@@ -1,0 +1,663 @@
+{
+    "schema_version": "2.0.0",
+    "generated_at": "2026-03-07",
+    "$comment": "Sample instances based on FPT Corporation ESG data — for pipeline development and testing",
+    "entities": [
+        {
+            "id": "COMP_FPT",
+            "type": "Company",
+            "properties": {
+                "name": "FPT Corporation",
+                "ticker": "FPT",
+                "exchange": "HOSE",
+                "industry": "Technology",
+                "vnsi_listed": true,
+                "is_subsidiary": false
+            }
+        },
+        {
+            "id": "COMP_FPT_TELECOM",
+            "type": "Company",
+            "properties": {
+                "name": "FPT Telecom",
+                "ticker": "FOX",
+                "exchange": "HOSE",
+                "industry": "Telecommunications",
+                "vnsi_listed": false,
+                "is_subsidiary": true
+            }
+        },
+        {
+            "id": "RPT_FPT_ESG_2023",
+            "type": "Report",
+            "properties": {
+                "title": "FPT ESG Report 2023",
+                "type": "ESG Report",
+                "year": 2023,
+                "filename": "2023-fpt-esg-report.pdf",
+                "language": "vi_en",
+                "gri_aligned": true,
+                "issb_aligned": false
+            }
+        },
+        {
+            "id": "RPT_FPT_ANNUAL_2023",
+            "type": "Report",
+            "properties": {
+                "title": "FPT Annual Report 2023",
+                "type": "Annual Report",
+                "year": 2023,
+                "filename": "annual-report-fpt-2023-en.pdf",
+                "language": "en",
+                "gri_aligned": false,
+                "issb_aligned": false
+            }
+        },
+        {
+            "id": "REG_TT96_2020",
+            "type": "Regulation",
+            "properties": {
+                "name": "Thông tư 96/2020/TT-BTC",
+                "issuer": "Bộ Tài chính Việt Nam",
+                "effective_date": "2021-01-01",
+                "amended_by": "REG_TT08_2026",
+                "scope": "Công ty đại chúng và công ty niêm yết HOSE, HNX",
+                "is_mandatory": true
+            }
+        },
+        {
+            "id": "REG_TT08_2026",
+            "type": "Regulation",
+            "properties": {
+                "name": "Thông tư 08/2026/TT-BTC",
+                "issuer": "Bộ Tài chính Việt Nam",
+                "effective_date": "2026-02-03",
+                "scope": "Sửa đổi bổ sung TT96/2020 — align ISSB và GRI, ESG chuyển sang bắt buộc",
+                "is_mandatory": true
+            }
+        },
+        {
+            "id": "REG_GREEN_TAXONOMY_2025",
+            "type": "Regulation",
+            "properties": {
+                "name": "Quyết định 21/2025/QĐ-TTg (Vietnam Green Taxonomy)",
+                "issuer": "Thủ tướng Chính phủ",
+                "effective_date": "2025-01-01",
+                "scope": "Phân loại dự án đầu tư xanh giai đoạn 2025-2030",
+                "is_mandatory": false
+            }
+        },
+        {
+            "id": "METRIC_CO2_SCOPE1_2023",
+            "type": "Metric",
+            "properties": {
+                "name": "Phát thải trực tiếp (Scope 1) 2023",
+                "pillar": "E",
+                "category": "Emissions",
+                "gri_code": "GRI 305-1",
+                "issb_code": "IFRS S2-para32(a)",
+                "value": 1250,
+                "unit": "tonne CO2e",
+                "year": 2023,
+                "is_green_taxonomy_aligned": false
+            }
+        },
+        {
+            "id": "METRIC_CO2_SCOPE2_2023",
+            "type": "Metric",
+            "properties": {
+                "name": "Phát thải gián tiếp từ năng lượng (Scope 2) 2023",
+                "pillar": "E",
+                "category": "Emissions",
+                "gri_code": "GRI 305-2",
+                "value": 8300,
+                "unit": "tonne CO2e",
+                "year": 2023,
+                "is_green_taxonomy_aligned": false
+            }
+        },
+        {
+            "id": "METRIC_ENERGY_2023",
+            "type": "Metric",
+            "properties": {
+                "name": "Tổng năng lượng tiêu thụ 2023",
+                "pillar": "E",
+                "category": "Energy",
+                "gri_code": "GRI 302-1",
+                "value": 42500,
+                "unit": "MWh",
+                "year": 2023,
+                "is_green_taxonomy_aligned": false
+            }
+        },
+        {
+            "id": "METRIC_RENEWABLE_RATIO_2023",
+            "type": "Metric",
+            "properties": {
+                "name": "Tỷ lệ năng lượng tái tạo 2023",
+                "pillar": "E",
+                "category": "Energy",
+                "gri_code": "GRI 302-1",
+                "value": 12.5,
+                "unit": "%",
+                "year": 2023,
+                "is_green_taxonomy_aligned": true
+            }
+        },
+        {
+            "id": "METRIC_FEMALE_RATIO_2023",
+            "type": "Metric",
+            "properties": {
+                "name": "Tỷ lệ nhân viên nữ 2023",
+                "pillar": "S",
+                "category": "Diversity",
+                "gri_code": "GRI 405-1",
+                "value": 38.2,
+                "unit": "%",
+                "year": 2023,
+                "is_green_taxonomy_aligned": false
+            }
+        },
+        {
+            "id": "METRIC_TRAINING_HOURS_2023",
+            "type": "Metric",
+            "properties": {
+                "name": "Số giờ đào tạo trung bình mỗi nhân viên 2023",
+                "pillar": "S",
+                "category": "Employment",
+                "gri_code": "GRI 404-1",
+                "value": 48,
+                "unit": "giờ/người/năm",
+                "year": 2023,
+                "is_green_taxonomy_aligned": false
+            }
+        },
+        {
+            "id": "METRIC_ACCIDENT_RATE_2023",
+            "type": "Metric",
+            "properties": {
+                "name": "Tỷ lệ tai nạn lao động 2023",
+                "pillar": "S",
+                "category": "Health_Safety",
+                "gri_code": "GRI 403-9",
+                "value": 0.12,
+                "unit": "ca/1000 nhân viên",
+                "year": 2023,
+                "is_green_taxonomy_aligned": false
+            }
+        },
+        {
+            "id": "METRIC_BOARD_INDEPENDENCE_2023",
+            "type": "Metric",
+            "properties": {
+                "name": "Tỷ lệ thành viên HĐQT độc lập 2023",
+                "pillar": "G",
+                "category": "Board_Governance",
+                "gri_code": "GRI 2-9",
+                "value": 40,
+                "unit": "%",
+                "year": 2023,
+                "is_green_taxonomy_aligned": false
+            }
+        },
+        {
+            "id": "METRIC_ANTICORRUPT_CASES_2023",
+            "type": "Metric",
+            "properties": {
+                "name": "Số vụ vi phạm đạo đức kinh doanh bị xác nhận 2023",
+                "pillar": "G",
+                "category": "Anti_corruption",
+                "gri_code": "GRI 205-3",
+                "value": 0,
+                "unit": "vụ",
+                "year": 2023,
+                "is_green_taxonomy_aligned": false
+            }
+        },
+        {
+            "id": "TGT_NETZERO_2050",
+            "type": "Target",
+            "properties": {
+                "name": "Net Zero 2050",
+                "pillar": "E",
+                "target_year": 2050,
+                "baseline_year": 2020,
+                "baseline_value": 1.12,
+                "baseline_unit": "tonne CO2e / tỷ VNĐ doanh thu",
+                "description": "Đạt mức phát thải carbon ròng bằng 0 vào năm 2050"
+            }
+        },
+        {
+            "id": "TGT_RENEWABLE_30_2025",
+            "type": "Target",
+            "properties": {
+                "name": "30% năng lượng tái tạo vào 2025",
+                "pillar": "E",
+                "target_year": 2025,
+                "baseline_year": 2022,
+                "baseline_value": 5.0,
+                "baseline_unit": "%",
+                "description": "Đạt 30% tỷ lệ sử dụng năng lượng tái tạo trong tổng năng lượng tiêu thụ"
+            }
+        },
+        {
+            "id": "TGT_FEMALE_LEADER_40_2026",
+            "type": "Target",
+            "properties": {
+                "name": "40% lãnh đạo cấp cao là nữ vào 2026",
+                "pillar": "S",
+                "target_year": 2026,
+                "baseline_year": 2022,
+                "baseline_value": 28.0,
+                "baseline_unit": "%",
+                "description": "Tăng tỷ lệ nữ giới trong vị trí quản lý cấp cao lên 40% vào 2026"
+            }
+        },
+        {
+            "id": "PRJ_SOLAR_FPT",
+            "type": "Project",
+            "properties": {
+                "name": "Lắp đặt điện mặt trời mái nhà tại Campus FPT",
+                "pillar": "E",
+                "start_year": 2022,
+                "end_year": 2025,
+                "budget_vnd": 15000000000,
+                "status": "In Progress",
+                "green_taxonomy_category": "Năng lượng tái tạo"
+            }
+        },
+        {
+            "id": "CLM_E_001",
+            "type": "Claim",
+            "properties": {
+                "text": "FPT cam kết giảm 30% cường độ phát thải carbon trên mỗi đơn vị doanh thu vào năm 2025 so với 2020",
+                "pillar": "E",
+                "sentiment": "Positive",
+                "page_ref": 28,
+                "year": 2023
+            }
+        },
+        {
+            "id": "CLM_E_002",
+            "type": "Claim",
+            "properties": {
+                "text": "100% văn phòng FPT tại Hà Nội và TP.HCM sử dụng điện tái tạo vào năm 2024",
+                "pillar": "E",
+                "sentiment": "Positive",
+                "page_ref": 34,
+                "year": 2023
+            }
+        },
+        {
+            "id": "CLM_S_001",
+            "type": "Claim",
+            "properties": {
+                "text": "FPT cam kết không phân biệt đối xử và đảm bảo môi trường làm việc bình đẳng cho tất cả nhân viên",
+                "pillar": "S",
+                "sentiment": "Positive",
+                "page_ref": 56,
+                "year": 2023
+            }
+        },
+        {
+            "id": "CLM_G_001",
+            "type": "Claim",
+            "properties": {
+                "text": "FPT cam kết tuân thủ đầy đủ các quy định pháp lý và không có vi phạm pháp luật nào trong năm 2023",
+                "pillar": "G",
+                "sentiment": "Positive",
+                "page_ref": 78,
+                "year": 2023
+            }
+        },
+        {
+            "id": "DP_E_001",
+            "type": "DataPoint",
+            "properties": {
+                "description": "Cường độ phát thải carbon trên doanh thu năm 2023",
+                "value": 0.85,
+                "unit": "tonne CO2e / tỷ VNĐ doanh thu",
+                "year": 2023,
+                "page_ref": 41,
+                "table_ref": "Table 4.1",
+                "data_type": "Actual"
+            }
+        },
+        {
+            "id": "DP_E_002",
+            "type": "DataPoint",
+            "properties": {
+                "description": "Tỷ lệ văn phòng dùng điện tái tạo thực tế năm 2023",
+                "value": 12.5,
+                "unit": "%",
+                "year": 2023,
+                "page_ref": 36,
+                "table_ref": "Table 4.3",
+                "data_type": "Actual"
+            }
+        },
+        {
+            "id": "NEWS_E_001",
+            "type": "NewsEvent",
+            "properties": {
+                "headline": "FPT bị xử phạt vì vi phạm tiêu chuẩn xả thải nước tại khu công nghiệp Hòa Lạc",
+                "source": "VnExpress",
+                "url": "https://vnexpress.net/fpt-xu-phat-xa-thai-2023.html",
+                "published_at": "2023-09-15",
+                "sentiment": "Negative",
+                "pillar": "E"
+            }
+        },
+        {
+            "id": "NEWS_S_001",
+            "type": "NewsEvent",
+            "properties": {
+                "headline": "Cựu nhân viên FPT phản ánh áp lực làm thêm giờ vượt quy định",
+                "source": "Lao Động",
+                "url": "https://laodong.vn/fpt-lam-them-gio-2023.html",
+                "published_at": "2023-11-20",
+                "sentiment": "Negative",
+                "pillar": "S"
+            }
+        },
+        {
+            "id": "AUDIT_FPT_2023",
+            "type": "AuditResult",
+            "properties": {
+                "company_id": "COMP_FPT",
+                "report_id": "RPT_FPT_ESG_2023",
+                "audited_at": "2026-03-07",
+                "trust_score": 0.64,
+                "greenwashing_risk": "Medium",
+                "total_claims": 4,
+                "supported_claims": 2,
+                "flagged_claims": 2,
+                "e_score": 0.60,
+                "s_score": 0.55,
+                "g_score": 0.75,
+                "summary": "FPT đưa ra các cam kết E và S tích cực nhưng có 2/4 tuyên bố thiếu bằng chứng số liệu hoặc bị mâu thuẫn bởi tin tức bên ngoài. Cam kết G (quản trị) được xác nhận tốt hơn."
+            }
+        }
+    ],
+    "relations": [
+        {
+            "id": "REL_SUB_001",
+            "type": "subsidiary_of",
+            "source_id": "COMP_FPT_TELECOM",
+            "target_id": "COMP_FPT",
+            "properties": {
+                "ownership_pct": 45.66,
+                "since_year": 2009
+            },
+            "extracted_at": "2026-03-07",
+            "confidence_score": 0.99,
+            "extraction_method": "Manual"
+        },
+        {
+            "id": "REL_EMIT_001",
+            "type": "has_emission",
+            "source_id": "COMP_FPT",
+            "target_id": "METRIC_CO2_SCOPE1_2023",
+            "properties": {
+                "year": 2023
+            },
+            "extracted_at": "2026-03-07",
+            "confidence_score": 0.97,
+            "extraction_method": "RE_Model"
+        },
+        {
+            "id": "REL_EMIT_002",
+            "type": "has_emission",
+            "source_id": "COMP_FPT",
+            "target_id": "METRIC_CO2_SCOPE2_2023",
+            "properties": {
+                "year": 2023
+            },
+            "extracted_at": "2026-03-07",
+            "confidence_score": 0.95,
+            "extraction_method": "RE_Model"
+        },
+        {
+            "id": "REL_EMIT_003",
+            "type": "has_emission",
+            "source_id": "COMP_FPT",
+            "target_id": "METRIC_ENERGY_2023",
+            "properties": {
+                "year": 2023
+            },
+            "extracted_at": "2026-03-07",
+            "confidence_score": 0.96,
+            "extraction_method": "RE_Model"
+        },
+        {
+            "id": "REL_SOCIAL_001",
+            "type": "has_emission",
+            "source_id": "COMP_FPT",
+            "target_id": "METRIC_FEMALE_RATIO_2023",
+            "properties": {
+                "year": 2023
+            },
+            "extracted_at": "2026-03-07",
+            "confidence_score": 0.98,
+            "extraction_method": "Rule-based"
+        },
+        {
+            "id": "REL_GOV_001",
+            "type": "has_emission",
+            "source_id": "COMP_FPT",
+            "target_id": "METRIC_BOARD_INDEPENDENCE_2023",
+            "properties": {
+                "year": 2023
+            },
+            "extracted_at": "2026-03-07",
+            "confidence_score": 0.99,
+            "extraction_method": "Manual"
+        },
+        {
+            "id": "REL_TGT_001",
+            "type": "targets_reduction",
+            "source_id": "COMP_FPT",
+            "target_id": "TGT_NETZERO_2050",
+            "properties": {
+                "announced_year": 2022
+            },
+            "extracted_at": "2026-03-07",
+            "confidence_score": 0.95,
+            "extraction_method": "RE_Model"
+        },
+        {
+            "id": "REL_TGT_002",
+            "type": "targets_reduction",
+            "source_id": "COMP_FPT",
+            "target_id": "TGT_RENEWABLE_30_2025",
+            "properties": {
+                "announced_year": 2023
+            },
+            "extracted_at": "2026-03-07",
+            "confidence_score": 0.91,
+            "extraction_method": "RE_Model"
+        },
+        {
+            "id": "REL_REG_001",
+            "type": "complies_with",
+            "source_id": "COMP_FPT",
+            "target_id": "REG_TT96_2020",
+            "properties": {
+                "status": "Compliant",
+                "year": 2023
+            },
+            "extracted_at": "2026-03-07",
+            "confidence_score": 0.90,
+            "extraction_method": "Rule-based"
+        },
+        {
+            "id": "REL_REG_002",
+            "type": "violates",
+            "source_id": "COMP_FPT",
+            "target_id": "REG_TT96_2020",
+            "properties": {
+                "violation_date": "2023-09-10",
+                "source_event": "NEWS_E_001"
+            },
+            "extracted_at": "2026-03-07",
+            "confidence_score": 0.82,
+            "extraction_method": "LLM_Constraint"
+        },
+        {
+            "id": "REL_PRJ_001",
+            "type": "invests_in",
+            "source_id": "COMP_FPT",
+            "target_id": "PRJ_SOLAR_FPT",
+            "properties": {
+                "investment_vnd": 15000000000
+            },
+            "extracted_at": "2026-03-07",
+            "confidence_score": 0.93,
+            "extraction_method": "RE_Model"
+        },
+        {
+            "id": "REL_CLM_001",
+            "type": "claims_reduction",
+            "source_id": "COMP_FPT",
+            "target_id": "CLM_E_001",
+            "properties": {
+                "year": 2023
+            },
+            "extracted_at": "2026-03-07",
+            "confidence_score": 0.96,
+            "extraction_method": "RE_Model"
+        },
+        {
+            "id": "REL_CLM_002",
+            "type": "claims_reduction",
+            "source_id": "COMP_FPT",
+            "target_id": "CLM_E_002",
+            "properties": {
+                "year": 2023
+            },
+            "extracted_at": "2026-03-07",
+            "confidence_score": 0.94,
+            "extraction_method": "RE_Model"
+        },
+        {
+            "id": "REL_CLM_003",
+            "type": "claims_reduction",
+            "source_id": "COMP_FPT",
+            "target_id": "CLM_S_001",
+            "properties": {
+                "year": 2023
+            },
+            "extracted_at": "2026-03-07",
+            "confidence_score": 0.88,
+            "extraction_method": "RE_Model"
+        },
+        {
+            "id": "REL_CLM_004",
+            "type": "claims_reduction",
+            "source_id": "COMP_FPT",
+            "target_id": "CLM_G_001",
+            "properties": {
+                "year": 2023
+            },
+            "extracted_at": "2026-03-07",
+            "confidence_score": 0.92,
+            "extraction_method": "RE_Model"
+        },
+        {
+            "id": "REL_SUP_001",
+            "type": "supported_by",
+            "source_id": "CLM_E_001",
+            "target_id": "DP_E_001",
+            "properties": {
+                "support_strength": "Strong"
+            },
+            "extracted_at": "2026-03-07",
+            "confidence_score": 0.88,
+            "extraction_method": "LLM_Constraint"
+        },
+        {
+            "id": "REL_SUP_002",
+            "type": "supported_by",
+            "source_id": "CLM_E_002",
+            "target_id": "DP_E_002",
+            "properties": {
+                "support_strength": "Weak"
+            },
+            "extracted_at": "2026-03-07",
+            "confidence_score": 0.72,
+            "extraction_method": "LLM_Constraint"
+        },
+        {
+            "id": "REL_CONTR_001",
+            "type": "contradicted_by",
+            "source_id": "CLM_G_001",
+            "target_id": "NEWS_E_001",
+            "properties": {
+                "contradiction_score": 0.81
+            },
+            "extracted_at": "2026-03-07",
+            "confidence_score": 0.81,
+            "extraction_method": "LLM_Constraint"
+        },
+        {
+            "id": "REL_CONTR_002",
+            "type": "contradicted_by",
+            "source_id": "CLM_S_001",
+            "target_id": "NEWS_S_001",
+            "properties": {
+                "contradiction_score": 0.74
+            },
+            "extracted_at": "2026-03-07",
+            "confidence_score": 0.74,
+            "extraction_method": "LLM_Constraint"
+        },
+        {
+            "id": "REL_EXT_001",
+            "type": "extracted_from",
+            "source_id": "CLM_E_001",
+            "target_id": "RPT_FPT_ESG_2023",
+            "properties": {
+                "page_number": 28
+            },
+            "extracted_at": "2026-03-07",
+            "confidence_score": 0.99,
+            "extraction_method": "RE_Model"
+        },
+        {
+            "id": "REL_EXT_002",
+            "type": "extracted_from",
+            "source_id": "METRIC_CO2_SCOPE1_2023",
+            "target_id": "RPT_FPT_ESG_2023",
+            "properties": {
+                "page_number": 41
+            },
+            "extracted_at": "2026-03-07",
+            "confidence_score": 0.97,
+            "extraction_method": "RE_Model"
+        },
+        {
+            "id": "REL_EXT_003",
+            "type": "extracted_from",
+            "source_id": "DP_E_001",
+            "target_id": "RPT_FPT_ESG_2023",
+            "properties": {
+                "page_number": 41
+            },
+            "extracted_at": "2026-03-07",
+            "confidence_score": 0.99,
+            "extraction_method": "Rule-based"
+        },
+        {
+            "id": "REL_AUDIT_001",
+            "type": "audited_by",
+            "source_id": "COMP_FPT",
+            "target_id": "AUDIT_FPT_2023",
+            "properties": {
+                "audit_year": 2023
+            },
+            "extracted_at": "2026-03-07",
+            "confidence_score": 1.0,
+            "extraction_method": "Manual"
+        }
+    ]
+}

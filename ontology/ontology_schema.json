@@ -1,0 +1,792 @@
+{
+    "schema_version": "2.0.0",
+    "last_updated": "2026-03-07",
+    "description": "Vn-ESG-Graph Ontology Schema — GRI Standards (transitioning to GRI 102/103 by 2027), aligned with TT96/2020/TT-BTC & TT08/2026/TT-BTC and Vietnam Green Taxonomy (QD 21/2025)",
+    "regulatory_context": {
+        "primary": [
+            "TT96/2020/TT-BTC",
+            "TT08/2026/TT-BTC"
+        ],
+        "international": [
+            "GRI Universal Standards 2021",
+            "ISSB IFRS S1/S2",
+            "GRI 102/103 (effective 2027)"
+        ],
+        "vietnam_specific": [
+            "QD 21/2025/QD-TTg (Green Taxonomy)",
+            "VNSI (HOSE)"
+        ]
+    },
+    "global_relation_properties": {
+        "$comment": "These properties MUST be included in every relation instance",
+        "extracted_at": {
+            "type": "string",
+            "format": "date",
+            "required": true,
+            "example": "2026-03-07"
+        },
+        "confidence_score": {
+            "type": "number",
+            "range": [
+                0,
+                1
+            ],
+            "required": true,
+            "example": 0.92
+        },
+        "extraction_method": {
+            "type": "string",
+            "required": true,
+            "enum": [
+                "RE_Model",
+                "Rule-based",
+                "Manual",
+                "LLM_Constraint"
+            ]
+        }
+    },
+    "entity_types": [
+        {
+            "type": "Company",
+            "description": "Doanh nghiệp niêm yết tại Việt Nam có công bố thông tin ESG",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "required": true,
+                    "example": "COMP_FPT"
+                },
+                "name": {
+                    "type": "string",
+                    "required": true,
+                    "example": "FPT Corporation"
+                },
+                "ticker": {
+                    "type": "string",
+                    "required": true,
+                    "example": "FPT"
+                },
+                "exchange": {
+                    "type": "string",
+                    "required": false,
+                    "example": "HOSE",
+                    "enum": [
+                        "HOSE",
+                        "HNX",
+                        "UPCoM"
+                    ]
+                },
+                "industry": {
+                    "type": "string",
+                    "required": false,
+                    "example": "Technology"
+                },
+                "vnsi_listed": {
+                    "type": "boolean",
+                    "required": false,
+                    "example": true
+                },
+                "is_subsidiary": {
+                    "type": "boolean",
+                    "required": false,
+                    "example": false
+                }
+            }
+        },
+        {
+            "type": "Metric",
+            "description": "Chỉ số định lượng ESG đo lường kết quả thực tế — bao phủ cả 3 trụ cột E, S, G",
+            "gri_note": "GRI 302-305 còn hiệu lực trong 2026; GRI 102/103 bắt buộc từ 2027",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "required": true,
+                    "example": "METRIC_CO2_SCOPE1_2023"
+                },
+                "name": {
+                    "type": "string",
+                    "required": true,
+                    "example": "Scope 1 GHG Emissions 2023"
+                },
+                "pillar": {
+                    "type": "string",
+                    "required": true,
+                    "example": "E",
+                    "enum": [
+                        "E",
+                        "S",
+                        "G"
+                    ]
+                },
+                "category": {
+                    "type": "string",
+                    "required": true,
+                    "example": "Emissions",
+                    "enum": [
+                        "Emissions",
+                        "Energy",
+                        "Water",
+                        "Waste",
+                        "Biodiversity",
+                        "Employment",
+                        "Health_Safety",
+                        "Diversity",
+                        "Community",
+                        "Anti_corruption",
+                        "Board_Governance",
+                        "Transparency"
+                    ]
+                },
+                "gri_code": {
+                    "type": "string",
+                    "required": false,
+                    "example": "GRI 305-1"
+                },
+                "issb_code": {
+                    "type": "string",
+                    "required": false,
+                    "example": "IFRS S2-para32"
+                },
+                "value": {
+                    "type": "number",
+                    "required": true,
+                    "example": 12500
+                },
+                "unit": {
+                    "type": "string",
+                    "required": true,
+                    "example": "tonne CO2e"
+                },
+                "year": {
+                    "type": "integer",
+                    "required": true,
+                    "example": 2023
+                },
+                "is_green_taxonomy_aligned": {
+                    "type": "boolean",
+                    "required": false,
+                    "example": false
+                }
+            }
+        },
+        {
+            "type": "Target",
+            "description": "Mục tiêu hoặc cam kết ESG dài hạn của doanh nghiệp",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "required": true,
+                    "example": "TGT_NETZERO_2050"
+                },
+                "name": {
+                    "type": "string",
+                    "required": true,
+                    "example": "Net Zero 2050"
+                },
+                "pillar": {
+                    "type": "string",
+                    "required": true,
+                    "example": "E",
+                    "enum": [
+                        "E",
+                        "S",
+                        "G"
+                    ]
+                },
+                "target_year": {
+                    "type": "integer",
+                    "required": false,
+                    "example": 2050
+                },
+                "baseline_year": {
+                    "type": "integer",
+                    "required": false,
+                    "example": 2020
+                },
+                "baseline_value": {
+                    "type": "number",
+                    "required": false,
+                    "example": 1.12
+                },
+                "baseline_unit": {
+                    "type": "string",
+                    "required": false,
+                    "example": "tonne CO2e / tỷ VNĐ"
+                },
+                "description": {
+                    "type": "string",
+                    "required": false
+                }
+            }
+        },
+        {
+            "type": "Regulation",
+            "description": "Quy định pháp lý áp dụng cho doanh nghiệp liên quan đến ESG",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "required": true,
+                    "example": "REG_TT96_2020"
+                },
+                "name": {
+                    "type": "string",
+                    "required": true,
+                    "example": "Thông tư 96/2020/TT-BTC"
+                },
+                "issuer": {
+                    "type": "string",
+                    "required": false,
+                    "example": "Bộ Tài chính Việt Nam"
+                },
+                "effective_date": {
+                    "type": "string",
+                    "required": false,
+                    "example": "2021-01-01"
+                },
+                "amended_by": {
+                    "type": "string",
+                    "required": false,
+                    "example": "REG_TT08_2026",
+                    "$comment": "ID của văn bản sửa đổi mới nhất nếu có"
+                },
+                "scope": {
+                    "type": "string",
+                    "required": false,
+                    "example": "Công ty niêm yết HOSE, HNX"
+                },
+                "is_mandatory": {
+                    "type": "boolean",
+                    "required": false,
+                    "example": true
+                }
+            }
+        },
+        {
+            "type": "Project",
+            "description": "Dự án, chương trình hoặc sáng kiến ESG cụ thể",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "required": true,
+                    "example": "PRJ_SOLAR_FPT"
+                },
+                "name": {
+                    "type": "string",
+                    "required": true,
+                    "example": "Điện mặt trời mái nhà FPT"
+                },
+                "pillar": {
+                    "type": "string",
+                    "required": true,
+                    "example": "E",
+                    "enum": [
+                        "E",
+                        "S",
+                        "G"
+                    ]
+                },
+                "start_year": {
+                    "type": "integer",
+                    "required": false,
+                    "example": 2022
+                },
+                "end_year": {
+                    "type": "integer",
+                    "required": false,
+                    "example": 2025
+                },
+                "budget_vnd": {
+                    "type": "number",
+                    "required": false,
+                    "example": 5000000000
+                },
+                "status": {
+                    "type": "string",
+                    "required": false,
+                    "example": "In Progress",
+                    "enum": [
+                        "Planned",
+                        "In Progress",
+                        "Completed",
+                        "Cancelled"
+                    ]
+                },
+                "green_taxonomy_category": {
+                    "type": "string",
+                    "required": false,
+                    "$comment": "Phân loại theo QD 21/2025/QD-TTg Vietnam Green Taxonomy",
+                    "example": "Năng lượng tái tạo"
+                }
+            }
+        },
+        {
+            "type": "Claim",
+            "description": "Tuyên bố định tính tích cực của doanh nghiệp về thành tích ESG — đối tượng chính của greenwashing detection",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "required": true,
+                    "example": "CLM_001"
+                },
+                "text": {
+                    "type": "string",
+                    "required": true,
+                    "example": "Cam kết giảm 50% lượng rác thải nhựa vào 2025"
+                },
+                "pillar": {
+                    "type": "string",
+                    "required": true,
+                    "example": "E",
+                    "enum": [
+                        "E",
+                        "S",
+                        "G"
+                    ]
+                },
+                "sentiment": {
+                    "type": "string",
+                    "required": true,
+                    "example": "Positive",
+                    "enum": [
+                        "Positive",
+                        "Neutral",
+                        "Negative"
+                    ]
+                },
+                "page_ref": {
+                    "type": "integer",
+                    "required": false,
+                    "example": 28
+                },
+                "year": {
+                    "type": "integer",
+                    "required": false,
+                    "example": 2023
+                }
+            }
+        },
+        {
+            "type": "DataPoint",
+            "description": "Số liệu định lượng cụ thể được trích xuất từ bảng biểu hoặc văn bản trong báo cáo",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "required": true,
+                    "example": "DP_001"
+                },
+                "description": {
+                    "type": "string",
+                    "required": true,
+                    "example": "Lượng rác thải nhựa phát sinh 2023"
+                },
+                "value": {
+                    "type": "number",
+                    "required": true,
+                    "example": 870
+                },
+                "unit": {
+                    "type": "string",
+                    "required": true,
+                    "example": "tấn"
+                },
+                "year": {
+                    "type": "integer",
+                    "required": true,
+                    "example": 2023
+                },
+                "page_ref": {
+                    "type": "integer",
+                    "required": false,
+                    "example": 35
+                },
+                "table_ref": {
+                    "type": "string",
+                    "required": false,
+                    "example": "Table 5.2"
+                },
+                "data_type": {
+                    "type": "string",
+                    "required": false,
+                    "enum": [
+                        "Actual",
+                        "Restated",
+                        "Estimated"
+                    ]
+                }
+            }
+        },
+        {
+            "type": "NewsEvent",
+            "description": "Sự kiện hoặc bài báo từ nguồn tin bên ngoài — xác nhận hoặc phủ nhận tuyên bố của doanh nghiệp",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "required": true,
+                    "example": "NEWS_001"
+                },
+                "headline": {
+                    "type": "string",
+                    "required": true,
+                    "example": "FPT bị phạt do vi phạm quy định xả thải"
+                },
+                "source": {
+                    "type": "string",
+                    "required": false,
+                    "example": "VnExpress"
+                },
+                "url": {
+                    "type": "string",
+                    "required": false
+                },
+                "published_at": {
+                    "type": "string",
+                    "required": false,
+                    "example": "2023-09-15"
+                },
+                "sentiment": {
+                    "type": "string",
+                    "required": true,
+                    "example": "Negative",
+                    "enum": [
+                        "Positive",
+                        "Neutral",
+                        "Negative"
+                    ]
+                },
+                "pillar": {
+                    "type": "string",
+                    "required": false,
+                    "example": "E",
+                    "enum": [
+                        "E",
+                        "S",
+                        "G",
+                        "Mixed"
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Report",
+            "description": "Tài liệu báo cáo gốc (PDF) là nguồn đầu vào của pipeline",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "required": true,
+                    "example": "RPT_FPT_ESG_2023"
+                },
+                "title": {
+                    "type": "string",
+                    "required": true,
+                    "example": "FPT ESG Report 2023"
+                },
+                "type": {
+                    "type": "string",
+                    "required": true,
+                    "example": "ESG Report",
+                    "enum": [
+                        "ESG Report",
+                        "Annual Report",
+                        "Sustainability Report",
+                        "CSR Report"
+                    ]
+                },
+                "year": {
+                    "type": "integer",
+                    "required": true,
+                    "example": 2023
+                },
+                "filename": {
+                    "type": "string",
+                    "required": false,
+                    "example": "2023-fpt-esg-report.pdf"
+                },
+                "total_pages": {
+                    "type": "integer",
+                    "required": false
+                },
+                "language": {
+                    "type": "string",
+                    "required": false,
+                    "enum": [
+                        "vi",
+                        "en",
+                        "vi_en"
+                    ]
+                },
+                "gri_aligned": {
+                    "type": "boolean",
+                    "required": false,
+                    "example": true
+                },
+                "issb_aligned": {
+                    "type": "boolean",
+                    "required": false,
+                    "example": false
+                }
+            }
+        },
+        {
+            "type": "AuditResult",
+            "description": "Kết quả kiểm toán Greenwashing của Agentic AI — output cuối cùng của pipeline, dùng cho Dashboard",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "required": true,
+                    "example": "AUDIT_FPT_2023"
+                },
+                "company_id": {
+                    "type": "string",
+                    "required": true,
+                    "example": "COMP_FPT"
+                },
+                "report_id": {
+                    "type": "string",
+                    "required": true,
+                    "example": "RPT_FPT_ESG_2023"
+                },
+                "audited_at": {
+                    "type": "string",
+                    "required": true,
+                    "example": "2026-03-07"
+                },
+                "trust_score": {
+                    "type": "number",
+                    "required": true,
+                    "range": [
+                        0,
+                        1
+                    ],
+                    "example": 0.64,
+                    "$comment": "Tỷ lệ claims được DataPoint xác nhận / tổng claims"
+                },
+                "greenwashing_risk": {
+                    "type": "string",
+                    "required": true,
+                    "example": "Medium",
+                    "enum": [
+                        "Low",
+                        "Medium",
+                        "High"
+                    ]
+                },
+                "total_claims": {
+                    "type": "integer",
+                    "required": true,
+                    "example": 11
+                },
+                "supported_claims": {
+                    "type": "integer",
+                    "required": true,
+                    "example": 8
+                },
+                "flagged_claims": {
+                    "type": "integer",
+                    "required": true,
+                    "example": 3
+                },
+                "e_score": {
+                    "type": "number",
+                    "required": false,
+                    "range": [
+                        0,
+                        1
+                    ],
+                    "example": 0.71
+                },
+                "s_score": {
+                    "type": "number",
+                    "required": false,
+                    "range": [
+                        0,
+                        1
+                    ],
+                    "example": 0.60
+                },
+                "g_score": {
+                    "type": "number",
+                    "required": false,
+                    "range": [
+                        0,
+                        1
+                    ],
+                    "example": 0.55
+                },
+                "summary": {
+                    "type": "string",
+                    "required": false,
+                    "example": "FPT đưa ra nhiều cam kết môi trường tích cực nhưng thiếu số liệu xác nhận cho 3/11 tuyên bố."
+                }
+            }
+        }
+    ],
+    "relation_types": [
+        {
+            "type": "has_emission",
+            "from": "Company",
+            "to": "Metric",
+            "description": "Doanh nghiệp có chỉ số phát thải/tiêu thụ năng lượng/nước (pillar E)",
+            "additional_properties": {
+                "year": {
+                    "type": "integer"
+                }
+            }
+        },
+        {
+            "type": "targets_reduction",
+            "from": "Company",
+            "to": "Target",
+            "description": "Doanh nghiệp đặt ra mục tiêu giảm thiểu ESG",
+            "additional_properties": {
+                "announced_year": {
+                    "type": "integer"
+                }
+            }
+        },
+        {
+            "type": "complies_with",
+            "from": "Company",
+            "to": "Regulation",
+            "description": "Doanh nghiệp tuân thủ một quy định ESG",
+            "additional_properties": {
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "Compliant",
+                        "Partial",
+                        "Non-Compliant"
+                    ]
+                },
+                "year": {
+                    "type": "integer"
+                }
+            }
+        },
+        {
+            "type": "violates",
+            "from": "Company",
+            "to": "Regulation",
+            "description": "Doanh nghiệp vi phạm một quy định (greenwashing signal mạnh — mâu thuẫn với complies_with)",
+            "additional_properties": {
+                "penalty_vnd": {
+                    "type": "number"
+                },
+                "violation_date": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "source_event": {
+                    "type": "string",
+                    "$comment": "ID của NewsEvent xác nhận vi phạm"
+                }
+            }
+        },
+        {
+            "type": "subsidiary_of",
+            "from": "Company",
+            "to": "Company",
+            "description": "Công ty con của công ty mẹ — dùng cho phân tích chuỗi cung ứng & rủi ro ESG gián tiếp",
+            "additional_properties": {
+                "ownership_pct": {
+                    "type": "number",
+                    "range": [
+                        0,
+                        100
+                    ]
+                },
+                "since_year": {
+                    "type": "integer"
+                }
+            }
+        },
+        {
+            "type": "invests_in",
+            "from": "Company",
+            "to": "Project",
+            "description": "Doanh nghiệp đầu tư vào một dự án ESG",
+            "additional_properties": {
+                "investment_vnd": {
+                    "type": "number"
+                }
+            }
+        },
+        {
+            "type": "claims_reduction",
+            "from": "Company",
+            "to": "Claim",
+            "description": "Doanh nghiệp đưa ra tuyên bố về thành tích/cam kết ESG",
+            "additional_properties": {
+                "year": {
+                    "type": "integer"
+                }
+            }
+        },
+        {
+            "type": "supported_by",
+            "from": "Claim",
+            "to": "DataPoint",
+            "description": "Tuyên bố được hỗ trợ bởi số liệu thực tế → NOT greenwashing",
+            "additional_properties": {
+                "support_strength": {
+                    "type": "string",
+                    "enum": [
+                        "Strong",
+                        "Weak",
+                        "None"
+                    ]
+                }
+            }
+        },
+        {
+            "type": "contradicted_by",
+            "from": "Claim",
+            "to": "NewsEvent",
+            "description": "Tuyên bố bị phủ nhận bởi tin tức bên ngoài → greenwashing flag",
+            "additional_properties": {
+                "contradiction_score": {
+                    "type": "number",
+                    "range": [
+                        0,
+                        1
+                    ]
+                }
+            }
+        },
+        {
+            "type": "extracted_from",
+            "from": [
+                "Metric",
+                "DataPoint",
+                "Claim"
+            ],
+            "to": "Report",
+            "description": "Thực thể được trích xuất từ báo cáo gốc",
+            "additional_properties": {
+                "page_number": {
+                    "type": "integer"
+                }
+            }
+        },
+        {
+            "type": "mentions",
+            "from": "Report",
+            "to": "Company",
+            "description": "Báo cáo đề cập đến doanh nghiệp",
+            "additional_properties": {
+                "mention_count": {
+                    "type": "integer"
+                }
+            }
+        },
+        {
+            "type": "audited_by",
+            "from": "Company",
+            "to": "AuditResult",
+            "description": "Doanh nghiệp được kiểm toán → liên kết công ty với kết quả audit",
+            "additional_properties": {
+                "audit_year": {
+                    "type": "integer"
+                }
+            }
+        }
+    ]
+}
