@@ -79,7 +79,7 @@ COMP_FPT
 
 ---
 
-## Bước 4 — Agent AI Đóng Vai "Kiểm Toán Viên"
+## Bước 4 — Agent AI 
 
 Agent quét toàn bộ đồ thị, phát hiện pattern nguy hiểm:
 
