@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(python:*)",
-      "Bash(pip install:*)"
+      "Bash(pip install:*)",
+      "Bash(git -C /c/Users/Admin/Desktop/capstone/code log --oneline -10)"
     ]
   }
 }
