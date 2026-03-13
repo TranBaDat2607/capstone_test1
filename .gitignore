@@ -1,1 +1,2 @@
-crawl_data/
+data/
+__pycache__/

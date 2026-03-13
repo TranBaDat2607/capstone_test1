@@ -19,7 +19,7 @@ import httpx
 from bs4 import BeautifulSoup
 
 # Config
-BASE_DIR = Path(__file__).resolve().parent
+BASE_DIR = Path(__file__).resolve().parent.parent / "data" / "raw" / "crawl_data_news"
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger("fpt_crawler")
 
@@ -96,7 +96,7 @@ def clean_text(s: str) -> str:
     """Decode HTML entities & normalize unicode."""
     if not s:
         return ""
-    # Decode HTML entities: &#7912; → Ứ, &amp; → &, ...
+    # Decode HTML entities: &#7912; -> unicode char, &amp; -> &, ...
     s = html.unescape(s)
     # Normalize unicode (NFC = composed form, chuẩn cho tiếng Việt)
     s = unicodedata.normalize("NFC", s)
@@ -731,7 +731,7 @@ async def main():
         else:
             logger.info(f"  {sk}: Success: {st['success']} Failed: {st['failed']}")
             for y, c in sorted(st.get("by_year", {}).items()):
-                logger.info(f"    └── {y}: {c}")
+                logger.info(f"    +-- {y}: {c}")
                 all_years[y] = all_years.get(y, 0) + c
 
     logger.info("\n  Phân bổ năm:")

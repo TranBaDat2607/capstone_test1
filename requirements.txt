@@ -1,3 +1,24 @@
+# Web crawlers (existing)
 playwright>=1.40.0
 nodriver>=0.34
 httpx>=0.25.0
+beautifulsoup4>=4.12.0
+
+# Knowledge Graph
+networkx>=3.2.0
+
+# PDF parsing
+pdfplumber>=0.10.0
+PyMuPDF>=1.23.0          # fitz - fallback PDF backend
+
+# LLM / AI
+anthropic>=0.40.0        # Anthropic Claude SDK (actor-critic reasoning agent)
+
+# NLP / Text processing
+# (difflib is stdlib - no extra install needed for entity linking)
+
+# Evaluation
+scikit-learn>=1.3.0      # precision/recall/F1 metrics (optional, has manual fallback)
+
+# Utilities
+python-dotenv>=1.0.0     # Load ANTHROPIC_API_KEY from .env file

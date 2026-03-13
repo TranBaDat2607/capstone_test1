@@ -17,7 +17,7 @@ import nodriver.cdp.browser as cdp_browser
 
 BASE_URL = "https://fpt.com"
 REPORT_URL = f"{BASE_URL}/en/ir/report"
-OUTPUT_DIR = Path(__file__).parent / "crawl_data"
+OUTPUT_DIR = Path(__file__).parent.parent / "data" / "raw" / "crawled_annual_report"
 
 ANNUAL_REPORT_PATTERNS = [
     r"/ir/general-meetings-of-shareholders/.*annual.*\.pdf",
