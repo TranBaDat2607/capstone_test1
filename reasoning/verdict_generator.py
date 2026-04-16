@@ -153,6 +153,7 @@ class VerdictGenerator:
         self,
         company_id: str,
         kg: KnowledgeGraph,
+        report_id: str | None = None,
     ) -> dict[str, Any]:
         """
         Perform a full greenwashing audit for all claims of a company.
@@ -202,20 +203,24 @@ class VerdictGenerator:
         # 3. Temporal consistency check
         temporal_issues: list[str] = []
         temporal_consistent: bool = True
+        temporal_result: dict = {}
         if self.temporal_module is not None:
             try:
-                temporal_result = self.temporal_module.check(company_id, kg)
-                temporal_consistent = temporal_result.get("consistent", True)
-                temporal_issues = temporal_result.get("issues", [])
+                temporal_result = self.temporal_module.analyze_company_timeline(company_id)
+                overall = temporal_result.get("overall_consistency", 1.0)
+                temporal_consistent = overall >= 0.5
+                divergence = temporal_result.get("divergence_years", [])
+                temporal_issues = [str(y) for y in divergence]
             except Exception as exc:
                 logger.warning("Temporal module failed: %s", exc)
 
         # 4. Silence detection
+        silence_result: dict = {}
         silent_pillars: list[str] = []
         if self.silence_detector is not None:
             try:
-                silence_result = self.silence_detector.detect(company_id, kg)
-                silent_pillars = silence_result.get("silent_pillars", [])
+                silence_result = self.silence_detector.detect_silence_signals(company_id)
+                silent_pillars = silence_result.get("silence_flags", [])
             except Exception as exc:
                 logger.warning("Silence detector failed: %s", exc)
 
@@ -236,9 +241,10 @@ class VerdictGenerator:
         s_score = _pillar_score(claim_results, "S")
         g_score = _pillar_score(claim_results, "G")
 
-        # Determine report_id: try to get it from the KG company node
-        company_node = _safe_get_node(kg, company_id) or {}
-        report_id = company_node.get("report_id", f"RPT_{company_id}_UNKNOWN")
+        # Determine report_id: use passed value, then KG company node, then fallback
+        if not report_id:
+            company_node = _safe_get_node(kg, company_id) or {}
+            report_id = company_node.get("properties", {}).get("report_id", f"RPT_{company_id}_UNKNOWN")
 
         # Summary text
         flagged_count_text = (
@@ -280,9 +286,16 @@ class VerdictGenerator:
             "summary": summary,
             # Extended fields for pipeline consumers
             "claim_results": claim_results,
-            "temporal_consistent": temporal_consistent,
-            "temporal_issues": temporal_issues,
-            "silent_pillars": silent_pillars,
+            "temporal_consistency": {
+                "consistent": temporal_consistent,
+                "overall_consistency": temporal_result.get("overall_consistency", 1.0),
+                "divergence_years": temporal_result.get("divergence_years", []),
+            },
+            "silence_signals": {
+                "silence_flags": silence_result.get("silence_flags", []),
+                "overall_coverage": silence_result.get("overall_coverage", 1.0),
+                "silence_risk": silence_result.get("silence_risk", "Low"),
+            },
         }
 
 

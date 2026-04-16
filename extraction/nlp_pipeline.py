@@ -21,16 +21,18 @@ from __future__ import annotations
 import json
 import logging
 import re
+import time
 from typing import Any
 
 logger = logging.getLogger(__name__)
 
 try:
-    import anthropic as _anthropic
-    _HAS_ANTHROPIC = True
+    from google import genai
+    from google.genai import types as genai_types
+    _HAS_GENAI = True
 except ImportError:
-    _HAS_ANTHROPIC = False
-    logger.warning("anthropic SDK not installed. NLP pipeline will be unavailable.")
+    _HAS_GENAI = False
+    logger.warning("google-genai SDK not installed. NLP pipeline will be unavailable.")
 
 
 # ---------------------------------------------------------------------------
@@ -101,9 +103,9 @@ class NLPExtractionPipeline:
     Parameters
     ----------
     api_key : str | None
-        Anthropic API key. If None, reads from ANTHROPIC_API_KEY environment variable.
+        Google AI API key. If None, reads from GOOGLE_AI_API_KEY environment variable.
     model : str
-        Claude model to use for extraction.
+        Gemini model to use for extraction.
     company_id : str
         KG company node ID (e.g. "COMP_FPT") — added to extracted relations.
     report_id : str
@@ -113,7 +115,7 @@ class NLPExtractionPipeline:
     def __init__(
         self,
         api_key: str | None = None,
-        model: str = "claude-sonnet-4-6",
+        model: str = "gemini-2.0-flash",
         company_id: str = "COMP_UNKNOWN",
         report_id: str = "RPT_UNKNOWN",
     ) -> None:
@@ -122,11 +124,12 @@ class NLPExtractionPipeline:
         self.report_id = report_id
         self._entity_counters: dict[str, int] = {}
 
-        if not _HAS_ANTHROPIC:
+        if not _HAS_GENAI:
             self._client = None
-            logger.warning("NLPExtractionPipeline initialized without Anthropic SDK.")
+            logger.warning("NLPExtractionPipeline initialized without google-genai SDK.")
         else:
-            self._client = _anthropic.Anthropic(api_key=api_key)
+            _key = api_key or ""
+            self._client = genai.Client(api_key=_key)
 
     # ------------------------------------------------------------------
     # Public API
@@ -165,13 +168,7 @@ class NLPExtractionPipeline:
         )
 
         try:
-            response = self._client.messages.create(
-                model=self.model,
-                max_tokens=2048,
-                system=_SYSTEM_PROMPT,
-                messages=[{"role": "user", "content": user_prompt}],
-            )
-            raw = response.content[0].text.strip()
+            raw = _gemini_call_with_retry(self._client, self.model, user_prompt, max_tokens=2048)
             result = self._parse_json_response(raw)
             result = self._add_provenance(result, page.get("page_number", 0))
             return result
@@ -298,3 +295,49 @@ class NLPExtractionPipeline:
             for row in table.get("rows", []):
                 lines.append(" | ".join(str(c) for c in row))
         return "\n".join(lines)
+
+
+# ---------------------------------------------------------------------------
+# Gemini helper with quota-safe retry
+# ---------------------------------------------------------------------------
+
+def _gemini_call_with_retry(
+    client: Any,
+    model_name: str,
+    prompt: str,
+    max_tokens: int = 2048,
+    max_retries: int = 3,
+) -> str:
+    """Call the Gemini API with exponential backoff on quota/429 errors."""
+    # System instruction + user prompt combined as a single contents string
+    full_prompt = f"{_SYSTEM_PROMPT}\n\n{prompt}"
+    config = genai_types.GenerateContentConfig(max_output_tokens=max_tokens)
+    delay = 4
+    last_exc: Exception | None = None
+    for attempt in range(max_retries + 1):
+        try:
+            response = client.models.generate_content(
+                model=model_name,
+                contents=full_prompt,
+                config=config,
+            )
+            return response.text.strip()
+        except Exception as exc:
+            exc_str = str(exc).lower()
+            is_quota = (
+                "429" in exc_str
+                or "quota" in exc_str
+                or "resource_exhausted" in exc_str
+                or "resourceexhausted" in exc_str
+            )
+            if is_quota and attempt < max_retries:
+                logger.warning(
+                    "Gemini quota hit (attempt %d/%d), retrying in %ds — %s",
+                    attempt + 1, max_retries, delay, exc,
+                )
+                time.sleep(delay)
+                delay *= 2
+                last_exc = exc
+            else:
+                raise
+    raise RuntimeError("Gemini call failed after retries") from last_exc

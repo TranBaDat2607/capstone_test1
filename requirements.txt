@@ -12,7 +12,8 @@ pdfplumber>=0.10.0
 PyMuPDF>=1.23.0          # fitz - fallback PDF backend
 
 # LLM / AI
-anthropic>=0.40.0        # Anthropic Claude SDK (actor-critic reasoning agent)
+anthropic>=0.40.0        # Anthropic Claude SDK (kept for optional use)
+google-genai>=1.0.0      # Google Gemini SDK (primary LLM backend)
 
 # NLP / Text processing
 # (difflib is stdlib - no extra install needed for entity linking)

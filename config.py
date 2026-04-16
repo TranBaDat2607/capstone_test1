@@ -12,6 +12,13 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
+# Load .env file if present (python-dotenv optional)
+try:
+    from dotenv import load_dotenv
+    load_dotenv(Path(__file__).parent / ".env")
+except ImportError:
+    pass
+
 
 class Config:
     """Static configuration container for the ESG Greenwashing Detection pipeline.
@@ -25,8 +32,8 @@ class Config:
     # LLM / API settings
     # ------------------------------------------------------------------
 
-    #: Which LLM backend to use.  Supported values: "anthropic", "openai".
-    LLM_PROVIDER: str = "anthropic"
+    #: Which LLM backend to use.  Supported values: "anthropic", "google".
+    LLM_PROVIDER: str = "google"
 
     #: Anthropic API key — read from environment, falls back to empty string.
     ANTHROPIC_API_KEY: str = os.getenv("ANTHROPIC_API_KEY", "")
@@ -34,8 +41,11 @@ class Config:
     #: OpenAI API key — read from environment, falls back to empty string.
     OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")
 
+    #: Google AI (Gemini) API key — read from environment.
+    GOOGLE_AI_API_KEY: str = os.getenv("GOOGLE_AI_API_KEY", "")
+
     #: Default model identifier sent to the LLM provider.
-    LLM_MODEL: str = "claude-sonnet-4-6"
+    LLM_MODEL: str = "gemini-2.0-flash"
 
     # ------------------------------------------------------------------
     # Neo4j / Graph-store settings
@@ -93,7 +103,8 @@ class Config:
     # ------------------------------------------------------------------
 
     #: Maximum number of RL reasoning iterations before forcing a conclusion.
-    RL_MAX_ITERATIONS: int = 5
+    #: Kept low (2) to stay within free-tier Gemini quota.
+    RL_MAX_ITERATIONS: int = 2
 
     #: Minimum cumulative reward required to accept an intermediate conclusion.
     RL_MIN_REWARD_THRESHOLD: float = 0.6

@@ -85,7 +85,7 @@ class ESGAuditPipeline:
         if verbose:
             logging.getLogger().setLevel(logging.DEBUG)
 
-        self.api_key = api_key or Config.ANTHROPIC_API_KEY or os.getenv("ANTHROPIC_API_KEY", "")
+        self.api_key = api_key or Config.GOOGLE_AI_API_KEY or os.getenv("GOOGLE_AI_API_KEY", "")
 
         # Phase A — KG
         self.kg = KnowledgeGraph()
@@ -211,11 +211,7 @@ class ESGAuditPipeline:
         if company_node is None:
             logger.warning("Company node %s not found in KG. Results may be empty.", company_id)
 
-        result = self.verdict_gen.audit_company(company_id, self.kg)
-
-        # Attach report_id if provided
-        if report_id and "report_id" not in result:
-            result["report_id"] = report_id
+        result = self.verdict_gen.audit_company(company_id, self.kg, report_id=report_id)
 
         return result
 

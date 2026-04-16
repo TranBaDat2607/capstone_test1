@@ -33,6 +33,12 @@ pip install -r requirements.txt
 python crawler_news.py
 ```
 
+### Build ontology data
+```bash
+python generators/build_ontology_from_pdfs.py   # regenerate framework_indicators.json
+python generators/build_instances.py             # regenerate sample_instances.json (requires ANTHROPIC_API_KEY)
+```
+
 ### Install dependencies
 ```bash
 pip install -r requirements.txt
