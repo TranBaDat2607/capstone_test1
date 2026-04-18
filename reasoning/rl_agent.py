@@ -21,8 +21,7 @@ import re
 import time
 from typing import Any
 
-from google import genai
-from google.genai import types as genai_types
+import anthropic
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +30,7 @@ logger = logging.getLogger(__name__)
 # Constants
 # ---------------------------------------------------------------------------
 
-_DEFAULT_MODEL: str = "gemini-2.0-flash"
+_DEFAULT_MODEL: str = "claude-sonnet-4-20250514"
 _DEFAULT_MAX_ITER: int = 2
 _GROUNDEDNESS_THRESHOLD: float = 0.60   # minimum score to accept a step
 _LOW_CONFIDENCE_THRESHOLD: float = 0.50  # flag verdict if below this
@@ -53,9 +52,9 @@ class RLReasoningAgent:
     Parameters
     ----------
     api_key : str | None
-        Google AI API key. If None, reads ``GOOGLE_AI_API_KEY`` from env.
+        Anthropic API key. If None, reads ``ANTHROPIC_API_KEY`` from env.
     model : str
-        Gemini model identifier to use for both actor and critic calls.
+        Claude model identifier to use for both actor and critic calls.
     max_iterations : int
         Maximum number of actor-critic loop iterations per claim.
     """
@@ -66,8 +65,7 @@ class RLReasoningAgent:
         model: str = _DEFAULT_MODEL,
         max_iterations: int = _DEFAULT_MAX_ITER,
     ) -> None:
-        _key = api_key or ""
-        self._genai_client = genai.Client(api_key=_key)
+        self._client = anthropic.Anthropic(api_key=api_key) if api_key else anthropic.Anthropic()
         self.model = model
         self.max_iterations = max_iterations
 
@@ -268,7 +266,7 @@ class RLReasoningAgent:
             iteration=iteration,
         )
         try:
-            return _gemini_call(self._genai_client, self.model, prompt, max_tokens=1024)
+            return _claude_call(self._client, self.model, prompt, max_tokens=1024)
         except Exception as exc:
             logger.error("Actor LLM call failed at iteration %d: %s", iteration, exc)
             return ""
@@ -310,7 +308,7 @@ class RLReasoningAgent:
             anti_paths=anti_paths_str,
         )
         try:
-            raw_text = _gemini_call(self._genai_client, self.model, prompt, max_tokens=256)
+            raw_text = _claude_call(self._client, self.model, prompt, max_tokens=256)
             return _parse_critic_json(raw_text, fallback=fallback)
         except Exception as exc:
             logger.error("Critic LLM call failed: %s", exc)
@@ -387,7 +385,7 @@ class RLReasoningAgent:
         }
 
         try:
-            raw_text = _gemini_call(self._genai_client, self.model, prompt, max_tokens=512)
+            raw_text = _claude_call(self._client, self.model, prompt, max_tokens=512)
             return _parse_verdict_json(raw_text, fallback=fallback_verdict)
         except Exception as exc:
             logger.error("Verdict generation failed: %s", exc)
@@ -554,10 +552,10 @@ _DEFAULT_GROUNDEDNESS_ON_ERROR: float = 0.50
 
 
 # ---------------------------------------------------------------------------
-# Gemini call wrapper with quota-safe retry
+# Claude call wrapper with rate-limit retry
 # ---------------------------------------------------------------------------
 
-def _gemini_call(
+def _claude_call(
     client: Any,
     model_name: str,
     prompt: str,
@@ -565,16 +563,16 @@ def _gemini_call(
     max_retries: int = 3,
 ) -> str:
     """
-    Call the Gemini API with exponential backoff on quota errors.
+    Call the Claude API with exponential backoff on rate-limit errors.
 
-    Retries up to *max_retries* times on 429 / ResourceExhausted responses,
+    Retries up to *max_retries* times on 429 / overloaded responses,
     doubling the wait each time (4 s -> 8 s -> 16 s).
 
     Parameters
     ----------
-    client : google.genai.Client
+    client : anthropic.Anthropic
     model_name : str
-        Model name, e.g. "gemini-2.0-flash".
+        Model name, e.g. "claude-sonnet-4-20250514".
     prompt : str
         Full prompt string (system + user combined).
     max_tokens : int
@@ -587,28 +585,23 @@ def _gemini_call(
     str
         Model response text, stripped of leading/trailing whitespace.
     """
-    config = genai_types.GenerateContentConfig(max_output_tokens=max_tokens)
     delay = 4  # seconds
     last_exc: Exception | None = None
     for attempt in range(max_retries + 1):
         try:
-            response = client.models.generate_content(
+            response = client.messages.create(
                 model=model_name,
-                contents=prompt,
-                config=config,
+                max_tokens=max_tokens,
+                temperature=0.1,
+                messages=[{"role": "user", "content": prompt}],
             )
-            return response.text.strip()
+            return response.content[0].text.strip()
         except Exception as exc:
             exc_str = str(exc).lower()
-            is_quota = (
-                "429" in exc_str
-                or "quota" in exc_str
-                or "resource_exhausted" in exc_str
-                or "resourceexhausted" in exc_str
-            )
-            if is_quota and attempt < max_retries:
+            is_rate_limit = "429" in exc_str or "rate" in exc_str or "overloaded" in exc_str
+            if is_rate_limit and attempt < max_retries:
                 logger.warning(
-                    "Gemini quota hit (attempt %d/%d), retrying in %ds — %s",
+                    "Claude rate limit (attempt %d/%d), retrying in %ds — %s",
                     attempt + 1, max_retries, delay, exc,
                 )
                 time.sleep(delay)
@@ -616,7 +609,7 @@ def _gemini_call(
                 last_exc = exc
             else:
                 raise
-    raise RuntimeError("Gemini call failed after retries") from last_exc
+    raise RuntimeError("Claude call failed after retries") from last_exc
 
 
 # ---------------------------------------------------------------------------

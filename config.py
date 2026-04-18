@@ -32,8 +32,8 @@ class Config:
     # LLM / API settings
     # ------------------------------------------------------------------
 
-    #: Which LLM backend to use.  Supported values: "anthropic", "google".
-    LLM_PROVIDER: str = "google"
+    #: Which LLM backend to use.
+    LLM_PROVIDER: str = "anthropic"
 
     #: Anthropic API key — read from environment, falls back to empty string.
     ANTHROPIC_API_KEY: str = os.getenv("ANTHROPIC_API_KEY", "")
@@ -41,11 +41,8 @@ class Config:
     #: OpenAI API key — read from environment, falls back to empty string.
     OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")
 
-    #: Google AI (Gemini) API key — read from environment.
-    GOOGLE_AI_API_KEY: str = os.getenv("GOOGLE_AI_API_KEY", "")
-
-    #: Default model identifier sent to the LLM provider.
-    LLM_MODEL: str = "gemini-2.0-flash"
+#: Default model identifier sent to the LLM provider.
+    LLM_MODEL: str = "claude-sonnet-4-20250514"
 
     # ------------------------------------------------------------------
     # Neo4j / Graph-store settings
@@ -103,7 +100,7 @@ class Config:
     # ------------------------------------------------------------------
 
     #: Maximum number of RL reasoning iterations before forcing a conclusion.
-    #: Kept low (2) to stay within free-tier Gemini quota.
+    #: Kept low (2) to control API cost per claim.
     RL_MAX_ITERATIONS: int = 2
 
     #: Minimum cumulative reward required to accept an intermediate conclusion.

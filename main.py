@@ -85,7 +85,7 @@ class ESGAuditPipeline:
         if verbose:
             logging.getLogger().setLevel(logging.DEBUG)
 
-        self.api_key = api_key or Config.GOOGLE_AI_API_KEY or os.getenv("GOOGLE_AI_API_KEY", "")
+        self.api_key = api_key or Config.ANTHROPIC_API_KEY or os.getenv("ANTHROPIC_API_KEY", "")
 
         # Phase A — KG
         self.kg = KnowledgeGraph()
