@@ -1,11 +1,11 @@
 """
-Tai toan bo bao cao thuong nien tu mot file Excel bat ky.
+Tai bao cao thuong nien tu sheet "Xây dựng - VLXD - BĐS".
 
 Su dung:
-    python crawl_data/download_reports.py <duong_dan_excel> [--sheets "Sheet A" "Sheet B"]
+    python crawl_data/download_reports.py <duong_dan_excel>
 
 Cau truc thu muc dau ra (mac dinh: <repo>/data/annual_report):
-    {Ten sheet}/
+    Xây dựng - VLXD - BĐS/
         {Ma CK} - {Ten cong ty}/
             {Ma CK}_{Nam}.{ext}        # file thuong (pdf,...)
             {Ma CK}_{Nam}/             # folder neu nguon la archive (.zip/.rar/.7z)
@@ -35,6 +35,7 @@ from extract_archives import EXTRACTORS, ARCHIVE_EXTS, dest_dir, already_extract
 # ---------------- Cau hinh mac dinh ----------------
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_OUT_ROOT = PROJECT_ROOT / "data" / "annual_report"
+TARGET_SHEET = "Xây dựng - VLXD - BĐS"
 
 MAX_WORKERS = 5
 TIMEOUT = 90
@@ -49,7 +50,6 @@ DELETE_ARCHIVE_AFTER_EXTRACT = True
 EXCEL_PATH: Path = Path()
 OUT_ROOT: Path = DEFAULT_OUT_ROOT
 LOG_PATH: Path = DEFAULT_OUT_ROOT / "download_log.csv"
-SHEET_FILTER: list[str] = []  # [] = tai tat ca sheet (tru "Tong quan")
 
 HEADERS = {
     "User-Agent": (
@@ -79,29 +79,20 @@ def extract_ext(url: str) -> str:
 
 def load_all() -> pd.DataFrame:
     xl = pd.ExcelFile(EXCEL_PATH)
-    data_sheets = [s for s in xl.sheet_names if s.strip().lower() != "tổng quan"]
-    if SHEET_FILTER:
-        wanted = {s.strip().lower() for s in SHEET_FILTER}
-        data_sheets = [s for s in data_sheets if s.strip().lower() in wanted]
-        if not data_sheets:
-            raise ValueError(
-                f"Khong tim thay sheet nao trong SHEET_FILTER={SHEET_FILTER}. "
-                f"Sheet co trong file: {xl.sheet_names}"
-            )
-    frames = []
-    for sheet in data_sheets:
-        df = pd.read_excel(EXCEL_PATH, sheet_name=sheet, header=0)
-        if df.shape[1] < 5:
-            continue
-        df = df.iloc[:, :5]
-        df.columns = ["ma_ck", "ten_cty", "ten_tl", "nam", "url"]
-        df["ma_ck"] = df["ma_ck"].ffill()
-        df["ten_cty"] = df["ten_cty"].ffill()
-        df["ten_tl"] = df["ten_tl"].ffill()
-        df["sheet"] = sheet
-        frames.append(df)
-    all_df = pd.concat(frames, ignore_index=True)
-    all_df = all_df.dropna(subset=["url", "ma_ck"]).copy()
+    if TARGET_SHEET not in xl.sheet_names:
+        raise ValueError(
+            f"Khong tim thay sheet '{TARGET_SHEET}'. Sheet co trong file: {xl.sheet_names}"
+        )
+    df = pd.read_excel(EXCEL_PATH, sheet_name=TARGET_SHEET, header=0)
+    if df.shape[1] < 5:
+        raise ValueError(f"Sheet '{TARGET_SHEET}' khong du 5 cot.")
+    df = df.iloc[:, :5]
+    df.columns = ["ma_ck", "ten_cty", "ten_tl", "nam", "url"]
+    df["ma_ck"] = df["ma_ck"].ffill()
+    df["ten_cty"] = df["ten_cty"].ffill()
+    df["ten_tl"] = df["ten_tl"].ffill()
+    df["sheet"] = TARGET_SHEET
+    all_df = df.dropna(subset=["url", "ma_ck"]).copy()
     all_df["url"] = all_df["url"].astype(str).str.strip()
     all_df = all_df[all_df["url"].str.startswith(("http://", "https://"))]
     # Year: NaN -> 'NA', else int
@@ -226,12 +217,6 @@ def parse_args():
         help=f"Thu muc dau ra (mac dinh: {DEFAULT_OUT_ROOT}).",
     )
     p.add_argument(
-        "--sheets",
-        nargs="*",
-        default=[],
-        help='Loc theo ten sheet. Vi du: --sheets "Xay dung - VLXD - BDS". De trong = tat ca sheet (tru "Tong quan").',
-    )
-    p.add_argument(
         "--log",
         type=Path,
         default=None,
@@ -241,21 +226,19 @@ def parse_args():
 
 
 def main():
-    global EXCEL_PATH, OUT_ROOT, LOG_PATH, SHEET_FILTER
+    global EXCEL_PATH, OUT_ROOT, LOG_PATH
     args = parse_args()
 
     EXCEL_PATH = args.excel.expanduser().resolve()
     if not EXCEL_PATH.is_file():
         sys.exit(f"Khong tim thay file Excel: {EXCEL_PATH}")
     OUT_ROOT = args.out.expanduser().resolve()
-    LOG_PATH = (args.log.expanduser().resolve() if args.log else OUT_ROOT / "download_log.csv")
-    SHEET_FILTER = list(args.sheets or [])
+    LOG_PATH = args.log.expanduser().resolve() if args.log else OUT_ROOT / "download_log.csv"
 
     OUT_ROOT.mkdir(parents=True, exist_ok=True)
     _log(f"Excel:  {EXCEL_PATH}")
+    _log(f"Sheet:  {TARGET_SHEET}")
     _log(f"Output: {OUT_ROOT}")
-    if SHEET_FILTER:
-        _log(f"Sheets: {SHEET_FILTER}")
 
     df = load_all()
     _log(f"Tong so URL hop le: {len(df)}")
