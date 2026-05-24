@@ -1,17 +1,23 @@
 """
-Tai toan bo bao cao thuong nien tu file 'Data do an.xlsx'.
+Tai toan bo bao cao thuong nien tu mot file Excel bat ky.
 
-Cau truc thu muc dau ra (B:/capstone/data2/data):
+Su dung:
+    python crawl_data/download_reports.py <duong_dan_excel> [--sheets "Sheet A" "Sheet B"]
+
+Cau truc thu muc dau ra (mac dinh: <repo>/data/annual_report):
     {Ten sheet}/
         {Ma CK} - {Ten cong ty}/
-            {Ma CK}_{Nam}.{ext}
+            {Ma CK}_{Nam}.{ext}        # file thuong (pdf,...)
+            {Ma CK}_{Nam}/             # folder neu nguon la archive (.zip/.rar/.7z)
 
+- Luon tu dong giai nen archive va xoa file nen goc -> dau ra khong con file archive.
 - 5 luong song song
 - Tu dong bo qua file da tai (cho phep resume)
 - Retry 3 lan voi backoff
-- Ghi log loi vao download_log.csv
+- Ghi log loi vao download_log.csv canh thu muc dau ra
 """
 
+import argparse
 import pandas as pd
 import requests
 from pathlib import Path
@@ -26,23 +32,24 @@ import sys
 sys.path.insert(0, str(Path(__file__).parent))
 from extract_archives import EXTRACTORS, ARCHIVE_EXTS, dest_dir, already_extracted
 
-# ---------------- Cau hinh ----------------
-EXCEL_PATH = Path("B:/capstone/data2/Data đồ án.xlsx")
-OUT_ROOT = Path("B:/capstone/data2/data")
-LOG_PATH = Path("B:/capstone/data2/download_log.csv")
+# ---------------- Cau hinh mac dinh ----------------
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+DEFAULT_OUT_ROOT = PROJECT_ROOT / "data" / "annual_report"
+
 MAX_WORKERS = 5
 TIMEOUT = 90
 MAX_RETRIES = 3
 RETRY_BACKOFF = 2  # giay, x attempt
 
-# Danh sach ten sheet muon tai. De [] (rong) = tai tat ca.
-# So sanh khong phan biet hoa thuong, bo qua khoang trang dau/cuoi.
-SHEET_FILTER = ["Xây dựng - VLXD - BĐS"]
-
-# Tu dong giai nen file .zip/.rar/.7z ngay sau khi tai xong va xoa file goc.
-# Neu giai nen loi: giu nguyen file nen, ghi vao counter extract_fail.
+# Luon tu dong giai nen .zip/.rar/.7z va xoa file goc -> dau ra khong con archive.
 AUTO_EXTRACT = True
 DELETE_ARCHIVE_AFTER_EXTRACT = True
+
+# Runtime config (gan trong main() tu CLI)
+EXCEL_PATH: Path = Path()
+OUT_ROOT: Path = DEFAULT_OUT_ROOT
+LOG_PATH: Path = DEFAULT_OUT_ROOT / "download_log.csv"
+SHEET_FILTER: list[str] = []  # [] = tai tat ca sheet (tru "Tong quan")
 
 HEADERS = {
     "User-Agent": (
@@ -203,8 +210,53 @@ def download_one(idx: int, row: dict, target: Path):
     return ("failed", idx, row, target, last_err)
 
 
+def parse_args():
+    p = argparse.ArgumentParser(
+        description="Tai bao cao thuong nien tu file Excel. Tu dong giai nen archive."
+    )
+    p.add_argument(
+        "excel",
+        type=Path,
+        help="Duong dan toi file Excel chua danh sach URL (cot: Ma CK, Ten cty, Ten TL, Nam, URL).",
+    )
+    p.add_argument(
+        "-o", "--out",
+        type=Path,
+        default=DEFAULT_OUT_ROOT,
+        help=f"Thu muc dau ra (mac dinh: {DEFAULT_OUT_ROOT}).",
+    )
+    p.add_argument(
+        "--sheets",
+        nargs="*",
+        default=[],
+        help='Loc theo ten sheet. Vi du: --sheets "Xay dung - VLXD - BDS". De trong = tat ca sheet (tru "Tong quan").',
+    )
+    p.add_argument(
+        "--log",
+        type=Path,
+        default=None,
+        help="Duong dan file log loi (mac dinh: <out>/download_log.csv).",
+    )
+    return p.parse_args()
+
+
 def main():
+    global EXCEL_PATH, OUT_ROOT, LOG_PATH, SHEET_FILTER
+    args = parse_args()
+
+    EXCEL_PATH = args.excel.expanduser().resolve()
+    if not EXCEL_PATH.is_file():
+        sys.exit(f"Khong tim thay file Excel: {EXCEL_PATH}")
+    OUT_ROOT = args.out.expanduser().resolve()
+    LOG_PATH = (args.log.expanduser().resolve() if args.log else OUT_ROOT / "download_log.csv")
+    SHEET_FILTER = list(args.sheets or [])
+
     OUT_ROOT.mkdir(parents=True, exist_ok=True)
+    _log(f"Excel:  {EXCEL_PATH}")
+    _log(f"Output: {OUT_ROOT}")
+    if SHEET_FILTER:
+        _log(f"Sheets: {SHEET_FILTER}")
+
     df = load_all()
     _log(f"Tong so URL hop le: {len(df)}")
 

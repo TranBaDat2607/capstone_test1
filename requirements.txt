@@ -1,6 +1,14 @@
 # Annual report crawler (crawl_data/crawler.py)
 nodriver>=0.34
 
+# Annual report downloader (crawl_data/download_reports.py)
+#   + archive extractor (crawl_data/extract_archives.py)
+# Note: .rar/.7z extraction shells out to UnRAR.exe / 7z.exe (external binaries),
+# not Python libs. Install WinRAR and 7-Zip separately on the host.
+pandas>=2.3.0
+openpyxl>=3.1.0       # pandas engine for .xlsx
+requests>=2.32.0
+
 # News crawler (crawl_data/crawler_news.py)
 httpx[http2]>=0.27.0
 beautifulsoup4>=4.12.0
