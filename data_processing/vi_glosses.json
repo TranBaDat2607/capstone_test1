@@ -1,0 +1,46 @@
+{
+  "_note": "Hand-curated Vietnamese glosses for GRI standards. Keyed by standard_code. Applied to every disclosure under that standard at query time. The English content in disclosures.json is authoritative; this file only adds VN paraphrase + domain keywords to help cross-lingual matching and display.",
+  "glosses": {
+    "1":   {"title_vi": "Nền tảng", "keywords_vi": ["nền tảng báo cáo", "nguyên tắc báo cáo"]},
+    "2":   {"title_vi": "Công bố chung", "keywords_vi": ["công bố chung", "thông tin về tổ chức", "quản trị", "hội đồng quản trị", "ban kiểm soát", "ban điều hành", "thù lao", "đại hội đồng cổ đông", "chiến lược", "cam kết chính sách", "tuân thủ pháp luật", "các bên liên quan", "thỏa ước lao động tập thể"]},
+    "3":   {"title_vi": "Các vấn đề trọng yếu", "keywords_vi": ["vấn đề trọng yếu", "tính trọng yếu", "đánh giá tác động"]},
+
+    "101": {"title_vi": "Đa dạng sinh học", "keywords_vi": ["đa dạng sinh học", "hệ sinh thái", "loài nguy cấp", "khu bảo tồn", "rừng", "tài nguyên thiên nhiên"]},
+    "102": {"title_vi": "Biến đổi khí hậu", "keywords_vi": ["biến đổi khí hậu", "phát thải khí nhà kính", "carbon", "phạm vi 1", "phạm vi 2", "phạm vi 3", "trung hòa carbon", "net zero", "giảm phát thải", "thích ứng khí hậu"]},
+    "103": {"title_vi": "Năng lượng", "keywords_vi": ["năng lượng", "tiêu thụ năng lượng", "tiết kiệm năng lượng", "năng lượng tái tạo", "điện mặt trời", "điện gió", "hiệu suất năng lượng", "cường độ năng lượng"]},
+
+    "201": {"title_vi": "Hiệu quả kinh tế", "keywords_vi": ["hiệu quả kinh tế", "giá trị kinh tế", "lợi nhuận", "phúc lợi", "hỗ trợ tài chính"]},
+    "202": {"title_vi": "Sự hiện diện trên thị trường", "keywords_vi": ["lương khởi điểm", "lương tối thiểu", "tuyển dụng địa phương"]},
+    "203": {"title_vi": "Tác động kinh tế gián tiếp", "keywords_vi": ["đầu tư hạ tầng", "dịch vụ cộng đồng", "tác động kinh tế"]},
+    "204": {"title_vi": "Hoạt động mua sắm", "keywords_vi": ["nhà cung cấp địa phương", "chi tiêu địa phương", "mua sắm"]},
+    "205": {"title_vi": "Chống tham nhũng", "keywords_vi": ["chống tham nhũng", "tham nhũng", "hối lộ", "đào tạo chống tham nhũng", "rủi ro tham nhũng"]},
+    "206": {"title_vi": "Hành vi phản cạnh tranh", "keywords_vi": ["phản cạnh tranh", "chống độc quyền", "độc quyền"]},
+    "207": {"title_vi": "Thuế", "keywords_vi": ["thuế", "quản trị thuế", "rủi ro thuế", "báo cáo thuế theo quốc gia"]},
+
+    "301": {"title_vi": "Nguyên vật liệu", "keywords_vi": ["nguyên vật liệu", "vật liệu tái chế", "tái sử dụng", "bao bì"]},
+    "302": {"title_vi": "Năng lượng", "keywords_vi": ["tiêu thụ năng lượng", "tiết kiệm năng lượng", "năng lượng tái tạo", "điện mặt trời", "hiệu suất năng lượng", "cường độ năng lượng"]},
+    "303": {"title_vi": "Nước và nước thải", "keywords_vi": ["nước", "nước thải", "xử lý nước", "tiết kiệm nước", "khai thác nước", "tài nguyên nước"]},
+    "304": {"title_vi": "Đa dạng sinh học", "keywords_vi": ["đa dạng sinh học", "khu bảo tồn", "loài nguy cấp", "hệ sinh thái", "phục hồi sinh cảnh"]},
+    "305": {"title_vi": "Phát thải", "keywords_vi": ["phát thải", "khí nhà kính", "khí thải", "carbon", "co2", "phạm vi 1", "phạm vi 2", "phạm vi 3", "ozone", "nox", "sox", "giảm phát thải"]},
+    "306": {"title_vi": "Chất thải", "keywords_vi": ["chất thải", "rác thải", "chất thải nguy hại", "tái chế", "tái sử dụng", "kinh tế tuần hoàn", "xử lý chất thải", "nước thải"]},
+    "308": {"title_vi": "Đánh giá môi trường nhà cung cấp", "keywords_vi": ["nhà cung cấp", "đánh giá môi trường", "chuỗi cung ứng", "rủi ro môi trường"]},
+
+    "401": {"title_vi": "Việc làm", "keywords_vi": ["việc làm", "tuyển dụng", "biến động nhân sự", "phúc lợi", "nghỉ thai sản", "lương thưởng"]},
+    "402": {"title_vi": "Quan hệ lao động và quản lý", "keywords_vi": ["quan hệ lao động", "thông báo thay đổi", "công đoàn"]},
+    "403": {"title_vi": "An toàn và sức khỏe nghề nghiệp", "keywords_vi": ["an toàn lao động", "vệ sinh lao động", "an toàn vệ sinh lao động", "tai nạn lao động", "bệnh nghề nghiệp", "phòng cháy chữa cháy", "đào tạo an toàn", "y tế lao động"]},
+    "404": {"title_vi": "Đào tạo và giáo dục", "keywords_vi": ["đào tạo", "bồi dưỡng", "giáo dục", "phát triển nghề nghiệp", "đánh giá hiệu suất", "nâng cao kỹ năng", "giờ đào tạo"]},
+    "405": {"title_vi": "Đa dạng và cơ hội bình đẳng", "keywords_vi": ["đa dạng", "bình đẳng giới", "phụ nữ", "nữ giới", "cơ hội bình đẳng", "tỷ lệ giới", "lương nữ nam"]},
+    "406": {"title_vi": "Không phân biệt đối xử", "keywords_vi": ["phân biệt đối xử", "không phân biệt"]},
+    "407": {"title_vi": "Tự do hiệp hội và thương lượng tập thể", "keywords_vi": ["tự do hiệp hội", "thương lượng tập thể", "công đoàn"]},
+    "408": {"title_vi": "Lao động trẻ em", "keywords_vi": ["lao động trẻ em", "trẻ em làm việc"]},
+    "409": {"title_vi": "Lao động cưỡng bức", "keywords_vi": ["lao động cưỡng bức", "lao động ép buộc", "nô lệ hiện đại"]},
+    "410": {"title_vi": "Hoạt động an ninh", "keywords_vi": ["nhân viên an ninh", "quyền con người", "đào tạo an ninh"]},
+    "411": {"title_vi": "Quyền của người bản địa", "keywords_vi": ["người bản địa", "dân tộc thiểu số"]},
+    "413": {"title_vi": "Cộng đồng địa phương", "keywords_vi": ["cộng đồng địa phương", "trách nhiệm xã hội", "an sinh xã hội", "từ thiện", "thiện nguyện", "tài trợ cộng đồng", "đánh giá tác động cộng đồng"]},
+    "414": {"title_vi": "Đánh giá xã hội nhà cung cấp", "keywords_vi": ["nhà cung cấp", "đánh giá xã hội", "chuỗi cung ứng", "rủi ro xã hội"]},
+    "415": {"title_vi": "Chính sách công", "keywords_vi": ["chính sách công", "đóng góp chính trị", "vận động chính sách"]},
+    "416": {"title_vi": "An toàn và sức khỏe khách hàng", "keywords_vi": ["an toàn sản phẩm", "sức khỏe khách hàng", "chất lượng sản phẩm", "thu hồi sản phẩm"]},
+    "417": {"title_vi": "Tiếp thị và nhãn mác", "keywords_vi": ["nhãn mác sản phẩm", "thông tin sản phẩm", "truyền thông tiếp thị", "quảng cáo"]},
+    "418": {"title_vi": "Quyền riêng tư khách hàng", "keywords_vi": ["quyền riêng tư", "bảo mật thông tin", "dữ liệu khách hàng", "rò rỉ dữ liệu"]}
+  }
+}

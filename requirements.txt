@@ -16,3 +16,9 @@ lxml>=4.9.0
 trafilatura>=1.8.0
 newspaper4k>=0.9.0
 playwright>=1.40.0
+
+# ESG sentence extraction pipeline (data_processing/)
+pymupdf>=1.24.0          # pdf_extractor.py
+underthesea>=6.8.0       # sentence_splitter.py (VN-aware sent_tokenize)
+numpy>=1.26.0            # gri_mapper.py
+sentence-transformers>=2.7.0  # gri_mapper.py (loads LaBSE for cross-lingual matching)
