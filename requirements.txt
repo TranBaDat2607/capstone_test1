@@ -1,27 +1,10 @@
-# Web crawlers (existing)
-playwright>=1.40.0
+# Annual report crawler (crawl_data/crawler.py)
 nodriver>=0.34
-httpx>=0.25.0
+
+# News crawler (crawl_data/crawler_news.py)
+httpx[http2]>=0.27.0
 beautifulsoup4>=4.12.0
-
-# Knowledge Graph
-networkx>=3.2.0
-
-# PDF parsing
-pdfplumber>=0.10.0
-PyMuPDF>=1.23.0          # fitz - fallback PDF backend
-
-# LLM / AI
-anthropic>=0.40.0        # Anthropic Claude SDK (kept for optional use)
-google-genai>=1.0.0      # Google Gemini SDK (primary LLM backend)
-
-# NLP / Text processing
-# (difflib is stdlib - no extra install needed for entity linking)
-
-# Evaluation
-scikit-learn>=1.3.0      # precision/recall/F1 metrics (optional, has manual fallback)
-rank-bm25>=0.2.2         # BM25 retrieval for KG quality evaluation
-underthesea>=6.8.0       # Vietnamese word segmentation for BM25 tokenization
-
-# Utilities
-python-dotenv>=1.0.0     # Load ANTHROPIC_API_KEY from .env file
+lxml>=4.9.0
+trafilatura>=1.8.0
+newspaper4k>=0.9.0
+playwright>=1.40.0
