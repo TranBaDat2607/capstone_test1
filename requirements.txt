@@ -1,4 +1,4 @@
-# Annual report crawler (crawl_data/crawler.py)
+w# Annual report crawler (crawl_data/crawler.py)
 nodriver>=0.34
 
 # Annual report downloader (crawl_data/download_reports.py)
@@ -22,3 +22,4 @@ pymupdf>=1.24.0          # pdf_extractor.py
 underthesea>=6.8.0       # sentence_splitter.py (VN-aware sent_tokenize)
 numpy>=1.26.0            # gri_mapper.py
 sentence-transformers>=2.7.0  # gri_mapper.py (loads LaBSE for cross-lingual matching)
+yake>=0.4.8              # extract_keywords.py (YAKE candidate keyword extraction from regulatory PDFs)
