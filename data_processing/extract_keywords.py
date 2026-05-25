@@ -1,8 +1,9 @@
 """Extract candidate ESG keywords from regulatory PDFs using YAKE.
 
-Reads Circular 96/2020/TT-BTC and the IFC-SSC sustainability reporting
-handbook, runs unsupervised YAKE keyword extraction on each, and writes
-the top-300 candidates per source (plus a merged deduplicated pool) to
+Reads every PDF under `data/esg_source_documents/` (Thông tư 96/2020,
+Thông tư 08/2026, IFC-SSC handbook, CSI 2020, GRI standards, etc.),
+runs unsupervised YAKE keyword extraction on each, and writes the
+top-300 candidates per source (plus a merged deduplicated pool) to
 `data_processing/yake_candidates.json`.
 
 This is the candidate-generation step of the keyword-dictionary protocol:
@@ -23,19 +24,17 @@ from pdf_extractor import extract_full_text
 
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-SOURCES: dict[str, Path] = {
-    "tt_96_2020_btc": REPO_ROOT / "data" / "tt-96-btc" / "96-btc.pdf",
-    "tt_08_2026_btc": REPO_ROOT / "data" / "tt-08-2026-btc" / "08-2026-btc.pdf",
-    "ifc_ssc_handbook": REPO_ROOT
-    / "data"
-    / "IFC_SSC_handbook"
-    / "SSC IFC Huong dan lap Bao cao Phat trien ben vung.pdf",
-    "csi_2020": REPO_ROOT
-    / "data"
-    / "CSI_criteria"
-    / "2020.6.22-9.9.59_Huong dan Bo Chi so CSI 2020.pdf",
-}
+SOURCE_DIR = REPO_ROOT / "data" / "esg_source_documents"
 OUTPUT_PATH = Path(__file__).resolve().parent / "yake_candidates.json"
+
+
+def _discover_sources(source_dir: Path) -> dict[str, Path]:
+    if not source_dir.exists():
+        raise FileNotFoundError(f"Source directory not found: {source_dir}")
+    pdfs = sorted(source_dir.glob("*.pdf"))
+    if not pdfs:
+        raise FileNotFoundError(f"No PDFs found in {source_dir}")
+    return {pdf.stem: pdf for pdf in pdfs}
 
 TOP_K = 300
 NGRAM_MAX = 3
@@ -61,10 +60,10 @@ def _run_yake(text: str) -> list[dict[str, float | str]]:
 
 
 def main() -> None:
+    sources = _discover_sources(SOURCE_DIR)
+    print(f"Found {len(sources)} PDF(s) in {SOURCE_DIR}")
     per_source: dict[str, list[dict[str, float | str]]] = {}
-    for name, pdf_path in SOURCES.items():
-        if not pdf_path.exists():
-            raise FileNotFoundError(f"Missing PDF: {pdf_path}")
+    for name, pdf_path in sources.items():
         print(f"[{name}] reading {pdf_path.name} ...")
         text = _read_pdf_text(pdf_path)
         print(f"[{name}] extracted {len(text):,} chars; running YAKE (top={TOP_K}) ...")
@@ -91,7 +90,7 @@ def main() -> None:
             "dedup_limit": DEDUP_LIM,
             "top_k_per_source": TOP_K,
         },
-        "sources": {name: str(path) for name, path in SOURCES.items()},
+        "sources": {name: str(path) for name, path in sources.items()},
         "per_source": per_source,
         "merged_pool": merged_sorted,
     }
