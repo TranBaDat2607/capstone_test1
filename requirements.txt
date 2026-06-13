@@ -23,3 +23,11 @@ underthesea>=6.8.0       # sentence_splitter.py (VN-aware sent_tokenize)
 numpy>=1.26.0            # gri_mapper.py
 sentence-transformers>=2.7.0  # gri_mapper.py (loads LaBSE for cross-lingual matching)
 yake>=0.4.8              # extract_keywords.py (YAKE candidate keyword extraction from regulatory PDFs)
+
+# ESG transformer classifier (data_processing/esg_classifier.py + notebooks/kaggle_esg_classify.ipynb)
+# Model: nguyen599/ViDeBERTa-v3-ESG-base (DeBERTa-v2, multi-label E/S/G/Neutral).
+# GPU inference runs on Kaggle (torch + CUDA are provided there). torch is NOT listed
+# here on purpose: install it locally only if you want to test the classifier on CPU.
+transformers>=4.51.0     # ViDeBERTa-v3-ESG-base (card tested on 4.51.0)
+sentencepiece>=0.1.99    # DeBERTa-v2 SentencePiece tokenizer (spm.model)
+protobuf>=3.20.0         # required by the SentencePiece tokenizer loader
