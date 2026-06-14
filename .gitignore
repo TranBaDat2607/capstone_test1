@@ -6,3 +6,8 @@ yake_candidates.json
 ef5b9835-91e3-4571-a0e8-c389650690e1-meca.md
 esg_keywords_v2.json
 candidates_review.csv
+esg_news_output/
+articles.json
+company_annual_report.xlsx
+schema.json
+test_data/
