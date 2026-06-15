@@ -1,8 +1,8 @@
 """Compile the reviewed CSV into the final ESG keyword dictionary.
 
-Reads `data_processing/candidates_review.csv` after the human has filled
+Reads `config/candidates_review.csv` after the human has filled
 in `keep` and `pillar` columns, validates the entries, and writes
-`data_processing/esg_keywords_v2.json` — the file that `esg_keywords.py`
+`config/esg_keywords_v2.json` — the file that `esg_keywords.py`
 loads at import time.
 
 Validation:
@@ -28,9 +28,10 @@ from pathlib import Path
 
 
 HERE = Path(__file__).resolve().parent
-INPUT_PATH = HERE / "candidates_review.csv"
-OUTPUT_PATH = HERE / "esg_keywords_v2.json"
-YAKE_CONFIG_PATH = HERE / "yake_candidates.json"
+REPO_ROOT = HERE.parent
+INPUT_PATH = REPO_ROOT / "config" / "candidates_review.csv"
+OUTPUT_PATH = REPO_ROOT / "config" / "esg_keywords_v2.json"
+YAKE_CONFIG_PATH = REPO_ROOT / "config" / "yake_candidates.json"
 
 VALID_PILLARS = {"E", "S", "G"}
 

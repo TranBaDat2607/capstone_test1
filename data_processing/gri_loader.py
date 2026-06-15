@@ -1,7 +1,7 @@
 """Parse the official GRI Standards PDFs into structured JSON.
 
-Source folder: data/fullset_GRI_standards/
-Outputs (data/processed/gri_taxonomy/):
+Source folder: data/raw/gri_standards/
+Outputs (data/interim/gri_taxonomy/):
     disclosures.json  – list of disclosures (code, standard, title, requirements,
                         recommendations, guidance, year, pillar, superseded_by)
     sectors.json      – list of sector standards (code, name, topics)
@@ -30,8 +30,8 @@ import fitz
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE_DIR = ROOT / "data" / "fullset_GRI_standards"
-OUTPUT_DIR = ROOT / "data" / "processed" / "gri_taxonomy"
+SOURCE_DIR = ROOT / "data" / "raw" / "gri_standards"
+OUTPUT_DIR = ROOT / "data" / "interim" / "gri_taxonomy"
 
 
 # ───────────────────────── filename classification ──────────────────────────

@@ -24,8 +24,8 @@ still excluding true boilerplate (which scores Neutral ~= 0.95+).
 
 CLI (read a sentences file, append predictions):
     python -m data_processing.esg_classifier \
-        --input  data/processed/aaa_sentences.jsonl \
-        --output data/processed/aaa_classified.jsonl \
+        --input  data/interim/sentences/aaa_sentences.jsonl \
+        --output data/interim/sentences/aaa_classified.jsonl \
         --batch-size 32 --threshold 0.5
 
 On a machine with no GPU this runs on CPU (slow but correct); on Kaggle with an

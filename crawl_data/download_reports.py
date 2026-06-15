@@ -2,9 +2,9 @@
 Tai bao cao thuong nien tu sheet "Xây dựng - VLXD - BĐS".
 
 Su dung:
-    python crawl_data/download_reports.py <duong_dan_excel>
+    python crawl_data/download_reports.py config/company_annual_report.xlsx
 
-Cau truc thu muc dau ra (mac dinh: <repo>/data/annual_report):
+Cau truc thu muc dau ra (mac dinh: <repo>/data/raw/annual_report):
     Xây dựng - VLXD - BĐS/
         {Ma CK} - {Ten cong ty}/
             {Ma CK}_{Nam}.{ext}        # file thuong (pdf,...)
@@ -34,7 +34,7 @@ from extract_archives import EXTRACTORS, ARCHIVE_EXTS, dest_dir, already_extract
 
 # ---------------- Cau hinh mac dinh ----------------
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-DEFAULT_OUT_ROOT = PROJECT_ROOT / "data" / "annual_report"
+DEFAULT_OUT_ROOT = PROJECT_ROOT / "data" / "raw" / "annual_report"
 TARGET_SHEET = "Xây dựng - VLXD - BĐS"
 
 MAX_WORKERS = 5

@@ -1,10 +1,10 @@
 """Extract candidate ESG keywords from regulatory PDFs using YAKE.
 
-Reads every PDF under `data/esg_source_documents/` (Thông tư 96/2020,
+Reads every PDF under `data/raw/esg_source_documents/` (Thông tư 96/2020,
 Thông tư 08/2026, IFC-SSC handbook, CSI 2020, GRI standards, etc.),
 runs unsupervised YAKE keyword extraction on each, and writes the
 top-300 candidates per source (plus a merged deduplicated pool) to
-`data_processing/yake_candidates.json`.
+`config/yake_candidates.json`.
 
 This is the candidate-generation step of the keyword-dictionary protocol:
 output is a *pool* to be manually reviewed/pruned, not the final dictionary.
@@ -24,8 +24,8 @@ from pdf_extractor import extract_full_text
 
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-SOURCE_DIR = REPO_ROOT / "data" / "esg_source_documents"
-OUTPUT_PATH = Path(__file__).resolve().parent / "yake_candidates.json"
+SOURCE_DIR = REPO_ROOT / "data" / "raw" / "esg_source_documents"
+OUTPUT_PATH = REPO_ROOT / "config" / "yake_candidates.json"
 
 
 def _discover_sources(source_dir: Path) -> dict[str, Path]:

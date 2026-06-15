@@ -5,8 +5,8 @@ keyword pre-filter → semantic GRI mapping → write JSONL per PDF.
 
 Usage:
     python -m data_processing.pipeline \
-        --input "data/annual_report/Xây dựng - VLXD - BĐS/AAA - CTCP Nhựa An Phát Xanh" \
-        --output "data/processed/esg_sentences"
+        --input "data/raw/annual_report/Xây dựng - VLXD - BĐS/AAA - CTCP Nhựa An Phát Xanh" \
+        --output "data/interim/esg_sentences"
 
     # Skip semantic stage (keyword-only pre-filter):
     python -m data_processing.pipeline --input ... --no-semantic

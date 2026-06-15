@@ -168,7 +168,7 @@ def crawl_company(fetcher, company: Company, *, out_dir: Path, max_articles: int
 
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--xlsx", default="company_annual_report.xlsx")
+    ap.add_argument("--xlsx", default="config/company_annual_report.xlsx")
     ap.add_argument("--ticker", action="append", help="Only crawl this ticker (repeatable).")
     ap.add_argument("--limit", type=int, default=None, help="Crawl only the first N companies.")
     ap.add_argument("--max-articles", type=int, default=DEFAULT_MAX_ARTICLES)

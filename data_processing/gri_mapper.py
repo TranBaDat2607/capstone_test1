@@ -1,8 +1,8 @@
 """Map Vietnamese ESG candidate sentences to GRI disclosures via multilingual embeddings.
 
-Reads the auto-extracted taxonomy from data/processed/gri_taxonomy/disclosures.json
+Reads the auto-extracted taxonomy from data/interim/gri_taxonomy/disclosures.json
 (produced by gri_loader.py) and layers hand-curated Vietnamese glosses from
-data_processing/vi_glosses.json on top. Each disclosure's embedding text combines
+config/vi_glosses.json on top. Each disclosure's embedding text combines
 EN title + EN overview/requirements + VN title + VN keywords, so the LaBSE model
 can match Vietnamese sentences to the right GRI code without any translation step.
 """
@@ -16,8 +16,8 @@ from pathlib import Path
 
 import numpy as np
 
-_TAXONOMY_PATH = Path(__file__).resolve().parents[1] / "data" / "processed" / "gri_taxonomy" / "disclosures.json"
-_GLOSSES_PATH = Path(__file__).with_name("vi_glosses.json")
+_TAXONOMY_PATH = Path(__file__).resolve().parents[1] / "data" / "interim" / "gri_taxonomy" / "disclosures.json"
+_GLOSSES_PATH = Path(__file__).resolve().parents[1] / "config" / "vi_glosses.json"
 _DEFAULT_MODEL = "sentence-transformers/LaBSE"
 
 # Disclosures from superseded standards are skipped — including them would

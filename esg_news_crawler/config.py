@@ -76,5 +76,5 @@ DEFAULT_MAX_ARTICLES = 40      # per company, after dedup
 DEFAULT_DOMAIN_DELAY = 2.0     # min seconds between hits to the SAME domain
 DEFAULT_TIMEOUT = 20
 DEFAULT_RETRIES = 3
-DEFAULT_OUTPUT_DIR = "esg_news_output"
-DEFAULT_CACHE_DIR = "esg_news_output/_cache"
+DEFAULT_OUTPUT_DIR = "data/outputs/news"
+DEFAULT_CACHE_DIR = "data/outputs/news/_cache"

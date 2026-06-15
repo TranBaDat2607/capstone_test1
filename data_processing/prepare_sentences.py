@@ -7,8 +7,8 @@ hand it every sentence.
 
 Workflow (hybrid local + Kaggle):
     1. python -m data_processing.prepare_sentences \
-           --input "test_data/AAA_Baocaothuongnien_2025.pdf" \
-           --output "data/processed/aaa_sentences.jsonl"        # <- this script
+           --input "data/raw/annual_reports_sample/AAA_Baocaothuongnien_2025.pdf" \
+           --output "data/interim/sentences/aaa_sentences.jsonl"   # <- this script
     2. Upload the resulting .jsonl (+ esg_classifier.py) as a Kaggle Dataset.
     3. Run notebooks/kaggle_esg_classify.ipynb on Kaggle (GPU + Internet on).
     4. Download classified.jsonl/.csv — that is the final ESG-tagged artifact.

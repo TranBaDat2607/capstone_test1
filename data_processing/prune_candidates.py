@@ -1,8 +1,8 @@
 """Hybrid pruning of the YAKE candidate pool.
 
-Reads `data_processing/yake_candidates.json` (merged_pool), optionally
+Reads `config/yake_candidates.json` (merged_pool), optionally
 pre-filters by YAKE score, applies the deterministic rejection rules
-from `prune_rules.py`, and emits `data_processing/candidates_review.csv`
+from `prune_rules.py`, and emits `config/candidates_review.csv`
 for human review.
 
 YAKE score convention: *lower score = more relevant*. The `--max-score`
@@ -39,8 +39,9 @@ from prune_rules import (
 
 
 HERE = Path(__file__).resolve().parent
-INPUT_PATH = HERE / "yake_candidates.json"
-OUTPUT_PATH = HERE / "candidates_review.csv"
+REPO_ROOT = HERE.parent
+INPUT_PATH = REPO_ROOT / "config" / "yake_candidates.json"
+OUTPUT_PATH = REPO_ROOT / "config" / "candidates_review.csv"
 
 # Default score cutoff. `None` keeps every candidate; set to a positive
 # float (e.g. 3e-3) to drop the tail before the rules are applied.

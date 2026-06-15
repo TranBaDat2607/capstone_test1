@@ -25,7 +25,7 @@ import unicodedata
 from pathlib import Path
 
 
-_DICT_PATH = Path(__file__).resolve().parent / "esg_keywords_v2.json"
+_DICT_PATH = Path(__file__).resolve().parents[1] / "config" / "esg_keywords_v2.json"
 
 
 def _load_pillar_dict(path: Path) -> dict[str, list[str]]:

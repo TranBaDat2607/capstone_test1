@@ -1,6 +1,6 @@
 # ESG News Crawler
 
-Crawls Vietnamese news for the 115 companies in `company_annual_report.xlsx` and
+Crawls Vietnamese news for the 115 companies in `config/company_annual_report.xlsx` and
 emits **sentence-split JSONL** that flows through the *same* classifier path as the
 annual reports — to be used as external evidence for greenwashing detection
 (report ESG claims vs. real-world conduct).
@@ -24,7 +24,7 @@ annual reports — to be used as external evidence for greenwashing detection
 
 ## Output
 
-`esg_news_output/<TICKER>.jsonl`, one sentence per line. The first four fields
+`data/outputs/news/<TICKER>.jsonl`, one sentence per line. The first four fields
 match the annual-report schema exactly; the rest are news metadata / features:
 
 ```json
@@ -40,7 +40,7 @@ match the annual-report schema exactly; the rest are news metadata / features:
 - `company_mentioned` / `matched_terms` are **soft features** for your model, not filters.
 - `publish_date` lets you align a news item to a report year.
 
-`esg_news_output/coverage.csv` — per company: `candidates, fetched_ok, articles,
+`data/outputs/news/coverage.csv` — per company: `candidates, fetched_ok, articles,
 sentences, top_domains`. **Important for greenwashing:** thin coverage means
 "little external evidence found", not "company is clean" — track it explicitly.
 
@@ -66,7 +66,7 @@ python -m esg_news_crawler.run
 #   --no-cache          bypass the HTML cache
 ```
 
-Raw HTML is cached under `esg_news_output/_cache/`, so re-runs and resume are
+Raw HTML is cached under `data/outputs/news/_cache/`, so re-runs and resume are
 cheap and polite (per-domain rate limiting + backoff on 403/429 are built in).
 
 ## Notes / known limits
