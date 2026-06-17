@@ -1,0 +1,3 @@
+# Downloaded source documents and intermediate extractions are regenerable
+# by running the pipeline (01..06). Provenance hashes live in the manifests.
+sources/

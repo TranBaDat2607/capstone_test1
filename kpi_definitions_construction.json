@@ -1,0 +1,527 @@
+[
+  {
+    "id": "TT96-6.1.1",
+    "name": "Tổng phát thải khí nhà kính (Scope 1 + Scope 2)",
+    "definition": "Tổng lượng phát thải khí nhà kính trực tiếp (Scope 1) và gián tiếp (Scope 2) trong kỳ báo cáo, quy đổi tấn CO2 tương đương (tCO2e).",
+    "sector": [
+      "Xây dựng - Vật liệu xây dựng - Bất động sản"
+    ],
+    "pillar": "Môi trường",
+    "source": {
+      "document": "Thong tu 96/2020/TT-BTC - Phu luc IV (Mau Bao cao thuong nien), Muc 6: Bao cao tac dong lien quan den moi truong va xa hoi",
+      "section": "Mục 6.1 - Tác động lên môi trường (phát thải khí nhà kính)",
+      "url": "https://luatminhkhue.vn/mau-bao-cao-thuong-nien-ban-hanh-theo-thong-tu-so-96-2020-tt-btc.aspx",
+      "excerpt": "Tổng phát thải khí nhà kính (GHG) trực tiếp và gián tiếp"
+    }
+  },
+  {
+    "id": "TT96-6.1.2",
+    "name": "Mức giảm phát thải khí nhà kính từ các sáng kiến",
+    "definition": "Lượng phát thải khí nhà kính giảm được nhờ các sáng kiến, biện pháp giảm thiểu trong kỳ, tính bằng tấn CO2 tương đương (tCO2e) hoặc phần trăm (%) so với kỳ gốc.",
+    "sector": [
+      "Xây dựng - Vật liệu xây dựng - Bất động sản"
+    ],
+    "pillar": "Môi trường",
+    "source": {
+      "document": "Thong tu 96/2020/TT-BTC - Phu luc IV (Mau Bao cao thuong nien), Muc 6: Bao cao tac dong lien quan den moi truong va xa hoi",
+      "section": "Mục 6.1 - Tác động lên môi trường (phát thải khí nhà kính)",
+      "url": "https://luatminhkhue.vn/mau-bao-cao-thuong-nien-ban-hanh-theo-thong-tu-so-96-2020-tt-btc.aspx",
+      "excerpt": "Các sáng kiến và biện pháp giảm thiểu phát thải khí nhà kính"
+    }
+  },
+  {
+    "id": "TT96-6.2.1",
+    "name": "Tổng lượng nguyên vật liệu sử dụng",
+    "definition": "Tổng khối lượng nguyên vật liệu sử dụng để sản xuất và đóng gói sản phẩm, dịch vụ chính trong năm (tấn hoặc m3).",
+    "sector": [
+      "Xây dựng - Vật liệu xây dựng - Bất động sản"
+    ],
+    "pillar": "Môi trường",
+    "source": {
+      "document": "Thong tu 96/2020/TT-BTC - Phu luc IV (Mau Bao cao thuong nien), Muc 6: Bao cao tac dong lien quan den moi truong va xa hoi",
+      "section": "Mục 6.2 - Quản lý nguồn nguyên vật liệu",
+      "url": "https://luatminhkhue.vn/mau-bao-cao-thuong-nien-ban-hanh-theo-thong-tu-so-96-2020-tt-btc.aspx",
+      "excerpt": "Tổng lượng nguyên vật liệu được sử dụng để sản xuất và đóng gói các sản phẩm và dịch vụ chính của tổ chức trong năm"
+    }
+  },
+  {
+    "id": "TT96-6.2.2",
+    "name": "Tỷ lệ nguyên vật liệu tái chế",
+    "definition": "Tỷ lệ phần trăm (%) nguyên vật liệu tái chế trên tổng nguyên vật liệu đầu vào dùng để sản xuất sản phẩm, dịch vụ chính.",
+    "sector": [
+      "Xây dựng - Vật liệu xây dựng - Bất động sản"
+    ],
+    "pillar": "Môi trường",
+    "source": {
+      "document": "Thong tu 96/2020/TT-BTC - Phu luc IV (Mau Bao cao thuong nien), Muc 6: Bao cao tac dong lien quan den moi truong va xa hoi",
+      "section": "Mục 6.2 - Quản lý nguồn nguyên vật liệu",
+      "url": "https://luatminhkhue.vn/mau-bao-cao-thuong-nien-ban-hanh-theo-thong-tu-so-96-2020-tt-btc.aspx",
+      "excerpt": "Báo cáo tỷ lệ phần trăm nguyên vật liệu được tái chế được sử dụng để sản xuất sản phẩm và dịch vụ chính của tổ chức"
+    }
+  },
+  {
+    "id": "TT96-6.3.1",
+    "name": "Tiêu thụ năng lượng trực tiếp và gián tiếp",
+    "definition": "Tổng năng lượng tiêu thụ trực tiếp (nhiên liệu) và gián tiếp (điện, nhiệt, hơi mua ngoài) trong kỳ (kWh, GJ hoặc TOE).",
+    "sector": [
+      "Xây dựng - Vật liệu xây dựng - Bất động sản"
+    ],
+    "pillar": "Môi trường",
+    "source": {
+      "document": "Thong tu 96/2020/TT-BTC - Phu luc IV (Mau Bao cao thuong nien), Muc 6: Bao cao tac dong lien quan den moi truong va xa hoi",
+      "section": "Mục 6.3 - Tiêu thụ năng lượng",
+      "url": "https://luatminhkhue.vn/mau-bao-cao-thuong-nien-ban-hanh-theo-thong-tu-so-96-2020-tt-btc.aspx",
+      "excerpt": "Năng lượng tiêu thụ trực tiếp và gián tiếp"
+    }
+  },
+  {
+    "id": "TT96-6.3.2",
+    "name": "Năng lượng tiết kiệm được",
+    "definition": "Lượng năng lượng tiết kiệm được nhờ các sáng kiến sử dụng năng lượng hiệu quả trong kỳ (kWh, GJ hoặc % so với kỳ gốc).",
+    "sector": [
+      "Xây dựng - Vật liệu xây dựng - Bất động sản"
+    ],
+    "pillar": "Môi trường",
+    "source": {
+      "document": "Thong tu 96/2020/TT-BTC - Phu luc IV (Mau Bao cao thuong nien), Muc 6: Bao cao tac dong lien quan den moi truong va xa hoi",
+      "section": "Mục 6.3 - Tiêu thụ năng lượng",
+      "url": "https://luatminhkhue.vn/mau-bao-cao-thuong-nien-ban-hanh-theo-thong-tu-so-96-2020-tt-btc.aspx",
+      "excerpt": "Năng lượng tiết kiệm được thông qua các sáng kiến sử dụng năng lượng hiệu quả"
+    }
+  },
+  {
+    "id": "TT96-6.3.3",
+    "name": "Kết quả sáng kiến tiết kiệm năng lượng / năng lượng tái tạo",
+    "definition": "Kết quả định lượng của các sáng kiến tiết kiệm năng lượng hoặc sử dụng năng lượng tái tạo (ví dụ lượng năng lượng tái tạo sử dụng, kWh; hoặc tỷ lệ % trên tổng năng lượng).",
+    "sector": [
+      "Xây dựng - Vật liệu xây dựng - Bất động sản"
+    ],
+    "pillar": "Môi trường",
+    "source": {
+      "document": "Thong tu 96/2020/TT-BTC - Phu luc IV (Mau Bao cao thuong nien), Muc 6: Bao cao tac dong lien quan den moi truong va xa hoi",
+      "section": "Mục 6.3 - Tiêu thụ năng lượng",
+      "url": "https://luatminhkhue.vn/mau-bao-cao-thuong-nien-ban-hanh-theo-thong-tu-so-96-2020-tt-btc.aspx",
+      "excerpt": "Các báo cáo sáng kiến tiết kiệm năng lượng (cung cấp các sản phẩm và dịch vụ tiết kiệm năng lượng hoặc sử dụng năng lượng tái tạo); báo cáo kết quả của các sáng kiến này"
+    }
+  },
+  {
+    "id": "TT96-6.4.1",
+    "name": "Tổng lượng nước sử dụng",
+    "definition": "Tổng lượng nước sử dụng theo nguồn cung cấp trong kỳ (m3).",
+    "sector": [
+      "Xây dựng - Vật liệu xây dựng - Bất động sản"
+    ],
+    "pillar": "Môi trường",
+    "source": {
+      "document": "Thong tu 96/2020/TT-BTC - Phu luc IV (Mau Bao cao thuong nien), Muc 6: Bao cao tac dong lien quan den moi truong va xa hoi",
+      "section": "Mục 6.4 - Tiêu thụ nước",
+      "url": "https://luatminhkhue.vn/mau-bao-cao-thuong-nien-ban-hanh-theo-thong-tu-so-96-2020-tt-btc.aspx",
+      "excerpt": "Nguồn cung cấp nước và lượng nước sử dụng"
+    }
+  },
+  {
+    "id": "TT96-6.4.2",
+    "name": "Tỷ lệ nước tái chế, tái sử dụng",
+    "definition": "Tỷ lệ phần trăm (%) và tổng lượng (m3) nước tái chế, tái sử dụng trên tổng lượng nước sử dụng.",
+    "sector": [
+      "Xây dựng - Vật liệu xây dựng - Bất động sản"
+    ],
+    "pillar": "Môi trường",
+    "source": {
+      "document": "Thong tu 96/2020/TT-BTC - Phu luc IV (Mau Bao cao thuong nien), Muc 6: Bao cao tac dong lien quan den moi truong va xa hoi",
+      "section": "Mục 6.4 - Tiêu thụ nước",
+      "url": "https://luatminhkhue.vn/mau-bao-cao-thuong-nien-ban-hanh-theo-thong-tu-so-96-2020-tt-btc.aspx",
+      "excerpt": "Tỷ lệ phần trăm và tổng lượng nước tái chế và tái sử dụng"
+    }
+  },
+  {
+    "id": "TT96-6.5.1",
+    "name": "Số lần bị xử phạt vi phạm môi trường",
+    "definition": "Số lần bị xử phạt do không tuân thủ pháp luật, quy định về bảo vệ môi trường trong kỳ (số lần).",
+    "sector": [
+      "Xây dựng - Vật liệu xây dựng - Bất động sản"
+    ],
+    "pillar": "Môi trường",
+    "source": {
+      "document": "Thong tu 96/2020/TT-BTC - Phu luc IV (Mau Bao cao thuong nien), Muc 6: Bao cao tac dong lien quan den moi truong va xa hoi",
+      "section": "Mục 6.5 - Tuân thủ pháp luật về bảo vệ môi trường",
+      "url": "https://luatminhkhue.vn/mau-bao-cao-thuong-nien-ban-hanh-theo-thong-tu-so-96-2020-tt-btc.aspx",
+      "excerpt": "Số lần bị xử phạt vi phạm do không tuân thủ luật pháp và các quy định về môi trường"
+    }
+  },
+  {
+    "id": "TT96-6.5.2",
+    "name": "Tổng tiền phạt vi phạm môi trường",
+    "definition": "Tổng số tiền bị xử phạt do không tuân thủ pháp luật, quy định về môi trường trong kỳ (VND).",
+    "sector": [
+      "Xây dựng - Vật liệu xây dựng - Bất động sản"
+    ],
+    "pillar": "Môi trường",
+    "source": {
+      "document": "Thong tu 96/2020/TT-BTC - Phu luc IV (Mau Bao cao thuong nien), Muc 6: Bao cao tac dong lien quan den moi truong va xa hoi",
+      "section": "Mục 6.5 - Tuân thủ pháp luật về bảo vệ môi trường",
+      "url": "https://luatminhkhue.vn/mau-bao-cao-thuong-nien-ban-hanh-theo-thong-tu-so-96-2020-tt-btc.aspx",
+      "excerpt": "Tổng số tiền do bị xử phạt vi phạm do không tuân thủ luật pháp và các quy định về môi trường"
+    }
+  },
+  {
+    "id": "TT96-6.6.1",
+    "name": "Số lượng lao động và mức lương trung bình",
+    "definition": "Tổng số lao động (người) và mức lương/thu nhập trung bình của người lao động trong kỳ (VND/người/tháng).",
+    "sector": [
+      "Xây dựng - Vật liệu xây dựng - Bất động sản"
+    ],
+    "pillar": "Xã hội",
+    "source": {
+      "document": "Thong tu 96/2020/TT-BTC - Phu luc IV (Mau Bao cao thuong nien), Muc 6: Bao cao tac dong lien quan den moi truong va xa hoi",
+      "section": "Mục 6.6 - Chính sách liên quan đến người lao động",
+      "url": "https://luatminhkhue.vn/mau-bao-cao-thuong-nien-ban-hanh-theo-thong-tu-so-96-2020-tt-btc.aspx",
+      "excerpt": "Số lượng lao động, mức lương trung bình đối với người lao động"
+    }
+  },
+  {
+    "id": "TT96-6.6.2",
+    "name": "Tỷ lệ lao động được bảo đảm an toàn, sức khỏe, phúc lợi",
+    "definition": "Mức độ thực hiện chính sách an toàn - sức khỏe - phúc lợi, ví dụ tỷ lệ phần trăm (%) lao động được đóng bảo hiểm hoặc khám sức khỏe định kỳ.",
+    "sector": [
+      "Xây dựng - Vật liệu xây dựng - Bất động sản"
+    ],
+    "pillar": "Xã hội",
+    "source": {
+      "document": "Thong tu 96/2020/TT-BTC - Phu luc IV (Mau Bao cao thuong nien), Muc 6: Bao cao tac dong lien quan den moi truong va xa hoi",
+      "section": "Mục 6.6 - Chính sách liên quan đến người lao động",
+      "url": "https://luatminhkhue.vn/mau-bao-cao-thuong-nien-ban-hanh-theo-thong-tu-so-96-2020-tt-btc.aspx",
+      "excerpt": "Chính sách lao động nhằm đảm bảo sức khỏe, an toàn và phúc lợi của người lao động"
+    }
+  },
+  {
+    "id": "TT96-6.6.3",
+    "name": "Tỷ lệ lao động được đào tạo",
+    "definition": "Tỷ lệ phần trăm (%) lao động được tham gia đào tạo trong kỳ báo cáo.",
+    "sector": [
+      "Xây dựng - Vật liệu xây dựng - Bất động sản"
+    ],
+    "pillar": "Xã hội",
+    "source": {
+      "document": "Thong tu 96/2020/TT-BTC - Phu luc IV (Mau Bao cao thuong nien), Muc 6: Bao cao tac dong lien quan den moi truong va xa hoi",
+      "section": "Mục 6.6 - Chính sách liên quan đến người lao động",
+      "url": "https://luatminhkhue.vn/mau-bao-cao-thuong-nien-ban-hanh-theo-thong-tu-so-96-2020-tt-btc.aspx",
+      "excerpt": "Hoạt động đào tạo người lao động"
+    }
+  },
+  {
+    "id": "TT96-6.6.4",
+    "name": "Số giờ đào tạo trung bình mỗi lao động",
+    "definition": "Số giờ đào tạo trung bình mỗi năm trên một lao động (giờ/người), có thể phân theo nhóm nhân viên.",
+    "sector": [
+      "Xây dựng - Vật liệu xây dựng - Bất động sản"
+    ],
+    "pillar": "Xã hội",
+    "source": {
+      "document": "Thong tu 96/2020/TT-BTC - Phu luc IV (Mau Bao cao thuong nien), Muc 6: Bao cao tac dong lien quan den moi truong va xa hoi",
+      "section": "Mục 6.6 - Chính sách liên quan đến người lao động",
+      "url": "https://luatminhkhue.vn/mau-bao-cao-thuong-nien-ban-hanh-theo-thong-tu-so-96-2020-tt-btc.aspx",
+      "excerpt": "Số giờ đào tạo trung bình mỗi năm, theo nhân viên và theo phân loại nhân viên"
+    }
+  },
+  {
+    "id": "TT96-6.6.5",
+    "name": "Số chương trình, lượt phát triển kỹ năng",
+    "definition": "Số chương trình hoặc số lượt người lao động tham gia phát triển kỹ năng, học tập liên tục trong kỳ (số chương trình hoặc số lượt).",
+    "sector": [
+      "Xây dựng - Vật liệu xây dựng - Bất động sản"
+    ],
+    "pillar": "Xã hội",
+    "source": {
+      "document": "Thong tu 96/2020/TT-BTC - Phu luc IV (Mau Bao cao thuong nien), Muc 6: Bao cao tac dong lien quan den moi truong va xa hoi",
+      "section": "Mục 6.6 - Chính sách liên quan đến người lao động",
+      "url": "https://luatminhkhue.vn/mau-bao-cao-thuong-nien-ban-hanh-theo-thong-tu-so-96-2020-tt-btc.aspx",
+      "excerpt": "Các chương trình phát triển kỹ năng và học tập liên tục để hỗ trợ người lao động đảm bảo có việc làm và phát triển sự nghiệp"
+    }
+  },
+  {
+    "id": "TT96-6.7.1",
+    "name": "Số chương trình, hoạt động vì cộng đồng",
+    "definition": "Số lượng chương trình, hoạt động đầu tư và phát triển cộng đồng địa phương thực hiện trong kỳ (số chương trình).",
+    "sector": [
+      "Xây dựng - Vật liệu xây dựng - Bất động sản"
+    ],
+    "pillar": "Xã hội",
+    "source": {
+      "document": "Thong tu 96/2020/TT-BTC - Phu luc IV (Mau Bao cao thuong nien), Muc 6: Bao cao tac dong lien quan den moi truong va xa hoi",
+      "section": "Mục 6.7 - Trách nhiệm đối với cộng đồng địa phương",
+      "url": "https://luatminhkhue.vn/mau-bao-cao-thuong-nien-ban-hanh-theo-thong-tu-so-96-2020-tt-btc.aspx",
+      "excerpt": "Báo cáo liên quan đến trách nhiệm đối với cộng đồng địa phương"
+    }
+  },
+  {
+    "id": "TT96-6.7.2",
+    "name": "Giá trị đầu tư, đóng góp cho cộng đồng",
+    "definition": "Tổng giá trị đầu tư, đóng góp và hỗ trợ tài chính cho cộng đồng địa phương trong kỳ (VND).",
+    "sector": [
+      "Xây dựng - Vật liệu xây dựng - Bất động sản"
+    ],
+    "pillar": "Xã hội",
+    "source": {
+      "document": "Thong tu 96/2020/TT-BTC - Phu luc IV (Mau Bao cao thuong nien), Muc 6: Bao cao tac dong lien quan den moi truong va xa hoi",
+      "section": "Mục 6.7 - Trách nhiệm đối với cộng đồng địa phương",
+      "url": "https://luatminhkhue.vn/mau-bao-cao-thuong-nien-ban-hanh-theo-thong-tu-so-96-2020-tt-btc.aspx",
+      "excerpt": "Các hoạt động đầu tư cộng đồng và hoạt động phát triển cộng đồng khác, bao gồm hỗ trợ tài chính nhằm phục vụ cộng đồng"
+    }
+  },
+  {
+    "id": "TT96-6.8.1",
+    "name": "Huy động vốn xanh",
+    "definition": "Giá trị vốn huy động qua thị trường vốn xanh (trái phiếu xanh, tín dụng xanh) theo hướng dẫn của UBCKNN trong kỳ (VND).",
+    "sector": [
+      "Xây dựng - Vật liệu xây dựng - Bất động sản"
+    ],
+    "pillar": "Quản trị",
+    "source": {
+      "document": "Thong tu 96/2020/TT-BTC - Phu luc IV (Mau Bao cao thuong nien), Muc 6: Bao cao tac dong lien quan den moi truong va xa hoi",
+      "section": "Mục 6.8 - Hoạt động thị trường vốn xanh",
+      "url": "https://luatminhkhue.vn/mau-bao-cao-thuong-nien-ban-hanh-theo-thong-tu-so-96-2020-tt-btc.aspx",
+      "excerpt": "Báo cáo liên quan đến hoạt động thị trường vốn xanh theo hướng dẫn của UBCKNN"
+    }
+  },
+  {
+    "id": "QD2171-1",
+    "name": "Tỷ lệ sử dụng vật liệu xây không nung (VLXKN)",
+    "definition": "Tỷ lệ phần trăm (%) vật liệu xây không nung trên tổng vật liệu xây sử dụng (mục tiêu quốc gia 35-40% năm 2025, 40-45% năm 2030 theo QĐ 2171/QĐ-TTg).",
+    "sector": [
+      "Xây dựng - Vật liệu xây dựng - Bất động sản"
+    ],
+    "pillar": "Môi trường",
+    "source": {
+      "document": "Quyết định 2171/QĐ-TTg (23/12/2021) - Chương trình phát triển vật liệu xây không nung tại Việt Nam đến năm 2030",
+      "section": "Điều 1.b - Mục tiêu cụ thể",
+      "url": "https://hethongphapluat.com/quyet-dinh-2171-qd-ttg-nam-2021-phe-duyet-chuong-trinh-phat-trien-vat-lieu-xay-khong-nung-tai-viet-nam-den-nam-2030-do-thu-tuong-chinh-phu-ban-hanh/dieu-1",
+      "excerpt": "Đẩy mạnh sản xuất và sử dụng vật liệu xây không nung thay thế một phần gạch đất sét nung đạt tỷ lệ: 35 - 40% vào năm 2025, 40 - 45% vào năm 2030 trong tổng số vật liệu xây, đảm bảo tỷ lệ sử dụng VLXKN trong các công trình theo quy định"
+    }
+  },
+  {
+    "id": "QCVN09-1",
+    "name": "Tỷ lệ công trình tuân thủ QCVN 09:2017/BXD",
+    "definition": "Tỷ lệ phần trăm (%) hoặc diện tích sàn (m2) công trình từ 2500 m2 trở lên tuân thủ quy chuẩn sử dụng năng lượng hiệu quả QCVN 09:2017/BXD (vỏ bao che, thông gió - điều hòa, chiếu sáng, thiết bị điện).",
+    "sector": [
+      "Xây dựng - Vật liệu xây dựng - Bất động sản"
+    ],
+    "pillar": "Môi trường",
+    "source": {
+      "document": "QCVN 09:2017/BXD - Quy chuẩn kỹ thuật quốc gia về các công trình xây dựng sử dụng năng lượng hiệu quả",
+      "section": "Mục 1.1 - Phạm vi điều chỉnh",
+      "url": "https://hethongphapluat.com/quy-chuan-ky-thuat-quoc-gia-qcvn-09-2017-bxd-ve-cac-cong-trinh-xay-dung-su-dung-nang-luong-hieu-qua.html",
+      "excerpt": "Quy chuẩn kỹ thuật quốc gia về các công trình xây dựng sử dụng năng lượng hiệu quả quy định những yêu cầu kỹ thuật bắt buộc phải tuân thủ khi thiết kế, xây dựng mới hoặc cải tạo các công trình có tổng diện tích sàn từ 2500 m 2 trở lên"
+    }
+  },
+  {
+    "id": "SSCIFC-E1",
+    "name": "Tiết kiệm năng lượng",
+    "definition": "Lượng năng lượng tiết kiệm được trong kỳ (kWh, GJ hoặc % so với kỳ gốc).",
+    "sector": [
+      "Xây dựng - Vật liệu xây dựng - Bất động sản"
+    ],
+    "pillar": "Môi trường",
+    "source": {
+      "document": "Hướng dẫn lập Báo cáo Phát triển bền vững (SSC - IFC)",
+      "section": "Mục 5 - Khía cạnh hoạt động kinh doanh được đề cập trong Báo cáo bền vững",
+      "url": "https://ssc.gov.vn/ (SSC IFC Huong dan lap Bao cao Phat trien ben vung.pdf)",
+      "excerpt": "Tiết kiệm năng lượng"
+    }
+  },
+  {
+    "id": "SSCIFC-E2",
+    "name": "Phát thải khí nhà kính (GHG)",
+    "definition": "Tổng phát thải khí nhà kính trong kỳ, quy đổi tấn CO2 tương đương (tCO2e), gồm Scope 1 và Scope 2.",
+    "sector": [
+      "Xây dựng - Vật liệu xây dựng - Bất động sản"
+    ],
+    "pillar": "Môi trường",
+    "source": {
+      "document": "Hướng dẫn lập Báo cáo Phát triển bền vững (SSC - IFC)",
+      "section": "Mục 5 - Khía cạnh hoạt động kinh doanh được đề cập trong Báo cáo bền vững",
+      "url": "https://ssc.gov.vn/ (SSC IFC Huong dan lap Bao cao Phat trien ben vung.pdf)",
+      "excerpt": "Phát thải Khí nhà kính GHG"
+    }
+  },
+  {
+    "id": "SSCIFC-E3",
+    "name": "Bảo tồn đa dạng sinh học",
+    "definition": "Mức độ bảo tồn đa dạng sinh học, ví dụ diện tích đất được phục hồi/bảo tồn (ha) hoặc số dự án bảo tồn trong kỳ.",
+    "sector": [
+      "Xây dựng - Vật liệu xây dựng - Bất động sản"
+    ],
+    "pillar": "Môi trường",
+    "source": {
+      "document": "Hướng dẫn lập Báo cáo Phát triển bền vững (SSC - IFC)",
+      "section": "Mục 5 - Khía cạnh hoạt động kinh doanh được đề cập trong Báo cáo bền vững",
+      "url": "https://ssc.gov.vn/ (SSC IFC Huong dan lap Bao cao Phat trien ben vung.pdf)",
+      "excerpt": "Bảo tồn đa dạng sinh học"
+    }
+  },
+  {
+    "id": "SSCIFC-E4",
+    "name": "Sử dụng nước",
+    "definition": "Tổng lượng nước khai thác và sử dụng trong kỳ (m3).",
+    "sector": [
+      "Xây dựng - Vật liệu xây dựng - Bất động sản"
+    ],
+    "pillar": "Môi trường",
+    "source": {
+      "document": "Hướng dẫn lập Báo cáo Phát triển bền vững (SSC - IFC)",
+      "section": "Mục 5 - Khía cạnh hoạt động kinh doanh được đề cập trong Báo cáo bền vững",
+      "url": "https://ssc.gov.vn/ (SSC IFC Huong dan lap Bao cao Phat trien ben vung.pdf)",
+      "excerpt": "Sử dụng nước"
+    }
+  },
+  {
+    "id": "SSCIFC-E5",
+    "name": "Sử dụng tài nguyên thiên nhiên",
+    "definition": "Khối lượng tài nguyên thiên nhiên khai thác/sử dụng trong kỳ (tấn hoặc m3).",
+    "sector": [
+      "Xây dựng - Vật liệu xây dựng - Bất động sản"
+    ],
+    "pillar": "Môi trường",
+    "source": {
+      "document": "Hướng dẫn lập Báo cáo Phát triển bền vững (SSC - IFC)",
+      "section": "Mục 5 - Khía cạnh hoạt động kinh doanh được đề cập trong Báo cáo bền vững",
+      "url": "https://ssc.gov.vn/ (SSC IFC Huong dan lap Bao cao Phat trien ben vung.pdf)",
+      "excerpt": "Sử dụng tài nguyên thiên nhiên"
+    }
+  },
+  {
+    "id": "SSCIFC-E6",
+    "name": "Biến rác thải thành năng lượng",
+    "definition": "Khối lượng chất thải được chuyển hóa thành năng lượng (tấn) hoặc năng lượng thu hồi từ chất thải (kWh, GJ).",
+    "sector": [
+      "Xây dựng - Vật liệu xây dựng - Bất động sản"
+    ],
+    "pillar": "Môi trường",
+    "source": {
+      "document": "Hướng dẫn lập Báo cáo Phát triển bền vững (SSC - IFC)",
+      "section": "Mục 5 - Khía cạnh hoạt động kinh doanh được đề cập trong Báo cáo bền vững",
+      "url": "https://ssc.gov.vn/ (SSC IFC Huong dan lap Bao cao Phat trien ben vung.pdf)",
+      "excerpt": "Biến rác thải thành năng lượng"
+    }
+  },
+  {
+    "id": "SSCIFC-E7",
+    "name": "Tỷ lệ tái chế chất thải",
+    "definition": "Tỷ lệ phần trăm (%) hoặc khối lượng (tấn) chất thải, vật liệu được tái chế trên tổng khối lượng phát sinh.",
+    "sector": [
+      "Xây dựng - Vật liệu xây dựng - Bất động sản"
+    ],
+    "pillar": "Môi trường",
+    "source": {
+      "document": "Hướng dẫn lập Báo cáo Phát triển bền vững (SSC - IFC)",
+      "section": "Mục 5 - Khía cạnh hoạt động kinh doanh được đề cập trong Báo cáo bền vững",
+      "url": "https://ssc.gov.vn/ (SSC IFC Huong dan lap Bao cao Phat trien ben vung.pdf)",
+      "excerpt": "Tái chế"
+    }
+  },
+  {
+    "id": "SSCIFC-S1",
+    "name": "Chế độ lương thưởng cho nhân viên",
+    "definition": "Mức lương, thưởng trung bình cho người lao động (VND/người/tháng hoặc /năm).",
+    "sector": [
+      "Xây dựng - Vật liệu xây dựng - Bất động sản"
+    ],
+    "pillar": "Xã hội",
+    "source": {
+      "document": "Hướng dẫn lập Báo cáo Phát triển bền vững (SSC - IFC)",
+      "section": "Mục 5 - Khía cạnh hoạt động kinh doanh được đề cập trong Báo cáo bền vững",
+      "url": "https://ssc.gov.vn/ (SSC IFC Huong dan lap Bao cao Phat trien ben vung.pdf)",
+      "excerpt": "Chế độ lương thưởng cho nhân viên"
+    }
+  },
+  {
+    "id": "SSCIFC-S2",
+    "name": "Chế độ phúc lợi",
+    "definition": "Mức chi phúc lợi hoặc tỷ lệ phần trăm (%) lao động được hưởng phúc lợi (bảo hiểm, hỗ trợ) trong kỳ.",
+    "sector": [
+      "Xây dựng - Vật liệu xây dựng - Bất động sản"
+    ],
+    "pillar": "Xã hội",
+    "source": {
+      "document": "Hướng dẫn lập Báo cáo Phát triển bền vững (SSC - IFC)",
+      "section": "Mục 5 - Khía cạnh hoạt động kinh doanh được đề cập trong Báo cáo bền vững",
+      "url": "https://ssc.gov.vn/ (SSC IFC Huong dan lap Bao cao Phat trien ben vung.pdf)",
+      "excerpt": "Chế độ phúc lợi"
+    }
+  },
+  {
+    "id": "SSCIFC-S3",
+    "name": "Biến động nhân sự",
+    "definition": "Tỷ lệ phần trăm (%) lao động nghỉ việc/thay đổi trong kỳ (tỷ lệ luân chuyển lao động).",
+    "sector": [
+      "Xây dựng - Vật liệu xây dựng - Bất động sản"
+    ],
+    "pillar": "Xã hội",
+    "source": {
+      "document": "Hướng dẫn lập Báo cáo Phát triển bền vững (SSC - IFC)",
+      "section": "Mục 5 - Khía cạnh hoạt động kinh doanh được đề cập trong Báo cáo bền vững",
+      "url": "https://ssc.gov.vn/ (SSC IFC Huong dan lap Bao cao Phat trien ben vung.pdf)",
+      "excerpt": "Thay đổi nhân công"
+    }
+  },
+  {
+    "id": "SSCIFC-S4",
+    "name": "Sức khỏe của nhân viên",
+    "definition": "Tỷ lệ phần trăm (%) lao động được chăm sóc, khám sức khỏe định kỳ trong kỳ.",
+    "sector": [
+      "Xây dựng - Vật liệu xây dựng - Bất động sản"
+    ],
+    "pillar": "Xã hội",
+    "source": {
+      "document": "Hướng dẫn lập Báo cáo Phát triển bền vững (SSC - IFC)",
+      "section": "Mục 5 - Khía cạnh hoạt động kinh doanh được đề cập trong Báo cáo bền vững",
+      "url": "https://ssc.gov.vn/ (SSC IFC Huong dan lap Bao cao Phat trien ben vung.pdf)",
+      "excerpt": "Sức khỏe của nhân viên"
+    }
+  },
+  {
+    "id": "SSCIFC-S5",
+    "name": "Thông lệ về an toàn lao động",
+    "definition": "Chỉ số an toàn lao động: tần suất tai nạn (LTIFR) hoặc số vụ tai nạn lao động, số giờ huấn luyện an toàn trong kỳ.",
+    "sector": [
+      "Xây dựng - Vật liệu xây dựng - Bất động sản"
+    ],
+    "pillar": "Xã hội",
+    "source": {
+      "document": "Hướng dẫn lập Báo cáo Phát triển bền vững (SSC - IFC)",
+      "section": "Mục 5 - Khía cạnh hoạt động kinh doanh được đề cập trong Báo cáo bền vững",
+      "url": "https://ssc.gov.vn/ (SSC IFC Huong dan lap Bao cao Phat trien ben vung.pdf)",
+      "excerpt": "Thông lệ về an toàn lao động"
+    }
+  },
+  {
+    "id": "SSCIFC-S6",
+    "name": "Mức độ đa dạng",
+    "definition": "Tỷ lệ phần trăm (%) đa dạng của lực lượng lao động, ví dụ tỷ lệ lao động nữ và tỷ lệ nữ trong quản lý.",
+    "sector": [
+      "Xây dựng - Vật liệu xây dựng - Bất động sản"
+    ],
+    "pillar": "Xã hội",
+    "source": {
+      "document": "Hướng dẫn lập Báo cáo Phát triển bền vững (SSC - IFC)",
+      "section": "Mục 5 - Khía cạnh hoạt động kinh doanh được đề cập trong Báo cáo bền vững",
+      "url": "https://ssc.gov.vn/ (SSC IFC Huong dan lap Bao cao Phat trien ben vung.pdf)",
+      "excerpt": "Mức độ đa dạng"
+    }
+  },
+  {
+    "id": "SSCIFC-S7",
+    "name": "Củng cố cộng đồng địa phương",
+    "definition": "Giá trị đầu tư (VND) hoặc số chương trình hỗ trợ, củng cố cộng đồng địa phương trong kỳ.",
+    "sector": [
+      "Xây dựng - Vật liệu xây dựng - Bất động sản"
+    ],
+    "pillar": "Xã hội",
+    "source": {
+      "document": "Hướng dẫn lập Báo cáo Phát triển bền vững (SSC - IFC)",
+      "section": "Mục 5 - Khía cạnh hoạt động kinh doanh được đề cập trong Báo cáo bền vững",
+      "url": "https://ssc.gov.vn/ (SSC IFC Huong dan lap Bao cao Phat trien ben vung.pdf)",
+      "excerpt": "Củng cố cộng đồng địa phương"
+    }
+  }
+]
