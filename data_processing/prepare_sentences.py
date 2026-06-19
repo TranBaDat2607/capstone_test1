@@ -15,8 +15,8 @@ Workflow (hybrid local + Kaggle):
 
 Output row schema (one JSON object per line; also mirrored as CSV):
     {source_pdf, page, sentence_index, text}
-matching the first four fields of pipeline.ExtractedSentence so the two paths
-stay interchangeable.
+These four fields are what the ViDeBERTa classifier (esg_classifier.py /
+notebooks/kaggle_esg_classify.ipynb) reads back in.
 """
 
 from __future__ import annotations

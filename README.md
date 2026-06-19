@@ -12,26 +12,19 @@ can be cross-checked against its *real-world* conduct.
 
 ```
 capstone_test1/
-├── config/                       # Configuration, schema & generated dictionaries
+├── config/                       # Configuration & schema
 │   ├── schema.json               #   Graph-RAG node/edge schema (Organization, ESGClaim, …)
-│   ├── company_annual_report.xlsx#   Master list of 115 companies (ticker, name, sector, URLs)
-│   ├── vi_glosses.json           #   Hand-curated Vietnamese ESG terminology (for GRI mapper)
-│   ├── esg_keywords_v2.json      #   ESG keyword dictionary      (generated)
-│   ├── yake_candidates.json      #   YAKE keyword candidates     (generated)
-│   └── candidates_review.csv     #   Human-review sheet          (generated)
+│   └── company_annual_report.xlsx#   Master list of 115 companies (ticker, name, sector, URLs)
 │
 ├── data/                         # All data — NOT code
 │   ├── raw/                      #   Inputs as collected
 │   │   ├── annual_reports_sample/#     14 sample AAA annual reports (2010–2025)
 │   │   ├── annual_report/        #     Downloaded reports (download_reports.py)
 │   │   ├── crawled_annual_report/#     Crawled reports (crawler.py)
-│   │   ├── crawl_data_news/      #     Crawled news (crawler_news.py)
-│   │   ├── gri_standards/        #     Official GRI Standards PDFs (gri_loader.py input)
-│   │   └── esg_source_documents/ #     Regulatory PDFs for keyword mining
+│   │   └── crawl_data_news/      #     Crawled news (crawler_news.py)
 │   ├── interim/                  #   Intermediate processing artifacts
 │   │   ├── sentences/            #     Extracted/sentence-split JSONL + CSV
-│   │   ├── news_sentences/       #     Sentence-split news
-│   │   └── gri_taxonomy/         #     Parsed GRI taxonomy (gri_loader.py output)
+│   │   └── news_sentences/       #     Sentence-split news
 │   ├── labeled/                  #   Labeled ESG sentences (model/human)
 │   └── outputs/                  #   Final artifacts for the graph step
 │       ├── esg_extracted/        #     Filtered ESG records (extract_esg.py)
@@ -44,18 +37,10 @@ capstone_test1/
 │   └── extract_archives.py       #   Unzip/unrar/7z extraction
 │
 ├── data_processing/              # ESG extraction & classification pipeline
-│   ├── pipeline.py               #   Orchestrator: PDF → sentences → keyword/GRI filter → JSONL
 │   ├── pdf_extractor.py          #   PyMuPDF text extraction (keeps page numbers, diacritics)
 │   ├── sentence_splitter.py      #   Vietnamese-aware sentence segmentation (underthesea)
-│   ├── esg_keywords.py           #   Keyword-dictionary matching
-│   ├── gri_loader.py             #   Parse GRI Standards PDFs → taxonomy JSON
-│   ├── gri_mapper.py             #   Map sentences → GRI disclosures (LaBSE embeddings)
+│   ├── prepare_sentences.py      #   Extract every sentence → JSONL (no ESG filter)
 │   ├── esg_classifier.py         #   Multi-label ViDeBERTa-v3-ESG classifier wrapper
-│   ├── prepare_sentences.py      #   Extract every sentence (for Kaggle GPU classification)
-│   ├── extract_keywords.py       #   YAKE candidate extraction from regulatory PDFs
-│   ├── prune_candidates.py       #   Filter YAKE candidates → review CSV
-│   ├── prune_rules.py            #   Rejection rules for keyword pruning
-│   ├── compile_dictionary.py     #   Reviewed CSV → final keyword dictionary
 │   └── extract_esg.py            #   Labeled JSONL → trimmed ESG records for Graph-RAG
 │
 ├── esg_news_crawler/             # Multi-channel ESG news retrieval
@@ -90,28 +75,22 @@ capstone_test1/
 
 ### 1. Annual reports → ESG records
 ```
-download_reports.py            → data/raw/annual_report/
-data_processing.pipeline       → data/interim/sentences/        (keyword + GRI filtered)
+download_reports.py                  → data/raw/annual_report/
+data_processing.prepare_sentences    → data/interim/sentences/   (every sentence, no filter)
    ├─ pdf_extractor.py
-   ├─ sentence_splitter.py
-   ├─ esg_keywords.py
-   └─ gri_mapper.py
-data_processing.prepare_sentences → data/interim/sentences/     (every sentence, no filter)
-notebooks/kaggle_esg_classify.ipynb  (ViDeBERTa-v3-ESG on GPU)  → data/labeled/
-data_processing.extract_esg    → data/outputs/esg_extracted/    (Graph-RAG input)
+   └─ sentence_splitter.py
+notebooks/kaggle_esg_classify.ipynb  (ViDeBERTa-v3-ESG on GPU)   → data/labeled/
+   └─ esg_classifier.py              (same logic, runnable locally on CPU)
+data_processing.extract_esg          → data/outputs/esg_extracted/  (Graph-RAG input)
 ```
+
+The ViDeBERTa-v3-ESG model is the ESG detector — every sentence is classified, with
+no keyword/GRI pre-filter.
 
 ### 2. News → ESG evidence
 ```
 esg_news_crawler.run           → data/outputs/news/<TICKER>.jsonl + coverage.csv
    (companies → queries → Google News RSS / Bing / DuckDuckGo → fetch → extract → normalize)
-```
-
-### 3. ESG keyword dictionary (one-off, human-in-the-loop)
-```
-extract_keywords.py   → config/yake_candidates.json
-prune_candidates.py   → config/candidates_review.csv   (human fills keep/pillar columns)
-compile_dictionary.py → config/esg_keywords_v2.json    (used by esg_keywords.py)
 ```
 
 ---
