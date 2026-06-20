@@ -1,4 +1,3 @@
-w# Annual report crawler (crawl_data/crawler.py)
 nodriver>=0.34
 
 # Annual report downloader (crawl_data/download_reports.py)
@@ -28,3 +27,5 @@ underthesea>=6.8.0       # sentence_splitter.py (VN-aware sent_tokenize)
 transformers>=4.51.0     # ViDeBERTa-v3-ESG-base (card tested on 4.51.0)
 sentencepiece>=0.1.99    # DeBERTa-v2 SentencePiece tokenizer (spm.model)
 protobuf>=3.20.0         # required by the SentencePiece tokenizer loader
+google-genai
+python-dotenv
