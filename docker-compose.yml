@@ -1,0 +1,40 @@
+# Neo4j for the Graph-RAG greenwashing KG (step 5 — src/load_graph_to_neo4j.py).
+#
+# Enterprise image so the team shares one custom user (`greenwashing`) and a named
+# database (`greenwashingkg`) — Community only has the single `neo4j` user + default db.
+# The Enterprise dev license is free for non-production / academic use.
+#
+# One-time setup (creates the user + database, idempotent):
+#   docker compose up -d
+#   # wait until healthy (docker compose ps), then:
+#   docker cp neo4j/init.cypher greenwashing-kg:/tmp/init.cypher
+#   docker exec greenwashing-kg cypher-shell -u neo4j -p nammovuivui -d system -f /tmp/init.cypher
+#
+# Then load the graph:
+#   python src/load_graph_to_neo4j.py --clear
+#
+# Browser UI: http://localhost:8474  (bolt: bolt://localhost:8687)
+# NOTE: `nammovuivui` is a LOCAL DEV password — change it (and don't commit it) for
+# anything beyond local development.
+
+services:
+  neo4j:
+    image: neo4j:5-enterprise
+    container_name: greenwashing-kg
+    restart: unless-stopped
+    environment:
+      - NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
+      # Initial admin password for the built-in `neo4j` user (used to run init.cypher).
+      - NEO4J_AUTH=neo4j/nammovuivui
+      # Uncomment to enable APOC (handy for KG queries/exports):
+      # - NEO4J_PLUGINS=["apoc"]
+    ports:
+      - "8687:7687"   # bolt  -> matches the loader default (bolt://localhost:8687)
+      - "8474:7474"   # HTTP browser UI -> http://localhost:8474
+    volumes:
+      - ./neo4j_data:/data   # persists the database across restarts (gitignored)
+    healthcheck:
+      test: ["CMD-SHELL", "cypher-shell -u neo4j -p nammovuivui 'RETURN 1' || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 20

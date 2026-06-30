@@ -14,11 +14,12 @@ cross-checked against its *real-world* conduct.
 
 `EmeraldMind/` is an external reference implementation. **Never edit it and never
 treat its files as part of this codebase** (don't list, refactor, or count them as
-project files). You may read it to understand intent: `src/` here is a deliberate
-port of `EmeraldMind/src/EmeraldKG/` steps 1→2→3, adapted to take **labeled JSONL**
-input (not PDFs) and a **single `GEMINI_API_KEY`** (not a multi-key pool). When
-porting more EmeraldKG stages, keep prompts/validation/output conventions identical
-so stages stay drop-in compatible.
+project files). You may read it to understand intent: `src/` here ports
+`EmeraldMind/src/EmeraldKG/` steps 1→2→3 closely, then 4 (entity resolution) as a
+**deliberate redesign** — all adapted to take **labeled JSONL** input (not PDFs) and a
+**single `GEMINI_API_KEY`** (not a multi-key pool). When porting more EmeraldKG stages,
+keep prompts/validation/output conventions identical so stages stay drop-in compatible;
+when a stage is redesigned instead of ported (like step 4), document why in `docs/`.
 
 ## Environment & conventions
 
@@ -74,12 +75,26 @@ src/extract_triplet_from_jsonl.py → graph_output/graphs/<pdf_stem>/page{N}.jso
 src/fix_invalid_triplets.py      → graph_output/validated/all_validated_triples.json (+ unfixable_triples.json)
    (Phase 1 offline: swap reversed edge directions + schema-validate;
     Phase 2 LLM: batch-repair invalid triples; Phase 3: aggregate)
+src/build_issuer_registry.py     → config/issuer_registry.json                       (run-once bootstrap)
+   (drafts the reporting company's name variants → aliases / exclusions / needs_review;
+    re-running preserves human edits, --force rebuilds; a human confirms needs_review)
+src/resolve_entities.py          → graph_output/resolved/resolved_graph.json (+ _stats.json)
+   (step 4: collapse duplicate entity nodes into canonical entities, keeping temporal history.
+    Stage A deterministic identity_keys merge + FROZEN issuer anchor (issuer_registry.json);
+    Stage B VN-aware blocking (normalized signature + gemini-embedding-001 cosine);
+    Stage C gemini-2.5-flash adjudication on ambiguous pairs (budgeted); Stage D consolidate)
+src/load_graph_to_neo4j.py       → Neo4j (bolt://localhost:8687, db `neo4j`)            (step 5)
+   (load the resolved {nodes,edges} graph as a property graph — NO LLM. Nodes keyed by
+    array index (entities already resolved; not re-deduped); edges keep temporal_metadata and
+    MERGE on a temporal _edge_key so multi-year edges stay distinct; temporal_versions become
+    supersedes version-node chains for supersedes-legal classes, else a JSON property)
 ```
 
-The `src/` scripts share helpers by importing across files: `extract_triplet_from_jsonl`
-and `fix_invalid_triplets` import `REPO_ROOT`, `build_page_text`, `load_pages_from_jsonl`,
-`RateLimiter`, etc. from `extract_kpi_from_jsonl` / `extract_triplet_from_jsonl`. Changing a
-shared helper's signature affects all three stages.
+The `src/` scripts share helpers by importing across files: later stages import
+`REPO_ROOT`, `build_page_text`, `load_pages_from_jsonl`, `RateLimiter`, `load_schema_sets`,
+`normalize_name`, etc. from the earlier ones (`extract_kpi_from_jsonl`,
+`extract_triplet_from_jsonl`, `fix_invalid_triplets`, `build_issuer_registry`). Changing a
+shared helper's signature affects every downstream stage.
 
 **D. KPI definition builder (`kpi_build/`, run-once provenance pipeline)**
 Stages `01_…`→`06_…` download official Vietnamese ESG regulations (Circular 96/2020,
@@ -120,9 +135,16 @@ python -m esg_news_crawler.run --ticker AAA --limit 1
 python src/extract_kpi_from_jsonl.py     -i <labeled.jsonl>            # → kpi_output/
 python src/extract_triplet_from_jsonl.py -i <labeled.jsonl>            # → graph_output/graphs/
 python src/fix_invalid_triplets.py                                    # → graph_output/validated/
+python src/build_issuer_registry.py                                   # → config/issuer_registry.json (run-once; then hand-confirm needs_review)
+python src/resolve_entities.py                                        # → graph_output/resolved/ (step 4: entity resolution)
+python src/load_graph_to_neo4j.py --dry-run                           # step 5: preview planned counts, no DB
+docker compose up -d                                                 # start Neo4j on :8687 (then run neo4j/init.cypher once — see docs)
+python src/load_graph_to_neo4j.py --clear                            # → Neo4j (wipe + load; needs the instance running)
 
 # Useful src/ flags: --doc <substr>, --limit-docs N, --all (scope);
-#   --all-pages (don't restrict to ESG pages); --dry-run (fix step: offline phase only, no LLM/writes)
+#   --all-pages (don't restrict to ESG pages); --dry-run (fix/resolve/load steps: offline only, no LLM/DB/writes);
+#   resolve: --no-llm (Stages A+B.1 only), --similarity-threshold, --max-llm-pairs (budget the LLM adjudication);
+#   load: --clear (wipe first), --no-versions (canonical only), --database, --strict (env: NEO4J_URI/USER/PASSWORD)
 ```
 
 There is no automated test suite or linter configured. `test/` and `notebooks/`
@@ -133,6 +155,8 @@ not unit tests.
 
 `docs/` holds per-stage design notes worth reading before modifying a stage:
 `SCHEMA_EXPLAINED.md`, `KPI_EXTRACTION_FROM_JSONL.md`, `TRIPLET_EXTRACTION_FROM_JSONL.md`,
-`TRIPLET_VALIDATION.md`, `KPI_DEFINITIONS_CONSTRUCTION_BUILD.md`, `VIETNAM_IMPROVEMENT_PLAN.md`.
-`README.md` (root), `esg_news_crawler/README.md`, and `kpi_build/README.md` cover their
-respective subsystems.
+`TRIPLET_VALIDATION.md`, `ENTITY_RESOLUTION.md` (step 4 — why it's a redesign, not a port),
+`GRAPH_LOAD_NEO4J.md` (step 5 — Neo4j load; also a redesign),
+`KPI_DEFINITIONS_CONSTRUCTION_BUILD.md`, `VIETNAM_IMPROVEMENT_PLAN.md`. The root
+`ENTITY_RESOLUTION_PLAN.md` is the step-4 engineering checklist. `README.md` (root),
+`esg_news_crawler/README.md`, and `kpi_build/README.md` cover their respective subsystems.

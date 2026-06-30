@@ -32,3 +32,6 @@ python-dotenv
 
 # Entity resolution (src/resolve_entities.py — Gemini embeddings + cosine blocking)
 numpy>=1.26.0
+
+# Neo4j graph load (src/load_graph_to_neo4j.py — step 5)
+neo4j>=5.0

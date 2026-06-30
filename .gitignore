@@ -32,3 +32,6 @@ Thumbs.db
 capstone_document.tex
 ef5b9835-91e3-4571-a0e8-c389650690e1-meca.md
 articles.json
+
+# ---- Neo4j (docker-compose data volume, step 5) ----
+neo4j_data/
