@@ -29,3 +29,6 @@ sentencepiece>=0.1.99    # DeBERTa-v2 SentencePiece tokenizer (spm.model)
 protobuf>=3.20.0         # required by the SentencePiece tokenizer loader
 google-genai
 python-dotenv
+
+# Entity resolution (src/resolve_entities.py — Gemini embeddings + cosine blocking)
+numpy>=1.26.0

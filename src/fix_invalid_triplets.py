@@ -328,7 +328,7 @@ def extract_json_from_response(response_text: str) -> List[Any]:
 
 
 def fix_batch_with_llm(batch: List[Dict[str, Any]], schema: Dict[str, Any],
-                       client: genai.Client, rate_limiter: RateLimiter, model: str) -> List[Dict[str, Any]]:
+                       client: genai.Client, rate_limiter: RateLimiter, model: str) -> List[Optional[Dict[str, Any]]]:
     if not batch:
         return []
     clean_batch = [{k: v for k, v in t.items() if not k.startswith("_")} for t in batch]
@@ -345,7 +345,10 @@ def fix_batch_with_llm(batch: List[Dict[str, Any]], schema: Dict[str, Any],
         )
         fixed = extract_json_from_response(response.text or "")
         if isinstance(fixed, list):
-            return [t for t in fixed if t is not None]
+            # Keep positions aligned with the input batch (null = unfixable). The
+            # caller maps each repair back to its original by index, so we must NOT
+            # filter out the Nones here.
+            return fixed
         return []
     except Exception as e:
         logger.error(f"LLM fix failed: {e}")
@@ -419,17 +422,34 @@ def process_all_files(input_dir: pathlib.Path, out_dir: pathlib.Path, schema: Di
             for i in range(0, len(all_invalid), batch_size):
                 batch = all_invalid[i:i + batch_size]
                 logger.info(f"Batch {i // batch_size + 1}/{n_batches} ({len(batch)} triples)")
-                fixed_batch = fix_batch_with_llm(batch, schema, client, rate_limiter, model)
-                for triple in fixed_batch:
-                    is_valid, _ = validate_triple(triple, entity_classes, edge_labels, edge_directions)
+                repaired = fix_batch_with_llm(batch, schema, client, rate_limiter, model)
+                returned = sum(1 for r in repaired if r is not None)
+                validated = 0
+                # The prompt asks the model to return repairs positionally aligned with
+                # the input (null where unfixable), so map each repair back to its
+                # original by index. Marking the original lets us compute the unfixable
+                # set as the exact complement of fixed_triples — no value comparison,
+                # no double-counting the ones we successfully repaired.
+                for j, original in enumerate(batch):
+                    repaired_triple = repaired[j] if j < len(repaired) else None
+                    if repaired_triple is None or not isinstance(repaired_triple, dict):
+                        continue
+                    is_valid, _ = validate_triple(repaired_triple, entity_classes, edge_labels, edge_directions)
                     if is_valid:
-                        fixed_triples.append(triple)
-                logger.info(f"  Batch result: {len(fixed_batch)} returned, "
-                            f"{sum(1 for t in fixed_batch if validate_triple(t, entity_classes, edge_labels, edge_directions)[0])} validated")
+                        clean = {k: v for k, v in repaired_triple.items() if not k.startswith("_")}
+                        fixed_triples.append(clean)
+                        original["_fixed"] = True
+                        validated += 1
+                logger.info(f"  Batch result: {returned} returned, {validated} validated")
             logger.info(f"\nLLM fixed: {len(fixed_triples)}/{len(all_invalid)} triples")
             all_valid.extend(fixed_triples)
     elif all_invalid and dry_run:
         logger.info(f"\n=== Phase 2: SKIPPED (--dry-run) — would have sent {len(all_invalid)} invalid triples ===")
+
+    # Invalid triples whose positionally-aligned repair re-validated were tagged
+    # `_fixed` above, so the unfixable set is exactly the untagged remainder. (The
+    # repaired forms already live in all_valid; the originals must not be re-listed.)
+    unfixable = [t for t in all_invalid if not t.get("_fixed")]
 
     logger.info("\n=== Phase 3: Saving results ===")
     if dry_run:
@@ -440,7 +460,6 @@ def process_all_files(input_dir: pathlib.Path, out_dir: pathlib.Path, schema: Di
         out_file.write_text(json.dumps(all_valid, indent=2, ensure_ascii=False), encoding="utf-8")
         logger.info(f"Saved {len(all_valid)} valid triples to {out_file}")
 
-        unfixable = [t for t in all_invalid if t not in fixed_triples]
         if unfixable:
             uf_file = out_dir / "unfixable_triples.json"
             uf_file.write_text(json.dumps(unfixable, indent=2, ensure_ascii=False), encoding="utf-8")
@@ -448,7 +467,7 @@ def process_all_files(input_dir: pathlib.Path, out_dir: pathlib.Path, schema: Di
 
     total = total_stats["total"]
     success_rate = f"{len(all_valid) / total * 100:.1f}%" if total > 0 else "N/A"
-    unfixable_count = total_stats["invalid"] - len(fixed_triples)
+    unfixable_count = len(unfixable)
     logger.info(
         "\n=== Final summary ===\n"
         f"Total input files: {len(all_files)} (normal: {len(normal_files)}, bugged: {len(bugged_files)})\n"

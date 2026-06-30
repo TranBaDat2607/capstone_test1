@@ -1,0 +1,497 @@
+\documentclass{article}
+\usepackage{tikz}
+\usetikzlibrary{calc,arrows.meta,positioning,shapes.geometric}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{mathptmx}
+\usepackage{indentfirst}
+\usepackage[utf8]{inputenc}
+\usepackage[T5]{fontenc}
+\usepackage[paperheight=29.7cm,paperwidth=21cm,right=2cm,left=3cm,top=2cm,bottom=2.5cm]{geometry}
+\usepackage[fontsize=13pt]{scrextend}
+\usepackage{indentfirst}
+\usepackage{lipsum}
+\renewcommand{\contentsname}{MỤC LỤC}
+\renewcommand{\tablename}{Bảng}
+\renewcommand{\listoffigures}{DANH MỤC HÌNH VẼ}
+\renewcommand{\listoftables}{DANH MỤC BẢNG BIỂU}
+\renewcommand{\figurename}{Hình}
+\graphicspath{ {figures/} }
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{makecell}
+\usepackage{hyperref}
+
+\newcolumntype{a}{>{\hsize = 1.1\hsize}X}
+\newcolumntype{s}{>{\hsize=2\hsize}X}
+
+\begin{document}
+
+\section{Thu thập dữ liệu (Crawling data)}
+
+Mục tiêu của giai đoạn này là xây dựng một kho ngữ liệu (corpus) gồm các báo cáo
+thường niên / báo cáo phát triển bền vững của các doanh nghiệp niêm yết, tập
+trung vào nhóm ngành \textit{Xây dựng -- Vật liệu xây dựng -- Bất động sản}. Quy
+trình thu thập gồm bốn bước: (1) xác định danh sách doanh nghiệp từ cổng dữ liệu
+Vietstock, (2) lập danh sách đường dẫn báo cáo, (3) tải báo cáo tự động, và (4)
+giải nén các tập nén để chuẩn hoá đầu ra về dạng tài liệu PDF.
+
+\subsection{Nguồn dữ liệu doanh nghiệp}
+
+Danh sách doanh nghiệp được lấy từ trang tra cứu doanh nghiệp A--Z của Vietstock:
+\href{https://finance.vietstock.vn/doanh-nghiep-a-z?page=1}{\texttt{finance.vietstock.vn/doanh-nghiep-a-z}}.
+Trang này liệt kê toàn bộ doanh nghiệp niêm yết theo thứ tự bảng chữ cái, kèm mã
+chứng khoán, tên công ty và ngành nghề. Từ nguồn này, nhóm nghiên cứu lọc ra các
+doanh nghiệp thuộc nhóm ngành mục tiêu và tổng hợp đường dẫn tới báo cáo thường
+niên của từng doanh nghiệp theo từng năm vào một tệp Excel danh mục
+(\texttt{config/company\_annual\_report.xlsx}).
+
+Tệp Excel được tổ chức theo sheet ngành; sheet được sử dụng có tên
+\textit{``Xây dựng -- VLXD -- BĐS''}. Mỗi dòng mô tả một báo cáo và gồm năm cột
+chuẩn hoá: mã chứng khoán (\texttt{ma\_ck}), tên công ty (\texttt{ten\_cty}),
+tên tài liệu (\texttt{ten\_tl}), năm báo cáo (\texttt{nam}) và đường dẫn tải
+(\texttt{url}). Các giá trị mã chứng khoán / tên công ty được điền xuôi
+(forward-fill) để xử lý các ô bị gộp (merged cell) trong Excel; những dòng không
+có URL hợp lệ (không bắt đầu bằng \texttt{http://} hoặc \texttt{https://}) bị loại bỏ.
+
+\subsection{Tải báo cáo tự động}
+
+Việc tải báo cáo được thực hiện bằng kịch bản
+\texttt{crawl\_data/download\_reports.py}. Kịch bản đọc tệp Excel danh mục, sinh
+ra cấu trúc thư mục đầu ra có dạng:
+
+\begin{verbatim}
+data/raw/annual_report/
+    Xây dựng - VLXD - BĐS/
+        {Mã CK} - {Tên công ty}/
+            {Mã CK}_{Năm}.{ext}     # tệp đơn (pdf, ...)
+            {Mã CK}_{Năm}/          # thư mục nếu nguồn là tập nén
+\end{verbatim}
+
+Các đặc điểm kỹ thuật chính của bộ tải:
+
+\begin{itemize}
+  \item \textbf{Tải song song:} sử dụng \texttt{ThreadPoolExecutor} với 5 luồng
+        đồng thời để tăng thông lượng.
+  \item \textbf{Chuẩn hoá tên tệp / thư mục:} loại bỏ các ký tự không hợp lệ trên
+        Windows (\texttt{<>:"/\textbackslash|?*} và ký tự điều khiển), giới hạn độ
+        dài tên để tránh lỗi đường dẫn quá dài.
+  \item \textbf{Cho phép chạy lại (resume):} tự động bỏ qua những tệp đã tải thành
+        công (kích thước $>0$) hoặc đã được giải nén trước đó, nên có thể dừng và
+        chạy lại mà không tải trùng.
+  \item \textbf{Cơ chế thử lại:} mỗi URL được thử tối đa 3 lần với thời gian chờ
+        tăng dần (backoff tuyến tính theo số lần thử).
+  \item \textbf{Giả lập trình duyệt:} đặt header \texttt{User-Agent} kiểu Chrome để
+        giảm khả năng bị máy chủ từ chối truy cập.
+  \item \textbf{Ghi nhật ký lỗi:} các đường dẫn tải thất bại được ghi vào
+        \texttt{download\_log.csv} (kèm mã CK, năm, URL, thông báo lỗi) để rà soát
+        và tải bổ sung.
+  \item \textbf{Khử trùng lặp đích:} khi cùng một (mã CK, năm) có nhiều URL, tệp
+        đích được thêm hậu tố phiên bản (\texttt{\_v2}, \texttt{\_v3}, ...) để
+        tránh ghi đè.
+\end{itemize}
+
+\subsection{Giải nén và chuẩn hoá định dạng}
+
+Một số báo cáo được công bố dưới dạng tập nén (\texttt{.zip}, \texttt{.rar},
+\texttt{.7z}). Bộ tải tích hợp logic giải nén từ
+\texttt{crawl\_data/extract\_archives.py}: ngay sau khi tải, mỗi tập nén được
+giải vào một thư mục cùng tên (bỏ phần mở rộng) rồi xoá tệp nén gốc, nhằm bảo đảm
+đầu ra cuối cùng chỉ còn tài liệu, không còn tập nén.
+
+Đối với tệp \texttt{.zip}, kịch bản xử lý riêng lỗi mã hoá tên tệp tiếng Việt:
+các tệp ZIP cũ trên Windows thường mã hoá tên theo \texttt{cp437}, nên tên tệp
+được giải mã lại sang \texttt{utf-8} (hoặc \texttt{cp1258} dự phòng) để giữ đúng
+dấu tiếng Việt. Tệp \texttt{.rar} và \texttt{.7z} được giải qua công cụ ngoài
+(\texttt{UnRAR.exe}, \texttt{7z.exe}). Việc giải nén cũng chạy đa luồng và bỏ qua
+các thư mục đích đã tồn tại nội dung.
+
+\medskip
+\noindent\textbf{Ghi chú.} Ngoài luồng tải theo danh mục Excel ở trên, kho mã
+nguồn còn có \texttt{crawl\_data/crawler.py} -- bộ thu thập chuyên biệt cho một
+website doanh nghiệp có bảo vệ Cloudflare. Bộ này dùng \texttt{nodriver}
+(Chrome không bị phát hiện tự động hoá), vô hiệu hoá trình xem PDF nội bộ của
+Chrome để mỗi lần điều hướng tới một liên kết PDF sẽ kích hoạt tải tệp, và dùng
+biểu thức chính quy để lọc đúng các liên kết báo cáo thường niên / ESG. Đây là
+phương án bổ trợ khi báo cáo không thể tải trực tiếp qua \texttt{requests}.
+
+\section{Xử lý dữ liệu (Processing data)}
+
+Sau khi có kho PDF, giai đoạn xử lý chuyển corpus thô thành tập câu được
+\textit{gán nhãn ESG} bằng một mô hình phân loại ngôn ngữ đã được tinh chỉnh
+(fine-tuned). Khác với hướng tiếp cận dựa trên từ điển từ khoá, ở đây
+\textbf{mô hình ngôn ngữ chính là bộ phát hiện ESG}: mọi câu trích từ báo cáo đều
+được đưa qua mô hình, không qua bất kỳ bước lọc từ khoá hay luật nào. Toàn bộ mã
+nằm trong gói \texttt{data\_processing/} và notebook
+\texttt{notebooks/kaggle\_esg\_classify.ipynb}.
+
+Pipeline được thiết kế theo mô hình \textit{lai} (hybrid): phần trích xuất văn
+bản chạy cục bộ trên CPU, còn phần suy luận mô hình chạy trên GPU (Kaggle). Luồng
+tổng thể gồm năm bước (Hình~\ref{fig:pipeline}): (i) trích xuất văn bản PDF,
+(ii) tách câu tiếng Việt, (iii) chuẩn bị câu thành tệp JSONL, (iv) phân loại ESG
+bằng mô hình ViDeBERTa, và (v) trích xuất các câu đã được gán nhãn ESG.
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[
+      node distance=7mm,
+      box/.style={draw, rounded corners, align=center, inner sep=4pt,
+                  text width=11cm, minimum height=8mm},
+      gpu/.style={draw, rounded corners, align=center, inner sep=4pt,
+                  text width=11cm, minimum height=8mm, very thick},
+      arrow/.style={-{Stealth[length=2.5mm]}, thick}
+    ]
+    \node[box] (pdf)  {Trích xuất văn bản PDF \\ \footnotesize (\texttt{pdf\_extractor.py} -- PyMuPDF, giữ số trang)};
+    \node[box, below=of pdf] (sent) {Tách câu tiếng Việt \\ \footnotesize (\texttt{sentence\_splitter.py} -- \texttt{underthesea})};
+    \node[box, below=of sent] (prep) {Chuẩn bị câu $\rightarrow$ JSONL \\ \footnotesize (\texttt{prepare\_sentences.py} -- mọi câu, không lọc ESG)};
+    \node[gpu, below=of prep] (clf) {Phân loại ESG bằng mô hình ViDeBERTa \\ \footnotesize (\texttt{esg\_classifier.py} / notebook trên Kaggle GPU)};
+    \node[box, below=of clf] (out) {Trích xuất câu đã gán nhãn ESG \\ \footnotesize (\texttt{extract\_esg.py})};
+    \draw[arrow] (pdf)  -- (sent);
+    \draw[arrow] (sent) -- (prep);
+    \draw[arrow] (prep) -- (clf);
+    \draw[arrow] (clf)  -- (out);
+  \end{tikzpicture}
+  \caption{Luồng xử lý trích xuất câu ESG dựa trên mô hình ViDeBERTa. Khối in
+  đậm chạy trên GPU (Kaggle); các khối còn lại chạy cục bộ trên CPU.}
+  \label{fig:pipeline}
+\end{figure}
+
+\subsection{Trích xuất văn bản PDF}
+
+Mô-đun \texttt{pdf\_extractor.py} dùng thư viện PyMuPDF (\texttt{fitz}) để trích
+xuất văn bản theo từng trang, giữ nguyên số trang (1-indexed) -- thông tin cần
+thiết để truy vết câu về đúng vị trí trong báo cáo. PyMuPDF xử lý tốt dấu tiếng
+Việt và bảo toàn thứ tự đọc với bố cục báo cáo thường niên điển hình. Văn bản mỗi
+trang được làm sạch: chuẩn hoá Unicode về dạng NFC, loại bỏ ký tự gạch nối mềm
+(soft hyphen), ghép lại các từ bị ngắt bởi dấu gạch nối cuối dòng, gộp khoảng
+trắng ngang và rút gọn các dòng trống liên tiếp.
+
+\subsection{Tách câu tiếng Việt}
+
+Mô-đun \texttt{sentence\_splitter.py} ưu tiên dùng \texttt{underthesea.sent\_tokenize}
+-- bộ tách câu nhận biết tiếng Việt (xử lý đúng các viết tắt như ``TP.HCM'',
+``Q.1'', số thập phân ``1.500'', ...); nếu thư viện không khả dụng, hệ thống lùi
+về một bộ tách bằng biểu thức chính quy. Quy trình tách câu gồm: (1) chia trang
+thành các khối đoạn theo dòng trống, (2) ghép các dòng bị ngắt mềm (do bố cục)
+thành văn bản liền mạch trong mỗi khối, (3) chạy bộ tách câu, và (4) lọc bỏ
+nhiễu: dòng mục lục (nhận diện qua dãy dấu chấm dẫn trang), số trang đơn lẻ, mảnh
+chỉ gồm số/ký hiệu bảng biểu, và các câu quá ngắn (dưới 25 ký tự hoặc dưới 4 từ).
+
+\subsection{Chuẩn bị câu cho mô hình}
+
+Mô-đun \texttt{prepare\_sentences.py} là nửa \textit{cục bộ} của pipeline. Nó duyệt
+một tệp PDF hoặc cả thư mục PDF (đệ quy), tái sử dụng đúng hai bước trích xuất và
+tách câu ở trên, rồi ghi \textbf{toàn bộ} câu ra một tệp JSONL (kèm bản sao CSV để
+mở bằng Excel). Điểm mấu chốt: bước này \textbf{không áp dụng bất kỳ bộ lọc ESG
+nào} -- mọi câu đều được giữ lại và chuyển cho mô hình, vì việc phát hiện ESG được
+giao hoàn toàn cho mô hình ViDeBERTa ở bước sau. Mỗi dòng JSONL là một bản ghi câu
+gồm bốn trường: tên PDF nguồn (\texttt{source\_pdf}), số trang (\texttt{page}),
+chỉ số câu trong trang (\texttt{sentence\_index}) và nội dung câu (\texttt{text}).
+
+\subsection{Phân loại ESG bằng mô hình ViDeBERTa}
+
+Đây là nửa \textit{GPU} của pipeline, được hiện thực hoá trong notebook
+\texttt{notebooks/kaggle\_esg\_classify.ipynb} (và mô-đun tương đương
+\texttt{esg\_classifier.py} có thể chạy độc lập trên CPU/GPU). Mô hình sử dụng là
+\texttt{nguyen599/ViDeBERTa-v3-ESG-base} -- một mô hình DeBERTa-v2 đã được tinh
+chỉnh cho bài toán phân loại ESG trên văn bản tiếng Việt/tiếng Anh.
+
+\subsubsection{Cơ chế phân loại đa nhãn}
+
+Mô hình có bốn nhãn: \textit{Neutral} (trung tính), \textit{Environmental} (Môi
+trường), \textit{Social} (Xã hội) và \textit{Governance} (Quản trị). Do cấu hình
+\texttt{problem\_type} là \texttt{multi\_label\_classification}, mỗi nhãn nhận một
+điểm xác suất \textbf{độc lập} qua hàm \textit{sigmoid} (không dùng softmax). Lưu
+ý kỹ thuật: thẻ cấu hình công bố ghi nhãn trung tính là ``Neural'', nên mã nguồn
+chuẩn hoá lại thành ``Neutral''.
+
+\subsubsection{Quy tắc gán nhãn}
+
+Từ vector điểm sigmoid của mỗi câu, hệ thống quyết định theo hai quy tắc tách bạch
+(Bảng~\ref{tab:thresholds}):
+
+\begin{itemize}
+  \item \textbf{Gán trụ cột E/S/G:} một câu được gắn nhãn một trụ cột khi điểm
+        sigmoid của trụ cột đó $\ge$ \texttt{THRESHOLD} (mặc định $0.45$). Một câu
+        có thể nhận nhiều trụ cột cùng lúc.
+  \item \textbf{Xác định tính liên quan ESG:} một câu được coi là \textit{có liên
+        quan ESG} khi điểm \textit{Neutral} $<$ \texttt{NEUTRAL\_THRESHOLD}
+        (mặc định $0.5$) -- \textbf{không} căn cứ vào việc một trụ cột đơn lẻ có
+        vượt ngưỡng hay không.
+\end{itemize}
+
+\noindent Lý do của quy tắc thứ hai: trên thực tế mô hình này phân bổ xác suất
+giống softmax (tổng các trụ cột và Neutral xấp xỉ $1$) và hiếm khi gắn hai trụ cột
+cùng lúc. Do đó một câu rõ ràng mang nội dung ESG có thể bị \textit{chia tín hiệu}
+giữa hai trụ cột (ví dụ câu về tuân thủ luật lao động cho $S=0.44$ và $G=0.44$,
+không trụ cột nào vượt $0.45$). Việc neo tính liên quan ESG vào điểm Neutral giúp
+thu hồi đúng những câu này, đồng thời vẫn loại được câu khuôn mẫu thuần tuý
+(thường có Neutral $\ge 0.95$).
+
+\begin{table}[H]
+  \centering
+  \caption{Các siêu tham số suy luận của mô hình phân loại ESG.}
+  \label{tab:thresholds}
+  \begin{tabularx}{\linewidth}{l l X}
+    \hline
+    \textbf{Tham số} & \textbf{Giá trị} & \textbf{Ý nghĩa} \\
+    \hline
+    \texttt{THRESHOLD}         & $0.45$ & Ngưỡng sigmoid để gán một trụ cột E/S/G. \\
+    \texttt{NEUTRAL\_THRESHOLD} & $0.5$  & Câu liên quan ESG khi điểm Neutral nhỏ hơn ngưỡng này. \\
+    \texttt{MAX\_LENGTH}       & $256$  & Độ dài token tối đa (giới hạn mô hình là $512$; câu thường ngắn). \\
+    \texttt{BATCH\_SIZE}       & $64$   & Kích thước lô khi suy luận theo lô. \\
+    \hline
+  \end{tabularx}
+\end{table}
+
+\subsubsection{Quy trình vận hành lai (local + Kaggle)}
+
+\begin{enumerate}
+  \item Chạy \texttt{prepare\_sentences.py} cục bộ để sinh tệp \texttt{*.jsonl}
+        chứa toàn bộ câu.
+  \item Tải tệp \texttt{*.jsonl} lên Kaggle dưới dạng \textit{Dataset} và đính kèm
+        vào notebook.
+  \item Chạy notebook trên Kaggle với \textit{Accelerator = GPU T4} (không dùng
+        P100 do ảnh PyTorch đã bỏ hỗ trợ kiến trúc này) và bật \textit{Internet}
+        để tải mô hình lần đầu.
+  \item Suy luận theo lô: mỗi câu được token hoá (đệm/cắt ở $256$ token), đưa qua
+        mô hình, áp sigmoid trên logits để thu điểm bốn nhãn, rồi áp hai quy tắc
+        gán nhãn ở trên.
+  \item Tải kết quả về: mỗi tệp đầu vào sinh một tệp
+        \texttt{<tên>\_classified.jsonl}. Mỗi dòng kết quả hợp nhất bốn trường câu
+        gốc với ba trường dự đoán: \texttt{scores} (điểm bốn nhãn), \texttt{labels}
+        (danh sách trụ cột vượt ngưỡng) và \texttt{esg} (cờ liên quan ESG).
+\end{enumerate}
+
+\subsection{Trích xuất câu đã gán nhãn ESG}
+
+Bước cuối, mô-đun \texttt{extract\_esg.py} đọc các tệp JSONL đã phân loại, giữ lại
+những câu có ít nhất một nhãn trụ cột (\texttt{labels} khác rỗng) và tỉa mỗi bản
+ghi về các trường cần thiết cho bước xây dựng đồ thị tri thức (GraphRAG) về sau:
+\texttt{source\_file}, \texttt{source\_pdf}, \texttt{page}, \texttt{sentence\_index},
+\texttt{text}, \texttt{labels} và \texttt{scores}. Mô-đun phản chiếu cấu trúc thư
+mục đầu vào và xuất bốn dạng kết quả: tệp \texttt{<tên>\_extracted.jsonl} cho từng
+nguồn, tệp gộp \texttt{esg\_all\_records.jsonl}, tệp gom theo tài liệu nguồn
+\texttt{esg\_by\_document.json}, và tệp thống kê tổng hợp \texttt{esg\_stats.json}.
+Kết quả này chính là tập câu ESG sạch, có truy vết tới đúng tài liệu và trang,
+dùng làm đầu vào cho các bước phân tích / xây dựng đồ thị tiếp theo.
+
+\section{Trích xuất chỉ số ESG (KPI extraction)}
+
+Sau khi đã có tập câu được gán nhãn ESG, giai đoạn này chuyển dòng câu \textit{phi
+cấu trúc} thành các \textit{quan sát chỉ số} (KPI observations) có cấu trúc, đầy đủ
+giá trị, đơn vị, năm và phân loại (mục tiêu / đã đạt / dự báo / kỳ gốc). Đây là
+cầu nối giữa phần xử lý ngôn ngữ ở Mục~2 và bước xây dựng đồ thị tri thức tiếp
+theo, vì lớp đồ thị được tổ chức quanh nút \texttt{KPIObservation} -- mỗi nút
+mang một con số đo lường gắn với tài liệu nguồn. Toàn bộ logic được hiện thực
+trong mô-đun \texttt{src/extract\_kpi\_from\_jsonl.py}; bộ từ vựng KPI mà bước
+này tham chiếu được xây dựng riêng theo quy trình mô tả trong tài liệu
+\texttt{docs/KPI\_DEFINITIONS\_CONSTRUCTION\_BUILD.md}.
+
+\subsection{Lý do cần một bước trích xuất riêng}
+
+Bộ phân loại ViDeBERTa ở Mục~2 chỉ trả lời câu hỏi \textit{``câu này có liên quan
+ESG hay không, thuộc trụ cột E/S/G nào''}, nhưng không cho biết \textit{``đang
+đo cái gì, bằng bao nhiêu, đơn vị nào, năm nào''}. Trong khi đó, lược đồ đồ thị
+yêu cầu mỗi \texttt{KPIObservation} phải có đầy đủ các trường định lượng
+(\texttt{kpi\_type}, \texttt{value}, \texttt{unit}, \texttt{kind},
+\texttt{direction}, \texttt{year}, \texttt{target\_year}, \texttt{baseline\_year},
+\texttt{source\_id}). Vì vậy cần một bước biến đổi: từ câu ESG dạng tự nhiên
+sang bản ghi KPI có kiểu xác định, được neo về một mã \texttt{kpi\_type} trong
+bộ từ vựng kiểm soát.
+
+Đặc điểm của báo cáo ESG tiếng Việt khiến cách tiếp cận luật/biểu thức chính quy
+không phù hợp: số liệu được viết theo nhiều dạng (\texttt{1.500}, \texttt{1,5
+triệu}, \texttt{15\%}); đơn vị thường ngầm định; cùng một chỉ số có thể được
+diễn đạt rất khác nhau giữa các doanh nghiệp; và một câu có thể chứa đồng thời
+\textit{kỳ gốc}, \textit{mục tiêu} và \textit{kết quả đã đạt}. Bước này do đó
+sử dụng \textbf{mô hình ngôn ngữ lớn (LLM)} -- cụ thể là \texttt{gemini-2.5-flash}
+qua SDK \texttt{google-genai} -- với \textit{structured outputs} ràng buộc bằng
+JSON Schema để loại trừ hoàn toàn lỗi phân tích văn bản tự do từ LLM.
+
+\subsection{Luồng xử lý}
+
+Luồng xử lý ở mức tài liệu được tóm tắt trong Hình~\ref{fig:kpi-pipeline}.
+Tệp đầu vào là JSONL đã gán nhãn ở Mục~2; tệp đầu ra là một tệp JSON cho mỗi
+trang, mỗi tệp chứa một danh sách các đối tượng KPI.
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[
+      node distance=7mm,
+      box/.style={draw, rounded corners, align=center, inner sep=4pt,
+                  text width=11.5cm, minimum height=8mm},
+      gpu/.style={draw, rounded corners, align=center, inner sep=4pt,
+                  text width=11.5cm, minimum height=8mm, very thick},
+      arrow/.style={-{Stealth[length=2.5mm]}, thick}
+    ]
+    \node[box] (in)   {JSONL câu đã gán nhãn ESG \\ \footnotesize (đầu ra của Mục 2)};
+    \node[box, below=of in] (group) {Nhóm câu theo \texttt{(source\_pdf, page)} và sắp xếp theo \texttt{sentence\_index}};
+    \node[box, below=of group] (gate) {Cổng lọc ESG: bỏ qua trang không có câu \texttt{esg=true} \\ \footnotesize (có thể tắt bằng \texttt{-{}-all-pages})};
+    \node[gpu, below=of gate] (llm) {Gọi LLM Gemini 2.5 Flash với \textit{response\_schema} \\ \footnotesize (toàn bộ văn bản trang được đưa vào, không chỉ câu ESG)};
+    \node[box, below=of llm] (norm) {Chuẩn hoá kết quả: \%, ép kiểu số, ép năm};
+    \node[box, below=of norm] (out)  {Ghi \texttt{page\_NNN\_kpis.json} (rỗng \texttt{[]} nếu không có KPI)};
+    \draw[arrow] (in) -- (group);
+    \draw[arrow] (group) -- (gate);
+    \draw[arrow] (gate) -- (llm);
+    \draw[arrow] (llm) -- (norm);
+    \draw[arrow] (norm) -- (out);
+  \end{tikzpicture}
+  \caption{Luồng trích xuất KPI ở mức tài liệu. Khối in đậm là lời gọi LLM có
+  ràng buộc lược đồ; các bước còn lại chạy cục bộ, không tốn token.}
+  \label{fig:kpi-pipeline}
+\end{figure}
+
+\subsubsection{Tái dựng văn bản trang}
+
+JSONL đầu vào ở mức câu. Để cung cấp đủ ngữ cảnh cho LLM, mô-đun gom các dòng
+thành cấu trúc \texttt{\{source\_pdf: \{page: [(sentence\_index, text,
+esg), ...]\}\}}, dùng \texttt{collections.OrderedDict} để giữ thứ tự xuất hiện
+của tài liệu. Văn bản mỗi trang sau đó được ghép lại theo \texttt{sentence\_index}
+tăng dần (\texttt{build\_page\_text}). Quan trọng là toàn bộ trang được tái
+dựng, kể cả các câu mà mô hình phân loại đã gán \textit{Neutral} -- vì con số
+hỗ trợ cho một tuyên bố ESG (ví dụ chú thích bảng, mệnh đề tiếp theo) thường
+nằm ở chính những câu Neutral đó; cắt bỏ chúng sẽ làm mất giá trị.
+
+\subsubsection{Cổng lọc ESG: tiết kiệm chi phí, không hi sinh độ phủ}
+
+Phần lớn các trang trong một báo cáo thường niên là báo cáo tài chính, ảnh, danh
+sách cổ đông -- không có nội dung ESG. Ở chế độ mặc định, bước này chỉ gọi LLM
+khi trang có \textbf{ít nhất một câu} với \texttt{esg=true}; các trang còn lại
+được ghi sẵn dưới dạng \texttt{[]} và không tốn token. Khi cổng kích hoạt, văn
+bản gửi tới LLM là \textbf{toàn bộ trang} chứ không phải tập con các câu ESG --
+nghĩa là cổng chỉ quyết định \textit{có gọi hay không}, không quyết định
+\textit{mô hình nhìn thấy gì}. Cờ \texttt{--all-pages} cho phép bỏ cổng, dùng
+trong các thử nghiệm thu hồi (recall).
+
+\subsubsection{Câu lệnh prompt}
+
+Prompt được tách thành hai phần:
+
+\begin{itemize}
+  \item \textbf{System instruction} -- gán định danh (\texttt{ESG-KPI-EXTRACTOR-V2}),
+        bắt buộc đầu ra JSON, \textit{ấn định cứng} các trường siêu dữ liệu
+        \texttt{company}, \texttt{sector}, \texttt{page}, \texttt{doc\_name} cho
+        mọi bản ghi (mô hình không có cơ hội bịa các trường này), và liệt kê
+        bốn quy tắc phân loại \texttt{kind} kèm từ khoá kích hoạt song ngữ
+        (\textit{baseline}: ``kể từ / năm gốc / since''; \textit{target}: ``mục
+        tiêu / cam kết / hướng tới''; \textit{achieved}: ``đạt được / đã giảm /
+        đã thực hiện''; \textit{projection}: ước lượng tương lai chưa cam kết).
+  \item \textbf{User message} -- bơm \textit{toàn bộ bộ từ vựng KPI}
+        (\texttt{\{id\}: \{definition\}} mỗi dòng, từ
+        \texttt{kpi\_definitions\_construction.json}) cùng văn bản trang đã tái
+        dựng đặt trong dấu \texttt{"""..."""} với số trang và tên tài liệu.
+\end{itemize}
+
+Hai quy ước có chủ ý: nếu một chỉ số không khớp định nghĩa nào, mô hình phải đặt
+\texttt{kpi\_type = "other"} với \texttt{title} mô tả -- thà giữ lại quan sát có
+kiểu \texttt{other} còn hơn mất thông tin; và \texttt{source\_id} được mẫu hoá
+\texttt{"\{doc\}\_\{page\}\_\{index\}"} để mỗi quan sát có một khoá ổn định, sau
+này dùng làm \texttt{identity\_keys} khi tải vào đồ thị.
+
+\subsubsection{Sinh có ràng buộc lược đồ}
+
+Lời gọi LLM truyền vào \texttt{response\_mime\_type = "application/json"} cùng
+một \texttt{response\_schema} theo \textit{phương ngữ OpenAPI-3 của Gemini} (các
+trường có thể \texttt{null} được khai báo bằng \texttt{"nullable": true} chứ
+không phải union, và không dùng \texttt{additionalProperties}). Các trường có
+thể trống về mặt nội dung (\texttt{value}, \texttt{unit}, \texttt{year},
+\texttt{target\_year}, \texttt{baseline\_year}) vẫn được liệt kê trong
+\texttt{required} -- nghĩa là mô hình \textbf{bắt buộc phát ra} khoá ấy, dù giá
+trị là \texttt{null}. Điều này loại bỏ hiện tượng thiếu khoá ngầm và giúp bước
+hậu xử lý phân biệt được ``không biết'' và ``mô hình quên''. Tham số
+\texttt{temperature = 0} bảo đảm tính tái lập;
+\texttt{max\_output\_tokens = 8000} đủ rộng cho các trang nhiều KPI.
+
+\subsubsection{Phòng vệ trước các trạng thái dừng bất thường}
+
+Ngay cả khi đã ràng buộc lược đồ, Gemini vẫn có thể kết thúc vì lý do khác
+\texttt{STOP}: bộ lọc an toàn, lặp văn bản, ... Mã chỉ chấp nhận
+\texttt{finish\_reason $\in$ \{STOP, MAX\_TOKENS\}}; mọi trạng thái khác sẽ ghi
+cảnh báo và trả về \texttt{[]} cho trang đó, không ném ngoại lệ -- nhờ vậy một
+trang bị chặn bởi bộ lọc nội dung không làm sụp đổ cả tài liệu.
+
+\subsubsection{Chuẩn hoá hậu xử lý}
+
+Mô hình thi thoảng trả về chuỗi \texttt{"15\%"} (vì văn bản gốc viết đúng như
+vậy). Hàm \texttt{normalize\_kpi\_response} bóc dấu \texttt{\%} cuối chuỗi,
+nâng lên \texttt{unit} nếu \texttt{unit} đang trống, rồi ép \texttt{value} sang
+\texttt{float}; đồng thời ép các trường năm dạng chuỗi 4 chữ số (\texttt{"2025"})
+về \texttt{int}. Đây là biến đổi duy nhất sau khi LLM trả lời -- không bịa,
+không suy diễn giá trị.
+
+\subsubsection{Song song hoá và khả năng tiếp tục (resumable)}
+
+Các trang của cùng một tài liệu được xử lý song song bằng
+\texttt{ThreadPoolExecutor} với \texttt{-{}-max-workers} luồng (mặc định 4); chọn
+thread (không phải process) là phù hợp vì nghẽn cổ chai nằm ở I/O mạng tới
+API Gemini, và SDK của Google là thread-safe. Trước mỗi lần gửi, worker kiểm tra
+tệp đầu ra \texttt{page\_NNN\_kpis.json} đã tồn tại hay chưa; nếu có thì đọc
+lại và bỏ qua. Cơ chế này khiến chạy lại an toàn: một lượt chạy 1.000 trang bị
+ngắt ở trang 700, khi chạy lại chỉ tốn token cho 300 trang còn lại. Trang xảy
+ra lỗi được ghi nhận và \textbf{không} ghi tệp đầu ra (để lượt chạy sau thử
+lại), thay vì cache lỗi thành \texttt{[]}.
+
+\subsection{Cấu trúc bản ghi kết quả}
+
+Mỗi tệp \texttt{page\_NNN\_kpis.json} là một danh sách các đối tượng KPI có dạng
+như Bảng~\ref{tab:kpi-record}. Một KPI có thể chứa nhiều \texttt{observations}
+khi cùng một chỉ số được nêu ở nhiều thời điểm (kỳ gốc + mục tiêu + đã đạt).
+
+\begin{table}[H]
+  \centering
+  \caption{Các trường chính trong bản ghi KPI đầu ra.}
+  \label{tab:kpi-record}
+  \begin{tabularx}{\linewidth}{l X}
+    \hline
+    \textbf{Trường} & \textbf{Ý nghĩa} \\
+    \hline
+    \texttt{kpi\_type}   & Mã KPI trong bộ từ vựng kiểm soát; \texttt{"other"} nếu không khớp. \\
+    \texttt{title}       & Nhãn ngắn mô tả chỉ số. \\
+    \texttt{observations}& Danh sách quan sát; mỗi quan sát có \texttt{value, unit, kind, direction, year, target\_year, baseline\_year, source\_id, snippet}. \\
+    \texttt{kind}        & Một trong \{\texttt{baseline}, \texttt{target}, \texttt{achieved}, \texttt{projection}\}. \\
+    \texttt{direction}   & Một trong \{\texttt{absolute}, \texttt{reduction}, \texttt{increase}\}. \\
+    \texttt{source\_id}  & Khoá theo dạng \texttt{"\{doc\}\_\{page\}\_\{index\}"} để truy vết và chống trùng. \\
+    \texttt{snippet}     & Đoạn trích nguồn $\le$ 160 ký tự để kiểm chứng. \\
+    \texttt{page, doc\_name, company, sector} & Siêu dữ liệu cố định cho mọi bản ghi của trang. \\
+    \hline
+  \end{tabularx}
+\end{table}
+
+Tổ chức một tệp cho mỗi trang phục vụ ba mục đích: (i) gắn số trang vào mọi bản
+ghi để có thể truy ngược chính xác về tài liệu nguồn; (ii) làm cho quy trình
+\textit{tiếp tục được} khi bị gián đoạn; và (iii) giới hạn ngữ cảnh mỗi lời gọi
+LLM ở mức một trang, giúp độ trễ và lượng token có thể dự đoán.
+
+\subsection{So sánh với pipeline tham chiếu}
+
+Mô-đun này khởi đầu từ việc cổng (port) lại bước
+\texttt{1-kpi-extraction.py} của dự án EmeraldMind, giữ nguyên định dạng bản
+ghi, hàm chuẩn hoá và khung prompt. Những khác biệt có chủ đích được nêu trong
+Bảng~\ref{tab:kpi-vs-emerald}.
+
+\begin{table}[H]
+  \centering
+  \caption{Khác biệt giữa mô-đun trích xuất KPI của dự án và bước 1 của EmeraldMind.}
+  \label{tab:kpi-vs-emerald}
+  \begin{tabularx}{\linewidth}{l X X}
+    \hline
+    \textbf{Khía cạnh} & \textbf{EmeraldMind bước 1} & \textbf{Dự án này} \\
+    \hline
+    Đầu vào            & Tệp PDF gốc & JSONL câu đã trích xuất \& gán nhãn \\
+    Bộ từ vựng KPI     & Đa ngành, có FAISS để chọn ngành & Một ngành (Xây dựng -- VLXD -- BĐS), không cần FAISS \\
+    Phát hiện ngành    & Heuristic theo tài liệu & Hằng số cứng \\
+    LLM                & Gemini với 7 khoá luân phiên (để né rate limit) & Gemini 2.5 Flash, một khoá \\
+    Định dạng đầu ra   & JSON lẫn trong văn bản, phải bóc khung mã & Structured outputs (\texttt{response\_schema}) \\
+    Cổng xử lý         & Mọi trang & Mặc định chỉ trang có câu ESG, \texttt{-{}-all-pages} để bỏ cổng \\
+    \hline
+  \end{tabularx}
+\end{table}
+
+\medskip
+\noindent\textbf{Đầu ra cuối cùng của giai đoạn này} là kho bản ghi KPI có cấu
+trúc, neo về bộ từ vựng kiểm soát và truy vết về tài liệu/trang nguồn. Đây
+chính là tập dữ liệu sẽ được nạp vào nút \texttt{KPIObservation} của đồ thị tri
+thức trong bước xây dựng GraphRAG tiếp theo.
+
+\end{document}

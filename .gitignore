@@ -1,11 +1,34 @@
-data/
-__pycache__/
+# ---- Secrets ----
 .env
+.env.*
+!.env.example
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+.ipynb_checkpoints/
+
+# ---- Generated pipeline data & outputs ----
+# config/ (schema.json, issuer_registry.json, company list) is intentionally
+# tracked; only generated artifacts are ignored.
+#   raw -> interim -> labeled -> outputs all live under data/
+data/
+graph_output/
+kpi_output/
+esg_news_output/
+test_data/
+
+# ---- IDE / OS ----
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# ---- Personal / document artifacts ----
 capstone_document.tex
 ef5b9835-91e3-4571-a0e8-c389650690e1-meca.md
-esg_news_output/
 articles.json
-company_annual_report.xlsx
-schema.json
-test_data/
-docs/
