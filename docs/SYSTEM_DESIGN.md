@@ -250,7 +250,8 @@ flowchart TD
 | 4 | `src/resolve_entities.py` | none | Collapse duplicates; **issuer anchor unifies report+news onto one AAA node** |
 | 5 | `src/load_graph_to_neo4j.py` | none | Load property graph; provenance props carried through |
 | **6** | **`src/crosscheck_claims_vs_conduct.py`** | **new (done, P4)** | **Link claims ↔ conduct; write `verifiedBy`/`contradictedBy*`; produce advisory assessments** ([`CLAIM_CONDUCT_CROSSCHECK.md`](./CLAIM_CONDUCT_CROSSCHECK.md)) |
-| **7** | **`src/report_claim_ledger.py` + Cypher** | **new** | Present evidence dossiers and the per-company claim ledger |
+| **6b** | **`src/sync_crosscheck_to_neo4j.py`** | **new (done, P5)** | Push the Step-6 dossiers into Neo4j as an advisory layer (no LLM) so Step 7 reads from the graph ([`CLAIM_LEDGER.md`](./CLAIM_LEDGER.md)) |
+| **7** | **`src/report_claim_ledger.py` + Cypher** | **new (done, P5)** | Render the per-company claim ledger **from Neo4j only** ([`CLAIM_LEDGER.md`](./CLAIM_LEDGER.md)) |
 
 Steps 1–5 are documented in their own files
 ([`KPI_EXTRACTION_FROM_JSONL.md`](./KPI_EXTRACTION_FROM_JSONL.md),
@@ -572,7 +573,7 @@ minimum new code.
 | **P2 — Step 2 `--source`** ✅ done | `news` mode + news prompt in `extract_triplet_from_jsonl.py`; stamps `source_type=news`; adds `--dry-run`; source-aware doc stem (news ids aren't `os.path.splitext`-ed) | `build_page_text`, `load_pages_from_jsonl`, `RateLimiter`, `triple_list_to_graph`, validation | input = P1 output `…/news_preprocessed/…_preprocessed.jsonl`. Live AAA run (30 docs, 16 non-empty): **290 nodes / 302 edges, 100% `source_type=news`**; 16 `MediaReport` + 20 `mentionsOrganization`. Reversed/hallucinated edges quarantined to `_bugged.json` for Step 3; empty `[]` extraction on 1 off-topic page. (No `Penalty`/`Controversy` in this crawl set — mostly company PR restating the report; handled at Step 6.) |
 | **P3 — Rebuild graph** | run steps 1→5 over both channels | all of steps 1–5 unchanged | resolved graph has one AAA node with report **and** news neighbors; provenance intact |
 | **P4 — Step 6 cross-check** ✅ | `src/crosscheck_claims_vs_conduct.py` (retrieve + adjudicate + self-verification guard + structural + KPI + dossier) | `RateLimiter`, `load_schema_sets`, `normalize_name`/`name_tokens`, structured-output pattern | Offline-first + **multi-provider LLM cascade** (`--provider-order`, default `gemini,openai`): primary `gemini-2.5-flash`, fallback OpenAI `gpt-4o-mini`; globally relevance-ranked + concurrent (`--max-workers`). Gemini project is billing-blocked (flash **and** embeddings 403), so the full AAA run ran on `gpt-4o-mini`: **3113 pairs, 0 failures → 1093 dossiers, 125 edges** (123 `verifiedBy` + 2 `contradictedByMedia`), **66 appears_supported / 22 appears_contradicted / 1005 unverified**; self-verification guard dropped 18 company-domain supports. Real gaps found (e.g. "ensures revenue growth" vs observed −42.3%; "recycled materials" vs 80–85% imported). `--dry-run`/`--no-llm`/`--to-neo4j` supported |
-| **P5 — Step 7 present** | `src/report_claim_ledger.py` + Cypher | Neo4j driver from step 5 | AAA ledger renders the worked example; review-queue query returns the tax-penalty link |
+| **P5 — Step 6b sync + Step 7 present** ✅ | `src/sync_crosscheck_to_neo4j.py` (dossier → Neo4j advisory layer, no LLM) + `src/report_claim_ledger.py` (renders **from Neo4j only**; console + `--markdown`; `--review-queue` / `--assessment` / `--claim-id`) + `neo4j/crosscheck_queries.cypher` | Step-5 Neo4j `:_Entity`/`_node_key`/`NEO4J_*` conventions; reuses the paid P4 dossier; no LLM, no new deps | Sync writes 6558 claim props + 182 advisory edges (140 `llm_supports` + 24 `llm_contradicts` + 18 `llm_flagged_support`). Ledger renders 1093 claims (**66 supported / 22 contradicted / 1005 unverified**) from Neo4j; worked examples fire (`AAA_SC_001` −42.3 %; recycled-materials vs 80–85 % imported; bonus-system support); `--review-queue` = 14. `llm_*` edges carry the KPI contradictions the base schema can't (no `Claim→KPIObservation` edge). ESG category not stored on claims (shows year+source); tax-penalty case needs the article re-extracted (`CLAIM_CONDUCT_CROSSCHECK.md` §6/§8) |
 | **P6 — Evaluate** | case studies, coverage, manual link-precision, ablations | outputs of P4/P5 | write-up with limitations |
 
 **Cost discipline** (carried from the existing pipeline): ESG-only gating, `--dry-run` /
@@ -630,8 +631,12 @@ memory note *"verify cheaply, not via expensive re-runs."*
 | `src/resolve_entities.py`, `src/load_graph_to_neo4j.py` | Steps 4–5 | exists, unchanged |
 | `src/crosscheck_claims_vs_conduct.py` | Step 6 (cross-check) | **done (P4)** |
 | `docs/CLAIM_CONDUCT_CROSSCHECK.md` | Step 6 design note | **done (P4)** |
-| `src/report_claim_ledger.py` | Step 7 (presentation) | **new (P5)** |
-| `graph_output/crosscheck/aaa_claim_assessments.json` | Advisory dossiers | **done (P4 output)** |
+| `src/sync_crosscheck_to_neo4j.py` | Step 6b (dossier → Neo4j advisory layer, no LLM) | **done (P5)** |
+| `src/report_claim_ledger.py` | Step 7 (presentation, **reads Neo4j only**) | **done (P5)** |
+| `neo4j/crosscheck_queries.cypher` | Step 7 analyst Cypher (review queue, roll-up, dossier, coverage) | **done (P5)** |
+| `docs/CLAIM_LEDGER.md` | Step 6b + 7 design note | **done (P5)** |
+| `graph_output/crosscheck/aaa_claim_assessments.json` | Advisory dossiers (input to the Step-6b sync) | **done (P4 output)** |
+| `graph_output/crosscheck/aaa_claim_ledger.md` | Rendered Markdown ledger | **done (P5 output)** |
 
 ### 13.3 Related docs
 
@@ -642,6 +647,7 @@ memory note *"verify cheaply, not via expensive re-runs."*
 [`ENTITY_RESOLUTION.md`](./ENTITY_RESOLUTION.md) ·
 [`GRAPH_LOAD_NEO4J.md`](./GRAPH_LOAD_NEO4J.md) ·
 [`CLAIM_CONDUCT_CROSSCHECK.md`](./CLAIM_CONDUCT_CROSSCHECK.md) ·
+[`CLAIM_LEDGER.md`](./CLAIM_LEDGER.md) ·
 [`esg_news_crawler/README.md`](../esg_news_crawler/README.md) ·
 [`VIETNAM_IMPROVEMENT_PLAN.md`](./VIETNAM_IMPROVEMENT_PLAN.md)
 

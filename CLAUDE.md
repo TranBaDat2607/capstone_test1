@@ -105,6 +105,14 @@ src/crosscheck_claims_vs_conduct.py → graph_output/crosscheck/<ticker>_claim_a
     Multi-provider LLM cascade (--provider-order gemini,openai): gemini-2.5-flash primary,
     OpenAI gpt-4o-mini fallback. Self-verification guard drops company-own-domain "verify" edges.
     Emits advisory dossiers — NO greenwashing score/label. --dry-run / --no-llm / --to-neo4j)
+src/sync_crosscheck_to_neo4j.py  → Neo4j advisory layer                                        (step 6b)
+   (NO LLM — reuses the paid step-6 dossier. MERGEs assessment/caveats/signals onto claim nodes +
+    llm_supports / llm_contradicts / llm_flagged_support evidence edges (incl. KPI contradictions
+    the base schema can't express). Idempotent; --clear-advisory, --dry-run)
+src/report_claim_ledger.py       → stdout + graph_output/crosscheck/<ticker>_claim_ledger.md   (step 7)
+   (presentation only — NO LLM, reads ONLY Neo4j (run step 6b first). Per-company claim ledger,
+    signal-first (contradicted → supported → unverified), with the coverage caveat.
+    --review-queue (contradiction + no verification), --assessment, --claim-id, --markdown)
 ```
 
 The `src/` scripts share helpers by importing across files: later stages import
@@ -161,12 +169,17 @@ docker compose up -d                                                 # start Neo
 python src/load_graph_to_neo4j.py --clear                            # → Neo4j (wipe + load; needs the instance running)
 python src/crosscheck_claims_vs_conduct.py --dry-run                 # step 6: preview claim↔conduct pairs, no LLM
 python src/crosscheck_claims_vs_conduct.py                           # → graph_output/crosscheck/ (advisory dossiers + linking edges)
+python src/sync_crosscheck_to_neo4j.py                              # step 6b: push dossiers into Neo4j advisory layer (no LLM)
+python src/report_claim_ledger.py                                   # step 7: render the AAA claim ledger FROM Neo4j (no LLM)
+python src/report_claim_ledger.py --review-queue --markdown         #   contradiction-no-verification queue + Markdown file
 
 # Useful src/ flags: --doc <substr>, --limit-docs N, --all (scope);
 #   --all-pages (don't restrict to ESG pages); --dry-run (fix/resolve/load steps: offline only, no LLM/DB/writes);
 #   resolve: --no-llm (Stages A+B.1 only), --similarity-threshold, --max-llm-pairs (budget the LLM adjudication);
 #   load: --clear (wipe first), --no-versions (canonical only), --database, --strict (env: NEO4J_URI/USER/PASSWORD);
-#   crosscheck: --no-llm (deterministic signals only), --max-llm-pairs, --provider-order gemini,openai, --to-neo4j
+#   crosscheck: --no-llm (deterministic signals only), --max-llm-pairs, --provider-order gemini,openai, --to-neo4j;
+#   sync (sync_crosscheck_to_neo4j.py): --clear-advisory, --dry-run;
+#   ledger (report_claim_ledger.py, Neo4j-only): --review-queue, --assessment, --claim-id, --limit, --markdown
 ```
 
 There is no automated test suite or linter configured. `test/` and `notebooks/`
@@ -185,6 +198,7 @@ before modifying a stage:
 `TRIPLET_VALIDATION.md`, `ENTITY_RESOLUTION.md` (step 4 — why it's a redesign, not a port),
 `GRAPH_LOAD_NEO4J.md` (step 5 — Neo4j load; also a redesign),
 `CLAIM_CONDUCT_CROSSCHECK.md` (step 6 — claim↔conduct cross-check, the analytical core),
+`CLAIM_LEDGER.md` (step 6b sync + step 7 — dossier → Neo4j advisory layer, then the Neo4j-only claim ledger + analyst Cypher),
 `KPI_DEFINITIONS_CONSTRUCTION_BUILD.md`, `VIETNAM_IMPROVEMENT_PLAN.md`. The root
 `ENTITY_RESOLUTION_PLAN.md` is the step-4 engineering checklist. `README.md` (root),
 `esg_news_crawler/README.md`, and `kpi_build/README.md` cover their respective subsystems.
