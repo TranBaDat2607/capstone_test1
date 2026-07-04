@@ -29,6 +29,7 @@ import re
 import time
 from collections import deque
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from datetime import datetime
 from pathlib import Path
 from threading import Lock
 from typing import Any, Dict, List, Optional, Tuple, Union
@@ -206,13 +207,117 @@ TEMPORAL_GRAPH_PROMPT_TEMPLATE = (
 )
 
 
+# News-oriented variant (SYSTEM_DESIGN §5.2). Same ontology, temporal rules and output
+# format as the report template, but framed so the model treats the text as THIRD-PARTY
+# news ABOUT the company (conduct side), not a statement BY the company (claim side).
+NEWS_GRAPH_PROMPT_TEMPLATE = (
+    "You are an ESG temporal knowledge-graph extractor working on a THIRD-PARTY NEWS ARTICLE.\n\n"
+    "## CONTEXT - THIS IS INDEPENDENT NEWS, NOT THE COMPANY'S OWN REPORT\n"
+    "The text below is a news article written by an external source ABOUT the company\n"
+    "'{company}', NOT a statement made BY the company. Treat every fact as REPORTED CONDUCT /\n"
+    "third-party observation - evidence of what the company actually did, not what it claims.\n"
+    "* Source domain : {source_domain}\n"
+    "* Article title : {title}\n"
+    "* Publish date  : {publish_date}\n"
+    "* URL           : {url}\n\n"
+    "## INPUTS\n"
+    "* KNOWLEDGE GRAPH SCHEMA: entity classes, edge labels, and temporal properties (JSON).\n"
+    "* documents: plain text from one news article.\n"
+    "* KPI records: optional JSON list of numbers observed in the article.\n\n"
+    "## Task\n"
+    "Extract **temporal** relations describing the company's real-world CONDUCT as reported by\n"
+    "this article. This is a TEMPORAL knowledge graph - you MUST include temporal properties for\n"
+    "all nodes and edges. Obey the ontology below.\n\n"
+    "## PREFER CONDUCT CLASSES AND EDGES (use only classes/edges present in the schema)\n"
+    "* ALWAYS create a MediaReport node for this article and link it to the company:\n"
+    "    MediaReport --mentionsOrganization--> Organization\n"
+    "  (this anchors the article and the company on the conduct side).\n"
+    "* A fine / sanction / administrative penalty -> Penalty, linked as:\n"
+    "    Organization --subjectToPenalty--> Penalty   (and Penalty --enforcedBy--> Authority if named).\n"
+    "* A real-world number REPORTED BY THE NEWS (not a company target) -> KPIObservation with\n"
+    "    kind='achieved', linked as Organization --reportsKPI--> KPIObservation.\n"
+    "* An independent certification / audit / verification -> ThirdPartyVerification or\n"
+    "    Organization --holdsCertification--> Certification.\n"
+    "* A scandal / violation / lawsuit narrative -> you may create a Controversy node, but only\n"
+    "    emit it as part of a schema-legal edge; otherwise capture the event via MediaReport/Penalty.\n"
+    "* Do NOT invent SustainabilityClaim / Goal / target-KPIObservation nodes from news - those\n"
+    "    belong to the company's own reports (claim side). News is the conduct side.\n\n"
+    "------------------\n"
+    "## KNOWLEDGE GRAPH SCHEMA\n"
+    "------------------\n"
+    "{schema_json}\n\n"
+    "------------------\n"
+    "## TEMPORAL EXTRACTION RULES\n"
+    "------------------\n"
+    "ALL nodes and edges MUST include temporal information:\n\n"
+    "**For ALL Nodes:** valid_from (YYYY-MM-DD or YYYY), valid_to (or null), is_current (bool).\n"
+    "**For ALL Edges:** a temporal_metadata object with valid_from, valid_to (or null), recorded_at.\n\n"
+    "**Temporal Inference Rules:**\n"
+    "1. Use the event date reported in the article for valid_from (e.g. the penalty date).\n"
+    "2. If only the publish date {publish_date} is known, use it as valid_from / recorded_at.\n"
+    "3. Ongoing/most-recent facts: valid_to=null, is_current=true; past events: is_current=false.\n"
+    "4. For observed numbers, use the reported year as valid_from.\n\n"
+    "------------------\n"
+    "## STRICT EXTRACTION RULES\n"
+    "------------------\n"
+    "Return a single JSON *array* of objects with keys:\n"
+    "    subject  | predicate | object | temporal_metadata\n"
+    "where predicate is an edge label from the schema, subject.class & object.class are entity\n"
+    "classes from the schema, and each entity's properties are a subset of that class's declared\n"
+    "keys (INCLUDING valid_from, valid_to, is_current). Do not add extra keys, comments, or prose.\n\n"
+    "-----------------\n"
+    "POSITIVE EXAMPLE (independent news reporting a penalty)\n"
+    "-----------------\n"
+    "[{{\n"
+    '  "subject": {{"class": "MediaReport", "properties": {{"report_id": "vietnamnet_2024_aaa_tax", '
+    '"title": "Khai sai thue, Nhua An Phat Xanh bi xu ly hon 1,7 ty dong", "publisher": "vietnamnet.vn", '
+    '"date": "2024-08-14", "valid_from": "2024-08-14", "valid_to": null, "is_current": true}}}},\n'
+    '  "predicate": "mentionsOrganization",\n'
+    '  "object": {{"class": "Organization", "properties": {{"name": "CTCP Nhua An Phat Xanh", '
+    '"valid_from": "2024-01-01", "valid_to": null, "is_current": true}}}},\n'
+    '  "temporal_metadata": {{"valid_from": "2024-08-14", "valid_to": null, "recorded_at": "{year}-01-01"}}\n'
+    "}},\n"
+    "{{\n"
+    '  "subject": {{"class": "Organization", "properties": {{"name": "CTCP Nhua An Phat Xanh", '
+    '"valid_from": "2024-01-01", "valid_to": null, "is_current": true}}}},\n'
+    '  "predicate": "subjectToPenalty",\n'
+    '  "object": {{"class": "Penalty", "properties": {{"penalty_id": "aaa_tax_2024", '
+    '"description": "Tax mis-declaration penalty", "amount": "1.7 billion VND", "date": "2024-08-14", '
+    '"valid_from": "2024-08-14", "valid_to": null, "is_current": true}}}},\n'
+    '  "temporal_metadata": {{"valid_from": "2024-08-14", "valid_to": null, "recorded_at": "{year}-01-01"}}\n'
+    "}}]\n\n"
+    "-----------------\n"
+    "BEGIN EXTRACTION\n"
+    "-----------------\n"
+    "Extract temporal conduct triples from the following article **and output only the JSON array**.\n\n"
+    "------------------\n"
+    "COMPANY NAME: {company}\n"
+    "PUBLISH YEAR: {year}\n"
+    "------------------\n\n"
+    "Output a valid JSON array, or an empty array [] if nothing found.\n\n"
+)
+
+
 def build_page_prompt(schema: Dict[str, Any], page_text: str, page_no: int,
-                      page_kpis: List[Dict[str, Any]], company: str, year: int) -> str:
-    header = TEMPORAL_GRAPH_PROMPT_TEMPLATE.format(
-        schema_json=json.dumps(schema, ensure_ascii=False, indent=2),
-        company=company,
-        year=year,
-    )
+                      page_kpis: List[Dict[str, Any]], company: str, year: int,
+                      source: str = "report", article_meta: Optional[Dict[str, Any]] = None) -> str:
+    if source == "news":
+        meta = article_meta or {}
+        header = NEWS_GRAPH_PROMPT_TEMPLATE.format(
+            schema_json=json.dumps(schema, ensure_ascii=False, indent=2),
+            company=company,
+            year=year,
+            source_domain=meta.get("source_domain", ""),
+            title=meta.get("title", ""),
+            publish_date=meta.get("publish_date", ""),
+            url=meta.get("url", ""),
+        )
+    else:
+        header = TEMPORAL_GRAPH_PROMPT_TEMPLATE.format(
+            schema_json=json.dumps(schema, ensure_ascii=False, indent=2),
+            company=company,
+            year=year,
+        )
     kpi_section = (
         f"--- KPI OBSERVATIONS (page {page_no}) ---\n```json\n"
         f"{json.dumps(page_kpis, indent=2, ensure_ascii=False)}\n```\n\n"
@@ -359,6 +464,20 @@ def triple_list_to_graph(triples: List[Dict[str, Any]], schema: Dict[str, Any]) 
     return {"nodes": nodes, "edges": edges}
 
 
+def stamp_source_type(graph: Dict[str, Any], source_type: str) -> Dict[str, Any]:
+    """Tag every node/edge with its provenance channel (SYSTEM_DESIGN §3.2).
+
+    `report` (claim side) vs `news` (conduct side). Additive: node props get a
+    `source_type` key (the step-3 validator ignores unknown props unless --strict);
+    edges get a top-level `source_type`. Mutates and returns `graph`.
+    """
+    for node in graph.get("nodes", []):
+        node.setdefault("properties", {})["source_type"] = source_type
+    for edge in graph.get("edges", []):
+        edge["source_type"] = source_type
+    return graph
+
+
 # --------------------------------------------------------------------------- #
 # I/O adapters: page text from JSONL, KPIs from kpi_output/.
 # Page numbering is 1-based throughout (matches step 1's page_NNN_kpis.json).
@@ -396,6 +515,56 @@ def load_kpis_for_doc(pdf_stem: str, kpi_dir: Path) -> Dict[int, List[Dict[str, 
         elif isinstance(data, dict):
             out.setdefault(page_num, []).append(data)
     return out
+
+
+def _year_int(*candidates: Any) -> Optional[int]:
+    """First 4-digit year found among the candidates (int or string)."""
+    for c in candidates:
+        if c is None:
+            continue
+        if isinstance(c, int) and c:
+            return c
+        m = re.search(r"(?:19|20)\d{2}", str(c))
+        if m:
+            return int(m.group(0))
+    return None
+
+
+def load_news_doc_meta(path: Path) -> Dict[str, Dict[str, Any]]:
+    """First-seen article metadata per source_pdf, for `--source news`.
+
+    Reads the P1-preprocessed news JSONL (`publish_date_normalized`, `publish_year`,
+    `date_uncertain`, ...). All rows of one article share these fields, so the first
+    surviving row is representative. `load_pages_from_jsonl` is left untouched (step 1
+    depends on its signature); this is a separate, additive reader over the same file.
+    """
+    meta: Dict[str, Dict[str, Any]] = {}
+    with open(path, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            row = json.loads(line)
+            src = row.get("source_pdf", "unknown")
+            if src in meta:
+                continue
+            year = _year_int(
+                row.get("publish_year"),
+                row.get("publish_date_normalized"),
+                row.get("publish_date"),
+                row.get("date_crawled"),
+            ) or datetime.now().year
+            meta[src] = {
+                "company": row.get("company") or row.get("ticker") or "",
+                "ticker": row.get("ticker", ""),
+                "year": year,
+                "source_domain": row.get("source_domain", ""),
+                "url": row.get("url", ""),
+                "title": row.get("title", ""),
+                "publish_date": row.get("publish_date_normalized") or row.get("publish_date") or "",
+                "date_uncertain": bool(row.get("date_uncertain", False)),
+            }
+    return meta
 
 
 # --------------------------------------------------------------------------- #
@@ -445,7 +614,8 @@ def process_page(page_info: Dict[str, Any], page_kpis: List[Dict[str, Any]],
                  client: genai.Client, client_idx: int, rate_limiter: RateLimiter,
                  schema: Dict[str, Any], model: str, esg_only: bool,
                  pdf_stem: str, dbg_pdf_dir: Path, g_pdf_dir: Path,
-                 company: str, year: int) -> Tuple[int, bool, bool]:
+                 company: str, year: int,
+                 source: str = "report", article_meta: Optional[Dict[str, Any]] = None) -> Tuple[int, bool, bool]:
     p_no = page_info["page"]
     page_text = page_info["text"]
     has_esg = page_info["has_esg"]
@@ -469,7 +639,8 @@ def process_page(page_info: Dict[str, Any], page_kpis: List[Dict[str, Any]],
         return p_no, True, False
 
     logger.info(f"-> Processing page {p_no} with client {client_idx}")
-    prompt = build_page_prompt(schema, page_text, p_no, page_kpis, company=company, year=year)
+    prompt = build_page_prompt(schema, page_text, p_no, page_kpis, company=company, year=year,
+                               source=source, article_meta=article_meta)
 
     max_retries = 2
     for retry in range(max_retries):
@@ -522,6 +693,7 @@ def process_page(page_info: Dict[str, Any], page_kpis: List[Dict[str, Any]],
 
                 graph = (triple_list_to_graph(valid_triples, schema)
                          if valid_triples else {"nodes": [], "edges": []})
+                stamp_source_type(graph, source)
                 out_file.write_text(json.dumps(graph, indent=2, ensure_ascii=False),
                                     encoding="utf-8")
                 logger.info(f"Page {p_no}: {len(graph['nodes'])} nodes, {len(graph['edges'])} edges")
@@ -548,14 +720,24 @@ def process_page(page_info: Dict[str, Any], page_kpis: List[Dict[str, Any]],
 def process_document(source_pdf: str, jsonl_pages: Dict[int, List[Tuple[int, str, bool]]],
                      kpi_dir: Path, out_dir: Path, schema: Dict[str, Any], model: str,
                      client: genai.Client, rate_limiter: RateLimiter,
-                     esg_only: bool, max_workers: int) -> Tuple[int, int]:
-    pdf_stem = os.path.splitext(source_pdf)[0]
-    company, year_str = parse_company_year_from_filename(source_pdf)
-    try:
-        year = int(year_str)
-    except ValueError:
-        logger.warning(f"Year not parseable from {source_pdf}; defaulting to 2024")
-        year = 2024
+                     esg_only: bool, max_workers: int,
+                     source: str = "report", doc_meta: Optional[Dict[str, Any]] = None) -> Tuple[int, int]:
+    if source == "news":
+        # news source_pdf is an id like "AAA__vietstock.vn__<hash>" (no .pdf); do NOT
+        # os.path.splitext it - that would strip ".vn__<hash>" and collapse every article
+        # from one domain into a single dir. Company/year come from the article metadata.
+        pdf_stem = source_pdf
+        meta = doc_meta or {}
+        company = meta.get("company") or meta.get("ticker") or source_pdf
+        year = int(meta.get("year") or datetime.now().year)
+    else:
+        pdf_stem = os.path.splitext(source_pdf)[0]
+        company, year_str = parse_company_year_from_filename(source_pdf)
+        try:
+            year = int(year_str)
+        except ValueError:
+            logger.warning(f"Year not parseable from {source_pdf}; defaulting to 2024")
+            year = 2024
 
     g_pdf_dir = out_dir / "graphs" / pdf_stem
     g_pdf_dir.mkdir(parents=True, exist_ok=True)
@@ -565,8 +747,9 @@ def process_document(source_pdf: str, jsonl_pages: Dict[int, List[Tuple[int, str
     page_kpi_map = load_kpis_for_doc(pdf_stem, kpi_dir)
     pages = pages_for_doc(jsonl_pages)
 
-    logger.info(f"=== Processing {source_pdf} - {company} ({year}) - {len(pages)} pages ===")
+    logger.info(f"=== Processing {source_pdf} [{source}] - {company} ({year}) - {len(pages)} pages ===")
 
+    article_meta = doc_meta if source == "news" else None
     success = 0
     failed = 0
     rate_limited = 0
@@ -576,6 +759,7 @@ def process_document(source_pdf: str, jsonl_pages: Dict[int, List[Tuple[int, str
                 process_page, pg, page_kpi_map.get(pg["page"], []),
                 client, 0, rate_limiter, schema, model, esg_only,
                 pdf_stem, dbg_pdf_dir, g_pdf_dir, company, year,
+                source, article_meta,
             ): pg["page"]
             for pg in pages
         }
@@ -601,6 +785,51 @@ def process_document(source_pdf: str, jsonl_pages: Dict[int, List[Tuple[int, str
 
 
 # --------------------------------------------------------------------------- #
+# Offline preview (no LLM, no writes) - verify --source/meta/prompt for free.
+# --------------------------------------------------------------------------- #
+def dry_run_preview(selected: List[str], docs: Dict[str, Any], schema: Dict[str, Any],
+                    esg_only: bool, source: str, news_meta: Dict[str, Dict[str, Any]],
+                    kpi_dir: Path) -> None:
+    print(f"\nDRY RUN [{source}] - no Gemini calls, nothing written.\n")
+    for src in selected:
+        pages = pages_for_doc(docs[src])
+        esg_pages = [p for p in pages if p["has_esg"]]
+        to_send = esg_pages if esg_only else [p for p in pages if p["text"]]
+
+        if source == "news":
+            meta: Optional[Dict[str, Any]] = news_meta.get(src, {})
+            stem = src
+            company = meta.get("company") or meta.get("ticker") or src
+            year = int(meta.get("year") or datetime.now().year)
+            extra = (f"  domain={meta.get('source_domain', '')}  date={meta.get('publish_date', '')}"
+                     f"{' (uncertain)' if meta.get('date_uncertain') else ''}")
+        else:
+            meta = None
+            stem = os.path.splitext(src)[0]
+            company, year_str = parse_company_year_from_filename(src)
+            try:
+                year = int(year_str)
+            except ValueError:
+                year = 2024
+            extra = ""
+
+        print(f"=== {src}  [{source}] ===")
+        print(f"  stem={stem}  company={company!r}  year={year}{extra}")
+        print(f"  pages={len(pages)}  esg_pages={len(esg_pages)}  will_send={len(to_send)}")
+
+        page_kpis = load_kpis_for_doc(stem, kpi_dir)
+        sample = to_send[0] if to_send else None
+        if sample:
+            prompt = build_page_prompt(
+                schema, sample["text"], sample["page"], page_kpis.get(sample["page"], []),
+                company=company, year=year, source=source, article_meta=meta,
+            )
+            print(f"  --- prompt sample (page {sample['page']}, {len(prompt)} chars, first 1200) ---")
+            print("  " + prompt[:1200].replace("\n", "\n  "))
+        print()
+
+
+# --------------------------------------------------------------------------- #
 # CLI.
 # --------------------------------------------------------------------------- #
 def main() -> None:
@@ -619,6 +848,13 @@ def main() -> None:
     parser.add_argument("--max-workers", type=int, default=DEFAULT_MAX_WORKERS, help="Parallel page workers")
     parser.add_argument("--rate-limit", type=int, default=DEFAULT_RATE_LIMIT, help="Max RPM (default 10)")
     parser.add_argument("--model", type=str, default=DEFAULT_MODEL, help="Gemini model id")
+    parser.add_argument("--source", choices=["report", "news"], default="report",
+                        help="report (default): company self-reporting -> claim side. "
+                             "news: third-party news -> conduct side; uses the news prompt and "
+                             "stamps source_type=news (input: P1-preprocessed news JSONL).")
+    parser.add_argument("--dry-run", action="store_true",
+                        help="Offline preview: list selected docs, ESG page counts and a prompt "
+                             "sample. No Gemini calls, no API key needed, nothing written.")
     args = parser.parse_args()
 
     if not args.input.exists():
@@ -628,25 +864,31 @@ def main() -> None:
         logger.error(f"Schema not found: {args.schema}")
         return
 
-    load_dotenv(REPO_ROOT / ".env")
-    api_key = os.getenv("GEMINI_API_KEY")
-    if not api_key:
-        logger.error(f"GEMINI_API_KEY not set in {REPO_ROOT / '.env'}")
-        return
-
     schema = json.loads(args.schema.read_text(encoding="utf-8"))
     entities, edges = schema_sets(schema)
     logger.info(f"Schema loaded: {len(entities)} entity classes, {len(edges)} edge labels")
-
-    client = genai.Client(api_key=api_key)
-    rate_limiter = RateLimiter(max_calls_per_minute=args.rate_limit)
 
     docs = load_pages_from_jsonl(args.input)
     selected = select_documents(docs, args)
     if not selected:
         return
 
+    # news: per-article metadata (company/year/domain/title) alongside the page text.
+    news_meta = load_news_doc_meta(args.input) if args.source == "news" else {}
     esg_only = not args.all_pages
+
+    if args.dry_run:
+        dry_run_preview(selected, docs, schema, esg_only, args.source, news_meta, args.kpi_dir)
+        return
+
+    load_dotenv(REPO_ROOT / ".env")
+    api_key = os.getenv("GEMINI_API_KEY")
+    if not api_key:
+        logger.error(f"GEMINI_API_KEY not set in {REPO_ROOT / '.env'}")
+        return
+
+    client = genai.Client(api_key=api_key)
+    rate_limiter = RateLimiter(max_calls_per_minute=args.rate_limit)
 
     total_success = 0
     total_failed = 0
@@ -655,11 +897,12 @@ def main() -> None:
             src, docs[src],
             args.kpi_dir, args.out_dir, schema, args.model,
             client, rate_limiter, esg_only=esg_only, max_workers=args.max_workers,
+            source=args.source, doc_meta=news_meta.get(src),
         )
         total_success += s
         total_failed += f
     logger.info(
-        f"Done. {total_success} page(s) succeeded, {total_failed} failed "
+        f"Done [{args.source}]. {total_success} page(s) succeeded, {total_failed} failed "
         f"across {len(selected)} doc(s) -> {args.out_dir}"
     )
 

@@ -3,6 +3,13 @@
 .env.*
 !.env.example
 
+# ---- Read-only external reference (NOT part of this project; see CLAUDE.md) ----
+# EmeraldMind/ is an external reference implementation with its own .git repo, a
+# ~50 MB graph_latest.json, and its own .env secrets. It must never be uploaded.
+# It was previously committed as a phantom submodule (a bare gitlink with no
+# .gitmodules); that entry has been removed with `git rm --cached EmeraldMind`.
+EmeraldMind/
+
 # ---- Python ----
 __pycache__/
 *.py[cod]
