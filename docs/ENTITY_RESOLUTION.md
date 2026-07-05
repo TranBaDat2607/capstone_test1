@@ -1,11 +1,11 @@
 # Entity resolution — purpose, reason and logic
 
-Scripts: [`src/build_issuer_registry.py`](../src/build_issuer_registry.py) (one-time issuer-registry
-bootstrap) → [`src/resolve_entities.py`](../src/resolve_entities.py) (the resolver).
+Scripts: [`src/step04_build_issuer_registry.py`](../src/step04_build_issuer_registry.py) (one-time issuer-registry
+bootstrap) → [`src/step05_resolve_entities.py`](../src/step05_resolve_entities.py) (the resolver).
 Engineering checklist: [`ENTITY_RESOLUTION_PLAN.md`](../ENTITY_RESOLUTION_PLAN.md).
 
 This step takes the single clean triple list produced by
-[`fix_invalid_triplets.py`](../src/fix_invalid_triplets.py)
+[`step03_fix_invalid_triplets.py`](../src/step03_fix_invalid_triplets.py)
 (`graph_output/validated/all_validated_triples.json`) and collapses the **many
 duplicate entity nodes** that per-page extraction inevitably creates into single
 **canonical entities**, while preserving each entity's temporal history. The output is a
@@ -65,7 +65,7 @@ company graph queryable as a single subject over time.
 |---|---|---|
 | Validated triples | `graph_output/validated/all_validated_triples.json` | Flat, schema-valid triple list from step 3. |
 | Schema | `config/schema.json` | Each class's `identity_keys` (the dedup mechanism). |
-| Issuer registry | `config/issuer_registry.json` | Canonical issuer aliases / exclusions, **bootstrapped once** by `build_issuer_registry.py` (from `config/company_annual_report.xlsx` + the Organization nodes) and reviewed by a human. Consumed by Stage A. |
+| Issuer registry | `config/issuer_registry.json` | Canonical issuer aliases / exclusions, **bootstrapped once** by `step04_build_issuer_registry.py` (from `config/company_annual_report.xlsx` + the Organization nodes) and reviewed by a human. Consumed by Stage A. |
 
 **Outputs**
 
@@ -107,7 +107,7 @@ flowchart TD
     B --> C[Split: entity vs observation<br/>identity_keys from schema.json]
     C --> D[Stage A: identity_keys merge<br/>exact-signature collisions]
     D --> E[Stage A: issuer anchor<br/>frozen merge via issuer_registry.json]
-    RG[build_issuer_registry.py<br/>xlsx + Org nodes → issuer_registry.json<br/>+ human review] -.-> E
+    RG[step04_build_issuer_registry.py<br/>xlsx + Org nodes → issuer_registry.json<br/>+ human review] -.-> E
     E --> F{Survivors still<br/>ambiguous?}
     F -- no --> R[Resolved clusters]
     F -- yes --> G[Stage B.1: normalized-signature merge<br/>diacritics / legal forms / OCR]
@@ -170,7 +170,7 @@ the issuer, because their `name` strings genuinely differ. The issuer — the on
 report is about — is the backbone of the greenwashing cross-check, so its identity must be
 **deterministic, never decided by embeddings or an LLM**. We make it so with a *canonical
 issuer registry* (`config/issuer_registry.json`) built once by
-[`build_issuer_registry.py`](../src/build_issuer_registry.py).
+[`step04_build_issuer_registry.py`](../src/step04_build_issuer_registry.py).
 
 Naïvely matching the issuer to the official name in `company_annual_report.xlsx` does **not**
 work: in the AAA corpus the official string `CTCP Nhựa An Phát Xanh` is not even among the
@@ -259,7 +259,7 @@ below is motivated by either the Vietnamese setting or the greenwashing goal.
 |---|---|---|---|---|
 | 1 | Compute backend | Local Ollama (`nomic-embed-text` + `gemma3`) at `localhost:11434` | Single `GEMINI_API_KEY`: `gemini-embedding-001` + `gemini-2.5-flash` | Matches the project's one-key convention; no local server; multilingual out of the box. The existing key was verified to serve `gemini-embedding-001` (3072-dim). |
 | 2 | Primary dedup mechanism | Embeddings + LLM for **all** entities | **`identity_keys` exact merge first**, fuzzy only on survivors | The schema was *built* around `identity_keys`; using them is free, exact, and reproducible, and shrinks the expensive fuzzy stage to a handful of cases. |
-| 3 | Issuer identity | Inferred like any other entity via embeddings | **Bootstrapped issuer registry** (`build_issuer_registry.py`): structural + lexical signals auto-sort name variants into aliases / exclusions / needs_review; the resolver merges aliases into one **frozen** cluster | The issuer is the report-vs-conduct backbone, so its identity is deterministic — never embeddings/LLM. Handles AAA's rename and the look-alike parent `An Phát Holdings`; 536 raw nodes → 1 issuer. |
+| 3 | Issuer identity | Inferred like any other entity via embeddings | **Bootstrapped issuer registry** (`step04_build_issuer_registry.py`): structural + lexical signals auto-sort name variants into aliases / exclusions / needs_review; the resolver merges aliases into one **frozen** cluster | The issuer is the report-vs-conduct backbone, so its identity is deterministic — never embeddings/LLM. Handles AAA's rename and the look-alike parent `An Phát Holdings`; 536 raw nodes → 1 issuer. |
 | 4 | Observations | Passed through, **never deduped** | Deduped by `identity_keys` (e.g. same KPI by `source_id`) | Avoids twin KPI/Emission nodes from overlapping pages; keeps measurement counts honest. |
 | 5 | Language handling | English-centric embedding; English LLM prompt | `normalize_vn_name` (legal-form stripping, OCR repair, diacritics) + multilingual embeddings + VN-anchored prompt | Vietnamese names carry heavy legal boilerplate, appear in both VN and EN, and arrive with OCR garble (`MÔI TRƢỜNG`). English tooling silently fails on all three. |
 | 6 | Match decision | `"yes" in resp and "no" not in resp` string parse | **Structured-output boolean** | Removes a fragile parser; the model returns a typed verdict. |
@@ -325,27 +325,27 @@ Two steps — bootstrap the issuer registry once (and review it), then resolve:
 ```bash
 # 0. Bootstrap config/issuer_registry.json, then open it and move each
 #    needs_review entry into "aliases" or "exclusions"
-python src/build_issuer_registry.py
+python src/step04_build_issuer_registry.py
 
 # 1a. Free offline preview: identity-key + frozen issuer anchor + normalized merge
 #     (no tokens, no writes)
-python src/resolve_entities.py --dry-run
+python src/step05_resolve_entities.py --dry-run
 
 # 1b. Deterministic-only run (writes; no embeddings/LLM)
-python src/resolve_entities.py --no-llm
+python src/step05_resolve_entities.py --no-llm
 
 # 1c. Full hybrid run
-python src/resolve_entities.py --max-llm-pairs 400
+python src/step05_resolve_entities.py --max-llm-pairs 400
 ```
 
-### `resolve_entities.py` flags
+### `step05_resolve_entities.py` flags
 
 | Flag | Default | Meaning |
 |------|---------|---------|
 | `-i, --input` | `graph_output/validated/all_validated_triples.json` | Validated triples |
 | `-s, --schema` | `config/schema.json` | Schema (`identity_keys`) |
 | `-o, --out-dir` | `graph_output/resolved/` | Output directory |
-| `--registry` | `config/issuer_registry.json` | Issuer registry (from `build_issuer_registry.py`) |
+| `--registry` | `config/issuer_registry.json` | Issuer registry (from `step04_build_issuer_registry.py`) |
 | `--similarity-threshold` | `0.92` | Embedding cosine cutoff for Stage B.2 candidates |
 | `--max-llm-pairs` | `400` | Budget: max Stage-C adjudications (highest-similarity pairs first) |
 | `--rate-limit` | `10` | Max RPM for the Gemini stages |

@@ -1,7 +1,7 @@
 # Claim ledger — the presentation stage (Step 7 / P5)
 
-Scripts: [`src/sync_crosscheck_to_neo4j.py`](../src/sync_crosscheck_to_neo4j.py) (Step 6b) +
-[`src/report_claim_ledger.py`](../src/report_claim_ledger.py) (Step 7) · queries:
+Scripts: [`src/step08_sync_crosscheck_to_neo4j.py`](../src/step08_sync_crosscheck_to_neo4j.py) (Step 6b) +
+[`src/step09_report_claim_ledger.py`](../src/step09_report_claim_ledger.py) (Step 7) · queries:
 [`neo4j/crosscheck_queries.cypher`](../neo4j/crosscheck_queries.cypher).
 System context: [`SYSTEM_DESIGN.md`](./SYSTEM_DESIGN.md) §9.
 
@@ -15,7 +15,7 @@ explicitly advisory opinion*, **never** a greenwashing score or hard label.
 
 ## 1. Why there are two scripts (and why Neo4j-only)
 
-Step 6 (`crosscheck_claims_vs_conduct.py`, P4) does the paid LLM work and writes the full
+Step 6 (`step07_crosscheck_claims_vs_conduct.py`, P4) does the paid LLM work and writes the full
 result to a JSON dossier (`graph_output/crosscheck/<ticker>_claim_assessments.json`). But two
 parts of that result never reach Neo4j on their own:
 
@@ -31,14 +31,14 @@ cached dossier costs nothing). That is Step 6b. Then Step 7 renders purely from 
 ```
 graph_output/crosscheck/<ticker>_claim_assessments.json   (Step 6 output, already paid for)
         │
-        ▼  Step 6b — sync_crosscheck_to_neo4j.py   (NO LLM, idempotent)
+        ▼  Step 6b — step08_sync_crosscheck_to_neo4j.py   (NO LLM, idempotent)
 Neo4j advisory layer  (assessment/caveats/signals on claims + llm_* evidence edges)
         │
-        ▼  Step 7 — report_claim_ledger.py   (reads ONLY Neo4j)
+        ▼  Step 7 — step09_report_claim_ledger.py   (reads ONLY Neo4j)
 console ledger  +  <ticker>_claim_ledger.md  +  neo4j/crosscheck_queries.cypher
 ```
 
-## 2. Step 6b — `sync_crosscheck_to_neo4j.py` (dossier → Neo4j, no LLM)
+## 2. Step 6b — `step08_sync_crosscheck_to_neo4j.py` (dossier → Neo4j, no LLM)
 
 Reads `<ticker>_claim_assessments.json` and MERGEs an **advisory layer** onto the step-5 graph,
 matching nodes on the loader's `_node_key = "n{index}"` convention:
@@ -60,11 +60,11 @@ Idempotent (MERGE on a stable `_adv_key`); `--clear-advisory` wipes the prior la
 182 advisory edges (140 `llm_supports` + 24 `llm_contradicts` + 18 `llm_flagged_support`).
 
 ```bash
-python src/sync_crosscheck_to_neo4j.py --dry-run          # counts only
-python src/sync_crosscheck_to_neo4j.py --clear-advisory   # wipe + re-write
+python src/step08_sync_crosscheck_to_neo4j.py --dry-run          # counts only
+python src/step08_sync_crosscheck_to_neo4j.py --clear-advisory   # wipe + re-write
 ```
 
-## 3. Step 7 — `report_claim_ledger.py` (renders from Neo4j only)
+## 3. Step 7 — `step09_report_claim_ledger.py` (renders from Neo4j only)
 
 No LLM, no JSON. Queries the advisory layer and renders:
 
@@ -138,10 +138,10 @@ sanity (conduct pool), (6) housekeeping to drop/re-sync the advisory layer. All 
 
 ```bash
 # Prereqs: steps 1–5 done + Step 6 dossier exists; Neo4j (step 5) running.
-python src/sync_crosscheck_to_neo4j.py            # Step 6b: dossier → Neo4j advisory layer (free)
-python src/report_claim_ledger.py                 # Step 7: AAA ledger (contradicted + supported)
-python src/report_claim_ledger.py --review-queue  #   contradiction, no verification (14)
-python src/report_claim_ledger.py --assessment all --markdown
+python src/step08_sync_crosscheck_to_neo4j.py            # Step 6b: dossier → Neo4j advisory layer (free)
+python src/step09_report_claim_ledger.py                 # Step 7: AAA ledger (contradicted + supported)
+python src/step09_report_claim_ledger.py --review-queue  #   contradiction, no verification (14)
+python src/step09_report_claim_ledger.py --assessment all --markdown
 ```
 
 No API key, no token cost — both scripts are LLM-free.

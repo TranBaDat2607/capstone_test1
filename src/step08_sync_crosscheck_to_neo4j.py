@@ -2,7 +2,7 @@
 
 System context: docs/SYSTEM_DESIGN.md §6/§9 and docs/CLAIM_LEDGER.md.
 
-Step 6 (crosscheck_claims_vs_conduct.py) computes, for each claim, an advisory `assessment`
+Step 6 (step07_crosscheck_claims_vs_conduct.py) computes, for each claim, an advisory `assessment`
 plus its supporting/contradicting evidence — and stores the FULL picture only in the JSON
 dossier (graph_output/crosscheck/<ticker>_claim_assessments.json). Two things therefore never
 reach Neo4j on their own:
@@ -26,9 +26,9 @@ What it writes (all clearly namespaced / flagged so advisory ≠ extracted fact)
     evidence_class / source_domain / date / year / independent / date_uncertain / role.
 
 Run from the repo root (Neo4j from step 5 must be up):
-  python src/sync_crosscheck_to_neo4j.py --dry-run          # counts only, no write
-  python src/sync_crosscheck_to_neo4j.py                    # MERGE into Neo4j
-  python src/sync_crosscheck_to_neo4j.py --clear-advisory   # wipe prior advisory layer first
+  python src/step08_sync_crosscheck_to_neo4j.py --dry-run          # counts only, no write
+  python src/step08_sync_crosscheck_to_neo4j.py                    # MERGE into Neo4j
+  python src/step08_sync_crosscheck_to_neo4j.py --clear-advisory   # wipe prior advisory layer first
 """
 
 import argparse
@@ -47,7 +47,7 @@ logger = logging.getLogger(__name__)
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CROSSCHECK_DIR = REPO_ROOT / "graph_output" / "crosscheck"
 
-# Neo4j defaults — match src/load_graph_to_neo4j.py + the crosscheck write-back.
+# Neo4j defaults — match src/step06_load_graph_to_neo4j.py + the crosscheck write-back.
 NEO4J_URI_DEFAULT = "bolt://localhost:8687"
 NEO4J_USER_DEFAULT = "greenwashing"
 NEO4J_PASSWORD_DEFAULT = "nammovuivui"
@@ -185,7 +185,7 @@ def run(args: argparse.Namespace) -> None:
     finally:
         driver.close()
     logger.info("Sync complete. The ledger + Cypher can now read everything from Neo4j "
-                "(python src/report_claim_ledger.py).")
+                "(python src/step09_report_claim_ledger.py).")
 
 
 def main() -> None:

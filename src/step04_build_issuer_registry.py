@@ -2,7 +2,7 @@
 """
 Bootstrap a *canonical issuer registry* for the entity-resolution step.
 
-Step 4 (`resolve_entities.py`) needs to merge every name variant of the
+Step 4 (`step05_resolve_entities.py`) needs to merge every name variant of the
 *reporting company* (the issuer) into one node deterministically — never via
 embeddings or an LLM, because the issuer is the backbone of the greenwashing
 cross-check. The trouble: in `all_validated_triples.json` the issuer appears
@@ -26,10 +26,10 @@ Each distinct Organization name is classified into:
 Re-running preserves human edits: confirmed aliases/exclusions are kept; only
 newly-seen names are (re)appended to needs_review. `--force` rebuilds fresh.
 
-Output: `config/issuer_registry.json`, consumed by `resolve_entities.py`.
+Output: `config/issuer_registry.json`, consumed by `step05_resolve_entities.py`.
 
 `normalize_name` is defined here and imported by the resolver so both sides
-match identically. Run from the repo root: `python src/build_issuer_registry.py`.
+match identically. Run from the repo root: `python src/step04_build_issuer_registry.py`.
 """
 
 from __future__ import annotations
@@ -46,7 +46,7 @@ from typing import Any, Dict, List, Set, Tuple
 import pandas as pd
 
 # Reuse step-1 helpers (src/ is on sys.path when run as `python src/...`).
-from extract_kpi_from_jsonl import REPO_ROOT
+from step01_extract_kpi_from_jsonl import REPO_ROOT
 
 # Report files are named "<TICKER>_Baocaothuongnien_<YEAR>"; the ticker is the
 # corpus issuer. We read it from KPI source_ids, which carry that stem.
@@ -323,7 +323,7 @@ def main() -> None:
     args = p.parse_args()
 
     if not args.input.exists():
-        logger.error(f"Input not found: {args.input} (run fix_invalid_triplets.py first)")
+        logger.error(f"Input not found: {args.input} (run step03_fix_invalid_triplets.py first)")
         return
     if not args.companies.exists():
         logger.error(f"Company table not found: {args.companies}")

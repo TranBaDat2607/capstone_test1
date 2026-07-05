@@ -1,0 +1,280 @@
+{
+  "description": "P6 evaluation gold set — 30 hand-labeled (claim, evidence) adjudication cases for AAA. Each `reference_verdict` is the author's careful human judgment (supports | contradicts | irrelevant), used to (a) measure the cross-check adjudicator's link-precision on a small illustrative sample and (b) ablate the LLM adjudicator against a deterministic keyword baseline (docs/EVALUATION.md, docs/SYSTEM_DESIGN.md §10). NOT a greenwashing gold set — it grades whether an evidence LINK is correct, never whether a company is greenwashing.",
+  "issuer": {"ticker": "AAA", "name": "CTCP Nhựa An Phát Xanh"},
+  "provenance": "Claim + evidence texts are copied verbatim from graph_output/crosscheck/aaa_claim_assessments.json. `case_type=real` pairs were actually adjudicated in the production run (P4); `case_type=constructed` pairs pair a real claim with a real but topically-unrelated evidence node to test the 'irrelevant' verdict (production writes no edge for irrelevant, so these are otherwise unobservable).",
+  "label_policy": "Reference labels reflect a strict-independence reading: an evidence item must speak to the SAME thing the claim asserts. Several `case_type=real` items labeled `irrelevant` are ones where the production LLM returned `contradicts`/`supports` but a human considers the link a temporal mismatch or a metric that does not actually bear on the claim — these are deliberately included to expose failure modes (§12).",
+  "cases": [
+    {
+      "id": "S01", "claim_id": "AnPhat_2012_HR_FrequentBonusSystem_P49", "claim_year": 2012,
+      "claim_text": "Company implements monthly, quarterly, and annual bonus systems to motivate employees.",
+      "evidence_class": "KPIObservation", "evidence_year": 2024,
+      "evidence_text": "Employee stock bonus payout for 2024 profits Employee Stock Bonus 114.5 billion VND achieved",
+      "evidence_meta": "KPIObservation from news, year 2024",
+      "esg_category": "Social", "reference_verdict": "supports", "case_type": "real",
+      "note": "Observed employee bonus payout corroborates the bonus-system claim."
+    },
+    {
+      "id": "S02", "claim_id": "AAA_Baocaothuongnien_claim_2017_3", "claim_year": 2017,
+      "claim_text": "Completed the issuance of ESOP shares to employees.",
+      "evidence_class": "KPIObservation", "evidence_year": 2026,
+      "evidence_text": "Number of ESOP shares issued ESOP shares issued 11.5 million shares achieved",
+      "evidence_meta": "KPIObservation from news, year 2026",
+      "esg_category": "Governance", "reference_verdict": "supports", "case_type": "real",
+      "note": "ESOP shares issued directly corroborates the ESOP-completion claim."
+    },
+    {
+      "id": "S03", "claim_id": "AAA_ListingChange_Approval_20161108", "claim_year": 2016,
+      "claim_text": "Resolution approving delisting on HNX and listing on HOSE",
+      "evidence_class": "KPIObservation", "evidence_year": 2016,
+      "evidence_text": "Listed on HOSE listing status true boolean achieved",
+      "evidence_meta": "KPIObservation from news, year 2016",
+      "esg_category": "Governance", "reference_verdict": "supports", "case_type": "real",
+      "note": "HOSE listing status = true confirms the listing-change resolution was carried out."
+    },
+    {
+      "id": "S04", "claim_id": "AAA_2018_dividend_policy_claim", "claim_year": 2018,
+      "claim_text": "AAA maintained an annual cash dividend policy for shareholders, ensuring timely payment.",
+      "evidence_class": "KPIObservation", "evidence_year": 2024,
+      "evidence_text": "Cash dividend payout for 2024 profits Dividend Payout 114.7 billion VND achieved",
+      "evidence_meta": "KPIObservation from news, year 2024",
+      "esg_category": "Governance", "reference_verdict": "supports", "case_type": "real",
+      "note": "An observed cash dividend payout corroborates the annual-dividend-policy claim."
+    },
+    {
+      "id": "S05", "claim_id": "AAA_Packaging_Leadership_2020", "claim_year": 2020,
+      "claim_text": "AAA maintained growth in core packaging business and affirmed its position as the largest plastic packaging manufacturer and exporter in Vietnam and a leading regional player.",
+      "evidence_class": "KPIObservation", "evidence_year": 2026,
+      "evidence_text": "total packaging production capacity production capacity 108000 tons/year achieved",
+      "evidence_meta": "KPIObservation from news, year 2026",
+      "esg_category": "Governance", "reference_verdict": "supports", "case_type": "real",
+      "note": "Large observed packaging capacity is consistent with a 'largest packaging manufacturer' position."
+    },
+    {
+      "id": "S06", "claim_id": "AAA_2014_production_expansion", "claim_year": 2014,
+      "claim_text": "Mở rộng sản xuất với việc vận hành Nhà máy sản xuất số 5 tại KCN Nam Sách – T.P Hải Dương có công suất thiết kế 7.200 tấn /năm chuyên xuất khẩu sang thị trường Nhật Bản",
+      "evidence_class": "KPIObservation", "evidence_year": 2017,
+      "evidence_text": "Sản lượng xuất bán sales volume 8000 tons/month achieved",
+      "evidence_meta": "KPIObservation from news, year 2017",
+      "esg_category": "Governance", "reference_verdict": "supports", "case_type": "real",
+      "note": "Observed export sales volume corroborates the production-expansion-for-export claim."
+    },
+    {
+      "id": "S07", "claim_id": "industrial_packaging_contribution_2020", "claim_year": 2020,
+      "claim_text": "further contribution from industrial packaging segment",
+      "evidence_class": "KPIObservation", "evidence_year": 2025,
+      "evidence_text": "Total capacity of 07 plastic packaging factories production capacity 108000 tons/year achieved",
+      "evidence_meta": "KPIObservation from news, year 2025",
+      "esg_category": "Governance", "reference_verdict": "supports", "case_type": "real",
+      "note": "Observed factory capacity supports a contribution from the packaging segment."
+    },
+    {
+      "id": "S08", "claim_id": "AAA_Baocaothuongnien_2018_page146_claim6", "claim_year": 2018,
+      "claim_text": "The Company's policy is to regularly monitor current and projected future liquidity requirements to ensure it maintains sufficient cash reserves, borrowings, and committed shareholder capital to meet short-term and longer-term liquidity regulations.",
+      "evidence_class": "KPIObservation", "evidence_year": 2025,
+      "evidence_text": "Current Ratio >1.1 x achieved",
+      "evidence_meta": "KPIObservation from news, year 2025",
+      "esg_category": "Governance", "reference_verdict": "supports", "case_type": "real",
+      "note": "A current ratio above 1.1 is consistent with the claim of maintaining adequate liquidity."
+    },
+    {
+      "id": "S09", "claim_id": "AAA_Baocaothuongnien_2018.pdf_62_claim_2", "claim_year": 2018,
+      "claim_text": "Completed capital increase issuance for existing shareholders at a 1:1 ratio.",
+      "evidence_class": "KPIObservation", "evidence_year": 2025,
+      "evidence_text": "Vốn điều lệ charter capital 1711000000000 VND achieved",
+      "evidence_meta": "KPIObservation from news, year 2025",
+      "esg_category": "Governance", "reference_verdict": "supports", "case_type": "real",
+      "note": "An observed charter-capital level is consistent with a completed capital increase."
+    },
+    {
+      "id": "S10", "claim_id": "AAA_2014_market_product_expansion", "claim_year": 2014,
+      "claim_text": "Mở rộng thị trường tiêu thụ sản phẩm trên các thị trường tiềm năng cả về chiều rộng cũng như việc đa dạng hoá sản phẩm tại thị trường.",
+      "evidence_class": "MediaReport", "evidence_year": 2024,
+      "evidence_text": "Nhựa An Phát Xanh (AAA): Hé lộ sản phẩm “át chủ bài” mới, mục tiêu chiếm lĩnh thị trường Mỹ",
+      "evidence_meta": "MediaReport from news, year 2024",
+      "esg_category": "Governance", "reference_verdict": "supports", "case_type": "real",
+      "note": "Independent news of a new product targeting the US market supports market/product expansion."
+    },
+
+    {
+      "id": "C01", "claim_id": "AAA_SC_001", "claim_year": 2021,
+      "claim_text": "Ensures growth in revenue and profit",
+      "evidence_class": "KPIObservation", "evidence_year": 2026,
+      "evidence_text": "Revenue decrease Revenue -42.3 % achieved",
+      "evidence_meta": "KPIObservation from news, year 2026",
+      "esg_category": "Governance", "reference_verdict": "contradicts", "case_type": "real",
+      "note": "Worked example: an observed -42.3% revenue decrease directly refutes 'ensures revenue growth'."
+    },
+    {
+      "id": "C02", "claim_id": "AAA_SC_2", "claim_year": 2020,
+      "claim_text": "AAA ensures revenue and profit growth, fulfilling contributions to the state budget.",
+      "evidence_class": "KPIObservation", "evidence_year": 2026,
+      "evidence_text": "Revenue decrease Revenue -42.3 % achieved",
+      "evidence_meta": "KPIObservation from news, year 2026",
+      "esg_category": "Governance", "reference_verdict": "contradicts", "case_type": "real",
+      "note": "Revenue -42.3% contradicts an 'ensures revenue and profit growth' claim."
+    },
+    {
+      "id": "C03", "claim_id": "AAA_Baocaothuongnien_2016.pdf_46_claim1", "claim_year": 2016,
+      "claim_text": "Company boosted production and exports to key markets, ensuring quality, high revenue and profit exceeding plan.",
+      "evidence_class": "KPIObservation", "evidence_year": 2026,
+      "evidence_text": "Revenue decrease Revenue -42.3 % achieved",
+      "evidence_meta": "KPIObservation from news, year 2026",
+      "esg_category": "Governance", "reference_verdict": "contradicts", "case_type": "real",
+      "note": "A large revenue decrease is in tension with 'high revenue and profit exceeding plan'."
+    },
+    {
+      "id": "C04", "claim_id": "AAA_Baocaothuongnien_claim_2017_1", "claim_year": 2017,
+      "claim_text": "Increased production and exports to key markets, numerous orders, ensured quality, high revenue and profit exceeding the plan.",
+      "evidence_class": "KPIObservation", "evidence_year": 2026,
+      "evidence_text": "Revenue decrease Revenue -42.3 % achieved",
+      "evidence_meta": "KPIObservation from news, year 2026",
+      "esg_category": "Governance", "reference_verdict": "contradicts", "case_type": "real",
+      "note": "Revenue -42.3% contradicts 'high revenue and profit exceeding the plan'."
+    },
+    {
+      "id": "C05", "claim_id": "AAA_claim_2017_stable_growth", "claim_year": 2017,
+      "claim_text": "AAA has stable revenue and profit growth, while ensuring full completion of contributions to the state budget.",
+      "evidence_class": "KPIObservation", "evidence_year": 2026,
+      "evidence_text": "Revenue decrease Revenue -42.3 % achieved",
+      "evidence_meta": "KPIObservation from news, year 2026",
+      "esg_category": "Governance", "reference_verdict": "contradicts", "case_type": "real",
+      "note": "A -42.3% revenue swing contradicts a 'stable revenue and profit growth' claim."
+    },
+    {
+      "id": "C06", "claim_id": "AAA_EPS_2019_projection", "claim_year": 2019,
+      "claim_text": "Earnings Per Share (EPS) expected to reach 2,550 VND in 2019",
+      "evidence_class": "KPIObservation", "evidence_year": 2026,
+      "evidence_text": "Earnings Per Share (last 4 quarters) EPS 1213.0 VND/share achieved",
+      "evidence_meta": "KPIObservation from news, year 2026",
+      "esg_category": "Governance", "reference_verdict": "contradicts", "case_type": "real",
+      "note": "Observed EPS 1213 is far below the projected 2,550 VND — the target was not met."
+    },
+    {
+      "id": "C07", "claim_id": "AAA_EPS_2019_projection", "claim_year": 2019,
+      "claim_text": "Earnings Per Share (EPS) expected to reach 2,550 VND in 2019",
+      "evidence_class": "KPIObservation", "evidence_year": 2025,
+      "evidence_text": "EPS 460-470 VND/cp achieved",
+      "evidence_meta": "KPIObservation from news, year 2025",
+      "esg_category": "Governance", "reference_verdict": "contradicts", "case_type": "real",
+      "note": "Observed EPS 460-470 is far below the projected 2,550 VND."
+    },
+    {
+      "id": "C08", "claim_id": "AAA_export_reach_2021", "claim_year": 2021,
+      "claim_text": "AAA exports 98% of its packaging production to over 70 countries and territories.",
+      "evidence_class": "KPIObservation", "evidence_year": 2025,
+      "evidence_text": "Number of countries with business relationships international_presence 50 countries achieved",
+      "evidence_meta": "KPIObservation from news, year 2025",
+      "esg_category": "Governance", "reference_verdict": "contradicts", "case_type": "real",
+      "note": "50 countries of business relationships is below the claimed 'over 70 countries'."
+    },
+    {
+      "id": "C09", "claim_id": "AAA_2020_claim_pioneering_plastic_industry", "claim_year": 2020,
+      "claim_text": "Pioneering position in Vietnam's plastic industry by revenue scale",
+      "evidence_class": "KPIObservation", "evidence_year": 2025,
+      "evidence_text": "Net revenue change Q2 2025 Net revenue change -17.0 % achieved",
+      "evidence_meta": "KPIObservation from news, year 2025",
+      "esg_category": "Governance", "reference_verdict": "contradicts", "case_type": "real",
+      "note": "A -17.0% net-revenue change undercuts a 'pioneering by revenue scale' claim."
+    },
+    {
+      "id": "C10", "claim_id": "AAA_2020_claim_pioneering_plastic_industry", "claim_year": 2020,
+      "claim_text": "Pioneering position in Vietnam's plastic industry by revenue scale",
+      "evidence_class": "KPIObservation", "evidence_year": 2026,
+      "evidence_text": "Revenue decrease Revenue -42.3 % achieved",
+      "evidence_meta": "KPIObservation from news, year 2026",
+      "esg_category": "Governance", "reference_verdict": "contradicts", "case_type": "real",
+      "note": "Revenue -42.3% is in tension with a revenue-scale leadership claim."
+    },
+
+    {
+      "id": "IR01", "claim_id": "AAA_Baocaothuongnien_recycled_materials_2012", "claim_year": 2012,
+      "claim_text": "Uses recycled raw materials to ensure less waste.",
+      "evidence_class": "KPIObservation", "evidence_year": 2025,
+      "evidence_text": "Dependency on imported raw materials dependency on imported materials 80-85 % achieved",
+      "evidence_meta": "KPIObservation from news, year 2025",
+      "esg_category": "Environmental", "reference_verdict": "irrelevant", "case_type": "real",
+      "note": "HARD: production LLM said 'contradicts', but import share does not measure recycled-vs-virgin content — the metric does not actually bear on the recycling claim."
+    },
+    {
+      "id": "IR02", "claim_id": "AAA_Baocaothuongnien_2025_FS_accuracy_claim", "claim_year": 2025,
+      "claim_text": "Các BCTC riêng và BCTC hợp nhất năm 2025 đã phản ánh trung thực và hợp lý trên các khía cạnh trọng yếu tình hình tài chính riêng và hợp nhất của Công ty tại ngày 31/12/2025, kết quả hoạt động kinh doanh riêng, hợp nhất và tình hình lưu chuyển tiền tệ riêng, hợp nhất cho năm tài chính kết thúc cùng ngày.",
+      "evidence_class": "KPIObservation", "evidence_year": 2026,
+      "evidence_text": "Total assets change from beginning of year to 2025-06-30 Total assets change -11.5 % achieved",
+      "evidence_meta": "KPIObservation from news, year 2026",
+      "esg_category": "Governance", "reference_verdict": "irrelevant", "case_type": "real",
+      "note": "HARD: production LLM said 'contradicts', but the claim is about the ACCURACY of the financial statements, which is independent of whether assets rose or fell."
+    },
+    {
+      "id": "IR03", "claim_id": "plastic_export_growth_forecast_2022", "claim_year": 2022,
+      "claim_text": "Plastic product export growth forecast at 22% in 2022",
+      "evidence_class": "KPIObservation", "evidence_year": 2024,
+      "evidence_text": "Vietnam plastic industry growth rate industry growth rate 16-18 %/year achieved",
+      "evidence_meta": "KPIObservation from news, year 2024",
+      "esg_category": "Governance", "reference_verdict": "irrelevant", "case_type": "real",
+      "note": "HARD: production LLM said 'contradicts', but an industry-wide growth rate is a different metric from the company's own export-growth forecast — it neither confirms nor refutes it."
+    },
+    {
+      "id": "IR04", "claim_id": "AnPhat_2017_HighestRevenueProfit", "claim_year": 2017,
+      "claim_text": "2017 revenue and profit are the highest since establishment.",
+      "evidence_class": "KPIObservation", "evidence_year": 2026,
+      "evidence_text": "Revenue decrease Revenue -42.3 % achieved",
+      "evidence_meta": "KPIObservation from news, year 2026",
+      "esg_category": "Governance", "reference_verdict": "irrelevant", "case_type": "real",
+      "note": "HARD: production LLM said 'contradicts', but a 2026 revenue drop does not refute that 2017 was the peak year at the time — a temporal-window mismatch (window-after=50)."
+    },
+    {
+      "id": "IR05", "claim_id": "strategic_risk_green_consumption_2021", "claim_year": 2021,
+      "claim_text": "Company's strategy not aligned with market trends or long-term development goals, specifically regarding green consumption trends and potential shift away from plastic packaging.",
+      "evidence_class": "KPIObservation", "evidence_year": 2025,
+      "evidence_text": "Total capacity of 07 plastic packaging factories production capacity 108000 tons/year achieved",
+      "evidence_meta": "KPIObservation from news, year 2025",
+      "esg_category": "Environmental", "reference_verdict": "irrelevant", "case_type": "real",
+      "note": "HARD: production LLM said 'contradicts'. The claim is a negatively-phrased risk-register entry; plastic capacity is tangential and the double negative makes 'contradicts' unreliable."
+    },
+    {
+      "id": "IR06", "claim_id": "AnPhat_2012_HR_FrequentBonusSystem_P49", "claim_year": 2012,
+      "claim_text": "Company implements monthly, quarterly, and annual bonus systems to motivate employees.",
+      "evidence_class": "KPIObservation", "evidence_year": 2025,
+      "evidence_text": "Number of countries with business relationships international_presence 50 countries achieved",
+      "evidence_meta": "KPIObservation from news, year 2025",
+      "esg_category": "Social", "reference_verdict": "irrelevant", "case_type": "constructed",
+      "note": "Constructed: an employee-bonus (Social) claim vs a geographic-reach metric — unrelated topics."
+    },
+    {
+      "id": "IR07", "claim_id": "AAA_Baocaothuongnien_2016.pdf_28_water_reuse_claim", "claim_year": 2016,
+      "claim_text": "All water used for cooling systems at the factory is recycled and reused, with no discharge into the environment.",
+      "evidence_class": "KPIObservation", "evidence_year": 2024,
+      "evidence_text": "Cash dividend payout for 2024 profits Dividend Payout 114.7 billion VND achieved",
+      "evidence_meta": "KPIObservation from news, year 2024",
+      "esg_category": "Environmental", "reference_verdict": "irrelevant", "case_type": "constructed",
+      "note": "Constructed: a water-reuse (Environmental) claim vs a dividend-payout metric — unrelated topics."
+    },
+    {
+      "id": "IR08", "claim_id": "AAA_export_reach_2021", "claim_year": 2021,
+      "claim_text": "AAA exports 98% of its packaging production to over 70 countries and territories.",
+      "evidence_class": "KPIObservation", "evidence_year": 2024,
+      "evidence_text": "Employee stock bonus payout for 2024 profits Employee Stock Bonus 114.5 billion VND achieved",
+      "evidence_meta": "KPIObservation from news, year 2024",
+      "esg_category": "Governance", "reference_verdict": "irrelevant", "case_type": "constructed",
+      "note": "Constructed: an export-reach claim vs an employee-bonus metric — unrelated topics."
+    },
+    {
+      "id": "IR09", "claim_id": "AAA_Baocaothuongnien_2018_page146_claim6", "claim_year": 2018,
+      "claim_text": "The Company's policy is to regularly monitor current and projected future liquidity requirements to ensure it maintains sufficient cash reserves, borrowings, and committed shareholder capital to meet short-term and longer-term liquidity regulations.",
+      "evidence_class": "KPIObservation", "evidence_year": 2017,
+      "evidence_text": "Top 500 doanh nghiệp lớn nhất Việt Nam company ranking 500 rank achieved",
+      "evidence_meta": "KPIObservation from news, year 2017",
+      "esg_category": "Governance", "reference_verdict": "irrelevant", "case_type": "constructed",
+      "note": "Constructed: a liquidity-management claim vs a size-ranking metric — the ranking does not bear on liquidity."
+    },
+    {
+      "id": "IR10", "claim_id": "AAA_Baocaothuongnien_2018_page146_claim5", "claim_year": 2018,
+      "claim_text": "The Company does not have any material credit risk with customers or partners because receivables come from a large number of customers operating in various industries and distributed across different geographical areas.",
+      "evidence_class": "KPIObservation", "evidence_year": 2026,
+      "evidence_text": "Revenue decrease Revenue -42.3 % achieved",
+      "evidence_meta": "KPIObservation from news, year 2026",
+      "esg_category": "Governance", "reference_verdict": "irrelevant", "case_type": "constructed",
+      "note": "Constructed: a credit-risk-diversification claim vs an aggregate revenue change — revenue level does not measure receivables concentration."
+    }
+  ]
+}

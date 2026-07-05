@@ -1,6 +1,6 @@
 # KPI extraction from labeled JSONL — purpose, reason and logic
 
-Script: [`src/extract_kpi_from_jsonl.py`](../src/extract_kpi_from_jsonl.py)
+Script: [`src/step01_extract_kpi_from_jsonl.py`](../src/step01_extract_kpi_from_jsonl.py)
 
 This step turns the ESG-labeled sentence stream (output of the ViDeBERTa classifier in
 `data_processing/`) into **structured, numeric KPI observations** — one JSON file per
@@ -276,19 +276,19 @@ cp .env.example .env
 
 ```bash
 # Default: just the first document (cheap smoke test)
-python src/extract_kpi_from_jsonl.py
+python src/step01_extract_kpi_from_jsonl.py
 
 # A specific document (substring match against source_pdf)
-python src/extract_kpi_from_jsonl.py --doc AAA_Baocaothuongnien_2023
+python src/step01_extract_kpi_from_jsonl.py --doc AAA_Baocaothuongnien_2023
 
 # First N documents
-python src/extract_kpi_from_jsonl.py --limit-docs 3
+python src/step01_extract_kpi_from_jsonl.py --limit-docs 3
 
 # Everything
-python src/extract_kpi_from_jsonl.py --all
+python src/step01_extract_kpi_from_jsonl.py --all
 
 # Recall sweep — run every non-empty page, not just ESG-tagged ones
-python src/extract_kpi_from_jsonl.py --all --all-pages
+python src/step01_extract_kpi_from_jsonl.py --all --all-pages
 ```
 
 ### Flags

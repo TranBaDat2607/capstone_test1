@@ -1,6 +1,6 @@
 # Claim ↔ conduct cross-check — purpose, reason and logic
 
-Script: [`src/crosscheck_claims_vs_conduct.py`](../src/crosscheck_claims_vs_conduct.py)
+Script: [`src/step07_crosscheck_claims_vs_conduct.py`](../src/step07_crosscheck_claims_vs_conduct.py)
 (Step 6 / P4). System context: [`SYSTEM_DESIGN.md`](./SYSTEM_DESIGN.md) §6.
 
 This step runs **after** the temporal knowledge graph is built, resolved and loaded
@@ -47,7 +47,7 @@ namespaced `llm_suggested=true` so they can never be mistaken for extracted fact
 **Inputs**
 - `graph_output/resolved/resolved_graph.json` — the step-4 `{nodes, edges}` graph
   (index-referenced edges, provenance-tagged, one resolved issuer node).
-- `config/schema.json` — read via `load_schema_sets` (from `fix_invalid_triplets.py`) to
+- `config/schema.json` — read via `load_schema_sets` (from `step03_fix_invalid_triplets.py`) to
   check that every edge this step writes is **schema-legal** before it is emitted.
 - `.env` `GEMINI_API_KEY` — **only** if LLM adjudication is enabled (Section 4, 6b).
 
@@ -92,7 +92,7 @@ For each claim, the conduct pool is filtered by cheap, explainable signals befor
 1. **Same issuer** — the pool is the news-side conduct on the one resolved issuer node
    (guaranteed by step 4). No cross-company leakage.
 2. **Topic overlap** — VN-normalized token overlap (`name_tokens` from
-   `build_issuer_registry.py`) between the claim (its `description` **plus** its
+   `step04_build_issuer_registry.py`) between the claim (its `description` **plus** its
    `ClaimKeyword` terms) and each candidate's text. Issuer-name and generic tokens are
    stop-listed so overlap reflects the ESG *topic*, not the company name.
 3. **Temporal window** — a candidate's effective year must lie in
@@ -109,7 +109,7 @@ Candidate pairs are ranked by topic overlap **globally** and the top `--max-llm-
 is judged only from the two provided texts, treating news as independent conduct and
 preferring `irrelevant` over guessing, returning
 `{verdict: supports|contradicts|irrelevant, confidence: 0-1, rationale}` as structured
-output (the robust `response_schema` / `json_object` pattern from `extract_kpi_from_jsonl.py`).
+output (the robust `response_schema` / `json_object` pattern from `step01_extract_kpi_from_jsonl.py`).
 
 **Multi-provider with graceful fallback.** Adjudication is *optional and non-fatal*, and
 runs through a **provider cascade** (`--provider-order`, default `gemini,openai`):
@@ -256,19 +256,19 @@ written edge keeps advisory links separable from extracted facts.
 #    .env needs a working key for the chosen provider(s) (GEMINI_API_KEY and/or OPENAI_API_KEY).
 
 # 1. Offline preview — no API, no writes (recommended first)
-python src/crosscheck_claims_vs_conduct.py --dry-run
+python src/step07_crosscheck_claims_vs_conduct.py --dry-run
 
 # 2. Deterministic run — writes dossiers from structural + KPI signals only (no API)
-python src/crosscheck_claims_vs_conduct.py --no-llm
+python src/step07_crosscheck_claims_vs_conduct.py --no-llm
 
 # 3. Full run — gemini-2.5-flash primary, gpt-4o-mini fallback, concurrent, whole budget
-python src/crosscheck_claims_vs_conduct.py --max-llm-pairs 3200 --rate-limit 400 --max-workers 8
+python src/step07_crosscheck_claims_vs_conduct.py --max-llm-pairs 3200 --rate-limit 400 --max-workers 8
 
 # 3b. OpenAI only (skip the currently-blocked Gemini and its wasted 403s)
-python src/crosscheck_claims_vs_conduct.py --provider-order openai --max-llm-pairs 3200 --rate-limit 400
+python src/step07_crosscheck_claims_vs_conduct.py --provider-order openai --max-llm-pairs 3200 --rate-limit 400
 
 # 4. Optionally MERGE the advisory edges into Neo4j (llm_suggested=true)
-python src/crosscheck_claims_vs_conduct.py --to-neo4j
+python src/step07_crosscheck_claims_vs_conduct.py --to-neo4j
 ```
 
 ### Flags
@@ -297,10 +297,10 @@ the zero-API default.
 
 ### Follow-up (to light up the worked example — needs billing restored)
 ```bash
-python src/extract_triplet_from_jsonl.py -i data/interim/news_preprocessed/aaa_news_classified_preprocessed.jsonl \
+python src/step02_extract_triplet_from_jsonl.py -i data/interim/news_preprocessed/aaa_news_classified_preprocessed.jsonl \
     --source news --doc vietnamnet            # re-extract the tax-penalty article
-python src/fix_invalid_triplets.py && python src/resolve_entities.py --no-llm && python src/load_graph_to_neo4j.py --clear
-python src/crosscheck_claims_vs_conduct.py    # now a real Controversy/Penalty exists to contradict a claim
+python src/step03_fix_invalid_triplets.py && python src/step05_resolve_entities.py --no-llm && python src/step06_load_graph_to_neo4j.py --clear
+python src/step07_crosscheck_claims_vs_conduct.py    # now a real Controversy/Penalty exists to contradict a claim
 ```
 
 ---

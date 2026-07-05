@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Extract temporal ESG knowledge-graph triples from the page-level KPI JSONs
-written by `extract_kpi_from_jsonl.py`, mirroring
+written by `step01_extract_kpi_from_jsonl.py`, mirroring
 EmeraldMind/src/EmeraldKG/2-extract-triplet.py but:
 
   * page text is reconstructed from the same labeled JSONL step 1 reads
@@ -38,9 +38,9 @@ from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 
-# Reuse step-1 helpers. When run as `python src/extract_triplet_from_jsonl.py`
+# Reuse step-1 helpers. When run as `python src/step02_extract_triplet_from_jsonl.py`
 # Python puts src/ on sys.path automatically.
-from extract_kpi_from_jsonl import (
+from step01_extract_kpi_from_jsonl import (
     REPO_ROOT,
     build_page_text,
     load_pages_from_jsonl,

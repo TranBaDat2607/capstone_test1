@@ -38,7 +38,7 @@ repo and secrets, so it is never committed or pushed with this project.
 - **Two execution styles — do not mix them:**
   - `data_processing/` and `esg_news_crawler/` are **packages**, run as modules:
     `python -m data_processing.extract_esg`.
-  - `src/` scripts are **standalone files** run directly (`python src/extract_triplet_from_jsonl.py`);
+  - `src/` scripts are **standalone files** run directly (`python src/step02_extract_triplet_from_jsonl.py`);
     they import each other by module name relying on Python putting `src/` on `sys.path`.
     Run them from the repo root.
 - **Sentence-level traceability** (`source_pdf`, `page`, `sentence_index`) is preserved
@@ -76,40 +76,40 @@ Both feed the same `src/` graph-construction path and land in one temporal KG (s
 
 **C. Labeled JSONL → temporal knowledge graph (`src/`, the EmeraldKG port)**
 ```
-src/extract_kpi_from_jsonl.py    → kpi_output/<pdf_stem>_kpis/page_NNN_kpis.json
+src/step01_extract_kpi_from_jsonl.py    → kpi_output/<pdf_stem>_kpis/page_NNN_kpis.json
    (per page: Gemini 2.5 Flash w/ structured output → typed KPIObservation records,
     only pages with ≥1 esg=true sentence are sent; uses kpi_definitions_construction.json)
-src/extract_triplet_from_jsonl.py → graph_output/graphs/<pdf_stem>/page{N}.json  (+ _bugged.json, _malformed.txt)
+src/step02_extract_triplet_from_jsonl.py → graph_output/graphs/<pdf_stem>/page{N}.json  (+ _bugged.json, _malformed.txt)
    (per page: page text + page KPIs + config/schema.json → temporal triples → node/edge graph.
     --source report (default) = claim-side prompt; --source news = conduct-side prompt (Controversy/
     MediaReport/Penalty/observed KPIObservation); every node/edge stamped source_type=report|news)
-src/fix_invalid_triplets.py      → graph_output/validated/all_validated_triples.json (+ unfixable_triples.json)
+src/step03_fix_invalid_triplets.py      → graph_output/validated/all_validated_triples.json (+ unfixable_triples.json)
    (Phase 1 offline: swap reversed edge directions + schema-validate;
     Phase 2 LLM: batch-repair invalid triples; Phase 3: aggregate)
-src/build_issuer_registry.py     → config/issuer_registry.json                       (run-once bootstrap)
+src/step04_build_issuer_registry.py     → config/issuer_registry.json                       (run-once bootstrap)
    (drafts the reporting company's name variants → aliases / exclusions / needs_review;
     re-running preserves human edits, --force rebuilds; a human confirms needs_review)
-src/resolve_entities.py          → graph_output/resolved/resolved_graph.json (+ _stats.json)
+src/step05_resolve_entities.py          → graph_output/resolved/resolved_graph.json (+ _stats.json)
    (step 4: collapse duplicate entity nodes into canonical entities, keeping temporal history.
     Stage A deterministic identity_keys merge + FROZEN issuer anchor (issuer_registry.json);
     Stage B VN-aware blocking (normalized signature + gemini-embedding-001 cosine);
     Stage C gemini-2.5-flash adjudication on ambiguous pairs (budgeted); Stage D consolidate)
-src/load_graph_to_neo4j.py       → Neo4j (bolt://localhost:8687, db `neo4j`)            (step 5)
+src/step06_load_graph_to_neo4j.py       → Neo4j (bolt://localhost:8687, db `neo4j`)            (step 5)
    (load the resolved {nodes,edges} graph as a property graph — NO LLM. Nodes keyed by
     array index (entities already resolved; not re-deduped); edges keep temporal_metadata and
     MERGE on a temporal _edge_key so multi-year edges stay distinct; temporal_versions become
     supersedes version-node chains for supersedes-legal classes, else a JSON property)
-src/crosscheck_claims_vs_conduct.py → graph_output/crosscheck/<ticker>_claim_assessments.json   (step 6)
+src/step07_crosscheck_claims_vs_conduct.py → graph_output/crosscheck/<ticker>_claim_assessments.json   (step 6)
    (the analytical core: for each SustainabilityClaim, retrieve conduct-side candidates →
     LLM-adjudicate supports/contradicts/irrelevant → write verifiedBy / contradictedBy* edges.
     Multi-provider LLM cascade (--provider-order gemini,openai): gemini-2.5-flash primary,
     OpenAI gpt-4o-mini fallback. Self-verification guard drops company-own-domain "verify" edges.
     Emits advisory dossiers — NO greenwashing score/label. --dry-run / --no-llm / --to-neo4j)
-src/sync_crosscheck_to_neo4j.py  → Neo4j advisory layer                                        (step 6b)
+src/step08_sync_crosscheck_to_neo4j.py  → Neo4j advisory layer                                        (step 6b)
    (NO LLM — reuses the paid step-6 dossier. MERGEs assessment/caveats/signals onto claim nodes +
     llm_supports / llm_contradicts / llm_flagged_support evidence edges (incl. KPI contradictions
     the base schema can't express). Idempotent; --clear-advisory, --dry-run)
-src/report_claim_ledger.py       → stdout + graph_output/crosscheck/<ticker>_claim_ledger.md   (step 7)
+src/step09_report_claim_ledger.py       → stdout + graph_output/crosscheck/<ticker>_claim_ledger.md   (step 7)
    (presentation only — NO LLM, reads ONLY Neo4j (run step 6b first). Per-company claim ledger,
     signal-first (contradicted → supported → unverified), with the coverage caveat.
     --review-queue (contradiction + no verification), --assessment, --claim-id, --markdown)
@@ -117,8 +117,8 @@ src/report_claim_ledger.py       → stdout + graph_output/crosscheck/<ticker>_c
 
 The `src/` scripts share helpers by importing across files: later stages import
 `REPO_ROOT`, `build_page_text`, `load_pages_from_jsonl`, `RateLimiter`, `load_schema_sets`,
-`normalize_name`, etc. from the earlier ones (`extract_kpi_from_jsonl`,
-`extract_triplet_from_jsonl`, `fix_invalid_triplets`, `build_issuer_registry`). Changing a
+`normalize_name`, etc. from the earlier ones (`step01_extract_kpi_from_jsonl`,
+`step02_extract_triplet_from_jsonl`, `step03_fix_invalid_triplets`, `step04_build_issuer_registry`). Changing a
 shared helper's signature affects every downstream stage.
 
 **D. KPI definition builder (`kpi_build/`, run-once provenance pipeline)**
@@ -158,28 +158,28 @@ python -m esg_news_crawler.run --ticker AAA --limit 1
 python -m data_processing.preprocess_news                             # P1: → data/interim/news_preprocessed/ (date-normalize + drop boilerplate)
 
 # C. Labeled JSONL → temporal KG (run from repo root, in order)
-python src/extract_kpi_from_jsonl.py     -i <labeled.jsonl>            # → kpi_output/
-python src/extract_triplet_from_jsonl.py -i <report_labeled.jsonl>    # → graph_output/graphs/ (claim side; --source report default)
-python src/extract_triplet_from_jsonl.py -i <news_preprocessed.jsonl> --source news   # conduct side (stamps source_type=news)
-python src/fix_invalid_triplets.py                                    # → graph_output/validated/
-python src/build_issuer_registry.py                                   # → config/issuer_registry.json (run-once; then hand-confirm needs_review)
-python src/resolve_entities.py                                        # → graph_output/resolved/ (step 4: entity resolution)
-python src/load_graph_to_neo4j.py --dry-run                           # step 5: preview planned counts, no DB
+python src/step01_extract_kpi_from_jsonl.py     -i <labeled.jsonl>            # → kpi_output/
+python src/step02_extract_triplet_from_jsonl.py -i <report_labeled.jsonl>    # → graph_output/graphs/ (claim side; --source report default)
+python src/step02_extract_triplet_from_jsonl.py -i <news_preprocessed.jsonl> --source news   # conduct side (stamps source_type=news)
+python src/step03_fix_invalid_triplets.py                                    # → graph_output/validated/
+python src/step04_build_issuer_registry.py                                   # → config/issuer_registry.json (run-once; then hand-confirm needs_review)
+python src/step05_resolve_entities.py                                        # → graph_output/resolved/ (step 4: entity resolution)
+python src/step06_load_graph_to_neo4j.py --dry-run                           # step 5: preview planned counts, no DB
 docker compose up -d                                                 # start Neo4j on :8687 (then run neo4j/init.cypher once — see docs)
-python src/load_graph_to_neo4j.py --clear                            # → Neo4j (wipe + load; needs the instance running)
-python src/crosscheck_claims_vs_conduct.py --dry-run                 # step 6: preview claim↔conduct pairs, no LLM
-python src/crosscheck_claims_vs_conduct.py                           # → graph_output/crosscheck/ (advisory dossiers + linking edges)
-python src/sync_crosscheck_to_neo4j.py                              # step 6b: push dossiers into Neo4j advisory layer (no LLM)
-python src/report_claim_ledger.py                                   # step 7: render the AAA claim ledger FROM Neo4j (no LLM)
-python src/report_claim_ledger.py --review-queue --markdown         #   contradiction-no-verification queue + Markdown file
+python src/step06_load_graph_to_neo4j.py --clear                            # → Neo4j (wipe + load; needs the instance running)
+python src/step07_crosscheck_claims_vs_conduct.py --dry-run                 # step 6: preview claim↔conduct pairs, no LLM
+python src/step07_crosscheck_claims_vs_conduct.py                           # → graph_output/crosscheck/ (advisory dossiers + linking edges)
+python src/step08_sync_crosscheck_to_neo4j.py                              # step 6b: push dossiers into Neo4j advisory layer (no LLM)
+python src/step09_report_claim_ledger.py                                   # step 7: render the AAA claim ledger FROM Neo4j (no LLM)
+python src/step09_report_claim_ledger.py --review-queue --markdown         #   contradiction-no-verification queue + Markdown file
 
 # Useful src/ flags: --doc <substr>, --limit-docs N, --all (scope);
 #   --all-pages (don't restrict to ESG pages); --dry-run (fix/resolve/load steps: offline only, no LLM/DB/writes);
 #   resolve: --no-llm (Stages A+B.1 only), --similarity-threshold, --max-llm-pairs (budget the LLM adjudication);
 #   load: --clear (wipe first), --no-versions (canonical only), --database, --strict (env: NEO4J_URI/USER/PASSWORD);
 #   crosscheck: --no-llm (deterministic signals only), --max-llm-pairs, --provider-order gemini,openai, --to-neo4j;
-#   sync (sync_crosscheck_to_neo4j.py): --clear-advisory, --dry-run;
-#   ledger (report_claim_ledger.py, Neo4j-only): --review-queue, --assessment, --claim-id, --limit, --markdown
+#   sync (step08_sync_crosscheck_to_neo4j.py): --clear-advisory, --dry-run;
+#   ledger (step09_report_claim_ledger.py, Neo4j-only): --review-queue, --assessment, --claim-id, --limit, --markdown
 ```
 
 There is no automated test suite or linter configured. `test/` and `notebooks/`

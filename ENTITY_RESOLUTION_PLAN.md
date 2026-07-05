@@ -1,22 +1,22 @@
 # Entity Resolution (Step 4) — Implementation Plan
 
-Build checklist for `src/resolve_entities.py`, the next stage after
-[`src/fix_invalid_triplets.py`](src/fix_invalid_triplets.py). This file is the
+Build checklist for `src/step05_resolve_entities.py`, the next stage after
+[`src/step03_fix_invalid_triplets.py`](src/step03_fix_invalid_triplets.py). This file is the
 *engineering* plan; the *explanatory* writeup lives in
 [`docs/ENTITY_RESOLUTION.md`](docs/ENTITY_RESOLUTION.md).
 
-> Status: **implemented.** Two scripts — `src/build_issuer_registry.py` (issuer-registry
-> bootstrap) and `src/resolve_entities.py` (the resolver). Full design writeup in
+> Status: **implemented.** Two scripts — `src/step04_build_issuer_registry.py` (issuer-registry
+> bootstrap) and `src/step05_resolve_entities.py` (the resolver). Full design writeup in
 > [`docs/ENTITY_RESOLUTION.md`](docs/ENTITY_RESOLUTION.md).
 >
 > **As-built deltas from the original sketch below:**
 > - The issuer anchor is a **bootstrapped registry** (`config/issuer_registry.json`), not a
->   raw xlsx-name match: `build_issuer_registry.py` auto-classifies each Organization name into
+>   raw xlsx-name match: `step04_build_issuer_registry.py` auto-classifies each Organization name into
 >   `aliases` / `exclusions` / `needs_review` from structural (subject-of-report-edge counts) +
 >   lexical signals; a human confirms `needs_review`. This was required because AAA's official
 >   name isn't even among its top variants (it was renamed) and `An Phát Holdings` is a separate
 >   listed entity. The resolver merges aliases into one **frozen** issuer cluster.
-> - The entity/observation split is declared in `resolve_entities.py` (`OBSERVATION_CLASSES`);
+> - The entity/observation split is declared in `step05_resolve_entities.py` (`OBSERVATION_CLASSES`);
 >   only `identity_keys` come from `schema.json` (the schema has no observation flag).
 > - Default `--similarity-threshold` is **0.92** (short ESG names → ~136k candidate pairs at
 >   0.86); deterministic stages A + B.1 carry the load, `--max-llm-pairs` caps Stage-C cost.
@@ -29,7 +29,7 @@ Build checklist for `src/resolve_entities.py`, the next stage after
 ## 1. Context / problem
 
 Per-page triple extraction emits the **same real-world entity once per page it is
-mentioned on**. After `fix_invalid_triplets.py` flattens 13 AAA annual reports into
+mentioned on**. After `step03_fix_invalid_triplets.py` flattens 13 AAA annual reports into
 one `all_validated_triples.json`, the issuer "An Phát" appears as dozens of duplicate
 `Organization` nodes — identical Vietnamese strings differing only by `valid_from`, an
 English-language variant, and OCR-garbled variants (`MÔI TRƢỜNG`). Entity resolution
@@ -103,12 +103,12 @@ graph_output/resolved/
 
 ---
 
-## 4. Module layout (`src/resolve_entities.py`)
+## 4. Module layout (`src/step05_resolve_entities.py`)
 
 **Reuse (import, don't re-implement):**
-- `REPO_ROOT` from `extract_kpi_from_jsonl`
-- `RateLimiter` from `extract_triplet_from_jsonl`
-- `load_schema_sets`, `validate_triple` from `fix_invalid_triplets`
+- `REPO_ROOT` from `step01_extract_kpi_from_jsonl`
+- `RateLimiter` from `step02_extract_triplet_from_jsonl`
+- `load_schema_sets`, `validate_triple` from `step03_fix_invalid_triplets`
 
 **New functions:**
 - `load_identity_keys(schema)` → `{class: [keys]}`, plus entity/observation class sets
@@ -134,7 +134,7 @@ the schema rather than the two hardcoded sets EmeraldKG ships.
 ## 6. CLI & defaults
 
 ```bash
-python src/resolve_entities.py \
+python src/step05_resolve_entities.py \
   -i graph_output/validated/all_validated_triples.json \
   -s config/schema.json \
   -o graph_output/resolved/
@@ -178,10 +178,10 @@ python src/resolve_entities.py \
 
 ```bash
 # Free pass only — how much does identity-key + ticker anchor merge on its own?
-python src/resolve_entities.py --dry-run
+python src/step05_resolve_entities.py --dry-run
 
 # Full run on AAA
-python src/resolve_entities.py
+python src/step05_resolve_entities.py
 ```
 
 Eyeball checks on `graph_output/resolved/`:

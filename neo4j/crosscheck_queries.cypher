@@ -3,7 +3,7 @@
 //
 // Run against the step-5 graph (Neo4j Browser / cypher-shell, bolt://localhost:8687)
 // AFTER pushing the cross-check dossiers into Neo4j:
-//     python src/sync_crosscheck_to_neo4j.py
+//     python src/step08_sync_crosscheck_to_neo4j.py
 //
 // The sync writes an ADVISORY LAYER on top of the extracted graph:
 //   * on each SustainabilityClaim: c.assessment (appears_supported | appears_contradicted |

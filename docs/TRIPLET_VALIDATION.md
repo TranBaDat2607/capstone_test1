@@ -1,9 +1,9 @@
 # Triplet validation & repair — purpose, reason and logic
 
-Script: [`src/fix_invalid_triplets.py`](../src/fix_invalid_triplets.py)
+Script: [`src/step03_fix_invalid_triplets.py`](../src/step03_fix_invalid_triplets.py)
 
 This step takes the per-page temporal graphs produced by
-[`extract_triplet_from_jsonl.py`](../src/extract_triplet_from_jsonl.py) and turns
+[`step02_extract_triplet_from_jsonl.py`](../src/step02_extract_triplet_from_jsonl.py) and turns
 them into a single **clean, schema-conformant triple list** at
 `graph_output/validated/all_validated_triples.json`, ready to be consumed by
 entity resolution (step 4). Triples that can't be repaired are kept in
@@ -152,7 +152,7 @@ computation.
 
 The script does `rglob("page*.json")` under `--input-dir` (default
 `graph_output/graphs/`). The recursive glob picks up every stem in one go, so
-running `python src/fix_invalid_triplets.py` covers all 13 annual reports at
+running `python src/step03_fix_invalid_triplets.py` covers all 13 annual reports at
 once with no flags needed.
 
 Each file is auto-classified:
@@ -257,7 +257,7 @@ malformations step 2's cleaner handles.
 ### 3.6 Rate limiting
 
 We reuse `RateLimiter` from
-[`extract_triplet_from_jsonl.py`](../src/extract_triplet_from_jsonl.py).
+[`step02_extract_triplet_from_jsonl.py`](../src/step02_extract_triplet_from_jsonl.py).
 `fix_batch_with_llm` calls `rate_limiter.wait_if_needed(0)` before every
 `generate_content`, so batches space themselves to honor `--rate-limit` (default
 10 RPM, matching the Gemini free tier). EmeraldMind's original used a fixed
@@ -351,16 +351,16 @@ The default `--input-dir` is `graph_output/graphs/`, populated by step 2.
 
 ```bash
 # Default: validate everything under graph_output/graphs/
-python src/fix_invalid_triplets.py
+python src/step03_fix_invalid_triplets.py
 
 # Just see the counts, don't spend any tokens
-python src/fix_invalid_triplets.py --dry-run
+python src/step03_fix_invalid_triplets.py --dry-run
 
 # Smaller batches if a single batch is timing out
-python src/fix_invalid_triplets.py --batch-size 10
+python src/step03_fix_invalid_triplets.py --batch-size 10
 
 # Paid Tier 1: crank the throttle
-python src/fix_invalid_triplets.py --rate-limit 1000
+python src/step03_fix_invalid_triplets.py --rate-limit 1000
 ```
 
 ### Flags

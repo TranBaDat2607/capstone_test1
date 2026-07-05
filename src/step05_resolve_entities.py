@@ -22,7 +22,7 @@ Vietnamese / greenwashing setting (see docs/ENTITY_RESOLUTION.md). The pipeline:
   Stage D  consolidate clusters -> temporal_versions; deterministic canonical;
            year-aware edge rewiring (keeps multi-year edges distinct)
 
-Run from the repo root:  python src/resolve_entities.py
+Run from the repo root:  python src/step05_resolve_entities.py
 Reuses helpers from the earlier stages; loads .env (GEMINI_API_KEY) at the repo root.
 """
 
@@ -43,10 +43,10 @@ from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 
-from extract_kpi_from_jsonl import REPO_ROOT
-from extract_triplet_from_jsonl import RateLimiter
-from fix_invalid_triplets import load_schema_sets
-from build_issuer_registry import normalize_name
+from step01_extract_kpi_from_jsonl import REPO_ROOT
+from step02_extract_triplet_from_jsonl import RateLimiter
+from step03_fix_invalid_triplets import load_schema_sets
+from step04_build_issuer_registry import normalize_name
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -549,7 +549,7 @@ def main() -> None:
     if args.dry_run:
         args.no_llm = True
     if not args.input.exists():
-        logger.error(f"Input not found: {args.input} (run fix_invalid_triplets.py first)")
+        logger.error(f"Input not found: {args.input} (run step03_fix_invalid_triplets.py first)")
         return
     if not args.schema.exists():
         logger.error(f"Schema not found: {args.schema}")

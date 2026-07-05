@@ -32,7 +32,7 @@ Design decisions (docs/SYSTEM_DESIGN.md, plan glistening-hopping-galaxy):
   * deterministic retrieval by default; embeddings (--embed) are optional (the current
     Gemini embedding endpoint may be billing-blocked and the candidate pool is tiny).
 
-Run from the repo root:  python src/crosscheck_claims_vs_conduct.py --dry-run
+Run from the repo root:  python src/step07_crosscheck_claims_vs_conduct.py --dry-run
 Reuses REPO_ROOT / RateLimiter / load_schema_sets / normalize_name from earlier stages;
 loads .env (GEMINI_API_KEY) at the repo root.
 """
@@ -53,10 +53,10 @@ from typing import Any, Dict, List, Optional, Set, Tuple
 
 from dotenv import load_dotenv
 
-from extract_kpi_from_jsonl import REPO_ROOT
-from extract_triplet_from_jsonl import RateLimiter
-from fix_invalid_triplets import load_schema_sets
-from build_issuer_registry import normalize_name, name_tokens
+from step01_extract_kpi_from_jsonl import REPO_ROOT
+from step02_extract_triplet_from_jsonl import RateLimiter
+from step03_fix_invalid_triplets import load_schema_sets
+from step04_build_issuer_registry import normalize_name, name_tokens
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -710,7 +710,7 @@ def _mk_edge(subj: int, pred: str, obj: int, verdict: str, conf: float, why: str
 
 def _write_back_neo4j(new_edges: List[Dict[str, Any]], args: argparse.Namespace) -> None:
     """Optional: MERGE the advisory edges into Neo4j, matching nodes on the loader's
-    `_node_key = "n{index}"` / `:_Entity` convention (load_graph_to_neo4j.py)."""
+    `_node_key = "n{index}"` / `:_Entity` convention (step06_load_graph_to_neo4j.py)."""
     try:
         from neo4j import GraphDatabase
     except ImportError:
@@ -764,7 +764,7 @@ def main() -> None:
     if args.dry_run:
         args.no_llm = True
     if not args.input.exists():
-        logger.error(f"Input not found: {args.input} (run resolve_entities.py first)")
+        logger.error(f"Input not found: {args.input} (run step05_resolve_entities.py first)")
         return
     if not args.schema.exists():
         logger.error(f"Schema not found: {args.schema}")

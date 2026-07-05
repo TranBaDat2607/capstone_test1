@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Validate and repair the temporal-graph triples produced by
-`extract_triplet_from_jsonl.py`, mirroring EmeraldMind/src/EmeraldKG/3-fix-invalid-triplet.py
+`step02_extract_triplet_from_jsonl.py`, mirroring EmeraldMind/src/EmeraldKG/3-fix-invalid-triplet.py
 with three adaptations:
 
   * single GEMINI_API_KEY client (instead of the GEMINI_API_KEY_1..7 pool).
@@ -42,10 +42,10 @@ from typing import Any, Dict, List, Optional, Set, Tuple
 from dotenv import load_dotenv
 from google import genai
 
-# Reuse helpers from earlier pipeline steps. When run as `python src/fix_invalid_triplets.py`
+# Reuse helpers from earlier pipeline steps. When run as `python src/step03_fix_invalid_triplets.py`
 # Python adds src/ to sys.path automatically.
-from extract_kpi_from_jsonl import REPO_ROOT
-from extract_triplet_from_jsonl import RateLimiter
+from step01_extract_kpi_from_jsonl import REPO_ROOT
+from step02_extract_triplet_from_jsonl import RateLimiter
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)

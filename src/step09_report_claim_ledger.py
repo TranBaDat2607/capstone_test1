@@ -3,22 +3,22 @@
 System context: docs/SYSTEM_DESIGN.md §9 and docs/CLAIM_LEDGER.md.
 
 This is the final presentation stage. It reads the advisory cross-check layer that
-`src/sync_crosscheck_to_neo4j.py` wrote into Neo4j (claim `assessment`/`caveats`/`signals`
+`src/step08_sync_crosscheck_to_neo4j.py` wrote into Neo4j (claim `assessment`/`caveats`/`signals`
 props + `llm_supports` / `llm_contradicts` / `llm_flagged_support` evidence edges) and renders
 a human-readable claim ledger. It makes **no** LLM call and reads **only** from Neo4j — the
 JSON dossier is no longer touched here (it lives one step upstream, in the sync).
 
 Prereq: run the sync once (free, no tokens):
-    python src/sync_crosscheck_to_neo4j.py
+    python src/step08_sync_crosscheck_to_neo4j.py
 
 Non-negotiable framing (SYSTEM_DESIGN §1.1): evidence + an explicitly advisory opinion,
 never a greenwashing score or verdict.
 
 Run from the repo root:
-    python src/report_claim_ledger.py                       # AAA ledger (contradicted + supported)
-    python src/report_claim_ledger.py --review-queue        # contradiction, no independent verification
-    python src/report_claim_ledger.py --assessment all --markdown
-    python src/report_claim_ledger.py --claim-id AAA_SC_001
+    python src/step09_report_claim_ledger.py                       # AAA ledger (contradicted + supported)
+    python src/step09_report_claim_ledger.py --review-queue        # contradiction, no independent verification
+    python src/step09_report_claim_ledger.py --assessment all --markdown
+    python src/step09_report_claim_ledger.py --claim-id AAA_SC_001
 """
 
 import argparse
@@ -37,7 +37,7 @@ logger = logging.getLogger(__name__)
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_OUT_DIR = REPO_ROOT / "graph_output" / "crosscheck"   # markdown output location only
 
-# Neo4j defaults — match src/load_graph_to_neo4j.py + the sync.
+# Neo4j defaults — match src/step06_load_graph_to_neo4j.py + the sync.
 NEO4J_URI_DEFAULT = "bolt://localhost:8687"
 NEO4J_USER_DEFAULT = "greenwashing"
 NEO4J_PASSWORD_DEFAULT = "nammovuivui"
@@ -145,7 +145,7 @@ def load_from_neo4j(driver, database: Optional[str], ticker: str):
             t=t))
         if not claim_rows:
             logger.error(f"No claims with an assessment for ticker '{t}' in Neo4j. "
-                         f"Run: python src/sync_crosscheck_to_neo4j.py --ticker {t}")
+                         f"Run: python src/step08_sync_crosscheck_to_neo4j.py --ticker {t}")
             sys.exit(1)
 
         edge_rows = list(s.run(
@@ -218,7 +218,7 @@ def render_header_text(h: Dict[str, Any]) -> str:
         f"    {COVERAGE_CAVEAT}",
         "  Advisory only — no greenwashing score or verdict; each assessment is an "
         "LLM-assisted opinion for human review.",
-        f"  (source: Neo4j advisory layer — run src/sync_crosscheck_to_neo4j.py to refresh)",
+        f"  (source: Neo4j advisory layer — run src/step08_sync_crosscheck_to_neo4j.py to refresh)",
         "=" * 88,
     ])
 
@@ -378,7 +378,7 @@ def main() -> None:
     _force_utf8_stdout()
     p = argparse.ArgumentParser(
         description="Step 7 / P5 — render the per-company claim ledger from the Neo4j advisory "
-                    "layer (read-only; run src/sync_crosscheck_to_neo4j.py first).")
+                    "layer (read-only; run src/step08_sync_crosscheck_to_neo4j.py first).")
     p.add_argument("--ticker", default="AAA", help="Issuer to render (default AAA).")
     p.add_argument("--assessment",
                    choices=["appears_contradicted", "appears_supported",

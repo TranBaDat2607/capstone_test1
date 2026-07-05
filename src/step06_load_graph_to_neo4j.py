@@ -26,7 +26,7 @@ allows it: classes that have a legal `supersedes` self-edge get a version-node c
 (`canonical -[:supersedes]-> newest -> ... -> oldest`); every other class keeps its
 history as a JSON-string property so no schema-illegal edge is emitted.
 
-Run from the repo root:  python src/load_graph_to_neo4j.py
+Run from the repo root:  python src/step06_load_graph_to_neo4j.py
 Connection defaults target a dedicated Neo4j Community instance; override via .env
 (NEO4J_URI / NEO4J_USER / NEO4J_PASSWORD) or CLI flags. Reuses REPO_ROOT and
 load_schema_sets from the earlier stages.
@@ -46,8 +46,8 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from dotenv import load_dotenv
 
-from extract_kpi_from_jsonl import REPO_ROOT
-from fix_invalid_triplets import load_schema_sets
+from step01_extract_kpi_from_jsonl import REPO_ROOT
+from step03_fix_invalid_triplets import load_schema_sets
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
