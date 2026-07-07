@@ -173,6 +173,9 @@ python src/step08_sync_crosscheck_to_neo4j.py                              # ste
 python src/step09_report_claim_ledger.py                                   # step 7: render the AAA claim ledger FROM Neo4j (no LLM)
 python src/step09_report_claim_ledger.py --review-queue --markdown         #   contradiction-no-verification queue + Markdown file
 
+# Demo UI (web front-end for step 7; reads the same Neo4j advisory layer, no LLM — see docs/DEMO_UI.md)
+streamlit run app.py                                                       # company-code claim-ledger explorer at http://localhost:8501
+
 # Useful src/ flags: --doc <substr>, --limit-docs N, --all (scope);
 #   --all-pages (don't restrict to ESG pages); --dry-run (fix/resolve/load steps: offline only, no LLM/DB/writes);
 #   resolve: --no-llm (Stages A+B.1 only), --similarity-threshold, --max-llm-pairs (budget the LLM adjudication);
@@ -199,6 +202,7 @@ before modifying a stage:
 `GRAPH_LOAD_NEO4J.md` (step 5 — Neo4j load; also a redesign),
 `CLAIM_CONDUCT_CROSSCHECK.md` (step 6 — claim↔conduct cross-check, the analytical core),
 `CLAIM_LEDGER.md` (step 6b sync + step 7 — dossier → Neo4j advisory layer, then the Neo4j-only claim ledger + analyst Cypher),
+`DEMO_UI.md` (the Streamlit company-code claim-ledger explorer, `app.py` — how to run the demo),
 `KPI_DEFINITIONS_CONSTRUCTION_BUILD.md`, `VIETNAM_IMPROVEMENT_PLAN.md`. The root
 `ENTITY_RESOLUTION_PLAN.md` is the step-4 engineering checklist. `README.md` (root),
 `esg_news_crawler/README.md`, and `kpi_build/README.md` cover their respective subsystems.
