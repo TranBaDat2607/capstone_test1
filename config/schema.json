@@ -95,6 +95,7 @@
         "baseline_year",
         "source_id",
         "company",
+        "date_uncertain",
         "valid_from",
         "valid_to",
         "is_current"
@@ -218,6 +219,7 @@
         "controversy_id",
         "description",
         "date",
+        "date_uncertain",
         "source",
         "valid_from",
         "valid_to",
@@ -232,6 +234,7 @@
         "description",
         "amount",
         "date",
+        "date_uncertain",
         "valid_from",
         "valid_to",
         "is_current"
@@ -245,6 +248,7 @@
         "title",
         "publisher",
         "date",
+        "date_uncertain",
         "valid_from",
         "valid_to",
         "is_current"

@@ -253,10 +253,20 @@ NEWS_GRAPH_PROMPT_TEMPLATE = (
     "**For ALL Nodes:** valid_from (YYYY-MM-DD or YYYY), valid_to (or null), is_current (bool).\n"
     "**For ALL Edges:** a temporal_metadata object with valid_from, valid_to (or null), recorded_at.\n\n"
     "**Temporal Inference Rules:**\n"
-    "1. Use the event date reported in the article for valid_from (e.g. the penalty date).\n"
-    "2. If only the publish date {publish_date} is known, use it as valid_from / recorded_at.\n"
+    "1. Use the event's OWN date/period if the article states it explicitly (an exact date, or a "
+    "quarter/period tied to an explicit year, e.g. 'quy 2/2025' or 'nam 2023') for valid_from, "
+    "and set date_uncertain=false - the text itself anchors the date, independent of publish date.\n"
+    "2. If the article does NOT state the event's own date/period explicitly (e.g. 'quy 2' with no "
+    "year given, or a vague 'gan day'/'recently'), do NOT assume it means the publish year - fall "
+    "back to the publish date {publish_date} for valid_from / recorded_at, and set "
+    "date_uncertain=true so downstream consumers know this date is a proxy, not a confirmed event "
+    "date. When genuinely unsure whether the article stated an explicit period, prefer "
+    "date_uncertain=true (never guess silently).\n"
     "3. Ongoing/most-recent facts: valid_to=null, is_current=true; past events: is_current=false.\n"
-    "4. For observed numbers, use the reported year as valid_from.\n\n"
+    "4. For observed numbers, use the reported year as valid_from, applying the same "
+    "date_uncertain rule as #1/#2 (explicit year in text -> false; inferred/assumed -> true).\n"
+    "5. Controversy, Penalty, MediaReport, and KPIObservation nodes MUST include a boolean "
+    "date_uncertain property set per rules #1/#2/#4 above.\n\n"
     "------------------\n"
     "## STRICT EXTRACTION RULES\n"
     "------------------\n"
@@ -266,12 +276,13 @@ NEWS_GRAPH_PROMPT_TEMPLATE = (
     "classes from the schema, and each entity's properties are a subset of that class's declared\n"
     "keys (INCLUDING valid_from, valid_to, is_current). Do not add extra keys, comments, or prose.\n\n"
     "-----------------\n"
-    "POSITIVE EXAMPLE (independent news reporting a penalty)\n"
+    "POSITIVE EXAMPLE (independent news reporting a penalty, explicit event date -> date_uncertain=false)\n"
     "-----------------\n"
     "[{{\n"
     '  "subject": {{"class": "MediaReport", "properties": {{"report_id": "vietnamnet_2024_aaa_tax", '
     '"title": "Khai sai thue, Nhua An Phat Xanh bi xu ly hon 1,7 ty dong", "publisher": "vietnamnet.vn", '
-    '"date": "2024-08-14", "valid_from": "2024-08-14", "valid_to": null, "is_current": true}}}},\n'
+    '"date": "2024-08-14", "date_uncertain": false, "valid_from": "2024-08-14", "valid_to": null, '
+    '"is_current": true}}}},\n'
     '  "predicate": "mentionsOrganization",\n'
     '  "object": {{"class": "Organization", "properties": {{"name": "CTCP Nhua An Phat Xanh", '
     '"valid_from": "2024-01-01", "valid_to": null, "is_current": true}}}},\n'
@@ -283,8 +294,22 @@ NEWS_GRAPH_PROMPT_TEMPLATE = (
     '  "predicate": "subjectToPenalty",\n'
     '  "object": {{"class": "Penalty", "properties": {{"penalty_id": "aaa_tax_2024", '
     '"description": "Tax mis-declaration penalty", "amount": "1.7 billion VND", "date": "2024-08-14", '
-    '"valid_from": "2024-08-14", "valid_to": null, "is_current": true}}}},\n'
+    '"date_uncertain": false, "valid_from": "2024-08-14", "valid_to": null, "is_current": true}}}},\n'
     '  "temporal_metadata": {{"valid_from": "2024-08-14", "valid_to": null, "recorded_at": "{year}-01-01"}}\n'
+    "}}]\n\n"
+    "-----------------\n"
+    "UNCERTAIN-DATE EXAMPLE (article says only \"quy 2\" with NO year stated for that figure -> "
+    "must NOT assume it means the publish year; fall back to publish date and flag it)\n"
+    "-----------------\n"
+    "[{{\n"
+    '  "subject": {{"class": "Organization", "properties": {{"name": "CTCP Nhua An Phat Xanh", '
+    '"valid_from": "2024-01-01", "valid_to": null, "is_current": true}}}},\n'
+    '  "predicate": "reportsKPI",\n'
+    '  "object": {{"class": "KPIObservation", "properties": {{"kpi_type": "profit", '
+    '"title": "Loi nhuan quy 2 tang truong 24.6 phan tram", "value": 24.6, "unit": "percent", "kind": "achieved", '
+    '"direction": "increase", "year": {year}, "source_id": "doanhnhan_baophapluat_20260614", '
+    '"date_uncertain": true, "valid_from": "{publish_date}", "valid_to": null, "is_current": true}}}},\n'
+    '  "temporal_metadata": {{"valid_from": "{publish_date}", "valid_to": null, "recorded_at": "{year}-01-01"}}\n'
     "}}]\n\n"
     "-----------------\n"
     "BEGIN EXTRACTION\n"

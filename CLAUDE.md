@@ -102,9 +102,11 @@ src/step06_load_graph_to_neo4j.py       → Neo4j (bolt://localhost:8687, db `ne
 src/step07_crosscheck_claims_vs_conduct.py → graph_output/crosscheck/<ticker>_claim_assessments.json   (step 6)
    (the analytical core: for each SustainabilityClaim, retrieve conduct-side candidates →
     LLM-adjudicate supports/contradicts/irrelevant → write verifiedBy / contradictedBy* edges.
-    Multi-provider LLM cascade (--provider-order gemini,openai): gemini-2.5-flash primary,
-    OpenAI gpt-4o-mini fallback. Self-verification guard drops company-own-domain "verify" edges.
-    Emits advisory dossiers — NO greenwashing score/label. --dry-run / --no-llm / --to-neo4j)
+    LLM adjudication is MANDATORY (no deterministic fallback) — multi-provider cascade
+    (--provider-order gemini,openai): gemini-2.5-flash primary, OpenAI gpt-4o-mini fallback;
+    aborts up front if neither provider is available. Self-verification guard drops
+    company-own-domain "verify" edges. Emits advisory dossiers — NO greenwashing score/label.
+    --dry-run / --to-neo4j)
 src/step08_sync_crosscheck_to_neo4j.py  → Neo4j advisory layer                                        (step 6b)
    (NO LLM — reuses the paid step-6 dossier. MERGEs assessment/caveats/signals onto claim nodes +
     llm_supports / llm_contradicts / llm_flagged_support evidence edges (incl. KPI contradictions
@@ -140,6 +142,11 @@ labels. Key invariants the `src/` validation relies on:
   entities are versioned only when properties change (linked via `supersedes` edges).
 - An edge label may appear with **multiple legal (source_class, target_class) pairs**;
   the validator treats any matching pair as valid and auto-swaps reversed directions.
+- News-derived observation classes (`KPIObservation`, `Controversy`, `Penalty`,
+  `MediaReport`) carry a required `date_uncertain` bool: `false` when the article states
+  an explicit date/period for that fact, `true` when step02's news prompt had to fall
+  back to the article's publish date as a proxy (never silently assume the publish year).
+  step07 surfaces this as a caveat on any dossier whose evidence includes an uncertain date.
 See `docs/SCHEMA_EXPLAINED.md` for the rationale.
 
 ## Common commands
@@ -167,7 +174,7 @@ python src/step05_resolve_entities.py                                        # �
 python src/step06_load_graph_to_neo4j.py --dry-run                           # step 5: preview planned counts, no DB
 docker compose up -d                                                 # start Neo4j on :8687 (then run neo4j/init.cypher once — see docs)
 python src/step06_load_graph_to_neo4j.py --clear                            # → Neo4j (wipe + load; needs the instance running)
-python src/step07_crosscheck_claims_vs_conduct.py --dry-run                 # step 6: preview claim↔conduct pairs, no LLM
+python src/step07_crosscheck_claims_vs_conduct.py --dry-run                 # step 6: preview claim↔conduct pairs (runs LLM, writes nothing)
 python src/step07_crosscheck_claims_vs_conduct.py                           # → graph_output/crosscheck/ (advisory dossiers + linking edges)
 python src/step08_sync_crosscheck_to_neo4j.py                              # step 6b: push dossiers into Neo4j advisory layer (no LLM)
 python src/step09_report_claim_ledger.py                                   # step 7: render the AAA claim ledger FROM Neo4j (no LLM)
@@ -180,7 +187,7 @@ streamlit run app.py                                                       # com
 #   --all-pages (don't restrict to ESG pages); --dry-run (fix/resolve/load steps: offline only, no LLM/DB/writes);
 #   resolve: --no-llm (Stages A+B.1 only), --similarity-threshold, --max-llm-pairs (budget the LLM adjudication);
 #   load: --clear (wipe first), --no-versions (canonical only), --database, --strict (env: NEO4J_URI/USER/PASSWORD);
-#   crosscheck: --no-llm (deterministic signals only), --max-llm-pairs, --provider-order gemini,openai, --to-neo4j;
+#   crosscheck: LLM adjudication is mandatory (no --no-llm); --max-llm-pairs, --provider-order gemini,openai, --to-neo4j;
 #   sync (step08_sync_crosscheck_to_neo4j.py): --clear-advisory, --dry-run;
 #   ledger (step09_report_claim_ledger.py, Neo4j-only): --review-queue, --assessment, --claim-id, --limit, --markdown
 ```

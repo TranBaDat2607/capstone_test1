@@ -18,17 +18,19 @@ the graph, producing advisory evidence links — no ground truth, no accuracy cl
 Pipeline (mirrors §6):
   6a  retrieve conduct candidates per claim   — same issuer + VN topic overlap +
       temporal window (+ optional embedding rank behind --embed)
-  6b  adjudicate each (claim, candidate) pair  — gemini-2.5-flash structured output;
-      optional, budgeted (--max-llm-pairs), degrades gracefully on 403 / --no-llm
+  6b  adjudicate each (claim, candidate) pair  — REQUIRED. gemini-2.5-flash structured
+      output, falling back to gpt-4o-mini (--provider-order); the run aborts up front
+      if no provider is available — there is no deterministic fallback.
   6c  write schema-legal linking edges         — verifiedBy / contradictedBy /
       contradictedByMedia, each stamped llm_suggested=true (attributable, re-runnable)
   6c-guard  self-verification guard            — a company-owned domain never creates
       a verifiedBy edge (independence, §6.4)
-  6d  deterministic signals                    — structural contradiction + KPI gap
-  6e  dossier + advisory assessment            — evidence + rationale + caveats
+  6d  dossier + advisory assessment            — evidence + rationale + caveats
 
 Design decisions (docs/SYSTEM_DESIGN.md, plan glistening-hopping-galaxy):
-  * offline-first: deterministic signals ALWAYS run; the LLM is opt-in and non-fatal.
+  * LLM-only: adjudication is mandatory. Quota/billing limits are managed via
+    --max-llm-pairs and the --provider-order gemini,openai cascade, not by falling
+    back to a deterministic-only mode.
   * deterministic retrieval by default; embeddings (--embed) are optional (the current
     Gemini embedding endpoint may be billing-blocked and the candidate pool is tiny).
 
@@ -376,7 +378,7 @@ class Adjudicator:
         if self.enabled:
             logger.info(f"Adjudicator ready: providers = {[p.name for p in self.providers]}")
         else:
-            logger.warning("No LLM provider available — deterministic-only.")
+            logger.warning("No LLM provider available.")
 
     def adjudicate(self, claim_text: str, evidence_text: str, evidence_meta: str) -> Optional[Dict[str, Any]]:
         if not self.enabled:
@@ -416,59 +418,6 @@ class Adjudicator:
 
 
 # --------------------------------------------------------------------------- #
-# Deterministic signals (§6.5).
-# --------------------------------------------------------------------------- #
-def structural_contradiction(g: Graph, claim_idx: int, issuer_idx: int,
-                             new_contradictions: List[int]) -> bool:
-    """A claim with contradiction evidence but no INDEPENDENT verification in-graph.
-    Uses newly-adjudicated contradictions plus any pre-existing contradictedBy* edges;
-    report-side verifiedBy does not count as independent verification (§6.4)."""
-    has_contra = bool(new_contradictions)
-    for pred, obj in g.out[claim_idx]:
-        if pred in ("contradictedBy", "contradictedByMedia"):
-            has_contra = True
-    return has_contra
-
-
-def build_kpi_gaps(g: Graph, report_targets: List[int],
-                   news_observed: List[int]) -> List[Dict[str, Any]]:
-    """Precompute adverse (report target, news observed) KPI pairs ONCE. Strict on purpose
-    (§6.5 — a complementary signal, never a verdict): same non-generic kpi_type and >=2
-    shared title tokens, with the observed value moving opposite to the target's direction.
-    Sparse by nature; each gap carries its token set for cheap per-claim lookup."""
-    obs = [(oi, props(g.nodes[oi]), topic_tokens(node_text(g.nodes[oi]))) for oi in news_observed]
-    gaps: List[Dict[str, Any]] = []
-    for ti in report_targets:
-        tp = props(g.nodes[ti])
-        direction = str(tp.get("direction", ""))
-        tv, tkind = tp.get("value"), str(tp.get("kpi_type", ""))
-        if direction not in ("reduction", "increase") or not isinstance(tv, (int, float)):
-            continue
-        ttok = topic_tokens(node_text(g.nodes[ti]))
-        for oi, op, otok in obs:
-            if tkind in ("", "other") or str(op.get("kpi_type", "")) != tkind:
-                continue
-            if len(ttok & otok) < 2:
-                continue
-            ov = op.get("value")
-            if not isinstance(ov, (int, float)):
-                continue
-            if (direction == "reduction" and ov > tv) or (direction == "increase" and ov < tv):
-                gaps.append({"tokens": ttok, "kpi_title": tp.get("title"), "kpi_type": tkind,
-                             "direction": direction, "target_value": tv, "observed_value": ov,
-                             "note": "observed conduct moves opposite to the reported target"})
-    return gaps
-
-
-def kpi_gap_for_claim(claim_tokens: Set[str], gaps: List[Dict[str, Any]]) -> Optional[Dict[str, Any]]:
-    """Attach a precomputed gap to a claim only when they share a topic. Advisory only."""
-    for gp in gaps:
-        if gp["tokens"] & claim_tokens:
-            return {k: v for k, v in gp.items() if k != "tokens"}
-    return None
-
-
-# --------------------------------------------------------------------------- #
 # Driver.
 # --------------------------------------------------------------------------- #
 def run(args: argparse.Namespace) -> None:
@@ -496,21 +445,19 @@ def run(args: argparse.Namespace) -> None:
     # ---- conduct pool (independent = news) ----
     conduct = [i for i, n in enumerate(g.nodes)
                if n.get("class") in CONDUCT_CLASSES and props(n).get("source_type") == "news"]
-    report_targets = [i for i, n in enumerate(g.nodes)
-                      if n.get("class") == "KPIObservation" and props(n).get("source_type") == "report"
-                      and props(n).get("kind") == "target"]
-    news_observed = [i for i in conduct if g.cls(i) == "KPIObservation"]
     conduct_by_cls = Counter(g.cls(i) for i in conduct)
     logger.info(f"Conduct pool (source_type=news): {len(conduct)} nodes {dict(conduct_by_cls)}")
 
-    # pre-tokenize the conduct pool + precompute KPI-gap signals once
+    # pre-tokenize the conduct pool once
     ctok = {i: topic_tokens(node_text(g.nodes[i])) for i in conduct}
-    kpi_gaps = build_kpi_gaps(g, report_targets, news_observed)
-    logger.info(f"KPI-gap signals precomputed: {len(kpi_gaps)}")
 
-    adjud = None
-    if not (args.no_llm or args.dry_run):
-        adjud = Adjudicator(args.model, args.openai_model, args.rate_limit, args.provider_order)
+    # LLM adjudication is mandatory — no deterministic fallback. Abort up front if no
+    # provider is available so the run never silently degrades into a weaker mode.
+    adjud = Adjudicator(args.model, args.openai_model, args.rate_limit, args.provider_order)
+    if not adjud.enabled:
+        logger.error("No LLM provider available (need GEMINI_API_KEY or OPENAI_API_KEY in .env) — "
+                     "aborting: this pipeline requires LLM adjudication.")
+        return
 
     # ---- 6a retrieval: candidate conduct per claim (deterministic, cheap) ----
     cand_of: Dict[int, List[int]] = {}
@@ -538,7 +485,7 @@ def run(args: argparse.Namespace) -> None:
     # ---- 6b adjudication: highest-overlap pairs first, up to the budget, concurrent ----
     verdicts: Dict[Tuple[int, int], Dict[str, Any]] = {}
     llm_pairs = 0
-    if adjud and adjud.enabled and pairs_total:
+    if pairs_total:
         all_pairs.sort(key=lambda t: -t[0])
         budget_pairs = all_pairs[: args.max_llm_pairs]
         logger.info(f"Adjudicating {len(budget_pairs)}/{pairs_total} candidate pairs "
@@ -557,9 +504,9 @@ def run(args: argparse.Namespace) -> None:
         logger.info(f"Adjudication done: {llm_pairs} pairs, {len(verdicts)} verdicts, "
                     f"active_providers={[p.name for p in adjud.providers if p.enabled]}")
     adjudicated_pairs = set(verdicts.keys())
-    budget_hit = adjud is not None and adjud.enabled and pairs_total > args.max_llm_pairs
+    budget_hit = pairs_total > args.max_llm_pairs
 
-    # ---- 6c/6d/6e assembly per claim ----
+    # ---- 6c assembly per claim ----
     dossiers: List[Dict[str, Any]] = []
     new_edges: List[Dict[str, Any]] = []
     assess_hist: Counter = Counter()
@@ -567,12 +514,10 @@ def run(args: argparse.Namespace) -> None:
         cnode = g.nodes[ci]
         ctext = node_text(cnode)
         cyear = node_year(cnode)
-        ctoks = topic_tokens(ctext, kw.get(ci))
         candidates = cand_of[ci]
 
         supporting: List[Dict[str, Any]] = []
         contradicting: List[Dict[str, Any]] = []
-        new_contra_targets: List[int] = []
         adjudicated_here = False
 
         for xi in candidates:
@@ -606,18 +551,14 @@ def run(args: argparse.Namespace) -> None:
                     new_edges.append(_mk_edge(ci, SUPPORT_EDGE, xi, v, conf, why, src_type, prov, True))
             else:  # contradicts
                 contradicting.append(ev)
-                new_contra_targets.append(xi)
                 label = CONTRADICT_EDGE.get(xcls)
                 if label and legal(label, "SustainabilityClaim", xcls):
                     new_edges.append(_mk_edge(ci, label, xi, v, conf, why, src_type, prov, None))
 
-        # ---- 6d deterministic signals ----
-        structural = structural_contradiction(g, ci, issuer_idx, new_contra_targets)
-        gap = kpi_gap_for_claim(ctoks, kpi_gaps)
         indep_support = [e for e in supporting if e.get("independent")]
 
-        # ---- 6e assessment (evidence links + structural only; kpi_gap is advisory, §6.5) ----
-        if contradicting or structural:
+        # ---- 6d assessment (LLM evidence links only) ----
+        if contradicting:
             assessment = "appears_contradicted"
         elif indep_support:
             assessment = "appears_supported"
@@ -630,16 +571,13 @@ def run(args: argparse.Namespace) -> None:
             caveats.append("No independent (news) conduct evidence exists for this issuer.")
         elif not candidates:
             caveats.append("No topically-related independent evidence was found for this claim.")
-        if adjud is None or not adjud.enabled:
-            caveats.append("LLM adjudication was not run; assessment rests on deterministic signals only.")
-        elif candidates and not adjudicated_here and budget_hit:
-            caveats.append("This claim's candidate evidence exceeded the adjudication budget and was not evaluated.")
+        if candidates and not adjudicated_here:
+            reason = "exceeded the adjudication budget" if budget_hit else "could not be adjudicated (LLM provider failure)"
+            caveats.append(f"This claim's candidate evidence {reason} and was not evaluated.")
         if any(e.get("date_uncertain") for e in contradicting + indep_support):
             caveats.append("At least one evidence item has an uncertain publish date.")
         if contradicting and indep_support:
             caveats.append("Evidence is mixed (both supporting and contradicting items found).")
-        if gap:
-            caveats.append("A KPI numeric-gap signal was detected (advisory, not conclusive on its own).")
 
         dossiers.append({
             "claim_id": props(cnode).get("claim_id"),
@@ -652,7 +590,6 @@ def run(args: argparse.Namespace) -> None:
             "supporting_evidence": indep_support,
             "flagged_non_independent_support": [e for e in supporting if not e.get("independent")],
             "contradicting_evidence": contradicting,
-            "signals": {"structural_contradiction": structural, "kpi_gap": gap},
             "caveats": caveats,
         })
 
@@ -665,14 +602,12 @@ def run(args: argparse.Namespace) -> None:
         "retrieval": {"claims_with_candidates": claims_with_cands,
                       "candidate_pairs": pairs_total,
                       "avg_candidates_per_claim": round(pairs_total / max(1, len(claim_idxs)), 2)},
-        "kpi_gap_signals": len(kpi_gaps),
         "assessments": dict(assess_hist),
         "linking_edges_written": len(new_edges),
         "edges_by_provider": dict(Counter(e["properties"].get("llm_provider") for e in new_edges)),
-        "llm": {"pairs_adjudicated": llm_pairs, "budget": args.max_llm_pairs,
-                **(adjud.summary() if adjud else {"active": False, "providers": []})},
+        "llm": {"pairs_adjudicated": llm_pairs, "budget": args.max_llm_pairs, **adjud.summary()},
         "params": {"top_k": args.top_k, "window_before": args.window_before,
-                   "window_after": args.window_after, "no_llm": args.no_llm, "dry_run": args.dry_run},
+                   "window_after": args.window_after, "dry_run": args.dry_run},
         "coverage_caveat": ("Thin independent conduct — absence of contradiction is NOT exoneration "
                             "(docs/SYSTEM_DESIGN.md §8.3)."),
     }
@@ -754,15 +689,13 @@ def main() -> None:
     p.add_argument("--rate-limit", type=int, default=DEFAULT_RATE_LIMIT)
     p.add_argument("--embed", action="store_true",
                    help="(reserved) embedding re-rank of candidates; off by default.")
-    p.add_argument("--no-llm", action="store_true", help="Deterministic signals only (no adjudication).")
-    p.add_argument("--dry-run", action="store_true", help="--no-llm and write nothing (offline preview).")
+    p.add_argument("--dry-run", action="store_true",
+                   help="Still runs LLM adjudication and prints stats, but writes nothing.")
     p.add_argument("--to-neo4j", action="store_true", help="Also MERGE advisory edges into Neo4j.")
     p.add_argument("--database", default=None, help="Neo4j database for --to-neo4j (default: user home db).")
     args = p.parse_args()
 
     args.provider_order = [s.strip().lower() for s in args.provider_order.split(",") if s.strip()]
-    if args.dry_run:
-        args.no_llm = True
     if not args.input.exists():
         logger.error(f"Input not found: {args.input} (run step05_resolve_entities.py first)")
         return
