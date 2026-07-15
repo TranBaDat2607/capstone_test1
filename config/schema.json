@@ -111,7 +111,7 @@
         "valid_to",
         "is_current"
       ],
-      "identity_keys": ["name", "valid_from"]
+      "identity_keys": ["name"]
     },
     {
       "class": "Certification",
@@ -123,7 +123,7 @@
         "valid_to",
         "is_current"
       ],
-      "identity_keys": ["name", "valid_from", "validity_period"]
+      "identity_keys": ["name"]
     },
     {
       "class": "Regulation",
@@ -135,7 +135,7 @@
         "valid_to",
         "is_current"
       ],
-      "identity_keys": ["name", "jurisdiction"]
+      "identity_keys": ["name"]
     },
     {
       "class": "Initiative",

@@ -312,6 +312,15 @@ def consolidate(nodes: List[Dict[str, Any]], edges: List[Dict[str, Any]], dsu: D
             for k, v in non_temporal_props(m).items():
                 if k not in props and v not in (None, ""):
                     props[k] = v
+        if canonical["class"] in OBSERVATION_CLASSES:
+            # P2 (TEMPORAL_KG_DESIGN): event time is an essential property of a
+            # T2/T3 observation, not versioning metadata — keep it on the node.
+            # T1 entities stay timeless; their history lives in temporal_versions
+            # and on edge temporal_metadata.
+            cp = canonical.get("properties", {})
+            for k in ("valid_from", "valid_to", "is_current"):
+                if k in cp:
+                    props[k] = cp[k]
         if tag:
             props["ticker"], props["name"] = tag[0], tag[1]
 
