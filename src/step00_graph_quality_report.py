@@ -214,8 +214,9 @@ def q2_consistency(nodes: List[Dict[str, Any]], edges: List[Dict[str, Any]],
             seen: Dict[Tuple, int] = {}
             for v in versions:
                 vp = v.get("properties", {})
-                key = (date_start_key(v.get("valid_from")), date_start_key(v.get("valid_to")),
-                       str(vp.get("name", "")))
+                # mirror step05's version signature: name with term/title fallbacks
+                label = str(vp.get("name") or node_name({"properties": vp}))
+                key = (date_start_key(v.get("valid_from")), date_start_key(v.get("valid_to")), label)
                 seen[key] = seen.get(key, 0) + 1
             format_split_versions += sum(c - 1 for c in seen.values() if c > 1)
             for v in versions:
