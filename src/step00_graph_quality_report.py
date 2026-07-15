@@ -206,7 +206,10 @@ def q2_consistency(nodes: List[Dict[str, Any]], edges: List[Dict[str, Any]],
         versions = nd.get("temporal_versions")
         if versions:
             n_current = sum(1 for v in versions if v.get("is_current") is True)
-            if n_current != 1:
+            n_open = sum(1 for v in versions if v.get("valid_to") in (None, ""))
+            # P4: at most one current version; a chain with an open version must
+            # have exactly one. An all-closed chain legitimately has none.
+            if n_current > 1 or (n_current == 0 and n_open > 0):
                 multi_current_chains += 1
             seen: Dict[Tuple, int] = {}
             for v in versions:

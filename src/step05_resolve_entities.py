@@ -45,7 +45,7 @@ from google.genai import types
 
 from step01_extract_kpi_from_jsonl import REPO_ROOT
 from step02_extract_triplet_from_jsonl import RateLimiter
-from step03_fix_invalid_triplets import load_schema_sets
+from step03_fix_invalid_triplets import date_start_key, load_schema_sets
 from step04_build_issuer_registry import normalize_name
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -326,11 +326,21 @@ def consolidate(nodes: List[Dict[str, Any]], edges: List[Dict[str, Any]], dsu: D
 
         node: Dict[str, Any] = {"class": canonical["class"], "properties": props}
         if len(members) > 1:
+            # P4: versions are distinct facts, not distinct spellings — compare
+            # dates by start instant so "2011" and "2011-01-01" collapse into one
+            # version instead of two both claiming is_current=true.
+            def _vsig(mp: Dict[str, Any], m: Dict[str, Any]) -> Tuple:
+                return (
+                    date_start_key(mp.get("valid_from")) or str(mp.get("valid_from")),
+                    date_start_key(mp.get("valid_to")) or str(mp.get("valid_to")),
+                    str(mp.get("name", primary_name(m))),
+                )
+
             seen: Set[Tuple] = set()
             versions = []
             for m in members:
                 mp = m.get("properties", {})
-                sig = (str(mp.get("valid_from")), str(mp.get("valid_to")), str(mp.get("name", primary_name(m))))
+                sig = _vsig(mp, m)
                 if sig in seen:
                     continue
                 seen.add(sig)
@@ -338,6 +348,20 @@ def consolidate(nodes: List[Dict[str, Any]], edges: List[Dict[str, Any]], dsu: D
                     "valid_from": mp.get("valid_from"), "valid_to": mp.get("valid_to"),
                     "is_current": mp.get("is_current"), "properties": mp,
                 })
+
+            # P4 invariant: at most one open version may be current. If several
+            # claim is_current=true, the latest-starting open version wins; a
+            # chain that is all-closed (every valid_to set) legitimately has none.
+            current_claims = [v for v in versions if v.get("is_current") is True]
+            open_versions = [v for v in versions if v.get("valid_to") in (None, "")]
+            if len(current_claims) != 1 and open_versions:
+                winner = max(open_versions,
+                             key=lambda v: date_start_key(v.get("valid_from")) or "")
+                for v in versions:
+                    flag = v is winner
+                    v["is_current"] = flag
+                    if isinstance(v.get("properties"), dict):
+                        v["properties"]["is_current"] = flag
             node["temporal_versions"] = versions
         root_to_new[root] = len(new_nodes)
         new_nodes.append(node)
