@@ -145,7 +145,10 @@ def build_payload(
         # Current temporal fields come from the latest-valid_from version.
         current = max(versions, key=lambda v: _year_sort_key(v.get("valid_from")), default=None)
         node_props = dict(props)
-        node_props["is_current"] = True
+        # T2/T3 observation nodes carry their own event-time props (P2); only
+        # default is_current for timeless T1 entities, whose "current" fields
+        # come from the latest temporal version below.
+        node_props.setdefault("is_current", True)
         if current:
             node_props["valid_from"] = current.get("valid_from")
             node_props["valid_to"] = current.get("valid_to")

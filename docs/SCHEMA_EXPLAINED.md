@@ -76,23 +76,33 @@ exist and *which* directed relationships are legal between them.
 Almost every property list ends with the same fields. Understanding these two
 patterns explains ~80% of the schema.
 
-### 2.1 Bitemporal validity (every node and edge)
+### 2.1 Bitemporal validity (edges and event nodes — see P2)
 
-Every **node** carries:
+At **extraction time** (step02) every node and edge carries `valid_from` /
+`valid_to` / `is_current` (nodes) and `temporal_metadata` (edges), and the step03
+validator requires them. In the **resolved graph** (step05 onward) the invariant is
+narrower, by design (principle **P2** in
+[`TEMPORAL_KG_DESIGN.md`](./TEMPORAL_KG_DESIGN.md): *time lives on statements, not
+on entities*):
 
-| Property     | Meaning                                                              |
-|--------------|---------------------------------------------------------------------|
-| `valid_from` | When the fact became true *in the real world*.                      |
-| `valid_to`   | When it stopped being true (open/null = still true).                |
-| `is_current` | Convenience boolean flag: is this the currently-valid version?      |
+- Every **edge** carries `temporal_metadata`:
 
-Every **edge** carries:
+  | Property      | Meaning                                                            |
+  |---------------|-------------------------------------------------------------------|
+  | `valid_from`  | When the relationship became true in the real world.              |
+  | `valid_to`    | When it ended.                                                    |
+  | `recorded_at` | When the system *learned* / ingested the fact (transaction time). |
 
-| Property      | Meaning                                                            |
-|---------------|-------------------------------------------------------------------|
-| `valid_from`  | When the relationship became true in the real world.              |
-| `valid_to`    | When it ended.                                                    |
-| `recorded_at` | When the system *learned* / ingested the fact (transaction time). |
+- **T2/T3 event & assertion nodes** (`KPIObservation`, `Emission`, `Waste`,
+  `Penalty`, `Controversy`, `MediaReport`, `ThirdPartyVerification`, `Investment`,
+  `SustainabilityClaim`, …) keep `valid_from` / `valid_to` / `is_current` as
+  **essential properties** — *when it happened* is part of what the event is.
+
+- **T1 identity nodes** (`Organization`, `Facility`, `Standard`, `Location`, …)
+  are **timeless**: their canonical properties carry no `valid_*`; their history
+  lives in `temporal_versions` (see §2.2) and on the temporal metadata of their
+  edges. A fact like *"AAA adopted GRI in 2021"* is the `adoptsStandard` **edge's**
+  `valid_from`, not a property (or identity) of the `Standard` node.
 
 This is a **bitemporal model**: `valid_*` tracks *real-world time* ("the company
 emitted X in 2023"), while `recorded_at` on edges tracks *knowledge time* ("we read
@@ -114,10 +124,16 @@ one with `supersedes`, and the old one's `valid_to` / `is_current` are closed of
 Combined with the bitemporal fields, this gives a full audit trail of how the graph's
 picture of reality evolved.
 
-> **Note:** `identity_keys` for the "versionable" classes often *include* a temporal
-> field — e.g. `Standard` is keyed by `["name", "valid_from"]`, `Emission` by
-> `["category", "scope", "valid_from"]`. This deliberately lets multiple time-stamped
-> versions of the "same" logical entity coexist as distinct nodes.
+> **Note (P1 — identity is timeless):** for **T1 identity classes** the
+> `identity_keys` must **never** contain a temporal field (`valid_from`, `date`,
+> `year`, `validity_period`, …). Keying `Standard` by `["name", "valid_from"]`
+> (the pre-P1 design) split "GRI" into one node per report year — 310/331
+> `Standard` nodes were isolated leaves. Time-of-observation belongs in
+> `temporal_versions` / `supersedes` and on edge `temporal_metadata`, not in
+> identity. Only **T2 observation classes** (`Emission` `["category","scope","valid_from"]`,
+> `Waste`, `KPIObservation`, `Investment`) legitimately carry time in their keys,
+> because each observation *is* a time-stamped occurrence. This rule is
+> machine-checked by `src/step00_graph_quality_report.py` (Q2) for every new class.
 
 ---
 
@@ -166,9 +182,9 @@ noting.
 
 | Class           | Key properties                              | Identity                  | Role |
 |-----------------|---------------------------------------------|---------------------------|------|
-| `Standard`      | name, description                           | name, valid_from          | A reporting/management standard the org adopts (GRI, ISO, ESRS…). |
-| `Certification` | name, description, validity_period          | name, valid_from, validity_period | A certificate held by an org/facility (ISO 14001, etc.). |
-| `Regulation`    | name, jurisdiction, description             | name, jurisdiction        | A law/rule the org is subject to. |
+| `Standard`      | name, description                           | name                      | A reporting/management standard the org adopts (GRI, ISO, ESRS…). Adoption period lives on the `adoptsStandard` edge. |
+| `Certification` | name, description, validity_period          | name                      | A *type* of certificate (ISO 14001, etc.). The holding period lives on the `holdsCertification` edge. |
+| `Regulation`    | name, jurisdiction, description             | name                      | A law/rule the org is subject to. |
 | `Authority`     | name, type, jurisdiction                    | name, jurisdiction        | The body that issues standards/certs or enforces penalties. |
 | `Penalty`       | penalty_id, description, amount, date       | penalty_id                | A fine/sanction imposed on an org. |
 

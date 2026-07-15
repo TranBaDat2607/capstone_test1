@@ -18,6 +18,11 @@ Pipeline:
     - auto-fix triples whose subject/object are swapped vs the schema's
       declared (source_class, target_class) for that edge label
     - full schema validation -> split into valid + invalid
+  Phase 1.5 (offline, P4 in docs/TEMPORAL_KG_DESIGN.md):
+    - canonicalize every date to ISO YYYY[-MM[-DD]]; flag valid_from > valid_to;
+      default a missing date_uncertain on news T2 nodes to true
+    - `--renormalize` applies only this phase to the existing aggregated
+      all_validated_triples.json (no LLM, keeps prior phase-2 repairs)
   Phase 2 (LLM, optional):
     - batch invalid triples (default 25 per batch)
     - ask gemini-2.5-flash to repair them against the schema
@@ -58,6 +63,85 @@ DEFAULT_OUT_DIR = REPO_ROOT / "graph_output" / "validated"
 DEFAULT_MODEL = "gemini-2.5-flash"
 DEFAULT_BATCH_SIZE = 25
 DEFAULT_RATE_LIMIT = 10
+
+
+# --------------------------------------------------------------------------- #
+# P4 temporal-integrity helpers (docs/TEMPORAL_KG_DESIGN.md).
+# Dates are canonicalized to ISO YYYY[-MM[-DD]] so that downstream version
+# comparison (step05) and quality gates (step00) compare instants, not string
+# spellings ("2011" vs "2011-01-01" was observed splitting one fact into two
+# temporal_versions both flagged is_current=true).
+# --------------------------------------------------------------------------- #
+ISO_DATE_RE = re.compile(r"^(\d{4})(?:-(\d{1,2})(?:-(\d{1,2}))?)?$")
+_DATE_PATTERNS = [
+    # (regex, (year_group, month_group, day_group)) — day-first is the Vietnamese order
+    (re.compile(r"^(\d{4})[/.](\d{1,2})[/.](\d{1,2})$"), (1, 2, 3)),   # 2023/05/31, 2023.05.31
+    (re.compile(r"^(\d{1,2})[/.\-](\d{1,2})[/.\-](\d{4})$"), (3, 2, 1)),  # 31/05/2023, 31-05-2023
+    (re.compile(r"^(\d{1,2})[/.\-](\d{4})$"), (2, 1, None)),           # 05/2023, 05-2023
+    (re.compile(r"^(\d{4})[/.](\d{1,2})$"), (1, 2, None)),             # 2023/05
+]
+
+
+def normalize_date_string(value: Any) -> Tuple[Optional[str], bool]:
+    """Canonicalize one date value to ISO YYYY[-MM[-DD]].
+
+    Returns (normalized, parseable). JSON null / "" / "null" / "none" -> (None, True).
+    An unrecognized spelling is returned unchanged with parseable=False (never
+    silently invent a date). Datetime strings keep only the date part.
+    """
+    if value is None:
+        return None, True
+    s = str(value).strip()
+    if s == "" or s.lower() in ("null", "none"):
+        return None, True
+
+    # datetime -> date part
+    if "T" in s:
+        s = s.split("T", 1)[0].strip()
+
+    m = ISO_DATE_RE.match(s)
+    if m:
+        y, mo, d = m.group(1), m.group(2), m.group(3)
+    else:
+        y = mo = d = None
+        for pat, (gy, gm, gd) in _DATE_PATTERNS:
+            pm = pat.match(s)
+            if pm:
+                y = pm.group(gy)
+                mo = pm.group(gm) if gm else None
+                d = pm.group(gd) if gd else None
+                break
+        if y is None:
+            return str(value), False
+
+    if mo is not None and not (1 <= int(mo) <= 12):
+        return str(value), False
+    if d is not None and not (1 <= int(d) <= 31):
+        return str(value), False
+
+    out = y
+    if mo is not None:
+        out += f"-{int(mo):02d}"
+        if d is not None:
+            out += f"-{int(d):02d}"
+    return out, True
+
+
+def date_start_key(value: Any) -> Optional[str]:
+    """The start instant of a (possibly partial) date, as a comparable YYYY-MM-DD.
+
+    "2011" and "2011-01-01" share the start instant "2011-01-01" — the exact
+    ambiguity that produced duplicate is_current=true versions (P4). Returns
+    None for null/unparseable values.
+    """
+    norm, ok = normalize_date_string(value)
+    if not ok or norm is None:
+        return None
+    parts = norm.split("-")
+    y = parts[0]
+    mo = parts[1] if len(parts) > 1 else "01"
+    d = parts[2] if len(parts) > 2 else "01"
+    return f"{y}-{mo}-{d}"
 
 
 # --------------------------------------------------------------------------- #
@@ -276,6 +360,75 @@ def process_file_offline(file_path: pathlib.Path, entity_classes: Set[str],
 
 
 # --------------------------------------------------------------------------- #
+# Phase 1.5 (offline): P4 temporal-invariant enforcement.
+# Bitemporal integrity is a hard, machine-checked constraint (TEMPORAL_KG_DESIGN
+# P4), not a convention:
+#   * every date value is canonicalized to ISO YYYY[-MM[-DD]] (so "2011" vs
+#     "2011-01-01" can never again split one fact into two temporal versions);
+#   * valid_from > valid_to is flagged (never silently swapped);
+#   * T2 news nodes (KPIObservation/Controversy/Penalty/MediaReport with
+#     source_type=news) must carry a boolean date_uncertain — a missing flag is
+#     set to true (the conservative "this date is a proxy" reading) and counted.
+# --------------------------------------------------------------------------- #
+NEWS_DATE_UNCERTAIN_CLASSES = {"KPIObservation", "Controversy", "Penalty", "MediaReport"}
+_NODE_DATE_PROPS = ("valid_from", "valid_to", "date")
+_EDGE_DATE_PROPS = ("valid_from", "valid_to", "recorded_at")
+
+
+def enforce_temporal_invariants(triples: List[Dict[str, Any]]) -> Dict[str, int]:
+    """Normalize dates and enforce the P4 invariants in place. Returns counters."""
+    stats = {
+        "dates_normalized": 0,
+        "dates_unparseable": 0,
+        "valid_from_after_valid_to": 0,
+        "date_uncertain_defaulted": 0,
+    }
+
+    def norm_inplace(container: Dict[str, Any], keys: Tuple[str, ...]) -> None:
+        for k in keys:
+            if k not in container:
+                continue
+            v = container[k]
+            if v is None:
+                continue
+            norm, ok = normalize_date_string(v)
+            if not ok:
+                stats["dates_unparseable"] += 1
+            elif norm != v:
+                container[k] = norm
+                stats["dates_normalized"] += 1
+
+    def check_range(container: Dict[str, Any], what: str) -> None:
+        kf = date_start_key(container.get("valid_from"))
+        kt = date_start_key(container.get("valid_to"))
+        if kf and kt and kf > kt:
+            stats["valid_from_after_valid_to"] += 1
+            logger.warning(f"P4: valid_from > valid_to on {what}: "
+                           f"{container.get('valid_from')} > {container.get('valid_to')}")
+
+    for t in triples:
+        for side in ("subject", "object"):
+            ent = t.get(side)
+            if not isinstance(ent, dict):
+                continue
+            props = ent.get("properties")
+            if not isinstance(props, dict):
+                continue
+            norm_inplace(props, _NODE_DATE_PROPS)
+            check_range(props, f"{ent.get('class')} node")
+            if (ent.get("class") in NEWS_DATE_UNCERTAIN_CLASSES
+                    and props.get("source_type") == "news"
+                    and not isinstance(props.get("date_uncertain"), bool)):
+                props["date_uncertain"] = True
+                stats["date_uncertain_defaulted"] += 1
+        tm = t.get("temporal_metadata")
+        if isinstance(tm, dict):
+            norm_inplace(tm, _EDGE_DATE_PROPS)
+            check_range(tm, f"edge {t.get('predicate')}")
+    return stats
+
+
+# --------------------------------------------------------------------------- #
 # Phase 2: LLM repair (verbatim prompt from EmeraldMind step 3).
 # --------------------------------------------------------------------------- #
 BATCH_FIX_PROMPT = (
@@ -451,6 +604,15 @@ def process_all_files(input_dir: pathlib.Path, out_dir: pathlib.Path, schema: Di
     # repaired forms already live in all_valid; the originals must not be re-listed.)
     unfixable = [t for t in all_invalid if not t.get("_fixed")]
 
+    logger.info("\n=== Phase 1.5: P4 temporal-invariant enforcement ===")
+    t_stats = enforce_temporal_invariants(all_valid)
+    logger.info(
+        f"  dates normalized to ISO: {t_stats['dates_normalized']}\n"
+        f"  unparseable date values: {t_stats['dates_unparseable']}\n"
+        f"  valid_from > valid_to:   {t_stats['valid_from_after_valid_to']}\n"
+        f"  date_uncertain defaulted (news T2): {t_stats['date_uncertain_defaulted']}"
+    )
+
     logger.info("\n=== Phase 3: Saving results ===")
     if dry_run:
         logger.info("Dry run — not writing any files.")
@@ -482,6 +644,39 @@ def process_all_files(input_dir: pathlib.Path, out_dir: pathlib.Path, schema: Di
 
 
 # --------------------------------------------------------------------------- #
+# Renormalize-only mode: apply the P4 phase to an already-aggregated
+# all_validated_triples.json. The step-2 LLM extraction results are a frozen,
+# paid-for asset — this lets P4 land on them without re-running phase 2.
+# --------------------------------------------------------------------------- #
+def renormalize_existing(out_dir: pathlib.Path, entity_classes: Set[str], edge_labels: Set[str],
+                         edge_directions: Dict[str, List[Tuple[str, str]]]) -> None:
+    in_file = out_dir / "all_validated_triples.json"
+    if not in_file.exists():
+        logger.error(f"--renormalize: {in_file} not found (run the full step first)")
+        return
+    triples = json.loads(in_file.read_text(encoding="utf-8"))
+    logger.info(f"Renormalizing {len(triples)} validated triples in {in_file}")
+    t_stats = enforce_temporal_invariants(triples)
+
+    still_valid = 0
+    for t in triples:
+        ok, _ = validate_triple(t, entity_classes, edge_labels, edge_directions)
+        still_valid += ok
+    if still_valid != len(triples):
+        logger.warning(f"{len(triples) - still_valid} triple(s) no longer schema-valid "
+                       f"after normalization — inspect before proceeding")
+
+    in_file.write_text(json.dumps(triples, indent=2, ensure_ascii=False), encoding="utf-8")
+    logger.info(
+        f"Rewrote {in_file}\n"
+        f"  dates normalized to ISO: {t_stats['dates_normalized']}\n"
+        f"  unparseable date values: {t_stats['dates_unparseable']}\n"
+        f"  valid_from > valid_to:   {t_stats['valid_from_after_valid_to']}\n"
+        f"  date_uncertain defaulted (news T2): {t_stats['date_uncertain_defaulted']}"
+    )
+
+
+# --------------------------------------------------------------------------- #
 # CLI.
 # --------------------------------------------------------------------------- #
 def main() -> None:
@@ -500,6 +695,9 @@ def main() -> None:
     parser.add_argument("--model", type=str, default=DEFAULT_MODEL, help="Gemini model id")
     parser.add_argument("--dry-run", action="store_true",
                         help="Stop after phase 1: report counts but don't call the LLM or write files")
+    parser.add_argument("--renormalize", action="store_true",
+                        help="Only re-apply the P4 temporal-invariant phase to the existing "
+                             "all_validated_triples.json (offline, no LLM, keeps prior repairs)")
     args = parser.parse_args()
 
     if not args.input_dir.exists():
@@ -515,6 +713,10 @@ def main() -> None:
         logger.info(f"Loaded schema: {len(entity_classes)} entities, {len(edge_labels)} edges")
     except Exception as e:
         logger.error(f"Failed to load schema: {e}")
+        return
+
+    if args.renormalize:
+        renormalize_existing(args.out_dir, entity_classes, edge_labels, edge_directions)
         return
 
     client: Optional[genai.Client] = None

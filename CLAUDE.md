@@ -76,6 +76,12 @@ Both feed the same `src/` graph-construction path and land in one temporal KG (s
 
 **C. Labeled JSONL → temporal knowledge graph (`src/`, the EmeraldKG port)**
 ```
+src/step00_graph_quality_report.py      → graph_output/quality/quality_report_<label>.{json,md}
+   (offline diagnostics, NO LLM/DB: measures the Q1–Q8 quality attributes of the resolved
+    graph — consistency incl. P4 temporal invariants + P1 identity lint, conciseness,
+    conduct completeness, Q7 traversability (median degree / leaves / masked-answerable /
+    hub-free structural claim→conduct / T2 anchoring). Run BEFORE and AFTER any
+    schema/pipeline change with --label; see docs/TEMPORAL_KG_DESIGN.md §4)
 src/step01_extract_kpi_from_jsonl.py    → kpi_output/<pdf_stem>_kpis/page_NNN_kpis.json
    (per page: Gemini 2.5 Flash w/ structured output → typed KPIObservation records,
     only pages with ≥1 esg=true sentence are sent; uses kpi_definitions_construction.json)
@@ -85,7 +91,15 @@ src/step02_extract_triplet_from_jsonl.py → graph_output/graphs/<pdf_stem>/page
     MediaReport/Penalty/observed KPIObservation); every node/edge stamped source_type=report|news)
 src/step03_fix_invalid_triplets.py      → graph_output/validated/all_validated_triples.json (+ unfixable_triples.json)
    (Phase 1 offline: swap reversed edge directions + schema-validate;
+    Phase 1.5 offline (P4): canonicalize dates to ISO YYYY[-MM[-DD]], warn valid_from>valid_to,
+    default missing date_uncertain on news T2 nodes; --renormalize applies only this phase to
+    the existing aggregated file (no LLM, keeps prior repairs);
     Phase 2 LLM: batch-repair invalid triples; Phase 3: aggregate)
+src/step03b_anchor_kpi_facilities.py    → appends to all_validated_triples.json (+ anchor_patch_stats.json)
+   (P3 offline patch, NO LLM: gazetteer of Facility names already in the graph matched against
+    each KPI's source sentence (source_id → labeled JSONL) → emits KPIObservation
+    --observedAtFacility--> Facility edges, tagged anchor_method=offline_gazetteer.
+    Run after step03, before step05. New extractions get anchors from the step02 prompt instead)
 src/step04_build_issuer_registry.py     → config/issuer_registry.json                       (run-once bootstrap)
    (drafts the reporting company's name variants → aliases / exclusions / needs_review;
     re-running preserves human edits, --force rebuilds; a human confirms needs_review)
@@ -134,12 +148,20 @@ rebuilding; treat it as generated data.
 
 The single source of truth for the knowledge graph: ~28 node classes (Organization,
 KPIObservation, Emission, SustainabilityClaim, Controversy, …) and ~50 directed edge
-labels. Key invariants the `src/` validation relies on:
-- **Every node carries temporal props** `valid_from`, `valid_to`, `is_current`; every
-  edge carries `temporal_metadata` (`valid_from`, `valid_to`, `recorded_at`).
+labels. Key invariants the `src/` validation relies on (see docs/TEMPORAL_KG_DESIGN.md
+for the T1/T2/T3 tier model behind them):
+- **At extraction (step02/step03) every node carries** `valid_from`, `valid_to`,
+  `is_current`; every edge carries `temporal_metadata` (`valid_from`, `valid_to`,
+  `recorded_at`). In the **resolved** graph (step05+) time lives on **edges and T2/T3
+  event nodes** (P2); T1 entity nodes are timeless, their history is `temporal_versions`.
+- Dates are canonical ISO `YYYY[-MM[-DD]]` (step03 phase 1.5); a version chain with an
+  open version has exactly one `is_current=true` (P4, enforced in step05).
 - Each node has `identity_keys` used to compute a stable entity id (for dedup/versioning).
-  Observation classes (`KPIObservation`, `Emission`, `Waste`) are versioned per-observation;
-  entities are versioned only when properties change (linked via `supersedes` edges).
+  **T1 identity is timeless (P1):** never put time fields (`valid_from`, `date`, `year`,
+  `validity_period`, …) in a T1 class's `identity_keys` — step00 lints this. Observation
+  classes (`KPIObservation`, `Emission`, `Waste`) legitimately carry time in their keys and
+  are versioned per-observation; entities are versioned only when properties change
+  (linked via `supersedes` edges).
 - An edge label may appear with **multiple legal (source_class, target_class) pairs**;
   the validator treats any matching pair as valid and auto-swaps reversed directions.
 - News-derived observation classes (`KPIObservation`, `Controversy`, `Penalty`,
@@ -165,10 +187,13 @@ python -m esg_news_crawler.run --ticker AAA --limit 1
 python -m data_processing.preprocess_news                             # P1: → data/interim/news_preprocessed/ (date-normalize + drop boilerplate)
 
 # C. Labeled JSONL → temporal KG (run from repo root, in order)
+python src/step00_graph_quality_report.py --label baseline                   # Q1–Q8 snapshot (before/after any change; offline)
 python src/step01_extract_kpi_from_jsonl.py     -i <labeled.jsonl>            # → kpi_output/
 python src/step02_extract_triplet_from_jsonl.py -i <report_labeled.jsonl>    # → graph_output/graphs/ (claim side; --source report default)
 python src/step02_extract_triplet_from_jsonl.py -i <news_preprocessed.jsonl> --source news   # conduct side (stamps source_type=news)
 python src/step03_fix_invalid_triplets.py                                    # → graph_output/validated/
+python src/step03_fix_invalid_triplets.py --renormalize                      #   P4-only pass on the existing validated file (no LLM)
+python src/step03b_anchor_kpi_facilities.py --dry-run                        # P3 offline anchor patch preview (then run without --dry-run)
 python src/step04_build_issuer_registry.py                                   # → config/issuer_registry.json (run-once; then hand-confirm needs_review)
 python src/step05_resolve_entities.py                                        # → graph_output/resolved/ (step 4: entity resolution)
 python src/step06_load_graph_to_neo4j.py --dry-run                           # step 5: preview planned counts, no DB
@@ -185,6 +210,8 @@ streamlit run app.py                                                       # com
 
 # Useful src/ flags: --doc <substr>, --limit-docs N, --all (scope);
 #   --all-pages (don't restrict to ESG pages); --dry-run (fix/resolve/load steps: offline only, no LLM/DB/writes);
+#   quality (step00): --label <name>, --skip-slow (skip the BFS-heavy Q7(c)/(d)), --max-hops;
+#   fix (step03): --renormalize (P4 pass only); anchor patch (step03b): --max-per-facility, --dry-run;
 #   resolve: --no-llm (Stages A+B.1 only), --similarity-threshold, --max-llm-pairs (budget the LLM adjudication);
 #   load: --clear (wipe first), --no-versions (canonical only), --database, --strict (env: NEO4J_URI/USER/PASSWORD);
 #   crosscheck: LLM adjudication is mandatory (no --no-llm); --max-llm-pairs, --provider-order gemini,openai, --to-neo4j;
@@ -204,7 +231,11 @@ in one temporal KG), the new news→graph branch and claim↔conduct cross-check
 deliberate "evidence + advisory LLM assessment, no greenwashing score/verdict" framing (no
 ground-truth labels exist). The rest of `docs/` holds per-stage design notes worth reading
 before modifying a stage:
-`SCHEMA_EXPLAINED.md`, `KPI_EXTRACTION_FROM_JSONL.md`, `TRIPLET_EXTRACTION_FROM_JSONL.md`,
+`SCHEMA_EXPLAINED.md`, `TEMPORAL_KG_DESIGN.md` (the 8 temporal-KG design principles
+P1–P8 + the Q1–Q8 quality attributes measured by step00 — read before touching the
+schema, step02 prompts, step03, or step05), `SSRL_REASONING_LAYER.md` (the proposed
+path-reasoning layer, steps 11–13 — not yet built; P5/P6/P8 constraints for it live in
+its §4.6/§4.7/§5.3/§7.2), `KPI_EXTRACTION_FROM_JSONL.md`, `TRIPLET_EXTRACTION_FROM_JSONL.md`,
 `TRIPLET_VALIDATION.md`, `ENTITY_RESOLUTION.md` (step 4 — why it's a redesign, not a port),
 `GRAPH_LOAD_NEO4J.md` (step 5 — Neo4j load; also a redesign),
 `CLAIM_CONDUCT_CROSSCHECK.md` (step 6 — claim↔conduct cross-check, the analytical core),
