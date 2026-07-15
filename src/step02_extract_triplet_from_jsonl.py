@@ -172,6 +172,26 @@ TEMPORAL_GRAPH_PROMPT_TEMPLATE = (
     "* Use 'supersedes' edges to link entity versions (newer version supersedes older version)\n"
     "* The newest version of an entity should have is_current=true, older versions is_current=false\n\n"
     "------------------\n"
+    "## EVENT ANCHORING RULES (REQUIRED - anchor every event to >= 2 entities when the text allows)\n"
+    "------------------\n"
+    "Event/observation nodes (KPIObservation, Emission, Waste, Penalty, Controversy, Investment,\n"
+    "Initiative, Project) must NOT hang off the reporting organization alone. Whenever the text\n"
+    "names a second real-world entity for the same fact, you MUST also emit the corresponding\n"
+    "schema edge in the same JSON array:\n"
+    "* a named factory / plant / mine / site -> KPIObservation --observedAtFacility--> Facility,\n"
+    "  Facility --generatesEmission--> Emission, Facility --generatesWaste--> Waste\n"
+    "  (plus Facility --locatedIn--> Location when the place is named)\n"
+    "* a named province / city / country     -> Organization|Facility|Project --locatedIn--> Location\n"
+    "* a named product                        -> Product --producedBy--> Organization,\n"
+    "  Product --manufacturedAt--> Facility\n"
+    "* a named authority / regulator          -> Penalty --enforcedBy--> Authority,\n"
+    "  Certification/Standard --issuedBy--> Authority\n"
+    "* a named partner / subsidiary           -> Organization --partnersWith/owns--> Organization\n"
+    "Example: 'Nha may Yen Bai dat san luong 43.200 tan' MUST yield BOTH\n"
+    "Organization --reportsKPI--> KPIObservation AND KPIObservation --observedAtFacility--> Facility.\n"
+    "Only anchor to entities the text actually names - NEVER invent a facility, location or\n"
+    "authority that is not in the text.\n\n"
+    "------------------\n"
     "## STRICT EXTRACTION RULES\n"
     "------------------\n"
     "Return a single JSON *array* of objects with keys:\n"
@@ -183,7 +203,8 @@ TEMPORAL_GRAPH_PROMPT_TEMPLATE = (
     "* temporal_metadata contains edge temporal properties (valid_from, valid_to, recorded_at)\n"
     "Do not add extra keys, comments, or prose.\n\n"
     "-----------------\n"
-    "POSITIVE EXAMPLE (valid temporal extraction)\n"
+    "POSITIVE EXAMPLE (valid temporal extraction; the KPI is anchored to BOTH the organization\n"
+    "and the facility the text names)\n"
     "-----------------\n"
     "[{{\n"
     '  "subject": {{"class": "Organization", "properties": {{"name": "Acme Corp", "industry": "Textiles", '
@@ -194,6 +215,16 @@ TEMPORAL_GRAPH_PROMPT_TEMPLATE = (
     '"baseline_year": 2020, "source_id": "acme_2023.pdf_1_2", "company": "acme", '
     '"valid_from": "2023-01-01", "valid_to": "2023-12-31", "is_current": false}}}},\n'
     '  "temporal_metadata": {{"valid_from": "2023-01-01", "valid_to": null, "recorded_at": "{year}-01-01"}}\n'
+    "}},\n"
+    "{{\n"
+    '  "subject": {{"class": "KPIObservation", "properties": {{"kpi_type": "ESG-1-1", "title": "Total energy consumed", '
+    '"value": 42.7, "unit": "MWh", "kind": "achieved", "direction": "reduction", "year": 2023, "target_year": null, '
+    '"baseline_year": 2020, "source_id": "acme_2023.pdf_1_2", "company": "acme", '
+    '"valid_from": "2023-01-01", "valid_to": "2023-12-31", "is_current": false}}}},\n'
+    '  "predicate": "observedAtFacility",\n'
+    '  "object": {{"class": "Facility", "properties": {{"name": "Acme Hanoi Plant", "type": "factory", '
+    '"valid_from": "2020-01-01", "valid_to": null, "is_current": true}}}},\n'
+    '  "temporal_metadata": {{"valid_from": "2023-01-01", "valid_to": "2023-12-31", "recorded_at": "{year}-01-01"}}\n'
     "}}]\n\n"
     "-----------------\n"
     "BEGIN EXTRACTION\n"
@@ -242,6 +273,17 @@ NEWS_GRAPH_PROMPT_TEMPLATE = (
     "    emit it as part of a schema-legal edge; otherwise capture the event via MediaReport/Penalty.\n"
     "* Do NOT invent SustainabilityClaim / Goal / target-KPIObservation nodes from news - those\n"
     "    belong to the company's own reports (claim side). News is the conduct side.\n\n"
+    "## EVENT ANCHORING RULES (REQUIRED - anchor every event to >= 2 entities when the text allows)\n"
+    "Conduct nodes (Penalty, Controversy, MediaReport, KPIObservation) must NOT hang off the\n"
+    "company alone. Whenever the article names a second real-world entity for the same fact,\n"
+    "you MUST also emit the corresponding schema edge in the same JSON array:\n"
+    "* the authority that fined/sanctioned      -> Penalty --enforcedBy--> Authority\n"
+    "* the factory / plant / site involved      -> KPIObservation --observedAtFacility--> Facility\n"
+    "  (plus Facility --locatedIn--> Location when the place is named)\n"
+    "* the province / city of the incident      -> Organization|Facility --locatedIn--> Location\n"
+    "* a named product                          -> MediaReport --mentionsProduct--> Product\n"
+    "* a named partner / subsidiary / supplier  -> Organization --partnersWith/owns--> Organization\n"
+    "Only anchor to entities the article actually names - NEVER invent one.\n\n"
     "------------------\n"
     "## KNOWLEDGE GRAPH SCHEMA\n"
     "------------------\n"
