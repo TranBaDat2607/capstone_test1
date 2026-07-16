@@ -18,9 +18,9 @@ the graph, producing advisory evidence links — no ground truth, no accuracy cl
 Pipeline (mirrors §6):
   6a  retrieve conduct candidates per claim   — same issuer + VN topic overlap +
       temporal window (+ optional embedding rank behind --embed)
-  6b  adjudicate each (claim, candidate) pair  — REQUIRED. gemini-2.5-flash structured
-      output, falling back to gpt-4o-mini (--provider-order); the run aborts up front
-      if no provider is available — there is no deterministic fallback.
+  6b  adjudicate each (claim, candidate) pair  — REQUIRED. gpt-4o-mini structured
+      output (--provider-order); the run aborts up front if no provider is
+      available — there is no deterministic fallback.
   6c  write schema-legal linking edges         — verifiedBy / contradictedBy /
       contradictedByMedia, each stamped llm_suggested=true (attributable, re-runnable)
   6c-guard  self-verification guard            — a company-owned domain never creates
@@ -29,14 +29,15 @@ Pipeline (mirrors §6):
 
 Design decisions (docs/SYSTEM_DESIGN.md, plan glistening-hopping-galaxy):
   * LLM-only: adjudication is mandatory. Quota/billing limits are managed via
-    --max-llm-pairs and the --provider-order gemini,openai cascade, not by falling
-    back to a deterministic-only mode.
-  * deterministic retrieval by default; embeddings (--embed) are optional (the current
-    Gemini embedding endpoint may be billing-blocked and the candidate pool is tiny).
+    --max-llm-pairs, not by falling back to a deterministic-only mode.
+  * deterministic retrieval by default; embeddings (--embed) are optional.
+  * Gemini support was removed — the Gemini project backing GEMINI_API_KEY is
+    permanently 403 PERMISSION_DENIED (account-level block, not transient), so
+    every run wasted several seconds retrying it before falling back to OpenAI.
 
 Run from the repo root:  python src/step07_crosscheck_claims_vs_conduct.py --dry-run
 Reuses REPO_ROOT / RateLimiter / load_schema_sets / normalize_name from earlier stages;
-loads .env (GEMINI_API_KEY) at the repo root.
+loads .env (OPENAI_API_KEY) at the repo root.
 """
 
 from __future__ import annotations
@@ -62,14 +63,12 @@ from step04_build_issuer_registry import normalize_name, name_tokens
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
-logging.getLogger("google_genai.models").setLevel(logging.WARNING)
 
 DEFAULT_INPUT = REPO_ROOT / "graph_output" / "resolved" / "resolved_graph.json"
 DEFAULT_SCHEMA = REPO_ROOT / "config" / "schema.json"
 DEFAULT_OUT_DIR = REPO_ROOT / "graph_output" / "crosscheck"
-DEFAULT_MODEL = "gemini-2.5-flash"
 DEFAULT_OPENAI_MODEL = "gpt-4o-mini"
-DEFAULT_PROVIDER_ORDER = "gemini,openai"   # primary,fallback
+DEFAULT_PROVIDER_ORDER = "openai"
 DEFAULT_RATE_LIMIT = 10
 DEFAULT_MAX_LLM_PAIRS = 300
 DEFAULT_TOP_K = 8
@@ -104,16 +103,6 @@ STOPWORDS: Set[str] = {
     "nhua", "green", "plastic", "plastics", "environment", "moi", "truong", "va",
     "cua", "cac", "trong", "nam", "the", "and", "for", "with", "cong ty",
     "bao", "cao", "report", "nien", "thuong", "ve", "la", "den", "cho", "khi",
-}
-
-ADJUDICATION_SCHEMA = {  # Gemini OpenAPI-3 dialect (same style as extract_kpi's KPI_SCHEMA)
-    "type": "object",
-    "properties": {
-        "verdict": {"type": "string", "enum": ["supports", "contradicts", "irrelevant"]},
-        "confidence": {"type": "number"},
-        "rationale": {"type": "string"},
-    },
-    "required": ["verdict", "confidence", "rationale"],
 }
 
 ADJUDICATE_SYSTEM = (
@@ -252,12 +241,11 @@ def claim_keywords(g: Graph) -> Dict[int, Set[str]]:
 
 
 # --------------------------------------------------------------------------- #
-# LLM adjudication (optional, multi-provider with graceful fallback).
+# LLM adjudication (single provider: OpenAI gpt-4o-mini).
 #
-# Primary: gemini-2.5-flash. Fallback: OpenAI gpt-4o-mini. Both do the SAME narrow,
-# grounded 3-way task, so either is adequate for the POC. A provider that fails 3x with
-# no success (e.g. a 403 billing block) is disabled and the next one is tried, so the run
-# always finishes — on the other provider, or on deterministic signals.
+# Does the SAME narrow, grounded 3-way task regardless of provider. A provider that
+# fails 3x with no success (e.g. a 403 billing block) is disabled, so the run still
+# finishes (with whatever calls already succeeded) rather than hanging.
 # --------------------------------------------------------------------------- #
 def _parse_verdict(raw: str) -> Optional[Dict[str, Any]]:
     """Parse a provider's JSON reply into {verdict, confidence, rationale} or None."""
@@ -293,35 +281,6 @@ class _Provider:
         raise NotImplementedError
 
 
-class _GeminiProvider(_Provider):
-    name = "gemini"
-
-    def __init__(self, model: str, rate_limit: int) -> None:
-        super().__init__()
-        self.model = model
-        if not os.getenv("GEMINI_API_KEY"):
-            return
-        try:
-            from google import genai
-            from google.genai import types
-            self._types = types
-            self.client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
-            self.rl = RateLimiter(max_calls_per_minute=rate_limit)
-            self.enabled = True
-        except Exception as e:  # pragma: no cover
-            logger.warning(f"[gemini] client init failed ({e}); provider disabled.")
-
-    def call(self, system: str, user: str) -> str:
-        self.rl.wait_if_needed(0)
-        resp = self.client.models.generate_content(
-            model=self.model, contents=user,
-            config=self._types.GenerateContentConfig(
-                system_instruction=system, response_mime_type="application/json",
-                response_schema=ADJUDICATION_SCHEMA, temperature=0),
-        )
-        return (resp.text or "").strip()
-
-
 class _OpenAIProvider(_Provider):
     name = "openai"
 
@@ -355,12 +314,11 @@ class Adjudicator:
     with the provider that produced it. When one provider dies (e.g. a 403), the next takes
     over automatically; if all die, the caller falls back to deterministic signals."""
 
-    def __init__(self, gemini_model: str, openai_model: str, rate_limit: int, order: List[str]) -> None:
-        # override=True so the repo .env is authoritative — a stale shell OPENAI_API_KEY /
-        # GEMINI_API_KEY must not shadow the key the user edits in .env.
+    def __init__(self, openai_model: str, rate_limit: int, order: List[str]) -> None:
+        # override=True so the repo .env is authoritative — a stale shell OPENAI_API_KEY
+        # must not shadow the key the user edits in .env.
         load_dotenv(REPO_ROOT / ".env", override=True)
         registry = {
-            "gemini": lambda: _GeminiProvider(gemini_model, rate_limit),
             "openai": lambda: _OpenAIProvider(openai_model, rate_limit),
         }
         self.providers: List[_Provider] = []
@@ -453,9 +411,9 @@ def run(args: argparse.Namespace) -> None:
 
     # LLM adjudication is mandatory — no deterministic fallback. Abort up front if no
     # provider is available so the run never silently degrades into a weaker mode.
-    adjud = Adjudicator(args.model, args.openai_model, args.rate_limit, args.provider_order)
+    adjud = Adjudicator(args.openai_model, args.rate_limit, args.provider_order)
     if not adjud.enabled:
-        logger.error("No LLM provider available (need GEMINI_API_KEY or OPENAI_API_KEY in .env) — "
+        logger.error("No LLM provider available (need OPENAI_API_KEY in .env) — "
                      "aborting: this pipeline requires LLM adjudication.")
         return
 
@@ -681,10 +639,9 @@ def main() -> None:
     p.add_argument("--window-before", type=int, default=DEFAULT_WINDOW_BEFORE)
     p.add_argument("--window-after", type=int, default=DEFAULT_WINDOW_AFTER)
     p.add_argument("--max-llm-pairs", type=int, default=DEFAULT_MAX_LLM_PAIRS)
-    p.add_argument("--model", type=str, default=DEFAULT_MODEL, help="Gemini model id (primary).")
-    p.add_argument("--openai-model", type=str, default=DEFAULT_OPENAI_MODEL, help="OpenAI model id (fallback).")
+    p.add_argument("--openai-model", type=str, default=DEFAULT_OPENAI_MODEL, help="OpenAI model id.")
     p.add_argument("--provider-order", type=str, default=DEFAULT_PROVIDER_ORDER,
-                   help="Comma-separated adjudication preference, e.g. 'gemini,openai' or 'openai'.")
+                   help="Comma-separated adjudication preference (currently only 'openai' is supported).")
     p.add_argument("--max-workers", type=int, default=8, help="Concurrent adjudication workers.")
     p.add_argument("--rate-limit", type=int, default=DEFAULT_RATE_LIMIT)
     p.add_argument("--embed", action="store_true",

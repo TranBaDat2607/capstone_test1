@@ -37,7 +37,6 @@ from step09_report_claim_ledger import (  # noqa: E402  (path set above)
     ASSESSMENT_LABEL,
     ASSESSMENT_ORDER,
     CONDUCT_CLASSES,
-    COVERAGE_CAVEAT,
     ROLE_BUCKET,
     build_header,
     is_review_queue,
@@ -50,15 +49,23 @@ NEO4J_URI_DEFAULT = "bolt://localhost:8687"
 NEO4J_USER_DEFAULT = "greenwashing"
 NEO4J_PASSWORD_DEFAULT = "nammovuivui"
 
-ASSESSMENT_META = {  # label, emoji, css class — the three advisory buckets (§1.1)
-    "appears_contradicted": ("Appears contradicted", "✗", "contradicted"),
-    "appears_supported": ("Appears supported", "✓", "supported"),
-    "unverified_insufficient_evidence": ("Unverified / insufficient", "•", "unverified"),
+ASSESSMENT_META = {  # nhãn, emoji, css class — 3 nhóm đánh giá tham khảo (§1.1)
+    "appears_contradicted": ("Có vẻ mâu thuẫn", "✗", "contradicted"),
+    "appears_supported": ("Có vẻ được xác nhận", "✓", "supported"),
+    "unverified_insufficient_evidence": ("Chưa xác minh / thiếu bằng chứng", "•", "unverified"),
 }
+
+# Nhãn hiển thị cho nguồn của claim (dữ liệu gốc vẫn là "report"/"news" — chỉ dịch phần hiển thị).
+CLAIM_SOURCE_LABEL = {"report": "báo cáo", "news": "tin tức"}
+
+# Bản dịch tiếng Việt cho lưu ý độ phủ (COVERAGE_CAVEAT gốc trong step09 giữ nguyên tiếng Anh
+# vì đó là script CLI dùng chung — bản dịch chỉ áp dụng cho giao diện Streamlit này).
+COVERAGE_CAVEAT_VI = ("Bằng chứng hành vi độc lập còn mỏng — việc không có mâu thuẫn KHÔNG "
+                      "đồng nghĩa với việc công ty đã được minh oan (xem docs/SYSTEM_DESIGN.md §8.3).")
 
 # --------------------------------------------------------------------------- page + style
 st.set_page_config(
-    page_title="Greenwashing Evidence Explorer",
+    page_title="Trình khám phá Bằng chứng Greenwashing",
     page_icon="🌿",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -67,24 +74,27 @@ st.set_page_config(
 st.markdown(
     """
     <style>
-      .block-container { padding-top: 2rem; max-width: 1150px; }
-      .gw-title { font-size: 1.9rem; font-weight: 700; margin-bottom: .1rem; }
-      .gw-sub   { color: #6b7280; font-size: .95rem; margin-bottom: 1rem; }
+      * { font-family: "Segoe UI", -apple-system, "Helvetica Neue", Roboto, Arial, sans-serif; }
+      .block-container { padding-top: 2rem; max-width: 1180px; }
+      .gw-title { font-size: 2rem; font-weight: 700; margin-bottom: .2rem; line-height: 1.3; }
+      .gw-sub   { color: #52606d; font-size: 1rem; line-height: 1.6; margin-bottom: 1.1rem; }
 
       .advisory-banner {
-        background: #fff8e1; border: 1px solid #f0d58a; color: #7a5c00;
-        border-radius: 8px; padding: .6rem .9rem; font-size: .88rem; margin-bottom: 1rem;
+        background: #fff8e1; border: 1px solid #f0d58a; color: #6b4f00;
+        border-radius: 8px; padding: .75rem 1rem; font-size: .92rem; line-height: 1.55;
+        margin-bottom: 1rem;
       }
       .coverage-caveat {
-        background: #eef2f7; border-left: 4px solid #94a3b8; color: #475569;
-        border-radius: 6px; padding: .55rem .8rem; font-size: .85rem; margin: .3rem 0 1.1rem 0;
+        background: #eef2f7; border-left: 4px solid #94a3b8; color: #3a4653;
+        border-radius: 6px; padding: .65rem .9rem; font-size: .9rem; line-height: 1.55;
+        margin: .3rem 0 1.2rem 0;
       }
 
       /* metric chips */
-      .chips { display: flex; gap: .6rem; flex-wrap: wrap; margin: .2rem 0 .6rem 0; }
-      .chip { border-radius: 10px; padding: .55rem .9rem; min-width: 120px; border: 1px solid; }
-      .chip .n { font-size: 1.5rem; font-weight: 700; line-height: 1; }
-      .chip .l { font-size: .74rem; text-transform: uppercase; letter-spacing: .03em; opacity: .8; }
+      .chips { display: flex; gap: .7rem; flex-wrap: wrap; margin: .2rem 0 .7rem 0; }
+      .chip { border-radius: 10px; padding: .6rem 1rem; min-width: 130px; border: 1px solid; }
+      .chip .n { font-size: 1.6rem; font-weight: 700; line-height: 1.2; }
+      .chip .l { font-size: .78rem; letter-spacing: .01em; opacity: .9; margin-top: .1rem; }
       .chip.total       { background:#f3f4f6; border-color:#d1d5db; color:#374151; }
       .chip.contradicted{ background:#fdecea; border-color:#f5b7b1; color:#a93226; }
       .chip.supported   { background:#eafaf1; border-color:#a9dfbf; color:#1e8449; }
@@ -93,32 +103,48 @@ st.markdown(
       /* claim card */
       .claim-card {
         border: 1px solid #e5e7eb; border-left-width: 5px; border-radius: 10px;
-        padding: .85rem 1.05rem; margin-bottom: .9rem; background: #ffffff;
+        padding: 1rem 1.15rem; margin-bottom: 1rem; background: #ffffff;
+        box-shadow: 0 1px 3px rgba(15, 23, 42, .05);
       }
       .claim-card.contradicted { border-left-color: #c0392b; }
       .claim-card.supported    { border-left-color: #1e8449; }
       .claim-card.unverified   { border-left-color: #b0b7bd; }
-      .claim-head { display:flex; justify-content:space-between; gap:1rem; align-items:baseline; }
-      .claim-id { font-family: ui-monospace, monospace; font-size: .8rem; color:#6b7280; }
-      .claim-text { font-size: 1.02rem; font-weight: 600; margin: .35rem 0 .55rem 0; color:#1f2937; }
+      .claim-head { display:flex; justify-content:space-between; gap:1rem; align-items:baseline;
+                    flex-wrap: wrap; }
+      .claim-id { font-family: ui-monospace, monospace; font-size: .82rem; color:#5d6d7e; }
+      .claim-text { font-size: 1.08rem; font-weight: 600; line-height: 1.55;
+                    margin: .45rem 0 .65rem 0; color:#1f2937; }
 
-      .badge { border-radius: 999px; padding: .12rem .6rem; font-size: .74rem; font-weight:600;
+      .badge { border-radius: 999px; padding: .18rem .7rem; font-size: .78rem; font-weight:700;
                white-space: nowrap; }
       .badge.contradicted { background:#fdecea; color:#a93226; }
       .badge.supported    { background:#eafaf1; color:#1e8449; }
       .badge.unverified   { background:#eef1f3; color:#5d6d7e; }
 
-      .evi { border-radius: 7px; padding: .5rem .7rem; margin: .4rem 0; font-size: .9rem; }
+      .evi { border-radius: 7px; padding: .65rem .9rem; margin: .5rem 0; font-size: .93rem; }
       .evi.c { background:#fdf0ee; border-left:3px solid #c0392b; }
       .evi.s { background:#eef8f2; border-left:3px solid #1e8449; }
       .evi.f { background:#fef6e7; border-left:3px solid #d68910; }
-      .evi .meta { font-size: .76rem; color:#6b7280; margin-bottom: .15rem; }
-      .evi .txt  { color:#374151; }
-      .evi .rat  { font-size: .82rem; color:#6b7280; font-style: italic; margin-top:.2rem; }
+      .evi .meta { font-size: .78rem; color:#5d6d7e; margin-bottom: .4rem; }
 
-      .caveats { font-size: .8rem; color:#6b7280; margin-top:.55rem; }
-      .caveats li { margin: .05rem 0; }
-      .sig { font-size: .78rem; color:#8a94a0; margin-top:.35rem; }
+      /* claim (báo cáo) vs bằng chứng độc lập — so sánh rõ ràng trong từng khối */
+      .cmp { margin: .25rem 0; }
+      .cmp-label { font-size: .72rem; font-weight: 700; text-transform: uppercase;
+                   letter-spacing: .02em; margin-bottom: .15rem; }
+      .claim-side .cmp-label    { color: #6b7280; }
+      .evidence-side .cmp-label { color: #374151; }
+      .cmp-text { font-size: .93rem; line-height: 1.55; color: #374151; }
+      .vs { font-size: .8rem; font-weight: 700; margin: .3rem 0; padding-left: .1rem; }
+      .vs.c { color: #a93226; }
+      .vs.s { color: #1e8449; }
+      .vs.f { color: #b8860b; }
+
+      .evi .rat  { font-size: .85rem; color:#5d6d7e; font-style: italic; line-height: 1.5;
+                   margin-top:.45rem; padding-top:.35rem; border-top: 1px dashed rgba(0,0,0,.08); }
+
+      .caveats { font-size: .84rem; color:#52606d; line-height: 1.6; margin-top:.65rem; }
+      .caveats li { margin: .15rem 0; }
+      .sig { font-size: .8rem; color:#78828c; line-height: 1.5; margin-top:.4rem; }
     </style>
     """,
     unsafe_allow_html=True,
@@ -235,54 +261,78 @@ def _ev_year(ev: Dict[str, Any]) -> str:
     return str(ev.get("year") or ev.get("date") or "?")
 
 
-def evidence_html(ev: Dict[str, Any], kind: str, maxlen: int, note: str = "") -> str:
+# kind -> (nhãn kết nối giữa báo cáo và bằng chứng, nhãn phía bằng chứng)
+CONNECTOR = {
+    "c": ("⚡ mâu thuẫn với", "🔎 Bằng chứng độc lập cho thấy"),
+    "s": ("✓ được xác nhận bởi", "🔎 Bằng chứng độc lập xác nhận"),
+    "f": ("⚑ có vẻ khớp với", "🔎 Nguồn không độc lập cho thấy"),
+}
+
+
+def evidence_html(claim_text: str, ev: Dict[str, Any], kind: str, maxlen: int, note: str = "") -> str:
     conf = ev.get("confidence")
-    conf_s = f"conf {float(conf):.2f}" if conf is not None else "conf ?"
+    conf_s = f"độ tin cậy {float(conf):.2f}" if conf is not None else "độ tin cậy ?"
     dom = ev.get("source_domain") or ""
     dom_s = f" · {esc(dom)}" if dom else ""
-    unc = " · date uncertain" if ev.get("date_uncertain") else ""
+    unc = " · ngày không chắc chắn" if ev.get("date_uncertain") else ""
     prov = ev.get("provider")
     prov_s = f" · {esc(prov)}" if prov else ""
     meta = (f"{esc(ev.get('class', '?'))} · {conf_s} · {esc(_ev_year(ev))}"
             f"{unc}{dom_s}{prov_s}{note}")
+
+    connector_label, evidence_label = CONNECTOR.get(kind, CONNECTOR["f"])
+    claim_row = (f'<div class="cmp claim-side">'
+                 f'<div class="cmp-label">📄 Báo cáo nói</div>'
+                 f'<div class="cmp-text">"{esc(_truncate(claim_text, min(maxlen, 220)))}"</div>'
+                 f'</div>')
+    connector_row = f'<div class="vs {kind}">{connector_label}</div>'
+    evidence_row = (f'<div class="cmp evidence-side">'
+                    f'<div class="cmp-label">{evidence_label}</div>'
+                    f'<div class="cmp-text">"{esc(_truncate(ev.get("text", ""), maxlen))}"</div>'
+                    f'</div>')
+
     rat = ev.get("rationale")
-    rat_html = f'<div class="rat">↳ {esc(_truncate(rat, maxlen + 120))}</div>' if rat else ""
+    rat_html = (f'<div class="rat">💭 Nhận định của LLM: '
+                f'{esc(_truncate(rat, maxlen + 120))}</div>') if rat else ""
     return (f'<div class="evi {kind}">'
             f'<div class="meta">{meta}</div>'
-            f'<div class="txt">"{esc(_truncate(ev.get("text", ""), maxlen))}"</div>'
+            f'{claim_row}{connector_row}{evidence_row}'
             f'{rat_html}</div>')
 
 
 def claim_card_html(d: Dict[str, Any], maxlen: int) -> str:
     assessment = d.get("assessment", "unverified_insufficient_evidence")
     _label, _emoji, cls = ASSESSMENT_META.get(
-        assessment, ("Unverified / insufficient", "•", "unverified"))
-    badge = f'<span class="badge {cls}">{_emoji} {esc(_label)} · advisory</span>'
+        assessment, ("Chưa xác minh / thiếu bằng chứng", "•", "unverified"))
+    badge = f'<span class="badge {cls}">{_emoji} {esc(_label)} · tham khảo</span>'
+    src = CLAIM_SOURCE_LABEL.get(d.get("claim_source_type", "report"), d.get("claim_source_type", "report"))
     head = (f'<div class="claim-head">'
             f'<span class="claim-id">{esc(d.get("claim_id", "?"))} · '
-            f'{esc(d.get("year", "?"))} · source={esc(d.get("claim_source_type", "report"))}</span>'
+            f'{esc(d.get("year", "?"))} · nguồn={esc(src)}</span>'
             f'{badge}</div>')
     text = f'<div class="claim-text">{esc(_truncate(d.get("claim_text", ""), maxlen))}</div>'
 
+    claim_text = d.get("claim_text", "")
     evi = []
     for ev in d.get("contradicting_evidence", []):
-        evi.append(evidence_html(ev, "c", maxlen))
+        evi.append(evidence_html(claim_text, ev, "c", maxlen))
     for ev in d.get("supporting_evidence", []):
-        evi.append(evidence_html(ev, "s", maxlen))
+        evi.append(evidence_html(claim_text, ev, "s", maxlen))
     for ev in d.get("flagged_non_independent_support", []):
-        evi.append(evidence_html(ev, "f", maxlen, note=" · company domain — not counted"))
-    evi_html = "".join(evi) or '<div class="sig">No linked conduct evidence.</div>'
+        evi.append(evidence_html(claim_text, ev, "f", maxlen,
+                                  note=" · miền của công ty — không được tính"))
+    evi_html = "".join(evi) or '<div class="sig">Không có bằng chứng hành vi liên kết.</div>'
 
     sig = d.get("signals", {}) or {}
-    sig_html = (f'<div class="sig">signals: structural_contradiction='
-                f'{str(bool(sig.get("structural_contradiction"))).lower()} · '
-                f'kpi_gap={"yes" if sig.get("kpi_gap") else "none"}</div>')
+    sig_html = (f'<div class="sig">tín hiệu: mâu thuẫn cấu trúc='
+                f'{"có" if sig.get("structural_contradiction") else "không"} · '
+                f'khoảng trống KPI={"có" if sig.get("kpi_gap") else "không"}</div>')
 
     caveats = d.get("caveats", []) or []
     cav_html = ""
     if caveats:
         items = "".join(f"<li>{esc(c)}</li>" for c in caveats)
-        cav_html = f'<div class="caveats"><b>Caveats:</b><ul>{items}</ul></div>'
+        cav_html = f'<div class="caveats"><b>Lưu ý:</b><ul>{items}</ul></div>'
 
     return (f'<div class="claim-card {cls}">{head}{text}{evi_html}{sig_html}{cav_html}</div>')
 
@@ -292,11 +342,11 @@ def chip(n: int, label: str, cls: str) -> str:
 
 
 # --------------------------------------------------------------------------- app body
-st.markdown('<div class="gw-title">🌿 Greenwashing Evidence Explorer</div>',
+st.markdown('<div class="gw-title">🌿 Trình khám phá Bằng chứng Greenwashing</div>',
             unsafe_allow_html=True)
-st.markdown('<div class="gw-sub">Do a company\'s <b>reported</b> ESG claims hold up against '
-            '<b>independent</b> evidence of what it actually did? '
-            'Enter a company code to review the evidence.</div>', unsafe_allow_html=True)
+st.markdown('<div class="gw-sub">Các tuyên bố ESG mà công ty <b>công bố</b> có đứng vững trước '
+            'bằng chứng <b>độc lập</b> về những gì công ty thực sự đã làm hay không? '
+            'Nhập mã công ty để xem lại bằng chứng.</div>', unsafe_allow_html=True)
 
 # Connect up front; fail with clear guidance rather than a stack trace.
 try:
@@ -305,43 +355,44 @@ try:
 except Exception as e:  # noqa: BLE001
     conn_ok = False
     st.error(
-        "**Cannot connect to Neo4j.** Start the step-5 database and load the graph first.\n\n"
+        "**Không thể kết nối tới Neo4j.** Hãy khởi động database (bước 5) và nạp graph trước.\n\n"
         f"```\ndocker compose up -d\n```\n\nURI `{os.getenv('NEO4J_URI', NEO4J_URI_DEFAULT)}` "
-        f"— details: `{e}`")
+        f"— chi tiết lỗi: `{e}`")
     st.stop()
 
 tickers = list_tickers()
 
 with st.sidebar:
-    st.header("Company")
-    ticker = st.selectbox("Company code (ticker)", tickers, index=0)
-    if st.button("↻ Refresh from Neo4j", use_container_width=True):
+    st.header("Công ty")
+    ticker = st.selectbox("Mã công ty (ticker)", tickers, index=0)
+    if st.button("↻ Làm mới từ Neo4j", use_container_width=True):
         st.cache_data.clear()
         st.rerun()
 
     st.divider()
-    st.header("Filters")
+    st.header("Bộ lọc")
     view = st.radio(
-        "Show",
-        ["Signal-bearing (default)", "Appears contradicted", "Appears supported",
-         "Unverified / insufficient", "All", "Review queue"],
-        help="Signal-bearing = contradicted + supported (mirrors the CLI default). "
-             "Review queue = contradiction with NO independent verification (the schema payoff).",
+        "Hiển thị",
+        ["Có tín hiệu (mặc định)", "Có vẻ mâu thuẫn", "Có vẻ được xác nhận",
+         "Chưa xác minh / thiếu bằng chứng", "Tất cả", "Hàng đợi cần xem xét"],
+        help="Có tín hiệu = mâu thuẫn + được xác nhận (giống mặc định của CLI). "
+             "Hàng đợi cần xem xét = có mâu thuẫn nhưng KHÔNG có xác minh độc lập.",
     )
-    query = st.text_input("Search claim text", "").strip().lower()
-    limit = st.slider("Max claims shown", 10, 500, 50, step=10)
-    maxlen = st.slider("Truncate text (chars)", 120, 1000, 320, step=20)
+    query = st.text_input("Tìm trong nội dung tuyên bố", "").strip().lower()
+    limit = st.slider("Số tuyên bố tối đa hiển thị", 10, 500, 50, step=10)
+    maxlen = st.slider("Giới hạn độ dài văn bản (ký tự)", 120, 1000, 320, step=20)
 
     st.divider()
-    st.caption("Read-only view of the Neo4j advisory layer "
-               "(`src/step08_sync_crosscheck_to_neo4j.py`). No LLM call, no score, no verdict.")
+    st.caption("Chế độ chỉ xem của lớp tham khảo (advisory) trong Neo4j "
+               "(`src/step08_sync_crosscheck_to_neo4j.py`). Không gọi LLM, không có điểm số, "
+               "không có kết luận cuối cùng.")
 
 name, dossiers, conduct_pool = load_dossiers(ticker)
 
 if not dossiers:
     st.warning(
-        f"No assessed claims found for **{ticker}** in Neo4j.\n\n"
-        "Run the cross-check sync once (free, no tokens):\n\n"
+        f"Không tìm thấy tuyên bố nào đã được đánh giá cho **{ticker}** trong Neo4j.\n\n"
+        "Hãy chạy đồng bộ cross-check một lần (miễn phí, không tốn token):\n\n"
         "```\npython src/step08_sync_crosscheck_to_neo4j.py --ticker "
         f"{ticker}\n```")
     st.stop()
@@ -353,40 +404,40 @@ counts = header["counts"]
 st.subheader(f"{ticker} — {name}")
 st.markdown(
     '<div class="chips">'
-    + chip(header["total"], "claims", "total")
-    + chip(counts["appears_contradicted"], "appears contradicted", "contradicted")
-    + chip(counts["appears_supported"], "appears supported", "supported")
-    + chip(counts["unverified_insufficient_evidence"], "unverified / insufficient", "unverified")
+    + chip(header["total"], "tuyên bố", "total")
+    + chip(counts["appears_contradicted"], "có vẻ mâu thuẫn", "contradicted")
+    + chip(counts["appears_supported"], "có vẻ được xác nhận", "supported")
+    + chip(counts["unverified_insufficient_evidence"], "chưa xác minh / thiếu bằng chứng", "unverified")
     + "</div>",
     unsafe_allow_html=True,
 )
 st.markdown(
-    '<div class="advisory-banner">⚠ <b>Advisory only.</b> No greenwashing score or verdict — '
-    'each assessment is an LLM-assisted opinion for human review; there is no ground-truth label '
-    '(see <code>docs/SYSTEM_DESIGN.md</code> §1.1). Every item links to its source for '
-    'verification.</div>',
+    '<div class="advisory-banner">⚠ <b>Chỉ mang tính tham khảo.</b> Không có điểm số hay kết luận '
+    'greenwashing — mỗi đánh giá là một ý kiến do LLM hỗ trợ, dành cho con người xem xét lại; '
+    'không tồn tại nhãn chuẩn (ground-truth) nào (xem <code>docs/SYSTEM_DESIGN.md</code> §1.1). '
+    'Mọi mục đều dẫn tới nguồn để bạn tự kiểm chứng.</div>',
     unsafe_allow_html=True,
 )
 st.markdown(
-    f'<div class="coverage-caveat">🛈 <b>Independent conduct on the issuer:</b> '
-    f'{esc(header["conduct_bits"])}. &nbsp; {esc(COVERAGE_CAVEAT)}</div>',
+    f'<div class="coverage-caveat">🛈 <b>Bằng chứng hành vi độc lập về công ty:</b> '
+    f'{esc(header["conduct_bits"])}. &nbsp; {esc(COVERAGE_CAVEAT_VI)}</div>',
     unsafe_allow_html=True,
 )
 
 # --- filter + sort -----------------------------------------------------------------------
 VIEW_TO_ASSESSMENT = {
-    "Appears contradicted": "appears_contradicted",
-    "Appears supported": "appears_supported",
-    "Unverified / insufficient": "unverified_insufficient_evidence",
+    "Có vẻ mâu thuẫn": "appears_contradicted",
+    "Có vẻ được xác nhận": "appears_supported",
+    "Chưa xác minh / thiếu bằng chứng": "unverified_insufficient_evidence",
 }
 
-if view == "Review queue":
+if view == "Hàng đợi cần xem xét":
     selected = [d for d in dossiers if is_review_queue(d)]
-elif view == "All":
+elif view == "Tất cả":
     selected = list(dossiers)
 elif view in VIEW_TO_ASSESSMENT:
     selected = [d for d in dossiers if d.get("assessment") == VIEW_TO_ASSESSMENT[view]]
-else:  # Signal-bearing (default)
+else:  # Có tín hiệu (mặc định)
     selected = [d for d in dossiers
                 if d.get("assessment") in ("appears_contradicted", "appears_supported")]
 
@@ -398,21 +449,21 @@ selected.sort(key=_sort_key)
 total_matched = len(selected)
 shown = selected[:limit]
 
-if view == "Review queue":
-    st.markdown(f"#### Review queue — contradiction with no independent verification "
+if view == "Hàng đợi cần xem xét":
+    st.markdown(f"#### Hàng đợi cần xem xét — mâu thuẫn nhưng không có xác minh độc lập "
                 f"({total_matched})")
 else:
-    st.markdown(f"#### Claims ({total_matched} match this filter"
-                + (f", showing {len(shown)}" if total_matched > len(shown) else "") + ")")
+    st.markdown(f"#### Tuyên bố ({total_matched} khớp bộ lọc này"
+                + (f", đang hiển thị {len(shown)}" if total_matched > len(shown) else "") + ")")
 
 if not shown:
-    st.info("No claims match this filter.")
+    st.info("Không có tuyên bố nào khớp bộ lọc này.")
 else:
     st.markdown("".join(claim_card_html(d, maxlen) for d in shown), unsafe_allow_html=True)
     if total_matched > len(shown):
-        st.caption(f"… {total_matched - len(shown)} more not shown — raise “Max claims shown” "
-                   "in the sidebar.")
+        st.caption(f"… còn {total_matched - len(shown)} tuyên bố chưa hiển thị — tăng "
+                   "“Số tuyên bố tối đa hiển thị” ở thanh bên.")
 
 st.divider()
-st.caption("Greenwashing Graph-RAG · evidence + advisory opinion, never a verdict · "
-           "data read live from Neo4j · docs/SYSTEM_DESIGN.md")
+st.caption("Greenwashing Graph-RAG · bằng chứng + ý kiến tham khảo, không phải kết luận cuối cùng · "
+           "dữ liệu đọc trực tiếp từ Neo4j · docs/SYSTEM_DESIGN.md")
