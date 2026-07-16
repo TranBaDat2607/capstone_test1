@@ -95,6 +95,48 @@ esg_news_crawler.run           → data/outputs/news/<TICKER>.jsonl + coverage.c
 
 ---
 
+## Onboarding (new team member — start here)
+
+The generated data (`data/`, `graph_output/`, `kpi_output/` — ~330 MB) is **not in Git**.
+It ships via a private Hugging Face dataset repo, so you do **not** re-run the expensive
+stages: the LLM extraction costs money, the ESG labeling needs a GPU, and the news crawl
+is not reproducible (the web moves). Four steps to a working setup:
+
+```bash
+# 1. Code + dependencies
+git clone https://github.com/TranBaDat2607/capstone_test1.git && cd capstone_test1
+pip install -r requirements.txt
+
+# 2. Secrets — never shared through Git or the dataset repo; use your OWN keys
+cp .env.example .env      # then fill in GEMINI_API_KEY (see CLAUDE.md)
+
+# 3. Data — lands the exact snapshot this commit was built against
+huggingface-cli login     # or put HF_TOKEN in .env (read token is enough)
+python src/data_sync.py pull
+
+# 4. Neo4j — rebuilt locally, NOT downloaded (a live DB volume cannot be copied safely)
+docker compose up -d
+python src/step06_load_graph_to_neo4j.py --clear    # a few minutes, no LLM
+```
+
+Verify: `python src/step09_report_claim_ledger.py` should render the AAA claim ledger.
+
+**How data and code stay in sync.** `data_version.json` (tracked in Git) pins the dataset
+revision, so `git checkout <old-commit> && python src/data_sync.py pull` restores the data
+that commit was built against — that pin is what keeps the thesis baseline vs after-phase0
+numbers reproducible. `python src/data_sync.py status` shows the pinned vs local state and
+warns when they have drifted apart.
+
+**Maintainer only** — after rebuilding the graph, publish the new snapshot and commit the pin:
+
+```bash
+python src/data_sync.py push --dry-run     # inspect what would go up
+python src/data_sync.py push               # needs an HF write token
+git add data_version.json && git commit -m "data: refresh snapshot"
+```
+
+---
+
 ## Quick start
 
 ```bash

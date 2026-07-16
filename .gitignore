@@ -23,6 +23,9 @@ env/
 # config/ (schema.json, issuer_registry.json, company list) is intentionally
 # tracked; only generated artifacts are ignored.
 #   raw -> interim -> labeled -> outputs all live under data/
+# These are distributed to the team via the Hugging Face dataset repo instead —
+# see README "Onboarding" and `python src/data_sync.py pull`. The pinned dataset
+# revision lives in data_version.json, which IS tracked.
 data/
 graph_output/
 kpi_output/
@@ -41,4 +44,7 @@ ef5b9835-91e3-4571-a0e8-c389650690e1-meca.md
 articles.json
 
 # ---- Neo4j (docker-compose data volume, step 5) ----
+# Never distributed: it is a live DB volume (corrupt if copied while running) and is
+# pinned to the Neo4j image version. Teammates rebuild it with step06 from
+# graph_output/resolved/resolved_graph.json instead.
 neo4j_data/
