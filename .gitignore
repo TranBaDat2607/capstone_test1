@@ -32,6 +32,9 @@ kpi_output/
 esg_news_output/
 test_data/
 
+# Resume/progress metadata written by upload_large_folder in src/data_sync.py push.
+.cache/
+
 # ---- IDE / OS ----
 .idea/
 .vscode/

@@ -27,7 +27,7 @@ Deliberately NOT distributed (none of this is about size):
                       Neo4j image version. Rebuild it locally with step06 instead (one
                       command, no LLM), from the resolved_graph.json this script ships.
 
-Auth: `huggingface-cli login`, or set HF_TOKEN in .env / the environment.
+Auth: `hf auth login`, or set HF_TOKEN in .env / the environment.
 A write token is needed only for `push`; `pull` of a private repo needs a read token.
 
 Run from the repo root:
@@ -53,6 +53,16 @@ from dotenv import load_dotenv
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
+# Route large files through classic LFS (S3 multipart) instead of Xet, which huggingface_hub
+# 1.x uses by default. Measured here: every one of the 15 LFS-bound files (all *.pdf, plus
+# all_validated_triples.json at >10 MB) failed on Xet with "connection forcibly closed"
+# (WinError 10054) and stalled at ~447 kB/s, while the 4028 non-LFS files committed fine.
+# The same PDF over classic LFS uploaded in 4.5 s at 3.14 MB/s. setdefault, so anyone whose
+# link does cope with Xet can still opt back in by exporting HF_HUB_DISABLE_XET=0.
+# Must precede any huggingface_hub import — its constants are read at import time, which is
+# why every import of it in this file is deliberately function-local.
+os.environ.setdefault("HF_HUB_DISABLE_XET", "1")
+
 # Resolved locally rather than imported from step01: this tool must run on a fresh clone
 # before the LLM/pipeline dependencies are installed, so it stays import-light on purpose.
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -68,8 +78,16 @@ IGNORE_PATTERNS = [".env", ".env.*", "**/.env", "EmeraldMind/**", "neo4j_data/**
 
 
 def _load_token() -> Optional[str]:
+    """Token from .env if present, else whatever `hf auth login` cached."""
     load_dotenv(REPO_ROOT / ".env")
-    return os.getenv("HF_TOKEN") or os.getenv("HUGGING_FACE_HUB_TOKEN")
+    explicit = os.getenv("HF_TOKEN") or os.getenv("HUGGING_FACE_HUB_TOKEN")
+    if explicit:
+        return explicit
+    # get_token() also resolves the cached CLI login, so `hf auth login` alone is enough
+    # and no token needs to be written into .env.
+    from huggingface_hub import get_token
+
+    return get_token()
 
 
 def _git_commit() -> str:
@@ -109,7 +127,7 @@ def cmd_push(args: argparse.Namespace) -> int:
 
     token = _load_token()
     if not token and not args.dry_run:
-        logger.error("No HF token. Run `huggingface-cli login` or set HF_TOKEN in .env.")
+        logger.error("No HF token. Run `hf auth login` or set HF_TOKEN in .env.")
         return 1
 
     present = [f for f in SYNCED_FOLDERS if (REPO_ROOT / f).exists()]
@@ -134,18 +152,24 @@ def cmd_push(args: argparse.Namespace) -> int:
     api.create_repo(repo_id=repo_id, repo_type="dataset", private=args.private, exist_ok=True)
 
     code_commit = _git_commit()
-    # One commit for all folders => one revision SHA to pin (uploading per-folder would
-    # yield three SHAs and defeat the point of a single reproducible snapshot).
-    info = api.upload_folder(
+    # upload_large_folder, not upload_folder: the latter has no retry, so on a slow link a
+    # dropped connection leaves it hanging on a dead socket forever (seen here — it stalled
+    # at 85% and never recovered). This one is resumable, multi-threaded and retries, and it
+    # keeps its progress metadata in <folder_path>/.cache/huggingface (git-ignored) so an
+    # interrupted run picks up where it left off instead of re-uploading.
+    api.upload_large_folder(
         folder_path=str(REPO_ROOT),
         repo_id=repo_id,
         repo_type="dataset",
         allow_patterns=ALLOW_PATTERNS,
         ignore_patterns=IGNORE_PATTERNS,
-        commit_message=args.message or f"Data snapshot for code commit {code_commit[:8]}",
+        print_report=True,
+        print_report_every=30,
     )
 
-    revision = getattr(info, "oid", None) or api.dataset_info(repo_id).sha
+    # It commits in batches and returns None, so the pin is the repo head once it settles —
+    # the intermediate commits are irrelevant, only the final tree needs to be reproducible.
+    revision = api.dataset_info(repo_id).sha
     payload = {
         "repo_id": repo_id,
         "repo_type": "dataset",
@@ -222,7 +246,6 @@ def main() -> int:
     p_push.add_argument("--repo-id", help="HF dataset repo, e.g. user/capstone-esg-kg-data")
     p_push.add_argument("--private", action="store_true", default=True)
     p_push.add_argument("--public", dest="private", action="store_false")
-    p_push.add_argument("-m", "--message", help="commit message for the dataset repo")
     p_push.add_argument("--dry-run", action="store_true")
     p_push.set_defaults(func=cmd_push)
 
