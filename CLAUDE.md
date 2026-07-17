@@ -27,6 +27,20 @@ repo and secrets, so it is never committed or pushed with this project.
 
 - **Windows / PowerShell** host. `.rar`/`.7z` extraction in `crawl_data/extract_archives.py`
   shells out to external **UnRAR.exe / 7z.exe** (install WinRAR + 7-Zip separately).
+- **Generated data is distributed via Hugging Face, not Git** (`src/data_sync.py`, not a
+  pipeline step): `data/`, `graph_output/`, `kpi_output/` are git-ignored (~342 MB) and ship
+  as an HF dataset repo. The pushed revision is **pinned in `data_version.json`, which IS
+  tracked in Git** — so a checkout recovers the data that went with that code, which is what
+  makes the baseline vs after-Phase-0 comparison reproducible. Never re-run an expensive stage
+  to get data a teammate already pushed; `pull` it. Needs `huggingface_hub` (imported lazily,
+  deliberately not in `requirements.txt` so the tool works on a bare clone) and `HF_TOKEN` in
+  `.env` (or `hf auth login`). The repo lives in the `nammovuivui-capstone` **org**, not a personal
+  namespace — HF has no collaborator feature for user-owned repos, so an org is the only way to
+  share a private one; you must be invited to it (`read` to pull, `write` to push) or it 404s.
+  **Anyone pushing must commit `data_version.json` in the same sitting** — a pushed snapshot whose
+  pin is not committed is invisible: the team keeps pulling the old revision with no error. `git pull`
+  before pushing, so a pin conflict surfaces in Git rather than silently overwriting someone's
+  snapshot. `neo4j_data/` is never synced — rebuild it with step06.
 - **Secrets:** copy `.env.example` → `.env` and set `GEMINI_API_KEY` (and optionally
   `OPENAI_API_KEY`, the fallback LLM provider for step 6's cross-check). All `src/` LLM
   scripts load `.env` from the repo root regardless of cwd. `.env` is git-ignored — never
@@ -129,6 +143,13 @@ src/step09_report_claim_ledger.py       → stdout + graph_output/crosscheck/<ti
    (presentation only — NO LLM, reads ONLY Neo4j (run step 6b first). Per-company claim ledger,
     signal-first (contradicted → supported → unverified), with the coverage caveat.
     --review-queue (contradiction + no verification), --assessment, --claim-id, --markdown)
+src/step10_evaluate.py                  → graph_output/evaluation/<ticker>_evaluation_report.md      (step 8 / P6)
+   (evaluation WITHOUT ground truth — measures the evidence-linking machinery, never
+    "greenwashing accuracy": coverage metrics + case studies + manual link-precision
+    methodology + ablations. Offline-first (reads the step-6 dossiers/stats + coverage.csv);
+    the ONLY paid part is a fixed 30-case OpenAI gold-set arm, and it is cached.
+    Rendered report is in Vietnamese; code/comments stay English. --coverage,
+    --case-studies, --ablation, --no-llm)
 ```
 
 The `src/` scripts share helpers by importing across files: later stages import
@@ -176,6 +197,12 @@ See `docs/SCHEMA_EXPLAINED.md` for the rationale.
 ```bash
 pip install -r requirements.txt
 
+# 0. Land the data snapshot this commit was built against (instead of re-running the pipeline)
+python src/data_sync.py status                              # what is pinned vs what is local
+python src/data_sync.py pull                                # teammate: fetch the revision in data_version.json
+python src/data_sync.py push                                # after a rebuild: upload + re-pin (needs org `write`)
+                                                            #   then: git add data_version.json && git commit
+
 # A. Annual report → labeled ESG sentences
 python -m data_processing.prepare_sentences \
     --input  "data/raw/annual_reports_sample/AAA_Baocaothuongnien_2025.pdf" \
@@ -204,6 +231,8 @@ python src/step07_crosscheck_claims_vs_conduct.py                           # �
 python src/step08_sync_crosscheck_to_neo4j.py                              # step 6b: push dossiers into Neo4j advisory layer (no LLM)
 python src/step09_report_claim_ledger.py                                   # step 7: render the AAA claim ledger FROM Neo4j (no LLM)
 python src/step09_report_claim_ledger.py --review-queue --markdown         #   contradiction-no-verification queue + Markdown file
+python src/step10_evaluate.py                                              # step 8 / P6: full Vietnamese evaluation report
+python src/step10_evaluate.py --ablation --no-llm                          #   free arms only (coverage/case studies/ablation are offline)
 
 # Demo UI (web front-end for step 7; reads the same Neo4j advisory layer, no LLM — see docs/DEMO_UI.md)
 streamlit run app.py                                                       # company-code claim-ledger explorer at http://localhost:8501
@@ -216,12 +245,21 @@ streamlit run app.py                                                       # com
 #   load: --clear (wipe first), --no-versions (canonical only), --database, --strict (env: NEO4J_URI/USER/PASSWORD);
 #   crosscheck: LLM adjudication is mandatory (no --no-llm); --max-llm-pairs, --provider-order gemini,openai, --to-neo4j;
 #   sync (step08_sync_crosscheck_to_neo4j.py): --clear-advisory, --dry-run;
-#   ledger (step09_report_claim_ledger.py, Neo4j-only): --review-queue, --assessment, --claim-id, --limit, --markdown
+#   ledger (step09_report_claim_ledger.py, Neo4j-only): --review-queue, --assessment, --claim-id, --limit, --markdown;
+#   evaluate (step10_evaluate.py): --coverage, --case-studies, --ablation, --no-llm (only the 30-case arm costs money)
 ```
 
-There is no automated test suite or linter configured. `test/` and `notebooks/`
-contain Jupyter notebooks for manual validation (e.g. `test/test_pdf_extraction.ipynb`),
-not unit tests.
+No pytest harness or linter is configured. The one automated check is a plain assert
+script covering the P3/P4 Phase-0 temporal logic — run it from the repo root after
+touching step03/step03b/step05:
+
+```bash
+python test/test_temporal_invariants.py    # offline, no LLM/DB; asserts date canonicalization,
+                                           # temporal invariants, source_id parsing, DSU consolidate
+```
+
+The rest of `test/` and `notebooks/` are Jupyter notebooks for manual validation
+(e.g. `test/test_pdf_extraction.ipynb`).
 
 ## Documentation map
 
@@ -241,6 +279,10 @@ its §4.6/§4.7/§5.3/§7.2), `KPI_EXTRACTION_FROM_JSONL.md`, `TRIPLET_EXTRACTIO
 `CLAIM_CONDUCT_CROSSCHECK.md` (step 6 — claim↔conduct cross-check, the analytical core),
 `CLAIM_LEDGER.md` (step 6b sync + step 7 — dossier → Neo4j advisory layer, then the Neo4j-only claim ledger + analyst Cypher),
 `DEMO_UI.md` (the Streamlit company-code claim-ledger explorer, `app.py` — how to run the demo),
+`EVALUATION.md` (step 8 / P6 — why evaluation measures the linking machinery, not
+greenwashing accuracy; the four methods and their costs),
+`ENTITY_RESOLUTION_IMPROVEMENT.md` (Vietnamese — proposal to use graph structural
+signatures to auto-resolve step-4's lexically ambiguous `needs_review` cases),
 `KPI_DEFINITIONS_CONSTRUCTION_BUILD.md`, `VIETNAM_IMPROVEMENT_PLAN.md`. The root
 `ENTITY_RESOLUTION_PLAN.md` is the step-4 engineering checklist. `README.md` (root),
 `esg_news_crawler/README.md`, and `kpi_build/README.md` cover their respective subsystems.

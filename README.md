@@ -111,7 +111,11 @@ pip install -r requirements.txt
 cp .env.example .env      # then fill in GEMINI_API_KEY (see CLAUDE.md)
 
 # 3. Data — lands the exact snapshot this commit was built against
-huggingface-cli login     # or put HF_TOKEN in .env (read token is enough)
+#    Ask the maintainer to invite you to the `nammovuivui-capstone` org first: the dataset
+#    is private, and without an invite this 404s (HF does not distinguish "no access" from
+#    "does not exist"). Then make a token of type *Read* at hf.co/settings/tokens — a
+#    fine-grained token must additionally be scoped to the ORG, or it 404s the same way.
+hf auth login             # or put HF_TOKEN in .env (a read token is enough)
 python src/data_sync.py pull
 
 # 4. Neo4j — rebuilt locally, NOT downloaded (a live DB volume cannot be copied safely)
@@ -127,13 +131,19 @@ that commit was built against — that pin is what keeps the thesis baseline vs 
 numbers reproducible. `python src/data_sync.py status` shows the pinned vs local state and
 warns when they have drifted apart.
 
-**Maintainer only** — after rebuilding the graph, publish the new snapshot and commit the pin:
+**Publishing a new snapshot.** Anyone with `write` in the org can push, so treat the two
+commands below as one indivisible step:
 
 ```bash
+git pull                                   # so a pin conflict surfaces here, not on the Hub
 python src/data_sync.py push --dry-run     # inspect what would go up
-python src/data_sync.py push               # needs an HF write token
-git add data_version.json && git commit -m "data: refresh snapshot"
+python src/data_sync.py push               # needs an HF *Write* token scoped to the org
+git add data_version.json && git commit -m "data: refresh snapshot" && git push
 ```
+
+A push whose pin is never committed is the failure mode to avoid: the Hub has your new data,
+`data_version.json` still points at the old revision, and the team keeps pulling stale data
+with no error to warn them. Announce the push so nobody rebuilds on a snapshot you replaced.
 
 ---
 
