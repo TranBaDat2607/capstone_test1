@@ -6,10 +6,13 @@ evidence that supports or contradicts it, plus an explicitly **advisory** assess
 
 This is the web front-end for Step 7 (docs/SYSTEM_DESIGN.md §9, docs/CLAIM_LEDGER.md).
 It reads ONLY from the Neo4j advisory layer that `src/step08_sync_crosscheck_to_neo4j.py`
-wrote (claim `assessment`/`caveats`/`signals` + `llm_supports`/`llm_contradicts`/
+wrote (claim `assessment`/`caveats`/`signals`/`score_*` + `llm_supports`/`llm_contradicts`/
 `llm_flagged_support` edges). It makes **no** LLM call — deterministic, traceable,
-same-input→same-evidence — and it never emits a greenwashing score or verdict
-(SYSTEM_DESIGN §1.1: no ground truth ⇒ evidence + advisory opinion only).
+same-input→same-evidence — and it never emits a greenwashing verdict
+(SYSTEM_DESIGN §1.1: no ground truth ⇒ evidence + advisory opinion only). The per-claim
+evidence-balance bar renders the step07b softmax distribution (docs/SOFTMAX_SCORING.md):
+a normalized balance of the linked evidence, computed offline — NOT a greenwashing
+probability, and labeled as such everywhere it appears.
 
 Prereqs (same as step09):
     - Neo4j up (docker compose up -d) with the step-5 graph loaded.
@@ -145,6 +148,27 @@ st.markdown(
       .caveats { font-size: .84rem; color:#52606d; line-height: 1.6; margin-top:.65rem; }
       .caveats li { margin: .15rem 0; }
       .sig { font-size: .8rem; color:#78828c; line-height: 1.5; margin-top:.4rem; }
+
+      /* evidence-balance bar (step07b) — đỏ | xám | xanh: hai cực tách nhau bằng ô trung
+         tính ở giữa (CVD-safe, validator-checked); nhãn chữ + giá trị bên dưới nên không
+         bao giờ chỉ dựa vào màu. */
+      .score-wrap { margin: .1rem 0 .55rem 0; }
+      .score-title { font-size: .72rem; font-weight: 700; text-transform: uppercase;
+                     letter-spacing: .02em; color: #6b7280; margin-bottom: .25rem; }
+      .score-title .score-note { font-weight: 400; text-transform: none; color: #8a939b; }
+      .score-bar { display: flex; gap: 2px; height: 10px; border-radius: 5px;
+                   overflow: hidden; background: #f3f4f6; }
+      .score-seg.c { background: #c0392b; }
+      .score-seg.a { background: #94a3b8; }
+      .score-seg.s { background: #1e8449; }
+      .score-legend { display: flex; gap: .9rem; flex-wrap: wrap; font-size: .78rem;
+                      color: #5d6d7e; margin-top: .3rem; }
+      .score-legend .dot { display: inline-block; width: 8px; height: 8px;
+                           border-radius: 2px; margin-right: .3rem; vertical-align: baseline; }
+      .score-legend .dot.c { background: #c0392b; }
+      .score-legend .dot.a { background: #94a3b8; }
+      .score-legend .dot.s { background: #1e8449; }
+      .score-dis { color: #b8860b; font-weight: 600; }
     </style>
     """,
     unsafe_allow_html=True,
@@ -204,7 +228,9 @@ def load_dossiers(ticker: str) -> Tuple[str, List[Dict[str, Any]], Dict[str, int
             "RETURN c._node_key AS key, c.claim_id AS claim_id, c.description AS text, "
             "       c.date AS year, c.source_type AS src, c.assessment AS assessment, "
             "       c.caveats AS caveats, c.structural_contradiction AS struct, "
-            "       c.kpi_gap AS kpi_gap",
+            "       c.kpi_gap AS kpi_gap, "
+            "       c.score_contradicted AS score_c, c.score_supported AS score_s, "
+            "       c.score_abstain AS score_a, c.score_disagrees_with_assessment AS score_dis",
             t=t))
 
         edge_rows = list(s.run(
@@ -235,6 +261,10 @@ def load_dossiers(ticker: str) -> Tuple[str, List[Dict[str, Any]], Dict[str, int
             "signals": {"structural_contradiction": bool(r["struct"]),
                         "kpi_gap": bool(r["kpi_gap"])},
             "caveats": list(r["caveats"] or []),
+            # step07b evidence-balance scores (docs/SOFTMAX_SCORING.md); None before enrichment.
+            "assessment_scores": ({"contradicted": r["score_c"], "supported": r["score_s"],
+                                   "abstain": r["score_a"]} if r["score_c"] is not None else None),
+            "score_disagrees_with_assessment": bool(r["score_dis"]),
         }
     for r in edge_rows:
         d = dossiers.get(r["key"])
@@ -300,6 +330,37 @@ def evidence_html(claim_text: str, ev: Dict[str, Any], kind: str, maxlen: int, n
             f'{rat_html}</div>')
 
 
+# Thứ tự đoạn: đỏ | xám | xanh — abstain (trung tính) nằm giữa hai cực, đúng layout
+# diverging và tách đỏ khỏi xanh cho người mù màu (validator: ΔE deutan 5.0 → 17.9).
+SCORE_SEGMENTS = (
+    ("contradicted", "mâu thuẫn", "c"),
+    ("abstain", "chưa đủ bằng chứng", "a"),
+    ("supported", "xác nhận", "s"),
+)
+
+
+def score_bar_html(d: Dict[str, Any]) -> str:
+    """Evidence-balance bar (step07b). Empty string when the dossier isn't enriched yet."""
+    scores = d.get("assessment_scores") or {}
+    if scores.get("contradicted") is None:
+        return ""
+    segs, legend = [], []
+    for key, label, cls in SCORE_SEGMENTS:
+        v = float(scores.get(key) or 0.0)
+        if v > 0.001:
+            segs.append(f'<div class="score-seg {cls}" style="flex:{v:.4f}"></div>')
+        legend.append(f'<span><span class="dot {cls}"></span>{esc(label)} {v:.2f}</span>')
+    dis = ('<span class="score-dis">⚖ điểm lệch với nhãn — bằng chứng trái chiều</span>'
+           if d.get("score_disagrees_with_assessment") else "")
+    tooltip = ("Phân bố cân bằng bằng chứng đã liên kết cho tuyên bố này (softmax offline, "
+               "tái lập được — docs/SOFTMAX_SCORING.md). KHÔNG phải xác suất greenwashing.")
+    return (f'<div class="score-wrap" title="{esc(tooltip)}">'
+            f'<div class="score-title">Cân bằng bằng chứng '
+            f'<span class="score-note">— không phải xác suất greenwashing</span></div>'
+            f'<div class="score-bar">{"".join(segs)}</div>'
+            f'<div class="score-legend">{"".join(legend)}{dis}</div></div>')
+
+
 def claim_card_html(d: Dict[str, Any], maxlen: int) -> str:
     assessment = d.get("assessment", "unverified_insufficient_evidence")
     _label, _emoji, cls = ASSESSMENT_META.get(
@@ -311,6 +372,7 @@ def claim_card_html(d: Dict[str, Any], maxlen: int) -> str:
             f'{esc(d.get("year", "?"))} · nguồn={esc(src)}</span>'
             f'{badge}</div>')
     text = f'<div class="claim-text">{esc(_truncate(d.get("claim_text", ""), maxlen))}</div>'
+    score_bar = score_bar_html(d)
 
     claim_text = d.get("claim_text", "")
     evi = []
@@ -334,7 +396,7 @@ def claim_card_html(d: Dict[str, Any], maxlen: int) -> str:
         items = "".join(f"<li>{esc(c)}</li>" for c in caveats)
         cav_html = f'<div class="caveats"><b>Lưu ý:</b><ul>{items}</ul></div>'
 
-    return (f'<div class="claim-card {cls}">{head}{text}{evi_html}{sig_html}{cav_html}</div>')
+    return (f'<div class="claim-card {cls}">{head}{text}{score_bar}{evi_html}{sig_html}{cav_html}</div>')
 
 
 def chip(n: int, label: str, cls: str) -> str:
@@ -384,8 +446,9 @@ with st.sidebar:
 
     st.divider()
     st.caption("Chế độ chỉ xem của lớp tham khảo (advisory) trong Neo4j "
-               "(`src/step08_sync_crosscheck_to_neo4j.py`). Không gọi LLM, không có điểm số, "
-               "không có kết luận cuối cùng.")
+               "(`src/step08_sync_crosscheck_to_neo4j.py`). Không gọi LLM, không có kết luận "
+               "cuối cùng; thanh cân bằng bằng chứng là lớp advisory tính offline "
+               "(`src/step07b_enrich_dossiers.py`), không phải xác suất greenwashing.")
 
 name, dossiers, conduct_pool = load_dossiers(ticker)
 
@@ -412,10 +475,12 @@ st.markdown(
     unsafe_allow_html=True,
 )
 st.markdown(
-    '<div class="advisory-banner">⚠ <b>Chỉ mang tính tham khảo.</b> Không có điểm số hay kết luận '
+    '<div class="advisory-banner">⚠ <b>Chỉ mang tính tham khảo.</b> Không có kết luận '
     'greenwashing — mỗi đánh giá là một ý kiến do LLM hỗ trợ, dành cho con người xem xét lại; '
     'không tồn tại nhãn chuẩn (ground-truth) nào (xem <code>docs/SYSTEM_DESIGN.md</code> §1.1). '
-    'Mọi mục đều dẫn tới nguồn để bạn tự kiểm chứng.</div>',
+    'Thanh <b>cân bằng bằng chứng</b> trên mỗi tuyên bố là phân bố chuẩn hóa của bằng chứng '
+    'đã liên kết (tính offline, tái lập được — <code>docs/SOFTMAX_SCORING.md</code>), '
+    '<b>không phải</b> xác suất greenwashing. Mọi mục đều dẫn tới nguồn để bạn tự kiểm chứng.</div>',
     unsafe_allow_html=True,
 )
 st.markdown(

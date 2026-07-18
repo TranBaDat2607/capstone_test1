@@ -12,7 +12,8 @@ Prereq: run the sync once (free, no tokens):
     python src/step08_sync_crosscheck_to_neo4j.py
 
 Non-negotiable framing (SYSTEM_DESIGN §1.1): evidence + an explicitly advisory opinion,
-never a greenwashing score or verdict.
+never a greenwashing verdict. The step07b evidence-balance scores, when present, are
+rendered with the same caveat (normalized evidence weights, not probabilities).
 
 Run from the repo root:
     python src/step09_report_claim_ledger.py                       # AAA ledger (contradicted + supported)
@@ -141,7 +142,9 @@ def load_from_neo4j(driver, database: Optional[str], ticker: str):
             "MATCH (c:SustainabilityClaim {crosscheck_ticker:$t}) "
             "RETURN c._node_key AS key, c.claim_id AS claim_id, c.description AS text, "
             "       c.date AS year, c.source_type AS src, c.assessment AS assessment, "
-            "       c.caveats AS caveats, c.structural_contradiction AS struct, c.kpi_gap AS kpi_gap",
+            "       c.caveats AS caveats, c.structural_contradiction AS struct, c.kpi_gap AS kpi_gap, "
+            "       c.score_contradicted AS score_c, c.score_supported AS score_s, "
+            "       c.score_abstain AS score_a, c.score_disagrees_with_assessment AS score_dis",
             t=t))
         if not claim_rows:
             logger.error(f"No claims with an assessment for ticker '{t}' in Neo4j. "
@@ -176,6 +179,10 @@ def load_from_neo4j(driver, database: Optional[str], ticker: str):
             "flagged_non_independent_support": [],
             "signals": {"structural_contradiction": bool(r["struct"]), "kpi_gap": bool(r["kpi_gap"])},
             "caveats": list(r["caveats"] or []),
+            # step07b evidence-balance scores (docs/SOFTMAX_SCORING.md); absent pre-enrichment.
+            "assessment_scores": ({"contradicted": r["score_c"], "supported": r["score_s"],
+                                   "abstain": r["score_a"]} if r["score_c"] is not None else None),
+            "score_disagrees_with_assessment": bool(r["score_dis"]),
         }
     for r in edge_rows:
         d = dossiers.get(r["key"])
@@ -216,8 +223,9 @@ def render_header_text(h: Dict[str, Any]) -> str:
          f"  |  unverified/insufficient: {c['unverified_insufficient_evidence']}"),
         f"  ⚠ Independent conduct on the issuer: {h['conduct_bits']}.",
         f"    {COVERAGE_CAVEAT}",
-        "  Advisory only — no greenwashing score or verdict; each assessment is an "
-        "LLM-assisted opinion for human review.",
+        "  Advisory only — no greenwashing verdict; each assessment is an LLM-assisted "
+        "opinion for human review, and the evidence-balance scores are normalized "
+        "evidence weights, not probabilities.",
         f"  (source: Neo4j advisory layer — run src/step08_sync_crosscheck_to_neo4j.py to refresh)",
         "=" * 88,
     ])
@@ -235,6 +243,13 @@ def render_entry_text(d: Dict[str, Any], maxlen: int) -> str:
         out += _evidence_lines_text("✓", ev, maxlen)
     for ev in d.get("flagged_non_independent_support", []):
         out += _evidence_lines_text("⚑", ev, maxlen, suffix=" [company domain — not counted]")
+    scores = d.get("assessment_scores")
+    if scores:
+        dis = "  (argmax disagrees with assessment — mixed evidence)" \
+            if d.get("score_disagrees_with_assessment") else ""
+        out.append(f"  scores: contradicted={scores['contradicted']:.2f} · "
+                   f"supported={scores['supported']:.2f} · abstain={scores['abstain']:.2f} "
+                   f"(evidence balance, not a greenwashing probability){dis}")
     sig = d.get("signals", {}) or {}
     out.append(f"  signals: structural_contradiction={str(bool(sig.get('structural_contradiction'))).lower()}; "
                f"kpi_gap={'yes' if sig.get('kpi_gap') else 'none'}")
@@ -263,9 +278,11 @@ def render_markdown(h: Dict[str, Any], groups: Dict[str, List[Dict[str, Any]]], 
     md = [
         f"# {h['ticker']} claim ledger — {h['name']}",
         "",
-        "> **Advisory only** — no greenwashing score or verdict. Every assessment is an "
+        "> **Advisory only** — no greenwashing verdict. Every assessment is an "
         "LLM-assisted opinion for human review; there is no ground-truth label "
-        "(see `docs/SYSTEM_DESIGN.md` §1.1). Source: Neo4j advisory layer.",
+        "(see `docs/SYSTEM_DESIGN.md` §1.1). Evidence-balance scores are normalized "
+        "evidence weights (`docs/SOFTMAX_SCORING.md`), not probabilities. "
+        "Source: Neo4j advisory layer.",
         "",
         "| assessment | count |",
         "|---|---|",
@@ -310,6 +327,13 @@ def _entry_markdown(d: Dict[str, Any], maxlen: int) -> List[str]:
                       f"\"{_truncate(ev.get('text', ''), maxlen)}\"")
             if ev.get("rationale"):
                 md.append(f"    - _rationale:_ {_truncate(ev['rationale'], maxlen + 120)}")
+    scores = d.get("assessment_scores")
+    if scores:
+        dis = " — **argmax disagrees with assessment** (mixed evidence)" \
+            if d.get("score_disagrees_with_assessment") else ""
+        md.append(f"- _scores (evidence balance, not a greenwashing probability):_ "
+                  f"contradicted={scores['contradicted']:.2f} · supported={scores['supported']:.2f} "
+                  f"· abstain={scores['abstain']:.2f}{dis}")
     sig = d.get("signals", {}) or {}
     md.append(f"- _signals:_ structural_contradiction="
               f"{str(bool(sig.get('structural_contradiction'))).lower()}, "

@@ -17,7 +17,10 @@ so the ledger (Step 7) and Cypher can read everything from Neo4j alone. Re-runni
 
 What it writes (all clearly namespaced / flagged so advisory ≠ extracted fact):
   * on each SustainabilityClaim node: `assessment`, `assessment_is_advisory=true`, `caveats`
-    (list), `structural_contradiction`, `kpi_gap`, `crosscheck_ticker`.
+    (list), `structural_contradiction`, `kpi_gap`, `crosscheck_ticker` — plus, when
+    step07b_enrich_dossiers.py has run, the evidence-balance scores `score_contradicted` /
+    `score_supported` / `score_abstain` and `score_disagrees_with_assessment`
+    (docs/SOFTMAX_SCORING.md — a normalized evidence balance, NOT a greenwashing probability).
   * advisory edges Claim→evidence node (matched on the loader's `_node_key = "n{index}"`):
       supporting_evidence            → `llm_supports`
       contradicting_evidence         → `llm_contradicts`   (incl. KPIObservation gaps)
@@ -81,6 +84,7 @@ def build_rows(dossiers: List[Dict[str, Any]], ticker: str):
             continue
         ck = f"n{ci}"
         sig = d.get("signals") or {}
+        scores = d.get("assessment_scores") or {}
         claim_rows.append({
             "ck": ck,
             "assessment": d.get("assessment"),
@@ -88,6 +92,12 @@ def build_rows(dossiers: List[Dict[str, Any]], ticker: str):
             "struct": bool(sig.get("structural_contradiction")),
             "kpi_gap": sig.get("kpi_gap") not in (None, {}),
             "ticker": ticker.upper(),
+            # step07b evidence-balance scores; None (SET → null) removes the property,
+            # so an un-enriched dossier cleanly clears any stale scores.
+            "score_contradicted": scores.get("contradicted"),
+            "score_supported": scores.get("supported"),
+            "score_abstain": scores.get("abstain"),
+            "score_disagrees": d.get("score_disagrees_with_assessment"),
         })
         for role, key in ROLE_KEY.items():
             for ev in d.get(key, []) or []:
@@ -153,7 +163,9 @@ def run(args: argparse.Namespace) -> None:
                 s.run("MATCH ()-[r]->() WHERE r.llm_suggested = true DELETE r")
                 s.run(f"MATCH (c:SustainabilityClaim {{crosscheck_ticker:$t}}) "
                       f"REMOVE c.assessment, c.assessment_is_advisory, c.caveats, "
-                      f"c.structural_contradiction, c.kpi_gap, c.crosscheck_ticker",
+                      f"c.structural_contradiction, c.kpi_gap, c.crosscheck_ticker, "
+                      f"c.score_contradicted, c.score_supported, c.score_abstain, "
+                      f"c.score_disagrees_with_assessment",
                       t=args.ticker.upper())
 
             # 1) claim-node advisory properties
@@ -162,7 +174,11 @@ def run(args: argparse.Namespace) -> None:
                 f"MATCH (c:`{SHARED_LABEL}` {{_node_key: r.ck}}) "
                 f"SET c.assessment = r.assessment, c.assessment_is_advisory = true, "
                 f"    c.caveats = r.caveats, c.structural_contradiction = r.struct, "
-                f"    c.kpi_gap = r.kpi_gap, c.crosscheck_ticker = r.ticker"
+                f"    c.kpi_gap = r.kpi_gap, c.crosscheck_ticker = r.ticker, "
+                f"    c.score_contradicted = r.score_contradicted, "
+                f"    c.score_supported = r.score_supported, "
+                f"    c.score_abstain = r.score_abstain, "
+                f"    c.score_disagrees_with_assessment = r.score_disagrees"
             )
             res = s.run(claim_q, rows=claim_rows).consume()
             logger.info(f"Claim props set on {res.counters.properties_set} properties "

@@ -88,6 +88,10 @@ data_processing.preprocess_news  → data/interim/news_preprocessed/  (P1: norma
 Reports are the **claim** side ("what they say"); news is the **conduct** side ("what they do").
 Both feed the same `src/` graph-construction path and land in one temporal KG (see `docs/SYSTEM_DESIGN.md`).
 
+`crawl_data/crawler_news.py` is a separate, FPT-specific standalone news crawler (not a
+`-m` package, not wired into pipeline B above) — treat it as a legacy/experimental tool, not
+the documented news-ingestion path. See `docs/NEWS_CRAWLER_OPTIMIZATION.md` for its design.
+
 **C. Labeled JSONL → temporal knowledge graph (`src/`, the EmeraldKG port)**
 ```
 src/step00_graph_quality_report.py      → graph_output/quality/quality_report_<label>.{json,md}
@@ -283,6 +287,8 @@ its §4.6/§4.7/§5.3/§7.2), `KPI_EXTRACTION_FROM_JSONL.md`, `TRIPLET_EXTRACTIO
 greenwashing accuracy; the four methods and their costs),
 `ENTITY_RESOLUTION_IMPROVEMENT.md` (Vietnamese — proposal to use graph structural
 signatures to auto-resolve step-4's lexically ambiguous `needs_review` cases),
-`KPI_DEFINITIONS_CONSTRUCTION_BUILD.md`, `VIETNAM_IMPROVEMENT_PLAN.md`. The root
+`KPI_DEFINITIONS_CONSTRUCTION_BUILD.md`, `VIETNAM_IMPROVEMENT_PLAN.md`,
+`NEWS_CRAWLER_OPTIMIZATION.md` (Vietnamese — architecture of the standalone, FPT-specific
+`crawl_data/crawler_news.py`, not the documented `esg_news_crawler/` pipeline). The root
 `ENTITY_RESOLUTION_PLAN.md` is the step-4 engineering checklist. `README.md` (root),
 `esg_news_crawler/README.md`, and `kpi_build/README.md` cover their respective subsystems.
