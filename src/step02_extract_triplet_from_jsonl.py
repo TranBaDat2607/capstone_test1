@@ -494,6 +494,13 @@ def _validate_extraction_format(data: Any, schema: Dict[str, Any]) -> bool:
 # --------------------------------------------------------------------------- #
 OBSERVATION_CLASSES = {"KPIObservation", "Emission", "Waste"}
 
+# Claim + evidence classes that get page-level provenance stamped at extraction time
+# (docs/PROVENANCE_PATCH.md). T1 entities (Organization, Person, ...) are deliberately
+# excluded: they recur on dozens of pages and get merged in step05, so a single stamped
+# page would be misleading.
+PROVENANCE_CLASSES = {"SustainabilityClaim", "KPIObservation", "MediaReport", "Controversy",
+                      "Penalty", "ThirdPartyVerification", "Emission", "Waste", "Certification"}
+
 
 def triple_list_to_graph(triples: List[Dict[str, Any]], schema: Dict[str, Any]) -> Dict[str, Any]:
     nodes: List[Dict[str, Any]] = []
@@ -542,6 +549,33 @@ def stamp_source_type(graph: Dict[str, Any], source_type: str) -> Dict[str, Any]
         node.setdefault("properties", {})["source_type"] = source_type
     for edge in graph.get("edges", []):
         edge["source_type"] = source_type
+    return graph
+
+
+def stamp_provenance(graph: Dict[str, Any], doc_stem: str, page: int, source: str,
+                     article_meta: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    """Stamp deterministic source provenance on claim/evidence nodes (not T1 entities).
+
+    The extractor knows exactly which document and page it is processing, so claim and
+    evidence nodes get `source_doc`/`source_page` here rather than relying on the LLM's
+    free-text `source`. For `--source news`, the article's title/url/domain (from
+    `load_news_doc_meta`) ride along so the UI can cite the article by name.
+    `provenance_method="extraction"` marks these as ground truth — the offline patch
+    (step05b) never overwrites them. Mutates and returns `graph`.
+    """
+    for node in graph.get("nodes", []):
+        if node.get("class") not in PROVENANCE_CLASSES:
+            continue
+        props = node.setdefault("properties", {})
+        props["source_doc"] = doc_stem
+        props["source_page"] = int(page)
+        props["provenance_method"] = "extraction"
+        if source == "news" and article_meta:
+            for src_key, dst_key in (("title", "article_title"), ("url", "article_url"),
+                                     ("source_domain", "source_domain")):
+                v = article_meta.get(src_key)
+                if v:
+                    props[dst_key] = v
     return graph
 
 
@@ -761,6 +795,7 @@ def process_page(page_info: Dict[str, Any], page_kpis: List[Dict[str, Any]],
                 graph = (triple_list_to_graph(valid_triples, schema)
                          if valid_triples else {"nodes": [], "edges": []})
                 stamp_source_type(graph, source)
+                stamp_provenance(graph, pdf_stem, p_no, source, article_meta)
                 out_file.write_text(json.dumps(graph, indent=2, ensure_ascii=False),
                                     encoding="utf-8")
                 logger.info(f"Page {p_no}: {len(graph['nodes'])} nodes, {len(graph['edges'])} edges")

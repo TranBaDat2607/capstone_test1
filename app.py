@@ -230,17 +230,26 @@ def load_dossiers(ticker: str) -> Tuple[str, List[Dict[str, Any]], Dict[str, int
             "       c.caveats AS caveats, c.structural_contradiction AS struct, "
             "       c.kpi_gap AS kpi_gap, "
             "       c.score_contradicted AS score_c, c.score_supported AS score_s, "
-            "       c.score_abstain AS score_a, c.score_disagrees_with_assessment AS score_dis",
+            "       c.score_abstain AS score_a, c.score_disagrees_with_assessment AS score_dis, "
+            "       c.source_doc AS source_doc, c.source_page AS source_page, "
+            "       c.source AS source_free",
             t=t))
 
         edge_rows = list(s.run(
             "MATCH (c:SustainabilityClaim {crosscheck_ticker:$t})-[x]->(e) "
             "WHERE x.llm_suggested = true "
             "RETURN c._node_key AS key, x.role AS role, x.evidence_class AS class, "
-            "       x.evidence_text AS text, x.source_domain AS source_domain, x.year AS year, "
+            "       x.evidence_text AS text, x.year AS year, "
             "       x.date AS date, x.confidence AS confidence, x.rationale AS rationale, "
             "       x.provider AS provider, x.independent AS independent, "
-            "       x.date_uncertain AS date_uncertain",
+            "       x.date_uncertain AS date_uncertain, "
+            # provenance lives on the evidence node itself (step05b patch / step02 stamp).
+            # x.source_domain is often an empty string (not null), so coalesce alone would
+            # keep '' and drop the real news domain — treat '' as missing.
+            "       coalesce(CASE WHEN x.source_domain <> '' THEN x.source_domain END, "
+            "                e.source_domain) AS source_domain, "
+            "       e.source_doc AS e_source_doc, e.source_page AS e_source_page, "
+            "       e.article_title AS e_article_title",
             t=t))
 
         conduct_pool: Dict[str, int] = {}
@@ -265,6 +274,8 @@ def load_dossiers(ticker: str) -> Tuple[str, List[Dict[str, Any]], Dict[str, int
             "assessment_scores": ({"contradicted": r["score_c"], "supported": r["score_s"],
                                    "abstain": r["score_a"]} if r["score_c"] is not None else None),
             "score_disagrees_with_assessment": bool(r["score_dis"]),
+            "source_doc": r["source_doc"], "source_page": r["source_page"],
+            "source_free": r["source_free"],
         }
     for r in edge_rows:
         d = dossiers.get(r["key"])
@@ -278,6 +289,8 @@ def load_dossiers(ticker: str) -> Tuple[str, List[Dict[str, Any]], Dict[str, int
             "year": r["year"], "date": r["date"], "confidence": r["confidence"],
             "rationale": r["rationale"], "provider": r["provider"],
             "independent": r["independent"], "date_uncertain": r["date_uncertain"],
+            "source_doc": r["e_source_doc"], "source_page": r["e_source_page"],
+            "article_title": r["e_article_title"],
         })
     return issuer_name, list(dossiers.values()), conduct_pool
 
@@ -289,6 +302,24 @@ def esc(text: Any) -> str:
 
 def _ev_year(ev: Dict[str, Any]) -> str:
     return str(ev.get("year") or ev.get("date") or "?")
+
+
+def provenance_label(source_doc: Any, source_page: Any, article_title: Any,
+                     source_domain: Any, fallback: str = "") -> str:
+    """Nguồn tham chiếu, HTML-escaped: '📰 <tên bài báo> · <domain>' cho tin tức,
+    '📄 <tên báo cáo> · tr. <trang>' cho báo cáo; fallback (vd c.source) khi node
+    chưa được đóng dấu provenance (step05b)."""
+    if article_title:
+        label = f"📰 {esc(_truncate(str(article_title), 80))}"
+        if source_domain:
+            label += f" · {esc(source_domain)}"
+        return label
+    if source_doc:
+        label = f"📄 {esc(source_doc)}"
+        if source_page is not None:
+            label += f" · tr. {esc(source_page)}"
+        return label
+    return esc(fallback) if fallback else ""
 
 
 # kind -> (nhãn kết nối giữa báo cáo và bằng chứng, nhãn phía bằng chứng)
@@ -303,12 +334,16 @@ def evidence_html(claim_text: str, ev: Dict[str, Any], kind: str, maxlen: int, n
     conf = ev.get("confidence")
     conf_s = f"độ tin cậy {float(conf):.2f}" if conf is not None else "độ tin cậy ?"
     dom = ev.get("source_domain") or ""
-    dom_s = f" · {esc(dom)}" if dom else ""
+    src_ref = provenance_label(ev.get("source_doc"), ev.get("source_page"),
+                               ev.get("article_title"), dom)
+    # the news branch already prints the domain — don't repeat it
+    dom_s = "" if (src_ref and ev.get("article_title")) else (f" · {esc(dom)}" if dom else "")
+    src_ref_s = f" · {src_ref}" if src_ref else ""
     unc = " · ngày không chắc chắn" if ev.get("date_uncertain") else ""
     prov = ev.get("provider")
     prov_s = f" · {esc(prov)}" if prov else ""
     meta = (f"{esc(ev.get('class', '?'))} · {conf_s} · {esc(_ev_year(ev))}"
-            f"{unc}{dom_s}{prov_s}{note}")
+            f"{unc}{dom_s}{src_ref_s}{prov_s}{note}")
 
     connector_label, evidence_label = CONNECTOR.get(kind, CONNECTOR["f"])
     claim_row = (f'<div class="cmp claim-side">'
@@ -367,9 +402,12 @@ def claim_card_html(d: Dict[str, Any], maxlen: int) -> str:
         assessment, ("Chưa xác minh / thiếu bằng chứng", "•", "unverified"))
     badge = f'<span class="badge {cls}">{_emoji} {esc(_label)} · tham khảo</span>'
     src = CLAIM_SOURCE_LABEL.get(d.get("claim_source_type", "report"), d.get("claim_source_type", "report"))
+    src_ref = provenance_label(d.get("source_doc"), d.get("source_page"), None, None,
+                               fallback=d.get("source_free") or "")
+    src_ref_s = f" · {src_ref}" if src_ref else ""
     head = (f'<div class="claim-head">'
             f'<span class="claim-id">{esc(d.get("claim_id", "?"))} · '
-            f'{esc(d.get("year", "?"))} · nguồn={esc(src)}</span>'
+            f'{esc(d.get("year", "?"))} · nguồn={esc(src)}{src_ref_s}</span>'
             f'{badge}</div>')
     text = f'<div class="claim-text">{esc(_truncate(d.get("claim_text", ""), maxlen))}</div>'
     score_bar = score_bar_html(d)

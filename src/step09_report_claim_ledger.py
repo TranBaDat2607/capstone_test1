@@ -144,7 +144,8 @@ def load_from_neo4j(driver, database: Optional[str], ticker: str):
             "       c.date AS year, c.source_type AS src, c.assessment AS assessment, "
             "       c.caveats AS caveats, c.structural_contradiction AS struct, c.kpi_gap AS kpi_gap, "
             "       c.score_contradicted AS score_c, c.score_supported AS score_s, "
-            "       c.score_abstain AS score_a, c.score_disagrees_with_assessment AS score_dis",
+            "       c.score_abstain AS score_a, c.score_disagrees_with_assessment AS score_dis, "
+            "       c.source_doc AS source_doc, c.source_page AS source_page",
             t=t))
         if not claim_rows:
             logger.error(f"No claims with an assessment for ticker '{t}' in Neo4j. "
@@ -158,7 +159,10 @@ def load_from_neo4j(driver, database: Optional[str], ticker: str):
             "       x.evidence_text AS text, x.source_domain AS source_domain, x.year AS year, "
             "       x.date AS date, x.confidence AS confidence, x.rationale AS rationale, "
             "       x.provider AS provider, x.independent AS independent, "
-            "       x.date_uncertain AS date_uncertain",
+            "       x.date_uncertain AS date_uncertain, "
+            # provenance lives on the evidence node itself (step05b patch / step02 stamp)
+            "       e.source_doc AS e_source_doc, e.source_page AS e_source_page, "
+            "       e.article_title AS e_article_title",
             t=t))
 
         conduct_pool: Dict[str, int] = {}
@@ -183,6 +187,7 @@ def load_from_neo4j(driver, database: Optional[str], ticker: str):
             "assessment_scores": ({"contradicted": r["score_c"], "supported": r["score_s"],
                                    "abstain": r["score_a"]} if r["score_c"] is not None else None),
             "score_disagrees_with_assessment": bool(r["score_dis"]),
+            "source_doc": r["source_doc"], "source_page": r["source_page"],
         }
     for r in edge_rows:
         d = dossiers.get(r["key"])
@@ -196,6 +201,8 @@ def load_from_neo4j(driver, database: Optional[str], ticker: str):
             "year": r["year"], "date": r["date"], "confidence": r["confidence"],
             "rationale": r["rationale"], "provider": r["provider"],
             "independent": r["independent"], "date_uncertain": r["date_uncertain"],
+            "source_doc": r["e_source_doc"], "source_page": r["e_source_page"],
+            "article_title": r["e_article_title"],
         })
     return issuer_name, list(dossiers.values()), conduct_pool
 
@@ -231,9 +238,24 @@ def render_header_text(h: Dict[str, Any]) -> str:
     ])
 
 
+def _source_ref(item: Dict[str, Any]) -> str:
+    """Human-readable source reference: article title for news, 'doc p.N' for reports.
+    Empty when the node was never provenance-stamped (step05b)."""
+    title = item.get("article_title")
+    if title:
+        return _truncate(str(title), 80)
+    doc = item.get("source_doc")
+    if not doc:
+        return ""
+    page = item.get("source_page")
+    return f"{doc} p.{page}" if page is not None else str(doc)
+
+
 def render_entry_text(d: Dict[str, Any], maxlen: int) -> str:
+    ref = _source_ref(d)
+    ref = f"  [{ref}]" if ref else ""
     out = [
-        f"CLAIM  {d.get('claim_id', '?')}   [{d.get('year', '?')}, source={d.get('claim_source_type', 'report')}]",
+        f"CLAIM  {d.get('claim_id', '?')}   [{d.get('year', '?')}, source={d.get('claim_source_type', 'report')}]{ref}",
         f'  "{_truncate(d.get("claim_text", ""), maxlen)}"',
         f"  ASSESSMENT: {d.get('assessment', '?')} (advisory)",
     ]
@@ -266,7 +288,9 @@ def _evidence_lines_text(mark: str, ev: Dict[str, Any], maxlen: int, suffix: str
     conf = ev.get("confidence")
     conf = f"conf {float(conf):.2f}" if conf is not None else "conf ?"
     unc = " (date uncertain)" if ev.get("date_uncertain") else ""
-    head = f"  {mark} {ev.get('class', '?')}  ({conf}, {_ev_year(ev)}{unc}{dom}){suffix}"
+    ref = _source_ref(ev)
+    ref = f"; {ref}" if ref else ""
+    head = f"  {mark} {ev.get('class', '?')}  ({conf}, {_ev_year(ev)}{unc}{dom}{ref}){suffix}"
     lines = [head, f'     "{_truncate(ev.get("text", ""), maxlen)}"']
     if ev.get("rationale"):
         lines.append(f"     rationale: {_truncate(ev['rationale'], maxlen + 120)}")
@@ -306,8 +330,10 @@ def render_markdown(h: Dict[str, Any], groups: Dict[str, List[Dict[str, Any]]], 
 
 
 def _entry_markdown(d: Dict[str, Any], maxlen: int) -> List[str]:
+    cref = _source_ref(d)
+    cref = f" — _{cref}_" if cref else ""
     md = [
-        f"### `{d.get('claim_id', '?')}` — [{d.get('year', '?')}, {d.get('claim_source_type', 'report')}]",
+        f"### `{d.get('claim_id', '?')}` — [{d.get('year', '?')}, {d.get('claim_source_type', 'report')}]{cref}",
         "",
         f"> {_truncate(d.get('claim_text', ''), maxlen)}",
         "",
@@ -323,7 +349,9 @@ def _entry_markdown(d: Dict[str, Any], maxlen: int) -> List[str]:
             dom = f", {dom}" if dom else ""
             conf = ev.get("confidence")
             conf = f"conf {float(conf):.2f}" if conf is not None else "conf ?"
-            md.append(f"- {mark} **{ev.get('class', '?')}** ({conf}, {_ev_year(ev)}{dom}){note}: "
+            ref = _source_ref(ev)
+            ref = f"; {ref}" if ref else ""
+            md.append(f"- {mark} **{ev.get('class', '?')}** ({conf}, {_ev_year(ev)}{dom}{ref}){note}: "
                       f"\"{_truncate(ev.get('text', ''), maxlen)}\"")
             if ev.get("rationale"):
                 md.append(f"    - _rationale:_ {_truncate(ev['rationale'], maxlen + 120)}")

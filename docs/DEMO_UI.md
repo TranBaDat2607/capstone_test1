@@ -26,6 +26,12 @@ greenwashing score or verdict** ([`SYSTEM_DESIGN.md`](./SYSTEM_DESIGN.md) §1.1)
   each listing contradicting (`✗`), supporting (`✓`) and flagged company-domain (`⚑`) evidence
   with class, confidence, year, source domain, provider, and the LLM rationale — plus per-claim
   `signals` and `caveats`.
+- **Source references** (`docs/PROVENANCE_PATCH.md`) — the claim header cites the annual
+  report + page (`📄 AAA_Baocaothuongnien_2021 · tr. 36`; falls back to the free-text
+  `c.source` for unstamped nodes) and each evidence line cites its origin: report-side
+  `📄 <doc> · tr. <N>`, news-side `📰 <article title> · <domain>` (plain text, not a link).
+  Requires `step05b_stamp_provenance.py` to have run before the Neo4j load; press
+  "↻ Làm mới từ Neo4j" after a reload to drop the Streamlit cache.
 - **Filters** (sidebar) — view bucket, **Review queue** (contradiction **and** no independent
   verification — the schema payoff, §4.1), free-text search, max-claims cap, text-length cap.
 

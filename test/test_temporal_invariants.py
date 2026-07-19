@@ -18,8 +18,15 @@ from step03_fix_invalid_triplets import (  # noqa: E402
     enforce_temporal_invariants,
     normalize_date_string,
 )
+from step02_extract_triplet_from_jsonl import stamp_provenance  # noqa: E402
 from step03b_anchor_kpi_facilities import parse_source_id  # noqa: E402
 from step05_resolve_entities import DSU, consolidate  # noqa: E402
+from step05b_stamp_provenance import (  # noqa: E402
+    candidate_locations,
+    choose_primary,
+    parse_page_token,
+    stamp_graph,
+)
 
 
 def test_normalize_date_string():
@@ -116,6 +123,125 @@ def test_parse_source_id():
         ("AAA_Baocaothuongnien_2011.pdf", 10, 1)
     assert parse_source_id("no_page_or_sentence") is None
     assert parse_source_id(None) is None
+
+
+# --------------------------------------------------------------------------- #
+# Provenance patch (step05b, docs/PROVENANCE_PATCH.md).
+# --------------------------------------------------------------------------- #
+IDKEYS = {"SustainabilityClaim": ["claim_id"], "KPIObservation": ["kpi_type", "year"],
+          "Organization": ["name"]}
+
+
+def test_parse_page_token():
+    assert parse_page_token("AAA_Baocaothuongnien_page12_LNST_DTT_2010") == \
+        ("AAA_Baocaothuongnien", 12)
+    assert parse_page_token("AAA_Baocaothuongnien_page7") == ("AAA_Baocaothuongnien", 7)
+    # ids in the canonical <src>_<page>_<idx> form belong to parse_source_id, not here
+    assert parse_page_token("AAA_Baocaothuongnien_2011.pdf_10_1") is None
+    assert parse_page_token("no_token_here") is None
+    assert parse_page_token(None) is None
+
+
+def test_choose_primary():
+    cands = {("AAA_Baocaothuongnien_2011", 5), ("AAA_Baocaothuongnien_2020", 3)}
+    # year context wins over lexicographic order
+    assert choose_primary(cands, 2020) == ("AAA_Baocaothuongnien_2020", 3)
+    # no year context -> lexicographically smallest doc
+    assert choose_primary(cands, None) == ("AAA_Baocaothuongnien_2011", 5)
+    # same doc, several pages -> smallest page
+    assert choose_primary({("D_2011", 9), ("D_2011", 2)}, None) == ("D_2011", 2)
+
+
+def test_candidate_locations_tiers():
+    stable_idx = {"SustainabilityClaim|c1": {("DOC_2011", 4)}}
+    source_idx = {"weird_llm_id": {("DOC_2012", 7)}}
+
+    # tier 1: a parseable source_id wins even when other indexes disagree
+    node = {"class": "SustainabilityClaim",
+            "properties": {"claim_id": "c1", "source_id": "DOC_2011.pdf_10_1"}}
+    assert candidate_locations(node, stable_idx, source_idx, IDKEYS, []) == \
+        ({("DOC_2011", 10)}, "source_id")
+
+    # tier 2: exact raw source_id lookup
+    node = {"class": "KPIObservation",
+            "properties": {"kpi_type": "x", "year": 2012, "source_id": "weird_llm_id"}}
+    assert candidate_locations(node, stable_idx, source_idx, IDKEYS, []) == \
+        ({("DOC_2012", 7)}, "source_id_index")
+
+    # tier 3: recomputed stable_id, reachable via a temporal_versions member too
+    node = {"class": "SustainabilityClaim", "properties": {"claim_id": "other"},
+            "temporal_versions": [{"properties": {"claim_id": "C1"}}]}  # case-insensitive
+    assert candidate_locations(node, stable_idx, source_idx, IDKEYS, []) == \
+        ({("DOC_2011", 4)}, "stable_id_index")
+
+    # tier 4: _pageNN_ token + unique year-matching doc dir
+    node = {"class": "KPIObservation",
+            "properties": {"kpi_type": "y", "year": 2010,
+                           "source_id": "DOC_page12_LNST_2010"}}
+    assert candidate_locations(node, {}, {}, IDKEYS, ["DOC_2010", "DOC_2011"]) == \
+        ({("DOC_2010", 12)}, "page_token")
+
+    # nothing matches -> unstamped
+    node = {"class": "SustainabilityClaim", "properties": {"claim_id": "nope"}}
+    assert candidate_locations(node, stable_idx, source_idx, IDKEYS, []) == (set(), None)
+
+
+def test_stamp_graph():
+    graph = {"nodes": [
+        {"class": "SustainabilityClaim", "properties": {"claim_id": "c1"}},
+        {"class": "Organization", "properties": {"name": "org"}},          # T1: never stamped
+        {"class": "KPIObservation",                                         # already ground truth
+         "properties": {"kpi_type": "z", "year": 2011, "provenance_method": "extraction"}},
+        {"class": "SustainabilityClaim", "properties": {"claim_id": "c2"}},  # ambiguous -> list
+        {"class": "MediaReport", "properties": {"report_id": "m1", "title": "t",
+                                                "source_id": "news_llm_id"}},
+    ], "edges": []}
+    idkeys = dict(IDKEYS, MediaReport=["report_id"])
+    stable_idx = {"SustainabilityClaim|c1": {("DOC_2011", 4)},
+                  "SustainabilityClaim|c2": {("DOC_2011", 4), ("DOC_2020", 9)}}
+    source_idx = {"news_llm_id": {("AAA__vietstock.vn__abc123", 1)}}
+    news_meta = {"AAA__vietstock.vn__abc123": {
+        "article_title": "Bài báo X", "article_url": "https://x", "source_domain": "vietstock.vn"}}
+
+    before = [n["class"] for n in graph["nodes"]]
+    stats = stamp_graph(graph, stable_idx, source_idx, news_meta, idkeys, ["DOC_2011", "DOC_2020"])
+
+    # node array untouched (order + count are load-bearing for step06/_node_key)
+    assert [n["class"] for n in graph["nodes"]] == before
+
+    n0, n1, n2, n3, n4 = (n["properties"] for n in graph["nodes"])
+    assert n0["source_doc"] == "DOC_2011" and n0["source_page"] == 4
+    assert "source_doc" not in n1                       # Organization skipped
+    assert n2["provenance_method"] == "extraction"      # pre-stamped left alone
+    assert "source_doc" not in n2
+    assert n3["source_pages"] == ["DOC_2011:4", "DOC_2020:9"]   # ambiguity keeps full list
+    assert n4["source_doc"] == "AAA__vietstock.vn__abc123"
+    assert n4["article_title"] == "Bài báo X" and n4["article_url"] == "https://x"
+    assert n4["title"] == "t"                           # original props untouched
+    assert stats["multi_location_nodes"] == 1
+    assert stats["news_enriched"] == 1
+    assert stats["per_class"]["KPIObservation"] == {"already_stamped": 1}
+
+
+def test_step02_stamp_provenance():
+    graph = {"nodes": [
+        {"class": "SustainabilityClaim", "properties": {"claim_id": "c"}},
+        {"class": "Organization", "properties": {"name": "org"}},
+    ], "edges": []}
+    meta = {"title": "Bài X", "url": "https://y", "source_domain": "d.vn"}
+    stamp_provenance(graph, "AAA__d.vn__ff00", 1, "news", meta)
+    claim, org = (n["properties"] for n in graph["nodes"])
+    assert claim["source_doc"] == "AAA__d.vn__ff00" and claim["source_page"] == 1
+    assert claim["provenance_method"] == "extraction"
+    assert claim["article_title"] == "Bài X" and claim["article_url"] == "https://y"
+    assert "source_doc" not in org                      # T1 entity untouched
+
+    graph = {"nodes": [{"class": "KPIObservation", "properties": {"kpi_type": "k"}}],
+             "edges": []}
+    stamp_provenance(graph, "AAA_Baocaothuongnien_2011", 10, "report", None)
+    (kpi,) = (n["properties"] for n in graph["nodes"])
+    assert kpi["source_doc"] == "AAA_Baocaothuongnien_2011" and kpi["source_page"] == 10
+    assert "article_title" not in kpi
 
 
 if __name__ == "__main__":

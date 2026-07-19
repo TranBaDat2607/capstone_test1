@@ -121,6 +121,14 @@ contradicting evidence, (3) assessment roll-up, (4) one claim's full dossier, (5
 sanity (conduct pool), (6) housekeeping to drop/re-sync the advisory layer. All keyed on the
 `llm_*` edges + `c.assessment` written by Step 6b.
 
+Since the step-5b provenance patch (`docs/PROVENANCE_PATCH.md`), claim and evidence nodes
+also carry `source_doc` / `source_page` (report stem + page, or news doc id) and — on
+news-doc nodes — `article_title` / `article_url` / `source_domain`, so analyst Cypher can
+cite sources directly, e.g.
+`MATCH (c:SustainabilityClaim {crosscheck_ticker:'AAA'}) RETURN c.claim_id, c.source_doc, c.source_page`.
+Both renderers surface them: the CLI prints `[<doc> p.<N>]` / the article title, the
+Streamlit UI shows `📄 <doc> · tr. <N>` / `📰 <title> · <domain>`.
+
 ## 5. Honest deviations & current-data caveats
 
 1. **No stored E/S/G category on claims.** Claim nodes carry only

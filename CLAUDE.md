@@ -126,6 +126,14 @@ src/step05_resolve_entities.py          → graph_output/resolved/resolved_graph
     Stage A deterministic identity_keys merge + FROZEN issuer anchor (issuer_registry.json);
     Stage B VN-aware blocking (normalized signature + gemini-embedding-001 cosine);
     Stage C gemini-2.5-flash adjudication on ambiguous pairs (budgeted); Stage D consolidate)
+src/step05b_stamp_provenance.py         → patches resolved_graph.json in place (+ provenance_patch_stats.json)
+   (offline provenance patch, NO LLM: matches claim/evidence nodes (PROVENANCE_CLASSES, never
+    T1 entities) back to the per-page graph_output/graphs/<doc>/page{N}.json files via a 4-tier
+    precedence (parseable source_id → exact source_id index → recomputed stable_id → _pageNN_
+    token) and stamps source_doc/source_page (+ article_title/url/domain for news docs from the
+    news JSONL). NEVER reorders nodes (step06 _node_key + dossier node_index are positional).
+    Run after step05, before step06; re-run after any step05 re-run. New step02 extractions
+    self-stamp (provenance_method=extraction) and are skipped. See docs/PROVENANCE_PATCH.md)
 src/step06_load_graph_to_neo4j.py       → Neo4j (bolt://localhost:8687, db `neo4j`)            (step 5)
    (load the resolved {nodes,edges} graph as a property graph — NO LLM. Nodes keyed by
     array index (entities already resolved; not re-deduped); edges keep temporal_metadata and
@@ -227,6 +235,7 @@ python src/step03_fix_invalid_triplets.py --renormalize                      #  
 python src/step03b_anchor_kpi_facilities.py --dry-run                        # P3 offline anchor patch preview (then run without --dry-run)
 python src/step04_build_issuer_registry.py                                   # → config/issuer_registry.json (run-once; then hand-confirm needs_review)
 python src/step05_resolve_entities.py                                        # → graph_output/resolved/ (step 4: entity resolution)
+python src/step05b_stamp_provenance.py --dry-run                             # provenance patch preview (then run without --dry-run; offline, no LLM)
 python src/step06_load_graph_to_neo4j.py --dry-run                           # step 5: preview planned counts, no DB
 docker compose up -d                                                 # start Neo4j on :8687 (then run neo4j/init.cypher once — see docs)
 python src/step06_load_graph_to_neo4j.py --clear                            # → Neo4j (wipe + load; needs the instance running)
@@ -245,6 +254,7 @@ streamlit run app.py                                                       # com
 #   --all-pages (don't restrict to ESG pages); --dry-run (fix/resolve/load steps: offline only, no LLM/DB/writes);
 #   quality (step00): --label <name>, --skip-slow (skip the BFS-heavy Q7(c)/(d)), --max-hops;
 #   fix (step03): --renormalize (P4 pass only); anchor patch (step03b): --max-per-facility, --dry-run;
+#   provenance patch (step05b): --graphs-dir, --news-globs, --stats-out, --dry-run;
 #   resolve: --no-llm (Stages A+B.1 only), --similarity-threshold, --max-llm-pairs (budget the LLM adjudication);
 #   load: --clear (wipe first), --no-versions (canonical only), --database, --strict (env: NEO4J_URI/USER/PASSWORD);
 #   crosscheck: LLM adjudication is mandatory (no --no-llm); --max-llm-pairs, --provider-order gemini,openai, --to-neo4j;
@@ -254,12 +264,13 @@ streamlit run app.py                                                       # com
 ```
 
 No pytest harness or linter is configured. The one automated check is a plain assert
-script covering the P3/P4 Phase-0 temporal logic — run it from the repo root after
-touching step03/step03b/step05:
+script covering the P3/P4 Phase-0 temporal logic and the step05b provenance matching —
+run it from the repo root after touching step03/step03b/step05/step05b:
 
 ```bash
 python test/test_temporal_invariants.py    # offline, no LLM/DB; asserts date canonicalization,
-                                           # temporal invariants, source_id parsing, DSU consolidate
+                                           # temporal invariants, source_id parsing, DSU consolidate,
+                                           # provenance tier matching + node-order invariant
 ```
 
 The rest of `test/` and `notebooks/` are Jupyter notebooks for manual validation
@@ -278,7 +289,9 @@ P1–P8 + the Q1–Q8 quality attributes measured by step00 — read before touc
 schema, step02 prompts, step03, or step05), `SSRL_REASONING_LAYER.md` (the proposed
 path-reasoning layer, steps 11–13 — not yet built; P5/P6/P8 constraints for it live in
 its §4.6/§4.7/§5.3/§7.2), `KPI_EXTRACTION_FROM_JSONL.md`, `TRIPLET_EXTRACTION_FROM_JSONL.md`,
-`TRIPLET_VALIDATION.md`, `ENTITY_RESOLUTION.md` (step 4 — why it's a redesign, not a port),
+`TRIPLET_VALIDATION.md`, `PROVENANCE_PATCH.md` (step 5b — offline source_doc/source_page
+stamping of the resolved graph so the UI/ledger can cite report page + article title),
+`ENTITY_RESOLUTION.md` (step 4 — why it's a redesign, not a port),
 `GRAPH_LOAD_NEO4J.md` (step 5 — Neo4j load; also a redesign),
 `CLAIM_CONDUCT_CROSSCHECK.md` (step 6 — claim↔conduct cross-check, the analytical core),
 `CLAIM_LEDGER.md` (step 6b sync + step 7 — dossier → Neo4j advisory layer, then the Neo4j-only claim ledger + analyst Cypher),
