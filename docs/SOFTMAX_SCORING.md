@@ -57,9 +57,13 @@ tính — giữ đúng self-verification guard của step07).
 
 **Trọng số một mẩu bằng chứng** (phạt ngày không chắc chắn):
 
-```
-w(e) = confidence(e) × (0.8 nếu date_uncertain(e) else 1.0)
-```
+$$
+w(e) = \text{confidence}(e) \times
+\begin{cases}
+0.8 & \text{nếu } \text{date\_uncertain}(e) = \text{true} \\
+1.0 & \text{ngược lại}
+\end{cases}
+$$
 
 Hai ghi chú về `w(e)`:
 
@@ -74,41 +78,56 @@ Hai ghi chú về `w(e)`:
 
 **Logits:**
 
-```
-z_contra  = min(Σ_{e∈C} w(e), W_max)
-            + λ_struct·[structural_contradiction] + λ_kpi·[kpi_gap] + λ_bp·[broken_promise]
-z_support = min(Σ_{e∈S⁺} w(e), W_max)
-z_abstain = β₀ − β₁·(z_contra + z_support)   # abstain giảm dần khi tổng khối lượng bằng chứng tăng
-```
+$$
+z_{\text{contra}} = \min\!\left(\sum_{e \in C} w(e),\ W_{max}\right)
+$$
 
-**Softmax với nhiệt độ τ:**
+$$
+z_{\text{support}} = \min\!\left(\sum_{e \in S^{+}} w(e),\ W_{max}\right)
+$$
 
-```
-scores = softmax([z_contra, z_support, z_abstain] / τ)
-```
+$$
+z_{\text{abstain}} = \beta_0 - \beta_1\cdot\left(z_{\text{contra}} + z_{\text{support}}\right)
+$$
+
+*(`z_abstain` giảm dần khi tổng khối lượng bằng chứng của hai phía kia tăng.)*
+
+**Softmax với nhiệt độ $\tau$:**
+
+$$
+\big(\text{score}_{\text{contra}},\ \text{score}_{\text{support}},\ \text{score}_{\text{abstain}}\big)
+= \operatorname{softmax}\!\left(\frac{z_{\text{contra}}}{\tau},\ \frac{z_{\text{support}}}{\tau},\ \frac{z_{\text{abstain}}}{\tau}\right)
+$$
+
+tức, với mỗi thành phần $i \in \{\text{contra}, \text{support}, \text{abstain}\}$:
+
+$$
+\text{score}_i = \frac{\exp(z_i / \tau)}{\displaystyle\sum_{j \in \{\text{contra}, \text{support}, \text{abstain}\}} \exp(z_j / \tau)}
+$$
 
 **Tham số mặc định** (điểm khởi đầu, sẽ calibrate — xem §4):
 
 | Tham số | Mặc định | Vai trò |
 |---|---|---|
-| `τ` | 1.0 | độ "nhọn" của phân bố |
-| `β₀` | 1.5 | thiên vị abstain khi không có bằng chứng (đúng tinh thần "unverified là mặc định") |
-| `β₁` | 1.0 | tốc độ abstain nhường chỗ khi có bằng chứng |
-| `λ_struct, λ_kpi, λ_bp` | 0.5 | đóng góp của tín hiệu offline (Vấn đề 2); = 0 khi chưa cài Vấn đề 2 |
-| `W_max` | 3.0 | chặn trên tổng trọng số một phía (chống 15 bài báo yếu lấn át 1 bằng chứng mạnh) |
+| $\tau$ | 1.0 | độ "nhọn" của phân bố |
+| $\beta_0$ | 1.5 | thiên vị abstain khi không có bằng chứng (đúng tinh thần "unverified là mặc định") |
+| $\beta_1$ | 1.0 | tốc độ abstain nhường chỗ khi có bằng chứng |
+| $\lambda_{struct}, \lambda_{kpi}, \lambda_{bp}$ | 0.5 | đóng góp của tín hiệu offline (Vấn đề 2); = 0 khi chưa cài Vấn đề 2 |
+| $W_{max}$ | 3.0 | chặn trên tổng trọng số một phía (chống 15 bài báo yếu lấn át 1 bằng chứng mạnh) |
 | phạt `date_uncertain` | 0.8 | ăn khớp caveat hiện có của step07 |
 
-**Kiểm chứng nhanh bằng số** (τ=1, β₀=1.5, β₁=1):
+**Kiểm chứng nhanh bằng số** ($\tau=1$, $\beta_0=1.5$, $\beta_1=1$):
 
-- *Không bằng chứng:* z = (0, 0, 1.5) → scores ≈ (0.15, 0.15, **0.69**) — abstain thắng rõ,
-  khớp 1.001/1.093 claim `unverified` của AAA.
-- *1 contradicting conf 0.8:* z = (0.8, 0, 0.7) → ≈ (**0.43**, 0.19, 0.38) — nghiêng
-  mâu thuẫn nhưng còn dè dặt, phản ánh đúng "một bài báo thì chưa chắc".
-- *2 contradicting conf 0.8:* z = (1.6, 0, −0.1) → ≈ (**0.72**, 0.15, 0.13) — tự tin dần
-  theo khối lượng bằng chứng. Hành vi đơn điệu, giải thích được — đúng thứ hội đồng cần.
+- *Không bằng chứng:* $(z_{\text{contra}}, z_{\text{support}}, z_{\text{abstain}}) = (0,\ 0,\ 1.5)$
+  → $\text{scores} \approx (0.15,\ 0.15,\ \mathbf{0.69})$ — abstain thắng rõ, khớp
+  1.001/1.093 claim `unverified` của AAA.
+- *1 contradicting conf 0.8:* $(0.8,\ 0,\ 0.7) \to \text{scores} \approx (\mathbf{0.43},\ 0.19,\ 0.38)$
+  — nghiêng mâu thuẫn nhưng còn dè dặt, phản ánh đúng "một bài báo thì chưa chắc".
+- *2 contradicting conf 0.8:* $(1.6,\ 0,\ -0.1) \to \text{scores} \approx (\mathbf{0.72},\ 0.15,\ 0.13)$
+  — tự tin dần theo khối lượng bằng chứng. Hành vi đơn điệu, giải thích được — đúng thứ hội đồng cần.
 
 Một hệ quả semantics cần nói rõ (tránh bị hỏi bất ngờ): khi bằng chứng **nặng cả hai
-phía**, `z_abstain` sụp sâu → phân bố tiến về ~(0.5, 0.5, 0.0) — "tự tin giằng co",
+phía**, $z_{\text{abstain}}$ sụp sâu → phân bố tiến về $\sim(0.5,\ 0.5,\ 0.0)$ — "tự tin giằng co",
 **không phải** abstain cao. Đây là lựa chọn thiết kế đúng semantics EmeraldMind
 (abstain = thiếu bằng chứng, không phải bằng chứng xung đột); case giằng co được bắt
 bằng cờ `score_disagrees_with_assessment` (§3) + caveat "Evidence is mixed" sẵn có.
