@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ESG Evidence View - Xác thực các tuyên bố báo cáo thường niên ESG của doanh nghiệp với bằng chứng độc lập">
+  <title>ESG Evidence View - Bảng Xác thực Tuyên bố ESG</title>
+
+  <!-- Google Fonts Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+  <div class="container">
+    
+    <!-- Top Search Input Bar (Separated Top Row to avoid confusion with company year filter) -->
+    <div class="top-search-row">
+      <div class="search-wrapper">
+        <div class="search-input-box">
+          <span class="search-icon">🔍</span>
+          <input 
+            type="text" 
+            id="companySearchInput" 
+            class="search-input" 
+            placeholder="Nhập mã cổ phiếu... (VD: AAA, VNM, FPT)" 
+            autocomplete="off"
+          >
+        </div>
+        <div id="searchDropdown" class="dropdown-list"></div>
+      </div>
+    </div>
+
+    <!-- Company Header Row -->
+    <header class="app-header">
+      <div class="company-title-area">
+        <h1>
+          <span id="companyName">Vinamilk</span> 
+          <span id="tickerSpan" class="ticker-span">(VNM)</span>
+        </h1>
+        <p class="subtitle">ESG Evidence View</p>
+      </div>
+
+      <!-- Year Selector belonging directly to selected Company -->
+      <div class="year-picker-wrapper">
+        <select id="yearSelect" class="year-select">
+          <option value="2022 - 2024">2022 - 2024</option>
+          <option value="2024">2024</option>
+          <option value="2023">2023</option>
+          <option value="2022">2022</option>
+        </select>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="tabs-header" aria-label="ESG Pillars">
+      <button class="tab-btn active" data-tab="environment" id="tabEnv">
+        <span>🌿</span> Môi trường 
+        <span class="badge-count" id="countEnv">13</span>
+      </button>
+      <button class="tab-btn" data-tab="social" id="tabSoc">
+        <span>👥</span> Xã hội 
+        <span class="badge-count" id="countSoc">5</span>
+      </button>
+      <button class="tab-btn" data-tab="governance" id="tabGov">
+        <span>🏛</span> Quản trị 
+        <span class="badge-count" id="countGov">4</span>
+      </button>
+    </nav>
+
+    <!-- Main 3-Column Evidence Layout -->
+    <main class="evidence-grid">
+      
+      <!-- Column 1: Verified (Green) -->
+      <section class="col-verified" aria-labelledby="heading-verified">
+        <h2 id="heading-verified" class="column-header">
+          Những điều công ty đã thực hiện đúng
+        </h2>
+        <div id="colVerifiedCards" class="cards-container">
+          <!-- Cards rendered by app.js -->
+        </div>
+      </section>
+
+      <!-- Column 2: Contradicted (Red) -->
+      <section class="col-contradicted" aria-labelledby="heading-contradicted">
+        <h2 id="heading-contradicted" class="column-header">
+          Những điều công ty nói nhưng thực tế khác
+        </h2>
+        <div id="colContradictedCards" class="cards-container">
+          <!-- Cards rendered by app.js -->
+        </div>
+      </section>
+
+      <!-- Column 3: Missing (Yellow) -->
+      <section class="col-missing" aria-labelledby="heading-missing">
+        <h2 id="heading-missing" class="column-header">
+          <span style="color: #d97706;">⚠️</span> Những điều bắt buộc phải công bố nhưng bị bỏ qua
+        </h2>
+        <div id="colMissingCards" class="cards-container">
+          <!-- Cards rendered by app.js -->
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Advisory Disclaimer Footer -->
+    <footer class="advisory-footer">
+      <span class="footer-icon">📐</span>
+      <div>
+        Thông tin được tổng hợp tự động từ báo cáo thường niên và tin tức công khai. Đây là ý kiến tham khảo, không phải kết luận pháp lý. Người dùng cần tự xác minh trước khi đưa ra quyết định.
+      </div>
+    </footer>
+
+  </div>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
