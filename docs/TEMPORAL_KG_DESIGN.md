@@ -209,6 +209,14 @@ SSRL doc đã xử lý một nửa: trần `df ≤ 20` cho keyword hub (§3.2) v
   theo nhãn quan hệ** thay vì đều.
 - **Với Cypher/analyst:** không đổi gì — quản trị bậc là chính sách của **tầng suy luận**,
   đồ thị Neo4j giữ nguyên đầy đủ.
+- **Node reference của trục chỉ tiêu (`StandardIndicator`, 2026-07): cùng chính sách.** 35 node
+  chỉ tiêu là *cố ý* bậc cao — mọi KPI của một chỉ tiêu treo vào một node là chủ đích join
+  (`STANDARD_INDICATOR_AXIS.md` §3). Nhưng đó là *vocabulary*, không phải *thực thể*, nên
+  step00 loại chúng khỏi metric hub-free Q7 qua hằng `REFERENCE_CLASSES` (loại khỏi hub argmax
+  và khỏi đường đi Q7(d), cùng cơ chế đang loại hub issuer). Không loại thì cạnh `partOf` mới —
+  vốn đã nằm trong `STRUCTURAL_EDGES` — sẽ tự thổi phồng Q7(d), làm bẩn so sánh before/after.
+  Đã kiểm chứng: claim→conduct structural giữ nguyên 8.0% qua thay đổi trục chỉ tiêu. Tầng SSRL
+  về sau nên áp cùng chính sách factored action space cho `StandardIndicator` như cho issuer.
 
 ### P6 — Khả năng đi hai chiều thuộc về tầng dataset, không thuộc về DB
 

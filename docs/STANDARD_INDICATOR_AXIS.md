@@ -1,15 +1,38 @@
 # Trục chuẩn TT96/GRI — tầng chỉ tiêu `StandardIndicator` cho graph greenwashing
 
-> Tài liệu thiết kế (đề xuất, chưa triển khai). Ngôn ngữ: tiếng Việt, mã/định danh giữ tiếng Anh
+> **Trạng thái (2026-07-20): ĐÃ TRIỂN KHAI (offline).** Các stage step03c/step04b/step05c/step05d
+> đã build + kiểm chứng offline trên dữ liệu AAA; schema, step00, step08 đã cập nhật;
+> `test/test_temporal_invariants.py` có case cho chúng. Kết quả before/after
+> (`graph_output/quality/quality_report_{before,after}_indicator_axis.md`): KPIObservation
+> deg≥2 **5.3% → 16.9%**, T2 deg≥2 **10.1% → 19.9%**, masked-answerable **26.3% → 34.8%**,
+> claim→conduct structural **8.0% → 8.0% (không đổi — confound đã được xử lý, xem §7)**; hub
+> vẫn là Organization (không chỉ tiêu nào thành hub). **Còn lại là bước chạy của người dùng:**
+> (a) duyệt `config/standard_crosswalk.json` (đang toàn `needs_review`) rồi đặt `status=confirmed`
+> để phát cạnh TT96→GRI; (b) duyệt `config/standards_registry.json`; (c) `step06 --clear` +
+> `step08` khi Neo4j chạy; (d) `step05d` là lần chạy tốn tiền tùy chọn. **Lưu ý dữ liệu:** trên
+> AAA hiện tại, tier-1 retrieval (§6) cho **0 cặp** vì cả 108 news-KPI đều là nhiễu tài chính
+> (không có `kpi_id` ESG) — trục đã nối đúng end-to-end nhưng conduct-side rỗng; re-run step07
+> tốn tiền lúc này sẽ ra y hệt kết quả cũ. Nút thắt thật vẫn là nuôi kênh news (§4), đúng như
+> §7 cảnh báo.
+>
+> Ngôn ngữ: tiếng Việt, mã/định danh giữ tiếng Anh
 > theo convention của repo. Sơ đồ trực quan của thiết kế này:
 > https://claude.ai/code/artifact/b47d74f9-c7d1-459a-ac9d-640058804fde
+>
+> **Tiêu chí thiết kế (quan trọng, chi phối toàn bộ §3 và §5):** đây **không phải** một patch
+> vá graph AAA hiện có. Đây là các **stage thường trực của pipeline**. Tiêu chí nghiệm thu là:
+> *chạy step01 → step09 từ đầu trên một công ty mới, chưa từng có dữ liệu, phải ra graph đã có
+> sẵn đầy đủ cạnh KPI/Claim → StandardIndicator → Regulation và TT96 → GRI, không cần thao tác
+> tay hay script vá nào.* Mọi lựa chọn dưới đây được cân bằng theo tiêu chí đó, chứ không theo
+> tiêu chí "tránh cho team phải re-run" như bản nháp đầu.
 >
 > Quan hệ với các doc khác: đây là phần **mở rộng mức graph** của
 > `CROSSCHECK_EXPANSION.md` — doc đó chủ trương thay đổi tối thiểu (mức property/cặp-cạnh,
 > không class mới) và đặt nền `step03c_canonicalize_kpis.py`; doc này bổ sung **một class mới
 > có chủ đích** (`StandardIndicator`) để vật chất hóa vocabulary 35 KPI thành node trong graph.
-> step03c càng canonical hóa được nhiều `kpi_type` thì tầng chỉ tiêu càng phủ rộng — hai việc
-> cộng hưởng, không thay thế nhau.
+> Phân công dứt khoát: **step03c canonical hóa `kpi_type` → mã chỉ tiêu** (mức validated),
+> **step05c vật chất hóa mã đó thành node + edge** (mức resolved). step03c phủ được bao nhiêu
+> thì trục chỉ tiêu rộng bấy nhiêu — hai việc nối tiếp nhau, không thay thế nhau.
 
 ---
 
@@ -144,28 +167,93 @@ reference chuẩn hóa với node mention do LLM extract.
 
 ### 3.2 Edge mới — chỉ 3 label + tái dùng `partOf`
 
-| Edge | Source → Target | Cách sinh | Giai đoạn |
+| Edge | Source → Target | Cách sinh | Stage sở hữu |
 |---|---|---|---|
-| `measuredUnder` | KPIObservation / Emission / Penalty → StandardIndicator | offline, map 1-1 theo `kpi_type`; Emission → TT96-6.1.x; Penalty → TT96-6.5.x | **GĐ 1 · 0 đ** |
-| `alignsWithIndicator` | SustainabilityClaim / Goal / Initiative (+ Controversy, MediaReport nếu cần) → StandardIndicator | classify văn tự do về mục TT96 6.x — LLM hoặc keyword qua `pillar`/`ClaimKeyword` | GĐ 2 · LLM |
-| `partOf` *(tái dùng)* | StandardIndicator → Standard / Regulation | offline, từ block `source` của từng định nghĩa | **GĐ 1 · 0 đ** |
-| `equivalentTo` | StandardIndicator → StandardIndicator (GRI) | sau khi enrich field `gri_mapping` vào `kpi_definitions_construction.json` (vd. TT96-6.1.1 ↔ GRI 305-1/305-2 — mapping có trong SSC-IFC guide) | GĐ 3 · enrich |
+| `partOf` *(tái dùng)* | StandardIndicator → Standard / Regulation | offline, từ block `source.document` của từng định nghĩa | **step05c · 0 đ** |
+| `measuredUnder` | KPIObservation / Emission / Penalty → StandardIndicator | offline, map 1-1 theo `kpi_type` (đã canonical hóa ở step03c); Emission → TT96-6.1.x theo `category`/`scope`; Penalty → TT96-6.5.x (xem cảnh báo §5.3) | **step05c · 0 đ** |
+| `equivalentTo` | StandardIndicator (TT96) → StandardIndicator (GRI) | offline, đọc crosswalk `config/standard_crosswalk.json` (vd. TT96-6.1.1 ↔ GRI 305-1/305-2) | **step05c · 0 đ** |
+| `alignsWithIndicator` | SustainabilityClaim / Goal / Initiative → StandardIndicator | 2 tầng: keyword tiếng Việt/Anh trên `description` (step05c, offline) → LLM cho phần dư (step05d, có budget) | step05c + step05d |
 
 Mỗi cặp thêm vào `schema.json` với `temporal_properties` chuẩn
 (`valid_from`/`valid_to`/`recorded_at`) như mọi edge khác.
 
-### 3.3 Phạm vi nối — lọc theo 18 relationship của AAA
+**GRI không còn là "giai đoạn 3".** Bản nháp đầu hoãn GRI vì cho rằng phải enrich dữ liệu
+trước. Thực tế một khi file crosswalk tồn tại thì sinh node GRI + `equivalentTo` là thuần
+deterministic, cùng độ khó với `partOf` — không có lý do gì để nó không nằm trong lần chạy
+đầu tiên. Với yêu cầu "chạy step01→cuối ra graph đầy đủ", GRI **phải** thuộc step05c.
+
+### 3.3 Crosswalk GRI để ở đâu — `config/`, KHÔNG phải file định nghĩa KPI
+
+Bản nháp đầu (§5.4 cũ) đề xuất thêm field `gri_mapping` vào từng định nghĩa trong
+`kpi_definitions_construction.json`. **Sai, và sẽ mất dữ liệu:** file đó là *generated data* —
+`kpi_build/05_build_kpi_definitions.py` và `kpi_build/06_enrich_kpis.py` đều ghi đè nó
+in-place (`OUT = HERE.parent / "kpi_definitions_construction.json"`). Bất kỳ ai rebuild
+kpi_build một lần là toàn bộ mapping GRI thủ công bay sạch, không cảnh báo.
+
+Crosswalk là **dữ liệu curate tay, tra cứu từ SSC-IFC guide** → đúng chỗ của nó là
+`config/standard_crosswalk.json`, tracked trong Git, cạnh `schema.json` và
+`issuer_registry.json` (CLAUDE.md: `config/` = "schema + dictionaries"). step05c đọc *hai*
+nguồn: `kpi_definitions_construction.json` cho 35 chỉ tiêu TT96/SSC-IFC (generated, verbatim)
+và `config/standard_crosswalk.json` cho ánh xạ GRI (curated). Ranh giới generated/curated
+giữ nguyên vẹn.
+
+### 3.4 Phạm vi nối — lọc theo 18 relationship của AAA
 
 | Nhóm | Relationship (count AAA) | Quyết định |
 |---|---|---|
-| **Nối ngay, deterministic** | `reportsKPI` (4.420) → chỉ 484 node có mã chuẩn; `generatesEmission` (Emission: 24 node) → TT96-6.1.x; `subjectToPenalty` (4) → TT96-6.5.x | GĐ 1. Penalty là mắt xích giá trị nhất: bằng chứng conduct gắn thẳng vào chỉ tiêu công ty phải tự khai |
-| **Nối sau, cần LLM/keyword** | `claims` (1.093), `setsGoal` (712), `targetsScienceBased`, `takesPartIn` (470 — TT96 yêu cầu báo cáo "sáng kiến" tại 6.1.2/6.3.2/6.3.3) | GĐ 2. Claim là điều kiện để cross-check theo từng chỉ tiêu |
+| **Nối ngay, deterministic** | `reportsKPI` (4.420) → chỉ 484 node có mã chuẩn; `generatesEmission` (Emission: 24 node) → TT96-6.1.x; `subjectToPenalty` (4) → TT96-6.5.x | step05c. Penalty *lẽ ra* là mắt xích giá trị nhất (bằng chứng conduct gắn thẳng vào chỉ tiêu công ty phải tự khai) — nhưng cả 4 node hiện có đều là "bị phạt 0 lần" tự khai, xem cảnh báo §5.3 bước 5 |
+| **Nối sau, cần LLM/keyword** | `claims` (1.093), `setsGoal` (712), `targetsScienceBased`, `takesPartIn` (470 — TT96 yêu cầu báo cáo "sáng kiến" tại 6.1.2/6.3.2/6.3.3) | step05c (keyword) + step05d (LLM). Claim là điều kiện để cross-check theo từng chỉ tiêu |
 | **Không nối** | `ownsFacility`, `locatedIn`, `partnersWith`, `impactsCommunity`, `investsIn`, `owns`, `publishesReport`, `supersedes` | Thực thể/quan hệ ngữ cảnh — chuẩn không "định nghĩa" nhà máy hay đối tác; nối chỉ tạo hub nhiễu |
-| **Trường hợp biên** | `adoptsStandard` (304) / `subjectToRegulation` (284): đã trỏ vào Standard — việc cần là gộp mention trùng về node canonical, không phải nối thêm. `holdsCertification` (84): tùy chọn `certifiesComplianceWith` sau, không phục vụ trực tiếp greenwashing | dọn dẹp song hành |
+| **Trường hợp biên** | `adoptsStandard` (304) / `subjectToRegulation` (284): đã trỏ vào Standard — việc cần là gộp mention trùng về node canonical, không phải nối thêm. `holdsCertification` (84): tùy chọn `certifiesComplianceWith` sau, không phục vụ trực tiếp greenwashing | xử lý ở step04b/step05, xem §3.5 |
+
+### 3.5 Vị trí trong pipeline — hai điểm chèn, không phải một
+
+Câu hỏi cốt lõi: tầng reference được bơm vào **trước** hay **sau** entity resolution? Trả lời
+là **cả hai, cho hai loại node khác nhau**, vì chúng có nhu cầu ngược nhau:
+
+| Loại node | Chèn ở đâu | Vì sao |
+|---|---|---|
+| **Node văn bản** (TT 96/2020, QĐ 2171, QCVN 09, SSC-IFC, GRI) — 5 node | **TRƯỚC step05**, làm frozen anchor | Chúng *có* mention trong văn bản: 436 node `Standard`/`Regulation` do LLM nhặt, GRI ≥4 biến thể, TT96 2 biến thể (C3). Ta **muốn** entity resolution gộp mention vào node canonical. Đây chính xác là bài toán mà Stage A.2 của step05 đã giải cho issuer — tái dùng cơ chế, không phát minh lại |
+| **Node chỉ tiêu** (35 `StandardIndicator`) | **SAU step05** | Chúng **không** có mention tự do trong văn bản (không ai viết "TT96-6.1.1" trong báo cáo), nên resolution không có việc gì để làm. Ngược lại còn nguy hiểm: `step05` dòng 399 xếp mọi class non-observation vào `entity_idx`, nên 35 node này sẽ lọt vào Stage B (embedding) và Stage C (LLM adjudication) — nơi `TT96-6.1.1` và `TT96-6.1.2` giống nhau đến mức LLM hoàn toàn có thể gộp nhầm. Bơm sau resolve loại bỏ rủi ro này ở mức kiến trúc, không phải bằng cách "hy vọng LLM đúng" |
+
+Ngoài ra node chỉ tiêu bơm sau resolve còn tôn trọng bất biến **append-only, không bao giờ
+reorder node** (`_node_key` của step06 và `node_index` của dossier là positional — xem
+`PROVENANCE_PATCH.md`), nên một lần re-run step05c không làm hỏng dossier step07 đã trả tiền.
+
+**Thứ tự chạy đầy đủ sau thay đổi** (phần in đậm là mới):
+
+```
+step01 → step02 → step03 → step03b → **step03c** → step04 → **step04b** →
+step05 (+ anchor chuẩn) → step05b → **step05c** → **step05d (tùy chọn, LLM)** →
+step06 → step07 → step07b → step08 → step09 → step10
+```
+
+| Stage | Loại | Vai trò trong trục chỉ tiêu |
+|---|---|---|
+| `step03c_canonicalize_kpis.py` | offline, **mới** (đã có trong `CROSSCHECK_EXPANSION.md`) | canonical hóa `kpi_type` free-text → mã chỉ tiêu. **Đây là nơi quyết định độ phủ của cả trục**, xem §5.2 |
+| `step04b_build_standards_registry.py` | run-once bootstrap, **mới** | soạn `config/standards_registry.json`: 5 văn bản chuẩn + alias (GRI variants, TT96 VN/EN) + exclusions. Mirror y hệt `step04_build_issuer_registry.py`: re-run giữ chỉnh sửa tay, `--force` rebuild, người xác nhận `needs_review` |
+| `step05_resolve_entities.py` | sửa nhỏ | mở rộng Stage A.2: ngoài issuer anchor, thêm **standards anchor** cho class `Standard`/`Regulation` dùng registry trên; cụm này cũng FROZEN (loại khỏi Stage B/C). Giải quyết C3 vĩnh viễn, ~10 dòng, dùng lại `load_issuer_index`/`normalize_name` |
+| `step05c_link_standard_indicators.py` | offline, NO LLM, **mới** | vật chất hóa 35 node chỉ tiêu + `partOf` + `measuredUnder` + `equivalentTo` (GRI) + `alignsWithIndicator` tầng keyword |
+| `step05d_align_claims_to_indicators.py` | LLM, có budget, **mới, tùy chọn** | `alignsWithIndicator` cho phần claim/goal mà keyword không quyết được |
+
+Bốn stage này đều **idempotent**: chạy lại trên graph đã có trục chỉ tiêu không nhân đôi node
+hay edge (khớp theo `identity_keys`). Đó là điều kiện để chúng nằm trong pipeline thường
+trực chứ không phải script chạy một lần.
+
+**Công việc kèm theo, bắt buộc, để đây thực sự là pipeline:**
+
+1. `CLAUDE.md` — mục "Pipeline architecture" phần C và mục "Common commands" phải liệt kê
+   step03c/step04b/step05c/step05d; nếu không, người chạy tiếp theo (kể cả Claude Code) sẽ
+   chạy step05b → step06 và im lặng bỏ qua trục chỉ tiêu.
+2. `test/test_temporal_invariants.py` — thêm case: idempotency của step05c, bất biến
+   node-order, P1 lint cho `StandardIndicator` (identity_keys không chứa time field).
+3. `docs/SYSTEM_DESIGN.md` — sơ đồ end-to-end thêm tầng reference.
+4. step07 phải **thực sự tiêu thụ** trục này (§6) — nếu không, ta xây một tầng edge không ai
+   đọc, và mọi lợi ích trong doc này chỉ nằm trên giấy.
 
 ---
 
-## 4. Hiện trạng kênh news và `source_type` (bối cảnh dữ liệu cho GĐ 1)
+## 4. Hiện trạng kênh news và `source_type` (bối cảnh dữ liệu cho step05c)
 
 Một class node duy nhất, phân biệt bằng property `source_type=report|news` (step02 dập).
 Hai node cùng nói về một sự thật **không bao giờ bị gộp** vì `identity_keys` của
@@ -205,66 +293,124 @@ việc xây tầng chỉ tiêu.
 
 ## 5. Triển khai
 
-### 5.1 GĐ 0 — schema + đo trước/sau (0 đ)
+### 5.1 Bước 0 — schema + đo trước/sau (0 đ)
 
-1. Thêm class `StandardIndicator` (§3.1) và các cặp edge GĐ 1 (§3.2) vào `config/schema.json`.
+1. Thêm class `StandardIndicator` (§3.1) và 4 cặp edge (§3.2) vào `config/schema.json`.
 2. `python src/step00_graph_quality_report.py --label before_indicator_axis` (chuẩn quy trình
    before/after của `TEMPORAL_KG_DESIGN.md` §4).
 
-### 5.2 GĐ 1 — `src/step05c_link_standard_indicators.py` (offline, NO LLM, 0 đ)
+### 5.2 Độ phủ: sửa ở nguồn (step01) *và* ở hạ nguồn (step03c) — không phải một trong hai
 
-Patch **sau resolve** cùng họ step05b (chạy sau step05b, trước step06). Chọn mức resolved
-thay vì mức validated (kiểu step03b) vì: (a) không bắt team re-run step05; (b) node chỉ tiêu
-là canonical sẵn, không cần resolution; (c) tôn trọng bất biến **append-only, không bao giờ
-reorder node** (`_node_key` của step06 và `node_index` của dossier là positional — xem
-`PROVENANCE_PATCH.md`).
+Đây là chỗ khác biệt lớn nhất giữa "vá graph AAA" và "làm pipeline". Bản nháp đầu coi độ phủ
+thấp (484/4.906 ≈ 10%) là hạn chế phải chịu đựng, chờ step03c gỡ dần. Với yêu cầu pipeline,
+phải tách bạch hai nguồn của vấn đề:
+
+**(a) Nguồn — `step01` prompt.** Với công ty *mới*, độ phủ do step01 quyết định hoàn toàn.
+Hiện prompt có escape hatch `"other"` (dòng ~214) và không phân biệt KPI tài chính với KPI
+ESG, nên extractor nhặt cả bảng cân đối kế toán. Bằng chứng trên dữ liệu AAA: trong 4.422
+KPIObservation *không* có mã chuẩn, top title là "Lợi nhuận sau thuế" (30), "Doanh thu" (26),
+"Tổng tài sản" (15…), và `unit` phân bố `VND` 2.024 / `tỷ đồng` 274 / `billion VND` 184 —
+tức **~85% phần đuôi là KPI tài chính thuần**, nhiễu đúng nghĩa. Sửa thường trực:
+
+- tách `indicator_id` thành **field riêng, nullable, enum đóng theo 35 mã** — không dùng chung
+  ô với `kpi_type` free-text nữa (hiện `kpi_type` gánh cả hai vai, nên "Revenue" và
+  "TT96-6.1.1" nằm cùng một trường);
+- thêm cờ phân miền (vd. `domain: environmental|social|governance|financial`) để KPI tài chính
+  được gắn nhãn thay vì bị nhồi vào `"other"` — vừa giảm nhiễu, vừa giữ lại dữ liệu.
+
+Đây là thay đổi **output schema của step01** → chỉ có tác dụng với dữ liệu extract mới; dữ
+liệu AAA hiện có phải re-run step01 (tốn tiền Gemini) mới hưởng. Không bắt buộc làm ngay,
+nhưng nếu không làm thì mỗi công ty mới lại thừa hưởng đúng độ phủ 10%.
+
+**(b) Hạ nguồn — `step03c`, và đây là phần chạy được ngay với 0 đ.** `KPIObservation` có sẵn
+field **`title` trên 4.896/4.906 node** (vd. `"Chi phí điện năng"`, `"Male employees"`,
+`"Tỷ lệ tham dự họp HĐQT"`) cộng với `unit`. Một từ điển deterministic
+`config/kpi_type_aliases.json` map `(title, unit)` → mã chỉ tiêu sẽ nâng độ phủ **mà không
+cần re-extract gì cả**. Từ điển này không phải hack tạm: văn bản tự do luôn trôi, nên lớp
+alias curate tay là thành phần vĩnh viễn — cùng tinh thần với `issuer_registry.json`.
+
+**Kỳ vọng thực tế, nói thẳng để không hứa hão:** vì phần đuôi ~85% là tài chính (map vào TT96
+là *sai*, không phải là bỏ sót), phần ESG thật lẫn trong đó chỉ vài trăm node — tín hiệu nhận
+biết là `unit` ∈ {`mg/L` 39, `Tấn` 38, `kWh`, `người`/`employees` ~100}. Ước lượng
+**484 → ~650–900 edge `measuredUnder`, tức độ phủ ~13–18%**, không phải 100%. Con số này vẫn
+đủ để query selective-disclosure (§6.2) chạy có nghĩa, nhưng đừng trình bày trục chỉ tiêu như
+thể nó phủ toàn bộ KPI.
+
+### 5.3 `src/step05c_link_standard_indicators.py` (offline, NO LLM, 0 đ)
+
+Chạy **sau step05b, trước step06** — lý do chọn mức resolved thay vì mức validated đã trình
+bày ở §3.5 (tránh Stage B/C gộp nhầm chỉ tiêu; tôn trọng bất biến node-order).
 
 ```
 Input : graph_output/resolved/resolved_graph.json
-        kpi_definitions_construction.json
+        kpi_definitions_construction.json        (generated — 35 chỉ tiêu TT96/SSC-IFC)
+        config/standard_crosswalk.json           (curated — ánh xạ TT96 ↔ GRI)
+        config/kpi_type_aliases.json             (curated — keyword → mã chỉ tiêu)
 Output: resolved_graph.json (patched in place, append-only)
         graph_output/resolved/indicator_axis_stats.json
-Flags : --dry-run, --defs <path>, --stats-out <path>
+Flags : --dry-run, --defs <path>, --crosswalk <path>, --no-gri, --no-align, --stats-out <path>
 ```
 
 Thuật toán:
 
-1. Đọc 35 định nghĩa → tạo (nếu chưa có) 35 node `StandardIndicator` + 4–5 node văn bản
-   (`Regulation` TT 96/2020, QĐ 2171, QCVN 09; `Standard` SSC-IFC, GRI) — **append vào cuối**
-   mảng `nodes`; idempotent theo `identity_keys` (chạy lại không nhân đôi).
-2. Emit edge `partOf` chỉ tiêu → văn bản theo `source.document`.
+1. Đọc 35 định nghĩa → tạo (nếu chưa có) 35 node `StandardIndicator` + node văn bản còn thiếu
+   — **append vào cuối** mảng `nodes`; idempotent theo `identity_keys`. Node văn bản bình
+   thường đã tồn tại sẵn do step04b + standards anchor của step05 (§3.5); step05c chỉ tạo bù
+   khi chạy trên graph chưa qua anchor.
+2. Emit `partOf` chỉ tiêu → văn bản theo `source.document`.
 3. Quét `KPIObservation`: `kpi_type` khớp regex `^(TT96-|QD2171|QCVN09|SSCIFC-)` → edge
-   `measuredUnder` (kỳ vọng 484 + phần step03c canonical hóa thêm được).
-4. `Emission` → `measuredUnder` TT96-6.1.1 (24 edge); `Penalty` → TT96-6.5.1/6.5.2 (4 edge;
-   heuristic: có `amount` → 6.5.2, không → 6.5.1).
-5. `temporal_metadata` của edge: `valid_from` kế thừa từ node quan sát, `recorded_at` = ngày
-   chạy patch; stamp `anchor_method=offline_indicator_map` (cùng convention step03b).
-6. Backfill 13 KPIObservation thiếu `source_type` → `report`.
-7. Ghi stats: đếm node/edge tạo mới, phân bố theo chỉ tiêu, danh sách `kpi_type` không map được.
+   `measuredUnder`. (Phần free-text đã được step03c canonical hóa trước đó — step05c **không**
+   tự đoán, nó chỉ đọc mã đã canonical. Giữ ranh giới này để lỗi map luôn truy được về
+   step03c.)
+4. `Emission` → `measuredUnder` TT96-6.1.1 theo `category`/`scope` (24 edge).
+5. `Penalty` → TT96-6.5.x — **cẩn thận, heuristic ở bản nháp đầu bị sai.** Bản nháp viết "có
+   `amount` → 6.5.2, không có → 6.5.1"; thực tế cả 4 node Penalty đều có `amount`, và mẫu
+   thật là:
 
-Sau đó: re-run `step06 --clear` → `step00 --label after_indicator_axis` → thêm case vào
-`test/test_temporal_invariants.py` (append-only + idempotency + node-order invariant).
-Tổng chi phí GĐ 1: **0 đ**, ~40 node + ~510 edge mới.
+   ```json
+   {"penalty_id": "AAA_2022_EnvPenalty_0times", "amount": 0,
+    "description": "Số lần bị phạt do không tuân thủ pháp luật, quy định về bảo vệ môi trường"}
+   ```
 
-### 5.3 GĐ 2 — `alignsWithIndicator` cho Claim/Goal/Initiative (LLM, budget nhỏ)
+   Đây **không phải án phạt** — đây là công ty *tự khai đã bị phạt 0 lần*, tức một tuyên bố
+   tuân thủ (claim), không phải bằng chứng conduct. Treo nó vào TT96-6.5.x như bằng chứng
+   conduct sẽ tạo tín hiệu **ngược dấu**: một lời tự khen bị đếm như một vi phạm. Quy tắc
+   đúng: `amount == 0` (hoặc `penalty_id` khớp `_0times`) → gắn cờ
+   `self_reported_zero=true` và **không** emit `measuredUnder` conduct; nếu muốn giữ, emit
+   như claim-side với `source_type=report` được ghi rõ. Chỉ Penalty có `amount > 0` mới là
+   mắt xích conduct thật.
+6. `equivalentTo`: đọc `config/standard_crosswalk.json` → sinh node `StandardIndicator` cho
+   các mã GRI được tham chiếu (vd. GRI 305-1) + edge TT96 → GRI. `--no-gri` để tắt.
+7. `alignsWithIndicator` tầng keyword: match `description` của `SustainabilityClaim`/`Goal`/
+   `Initiative` với từ khóa tiếng Việt+Anh của từng mục 6.x. Chỉ emit khi khớp **không mơ hồ**
+   (đúng 1 chỉ tiêu ứng viên); phần còn lại để step05d. Mọi edge mang
+   `alignment_method=keyword` để truy vết và để đo precision riêng theo từng tầng.
+8. `temporal_metadata` của edge: `valid_from` kế thừa từ node quan sát, `recorded_at` = ngày
+   chạy; stamp `anchor_method=offline_indicator_map` (cùng convention step03b).
+9. Backfill 13 KPIObservation thiếu `source_type` → `report`.
+10. Ghi stats: node/edge tạo mới, phân bố theo chỉ tiêu, **danh sách `kpi_type` không map được
+    kèm số lượng** — file này là input trực tiếp để mở rộng `kpi_type_aliases.json` vòng sau.
 
-- Bước lọc rẻ trước: `ClaimKeyword`/`pillar` + keyword tiếng Việt của từng mục 6.x → chỉ đưa
-  claim qua LLM khi mơ hồ (cùng triết lý budget `--max-llm-pairs`).
-- Output là edge nền `alignsWithIndicator` (đây là *phân loại chủ đề*, không phải phán xử
-  supports/contradicts — nên được phép nằm ở graph nền, khác với edge advisory step07).
-- Chạy chung đợt với lần re-run step07 có kiểm soát của `CROSSCHECK_EXPANSION.md` §5 tuần 3.
+Sau đó: `step06 --clear` → `step00 --label after_indicator_axis` → thêm case vào
+`test/test_temporal_invariants.py`. Chi phí: **0 đ**, ~40–60 node + ~700–1.000 edge mới.
 
-### 5.4 GĐ 3 — GRI (`equivalentTo`, 0 đ sau khi enrich)
+### 5.4 `src/step05d_align_claims_to_indicators.py` (LLM, có budget, tùy chọn)
 
-Thêm field `gri_mapping` vào từng định nghĩa trong `kpi_definitions_construction.json`
-(mapping TT96 ↔ GRI lấy từ SSC-IFC guide, vd. TT96-6.1.1 ↔ GRI 305-1/305-2) → step05c đọc
-field này, sinh node chỉ tiêu GRI + edge `equivalentTo`. Không đập lại gì.
+- Chỉ nhận phần claim/goal mà tầng keyword của step05c **không** quyết được (mơ hồ hoặc
+  không khớp) — cùng triết lý budget `--max-llm-pairs` của step05/step07.
+- Output vẫn là edge nền `alignsWithIndicator`, mang `alignment_method=llm`. Đây là *phân loại
+  chủ đề*, không phải phán xử supports/contradicts — nên được phép nằm ở graph nền, khác với
+  edge advisory của step07 (xem §2.4).
+- Tách khỏi step05c để giữ nguyên convention của repo: mỗi stage hoặc "NO LLM" hoặc "LLM",
+  không nửa nọ nửa kia. Pipeline chạy được đầy đủ **kể cả khi bỏ qua step05d** — chỉ là độ phủ
+  `alignsWithIndicator` thấp hơn.
 
-### 5.5 Việc dọn dẹp song hành (không chặn GĐ 1)
+### 5.5 Việc dọn dẹp song hành
 
-- Siết prompt step01: bớt nhặt KPI tài chính thuần (810 `other` là nhiễu) — tăng độ phủ mã chuẩn.
-- Thêm alias GRI/TT96 vào entity resolution để gộp các biến thể mention (C3) về node canonical.
-- Siết prompt news step02: ưu tiên Penalty/Controversy/KPI môi trường (§4.2).
+- Siết prompt news step02: ưu tiên Penalty/Controversy/KPI môi trường (§4.2) — hiện news-KPI
+  còn nhặt "Vốn điều lệ 30 tỷ VND".
+- (Việc gộp mention GRI/TT96 và việc siết prompt step01 **không còn nằm ở đây** — chúng đã
+  trở thành phần chính thức của pipeline: step04b + standards anchor ở §3.5, và §5.2(a).)
 
 ---
 
@@ -313,16 +459,21 @@ RETURN i.id, r.value, n.value;
 
 | Rủi ro | Đối sách |
 |---|---|
-| Độ phủ khởi điểm thấp: chỉ ~10% KPIObservation có mã chuẩn → tầng chỉ tiêu mỏng lúc đầu | step03c canonical hóa nâng dần; §5.5 siết prompt step01; GĐ 1 vẫn đáng làm vì selective-disclosure query (§6.2) chạy được ngay với phần đã phủ |
-| Claim alignment (GĐ 2) sai chủ đề → cross-check sai cặp | lọc keyword trước, LLM sau; edge mang `alignment_method` để truy vết; đo precision mẫu theo phương pháp step10 |
+| Độ phủ khởi điểm thấp: chỉ ~10% KPIObservation có mã chuẩn, và trần thực tế chỉ ~13–18% (§5.2) | sửa cả hai đầu: step01 emit `indicator_id` enum cho dữ liệu mới, `kpi_type_aliases.json` cho dữ liệu cũ; stats của step05c liệt kê `kpi_type` chưa map để nuôi từ điển vòng sau; selective-disclosure query (§6.2) đã chạy có nghĩa với phần đã phủ |
+| Claim alignment sai chủ đề → cross-check sai cặp | keyword trước (chỉ emit khi không mơ hồ), LLM sau; edge mang `alignment_method=keyword\|llm` để đo precision **riêng từng tầng** theo phương pháp step10 |
 | Patch làm lệch node-order → hỏng `_node_key`/`node_index` | append-only tuyệt đối; assert trong test_temporal_invariants; step05c chạy SAU step05b |
-| Nhầm node chỉ tiêu với node mention (C3) khi query | class riêng `StandardIndicator`; mention giữ nguyên class `Standard`/`Regulation` |
-| Kênh news quá mỏng làm GĐ 2+cross-check ít tác dụng thực | ưu tiên song song việc nuôi news (§4); không coi trục chỉ tiêu là thuốc chữa thiếu dữ liệu |
+| Nhầm node chỉ tiêu với node mention (C3) khi query | class riêng `StandardIndicator`; mention giữ nguyên class `Standard`/`Regulation`, được gộp về node canonical bởi standards anchor (§3.5) |
+| Kênh news quá mỏng làm cross-check ít tác dụng thực | ưu tiên song song việc nuôi news (§4); không coi trục chỉ tiêu là thuốc chữa thiếu dữ liệu |
+| **35 node chỉ tiêu trở thành hub → hỏng chính tiêu chí Q7 mà §2.3 dùng để bác bỏ phương án khác** | phân tán qua 35 node (không phải 1) đã giảm bậc đáng kể, nhưng `TT96-6.6.1` vẫn sẽ hứng ~89+ edge. Phải kiểm bằng `step00 --label after_indicator_axis` chứ không suy đoán; nếu Q7 xấu đi, cân nhắc loại class reference khỏi metric hub-free (node reference khác bản chất với node thực thể) — và ghi rõ quyết định đó vào `TEMPORAL_KG_DESIGN.md` |
+| **Stage mới bị bỏ quên khi chạy pipeline** — rủi ro đặc thù của việc này là *pipeline*, không phải patch | cập nhật `CLAUDE.md` (§3.5 mục 1) là bắt buộc, không phải tùy chọn; thêm cảnh báo trong step06 khi graph không có node `StandardIndicator` nào (nhắc "đã chạy step05c chưa?") |
+| Trục chỉ tiêu được xây nhưng step07 vẫn retrieval token-overlap → tầng edge không ai đọc | §6 phải được triển khai cùng đợt; tiêu chí nghiệm thu là **số cặp LLM của step07 giảm** và dossier dẫn được mã chỉ tiêu, không phải "đã có edge trong Neo4j" |
 
 ## 8. Tham chiếu
 
 - Sơ đồ thiết kế: https://claude.ai/code/artifact/b47d74f9-c7d1-459a-ac9d-640058804fde
 - `CROSSCHECK_EXPANSION.md` — step03c (khóa join KPI), retrieval routing, kế hoạch 4 tuần defense-1
+- `ENTITY_RESOLUTION.md` — Stage A.2 frozen anchor, cơ chế mà standards anchor (§3.5) tái dùng
+- `KPI_EXTRACTION_FROM_JSONL.md` — prompt step01, nơi sửa `indicator_id`/`domain` ở §5.2(a)
 - `TEMPORAL_KG_DESIGN.md` — P1 (identity timeless), Q7 (hub-free), quy trình step00 before/after
 - `PROVENANCE_PATCH.md` — bất biến node-order positional mà step05c phải tôn trọng
 - `CLAIM_CONDUCT_CROSSCHECK.md` — vì sao LLM adjudication bắt buộc, self-verification guard

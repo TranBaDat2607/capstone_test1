@@ -208,6 +208,29 @@ ignores unknown properties by default. If the pipeline is ever run with `--stric
 We deliberately do **not** add a `GreenwashingScore` node class (see §1.1); advisory output
 rides on edge properties + a JSON artifact (§6.6).
 
+### 4.4 The reference layer — the TT96/GRI indicator axis (added 2026-07)
+
+One deliberate class was later added: **`StandardIndicator`** — a materialization of the 35-KPI
+controlled vocabulary as graph nodes, so a company's *claim* about an indicator and the *conduct*
+measured under it converge on one join point. It sits above the claim/conduct data as a third,
+**reference** layer:
+
+```
+(Regulation TT96) ◄─partOf─ (StandardIndicator TT96-6.1.1) ─equivalentTo─► (StandardIndicator GRI 305-1)
+                                   ▲                    ▲
+                     measuredUnder │      alignsWithIndicator │
+                          (KPIObservation, conduct)   (SustainabilityClaim, claim)
+```
+
+It is built **offline, after entity resolution** by `step05c_link_standard_indicators.py` (nodes
++ `partOf`/`measuredUnder`/`equivalentTo`/`alignsWithIndicator`), fed by `step03c`'s canonical
+`kpi_id`, with the reference documents themselves canonicalized by a frozen standards anchor
+(`step04b` + step05 Stage A.3). It closes two blind spots of the claim-centric design (§1.2):
+**selective disclosure** (a mandatory indicator with no `measuredUnder` is a silence signal that
+needs no claim) and **unattached bad conduct** (a penalty gets a structural home on its
+indicator). It turns step-6a retrieval into a 2-hop indicator join. Full design, the rejected
+alternatives, and the honest coverage limits: `docs/STANDARD_INDICATOR_AXIS.md`.
+
 ---
 
 ## 5. End-to-end pipeline

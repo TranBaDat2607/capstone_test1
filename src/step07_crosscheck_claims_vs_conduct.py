@@ -409,6 +409,30 @@ def run(args: argparse.Namespace) -> None:
     # pre-tokenize the conduct pool once
     ctok = {i: topic_tokens(node_text(g.nodes[i])) for i in conduct}
 
+    # ---- indicator-axis index (tier-1 retrieval, docs/STANDARD_INDICATOR_AXIS.md §6) ----
+    # A claim and a conduct node that hang off the SAME StandardIndicator are almost always
+    # topically relevant to each other — the LLM then only has to decide supports/contradicts,
+    # not relevance. This turns retrieval from a global token overlap into a 2-hop graph join:
+    #   claim --alignsWithIndicator--> (StandardIndicator) <--measuredUnder-- conduct(news)
+    ind_conduct: Dict[int, List[int]] = defaultdict(list)
+    for si in conduct:
+        for pred, obj in g.out.get(si, []):
+            if pred == "measuredUnder":
+                ind_conduct[obj].append(si)
+    claim_inds: Dict[int, List[int]] = defaultdict(list)
+    for ci in claim_idxs:
+        for pred, obj in g.out.get(ci, []):
+            if pred == "alignsWithIndicator":
+                claim_inds[ci].append(obj)
+    n_indicator_links = sum(len(v) for v in claim_inds.values())
+    logger.info(f"Indicator axis: {n_indicator_links} claim→indicator link(s); "
+                f"{sum(len(v) for v in ind_conduct.values())} indicator←conduct(news) link(s)")
+
+    # Score boost so an indicator-joined pair always outranks a token-overlap pair for the LLM
+    # budget (all_pairs is sorted by score descending at :447). It is deliberately large.
+    INDICATOR_BOOST = 1000
+    tier_of: Dict[Tuple[int, int], str] = {}
+
     # LLM adjudication is mandatory — no deterministic fallback. Abort up front if no
     # provider is available so the run never silently degrades into a weaker mode.
     adjud = Adjudicator(args.openai_model, args.rate_limit, args.provider_order)
@@ -433,6 +457,25 @@ def run(args: argparse.Namespace) -> None:
                 if xyear < cyear - args.window_before or xyear > cyear + args.window_after:
                     continue
             scored.append((overlap, xyear or 0, xi))
+
+        # Tier 1: inject indicator-joined conduct with a boosted score. These bypass the
+        # token-overlap gate (a claim and a KPI on the same indicator can share zero tokens —
+        # "giảm phát thải" vs "12.450 tCO2e") but keep the temporal window unless date-uncertain.
+        token_xis = {xi for _, _, xi in scored}
+        for si in claim_inds.get(ci, []):
+            for xi in ind_conduct.get(si, []):
+                if xi in token_xis:
+                    # already a token candidate — promote it to tier-1 priority
+                    scored = [(ov + INDICATOR_BOOST if x == xi else ov, y, x) for ov, y, x in scored]
+                else:
+                    xyear = node_year(g.nodes[xi])
+                    if cyear is not None and xyear is not None and not date_uncertain(g.nodes[xi]):
+                        if xyear < cyear - args.window_before or xyear > cyear + args.window_after:
+                            continue
+                    scored.append((INDICATOR_BOOST, xyear or 0, xi))
+                    token_xis.add(xi)
+                tier_of[(ci, xi)] = "indicator"
+
         scored.sort(key=lambda t: (-t[0], -t[1]))
         top = scored[: args.top_k]
         cand_of[ci] = [xi for _, _, xi in top]
@@ -494,7 +537,8 @@ def run(args: argparse.Namespace) -> None:
             ev = {"node_index": xi, "class": xcls, "text": node_text(xnode)[:400],
                   "source_domain": domain, "date": props(xnode).get("date"),
                   "year": node_year(xnode), "confidence": conf, "rationale": why,
-                  "provider": prov, "date_uncertain": date_uncertain(xnode)}
+                  "provider": prov, "date_uncertain": date_uncertain(xnode),
+                  "retrieval_tier": tier_of.get((ci, xi), "token_overlap")}
 
             if v == "supports":
                 # self-verification guard: the issuer's own domain cannot verify its claim
@@ -559,7 +603,10 @@ def run(args: argparse.Namespace) -> None:
         "conduct_pool": {"total": len(conduct), "by_class": dict(conduct_by_cls)},
         "retrieval": {"claims_with_candidates": claims_with_cands,
                       "candidate_pairs": pairs_total,
-                      "avg_candidates_per_claim": round(pairs_total / max(1, len(claim_idxs)), 2)},
+                      "avg_candidates_per_claim": round(pairs_total / max(1, len(claim_idxs)), 2),
+                      "indicator_tier_pairs": sum(1 for (ci, xi) in tier_of
+                                                  if xi in cand_of.get(ci, [])),
+                      "claims_with_indicator_link": sum(1 for ci in claim_idxs if claim_inds.get(ci))},
         "assessments": dict(assess_hist),
         "linking_edges_written": len(new_edges),
         "edges_by_provider": dict(Counter(e["properties"].get("llm_provider") for e in new_edges)),

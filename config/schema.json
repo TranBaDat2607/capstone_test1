@@ -96,6 +96,10 @@
         "source_id",
         "company",
         "date_uncertain",
+        "kpi_id",
+        "unit_normalized",
+        "value_normalized",
+        "period",
         "valid_from",
         "valid_to",
         "is_current"
@@ -112,6 +116,21 @@
         "is_current"
       ],
       "identity_keys": ["name"]
+    },
+    {
+      "class": "StandardIndicator",
+      "properties": [
+        "id",
+        "name",
+        "definition",
+        "pillar",
+        "section",
+        "source_document",
+        "valid_from",
+        "valid_to",
+        "is_current"
+      ],
+      "identity_keys": ["id"]
     },
     {
       "class": "Certification",
@@ -716,6 +735,60 @@
       "label": "supersedes",
       "source_class": "Regulation",
       "target_class": "Regulation",
+      "temporal_properties": ["valid_from", "valid_to", "recorded_at"]
+    },
+    {
+      "label": "partOf",
+      "source_class": "StandardIndicator",
+      "target_class": "Regulation",
+      "temporal_properties": ["valid_from", "valid_to", "recorded_at"]
+    },
+    {
+      "label": "partOf",
+      "source_class": "StandardIndicator",
+      "target_class": "Standard",
+      "temporal_properties": ["valid_from", "valid_to", "recorded_at"]
+    },
+    {
+      "label": "measuredUnder",
+      "source_class": "KPIObservation",
+      "target_class": "StandardIndicator",
+      "temporal_properties": ["valid_from", "valid_to", "recorded_at"]
+    },
+    {
+      "label": "measuredUnder",
+      "source_class": "Emission",
+      "target_class": "StandardIndicator",
+      "temporal_properties": ["valid_from", "valid_to", "recorded_at"]
+    },
+    {
+      "label": "measuredUnder",
+      "source_class": "Penalty",
+      "target_class": "StandardIndicator",
+      "temporal_properties": ["valid_from", "valid_to", "recorded_at"]
+    },
+    {
+      "label": "alignsWithIndicator",
+      "source_class": "SustainabilityClaim",
+      "target_class": "StandardIndicator",
+      "temporal_properties": ["valid_from", "valid_to", "recorded_at"]
+    },
+    {
+      "label": "alignsWithIndicator",
+      "source_class": "Goal",
+      "target_class": "StandardIndicator",
+      "temporal_properties": ["valid_from", "valid_to", "recorded_at"]
+    },
+    {
+      "label": "alignsWithIndicator",
+      "source_class": "Initiative",
+      "target_class": "StandardIndicator",
+      "temporal_properties": ["valid_from", "valid_to", "recorded_at"]
+    },
+    {
+      "label": "equivalentTo",
+      "source_class": "StandardIndicator",
+      "target_class": "StandardIndicator",
       "temporal_properties": ["valid_from", "valid_to", "recorded_at"]
     }
   ]

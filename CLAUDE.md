@@ -118,12 +118,26 @@ src/step03b_anchor_kpi_facilities.py    → appends to all_validated_triples.jso
     each KPI's source sentence (source_id → labeled JSONL) → emits KPIObservation
     --observedAtFacility--> Facility edges, tagged anchor_method=offline_gazetteer.
     Run after step03, before step05. New extractions get anchors from the step02 prompt instead)
+src/step03c_canonicalize_kpis.py        → appends/patches all_validated_triples.json (+ kpi_canonical_stats.json)
+   (offline, NO LLM: assigns each KPIObservation a canonical `kpi_id` from the 35-indicator
+    vocabulary via config/kpi_type_aliases.json + rapidfuzz on official names, writing a NEW
+    property (NEVER rewrites `kpi_type`, which is in identity_keys — so node order is preserved
+    and paid step07 dossiers survive). Also unit_normalized/value_normalized/period and a
+    Goal.target_date regex backfill (future years only). Feeds the indicator axis, docs/
+    STANDARD_INDICATOR_AXIS.md §5.2. Run after step03b, before step04. Precision over recall:
+    financial KPIs in VND are rejected, not force-mapped)
 src/step04_build_issuer_registry.py     → config/issuer_registry.json                       (run-once bootstrap)
    (drafts the reporting company's name variants → aliases / exclusions / needs_review;
     re-running preserves human edits, --force rebuilds; a human confirms needs_review)
+src/step04b_build_standards_registry.py → config/standards_registry.json                    (run-once bootstrap)
+   (offline, NO LLM: same shape/contract as step04, applied to the 5 reference documents behind
+    the indicator vocabulary (TT96, QĐ2171, QCVN09, SSC-IFC, GRI). Collapses their many mentions
+    — GRI's ≥4 spellings, TT96 VN/EN — so step05's standards anchor freezes them onto one
+    canonical node each, fixing diagnosis C3. A human confirms needs_review; --force rebuilds)
 src/step05_resolve_entities.py          → graph_output/resolved/resolved_graph.json (+ _stats.json)
    (step 4: collapse duplicate entity nodes into canonical entities, keeping temporal history.
-    Stage A deterministic identity_keys merge + FROZEN issuer anchor (issuer_registry.json);
+    Stage A deterministic identity_keys merge + FROZEN issuer anchor (issuer_registry.json) +
+    FROZEN standards anchor (Stage A.3, standards_registry.json — Standard/Regulation mentions);
     Stage B VN-aware blocking (normalized signature + gemini-embedding-001 cosine);
     Stage C gemini-2.5-flash adjudication on ambiguous pairs (budgeted); Stage D consolidate)
 src/step05b_stamp_provenance.py         → patches resolved_graph.json in place (+ provenance_patch_stats.json)
@@ -134,6 +148,19 @@ src/step05b_stamp_provenance.py         → patches resolved_graph.json in place
     news JSONL). NEVER reorders nodes (step06 _node_key + dossier node_index are positional).
     Run after step05, before step06; re-run after any step05 re-run. New step02 extractions
     self-stamp (provenance_method=extraction) and are skipped. See docs/PROVENANCE_PATCH.md)
+src/step05c_link_standard_indicators.py → patches resolved_graph.json in place (+ indicator_axis_stats.json)
+   (offline, NO LLM: materializes the TT96/GRI indicator axis. APPENDS ~35 StandardIndicator
+    nodes + edges: partOf (indicator→document), measuredUnder (KPIObservation/Emission→indicator,
+    read from step03c's kpi_id — never guessed here), equivalentTo (TT96→GRI, from
+    config/standard_crosswalk.json, confirmed rows only), and a keyword tier of alignsWithIndicator
+    (Claim/Goal/Initiative→indicator, unambiguous only). Penalty amount==0 = self-reported
+    "fined 0 times" → flagged self_reported_zero, NO conduct edge. APPEND-ONLY (asserts the
+    existing node/edge prefix is untouched — dossiers stay valid). Run after step05b, before
+    step06. See docs/STANDARD_INDICATOR_AXIS.md)
+src/step05d_align_claims_to_indicators.py → patches resolved_graph.json in place (+ indicator_align_llm_stats.json)
+   (OPTIONAL, LLM, budgeted: alignsWithIndicator for the Claim/Goal/Initiative the keyword tier
+    left unresolved. Topic classification only (alignment_method=llm), NOT a supports/contradicts
+    judgement. Pipeline is complete without it. Run after step05c; --max-llm-pairs, --dry-run)
 src/step06_load_graph_to_neo4j.py       → Neo4j (bolt://localhost:8687, db `neo4j`)            (step 5)
    (load the resolved {nodes,edges} graph as a property graph — NO LLM. Nodes keyed by
     array index (entities already resolved; not re-deduped); edges keep temporal_metadata and
@@ -233,9 +260,13 @@ python src/step02_extract_triplet_from_jsonl.py -i <news_preprocessed.jsonl> --s
 python src/step03_fix_invalid_triplets.py                                    # → graph_output/validated/
 python src/step03_fix_invalid_triplets.py --renormalize                      #   P4-only pass on the existing validated file (no LLM)
 python src/step03b_anchor_kpi_facilities.py --dry-run                        # P3 offline anchor patch preview (then run without --dry-run)
+python src/step03c_canonicalize_kpis.py --dry-run                            # assign canonical kpi_id (then run without --dry-run; offline, no LLM)
 python src/step04_build_issuer_registry.py                                   # → config/issuer_registry.json (run-once; then hand-confirm needs_review)
-python src/step05_resolve_entities.py                                        # → graph_output/resolved/ (step 4: entity resolution)
+python src/step04b_build_standards_registry.py                               # → config/standards_registry.json (run-once; hand-confirm needs_review)
+python src/step05_resolve_entities.py                                        # → graph_output/resolved/ (step 4: entity resolution + standards anchor)
 python src/step05b_stamp_provenance.py --dry-run                             # provenance patch preview (then run without --dry-run; offline, no LLM)
+python src/step05c_link_standard_indicators.py --dry-run                     # TT96/GRI indicator axis preview (then run without --dry-run; offline, no LLM)
+python src/step05d_align_claims_to_indicators.py --dry-run                   # OPTIONAL LLM: align remaining claims (then --max-llm-pairs N to run)
 python src/step06_load_graph_to_neo4j.py --dry-run                           # step 5: preview planned counts, no DB
 docker compose up -d                                                 # start Neo4j on :8687 (then run neo4j/init.cypher once — see docs)
 python src/step06_load_graph_to_neo4j.py --clear                            # → Neo4j (wipe + load; needs the instance running)
@@ -254,8 +285,11 @@ streamlit run app.py                                                       # com
 #   --all-pages (don't restrict to ESG pages); --dry-run (fix/resolve/load steps: offline only, no LLM/DB/writes);
 #   quality (step00): --label <name>, --skip-slow (skip the BFS-heavy Q7(c)/(d)), --max-hops;
 #   fix (step03): --renormalize (P4 pass only); anchor patch (step03b): --max-per-facility, --dry-run;
+#   kpi canonical (step03c): --aliases, --fuzzy-threshold, --no-goals, --dry-run;
 #   provenance patch (step05b): --graphs-dir, --news-globs, --stats-out, --dry-run;
-#   resolve: --no-llm (Stages A+B.1 only), --similarity-threshold, --max-llm-pairs (budget the LLM adjudication);
+#   indicator axis (step05c): --crosswalk, --no-gri, --no-align, --trust-draft-crosswalk, --dry-run;
+#   claim→indicator LLM (step05d): --max-llm-pairs, --openai-model, --dry-run;
+#   resolve: --no-llm (Stages A+B.1 only), --standards-registry, --similarity-threshold, --max-llm-pairs;
 #   load: --clear (wipe first), --no-versions (canonical only), --database, --strict (env: NEO4J_URI/USER/PASSWORD);
 #   crosscheck: LLM adjudication is mandatory (no --no-llm); --max-llm-pairs, --provider-order gemini,openai, --to-neo4j;
 #   sync (step08_sync_crosscheck_to_neo4j.py): --clear-advisory, --dry-run;
@@ -264,13 +298,16 @@ streamlit run app.py                                                       # com
 ```
 
 No pytest harness or linter is configured. The one automated check is a plain assert
-script covering the P3/P4 Phase-0 temporal logic and the step05b provenance matching —
-run it from the repo root after touching step03/step03b/step05/step05b:
+script covering the P3/P4 Phase-0 temporal logic, the step05b provenance matching, and the
+indicator-axis stages (step03c/step05c/step08) — run it from the repo root after touching
+step03/step03b/step03c/step05/step05b/step05c/step08:
 
 ```bash
 python test/test_temporal_invariants.py    # offline, no LLM/DB; asserts date canonicalization,
                                            # temporal invariants, source_id parsing, DSU consolidate,
-                                           # provenance tier matching + node-order invariant
+                                           # provenance tier matching + node-order invariant,
+                                           # kpi_id canonicalization, indicator-axis edge minting,
+                                           # and step08 stable-id (claim_id) resolution
 ```
 
 The rest of `test/` and `notebooks/` are Jupyter notebooks for manual validation

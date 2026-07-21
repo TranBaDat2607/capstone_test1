@@ -1,0 +1,52 @@
+{
+  "TT96": {
+    "canonical_name": "Thông tư 96/2020/TT-BTC",
+    "kind": "Regulation",
+    "aliases": [
+      "Circular 96/2020/TT-BTC",
+      "Thông tư 96/2020/TT-BTC"
+    ],
+    "exclusions": [],
+    "needs_review": []
+  },
+  "GRI": {
+    "canonical_name": "GRI Standards",
+    "kind": "Standard",
+    "aliases": [
+      "GRI Standard",
+      "GRI Standards",
+      "GRI Sustainability Reporting Standards",
+      "Global Reporting Initiative",
+      "Global Reporting Initiative (GRI)"
+    ],
+    "exclusions": [],
+    "needs_review": []
+  },
+  "SSCIFC": {
+    "canonical_name": "Sổ tay hướng dẫn công bố thông tin ESG (SSC-IFC)",
+    "kind": "Standard",
+    "aliases": [
+      "Hướng dẫn công bố thông tin về Môi trường & Xã hội"
+    ],
+    "exclusions": [],
+    "needs_review": []
+  },
+  "QD2171": {
+    "canonical_name": "Quyết định 2171/QĐ-BXD",
+    "kind": "Regulation",
+    "aliases": [
+      "Quyết định 2171/QĐ-BXD"
+    ],
+    "exclusions": [],
+    "needs_review": []
+  },
+  "QCVN09": {
+    "canonical_name": "QCVN 09:2017/BXD",
+    "kind": "Standard",
+    "aliases": [
+      "QCVN 09:2017/BXD"
+    ],
+    "exclusions": [],
+    "needs_review": []
+  }
+}

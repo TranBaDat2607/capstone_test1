@@ -56,6 +56,7 @@ DEFAULT_INPUT = REPO_ROOT / "graph_output" / "validated" / "all_validated_triple
 DEFAULT_SCHEMA = REPO_ROOT / "config" / "schema.json"
 DEFAULT_OUT_DIR = REPO_ROOT / "graph_output" / "resolved"
 DEFAULT_REGISTRY = REPO_ROOT / "config" / "issuer_registry.json"
+DEFAULT_STANDARDS_REGISTRY = REPO_ROOT / "config" / "standards_registry.json"
 DEFAULT_MODEL = "gemini-2.5-flash"
 DEFAULT_EMBED_MODEL = "gemini-embedding-001"
 DEFAULT_EMBED_DIM = 768
@@ -74,6 +75,18 @@ OBSERVATION_CLASSES = {
     "Emission", "Waste",
 }
 TEMPORAL_FIELDS = {"valid_from", "valid_to", "is_current", "recorded_at"}
+
+# `subjectToRegulation` (Organization->Regulation) and `adoptsStandard` (Organization->Standard)
+# both mean "the company follows this reference document" but the schema locks each to a
+# different target class. step02's LLM extraction sometimes picks the wrong one when a single
+# document could plausibly read as either (e.g. the voluntary SSC-IFC guide extracted once as a
+# "regulation") — the document's TRUE class is only known once Stage A.3's frozen standards
+# anchor resolves it (config/standards_registry.json `kind`), which happens here in Stage D, well
+# after extraction. Relabeling deterministically at this point — keyed on the node's final
+# resolved class, not on what any individual extraction guessed — means the fix holds no matter
+# how many times step01-step06 is rerun on fresh data, not just for the mentions seen so far.
+DOC_EDGE_EXPECTED_CLASS = {"subjectToRegulation": "Regulation", "adoptsStandard": "Standard"}
+DOC_EDGE_SWAP = {"subjectToRegulation": "adoptsStandard", "adoptsStandard": "subjectToRegulation"}
 
 
 # --------------------------------------------------------------------------- #
@@ -203,6 +216,39 @@ def load_issuer_index(registry_path: Path) -> Tuple[Dict[str, Tuple[str, str]], 
     return index, n_alias, n_excl
 
 
+def load_standards_index(registry_path: Path) -> Tuple[Dict[str, Tuple[str, str, str]], int, int]:
+    """normalized-name -> (doc_key, canonical_name, kind) for Standard/Regulation mentions.
+
+    Same shape and same purpose as load_issuer_index, applied to the five reference documents
+    behind the indicator vocabulary (config/standards_registry.json, built by step04b). The
+    resulting clusters are FROZEN in Stage A.3, exactly like the issuer, so GRI's ≥4 spellings
+    collapse onto one canonical node without ever consulting embeddings or an LLM (fixes C3).
+
+    `kind` (registry's authoritative "Standard"/"Regulation" class) rides along so consolidate()
+    can force the merged node's `class` — not just its `name` — to match the registry. Without
+    this, the merged node's class is whichever member `max(prop_completeness, ...)` happens to
+    pick, which can be a mis-extracted mention (e.g. the SSC-IFC guide extracted once as
+    "Regulation") and silently produces schema-illegal edges downstream (adoptsStandard/
+    issuedBy expect a "Standard" target/source)."""
+    if not registry_path.exists():
+        logger.warning(f"No standards registry at {registry_path}; skipping standards anchor.")
+        return {}, 0, 0
+    reg = json.loads(registry_path.read_text(encoding="utf-8"))
+    index: Dict[str, Tuple[str, str, str]] = {}
+    n_alias = n_excl = 0
+    for key, info in reg.items():
+        canonical = info.get("canonical_name", key)
+        kind = info.get("kind", "Standard")
+        excl = {normalize_name(e["name"]) for e in info.get("exclusions", [])}
+        n_excl += len(excl)
+        for alias in info.get("aliases", []):
+            na = normalize_name(alias)
+            if na and na not in excl:
+                index[na] = (key, canonical, kind)
+                n_alias += 1
+    return index, n_alias, n_excl
+
+
 # --------------------------------------------------------------------------- #
 # Stage C — LLM adjudication.
 # --------------------------------------------------------------------------- #
@@ -295,7 +341,10 @@ def edge_year(edge: Dict[str, Any]) -> str:
 
 
 def consolidate(nodes: List[Dict[str, Any]], edges: List[Dict[str, Any]], dsu: DSU,
-                issuer_tag: Dict[int, Tuple[str, str]]) -> Tuple[Dict[str, Any], Dict[str, int]]:
+                issuer_tag: Dict[int, Tuple[str, str]],
+                standards_tag: Optional[Dict[int, Tuple[str, str]]] = None
+                ) -> Tuple[Dict[str, Any], Dict[str, int]]:
+    standards_tag = standards_tag or {}
     clusters: Dict[int, List[int]] = defaultdict(list)
     for i in range(len(nodes)):
         clusters[dsu.find(i)].append(i)
@@ -321,10 +370,19 @@ def consolidate(nodes: List[Dict[str, Any]], edges: List[Dict[str, Any]], dsu: D
             for k in ("valid_from", "valid_to", "is_current"):
                 if k in cp:
                     props[k] = cp[k]
+        node_class = canonical["class"]
         if tag:
             props["ticker"], props["name"] = tag[0], tag[1]
+        elif root in standards_tag:
+            # canonical reference document name AND class (no ticker — these are not
+            # companies). The class must come from the registry's `kind`, not from whichever
+            # member `canonical` happened to pick — a single mis-extracted mention (e.g. the
+            # SSC-IFC guide tagged "Regulation" instead of "Standard") must not decide the
+            # class of the whole frozen cluster, or adoptsStandard/issuedBy edges pointing at
+            # it become schema-illegal (docs/STANDARD_INDICATOR_AXIS.md).
+            props["name"], node_class = standards_tag[root]
 
-        node: Dict[str, Any] = {"class": canonical["class"], "properties": props}
+        node: Dict[str, Any] = {"class": node_class, "properties": props}
         if len(members) > 1:
             # P4: versions are distinct facts, not distinct spellings — compare
             # dates by start instant so "2011" and "2011-01-01" collapse into one
@@ -368,20 +426,31 @@ def consolidate(nodes: List[Dict[str, Any]], edges: List[Dict[str, Any]], dsu: D
 
     seen_edges: Set[Tuple] = set()
     new_edges: List[Dict[str, Any]] = []
+    doc_edges_relabeled = 0
     for e in edges:
         ns, no = root_to_new[dsu.find(e["subject"])], root_to_new[dsu.find(e["object"])]
         if ns == no:  # self-loop created by merging both endpoints
             continue
-        key = (ns, e["predicate"], no, edge_year(e))
+        predicate = e["predicate"]
+        expected = DOC_EDGE_EXPECTED_CLASS.get(predicate)
+        if expected is not None:
+            obj_class = new_nodes[no]["class"]
+            if obj_class != expected:
+                swap = DOC_EDGE_SWAP[predicate]
+                if obj_class == DOC_EDGE_EXPECTED_CLASS[swap]:
+                    predicate = swap
+                    doc_edges_relabeled += 1
+        key = (ns, predicate, no, edge_year(e))
         if key in seen_edges:
             continue
         seen_edges.add(key)
-        ne = {"subject": ns, "predicate": e["predicate"], "object": no}
+        ne = {"subject": ns, "predicate": predicate, "object": no}
         if "temporal_metadata" in e:
             ne["temporal_metadata"] = e["temporal_metadata"]
         new_edges.append(ne)
 
-    stats = {"resolved_nodes": len(new_nodes), "resolved_edges": len(new_edges)}
+    stats = {"resolved_nodes": len(new_nodes), "resolved_edges": len(new_edges),
+             "doc_edges_relabeled": doc_edges_relabeled}
     return {"nodes": new_nodes, "edges": new_edges}, stats
 
 
@@ -446,8 +515,34 @@ def resolve(args: argparse.Namespace) -> None:
                 f"into {len(issuer_roots)} frozen issuer cluster(s) "
                 f"(registry: {n_alias} aliases, {n_excl} exclusions)")
 
-    # frozen issuer node indices — excluded from Stages B/C
-    frozen = {i for i in entity_idx if dsu.find(i) in issuer_roots}
+    # ---- Stage A.3: standards anchor (frozen) ----
+    # Same mechanism as A.2, applied to the five reference documents. Each doc_key's mentions
+    # (GRI's many spellings, TT96 VN/EN, …) collapse onto one canonical node whose name comes
+    # from the registry — never from embeddings or an LLM (fixes diagnosis C3).
+    std_index, s_alias, s_excl = load_standards_index(args.standards_registry)
+    std_members: Dict[str, List[int]] = defaultdict(list)
+    for i in entity_idx:
+        if nodes[i]["class"] not in ("Standard", "Regulation"):
+            continue
+        tag = std_index.get(normalize_name(primary_name(nodes[i])))
+        if tag is not None:
+            std_members[tag[0]].append(i)          # tag[0] = doc_key
+    standards_roots: Set[int] = set()
+    standards_tag: Dict[int, Tuple[str, str]] = {}
+    for key, members in std_members.items():
+        for j in members[1:]:
+            dsu.union(members[0], j)
+        root = dsu.find(members[0])
+        standards_roots.add(root)
+        _, canonical_name, kind = std_index[normalize_name(primary_name(nodes[members[0]]))]
+        standards_tag[root] = (canonical_name, kind)
+    logger.info(f"Stage A.3 standards anchor: merged {sum(len(m) for m in std_members.values())} "
+                f"Standard/Regulation node(s) into {len(standards_roots)} frozen cluster(s) "
+                f"(registry: {s_alias} aliases, {s_excl} exclusions)")
+
+    # frozen node indices (issuer + standards) — excluded from Stages B/C
+    anchor_roots = issuer_roots | standards_roots
+    frozen = {i for i in entity_idx if dsu.find(i) in anchor_roots}
 
     # ---- Stage B.1: normalized identity-signature merge (entities, non-issuer) ----
     norm_groups: Dict[Tuple, List[int]] = defaultdict(list)
@@ -525,9 +620,11 @@ def resolve(args: argparse.Namespace) -> None:
         logger.info("Stages B.2/C skipped (--no-llm/--dry-run)")
 
     # ---- Stage D: consolidate ----
-    resolved, dstats = consolidate(nodes, edges, dsu, issuer_tag)
+    resolved, dstats = consolidate(nodes, edges, dsu, issuer_tag, standards_tag)
     final_entity_clusters = dsu.n_components(entity_idx)
-    logger.info(f"Stage D: {n} -> {dstats['resolved_nodes']} nodes, {len(edges)} -> {dstats['resolved_edges']} edges")
+    logger.info(f"Stage D: {n} -> {dstats['resolved_nodes']} nodes, {len(edges)} -> {dstats['resolved_edges']} edges"
+                f" ({dstats['doc_edges_relabeled']} subjectToRegulation/adoptsStandard relabeled"
+                f" to match the resolved document's class)")
 
     stats = {
         "input": {"triples": len(triples), "graph_nodes": n, "graph_edges": len(edges),
@@ -543,7 +640,8 @@ def resolve(args: argparse.Namespace) -> None:
         },
         "output": {"resolved_nodes": dstats["resolved_nodes"], "resolved_edges": dstats["resolved_edges"],
                    "node_reduction": n - dstats["resolved_nodes"],
-                   "reduction_pct": round((n - dstats["resolved_nodes"]) / n * 100, 1) if n else 0.0},
+                   "reduction_pct": round((n - dstats["resolved_nodes"]) / n * 100, 1) if n else 0.0,
+                   "doc_edges_relabeled": dstats["doc_edges_relabeled"]},
         "registry": {"aliases": n_alias, "exclusions": n_excl},
         "params": {"similarity_threshold": args.similarity_threshold, "embed_model": args.embed_model,
                    "embed_dim": args.embed_dim, "model": args.model, "no_llm": args.no_llm},
@@ -568,6 +666,8 @@ def main() -> None:
     p.add_argument("-s", "--schema", type=Path, default=DEFAULT_SCHEMA)
     p.add_argument("-o", "--out-dir", type=Path, default=DEFAULT_OUT_DIR)
     p.add_argument("--registry", type=Path, default=DEFAULT_REGISTRY)
+    p.add_argument("--standards-registry", type=Path, default=DEFAULT_STANDARDS_REGISTRY,
+                   help="Canonical Standard/Regulation registry from step04b (frozen anchor).")
     p.add_argument("--similarity-threshold", type=float, default=DEFAULT_SIM)
     p.add_argument("--rate-limit", type=int, default=DEFAULT_RATE_LIMIT)
     p.add_argument("--model", type=str, default=DEFAULT_MODEL)

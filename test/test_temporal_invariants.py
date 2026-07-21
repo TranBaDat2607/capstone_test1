@@ -244,6 +244,139 @@ def test_step02_stamp_provenance():
     assert "article_title" not in kpi
 
 
+# --------------------------------------------------------------------------- #
+# Indicator axis: step03c canonicalization + step05c linking + step08 stable-id.
+# --------------------------------------------------------------------------- #
+import json  # noqa: E402
+
+from step03c_canonicalize_kpis import Matcher, backfill_goal_target_date  # noqa: E402
+from step03_fix_invalid_triplets import load_schema_sets  # noqa: E402
+from step05c_link_standard_indicators import (  # noqa: E402
+    GraphPatch, doc_key_for, match_keyword, build_keyword_index,
+)
+from step08_sync_crosscheck_to_neo4j import (  # noqa: E402
+    build_key_index, resolve_claim, resolve_evidence,
+)
+
+REPO = Path(__file__).resolve().parents[1]
+_DEFS = json.loads((REPO / "kpi_definitions_construction.json").read_text(encoding="utf-8"))
+_ALIASES = json.loads((REPO / "config" / "kpi_type_aliases.json").read_text(encoding="utf-8"))
+_SCHEMA_SETS = load_schema_sets(json.loads((REPO / "config" / "schema.json").read_text(encoding="utf-8")))
+
+
+def test_step03c_matcher_rejects_financial_and_keeps_kpi_type():
+    m = Matcher(_DEFS, _ALIASES)
+    # a genuine ESG alias maps
+    ind, method = m.match("Male employees", "người")
+    assert ind == "SSCIFC-S6", (ind, method)
+    # a financial KPI in VND is rejected, never force-mapped onto an indicator
+    ind, method = m.match("Lợi nhuận sau thuế", "tỷ đồng")
+    assert ind is None and method == "rejected_unit", (ind, method)
+    # an already-standard code is passed through unchanged (never re-derived)
+    assert "TT96-6.6.1" in {d["id"] for d in _DEFS}
+
+
+def test_step03c_goal_backfill_future_only():
+    triples = [
+        {"subject": {"class": "Goal", "properties":
+                     {"name": "Giảm phát thải đến năm 2030", "valid_from": "2020"}},
+         "predicate": "setsGoal",
+         "object": {"class": "Organization", "properties": {"name": "X"}}},
+        # a matched year in the PAST relative to valid_from must NOT become a target_date
+        {"subject": {"class": "Goal", "properties":
+                     {"name": "Hoàn thành đến năm 2015", "valid_from": "2020"}},
+         "predicate": "setsGoal",
+         "object": {"class": "Organization", "properties": {"name": "X"}}},
+    ]
+    stats = backfill_goal_target_date(triples)
+    assert triples[0]["subject"]["properties"]["target_date"] == "2030"
+    assert "target_date" not in triples[1]["subject"]["properties"]
+    assert stats["filled"] == 1 and stats["rejected_not_in_future"] == 1
+
+
+def _mini_graph():
+    # KPIObservation already carrying a canonical kpi_id + a self-reported-zero Penalty
+    return {"nodes": [
+        {"class": "KPIObservation", "properties": {"kpi_id": "TT96-6.1.1", "title": "GHG",
+                                                    "valid_from": "2020"}},
+        {"class": "Penalty", "properties": {"penalty_id": "AAA_2022_EnvPenalty_0times",
+                                            "amount": 0, "valid_from": "2022"}},
+    ], "edges": []}
+
+
+def test_step05c_add_edge_direction_and_idempotency():
+    ec, el, ed = _SCHEMA_SETS
+    g = _mini_graph()
+    gp = GraphPatch(g, ec, el, ed)
+    si = {"class": "StandardIndicator", "properties": {"id": "TT96-6.1.1", "name": "GHG"}}
+    idx, created = gp.ensure_node(si)
+    assert created
+    # ensure_node is idempotent — same identity does not duplicate
+    idx2, created2 = gp.ensure_node(dict(si))
+    assert idx2 == idx and not created2
+    # legal measuredUnder direction is accepted
+    assert gp.add_edge(0, "measuredUnder", idx, {"valid_from": "2020", "valid_to": None,
+                                                 "recorded_at": "2026-01-01"})
+    # re-adding the same edge is a no-op (dedup)
+    assert not gp.add_edge(0, "measuredUnder", idx, {"valid_from": "2020", "valid_to": None,
+                                                     "recorded_at": "2026-01-01"})
+    # illegal direction (StandardIndicator -measuredUnder-> KPIObservation) is rejected
+    assert not gp.add_edge(idx, "measuredUnder", 0, {"valid_from": None, "valid_to": None,
+                                                     "recorded_at": "2026-01-01"})
+    # append-only: the two original nodes are untouched in place
+    assert [n["class"] for n in g["nodes"][:2]] == ["KPIObservation", "Penalty"]
+
+
+def test_step05c_doc_key_and_keyword_tier():
+    assert doc_key_for("TT96-6.1.1") == ("TT96", "Regulation")
+    assert doc_key_for("SSCIFC-E2") == ("SSCIFC", "Standard")
+    assert doc_key_for("GRI 305-1") is None
+    kw = build_keyword_index(_DEFS)
+    # unambiguous keyword resolves
+    assert match_keyword("Chúng tôi giảm phát thải khí nhà kính", kw) == "TT96-6.1.1"
+    # generic text resolves to nothing (no false alignment)
+    assert match_keyword("Công ty phát triển bền vững", kw) is None
+
+
+def test_step05_standards_anchor_fixes_class_and_relabels_edge():
+    # The SSC-IFC bug, reproduced: a document mention gets extracted with the wrong class
+    # (here "Regulation" for what the registry says is a "Standard"). consolidate() must let
+    # the registry's `kind` — not whichever member "wins" by prop_completeness — decide the
+    # merged node's class, and must relabel any subjectToRegulation edge pointing at it to
+    # adoptsStandard so the pipeline never regenerates the illegal-edge bug on a fresh run.
+    nodes = [
+        {"class": "Organization", "properties": {"name": "AAA"}},
+        {"class": "Regulation", "properties": {"name": "SSC-IFC Guide", "jurisdiction": "Vietnam"}},
+    ]
+    edges = [{"subject": 0, "predicate": "subjectToRegulation", "object": 1,
+             "temporal_metadata": {"valid_from": "2020", "valid_to": None,
+                                   "recorded_at": "2026-01-01"}}]
+    dsu = DSU(2)
+    standards_tag = {dsu.find(1): ("SSC-IFC Guide", "Standard")}
+    resolved, dstats = consolidate(nodes, edges, dsu, {}, standards_tag)
+    doc_node = next(n for n in resolved["nodes"] if n["class"] in ("Standard", "Regulation"))
+    assert doc_node["class"] == "Standard"
+    (edge,) = resolved["edges"]
+    assert edge["predicate"] == "adoptsStandard"
+    assert dstats["doc_edges_relabeled"] == 1
+
+
+def test_step08_stable_id_survives_reorder():
+    graph = {"nodes": [
+        {"class": "SustainabilityClaim", "properties": {"claim_id": "c1", "description": "d1"}},
+        {"class": "MediaReport", "properties": {"report_id": "r1", "title": "Bài báo độc lập X"}},
+    ], "edges": []}
+    by_claim, by_text = build_key_index(graph)
+    # claim resolves by its stable claim_id, not by array position
+    dossier = {"claim_id": "c1", "claim_node_index": 999}
+    ck, how = resolve_claim(dossier, by_claim)
+    assert ck == "n0" and how == "stable_id"
+    # evidence resolves by (class, text) when node_index is stale
+    ev = {"class": "MediaReport", "text": "Bài báo độc lập X", "node_index": 999}
+    ek, how = resolve_evidence(ev, by_text)
+    assert ek == "n1" and how == "text"
+
+
 if __name__ == "__main__":
     fns = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     for fn in fns:

@@ -68,8 +68,17 @@ DEFAULT_MAX_HOPS = 4  # for Q7(d) claim→conduct search
 T1_CLASSES = {
     "Organization", "Person", "Facility", "Product", "Material", "Location",
     "Country", "Standard", "Regulation", "Authority", "Community",
-    "ClaimKeyword", "Certification",
+    "ClaimKeyword", "Certification", "StandardIndicator",
 }
+
+# Reference nodes are a controlled vocabulary generated from
+# kpi_definitions_construction.json (step05c) — NOT entities extracted from text.
+# They are deliberately high-degree by design: every KPI of a given indicator hangs
+# off one node, which is the whole point of the join (docs/STANDARD_INDICATOR_AXIS.md
+# §3). Counting them in the Q7 hub/path metrics would measure the vocabulary rather
+# than the graph, and would make a before/after comparison across the indicator-axis
+# change meaningless — so they are excluded there (and only there).
+REFERENCE_CLASSES = {"StandardIndicator"}
 T2_CLASSES = {
     "KPIObservation", "Emission", "Waste", "Penalty", "Controversy",
     "MediaReport", "ThirdPartyVerification", "Investment", "Project",
@@ -356,7 +365,10 @@ def q7_traversability(nodes: List[Dict[str, Any]], edges: List[Dict[str, Any]],
     leaves = sum(1 for d in degrees if d == 1)
     isolated = sum(1 for d in degrees if d == 0)
 
-    max_deg_idx = max(range(n), key=lambda i: degrees[i]) if n else 0
+    # The hub is the busiest *entity* — reference vocabulary nodes are excluded so the
+    # metric keeps measuring the extracted graph (see REFERENCE_CLASSES).
+    hub_candidates = [i for i in range(n) if nodes[i].get("class") not in REFERENCE_CLASSES]
+    max_deg_idx = max(hub_candidates, key=lambda i: degrees[i]) if hub_candidates else 0
     hub = {"class": nodes[max_deg_idx].get("class"), "name": node_name(nodes[max_deg_idx])[:60],
            "degree": degrees[max_deg_idx]} if n else {}
 
@@ -443,6 +455,12 @@ def q7_traversability(nodes: List[Dict[str, Any]], edges: List[Dict[str, Any]],
     # information — the walker can even bounce claim→hub→Facility→hub→conduct and
     # launder a "structural" flag. Only hub-free structural paths measure real
     # alternate routes; pure-keyword paths never count (hasKeyword is not structural).
+    # Reference vocabulary nodes are barred for the same reason as the issuer hub: every
+    # claim and every KPI of an indicator hangs off one StandardIndicator, so routing
+    # through it would flag "structural path" for pairs that share nothing but a topic.
+    # Barring them keeps Q7(d) comparable before/after the indicator axis is added.
+    barred = {max_deg_idx} | {i for i, nd in enumerate(nodes)
+                              if nd.get("class") in REFERENCE_CLASSES}
     claim_idx = [i for i, nd in enumerate(nodes) if nd.get("class") == "SustainabilityClaim"]
     conduct_idx = {i for i, nd in enumerate(nodes) if is_conduct(nd)}
     reached = 0
@@ -456,8 +474,8 @@ def q7_traversability(nodes: List[Dict[str, Any]], edges: List[Dict[str, Any]],
             nxt_states: List[Tuple[int, bool]] = []
             for u, flag in frontier:
                 for v, lbl in adj[u]:
-                    if v == max_deg_idx:
-                        continue  # issuer hub excluded from (d) paths
+                    if v in barred:
+                        continue  # issuer hub + reference vocabulary excluded from (d) paths
                     nf = flag or (lbl in STRUCTURAL_EDGES)
                     if v in conduct_idx and nf:
                         ok = True

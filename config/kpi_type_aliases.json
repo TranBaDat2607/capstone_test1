@@ -1,0 +1,127 @@
+{
+  "_doc": [
+    "Curated alias dictionary: free-text KPIObservation (title, unit) -> canonical indicator id.",
+    "Consumed by src/step03c_canonicalize_kpis.py, which writes the result to the NEW property",
+    "`kpi_id`. It never rewrites `kpi_type`, because kpi_type is part of",
+    "KPIObservation.identity_keys and changing it would change node identity.",
+    "",
+    "Why this file exists at all: step01 already emits standard codes for the KPIs it",
+    "recognises (484/4906 on AAA), but free text always drifts, so a hand-curated alias layer",
+    "is a permanent part of the pipeline - same role issuer_registry.json plays for company",
+    "names. Grow `rules` from the `unmapped_titles` list in the step03c stats file.",
+    "",
+    "PRECISION OVER RECALL. The untouched tail is ~85% purely financial KPIs (unit VND / ty",
+    "dong), which must NOT be mapped onto a TT96 indicator - that would be a wrong answer, not",
+    "a missing one. Anything genuinely ambiguous belongs in `needs_review`, which step03c",
+    "deliberately does NOT apply until a human promotes it into `rules`."
+  ],
+  "version": "2026-07-20",
+
+  "reject_units": [
+    "vnd", "dong", "đồng", "tỷ đồng", "ty dong", "tỷ vnđ", "triệu đồng", "trieu dong",
+    "billion vnd", "million vnd", "triệu vnd", "million usd", "tỷ usd", "usd",
+    "shares", "cổ phiếu", "vnd/share", "đồng/cp", "ratio", "vòng", "lần", "times"
+  ],
+
+  "unit_canonical": {
+    "m3": "m³",
+    "m³": "m³",
+    "nghìn m3": "m³",
+    "kwh": "kWh",
+    "kwh/kg": "kWh/kg",
+    "mwh": "MWh",
+    "tấn": "tấn",
+    "tan": "tấn",
+    "tấn/năm": "tấn/năm",
+    "tco2e": "tCO2e",
+    "tấn co2e": "tCO2e",
+    "persons": "người",
+    "employees": "người",
+    "người": "người",
+    "giờ": "giờ",
+    "hours": "giờ",
+    "mg/l": "mg/L",
+    "%": "%"
+  },
+
+  "unit_scale_to_base": {
+    "nghìn m3": {"base": "m³", "factor": 1000},
+    "mwh": {"base": "kWh", "factor": 1000}
+  },
+
+  "rules": [
+    {
+      "indicator_id": "TT96-6.6.1",
+      "note": "Headcount, including the education-level breakdown of the workforce.",
+      "units": ["người"],
+      "exact": [
+        "total employees", "number of employees", "số lượng lao động", "tổng số lao động",
+        "số lao động", "tổng số nhân viên", "post-graduate", "university", "college",
+        "vocational secondary", "high school", "post-graduate employees",
+        "university-level employees", "college-level employees",
+        "vocational secondary employees", "high school employees",
+        "trên đại học", "đại học", "cao đẳng", "trung cấp nghề", "ptth"
+      ],
+      "contains": ["số lượng lao động", "tổng số lao động"]
+    },
+    {
+      "indicator_id": "SSCIFC-S6",
+      "note": "Gender split of the workforce = diversity, not headcount.",
+      "units": ["người"],
+      "exact": ["male employees", "female employees", "nam", "nữ", "lao động nam", "lao động nữ"],
+      "contains": ["lao động nam", "lao động nữ"]
+    },
+    {
+      "indicator_id": "TT96-6.6.4",
+      "note": "Training hours.",
+      "units": ["giờ"],
+      "exact": ["tổng số giờ đào tạo", "số giờ đào tạo", "training hours"],
+      "contains": ["giờ đào tạo"]
+    },
+    {
+      "indicator_id": "TT96-6.3.1",
+      "note": "Direct/indirect energy consumption. Cost of energy is NOT consumption - see needs_review.",
+      "units": ["kWh", "kWh/kg", "MWh"],
+      "exact": ["tiêu hao điện năng cho sản xuất", "energy consumption", "điện năng tiêu thụ"],
+      "contains": ["tiêu hao điện năng", "tiêu thụ điện năng", "tiêu thụ năng lượng"]
+    },
+    {
+      "indicator_id": "TT96-6.4.1",
+      "note": "Total water WITHDRAWN/used. Wastewater discharge is a different fact - see needs_review.",
+      "units": ["m³"],
+      "exact": ["tổng lượng nước sử dụng", "lượng nước sử dụng", "water consumption"],
+      "contains": ["lượng nước sử dụng", "nước tiêu thụ"]
+    },
+    {
+      "indicator_id": "SSCIFC-E7",
+      "note": "Share of waste recycled.",
+      "units": ["%"],
+      "exact": ["tỷ lệ tái chế chất thải", "tỷ lệ chất thải tái chế"],
+      "contains": ["tỷ lệ tái chế"]
+    }
+  ],
+
+  "needs_review": [
+    {
+      "titles": ["tổng lượng nước thải phát sinh"],
+      "unit": "m³",
+      "observed_count": 6,
+      "candidate": "TT96-6.4.1",
+      "why_held_back": "Nước THẢI (discharge) khác nước SỬ DỤNG (withdrawal). TT96 muc 6.4 chi noi ve tieu thu nuoc; SSCIFC-E4 rong hon nhung cung khong dung han. Map bua se lam sai chi tieu."
+    },
+    {
+      "titles": ["chi phí điện năng"],
+      "unit": "tỷ đồng",
+      "observed_count": 4,
+      "candidate": "TT96-6.3.1",
+      "why_held_back": "Day la CHI PHI (tien) chu khong phai MUC TIEU THU (kWh). Dung lam bang chung cho chi tieu nang luong se sai don vi va sai ban chat."
+    },
+    {
+      "titles": ["sản lượng sản xuất", "quy mô sản xuất bao bì màng mỏng", "sản lượng bán bao bì"],
+      "unit": "tấn",
+      "observed_count": 11,
+      "candidate": null,
+      "why_held_back": "San luong san xuat/ban hang la chi tieu kinh doanh, khong phai chi tieu ESG cua TT96. Chi map neu dung lam mau so cuong do phat thai."
+    }
+  ]
+}

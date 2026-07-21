@@ -362,6 +362,11 @@ def main() -> None:
     schema = json.loads(args.schema.read_text(encoding="utf-8"))
     schema_sets = load_schema_sets(schema)
 
+    if not any(n.get("class") == "StandardIndicator" for n in graph.get("nodes", [])):
+        logger.warning("No StandardIndicator nodes in the graph — the TT96/GRI indicator axis "
+                       "is absent. Did you run step05c_link_standard_indicators.py after step05b? "
+                       "(docs/STANDARD_INDICATOR_AXIS.md)")
+
     payload = build_payload(graph, schema_sets, include_versions=not args.no_versions)
     c = payload["counts"]
     logger.info(
