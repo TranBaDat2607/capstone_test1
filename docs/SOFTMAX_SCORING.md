@@ -210,9 +210,10 @@ phải chạy lại được nhiều lần miễn phí khi chỉnh tham số, đ
   MERGE properties; `--clear-advisory` cũng phải REMOVE chúng).
 - `step09_report_claim_ledger.py`: in một dòng
   `scores: contradicted=0.62 · supported=0.11 · abstain=0.27`.
-- `app.py`: thanh "cân bằng bằng chứng" 3 đoạn (đỏ/xanh/xám) trong claim card — trực quan
-  hơn mọi bảng số khi demo trước hội đồng. Đồng thời sửa banner/caption đang nói "không
-  có điểm số" thành framing mới ("thanh cân bằng bằng chứng ≠ xác suất greenwashing").
+- Lớp hiển thị: các điểm `score_*` được ghi sẵn lên node claim trong Neo4j (step08), nên
+  UI bất kỳ đọc được. Thanh trực quan "cân bằng bằng chứng" 3 đoạn từng nằm ở demo Streamlit
+  (`app.py`) — đã gỡ cùng app.py; một UI sau này có thể vẽ lại từ chính các điểm này. Nhớ
+  framing: "cân bằng bằng chứng ≠ xác suất greenwashing".
 - Pseudo-code lõi (~30 dòng, không dependency mới):
 
 ```python

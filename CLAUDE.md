@@ -278,8 +278,8 @@ python src/step09_report_claim_ledger.py --review-queue --markdown         #   c
 python src/step10_evaluate.py                                              # step 8 / P6: full Vietnamese evaluation report
 python src/step10_evaluate.py --ablation --no-llm                          #   free arms only (coverage/case studies/ablation are offline)
 
-# Demo UI (web front-end for step 7; reads the same Neo4j advisory layer, no LLM — see docs/DEMO_UI.md)
-streamlit run app.py                                                       # company-code claim-ledger explorer at http://localhost:8501
+# ESG Evidence View UI (web front-end; reads the Neo4j advisory layer, no LLM — see docs/ESG_EVIDENCE_VIEW.md)
+python api/main.py                                                         # 3-column TT96/GRI evidence view at http://localhost:8000
 
 # Useful src/ flags: --doc <substr>, --limit-docs N, --all (scope);
 #   --all-pages (don't restrict to ESG pages); --dry-run (fix/resolve/load steps: offline only, no LLM/DB/writes);
@@ -332,7 +332,7 @@ stamping of the resolved graph so the UI/ledger can cite report page + article t
 `GRAPH_LOAD_NEO4J.md` (step 5 — Neo4j load; also a redesign),
 `CLAIM_CONDUCT_CROSSCHECK.md` (step 6 — claim↔conduct cross-check, the analytical core),
 `CLAIM_LEDGER.md` (step 6b sync + step 7 — dossier → Neo4j advisory layer, then the Neo4j-only claim ledger + analyst Cypher),
-`DEMO_UI.md` (the Streamlit company-code claim-ledger explorer, `app.py` — how to run the demo),
+`ESG_EVIDENCE_VIEW.md` (the 3-column TT96/GRI evidence-view UI, `api/` + `frontend/` — how to run the demo),
 `EVALUATION.md` (step 8 / P6 — why evaluation measures the linking machinery, not
 greenwashing accuracy; the four methods and their costs),
 `ENTITY_RESOLUTION_IMPROVEMENT.md` (Vietnamese — proposal to use graph structural

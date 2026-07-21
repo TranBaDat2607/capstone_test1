@@ -35,6 +35,3 @@ numpy>=1.26.0
 
 # Neo4j graph load (src/step06_load_graph_to_neo4j.py — step 5)
 neo4j>=5.0
-
-# Demo UI (app.py — company-code claim-ledger explorer over the Neo4j advisory layer)
-streamlit>=1.32.0

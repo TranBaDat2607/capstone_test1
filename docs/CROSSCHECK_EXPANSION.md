@@ -8,7 +8,7 @@
 
 | # | Phát hiện | Bằng chứng |
 |---|---|---|
-| D1 | `kpi_gap` và `structural_contradiction` là **tín hiệu "ma"**: step08/step09/app.py đọc-ghi-hiển thị chúng, nhưng step07 **không bao giờ ghi key `signals`** vào dossier → 1.093/1.093 claim AAA có `kpi_gap=false` vĩnh viễn | dossier keys thiếu `signals`; grep step07 không có `kpi_gap` |
+| D1 | `kpi_gap` và `structural_contradiction` là **tín hiệu "ma"**: step08/step09 đọc-ghi chúng, nhưng step07 **không bao giờ ghi key `signals`** vào dossier → 1.093/1.093 claim AAA có `kpi_gap=false` vĩnh viễn | dossier keys thiếu `signals`; grep step07 không có `kpi_gap` |
 | D2 | Retrieval 6a của step07 là **token-overlap toàn cục**: pool = mọi node news thuộc `CONDUCT_CLASSES`, không luôn-kèm KPI/Penalty, không đi qua cấu trúc đồ thị (Facility/công ty con) | `step07:403-441` |
 | D3 | Schema **đã có** `Goal.target_date` nhưng extraction gần như không điền (mẫu AAA: "95% export target" không có năm; nhiều goal khẩu hiệu) → không kiểm được "hứa mà không làm" | `config/schema.json` vs mẫu node Goal trong Neo4j |
 | D4 | KPI hai phía không nối được với nhau: report-side có `kpi_type` từ vocabulary 35 KPI (step01), news-side là text tự do từ prompt step02 → **không có khóa join** để so số | schema KPIObservation; kiểm tra mẫu |
@@ -146,8 +146,8 @@ compatible (node cũ thiếu property mới vẫn hợp lệ) và đo được b
 
 - `step02 --source news` (extraction mới) + backfill trong `step03c` (join `source_id` →
   JSONL labeled): ghi `article_url`, `publish_date`, `source_domain` thành property trực
-  tiếp trên node news. Sửa luôn "lời hứa traceability bị gãy ở dặm cuối" của app.py
-  (banner nói "dẫn tới nguồn" nhưng card không có link).
+  tiếp trên node news. Sửa luôn "lời hứa traceability bị gãy ở dặm cuối" ở lớp hiển thị
+  (card không có link tới nguồn).
 
 ## 5. Kế hoạch 4 tuần (deadline bảo vệ lần 1 ≈ 2026-08-18)
 

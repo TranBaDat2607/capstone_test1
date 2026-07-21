@@ -93,8 +93,8 @@ Re-run step05b after any step05 re-run (the resolver rewrites `resolved_graph.js
 New step02 extractions self-stamp (`stamp_provenance`, `provenance_method="extraction"`),
 so on freshly extracted docs the patch becomes a no-op for those nodes.
 
-Display side: `app.py` (claim header `📄 <doc> · tr. <N>`, evidence meta `📰 <title> · <domain>`)
+Display side: the ESG Evidence View UI (`api/` + `frontend/`, claim source `<doc>, trang <N>`)
 and `src/step09_report_claim_ledger.py` (`[<doc> p.<N>]` / article title) — see
-`docs/DEMO_UI.md`, `docs/CLAIM_LEDGER.md`.
+`docs/ESG_EVIDENCE_VIEW.md`, `docs/CLAIM_LEDGER.md`.
 
 Stats land in `graph_output/resolved/provenance_patch_stats.json`.

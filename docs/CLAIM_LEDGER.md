@@ -126,8 +126,9 @@ also carry `source_doc` / `source_page` (report stem + page, or news doc id) and
 news-doc nodes — `article_title` / `article_url` / `source_domain`, so analyst Cypher can
 cite sources directly, e.g.
 `MATCH (c:SustainabilityClaim {crosscheck_ticker:'AAA'}) RETURN c.claim_id, c.source_doc, c.source_page`.
-Both renderers surface them: the CLI prints `[<doc> p.<N>]` / the article title, the
-Streamlit UI shows `📄 <doc> · tr. <N>` / `📰 <title> · <domain>`.
+Both renderers surface them: the CLI (`step09`) prints `[<doc> p.<N>]` / the article
+title; the ESG Evidence View UI (`api/` + `frontend/`) shows `<doc>, trang <N>` and the
+evidence source domain.
 
 ## 5. Honest deviations & current-data caveats
 
