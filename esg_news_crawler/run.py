@@ -39,7 +39,7 @@ from .config import (
 from .extract import extract_article
 from .fetch import Fetcher, domain_of
 from .normalize import article_to_records
-from .queries import base_queries, site_queries
+from .queries import base_queries, site_queries, subsidiary_queries
 from .sources import bing, ddg, google_news_rss
 
 log = logging.getLogger("esg_news")
@@ -62,6 +62,7 @@ def gather_candidates(fetcher, company: Company, *, num: int, since_years: int,
                       use_site: bool) -> list[dict]:
     """Run all channels for all queries; return deduped candidate dicts."""
     queries = base_queries(company)
+    queries += subsidiary_queries(company)
     if use_site:
         queries += site_queries(company, SITE_DOMAINS)
 
@@ -92,6 +93,7 @@ def gather_candidates(fetcher, company: Company, *, num: int, since_years: int,
                     "query": q.text,
                     "terms": q.terms,
                     "kind": q.kind,
+                    "subsidiary_name": q.subsidiary_name,
                 }
     # Rank candidates with FREE signals (no extra fetch):
     #   1) does the search-result title name the company?  (on-target for this company)
@@ -102,8 +104,14 @@ def gather_candidates(fetcher, company: Company, *, num: int, since_years: int,
 
     def rank(c: dict) -> tuple:
         t = c["title"].lower()
-        names_hit = any(n and n in t for n in names)
-        kw_hit = c["kind"] in ("keyword", "site")
+        if c["kind"] in ("subsidiary", "subsidiary_keyword"):
+            # On-target for a subsidiary query means the SUBSIDIARY's name is
+            # in the title -- the parent's name is exactly what won't appear
+            # (that's why this query exists at all).
+            names_hit = bool(c["subsidiary_name"]) and c["subsidiary_name"].lower() in t
+        else:
+            names_hit = any(n and n in t for n in names)
+        kw_hit = c["kind"] in ("keyword", "site", "subsidiary_keyword")
         return (0 if names_hit else 1, 0 if kw_hit else 1)
 
     return sorted(by_url.values(), key=rank)

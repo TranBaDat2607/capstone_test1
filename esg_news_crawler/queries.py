@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from .companies import Company
+from .companies import Company, Subsidiary
 from .config import KEYWORD_GROUPS
 
 
@@ -18,7 +18,9 @@ from .config import KEYWORD_GROUPS
 class Query:
     text: str               # the actual search string
     terms: list[str]        # keyword-group terms it carries ([] for plain identity)
-    kind: str               # "plain" | "keyword" | "site"
+    kind: str               # "plain" | "keyword" | "site" | "subsidiary" | "subsidiary_keyword"
+    subsidiary_name: str = ""          # set when this targets a subsidiary/associate,
+    subsidiary_relationship: str = ""  # not the parent — "subsidiary" | "associate"
 
 
 def _kw_identity(c: Company) -> str:
@@ -46,6 +48,49 @@ def base_queries(c: Company) -> list[Query]:
     return out
 
 
+def _subsidiary_identity(c: Company, sub: Subsidiary) -> str:
+    """Identity phrase for a subsidiary query. A subsidiary has no ticker of
+    its own, so an ambiguous short name (e.g. "Số 5") is disambiguated with
+    the PARENT's ticker instead."""
+    if sub.is_ambiguous:
+        return f"{sub.short} {c.ticker}".strip()
+    return sub.short
+
+
+def subsidiary_queries(c: Company) -> list[Query]:
+    """Queries per subsidiary/associate company found in the parent's annual
+    report (config/subsidiaries/<TICKER>.json — see
+    companies.load_subsidiaries): one plain-identity query, plus one per
+    KEYWORD_GROUPS entry (same pattern as base_queries) to catch ESG/
+    controversy stories that only name the subsidiary/plant/site, never the
+    parent group — e.g. an environmental fine on a production subsidiary.
+
+    NOTE on volume: this is a full cartesian product (1 + len(KEYWORD_GROUPS)
+    queries per subsidiary), and some tickers have 20+ subsidiaries — e.g.
+    AAA's 16 subsidiaries become 16 * 5 = 80 subsidiary queries on top of its
+    6 base queries. Each query fans out to up to 3 search channels in
+    gather_candidates. Consider --limit / a smaller run first to gauge
+    runtime before a full 115-ticker pass.
+
+    Every query is tagged with subsidiary_name/subsidiary_relationship so
+    the origin is traceable — the article itself is still filed under the
+    PARENT ticker, since gather_candidates runs one Company at a time."""
+    out: list[Query] = []
+    for sub in c.subsidiaries:
+        ident = _subsidiary_identity(c, sub)
+        out.append(Query(
+            text=ident, terms=[], kind="subsidiary",
+            subsidiary_name=sub.name, subsidiary_relationship=sub.relationship,
+        ))
+        for group in KEYWORD_GROUPS:
+            or_expr = " OR ".join(group)
+            out.append(Query(
+                text=f"{ident} ({or_expr})", terms=list(group), kind="subsidiary_keyword",
+                subsidiary_name=sub.name, subsidiary_relationship=sub.relationship,
+            ))
+    return out
+
+
 def site_queries(c: Company, domains: list[str]) -> list[Query]:
     """site:-restricted queries (routed through DuckDuckGo / Bing) to reach
     portals whose own on-site search is flaky. One per domain, carrying the
@@ -67,3 +112,5 @@ if __name__ == "__main__":
         print(f"=== {c.ticker} {c.short!r} ===")
         for q in base_queries(c):
             print(f"  [{q.kind:7}] {q.text}")
+        for q in subsidiary_queries(c):
+            print(f"  [{q.kind:10}] {q.text}  <- {q.subsidiary_name} ({q.subsidiary_relationship})")
