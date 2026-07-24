@@ -72,30 +72,51 @@ file nữa. Cần chốt trước khi chuyển file đầu tiên:
 
 - Chạy `python -m esg_kg.<pkg>.<mod>` từ `src_module/`, hoặc thêm `pyproject.toml`
   với `console_scripts` để có lệnh gọn.
-- `REPO_ROOT` hiện là `parents[1]` của file. Trong bố cục mới file nằm sâu hơn
-  (`esg_kg/kpi/extract.py`), nên `core/paths.py` phải tính lại độ sâu — hoặc
-  neo `REPO_ROOT` bằng biến môi trường / marker file (khuyến nghị: tìm ngược lên
-  tới thư mục chứa `config/` + `.git`). Đây là bẫy dễ sai nhất khi di chuyển.
+- `REPO_ROOT`: bản `src/` cũ dùng `parents[1]`. Trong bố cục mới file nằm sâu hơn
+  (`esg_kg/kpi/extract.py`) nên đếm `parents[N]` sẽ sai. **Đã chốt & làm xong**
+  trong `core/paths.py`: neo `REPO_ROOT` bằng marker — tổ tiên đầu tiên có **cả**
+  `config/` lẫn `.git` (yêu cầu cả hai để không dính nhầm `EmeraldMind/`), kèm
+  escape hatch `ESG_KG_REPO_ROOT`. Đây từng là bẫy dễ sai nhất khi di chuyển.
 
-## 4. Thứ tự refactor đề xuất (giảm rủi ro cho kiểu "từng bước một")
+## 4. Chiến lược migrate: Model A (KHÔNG đụng `src/` đang chạy)
 
-1. **`core/paths.py` trước tiên** — chuyển đúng `REPO_ROOT` (nhỏ, cơ học, được
-   import nhiều nhất). Sửa các nơi import `REPO_ROOT` trỏ về `esg_kg.core.paths`,
-   chạy `python test/test_temporal_invariants.py` → xanh là đã chứng minh khung
-   package + cách xử lý path hoạt động ("walking skeleton").
-2. **Phần còn lại của `core/`** — schema, naming, dates, identity, io_jsonl, llm,
-   text. Sau bước này coupling step→step bị cắt.
+**Quan trọng — cái bẫy đã né:** code `src/` cũ chạy nhờ Python tự đặt thư mục
+`src/` lên `sys.path` rồi `from step0X import ...`. Package `esg_kg` nằm dưới
+`src_module/`, **không** trên path đó — nên KHÔNG thể sửa file trong `src/` để
+`from esg_kg... import` (sẽ `ImportError`) trừ khi cài editable (`pip install -e`).
+Vì vậy ta **không rewire `src/`**. Thay vào đó:
+
+- **Xây `core/` như code mới**, trích nguyên văn (verbatim) từ `src/`.
+- **Kiểm mỗi module `core` bằng test TƯƠNG ĐƯƠNG** với bản `src/` gốc: import cả
+  hai, chạy trên cùng input thật, assert kết quả bằng nhau. (Đây là "walking
+  skeleton test", KHÔNG phải rewire `src/`.)
+- Helper tồn tại **song song** ở cả hai cây trong lúc migrate — trùng lặp tạm
+  thời, chấp nhận được, đổi lấy pipeline cũ **không gãy**.
+- Một stage chỉ đổi `import` sang `esg_kg.core` **khi chính nó được dời** sang
+  `esg_kg/` (§ thứ tự bên dưới).
+
+### Thứ tự thực hiện (giảm rủi ro cho kiểu "từng bước một")
+
+1. ✅ **`core/paths.py`** — `REPO_ROOT` marker-based + hằng gốc + `load_env()`.
+   *Đã xong, verify: `REPO_ROOT` neo đúng repo thật dù ở sâu 3 cấp.*
+2. ⏳ **Phần còn lại của `core/`** (theo số importer):
+   - ✅ `core/schema.py` — `load_schema_sets`, `validate_triple`, `get_identity_keys`.
+     *Verify byte-equivalent với `src/` gốc trên schema thật + 506 case validate.*
+   - `core/naming.py` — `normalize_name`, `name_tokens`, `merge_preserving_edits` (6 file)
+   - rồi `io_jsonl`, `dates`, `identity`, `text` (dedupe `node_text`), `llm`.
 3. **Các stage LÁ** (không ai import): step00, step03c, step04b, step05, step05b,
    step05d, step06, step07b, step08, step09, step10, data_sync — chuyển an toàn,
-   không làm gãy downstream.
+   không làm gãy downstream. Đây là lúc đầu tiên `import` trỏ sang `esg_kg.core`.
 4. **Các stage HUB cuối cùng**: step04 → step03 → step02 → step01 — lúc này phần
    dùng chung đã ở `core/`, phần còn lại chỉ là entrypoint mỏng.
 
 ## 5. Lưới an toàn & mắt xích yếu
 
-- `test/test_temporal_invariants.py` import theo **cùng kiểu bare-module**
-  (`from step03_... import ...`). Nó là lưới hồi quy DUY NHẤT — cập nhật import
-  của nó **đồng bộ** với mỗi lần chuyển, và chạy lại sau mỗi bước.
-- **Mắt xích yếu nhất**: `REPO_ROOT` đổi độ sâu thư mục (§3) + cơ chế `sys.path`.
-  Sai ở đây làm mọi đường dẫn `data/`, `config/`, `graph_output/` trỏ sai mà
-  không báo lỗi ngay. Xử lý dứt điểm ở bước 1 trước khi đi tiếp.
+- **Test tương đương old-vs-new** là lưới chính khi xây `core/` (§4): pipeline cũ
+  không đổi nên chỉ cần chứng minh bản mới bằng hệt bản cũ.
+- `test/test_temporal_invariants.py` import theo **bare-module** (`from step03_...`).
+  Nó vẫn xanh trong suốt giai đoạn `core/` (vì `src/` không đổi). Chỉ khi tới bước
+  3–4 (dời stage) mới cần cập nhật import của nó **đồng bộ** với mỗi lần chuyển.
+- **Mắt xích yếu nhất còn lại**: cách CHẠY sau khi dời stage — `python -m
+  esg_kg.<pkg>.<mod>` từ `src_module/`, và `.env`/cwd khi chạy từ vị trí mới. Sẽ
+  chốt ở bước 3 (stage lá đầu tiên), không phải bây giờ.
