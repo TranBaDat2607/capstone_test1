@@ -35,6 +35,7 @@ import step03_fix_invalid_triplets as old_step03  # noqa: E402
 import step04_build_issuer_registry as old_step04  # noqa: E402
 
 # --- new: the esg_kg package ---------------------------------------------------
+from esg_kg.core import dates as new_dates  # noqa: E402
 from esg_kg.core import naming as new_naming  # noqa: E402
 from esg_kg.core import paths as new_paths  # noqa: E402
 from esg_kg.core import schema as new_schema  # noqa: E402
@@ -265,6 +266,75 @@ def test_naming_constants_match_src():
     assert new_naming.OCR_FIXES == old_step04.OCR_FIXES
     assert new_naming.LEGAL_FORMS == old_step04.LEGAL_FORMS
     assert new_naming.SYNONYMS == old_step04.SYNONYMS
+
+
+# --------------------------------------------------------------------------- #
+# core/dates.py  — ISO_DATE_RE, normalize_date_string, date_start_key
+# --------------------------------------------------------------------------- #
+def test_dates_normalize_date_string_matches_src():
+    """Every spelling the step02 LLM has been seen to emit, plus the reject paths."""
+    cases = [
+        None, "", "   ", "null", "NULL", "none", "None",
+        "2011", "2011-3", "2011-03", "2011-1-3", "2011-01-03",     # ISO, zero-padding
+        "2024-08-14T10:00:00", "2024-08-14T00:00:00Z",             # datetime -> date part
+        "31/05/2023", "31-05-2023", "31.05.2023",                  # VN day-first
+        "2023/05/31", "2023.05.31",                                # year-first
+        "05/2023", "05-2023", "2023/05",                           # month + year
+        "2023-13-01", "2023-00-01", "2023-01-32", "2023-01-00",    # out-of-range -> unparseable
+        "Q2 2023", "quy 2 nam 2023", "garbage", "20230531",        # unrecognized -> unchanged
+        2011, 0, True,                                             # non-str inputs
+    ]
+    for c in cases:
+        assert new_dates.normalize_date_string(c) == old_step03.normalize_date_string(c), \
+            f"case {c!r}"
+
+
+def test_dates_date_start_key_matches_src():
+    cases = [
+        None, "", "null", "2011", "2011-01-01", "2011-03", "2011-03-15",
+        "31/05/2023", "05/2023", "2024-08-14T10:00:00",
+        "Q2 2023", "garbage", 2011,
+    ]
+    for c in cases:
+        assert new_dates.date_start_key(c) == old_step03.date_start_key(c), f"case {c!r}"
+
+    # the P4 collapse this function exists for, asserted on the NEW module:
+    # "2011" and "2011-01-01" are one instant, not two versions
+    assert new_dates.date_start_key("2011") == new_dates.date_start_key("2011-01-01")
+
+
+def test_dates_constants_match_src():
+    assert new_dates.ISO_DATE_RE.pattern == old_step03.ISO_DATE_RE.pattern
+    # the private table normalize_date_string reads must move with it
+    assert [p.pattern for p, _ in new_dates._DATE_PATTERNS] == \
+           [p.pattern for p, _ in old_step03._DATE_PATTERNS]
+    assert [g for _, g in new_dates._DATE_PATTERNS] == \
+           [g for _, g in old_step03._DATE_PATTERNS]
+
+
+def test_dates_matches_src_on_real_corpus():
+    """Every date string the real graph actually carries — node validity and edge
+    temporal_metadata alike."""
+    triples = load_triples()
+    if not triples:
+        _skip("dates/corpus", f"{TRIPLES_FILE.name} absent (run data_sync pull)")
+        return
+    values = []
+    for t in triples[:CORPUS_CAP]:
+        for side in ("subject", "object"):
+            node = t.get(side)
+            if isinstance(node, dict):
+                props = node.get("properties") or {}
+                values += [props.get("valid_from"), props.get("valid_to")]
+        tm = t.get("temporal_metadata")
+        if isinstance(tm, dict):
+            values += [tm.get("valid_from"), tm.get("valid_to"), tm.get("recorded_at")]
+    for v in values:
+        assert new_dates.normalize_date_string(v) == old_step03.normalize_date_string(v), \
+            f"normalize_date_string({v!r})"
+        assert new_dates.date_start_key(v) == old_step03.date_start_key(v), \
+            f"date_start_key({v!r})"
+    print(f"     ({len(set(map(repr, values)))} distinct real date values compared)")
 
 
 if __name__ == "__main__":
