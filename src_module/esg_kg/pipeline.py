@@ -22,7 +22,7 @@ STAGES = [
     ("03b", "step03b_anchor_kpi_facilities",       "esg_kg.graph.anchor_kpi",         "offline; after 03, before 03c"),
     ("03c", "step03c_canonicalize_kpis",           "esg_kg.kpi.canonicalize",         "offline; after 03b, before 04"),
     ("04",  "step04_build_issuer_registry",        "esg_kg.registry.issuer",          "run-once bootstrap"),
-    ("04b", "step04b_build_standards_registry",    "esg_kg.registry.standards",       "run-once bootstrap"),
+    ("04b", "step04b_build_standards_registry",    None,                                  "NOT PORTED by decision (2026-07-26): it read step05's output while step05 read its output — a cycle. config/standards_registry.json is static config now and step00 audits its coverage; src/ keeps the file for a from-scratch reseed"),
     ("05",  "step05_resolve_entities",             "esg_kg.resolve.entities",         "entity resolution"),
     ("05b", "step05b_stamp_provenance",            "esg_kg.resolve.provenance",       "offline; after 05"),
     ("05c", "step05c_link_standard_indicators",    "esg_kg.resolve.indicators",       "offline; after 05b"),

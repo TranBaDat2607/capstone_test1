@@ -223,7 +223,7 @@ reorder node** (`_node_key` của step06 và `node_index` của dossier là posi
 **Thứ tự chạy đầy đủ sau thay đổi** (phần in đậm là mới):
 
 ```
-step01 → step02 → step03 → step03b → **step03c** → step04 → **step04b** →
+step01 → step02 → step03 → step03b → **step03c** → step04 →
 step05 (+ anchor chuẩn) → step05b → **step05c** → **step05d (tùy chọn, LLM)** →
 step06 → step07 → step07b → step08 → step09 → step10
 ```
@@ -231,7 +231,7 @@ step06 → step07 → step07b → step08 → step09 → step10
 | Stage | Loại | Vai trò trong trục chỉ tiêu |
 |---|---|---|
 | `step03c_canonicalize_kpis.py` | offline, **mới** (đã có trong `CROSSCHECK_EXPANSION.md`) | canonical hóa `kpi_type` free-text → mã chỉ tiêu. **Đây là nơi quyết định độ phủ của cả trục**, xem §5.2 |
-| `step04b_build_standards_registry.py` | run-once bootstrap, **mới** | soạn `config/standards_registry.json`: 5 văn bản chuẩn + alias (GRI variants, TT96 VN/EN) + exclusions. Mirror y hệt `step04_build_issuer_registry.py`: re-run giữ chỉnh sửa tay, `--force` rebuild, người xác nhận `needs_review` |
+| `config/standards_registry.json` | **config tĩnh** (từ 2026-07-26 không còn là stage) | 5 văn bản chuẩn + alias (GRI variants, TT96 VN/EN) + exclusions + `match_patterns`/`exclude_hints`. Sửa tay rồi chạy lại step05. `step00` audit độ phủ (`standards_registry_audit`). `src/step04b_build_standards_registry.py` vẫn còn để gây lại từ đầu nhưng KHÔNG nằm trên đường chạy — nó đọc output của step05 trong khi step05 đọc output của nó (vòng lặp). Xem `src_module/esg_kg/DESIGN.md` §4.2 |
 | `step05_resolve_entities.py` | sửa nhỏ | mở rộng Stage A.2: ngoài issuer anchor, thêm **standards anchor** cho class `Standard`/`Regulation` dùng registry trên; cụm này cũng FROZEN (loại khỏi Stage B/C). Giải quyết C3 vĩnh viễn, ~10 dòng, dùng lại `load_issuer_index`/`normalize_name` |
 | `step05c_link_standard_indicators.py` | offline, NO LLM, **mới** | vật chất hóa 35 node chỉ tiêu + `partOf` + `measuredUnder` + `equivalentTo` (GRI) + `alignsWithIndicator` tầng keyword |
 | `step05d_align_claims_to_indicators.py` | LLM, có budget, **mới, tùy chọn** | `alignsWithIndicator` cho phần claim/goal mà keyword không quyết được |

@@ -46,10 +46,10 @@ src_module/esg_kg/
 
   kpi/                 extract.py(step01)  canonicalize.py(step03c)
   graph/               extract_triples.py(step02)  fix_triples.py(step03)  anchor_kpi.py(step03b)
-  registry/            issuer.py(step04)  standards.py(step04b)
+  registry/            issuer.py(step04)          # standards.py: KHONG dời, xem §4.2
   resolve/             entities.py(step05)  provenance.py(step05b)  indicators.py(step05c)  align_claims.py(step05d)
   load/                neo4j_load.py(step06)  neo4j_sync.py(step08)
-  crosscheck/          claims_vs_conduct.py(step07)  enrich_dossiers.py(step07b)
+  crosscheck/          claims_vs_conduct.py(step07)   # enrich_dossiers: KHONG dời, xem §4.1
   report/              quality.py(step00)  claim_ledger.py(step09)  evaluate.py(step10)
 
   pipeline.py          # thứ tự chạy (thay cho tiền tố stepNN_)
@@ -152,7 +152,7 @@ Vì vậy ta **không rewire `src/`**. Thay vào đó:
      | `step07b`, `step09`, `data_sync` | *(không có)* | ✅ dời được ngay |
      | `step03c` | `REPO_ROOT` | ✅ đã có trong `core/paths` |
      | `step06` | `REPO_ROOT`, `load_schema_sets` | ✅ đã có |
-     | `step04b` | `merge_preserving_edits`, `normalize_name` | ✅ đã có trong `core/naming` |
+     | `step04b` | `merge_preserving_edits`, `normalize_name` | ⛔ đủ điều kiện nhưng KHÔNG dời — §4.2 |
      | `step05b` | + `parse_source_id` (step03b), `PROVENANCE_CLASSES`/`stamp_provenance` (step02) | ❌ **chặn**: chờ `core/identity.py` |
 
      ✅ **`step03c` → `kpi/canonicalize.py` (2026-07-25), stage thứ hai.** `diff` với bản
@@ -166,30 +166,10 @@ Vì vậy ta **không rewire `src/`**. Thay vào đó:
      canh 4 tier (`kpi_type`/`alias_exact`/`rejected_unit`/`no_match`) đều phải kích hoạt
      — nếu không, arm chỉ đang so hai đống rỗng mà vẫn "PASS".
 
-     ✅ **`step04b` → `registry/standards.py` (2026-07-26), stage thứ ba.** Cũng dời bằng
-     copy-rồi-vá-import: `diff` phần code (từ `import argparse` trở đi) đúng **một hunk** —
-     `merge_preserving_edits`/`normalize_name` lấy từ `core.naming`, `REPO_ROOT` từ
-     `core.paths`. `build()` không trả về gì mà **ghi ra file**, nên arm tương đương chạy
-     cả hai cây trên đồ thị resolved thật vào hai file tạm rồi so JSON đã parse — đúng thứ
-     hợp đồng mà neo Stage A.3 của step05 đọc. Bốn nhóm: hằng số (`SEEDS`/`EXCLUDE_HINTS`),
-     đường mặc định, **đường merge** (mồi sẵn một registry đã sửa tay để bắt ca một cây âm
-     thầm vứt quyết định của người duyệt), và một guard chống rỗng (đồ thị phải thật sự có
-     >50 mention `Standard`/`Regulation`, nếu không cả hai cây chỉ nhả `SEEDS` mà vẫn "PASS").
-     Kiểm chéo: chạy qua dispatcher và chạy `src/` ra file **giống nhau từng byte**.
-
-     ⚠️ **Nợ thiết kế phát hiện lúc dời (2026-07-26), chưa sửa — commit riêng theo §5.3:**
-     `step04b` đọc `graph_output/resolved/resolved_graph.json`, tức **output của `step05`**,
-     trong khi `step05` lại đọc `config/standards_registry.json` là output của nó → **vòng
-     lặp phụ thuộc**; trên bare clone stage này không chạy được. Đối chiếu: `step04` đọc
-     `all_validated_triples.json` (step03), không vòng. Tệ hơn, **lần quét đồ thị đóng góp
-     đúng 0**: cả 10 alias trong registry đang commit trùng khít `seed_aliases` viết tay,
-     0 exclusion; chạy lại chỉ sinh đúng 1 `needs_review` — mà đó chính là `canonical_name`
-     do step04b tự đặt, đã được step05 gắn lên node hợp nhất, nay quay lại làm "tên lạ".
-     Hướng sửa (chờ chốt): registry hạ xuống thành **config tĩnh** (5 tài liệu là từ vựng
-     đóng), phần quét đồ thị chuyển thành **audit trong `step00`** — cùng loại với P1
-     identity lint, và step00 đã ở `esg_kg` rồi nên số stage giảm thay vì tăng. Theo §5.4,
-     việc chuẩn hoá tên `Standard`/`Regulation` ở `step03` không còn bị chặn bởi
-     `identity_keys=['name']`.
+     ❌ **`step04b` đã được dời sang `registry/standards.py` (2026-07-26) rồi **bị gỡ ra**
+     ngay trong ngày. Lần dời verbatim làm đúng quy trình và xanh hết, nhưng chính lúc đọc
+     kỹ file để viết arm tương đương thì lộ ra nợ thiết kế bên dưới — và theo §5.4, cái
+     đúng là sửa chứ không phải bê nguyên sang kiến trúc mới. Xem **§4.2**.
 
      Còn lại: **`step05c`** — cái này buộc phải chốt chỗ ở cho `GraphPatch`/`temporal_md`
      (§2), vốn cũng là nút thắt đang chặn `step05d`.
@@ -254,6 +234,55 @@ này trở thành thứ có người tiêu thụ thường xuyên.
 
 Bảng stage được canh bởi `test/test_pipeline_table.py`: một stage `None` **bắt buộc**
 phải có note nói rõ "not ported", và `--list` không được phép hiển thị nó như "chưa dời".
+
+### 4.2 `step04b` KHÔNG được dời sang `esg_kg` — registry thành config tĩnh (quyết định 2026-07-26)
+
+Khác `step07b` (§4.1, loại vì không ai tiêu thụ output), `step04b` bị loại vì **bản thân
+nó không phải một stage**. Hai bằng chứng, đều đo được:
+
+**(a) Vòng lặp phụ thuộc.** `step04b` đọc `graph_output/resolved/resolved_graph.json` —
+**output của `step05`** — trong khi `step05` đọc `config/standards_registry.json` là output
+của `step04b`. Thứ tự chạy ghi là 04b trước 05, nên **trên bare clone stage này không chạy
+được**: file input chưa tồn tại. Nó chỉ chạy được vì máy đã có sẵn một vòng pipeline cũ.
+Đối chiếu: `step04` (anh em sinh đôi) đọc `all_validated_triples.json` — stage **đứng
+trước** nó — không vòng.
+
+**(b) Lần quét đồ thị thu về con số không.** Cả **10/10 alias** trong registry đang commit
+trùng khít `seed_aliases` viết tay trong chính file `.py`; 0 exclusion đến từ đồ thị. Quét
+436 node, thêm được 0 thông tin — vì 5 tài liệu này là **từ vựng đóng**, đã biết trước hết.
+Tệ hơn, chạy lại sinh đúng 1 mục `needs_review`: **`canonical_name` do chính `step04b` đặt
+ra**, đã được step05 gắn lên node hợp nhất, nay quay ngược lại bị nhận nhầm là "tên lạ cần
+duyệt". Vòng lặp đang tự sinh nhiễu cho chính nó.
+
+**Quyết định — tách đôi đúng bản chất:**
+
+- `config/standards_registry.json` **là config tĩnh**. Không stage nào sinh ra nó nữa ⇒ vòng
+  lặp biến mất, bare clone chạy được. `match_patterns` và `exclude_hints` (trước đây là
+  `SEEDS[*]["match_re"]` và `EXCLUDE_HINTS` trong code) **chuyển nguyên văn vào file config**,
+  để nó tự mô tả đầy đủ. `step05` không đổi một dòng: nó chỉ đọc `canonical_name`/`kind`/
+  `aliases`/`exclusions` và bỏ qua khóa lạ.
+- Phần quét đồ thị thành **audit trong `step00`** (`standards_registry_audit`): "đồ thị có
+  mention nào *trông giống* 1 trong 5 tài liệu mà registry chưa phủ không?". Cùng họ với P1
+  identity lint, và step00 đã ở `esg_kg` rồi nên **số stage giảm 1 thay vì tăng**. Vòng
+  lặp không tái sinh vì step00 **báo cáo về** một đồ thị chứ không **nuôi** đồ thị nào.
+- ❌ **KHÔNG xoá `src/step04b_build_standards_registry.py`** (cùng lý do §4.1): nó vẫn là
+  công cụ **gây lại registry từ đầu** cho một bộ corpus hoàn toàn mới. Chỉ là nó không
+  nằm trên đường chạy nữa. `pipeline.py` để `new_module=None`, giữ nguyên dòng.
+
+**Điều audit phải KHÔNG được làm mất.** Đồ thị có ~432 node `Standard`/`Regulation` nhưng
+chỉ ~10 thuộc 5 tài liệu trong phạm vi; phần còn lại là chuẩn kế toán, ISO, thông tư thuế —
+**cố ý ngoài phạm vi**. Một danh sách "không có trong registry" ngây thơ sẽ dài ~420 dòng
+nhiễu và dạy người ta bỏ qua mục này. Đó là lý do `match_patterns` phải sống sót qua lần
+chuyển này, và là một test riêng trong `test/test_standards_audit.py`.
+
+**Kết quả trên đồ thị thật:** 418 cách viết phân biệt, 5 đã curate, **0 uncovered** — và
+cái `needs_review` giả của step04b biến mất vì `canonical_name` nay được tính là covered
+theo định nghĩa. Hai cây cho kết quả giống hệt nhau trên đồ thị thật.
+
+**Điều kiện đảo ngược.** Nếu số tài liệu tham chiếu thôi đóng (ví dụ mở sang nhiều ngành,
+mỗi ngành một bộ quy định riêng) thì việc soạn registry bằng tay hết rẻ, và lúc đó một
+stage sinh registry mới có lý. Khi ấy **vẫn phải đổi input sang `all_validated_triples.json`
+(step03)** — nếu không, vòng lặp quay lại y nguyên.
 
 ## 5. Sửa lỗi trong lúc refactor — nguyên tắc "vá ở stage sớm nhất"
 

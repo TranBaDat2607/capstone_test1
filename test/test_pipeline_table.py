@@ -35,7 +35,11 @@ STAGES = run.STAGES
 
 # Stages deliberately NOT ported to esg_kg. A row here is a decision, not a backlog item;
 # the reason belongs in the pipeline.py note and in DESIGN.md.
-EXPECTED_NOT_PORTED = {"07b"}
+#   07b — nothing on the delivered surface reads its softmax scores (DESIGN.md §4.1).
+#   04b — it read step05's output while step05 read its output, a dependency cycle, and the
+#         scan earned nothing (every alias was a hardcoded seed). The registry is static
+#         config now and step00 audits its coverage; src/ keeps the file for a reseed.
+EXPECTED_NOT_PORTED = {"07b", "04b"}
 
 
 def test_every_stage_points_at_a_real_src_file():

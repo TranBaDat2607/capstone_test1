@@ -135,15 +135,16 @@ is the only file that touches `sys.path`, and it reads the stage table from `pip
 so `--list` reports migration status honestly. No `pip install` step.
 
 `step03c` is the second migrated stage (`esg_kg/kpi/canonicalize.py`), its equivalence arm
-comparing all 5,214 real KPIObservation occurrences across both trees. `step04b` is the third
-(`esg_kg/registry/standards.py`) — its arm runs both trees over the real resolved graph into
-temp files and compares the written registries, including the hand-edit merge path.
-**Known design debt found while moving it, fix not yet applied:** `step04b` reads
-`resolved_graph.json` (step05's *output*) while step05 reads the registry it writes — a
-dependency cycle, so it cannot run on a bare clone; and the graph scan contributes nothing
-(all 10 aliases are the hardcoded `SEEDS`; a re-run only surfaces step04b's own
-`canonical_name` as a to-review item). Plan in DESIGN.md §4: demote the registry to static
-config and move the scan into step00 as an audit. Next: `step05c` (which forces a home for
+comparing all 5,214 real KPIObservation occurrences across both trees.
+**`step04b` is deliberately NOT ported either** (DESIGN.md §4.2, decided 2026-07-26): it read
+`resolved_graph.json` — step05's *output* — while step05 reads the registry it writes, a
+dependency cycle that made it unrunnable on a bare clone; and its scan earned nothing (all 10
+aliases in the committed registry are its own hardcoded `SEEDS`, and a re-run only surfaced
+step04b's own `canonical_name` as a to-review item). So **`config/standards_registry.json` is
+static config now** — nothing regenerates it, it carries `match_patterns`/`exclude_hints`
+inline, and **step00 audits its coverage** instead (`standards_registry_audit`, same family as
+the P1 identity lint). `src/step04b_build_standards_registry.py` is NOT deleted — it remains
+the from-scratch reseed tool. Next: `step05c` (which forces a home for
 `GraphPatch`/`temporal_md`, the blocker on `step05d`).
 `step05b` is blocked on `core/identity.py` (`parse_source_id`).
 **`step07b` is deliberately NOT being ported** (DESIGN.md §4.1): the delivered surface is
@@ -235,11 +236,15 @@ src/step03c_canonicalize_kpis.py        → appends/patches all_validated_triple
 src/step04_build_issuer_registry.py     → config/issuer_registry.json                       (run-once bootstrap)
    (drafts the reporting company's name variants → aliases / exclusions / needs_review;
     re-running preserves human edits, --force rebuilds; a human confirms needs_review)
-src/step04b_build_standards_registry.py → config/standards_registry.json                    (run-once bootstrap)
-   (offline, NO LLM: same shape/contract as step04, applied to the 5 reference documents behind
-    the indicator vocabulary (TT96, QĐ2171, QCVN09, SSC-IFC, GRI). Collapses their many mentions
-    — GRI's ≥4 spellings, TT96 VN/EN — so step05's standards anchor freezes them onto one
-    canonical node each, fixing diagnosis C3. A human confirms needs_review; --force rebuilds)
+config/standards_registry.json          — STATIC CONFIG, no longer a pipeline stage (2026-07-26)
+   (the 5 reference documents behind the indicator vocabulary (TT96, QĐ2171, QCVN09, SSC-IFC,
+    GRI) with their aliases/exclusions + `match_patterns`/`exclude_hints`. step05's standards
+    anchor freezes GRI's ≥4 spellings and TT96 VN/EN onto one canonical node each (diagnosis C3).
+    Hand-edited: add an alias, then re-run step05. NOTHING generates it — step00's
+    `standards_registry_audit` reports uncovered mentions instead, which is all the old
+    generator ever produced. `src/step04b_build_standards_registry.py` still exists as the
+    from-scratch reseed tool, but it is OFF the run order: it read step05's output while
+    step05 read its output. See DESIGN.md §4.2)
 src/step05_resolve_entities.py          → graph_output/resolved/resolved_graph.json (+ _stats.json)
    (step 4: collapse duplicate entity nodes into canonical entities, keeping temporal history.
     Stage A deterministic identity_keys merge + FROZEN issuer anchor (issuer_registry.json) +
@@ -390,7 +395,7 @@ python src/step03_fix_invalid_triplets.py --renormalize                      #  
 python src/step03b_anchor_kpi_facilities.py --dry-run                        # P3 offline anchor patch preview (then run without --dry-run)
 python src/step03c_canonicalize_kpis.py --dry-run                            # assign canonical kpi_id (then run without --dry-run; offline, no LLM)
 python src/step04_build_issuer_registry.py                                   # → config/issuer_registry.json (run-once; then hand-confirm needs_review)
-python src/step04b_build_standards_registry.py                               # → config/standards_registry.json (run-once; hand-confirm needs_review)
+#   (no step04b: config/standards_registry.json is static config, hand-edited; step00 audits its coverage)
 python src/step05_resolve_entities.py                                        # → graph_output/resolved/ (step 4: entity resolution + standards anchor)
 python src/step05b_stamp_provenance.py --dry-run                             # provenance patch preview (then run without --dry-run; offline, no LLM)
 python src/step05c_link_standard_indicators.py --dry-run                     # TT96/GRI indicator axis preview (then run without --dry-run; offline, no LLM)
@@ -407,19 +412,17 @@ python src/step09_report_claim_ledger.py --review-queue --markdown         #   c
 python src/step10_evaluate.py                                              # step 8 / P6: full Vietnamese evaluation report
 python src/step10_evaluate.py --ablation --no-llm                          #   free arms only (coverage/case studies/ablation are offline)
 
-# Refactor target (src_module/esg_kg) — step00 + step03c + step04b have moved so far
+# Refactor target (src_module/esg_kg) — step00 + step03c have moved so far
 python src_module/run.py --list                                            # stages + which are migrated
 python src_module/run.py quality --label baseline                          # == src/step00_graph_quality_report.py
 python src_module/run.py canonicalize --dry-run                            # == src/step03c_canonicalize_kpis.py
-python src_module/run.py standards                                         # == src/step04b_build_standards_registry.py
-                                                                           #   (no --dry-run; use -o <tmp> to avoid touching config/)
 
 # ESG Evidence View UI (web front-end; reads the Neo4j advisory layer, no LLM — see docs/ESG_EVIDENCE_VIEW.md)
 python api/main.py                                                         # 3-column TT96/GRI evidence view at http://localhost:8000
 
 # Useful src/ flags: --doc <substr>, --limit-docs N, --all (scope);
 #   --all-pages (don't restrict to ESG pages); --dry-run (fix/resolve/load steps: offline only, no LLM/DB/writes);
-#   quality (step00): --label <name>, --skip-slow (skip the BFS-heavy Q7(c)/(d)), --max-hops;
+#   quality (step00): --label <name>, --skip-slow (skip the BFS-heavy Q7(c)/(d)), --max-hops, --standards-registry;
 #   fix (step03): --renormalize (P4 pass only); anchor patch (step03b): --max-per-facility, --dry-run;
 #   kpi canonical (step03c): --aliases, --fuzzy-threshold, --no-goals, --dry-run;
 #   provenance patch (step05b): --graphs-dir, --news-globs, --stats-out, --dry-run;
@@ -455,6 +458,13 @@ python test/test_indicator_axis.py         # drives step05c's real run() on a te
                                            # self-reported-zero Penalty gets NO conduct edge,
                                            # kpi_id-not-kpi_type boundary, confirmed-crosswalk
                                            # gate, stage-level append-only + idempotency.
+python test/test_standards_audit.py        # step00's standards-registry audit, in BOTH trees:
+                                           # an uncurated GRI spelling surfaces, an out-of-scope
+                                           # accounting standard does NOT (the noise filter that
+                                           # makes the section readable), a curated exclusion
+                                           # stays closed, and canonical_name is never reported
+                                           # as unknown (step04b's old feedback artifact).
+                                           # Run after touching step00 or the registry config.
 python test/test_pipeline_table.py         # refactor stage table (src_module/esg_kg/pipeline.py
                                            # + run.py): every row points at a real src/ file,
                                            # short names don't collide, and a stage that is

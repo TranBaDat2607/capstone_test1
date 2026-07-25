@@ -70,6 +70,7 @@ DEFAULT_GRAPH = RESOLVED_DIR / "resolved_graph.json"
 DEFAULT_SCHEMA = SCHEMA_PATH
 DEFAULT_OUT_DIR = QUALITY_DIR
 DEFAULT_MAX_HOPS = 4  # for Q7(d) claim→conduct search
+DEFAULT_STANDARDS_REGISTRY = REPO_ROOT / "config" / "standards_registry.json"
 
 # --------------------------------------------------------------------------- #
 # The three node tiers (TEMPORAL_KG_DESIGN.md §2). T1 identity is timeless (P1);
@@ -264,6 +265,101 @@ def q2_consistency(nodes: List[Dict[str, Any]], edges: List[Dict[str, Any]],
         "t1_identity_keys_with_time_fields": t1_identity_violations,
         "total_violations": violations,
         "gate": "0 violations (proposal P4/Q2)",
+    }
+
+
+# --------------------------------------------------------------------------- #
+# Standards-registry audit — Standard/Regulation mentions the frozen registry
+# does not cover yet.
+#
+# This was step04b's graph scan. It moved here (2026-07-26) because step04b read
+# graph_output/resolved/resolved_graph.json — step05's OUTPUT — while step05 reads
+# the registry step04b writes: a dependency cycle that made the stage unrunnable on
+# a bare clone. The registry is static config now, nothing regenerates it, and the
+# only thing the scan ever produced was this to-review list. A to-review list is a
+# diagnostic, and diagnostics are what step00 is.
+#
+# `match_patterns` (carried into the registry from step04b's SEEDS) is what keeps
+# this readable: the graph holds ~432 Standard/Regulation nodes and only the five
+# reference documents are in scope, so a mention is reported only when it LOOKS LIKE
+# one of them. Without the patterns the section would be ~420 lines of accounting
+# standards and ISO certificates, which trains people to skip it.
+# --------------------------------------------------------------------------- #
+DEFAULT_MIN_DEGREE = 2
+
+
+def standards_registry_audit(nodes: List[Dict[str, Any]], edges: List[Dict[str, Any]],
+                             registry: Dict[str, Any],
+                             min_degree: int = DEFAULT_MIN_DEGREE) -> Dict[str, Any]:
+    """Names that look like one of the five reference documents but are not curated yet.
+
+    Deduplicated by normalized name (degrees summed), because one spelling is one
+    curation decision no matter how many nodes carry it. A mention is claimed by at
+    most one document, so the same name never shows up under two keys.
+
+    A registry entry's `canonical_name` counts as covered by definition — step04b used
+    to flag its own canonical name as an unknown mention, because it writes that name,
+    step05 stamps it onto the merged node, and the next scan reads it back as a stranger.
+    """
+    degree: Counter = Counter()
+    for e in edges:
+        degree[e["subject"]] += 1
+        degree[e["object"]] += 1
+
+    # distinct normalized name -> display name, class, summed degree
+    mentions: Dict[str, Dict[str, Any]] = {}
+    for i, n in enumerate(nodes):
+        if n.get("class") not in ("Standard", "Regulation"):
+            continue
+        name = str((n.get("properties") or {}).get("name") or "").strip()
+        if not name:
+            continue
+        norm = normalize_name(name)
+        if not norm:
+            continue
+        seen = mentions.setdefault(norm, {"name": name, "class": n["class"], "degree": 0})
+        seen["degree"] += degree[i]
+
+    covered = 0
+    uncovered: List[Dict[str, Any]] = []
+    claimed: Set[str] = set()
+
+    for key, info in registry.items():
+        known = {normalize_name(a) for a in info.get("aliases", [])}
+        known.add(normalize_name(info.get("canonical_name", key)))
+        known.discard("")
+        excluded = {normalize_name(x["name"]) for x in info.get("exclusions", [])}
+        hints = info.get("exclude_hints") or []
+        patterns = [re.compile(p, re.IGNORECASE) for p in (info.get("match_patterns") or [])]
+
+        for norm, m in mentions.items():
+            if norm in claimed:
+                continue
+            if norm in known:
+                covered += 1
+                claimed.add(norm)
+                continue
+            if norm in excluded or any(h in norm for h in hints):
+                claimed.add(norm)          # a human already ruled on this one
+                continue
+            if not any(p.search(m["name"]) or p.search(norm) for p in patterns):
+                continue                   # not this document; another key may still claim it
+            claimed.add(norm)
+            uncovered.append({
+                "name": m["name"], "normalized": norm, "class": m["class"],
+                "degree": m["degree"], "doc_key": key,
+                "suggest": "include" if m["degree"] >= min_degree else "exclude",
+            })
+
+    uncovered.sort(key=lambda u: (-u["degree"], u["name"]))
+    return {
+        "documents": len(registry),
+        "distinct_mentions": len(mentions),
+        "covered_mentions": covered,
+        "uncovered": uncovered,
+        "note": ("uncovered = looks like one of the five reference documents but is neither "
+                 "an alias nor a curated exclusion; edit config/standards_registry.json by "
+                 "hand, then re-run step05 so the frozen anchor picks it up"),
     }
 
 
@@ -566,6 +662,22 @@ def render_markdown(report: Dict[str, Any]) -> str:
         lines += ["", "## P1 violations (time fields in T1 identity_keys)", ""]
         for v in q["q2_consistency"]["t1_identity_keys_with_time_fields"]:
             lines.append(f"- `{v['class']}`: {v['temporal_identity_keys']}")
+
+    audit = q.get("standards_registry_audit")
+    if audit:
+        lines += ["", "## Standards registry coverage", "",
+                  (f"{audit['covered_mentions']} of {audit['distinct_mentions']} distinct "
+                   f"Standard/Regulation spellings are curated across "
+                   f"{audit['documents']} reference documents.")]
+        if audit["uncovered"]:
+            lines += ["", "Looks like a reference document but is not curated yet "
+                          "(edit `config/standards_registry.json`, then re-run step05):", "",
+                      "| name | doc | class | degree | suggest |", "|---|---|---|---|---|"]
+            for u in audit["uncovered"]:
+                lines.append(f"| {u['name']} | {u['doc_key']} | {u['class']} | "
+                             f"{u['degree']} | {u['suggest']} |")
+        else:
+            lines += ["", "No uncovered mentions."]
     lines.append("")
     return "\n".join(lines)
 
@@ -581,6 +693,8 @@ def main() -> None:
                    help="Path length budget for Q7(d) claim→conduct search")
     p.add_argument("--skip-slow", action="store_true",
                    help="Skip the BFS-heavy Q7(c)/(d) metrics")
+    p.add_argument("--standards-registry", type=Path, default=DEFAULT_STANDARDS_REGISTRY,
+                   help="Static registry of the five reference documents; audited, never written")
     args = p.parse_args()
 
     if not args.graph.exists():
@@ -609,6 +723,11 @@ def main() -> None:
     logger.info("Computing Q7 traversability (BFS metrics)...")
     report["q7_traversability"] = q7_traversability(nodes, edges, args.max_hops, args.skip_slow)
     report["q8_independence"] = q8_independence(nodes)
+    if args.standards_registry.exists():
+        registry = json.loads(args.standards_registry.read_text(encoding="utf-8"))
+        report["standards_registry_audit"] = standards_registry_audit(nodes, edges, registry)
+    else:
+        logger.warning(f"No standards registry at {args.standards_registry}; skipping its audit.")
 
     args.out_dir.mkdir(parents=True, exist_ok=True)
     json_path = args.out_dir / f"quality_report_{args.label}.json"
