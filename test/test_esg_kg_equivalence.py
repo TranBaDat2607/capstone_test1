@@ -22,6 +22,7 @@ Run from the repo root:
 
 import json
 import sys
+import tempfile
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
@@ -35,6 +36,7 @@ import step03c_canonicalize_kpis as old_step03c  # noqa: E402
 import step02_extract_triplet_from_jsonl as old_step02  # noqa: E402
 import step03_fix_invalid_triplets as old_step03  # noqa: E402
 import step04_build_issuer_registry as old_step04  # noqa: E402
+import step04b_build_standards_registry as old_step04b  # noqa: E402
 
 # --- new: the esg_kg package ---------------------------------------------------
 from esg_kg.core import dates as new_dates  # noqa: E402
@@ -42,6 +44,7 @@ from esg_kg.kpi import canonicalize as new_canonicalize  # noqa: E402
 from esg_kg.core import naming as new_naming  # noqa: E402
 from esg_kg.core import paths as new_paths  # noqa: E402
 from esg_kg.core import schema as new_schema  # noqa: E402
+from esg_kg.registry import standards as new_standards  # noqa: E402
 from esg_kg.report import quality as new_quality  # noqa: E402
 
 SCHEMA_FILE = REPO / "config" / "schema.json"
@@ -686,6 +689,98 @@ def test_canonicalize_corpus_arm_is_not_vacuous():
     methods = stats["by_method"]
     for tier in ("kpi_type", "alias_exact", "rejected_unit", "no_match"):
         assert methods.get(tier, 0) > 0, f"tier {tier!r} never fired: {methods}"
+
+
+# ---------------------------------------------------------------------------
+# step04b -> esg_kg.registry.standards
+#
+# `build()` has no return value: it WRITES a registry file. So the arm runs both
+# trees into two temp files and compares the parsed JSON — which is the real
+# contract, since step05's frozen standards anchor reads exactly that file.
+# ---------------------------------------------------------------------------
+
+def standard_mentions() -> int:
+    """How many Standard/Regulation nodes the resolved graph actually holds.
+
+    Used only to prove the arms below are not comparing two empty scans.
+    """
+    if not RESOLVED_FILE.exists():
+        return 0
+    graph = json.loads(RESOLVED_FILE.read_text(encoding="utf-8"))
+    return sum(1 for n in graph.get("nodes", [])
+               if n.get("class") in ("Standard", "Regulation")
+               and str((n.get("properties") or {}).get("name") or "").strip())
+
+
+def build_both(existing: dict = None, force: bool = True, min_degree: int = 2):
+    """Run build() in both trees on the real graph; return the two parsed registries."""
+    with tempfile.TemporaryDirectory() as tmp:
+        out_new, out_old = Path(tmp) / "new.json", Path(tmp) / "old.json"
+        if existing is not None:
+            blob = json.dumps(existing, ensure_ascii=False)
+            out_new.write_text(blob, encoding="utf-8")
+            out_old.write_text(blob, encoding="utf-8")
+        new_standards.build(RESOLVED_FILE, out_new, force, min_degree)
+        old_step04b.build(RESOLVED_FILE, out_old, force, min_degree)
+        return (json.loads(out_new.read_text(encoding="utf-8")),
+                json.loads(out_old.read_text(encoding="utf-8")))
+
+
+def test_standards_constants_match_src():
+    assert new_standards.SEEDS == old_step04b.SEEDS
+    assert new_standards.EXCLUDE_HINTS == old_step04b.EXCLUDE_HINTS
+
+
+def test_standards_default_paths_match_src():
+    for name in ("DEFAULT_INPUT", "DEFAULT_OUTPUT"):
+        assert getattr(new_standards, name) == getattr(old_step04b, name), name
+
+
+def test_standards_build_matches_src_on_the_real_graph():
+    """Both trees scan the real 436-mention graph; the written registries must be identical."""
+    if not RESOLVED_FILE.exists():
+        _skip("standards/build", f"{RESOLVED_FILE.name} absent (run data_sync pull)")
+        return
+    new_reg, old_reg = build_both()
+    assert new_reg == old_reg, "registry diverged"
+    n_alias = sum(len(v["aliases"]) for v in new_reg.values())
+    n_review = sum(len(v["needs_review"]) for v in new_reg.values())
+    print(f"     ({len(new_reg)} documents, {n_alias} aliases, {n_review} to review)")
+
+
+def test_standards_build_preserves_hand_edits_identically():
+    """The merge path, not the fresh path: a human moved a mention into aliases and
+    added an exclusion. Both trees must honour those edits the same way — this is
+    what stops one tree quietly discarding a curator's decision."""
+    if not RESOLVED_FILE.exists():
+        _skip("standards/merge", f"{RESOLVED_FILE.name} absent")
+        return
+    edited = {
+        "GRI": {
+            "canonical_name": "GRI Standards", "kind": "Standard",
+            "aliases": ["GRI Standards", "Bộ tiêu chuẩn GRI (hand-added)"],
+            "exclusions": [{"name": "GRI 305-1", "reason": "indicator, not the document"}],
+            "needs_review": [],
+        },
+    }
+    new_reg, old_reg = build_both(existing=edited, force=False)
+    assert new_reg == old_reg, "merged registry diverged"
+    assert "Bộ tiêu chuẩn GRI (hand-added)" in new_reg["GRI"]["aliases"], \
+        "the hand-added alias was dropped — merge_preserving_edits is not being applied"
+
+
+def test_standards_build_arm_is_not_vacuous():
+    """Guard: if the graph held no Standard/Regulation node, both trees would emit the
+    bare SEEDS and the arms above would 'PASS' while comparing nothing scanned."""
+    if not RESOLVED_FILE.exists():
+        _skip("standards/not-vacuous", f"{RESOLVED_FILE.name} absent")
+        return
+    assert standard_mentions() > 50, standard_mentions()
+    reg, _ = build_both()
+    assert set(reg) == {s["key"] for s in new_standards.SEEDS}, sorted(reg)
+    for key, entry in reg.items():
+        assert entry["aliases"], f"{key} has no aliases at all"
+        assert entry["kind"] in ("Standard", "Regulation"), entry["kind"]
 
 
 if __name__ == "__main__":

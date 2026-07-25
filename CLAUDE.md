@@ -135,8 +135,16 @@ is the only file that touches `sys.path`, and it reads the stage table from `pip
 so `--list` reports migration status honestly. No `pip install` step.
 
 `step03c` is the second migrated stage (`esg_kg/kpi/canonicalize.py`), its equivalence arm
-comparing all 5,214 real KPIObservation occurrences across both trees. Next: `step04b`, then
-`step05c` (which forces a home for `GraphPatch`/`temporal_md`, the blocker on `step05d`).
+comparing all 5,214 real KPIObservation occurrences across both trees. `step04b` is the third
+(`esg_kg/registry/standards.py`) — its arm runs both trees over the real resolved graph into
+temp files and compares the written registries, including the hand-edit merge path.
+**Known design debt found while moving it, fix not yet applied:** `step04b` reads
+`resolved_graph.json` (step05's *output*) while step05 reads the registry it writes — a
+dependency cycle, so it cannot run on a bare clone; and the graph scan contributes nothing
+(all 10 aliases are the hardcoded `SEEDS`; a re-run only surfaces step04b's own
+`canonical_name` as a to-review item). Plan in DESIGN.md §4: demote the registry to static
+config and move the scan into step00 as an audit. Next: `step05c` (which forces a home for
+`GraphPatch`/`temporal_md`, the blocker on `step05d`).
 `step05b` is blocked on `core/identity.py` (`parse_source_id`).
 **`step07b` is deliberately NOT being ported** (DESIGN.md §4.1): the delivered surface is
 the `frontend/`+`api/` UI, which never reads its softmax scores, so `pipeline.py` carries
@@ -399,10 +407,12 @@ python src/step09_report_claim_ledger.py --review-queue --markdown         #   c
 python src/step10_evaluate.py                                              # step 8 / P6: full Vietnamese evaluation report
 python src/step10_evaluate.py --ablation --no-llm                          #   free arms only (coverage/case studies/ablation are offline)
 
-# Refactor target (src_module/esg_kg) — step00 + step03c have moved so far
+# Refactor target (src_module/esg_kg) — step00 + step03c + step04b have moved so far
 python src_module/run.py --list                                            # stages + which are migrated
 python src_module/run.py quality --label baseline                          # == src/step00_graph_quality_report.py
 python src_module/run.py canonicalize --dry-run                            # == src/step03c_canonicalize_kpis.py
+python src_module/run.py standards                                         # == src/step04b_build_standards_registry.py
+                                                                           #   (no --dry-run; use -o <tmp> to avoid touching config/)
 
 # ESG Evidence View UI (web front-end; reads the Neo4j advisory layer, no LLM — see docs/ESG_EVIDENCE_VIEW.md)
 python api/main.py                                                         # 3-column TT96/GRI evidence view at http://localhost:8000

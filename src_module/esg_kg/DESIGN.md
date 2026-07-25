@@ -166,8 +166,33 @@ Vì vậy ta **không rewire `src/`**. Thay vào đó:
      canh 4 tier (`kpi_type`/`alias_exact`/`rejected_unit`/`no_match`) đều phải kích hoạt
      — nếu không, arm chỉ đang so hai đống rỗng mà vẫn "PASS".
 
-     Còn lại: **`step04b`** (nhỏ, sạch), rồi **`step05c`** — cái này buộc phải chốt chỗ ở
-     cho `GraphPatch`/`temporal_md` (§2), vốn cũng là nút thắt đang chặn `step05d`.
+     ✅ **`step04b` → `registry/standards.py` (2026-07-26), stage thứ ba.** Cũng dời bằng
+     copy-rồi-vá-import: `diff` phần code (từ `import argparse` trở đi) đúng **một hunk** —
+     `merge_preserving_edits`/`normalize_name` lấy từ `core.naming`, `REPO_ROOT` từ
+     `core.paths`. `build()` không trả về gì mà **ghi ra file**, nên arm tương đương chạy
+     cả hai cây trên đồ thị resolved thật vào hai file tạm rồi so JSON đã parse — đúng thứ
+     hợp đồng mà neo Stage A.3 của step05 đọc. Bốn nhóm: hằng số (`SEEDS`/`EXCLUDE_HINTS`),
+     đường mặc định, **đường merge** (mồi sẵn một registry đã sửa tay để bắt ca một cây âm
+     thầm vứt quyết định của người duyệt), và một guard chống rỗng (đồ thị phải thật sự có
+     >50 mention `Standard`/`Regulation`, nếu không cả hai cây chỉ nhả `SEEDS` mà vẫn "PASS").
+     Kiểm chéo: chạy qua dispatcher và chạy `src/` ra file **giống nhau từng byte**.
+
+     ⚠️ **Nợ thiết kế phát hiện lúc dời (2026-07-26), chưa sửa — commit riêng theo §5.3:**
+     `step04b` đọc `graph_output/resolved/resolved_graph.json`, tức **output của `step05`**,
+     trong khi `step05` lại đọc `config/standards_registry.json` là output của nó → **vòng
+     lặp phụ thuộc**; trên bare clone stage này không chạy được. Đối chiếu: `step04` đọc
+     `all_validated_triples.json` (step03), không vòng. Tệ hơn, **lần quét đồ thị đóng góp
+     đúng 0**: cả 10 alias trong registry đang commit trùng khít `seed_aliases` viết tay,
+     0 exclusion; chạy lại chỉ sinh đúng 1 `needs_review` — mà đó chính là `canonical_name`
+     do step04b tự đặt, đã được step05 gắn lên node hợp nhất, nay quay lại làm "tên lạ".
+     Hướng sửa (chờ chốt): registry hạ xuống thành **config tĩnh** (5 tài liệu là từ vựng
+     đóng), phần quét đồ thị chuyển thành **audit trong `step00`** — cùng loại với P1
+     identity lint, và step00 đã ở `esg_kg` rồi nên số stage giảm thay vì tăng. Theo §5.4,
+     việc chuẩn hoá tên `Standard`/`Regulation` ở `step03` không còn bị chặn bởi
+     `identity_keys=['name']`.
+
+     Còn lại: **`step05c`** — cái này buộc phải chốt chỗ ở cho `GraphPatch`/`temporal_md`
+     (§2), vốn cũng là nút thắt đang chặn `step05d`.
      (`step07b` từng đứng đầu danh sách này — đã loại, xem §4.1.) `step09`/`step06` cần
      Neo4j nên arm của chúng chỉ kiểm được tới mức import + hàm thuần; để sau.
    - **CHƯA đủ điều kiện dù không ai import chúng**: `step05d` (cần `GraphPatch`/
