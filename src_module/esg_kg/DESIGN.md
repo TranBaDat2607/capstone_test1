@@ -107,13 +107,14 @@ Vì vậy ta **không rewire `src/`**. Thay vào đó:
      `issuer_core_tokens`/`GENERIC_TOKENS` **ở lại** step04 (không ai khác import).
    - Cả hai verify bằng `test/test_esg_kg_equivalence.py` (§6), chạy trên schema
      thật + 5000 triple thật + 242 tên Organization thật.
-   - ⏭️ **`core/dates.py` LÀ VIỆC TIẾP THEO** — `ISO_DATE_RE` (step03:75),
-     `normalize_date_string` (step03:85), `date_start_key` (step03:130).
-     `enforce_temporal_invariants` (step03:378) **ở lại** step03 (chỉ test import).
-     Xếp trước `io_jsonl` **không** vì số importer mà vì nó **mở khoá `step00`**
-     (xem bước 3); `io_jsonl` chỉ step02 dùng, mà step02 là hub cuối ở bước 4 —
-     làm sớm không mở khoá được gì.
-   - rồi `io_jsonl`, `identity`, `text`, `llm`.
+   - ✅ `core/dates.py` — `ISO_DATE_RE`, `normalize_date_string`, `date_start_key`
+     (+ bảng riêng `_DATE_PATTERNS`). `enforce_temporal_invariants` (step03:378)
+     **ở lại** step03 (chỉ test import). Xếp trước `io_jsonl` **không** vì số
+     importer mà vì nó **mở khoá `step00`** (xem bước 3); `io_jsonl` chỉ step02
+     dùng, mà step02 là hub cuối ở bước 4 — làm sớm không mở khoá được gì.
+   - ⏭️ **VIỆC TIẾP THEO: dời `step00`** (bước 3) — mọi symbol nó import giờ đã có
+     trong `core/`. Đây là lần đầu chốt cách CHẠY (§6).
+   - `core/` còn lại, làm khi stage cần tới: `io_jsonl`, `identity`, `text`, `llm`.
      ⚠️ `text`: hai `node_text` **KHÔNG phải bản trùng** — `step05d:63` nhận *props dict*,
      `step07:133` nhận *node* rồi rẽ nhánh theo class. Chuyển cả hai, giữ tên riêng.
 3. **Các stage dời được** — tiêu chí là **"mọi symbol NÓ import đã nằm trong `core/`"**,
