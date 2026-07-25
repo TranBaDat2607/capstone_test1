@@ -69,16 +69,36 @@ Vài lựa chọn tên có chủ đích:
 Hiện `src/` chạy kiểu standalone, dựa vào việc Python tự đặt thư mục script lên
 `sys.path` rồi `from step0X import ...`. Sang package thì import thành
 `from esg_kg.core.schema import load_schema_sets`, và stage chạy bằng
-`python -m esg_kg.kpi.extract` (từ trong `src_module/`) — **không** chạy trực tiếp
-file nữa. Cần chốt trước khi chuyển file đầu tiên:
+`python -m esg_kg.kpi.extract` — **không** chạy trực tiếp file nữa.
 
-- Chạy `python -m esg_kg.<pkg>.<mod>` từ `src_module/`, hoặc thêm `pyproject.toml`
-  với `console_scripts` để có lệnh gọn.
+**✅ ĐÃ CHỐT (khi dời step00, 2026-07-25).** Hai cách, cùng một code path:
+
+```bash
+python src_module/run.py quality --label baseline   # từ REPO ROOT (cách chính thức)
+cd src_module && python -m esg_kg.report.quality --label baseline   # tương đương
+```
+
+`src_module/run.py` là **file duy nhất** chạm `sys.path`. Ba phương án đã cân:
+
+| Phương án | Loại vì |
+|---|---|
+| `pip install -e .` + `pyproject.toml` | thêm một bước build; bare clone quên cài là `ModuleNotFoundError` |
+| export `PYTHONPATH=src_module` | theo từng shell, dễ quên, không ghi được vào tài liệu lệnh |
+| **`run.py` dispatcher** ✅ | giữ quy ước "chạy từ repo root" của CLAUDE.md, không cần cài gì |
+
+Lợi ích kèm theo: `run.py` **đọc bảng stage từ `pipeline.py`** thay vì chép lại,
+nên `pipeline.py` từ tài liệu chết thành entrypoint sống, và
+`python src_module/run.py --list` báo tiến độ migrate **trung thực** (hỏi
+`importlib.util.find_spec`, không phải một danh sách tay). Stage chưa dời thì
+`run.py` in ra đúng lệnh `src/` cần chạy thay vì báo lỗi cụt.
+
 - `REPO_ROOT`: bản `src/` cũ dùng `parents[1]`. Trong bố cục mới file nằm sâu hơn
   (`esg_kg/kpi/extract.py`) nên đếm `parents[N]` sẽ sai. **Đã chốt & làm xong**
   trong `core/paths.py`: neo `REPO_ROOT` bằng marker — tổ tiên đầu tiên có **cả**
   `config/` lẫn `.git` (yêu cầu cả hai để không dính nhầm `EmeraldMind/`), kèm
   escape hatch `ESG_KG_REPO_ROOT`. Đây từng là bẫy dễ sai nhất khi di chuyển.
+  **Đã kiểm thực tế**: chạy cả hai cách trên với hai cwd khác nhau đều đọc đúng
+  `graph_output/resolved/resolved_graph.json` của repo và ghi đúng `--out-dir`.
 
 ## 4. Chiến lược migrate: Model A (KHÔNG đụng `src/` đang chạy)
 
@@ -112,21 +132,32 @@ Vì vậy ta **không rewire `src/`**. Thay vào đó:
      **ở lại** step03 (chỉ test import). Xếp trước `io_jsonl` **không** vì số
      importer mà vì nó **mở khoá `step00`** (xem bước 3); `io_jsonl` chỉ step02
      dùng, mà step02 là hub cuối ở bước 4 — làm sớm không mở khoá được gì.
-   - ⏭️ **VIỆC TIẾP THEO: dời `step00`** (bước 3) — mọi symbol nó import giờ đã có
-     trong `core/`. Đây là lần đầu chốt cách CHẠY (§6).
    - `core/` còn lại, làm khi stage cần tới: `io_jsonl`, `identity`, `text`, `llm`.
      ⚠️ `text`: hai `node_text` **KHÔNG phải bản trùng** — `step05d:63` nhận *props dict*,
      `step07:133` nhận *node* rồi rẽ nhánh theo class. Chuyển cả hai, giữ tên riêng.
+     `identity` giờ là cái chặn duy nhất của `step05b` (xem bảng bước 3).
 3. **Các stage dời được** — tiêu chí là **"mọi symbol NÓ import đã nằm trong `core/`"**,
    KHÔNG phải "không ai import nó". Cả hai điều kiện đều cần, nhưng điều kiện thứ hai
    mới là thứ quyết định thời điểm dời được.
-   - **`step00` là stage đầu tiên đủ điều kiện**, ngay sau `core/dates.py`: nó import
-     đúng `REPO_ROOT` (✅ paths), `ISO_DATE_RE`/`date_start_key`/`normalize_date_string`
-     (⏭️ dates) + `load_schema_sets` (✅ schema), `normalize_name` (✅ naming) — hết.
-     Đây cũng là lúc đầu tiên `import` trỏ sang `esg_kg.core`, và là lúc phải chốt
-     cách CHẠY (§6, mắt xích yếu nhất).
-   - Tiếp theo khi `core/` xong: step03c, step04b, step05, step05b, step06, step07b,
-     step09, data_sync.
+   - ✅ **`step00` → `report/quality.py`** (2026-07-25), stage đầu tiên được dời.
+     Dời **nguyên văn**: `diff` với bản `src/` chỉ khác đúng hai chỗ — docstring và
+     khối import (4 symbol giờ lấy từ `esg_kg.core`, `DEFAULT_*` dựng từ
+     `core.paths`). Toàn bộ ~500 dòng logic Q1–Q8 không đổi một ký tự.
+     Đây cũng là lúc chốt cách CHẠY (§3).
+   - **Quét lại đồ thị import (2026-07-25): 6 stage nữa ĐÃ đủ điều kiện ngay**, không
+     phải "chờ `core/` xong" như bản trước của tài liệu này viết:
+
+     | Stage | Import từ stage khác | Trạng thái |
+     |---|---|---|
+     | `step07b`, `step09`, `data_sync` | *(không có)* | ✅ dời được ngay |
+     | `step03c` | `REPO_ROOT` | ✅ đã có trong `core/paths` |
+     | `step06` | `REPO_ROOT`, `load_schema_sets` | ✅ đã có |
+     | `step04b` | `merge_preserving_edits`, `normalize_name` | ✅ đã có trong `core/naming` |
+     | `step05b` | + `parse_source_id` (step03b), `PROVENANCE_CLASSES`/`stamp_provenance` (step02) | ❌ **chặn**: chờ `core/identity.py` |
+
+     Thứ tự đề xuất: **`step07b` trước** (offline, tất định, không DB → arm tương
+     đương so được nguyên dossier), rồi `step03c`, `step04b`. `step09`/`step06` cần
+     Neo4j nên arm của chúng chỉ kiểm được tới mức import + hàm thuần; để sau.
    - **CHƯA đủ điều kiện dù không ai import chúng**: `step05d` (cần `GraphPatch`/
      `temporal_md` từ step05c — hiện **chưa có chỗ trong `core/`**, xem §2),
      `step08` (cần `node_text` từ step07 → chờ `core/text.py`),
@@ -202,9 +233,34 @@ bị xoá**, không sớm hơn.
   **Mỗi module `core/` mới phải thêm arm vào đây TRƯỚC khi trích** (xem quy tắc TDD
   trong CLAUDE.md). Đã mutation-check: sửa lệch `SYNONYMS`/`LEGAL_FORMS` ở một cây
   bị bắt bởi 3 arm.
+  Arm của một **stage** không có "một giá trị trả về" để so, nên so ba thứ định
+  nghĩa nó: hằng số module, từng hàm chỉ số, và Markdown đã render. Với `step00`
+  còn có thêm phép kiểm cuối: chạy thật cả hai cây trên đồ thị thật rồi so
+  artifact — JSON giống hệt, `.md` chỉ khác `label` + `generated_at`.
+  ⚠️ **Chi phí phải né**: `q7_traversability` full BFS tốn ~44s/lần trên đồ thị
+  10 393 node (đo thật) → 88s nếu chạy cả hai cây. Vì vậy arm đồ thị thật chạy
+  `skip_slow=True`, còn nhánh Q7(c)/(d) phủ bằng một mini-graph tổng hợp 20 node
+  (tức thời, và **chạy được trên bare clone**). Mini-graph đó được canh gác bởi
+  `test_quality_mini_graph_is_not_vacuous`: mọi counter phải khác 0 và hai chỉ số
+  BFS phải nằm **strictly giữa 0% và 100%** — nếu không, arm chỉ đang so hai đống
+  số 0 mà vẫn "PASS".
 - `test/test_temporal_invariants.py` import theo **bare-module** (`from step03_...`).
   Nó vẫn xanh trong suốt giai đoạn `core/` (vì `src/` không đổi). Chỉ khi tới bước
   3–4 (dời stage) mới cần cập nhật import của nó **đồng bộ** với mỗi lần chuyển.
-- **Mắt xích yếu nhất còn lại**: cách CHẠY sau khi dời stage — `python -m
-  esg_kg.<pkg>.<mod>` từ `src_module/`, và `.env`/cwd khi chạy từ vị trí mới. Sẽ
-  chốt ở bước 3 (stage lá đầu tiên), không phải bây giờ.
+- ✅ **Mắt xích yếu "cách CHẠY" đã gỡ** ở bước dời `step00` — xem §3.
+
+### 6.1 Nợ kỹ thuật đã biết: bản sinh đôi của `step00`
+
+`src/step00_graph_quality_report.py` **vẫn còn nguyên** sau khi dời (Model A), nên
+tier map T1/T2/T3 hiện tồn tại ở **hai** nơi. Đó chính là thứ mà comment ở
+`test/test_schema_contract.py:15` ("IMPORTED from step00, never re-declared") sinh
+ra để chặn — chấp nhận tạm vì arm tương đương đang khoá hai bản bằng nhau, nhưng
+**không được để lâu**. Commit dọn (tách riêng, đúng §5.3):
+
+1. xoá `src/step00_graph_quality_report.py`;
+2. `test/test_schema_contract.py` đổi sang `from esg_kg.report.quality import ...`;
+3. khai tử các arm `test_quality_*` trong test tương đương (theo luật §5.3: arm
+   chỉ chết khi bản sinh đôi trong `src/` bị xoá);
+4. cập nhật CLAUDE.md phần "Common commands".
+
+Không stage `src/` nào import `step00`, nên bước 1 không làm gãy pipeline đang chạy.

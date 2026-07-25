@@ -28,11 +28,25 @@ băng, bản sửa thật đã ở stage sớm), **E2** (stage sớm về cấu 
 trong docstring của stage. Bảng phân loại hiện trạng `src/` + trường hợp vi phạm đã
 tìm thấy: DESIGN.md §5.1–5.2.
 
+## Cách chạy
+
+```bash
+python src_module/run.py --list                      # mọi stage + đã dời hay chưa
+python src_module/run.py quality --label baseline    # chạy stage (từ REPO ROOT)
+cd src_module && python -m esg_kg.report.quality --label baseline   # tương đương
+```
+
+`run.py` là file duy nhất chạm `sys.path`, và đọc bảng stage từ `pipeline.py` nên
+`--list` luôn nói thật về tiến độ. **Không cần `pip install`.** Đường dẫn output
+neo theo `REPO_ROOT` (marker-based) nên không phụ thuộc cwd. Stage chưa dời thì
+`run.py` in ra đúng lệnh `src/` cần chạy. Lý do chọn cách này: DESIGN.md §3.
+
 ## Cách làm việc
 
 Test-first, luôn luôn (xem CLAUDE.md → "Working rule: Test-Driven Development").
 Mỗi module `core/` mới **phải có arm trong `test/test_esg_kg_equivalence.py` trước
-khi được trích** — thêm arm, chạy, thấy đỏ, rồi mới viết code.
+khi được trích** — thêm arm, chạy, thấy đỏ, rồi mới viết code. Với một **stage**,
+arm so ba thứ: hằng số module, từng hàm, và output đã render.
 
 ```bash
 python test/test_esg_kg_equivalence.py    # lưới chống lệch giữa src/ và esg_kg
@@ -46,7 +60,10 @@ python test/test_temporal_invariants.py   # bộ test sẵn có của src/, ph�
 | `core/paths.py` | ✅ `REPO_ROOT` neo bằng marker + hằng gốc + `load_env()` |
 | `core/schema.py` | ✅ `load_schema_sets`, `validate_triple`, `get_identity_keys` |
 | `core/naming.py` | ✅ `normalize_name`, `name_tokens`, `merge_preserving_edits` |
-| `core/` còn lại | ⏳ `dates` → `io_jsonl` → `identity` → `text` → `llm` |
-| Các stage | ⏳ chưa dời stage nào; `step00` sẽ là stage đầu tiên đủ điều kiện, ngay sau `core/dates.py` |
+| `core/dates.py` | ✅ `ISO_DATE_RE`, `normalize_date_string`, `date_start_key` |
+| `core/` còn lại | ⏳ `identity` (đang chặn `step05b`) → `io_jsonl` → `text` → `llm` |
+| `report/quality.py` | ✅ stage đầu tiên được dời (từ `step00`), chạy được |
+| Stage kế tiếp | ⏳ `step07b` → `step03c` → `step04b` (đã đủ điều kiện, DESIGN.md §4 bước 3) |
 
-Chưa có stage nào chạy được từ đây — `src/` vẫn là đường chạy duy nhất.
+`src/` **vẫn là pipeline chạy thật**; mới đúng một stage chạy được từ đây, và bản
+`src/step00_graph_quality_report.py` vẫn còn (nợ đã ghi: DESIGN.md §6.1).

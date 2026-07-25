@@ -57,8 +57,12 @@ repo and secrets, so it is never committed or pushed with this project.
   - `src/` scripts are **standalone files** run directly (`python src/step02_extract_triplet_from_jsonl.py`);
     they import each other by module name relying on Python putting `src/` on `sys.path`.
     Run them from the repo root.
-  - (`src_module/esg_kg/` is the in-progress third style — see the refactor section below.
-    It is NOT yet a run target; `src/` is still the pipeline you execute.)
+  - `src_module/esg_kg/` is the in-progress third style (see the refactor section below):
+    a real package, run from the repo root via its dispatcher —
+    `python src_module/run.py quality --label baseline` (equivalently
+    `python -m esg_kg.report.quality` from inside `src_module/`). Only **one** stage
+    has been migrated so far; `python src_module/run.py --list` shows which.
+    `src/` is still the pipeline you execute.
 - **Sentence-level traceability** (`source_pdf`, `page`, `sentence_index`) is preserved
   through every stage so each graph node traces back to its source — keep it intact.
 - **Torch is intentionally absent from `requirements.txt`.** The ViDeBERTa ESG classifier
@@ -112,10 +116,17 @@ Non-negotiable rules while this is in flight:
   (step04 → step03 → step02 → step01).
 - Extract helpers **verbatim**. Behaviour changes and refactoring are separate commits.
 
-State: `core/paths.py` (marker-based `REPO_ROOT`) and `core/schema.py` (`load_schema_sets`,
-`validate_triple`, `get_identity_keys`) have landed but **their equivalence test is not yet
-committed** — write it first. Next: `core/naming.py`, then `dates`, `io_jsonl`, `identity`,
-`text`, `llm`.
+State: `core/` has `paths` (marker-based `REPO_ROOT`), `schema`, `naming`, `dates`, all
+covered by `test/test_esg_kg_equivalence.py`. **`step00` is the first migrated STAGE**
+(`esg_kg/report/quality.py`) — with it the run convention is settled: `src_module/run.py`
+is the only file that touches `sys.path`, and it reads the stage table from `pipeline.py`
+so `--list` reports migration status honestly. No `pip install` step.
+
+Next: `step07b` → `step03c` → `step04b` (already unblocked — they import nothing that is
+still trapped in a `src/` step). `step05b` is blocked on `core/identity.py` (`parse_source_id`).
+Known debt: `src/step00_graph_quality_report.py` still exists, so the T1/T2/T3 tier map that
+`test/test_schema_contract.py` imports lives in two trees — cleanup commit spelled out in
+`src_module/esg_kg/DESIGN.md` §6.1.
 
 Corrections to DESIGN.md found by review, not yet folded into it:
 - The two `node_text` are **NOT duplicates** — `step05d:63` takes a *properties dict*,
@@ -367,6 +378,10 @@ python src/step09_report_claim_ledger.py --review-queue --markdown         #   c
 python src/step10_evaluate.py                                              # step 8 / P6: full Vietnamese evaluation report
 python src/step10_evaluate.py --ablation --no-llm                          #   free arms only (coverage/case studies/ablation are offline)
 
+# Refactor target (src_module/esg_kg) — only step00 has moved so far
+python src_module/run.py --list                                            # stages + which are migrated
+python src_module/run.py quality --label baseline                          # == src/step00_graph_quality_report.py
+
 # ESG Evidence View UI (web front-end; reads the Neo4j advisory layer, no LLM — see docs/ESG_EVIDENCE_VIEW.md)
 python api/main.py                                                         # 3-column TT96/GRI evidence view at http://localhost:8000
 
@@ -411,7 +426,11 @@ python test/test_indicator_axis.py         # drives step05c's real run() on a te
 python test/test_esg_kg_equivalence.py     # refactor safety net: imports BOTH src/ and
                                            # src_module/esg_kg, runs them on the real
                                            # schema/corpus, asserts equal. Run after ANY
-                                           # edit to a src/ helper that has a core/ twin.
+                                           # edit to a src/ helper that has a core/ twin,
+                                           # or to step00 (whose whole Q1-Q8 surface is
+                                           # compared against esg_kg/report/quality.py —
+                                           # real graph with --skip-slow, plus a synthetic
+                                           # 20-node graph for the 44s Q7 BFS arms).
 ```
 
 The rest of `test/` and `notebooks/` are Jupyter notebooks for manual validation

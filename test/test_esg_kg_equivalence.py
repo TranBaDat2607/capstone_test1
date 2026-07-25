@@ -29,6 +29,7 @@ sys.path.insert(0, str(REPO / "src"))
 sys.path.insert(0, str(REPO / "src_module"))
 
 # --- old: the flat src/ scripts ------------------------------------------------
+import step00_graph_quality_report as old_step00  # noqa: E402
 import step01_extract_kpi_from_jsonl as old_step01  # noqa: E402
 import step02_extract_triplet_from_jsonl as old_step02  # noqa: E402
 import step03_fix_invalid_triplets as old_step03  # noqa: E402
@@ -39,9 +40,11 @@ from esg_kg.core import dates as new_dates  # noqa: E402
 from esg_kg.core import naming as new_naming  # noqa: E402
 from esg_kg.core import paths as new_paths  # noqa: E402
 from esg_kg.core import schema as new_schema  # noqa: E402
+from esg_kg.report import quality as new_quality  # noqa: E402
 
 SCHEMA_FILE = REPO / "config" / "schema.json"
 TRIPLES_FILE = REPO / "graph_output" / "validated" / "all_validated_triples.json"
+RESOLVED_FILE = REPO / "graph_output" / "resolved" / "resolved_graph.json"
 
 # How many real triples to run through validate_triple. A cap, not a sample:
 # drift shows up in the first few hundred, and the test must stay fast.
@@ -335,6 +338,228 @@ def test_dates_matches_src_on_real_corpus():
         assert new_dates.date_start_key(v) == old_step03.date_start_key(v), \
             f"date_start_key({v!r})"
     print(f"     ({len(set(map(repr, values)))} distinct real date values compared)")
+
+
+# --------------------------------------------------------------------------- #
+# report/quality.py  — step00. The first whole STAGE moved, not just a helper.
+#
+# A stage has no single return value to compare, so equivalence is asserted on
+# the three things that actually define it: the module constants (the T1/T2/T3
+# tier map is a contract other files import), every Q1-Q8 metric function, and
+# the rendered Markdown.
+#
+# Q7's BFS arms cost ~44s per call on the real 10k-node graph (measured), so the
+# real-corpus arm runs with skip_slow=True and the (c)/(d) BFS is covered by the
+# synthetic graph below instead, where it is instant. That synthetic graph is
+# also what lets these arms run on a bare clone.
+# --------------------------------------------------------------------------- #
+def mini_graph() -> tuple:
+    """A hand-built graph that trips EVERY counter step00 reports.
+
+    Node indices are load-bearing: edges address nodes by position, and Q7
+    walks that adjacency. `test_quality_mini_graph_is_not_vacuous` guards the
+    intent — if a future edit flattens this into all-zero metrics, the
+    comparison would still "pass" while testing nothing.
+    """
+    def rep(**kw):
+        return dict(source_type="report", **kw)
+
+    def news(**kw):
+        return dict(source_type="news", **kw)
+
+    nodes = [
+        # 0: the hub (highest degree, excluded from Q7(d) paths)
+        {"class": "Organization", "properties": rep(name="CTCP Nhựa An Phát Xanh", valid_from="2020")},
+        # 1+? Q3: 1 and 14 normalize to the same key -> one surplus duplicate
+        {"class": "Organization", "properties": rep(name="An Phát Xanh JSC", valid_from="2020")},
+        {"class": "Facility", "properties": rep(name="Nhà máy Hải Dương", valid_from="2020")},
+        # 3: Q1 broken-OCR char (Ƣ, seen in real PDF extraction)
+        {"class": "Facility", "properties": rep(name="Nhà máy MÔI TRƢỜNG", valid_from="2020")},
+        # 4: Q1 non-NFC name — written DECOMPOSED (combining diacritics) on purpose,
+        #    which is what unnormalized PDF text extraction actually produces
+        {"class": "Facility", "properties": rep(name="Nhà máy Bà Rịa", valid_from="2020")},
+        # 5: report-side KPI, parseable source_id
+        {"class": "KPIObservation", "properties": rep(name="Điện tiêu thụ", valid_from="2023",
+                                                      source_id="AAA_2023_labeled_12_3")},
+        # 6: news-side KPI = conduct; NO date_uncertain (Q2 counter) and no valid_from (Q5)
+        {"class": "KPIObservation", "properties": news(name="Nước thải", source_id="news-article-xyz")},
+        {"class": "Controversy", "properties": news(name="Xả thải vượt chuẩn", valid_from="2024-03",
+                                                    date_uncertain=True)},
+        # 8: Q2 non-canonical date spelling
+        {"class": "Penalty", "properties": news(name="Phạt hành chính", valid_from="31/05/2023",
+                                                date_uncertain=False)},
+        {"class": "MediaReport", "properties": news(name="Bài báo VnExpress", valid_from="2024-01-15",
+                                                    publisher="VnExpress", date_uncertain=False)},
+        {"class": "SustainabilityClaim", "properties": rep(claim_id="AAA-C-001", valid_from="2023")},
+        {"class": "SustainabilityClaim", "properties": rep(claim_id="AAA-C-002", valid_from="2023")},
+        {"class": "ClaimKeyword", "properties": rep(term="phát thải", valid_from="2023")},
+        # 13: REFERENCE_CLASSES — barred from Q7 hub/path metrics
+        {"class": "StandardIndicator", "properties": rep(name="TT96-E1", valid_from="2020")},
+        # 14: Q2 version chain with TWO is_current=true (P4 violation) + Q3 duplicate of node 1
+        {"class": "Organization", "properties": rep(name="AN PHAT XANH , JSC.", valid_from="2019"),
+         "temporal_versions": [
+             {"valid_from": "2019", "valid_to": None, "is_current": True, "properties": {"name": "An Phat Xanh"}},
+             {"valid_from": "2021", "valid_to": None, "is_current": True, "properties": {"name": "An Phat Xanh"}},
+         ]},
+        # 15: Q2 versions split ONLY by date spelling ("2011" vs "2011-01-01")
+        {"class": "Organization", "properties": rep(name="An Phát Holdings", valid_from="2011"),
+         "temporal_versions": [
+             {"valid_from": "2011", "valid_to": None, "is_current": True, "properties": {"name": "An Phat Holdings"}},
+             {"valid_from": "2011-01-01", "valid_to": None, "is_current": False, "properties": {"name": "An Phat Holdings"}},
+         ]},
+        # 16: isolated node (degree 0)
+        {"class": "Product", "properties": rep(name="Bao bì phân hủy", valid_from="2022")},
+        # 17: leaf (degree 1) — masking its only edge orphans it in Q7(c)
+        {"class": "Person", "properties": {"name": "Nguyễn Văn A"}},
+        {"class": "Location", "properties": {"name": "Hải Dương"}},
+        # 19: Q2 valid_from > valid_to
+        {"class": "Goal", "properties": {"name": "Giảm 20% phát thải", "valid_from": "2030", "valid_to": "2025"}},
+    ]
+
+    def ed(s, o, p, vf="2020", vt=None):
+        return {"subject": s, "object": o, "predicate": p,
+                "temporal_metadata": {"valid_from": vf, "valid_to": vt, "recorded_at": vf}}
+
+    edges = [
+        # Q7(c) branch 1: parallel SAME-label edges (multi-year) on pair (0,2)...
+        ed(0, 2, "ownsFacility", "2020"),
+        ed(0, 2, "ownsFacility", "2021"),
+        # ...plus a DIFFERENT label on the same pair -> masking survives at 1 hop
+        ed(2, 0, "partOf", "2020"),
+        ed(0, 3, "ownsFacility"),
+        ed(0, 4, "ownsFacility"),
+        # the structural spine Q7(d) must find: 10 -> 5 -> 2 -> 6, hub-free
+        ed(5, 2, "observedAtFacility", "2023"),
+        ed(6, 2, "observedAtFacility", "2024"),
+        ed(10, 5, "verifiedBy", "2023"),
+        ed(10, 12, "hasKeyword", "2023"),
+        ed(11, 12, "hasKeyword", "2023"),
+        ed(11, 13, "alignsWithIndicator", "2023"),
+        ed(10, 13, "alignsWithIndicator", "2023"),
+        ed(5, 13, "measuredUnder", "2023"),
+        ed(0, 9, "publishesReport", "2024"),
+        # Q7(c) branch 2: masking this orphans node 17 (degree 1) -> unanswerable
+        ed(9, 17, "reportedBy", "2024"),
+        ed(0, 8, "subjectToPenalty", "2023"),
+        ed(10, 7, "contradictedBy", "2024"),
+        # Q7(c) branch 3: single-label pair with a 2-hop detour (2 -> 0 -> 18)
+        ed(2, 18, "locatedIn"),
+        ed(0, 18, "locatedIn"),
+        ed(14, 2, "ownsFacility"),
+        ed(15, 2, "ownsFacility"),
+        # Q2 illegal edges: unknown predicate, and a legal label on an illegal pair
+        ed(0, 1, "notARealEdgeLabel"),
+        ed(19, 12, "alignsWithIndicator"),
+    ]
+    return nodes, edges
+
+
+def mini_report(mod, schema: dict) -> dict:
+    """Build step00's full report dict with the volatile fields pinned, so the
+    two trees are compared on the metrics rather than on a timestamp."""
+    nodes, edges = mini_graph()
+    return {
+        "label": "equivalence",
+        "generated_at": "2026-01-01T00:00:00+00:00",
+        "graph_file": "graph_output/resolved/resolved_graph.json",
+        "graph_mtime": "2026-01-01T00:00:00+00:00",
+        "nodes": len(nodes),
+        "edges": len(edges),
+        "q1_accuracy": mod.q1_accuracy(nodes),
+        "q2_consistency": mod.q2_consistency(nodes, edges, schema),
+        "q3_conciseness": mod.q3_conciseness(nodes),
+        "q4_completeness": mod.q4_completeness(nodes),
+        "q5_timeliness": mod.q5_timeliness(nodes, edges),
+        "q6_provenance": mod.q6_provenance(nodes),
+        # skip_slow=False: the BFS arms are cheap here and nowhere else
+        "q7_traversability": mod.q7_traversability(nodes, edges, 4, False),
+        "q8_independence": mod.q8_independence(nodes),
+    }
+
+
+def test_quality_constants_match_src():
+    """The tier map is a CONTRACT: test_schema_contract.py imports it rather than
+    re-declaring it, so a silent drift here would quietly change what P1 lints."""
+    for name in ("T1_CLASSES", "T2_CLASSES", "T3_CLASSES", "REFERENCE_CLASSES",
+                 "CONDUCT_CLASSES", "TEMPORAL_IDENTITY_FIELDS", "STRUCTURAL_EDGES",
+                 "BROKEN_CHARS", "DEFAULT_MAX_HOPS"):
+        assert getattr(new_quality, name) == getattr(old_step00, name), f"constant {name}"
+
+
+def test_quality_default_paths_match_src():
+    # step00 built these from `REPO_ROOT / ...`; the module now takes them from
+    # core.paths. Same files, or the stage writes its report somewhere new.
+    assert new_quality.DEFAULT_GRAPH == old_step00.DEFAULT_GRAPH
+    assert new_quality.DEFAULT_SCHEMA == old_step00.DEFAULT_SCHEMA
+    assert new_quality.DEFAULT_OUT_DIR == old_step00.DEFAULT_OUT_DIR
+
+
+def test_quality_helpers_match_src():
+    nodes, _ = mini_graph()
+    for nd in nodes:
+        assert new_quality.node_name(nd) == old_step00.node_name(nd)
+        assert new_quality.is_conduct(nd) == old_step00.is_conduct(nd)
+        assert new_quality.is_news_t2(nd) == old_step00.is_news_t2(nd)
+    for part, whole in [(0, 0), (0, 10), (1, 3), (7, 7), (13790, 10393)]:
+        assert new_quality.pct(part, whole) == old_step00.pct(part, whole)
+
+
+def test_quality_mini_graph_is_not_vacuous():
+    """Guards the fixture, not the code: every counter the synthetic graph exists
+    to exercise must actually be non-zero, or the equivalence arms below compare
+    two piles of zeros and would miss real drift."""
+    rep = mini_report(old_step00, load_schema())
+    q2, q7 = rep["q2_consistency"], rep["q7_traversability"]
+    for key in ("schema_illegal_edges", "non_canonical_date_values",
+                "valid_from_after_valid_to", "version_chains_not_exactly_one_is_current",
+                "versions_split_only_by_date_format", "news_t2_missing_date_uncertain"):
+        assert q2[key] > 0, f"mini_graph no longer exercises q2.{key}"
+    assert rep["q1_accuracy"]["nodes_with_non_nfc_name"] > 0
+    assert rep["q1_accuracy"]["nodes_with_broken_ocr_chars"] > 0
+    assert rep["q3_conciseness"]["total_surplus_duplicate_t1_nodes"] > 0
+    assert rep["q4_completeness"]["controversy"] > 0 and rep["q4_completeness"]["penalty"] > 0
+    assert rep["q7_traversability"]["isolated_nodes"] > 0
+    assert q7["largest_hub"]["class"] == "Organization", "the hub must not be a StandardIndicator"
+    # both BFS arms must land strictly between 0% and 100% — that is the only
+    # proof the reachable AND unreachable branches are both walked
+    for key in ("c_masked_queries_answerable_pct", "d_claims_structural_path_to_conduct_pct"):
+        assert 0.0 < q7[key] < 100.0, f"q7.{key} = {q7[key]} exercises only one branch"
+
+
+def test_quality_metrics_match_src_on_mini_graph():
+    """Every Q1-Q8 function, including the Q7(c)/(d) BFS the real-graph arm skips."""
+    schema = load_schema()
+    assert mini_report(new_quality, schema) == mini_report(old_step00, schema)
+
+
+def test_quality_render_markdown_matches_src():
+    schema = load_schema()
+    assert new_quality.render_markdown(mini_report(new_quality, schema)) == \
+           old_step00.render_markdown(mini_report(old_step00, schema))
+
+
+def test_quality_metrics_match_src_on_real_graph():
+    """The resolved graph as it really is — 10k nodes of shapes no fixture invents.
+
+    skip_slow=True: Q7(c)/(d) cost ~44s per call here (~88s for both trees), and
+    the mini-graph arm above already compares them.
+    """
+    if not RESOLVED_FILE.exists():
+        _skip("quality/real-graph", f"{RESOLVED_FILE.name} absent (run data_sync pull)")
+        return
+    graph = json.loads(RESOLVED_FILE.read_text(encoding="utf-8"))
+    nodes, edges = graph.get("nodes", []), graph.get("edges", [])
+    schema = load_schema()
+    assert new_quality.q1_accuracy(nodes) == old_step00.q1_accuracy(nodes)
+    assert new_quality.q2_consistency(nodes, edges, schema) == old_step00.q2_consistency(nodes, edges, schema)
+    assert new_quality.q3_conciseness(nodes) == old_step00.q3_conciseness(nodes)
+    assert new_quality.q4_completeness(nodes) == old_step00.q4_completeness(nodes)
+    assert new_quality.q5_timeliness(nodes, edges) == old_step00.q5_timeliness(nodes, edges)
+    assert new_quality.q6_provenance(nodes) == old_step00.q6_provenance(nodes)
+    assert new_quality.q7_traversability(nodes, edges, 4, True) == \
+           old_step00.q7_traversability(nodes, edges, 4, True)
+    assert new_quality.q8_independence(nodes) == old_step00.q8_independence(nodes)
+    print(f"     ({len(nodes)} nodes / {len(edges)} edges compared, Q7 BFS skipped by design)")
 
 
 if __name__ == "__main__":
