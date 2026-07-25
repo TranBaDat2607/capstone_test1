@@ -21,8 +21,9 @@ Hệ quả: không thể chuyển `step05` sang module mới mà không kéo the
 nó import trực tiếp từ các file anh em. **`core/` gỡ đúng nút thắt này** — sau khi
 tách, mỗi stage chỉ phụ thuộc `esg_kg.core` và di chuyển được độc lập.
 
-Phát hiện thêm: `node_text` **định nghĩa trùng** ở `step05d:63` và `step07:133` →
-gom về `core/text.py`, xoá bản trùng.
+Phát hiện thêm: `node_text` tồn tại ở **hai** nơi — `step05d:63` và `step07:133` —
+nhưng **KHÔNG phải bản trùng** (xem §2, `text.py`). Cả hai cùng về `core/text.py`,
+giữ tên riêng.
 
 ## 2. Bố cục đề xuất
 
@@ -37,7 +38,8 @@ src_module/esg_kg/
     dates.py           #  date_start_key (+ canonicalize ISO)  <- step03:130
     identity.py        #  parse_source_id                      <- step03b:98
                        #  PROVENANCE_CLASSES, stable_id        <- step02
-    text.py            #  node_text  (DEDUPE 2 bản)            <- step05d:63 + step07:133
+    text.py            #  node_text x2 — KHÁC NHAU, giữ 2 tên  <- step05d:63 (props dict)
+                       #                                       <- step07:133 (node, rẽ theo class)
     llm.py             #  RateLimiter                          <- step02:70
                        #  _Provider/_OpenAIProvider cascade    <- step07:284
     datasync.py        #  HF snapshot pull/push                <- src/data_sync.py
@@ -103,18 +105,94 @@ Vì vậy ta **không rewire `src/`**. Thay vào đó:
    - ✅ `core/schema.py` — `load_schema_sets`, `validate_triple`, `get_identity_keys`.
    - ✅ `core/naming.py` — `normalize_name`, `name_tokens`, `merge_preserving_edits` (6 file).
      `issuer_core_tokens`/`GENERIC_TOKENS` **ở lại** step04 (không ai khác import).
-   - Cả hai verify bằng `test/test_esg_kg_equivalence.py` (§5), chạy trên schema
+   - Cả hai verify bằng `test/test_esg_kg_equivalence.py` (§6), chạy trên schema
      thật + 5000 triple thật + 242 tên Organization thật.
-   - rồi `io_jsonl`, `dates`, `identity`, `text`, `llm`.
+   - ⏭️ **`core/dates.py` LÀ VIỆC TIẾP THEO** — `ISO_DATE_RE` (step03:75),
+     `normalize_date_string` (step03:85), `date_start_key` (step03:130).
+     `enforce_temporal_invariants` (step03:378) **ở lại** step03 (chỉ test import).
+     Xếp trước `io_jsonl` **không** vì số importer mà vì nó **mở khoá `step00`**
+     (xem bước 3); `io_jsonl` chỉ step02 dùng, mà step02 là hub cuối ở bước 4 —
+     làm sớm không mở khoá được gì.
+   - rồi `io_jsonl`, `identity`, `text`, `llm`.
      ⚠️ `text`: hai `node_text` **KHÔNG phải bản trùng** — `step05d:63` nhận *props dict*,
      `step07:133` nhận *node* rồi rẽ nhánh theo class. Chuyển cả hai, giữ tên riêng.
-3. **Các stage LÁ** (không ai import): step00, step03c, step04b, step05, step05b,
-   step05d, step06, step07b, step08, step09, step10, data_sync — chuyển an toàn,
-   không làm gãy downstream. Đây là lúc đầu tiên `import` trỏ sang `esg_kg.core`.
+3. **Các stage dời được** — tiêu chí là **"mọi symbol NÓ import đã nằm trong `core/`"**,
+   KHÔNG phải "không ai import nó". Cả hai điều kiện đều cần, nhưng điều kiện thứ hai
+   mới là thứ quyết định thời điểm dời được.
+   - **`step00` là stage đầu tiên đủ điều kiện**, ngay sau `core/dates.py`: nó import
+     đúng `REPO_ROOT` (✅ paths), `ISO_DATE_RE`/`date_start_key`/`normalize_date_string`
+     (⏭️ dates) + `load_schema_sets` (✅ schema), `normalize_name` (✅ naming) — hết.
+     Đây cũng là lúc đầu tiên `import` trỏ sang `esg_kg.core`, và là lúc phải chốt
+     cách CHẠY (§6, mắt xích yếu nhất).
+   - Tiếp theo khi `core/` xong: step03c, step04b, step05, step05b, step06, step07b,
+     step09, data_sync.
+   - **CHƯA đủ điều kiện dù không ai import chúng**: `step05d` (cần `GraphPatch`/
+     `temporal_md` từ step05c — hiện **chưa có chỗ trong `core/`**, xem §2),
+     `step08` (cần `node_text` từ step07 → chờ `core/text.py`),
+     `step10` (`step10_evaluate.py:367` giấu một lazy `from step07… import Adjudicator`
+     trong `try` — hỏng thì **im lặng**, chỉ mất arm LLM, không báo lỗi).
 4. **Các stage HUB cuối cùng**: step04 → step03 → step02 → step01 — lúc này phần
    dùng chung đã ở `core/`, phần còn lại chỉ là entrypoint mỏng.
 
-## 5. Lưới an toàn & mắt xích yếu
+## 5. Sửa lỗi trong lúc refactor — nguyên tắc "vá ở stage sớm nhất"
+
+Refactor **không** tự sửa lỗi: helper được trích nguyên văn, nên mọi khiếm khuyết
+của `src/` đi thẳng sang `esg_kg`. Test tương đương (§6) tồn tại chính là để *bảo
+toàn hành vi*, kể cả hành vi sai. Vì vậy việc sửa lỗi cần luật riêng.
+
+### 5.1 Luật: lỗi được sửa ở stage SỚM NHẤT có đủ thông tin để sửa
+
+Không được để một module phía sau đi dọn hậu quả của module phía trước. Stage sau
+chỉ được xử lý bù khi rơi vào **một trong ba ngoại lệ có tên**, và phải ghi rõ
+ngoại lệ nào ngay trong docstring của stage:
+
+- **E1 — Backfill dữ liệu đã đóng băng.** Bản sửa thật ĐÃ nằm ở stage sớm; stage
+  sau chỉ vá phần dữ liệu cũ không thể trích lại (tốn tiền LLM, và step02 chạy
+  lại còn kéo theo rủi ro `claim_id` không tất định). **Bắt buộc** đánh dấu
+  phương pháp trên chính dữ liệu (vd `anchor_method`, `provenance_method`) và ghi
+  điều kiện khai tử: *"gỡ được khi corpus được trích lại"*.
+- **E2 — Stage sớm về mặt cấu trúc không thể biết.** Thông tin chỉ tồn tại về
+  sau (vd cần đồ thị đã resolve mới có node canonical để nối).
+- **E3 — Stage sớm cố ý giữ lại bất định thay vì đoán bừa.** Khi ấy stage sau xử
+  lý `None`/cờ nghi ngờ là **tôn trọng hợp đồng**, không phải vá bù.
+
+Không thuộc E1/E2/E3 ⇒ sửa ngược lên stage sớm, không thêm code phòng thủ.
+
+### 5.2 Phân loại hiện trạng `src/` (quét ngày 2026-07-25)
+
+| Chỗ | Loại | Căn cứ |
+|---|---|---|
+| step03b anchor KPI→Facility | **E1** | step02 prompt đã sinh `observedAtFacility` cho extraction mới (step02:181,191,224,281); step03b chỉ vá dữ liệu đã trả tiền, gắn `anchor_method="offline_gazetteer"` |
+| step05b stamp provenance | **E1** | step02:555–572 tự stamp `provenance_method="extraction"`; step05b:29 bỏ qua node đã có |
+| step03c gán `kpi_id` | **E2** | không làm ở step01 được: `kpi_type` nằm trong `identity_keys`, ghi đè sẽ đổi thứ tự node và phá dossier step07 đã trả tiền |
+| step05c trục chỉ số | **E2** | cần đồ thị đã resolve |
+| step05:392 `date_start_key(...) or str(...)` | **E3, hợp lệ** | step03 cố ý trả `("Q2 2023", False)` giữ nguyên thay vì bịa ngày; step05 buộc phải xử lý `None`, nếu không mọi ngày không parse được sẽ gộp thành một version |
+| **step04:428 sniff `{nodes,edges}`** | **VI PHẠM** | step03 luôn ghi `List[Dict]` (step03:545,622); file thật là list 14 677 phần tử; step05 đọc đúng file đó mà không sniff. Nhánh này là **code chết giả vờ có bất định** → xoá khi dời step04, đọc theo đúng một hợp đồng |
+
+Kết luận: nguyên tắc này thực ra đã được tuân thủ gần như toàn bộ, nhưng chưa từng
+được viết ra — nên nó đang được giữ bằng trí nhớ. Bảng trên là chỗ ghi chính thức.
+*(Ghi nhận: `load_triples()` trong `test/test_esg_kg_equivalence.py` cũng đang sniff
+kiểu tương tự — chấp nhận được cho test harness, nhưng siết lại khi step04 được dời.)*
+
+### 5.3 Quy trình sửa một lỗi (giữ nguyên lưới an toàn)
+
+Mấu chốt: test tương đương **chặn** thay đổi hành vi, nên không được nhét bản sửa
+vào commit refactor. Tách làm hai loại commit:
+
+- **Commit refactor** — dời nguyên văn, `src/` không đổi, test tương đương XANH.
+- **Commit sửa lỗi** — sửa **ĐỒNG THỜI CẢ HAI CÂY** trong cùng một commit, cộng
+  một test hành vi đã đỏ trước đó. Test tương đương **vẫn xanh**, và giờ nó chứng
+  minh thêm một điều: bản sửa đã đáp xuống hai cây giống hệt nhau.
+
+Sửa cả hai cây **không** phá Model A: Model A cấm *rewire import* của `src/`
+(sẽ `ImportError`), chứ không cấm sửa lỗi tại chỗ. Nhờ vậy không bao giờ có giai
+đoạn hai cây lệch nhau âm thầm, và bản sửa có hiệu lực ngay trên pipeline đang
+chạy thật (`src/`) chứ không nằm chờ trong `esg_kg`.
+
+Arm tương đương của một symbol chỉ được **khai tử khi bản sinh đôi trong `src/`
+bị xoá**, không sớm hơn.
+
+## 6. Lưới an toàn & mắt xích yếu
 
 - **`test/test_esg_kg_equivalence.py`** là lưới chính khi xây `core/` (§4): pipeline cũ
   không đổi nên chỉ cần chứng minh bản mới bằng hệt bản cũ. Import cả hai cây, chạy
