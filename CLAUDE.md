@@ -46,20 +46,86 @@ repo and secrets, so it is never committed or pushed with this project.
   scripts load `.env` from the repo root regardless of cwd. `.env` is git-ignored — never
   commit it.
 - **Layout principle (enforced):** code lives only in the package folders
-  (`crawl_data/`, `data_processing/`, `esg_news_crawler/`, `src/`, `kpi_build/`).
-  Everything else is `config/` (schema + dictionaries) or `data/`
-  (`raw/` → `interim/` → `labeled/` → `outputs/`). **No data files inside code packages.**
+  (`crawl_data/`, `data_processing/`, `esg_news_crawler/`, `src/`, `src_module/`,
+  `kpi_build/`, plus the UI pair `api/` + `frontend/`). Everything else is `config/`
+  (schema + dictionaries), `neo4j/` (`init.cypher` constraints + `crosscheck_queries.cypher`
+  analyst queries), or `data/` (`raw/` → `interim/` → `labeled/` → `outputs/`).
+  **No data files inside code packages.**
 - **Two execution styles — do not mix them:**
   - `data_processing/` and `esg_news_crawler/` are **packages**, run as modules:
     `python -m data_processing.extract_esg`.
   - `src/` scripts are **standalone files** run directly (`python src/step02_extract_triplet_from_jsonl.py`);
     they import each other by module name relying on Python putting `src/` on `sys.path`.
     Run them from the repo root.
+  - (`src_module/esg_kg/` is the in-progress third style — see the refactor section below.
+    It is NOT yet a run target; `src/` is still the pipeline you execute.)
 - **Sentence-level traceability** (`source_pdf`, `page`, `sentence_index`) is preserved
   through every stage so each graph node traces back to its source — keep it intact.
 - **Torch is intentionally absent from `requirements.txt`.** The ViDeBERTa ESG classifier
   runs on GPU via `notebooks/kaggle_esg_classify.ipynb`; install torch locally only to
   test `data_processing/esg_classifier.py` on CPU.
+- **Other deps are deliberately unlisted and imported lazily** — each degrades gracefully
+  so a bare clone still runs: `huggingface_hub` (`data_sync.py`), `rapidfuzz` (step03c's
+  fuzzy tier; disabled with a warning if absent), `openai` (step07/step10). Install them
+  on demand rather than adding them to `requirements.txt`.
+- **Gemini is currently billing-blocked**, so the code has drifted to OpenAI where a
+  choice exists: step07's `DEFAULT_PROVIDER_ORDER` is `"openai"` and step05 is run with
+  `--no-llm` (Stages A + B.1 only — no embedding blocking, no adjudication). Don't
+  "fix" these back to Gemini without checking whether the key works.
+
+## Working rule: Test-Driven Development (applies to ALL code from now on)
+
+**Write the test first. Run it. See it fail. Then write the code.** No production code
+lands without a failing test that demanded it. This is not optional and not limited to the
+refactor — it is how code gets written in this repo from now on.
+
+The cycle, per unit of work:
+1. **Red** — write the smallest test that expresses the next behaviour, run it, confirm it
+   fails *for the expected reason* (a test that passes before the code exists is testing nothing).
+2. **Green** — the minimum code to pass. No extra features "while I'm here".
+3. **Refactor** — clean up with the test green, re-run.
+
+Conventions (match `test/test_temporal_invariants.py`, the existing precedent):
+- **Plain `assert` scripts, no pytest** — the repo has no pytest/linter harness. A test is
+  a runnable file under `test/` printing pass/fail and exiting non-zero on failure.
+- **Tests must be offline** — no LLM, no Neo4j, no network. They run on real artifacts
+  already on disk (`config/schema.json`, `graph_output/…`). This keeps them free and
+  repeatable; **never verify by re-running a paid stage** (see also `--dry-run`/`--no-llm`).
+- Run from the repo root: `python test/<name>.py`.
+- Touching step03/03b/03c/05/05b/05c/08 still means re-running `test_temporal_invariants.py`.
+
+## Active refactor: `src/` → `src_module/esg_kg/`
+
+Migrating the 19 flat `src/step*.py` scripts to a module architecture, **one stage at a
+time**. Design + old→new file mapping: `src_module/esg_kg/DESIGN.md`; canonical run order
+(replacing the `stepNN_` prefixes): `src_module/esg_kg/pipeline.py`.
+
+Non-negotiable rules while this is in flight:
+- **Model A — never rewire `src/`.** The old pipeline must keep running untouched.
+  `esg_kg` is not on `src/`'s `sys.path`, so editing `src/` to import from it would just
+  `ImportError`. Helpers therefore **exist in both trees temporarily** — accepted cost.
+- **The TDD test for this refactor is an old-vs-new equivalence test**: import the `src/`
+  original *and* the `esg_kg` version, run both on real input, assert equal results. Write
+  it before extracting the module. This is the only thing preventing the two copies drifting.
+- **A stage may move only when every symbol IT imports already lives in `esg_kg.core`** —
+  *not* merely when nobody imports it. Order: finish `core/` → leaf stages → hubs
+  (step04 → step03 → step02 → step01).
+- Extract helpers **verbatim**. Behaviour changes and refactoring are separate commits.
+
+State: `core/paths.py` (marker-based `REPO_ROOT`) and `core/schema.py` (`load_schema_sets`,
+`validate_triple`, `get_identity_keys`) have landed but **their equivalence test is not yet
+committed** — write it first. Next: `core/naming.py`, then `dates`, `io_jsonl`, `identity`,
+`text`, `llm`.
+
+Corrections to DESIGN.md found by review, not yet folded into it:
+- The two `node_text` are **NOT duplicates** — `step05d:63` takes a *properties dict*,
+  `step07:133` takes a *node* and class-dispatches. Both move; keep separate names.
+  Merging them silently rewrites step07's paid LLM prompt.
+- `GraphPatch` / `temporal_md` (step05c) are shared but have **no home in the `core/` layout** —
+  this blocks step05d.
+- `step05d`, `step08`, `step10` are listed as safe "leaf" moves but are not: they import
+  from step05c/step07. `step10_evaluate.py:367` hides a lazy `from step07… import Adjudicator`
+  inside a `try` — it fails *silently* if broken.
 
 ## Pipeline architecture (the big picture)
 
@@ -170,10 +236,20 @@ src/step07_crosscheck_claims_vs_conduct.py → graph_output/crosscheck/<ticker>_
    (the analytical core: for each SustainabilityClaim, retrieve conduct-side candidates →
     LLM-adjudicate supports/contradicts/irrelevant → write verifiedBy / contradictedBy* edges.
     LLM adjudication is MANDATORY (no deterministic fallback) — multi-provider cascade
-    (--provider-order gemini,openai): gemini-2.5-flash primary, OpenAI gpt-4o-mini fallback;
-    aborts up front if neither provider is available. Self-verification guard drops
-    company-own-domain "verify" edges. Emits advisory dossiers — NO greenwashing score/label.
-    --dry-run / --to-neo4j)
+    (--provider-order, default `openai` = gpt-4o-mini while Gemini is billing-blocked;
+    `gemini,openai` puts gemini-2.5-flash first); aborts up front if no provider is
+    available. Self-verification guard drops company-own-domain "verify" edges.
+    Emits advisory dossiers — NO greenwashing score/label. --dry-run / --to-neo4j)
+src/step07b_enrich_dossiers.py          → patches the step07 dossiers in place (idempotent)     (step 6c)
+   (offline, NO LLM/DB: softmax over three evidence-balance components → assessment_scores
+    {contradicted, supported, abstain} + score_components + score_disagrees_with_assessment,
+    written back into <ticker>_claim_assessments.json. This is NOT a greenwashing
+    probability (SYSTEM_DESIGN §1.1 — no ground truth); the categorical `assessment` stays
+    the primary output. Deterministic over the frozen dossier, so it never needs the paid
+    step07 re-run. The `signals` terms (lam_struct/lam_kpi/lam_bp) contribute 0 until the
+    generator in docs/CROSSCHECK_EXPANSION.md lands — safe to run today. Consumed by
+    step08 + step09. Read docs/SOFTMAX_SCORING.md before touching the formula; beta0 is a
+    design decision, not a fitted parameter. --dry-run, --calibrate, --bin-confidence, --params)
 src/step08_sync_crosscheck_to_neo4j.py  → Neo4j advisory layer                                        (step 6b)
    (NO LLM — reuses the paid step-6 dossier. MERGEs assessment/caveats/signals onto claim nodes +
     llm_supports / llm_contradicts / llm_flagged_support evidence edges (incl. KPI contradictions
@@ -203,6 +279,18 @@ QĐ 2171, QCVN 09, SSC-IFC guide) and extract them **verbatim** into
 `kpi_definitions_construction.json` (35 KPIs, each carrying a `source` block). This file
 is the controlled KPI vocabulary consumed by stage C's KPI extractor. It rarely needs
 rebuilding; treat it as generated data.
+
+**E. ESG Evidence View UI (`api/` + `frontend/`) — the demo surface**
+`api/main.py` is a **pure–standard-library `http.server`** (deliberately no FastAPI/Flask,
+to dodge framework version mismatches) that serves the REST endpoints and the static
+`frontend/` on `http://localhost:8000`. All data access lives in `api/evidence_service.py`,
+which reads **live Neo4j** (the step06 base graph + the step08 advisory layer) — the mock
+data is gone and **Neo4j is REQUIRED**; the query helpers raise `RuntimeError` if it is
+unreachable. Only claims carrying an `alignsWithIndicator` edge are shown, so each card's
+E/S/G pillar comes from the linked `StandardIndicator.pillar` rather than being guessed.
+The frontend (`index.html` + `css/style.css` + `js/app.js`) is intentionally frozen:
+per `docs/REAL_DATA_INTEGRATION_GUIDE.md`, data-source changes belong in
+`evidence_service.py` only. See `docs/ESG_EVIDENCE_VIEW.md`.
 
 ## The graph schema (`config/schema.json`)
 
@@ -272,6 +360,7 @@ docker compose up -d                                                 # start Neo
 python src/step06_load_graph_to_neo4j.py --clear                            # → Neo4j (wipe + load; needs the instance running)
 python src/step07_crosscheck_claims_vs_conduct.py --dry-run                 # step 6: preview claim↔conduct pairs (runs LLM, writes nothing)
 python src/step07_crosscheck_claims_vs_conduct.py                           # → graph_output/crosscheck/ (advisory dossiers + linking edges)
+python src/step07b_enrich_dossiers.py --dry-run                            # step 6c: softmax evidence-balance scores (then run without --dry-run; offline, no LLM)
 python src/step08_sync_crosscheck_to_neo4j.py                              # step 6b: push dossiers into Neo4j advisory layer (no LLM)
 python src/step09_report_claim_ledger.py                                   # step 7: render the AAA claim ledger FROM Neo4j (no LLM)
 python src/step09_report_claim_ledger.py --review-queue --markdown         #   contradiction-no-verification queue + Markdown file
@@ -291,14 +380,16 @@ python api/main.py                                                         # 3-c
 #   claim→indicator LLM (step05d): --max-llm-pairs, --openai-model, --dry-run;
 #   resolve: --no-llm (Stages A+B.1 only), --standards-registry, --similarity-threshold, --max-llm-pairs;
 #   load: --clear (wipe first), --no-versions (canonical only), --database, --strict (env: NEO4J_URI/USER/PASSWORD);
-#   crosscheck: LLM adjudication is mandatory (no --no-llm); --max-llm-pairs, --provider-order gemini,openai, --to-neo4j;
+#   crosscheck: LLM adjudication is mandatory (no --no-llm); --max-llm-pairs, --provider-order (default openai), --to-neo4j;
+#   softmax scores (step07b): --dry-run, --calibrate (grid over tau/beta1/w_max), --bin-confidence, --params '{"tau":0.75}';
 #   sync (step08_sync_crosscheck_to_neo4j.py): --clear-advisory, --dry-run;
 #   ledger (step09_report_claim_ledger.py, Neo4j-only): --review-queue, --assessment, --claim-id, --limit, --markdown;
 #   evaluate (step10_evaluate.py): --coverage, --case-studies, --ablation, --no-llm (only the 30-case arm costs money)
 ```
 
-No pytest harness or linter is configured. The one automated check is a plain assert
-script covering the P3/P4 Phase-0 temporal logic, the step05b provenance matching, and the
+No pytest harness or linter is configured — tests are plain assert scripts under `test/`
+(see the TDD working rule above; new code adds new files here, test-first). The existing
+check covers the P3/P4 Phase-0 temporal logic, the step05b provenance matching, and the
 indicator-axis stages (step03c/step05c/step08) — run it from the repo root after touching
 step03/step03b/step03c/step05/step05b/step05c/step08:
 
@@ -308,6 +399,10 @@ python test/test_temporal_invariants.py    # offline, no LLM/DB; asserts date ca
                                            # provenance tier matching + node-order invariant,
                                            # kpi_id canonicalization, indicator-axis edge minting,
                                            # and step08 stable-id (claim_id) resolution
+python test/test_esg_kg_equivalence.py     # refactor safety net: imports BOTH src/ and
+                                           # src_module/esg_kg, runs them on the real
+                                           # schema/corpus, asserts equal. Run after ANY
+                                           # edit to a src/ helper that has a core/ twin.
 ```
 
 The rest of `test/` and `notebooks/` are Jupyter notebooks for manual validation
@@ -323,16 +418,18 @@ ground-truth labels exist). The rest of `docs/` holds per-stage design notes wor
 before modifying a stage:
 `SCHEMA_EXPLAINED.md`, `TEMPORAL_KG_DESIGN.md` (the 8 temporal-KG design principles
 P1–P8 + the Q1–Q8 quality attributes measured by step00 — read before touching the
-schema, step02 prompts, step03, or step05), `SSRL_REASONING_LAYER.md` (the proposed
-path-reasoning layer, steps 11–13 — not yet built; P5/P6/P8 constraints for it live in
-its §4.6/§4.7/§5.3/§7.2), `KPI_EXTRACTION_FROM_JSONL.md`, `TRIPLET_EXTRACTION_FROM_JSONL.md`,
+schema, step02 prompts, step03, or step05), `KPI_EXTRACTION_FROM_JSONL.md`, `TRIPLET_EXTRACTION_FROM_JSONL.md`,
 `TRIPLET_VALIDATION.md`, `PROVENANCE_PATCH.md` (step 5b — offline source_doc/source_page
 stamping of the resolved graph so the UI/ledger can cite report page + article title),
 `ENTITY_RESOLUTION.md` (step 4 — why it's a redesign, not a port),
 `GRAPH_LOAD_NEO4J.md` (step 5 — Neo4j load; also a redesign),
 `CLAIM_CONDUCT_CROSSCHECK.md` (step 6 — claim↔conduct cross-check, the analytical core),
 `CLAIM_LEDGER.md` (step 6b sync + step 7 — dossier → Neo4j advisory layer, then the Neo4j-only claim ledger + analyst Cypher),
+`SOFTMAX_SCORING.md` (step 6c — the evidence-balance formula, its parameters, and why it
+is explicitly not a greenwashing probability; read before changing step07b),
 `ESG_EVIDENCE_VIEW.md` (the 3-column TT96/GRI evidence-view UI, `api/` + `frontend/` — how to run the demo),
+`REAL_DATA_INTEGRATION_GUIDE.md` (Vietnamese — the mock→live-Neo4j swap for that UI; the
+rule that only `api/evidence_service.py` changes, never the frontend),
 `EVALUATION.md` (step 8 / P6 — why evaluation measures the linking machinery, not
 greenwashing accuracy; the four methods and their costs),
 `ENTITY_RESOLUTION_IMPROVEMENT.md` (Vietnamese — proposal to use graph structural
@@ -342,3 +439,13 @@ signatures to auto-resolve step-4's lexically ambiguous `needs_review` cases),
 `crawl_data/crawler_news.py`, not the documented `esg_news_crawler/` pipeline). The root
 `ENTITY_RESOLUTION_PLAN.md` is the step-4 engineering checklist. `README.md` (root),
 `esg_news_crawler/README.md`, and `kpi_build/README.md` cover their respective subsystems.
+
+**Proposals, not implementations** (pre-defence-1 improvement plan — don't read them as
+descriptions of existing code): `CROSSCHECK_EXPANSION.md` (Vietnamese — the `signals`
+generator, graph-routed evidence retrieval, and the D1 finding that `kpi_gap` /
+`structural_contradiction` are currently *ghost* signals step07 never writes) and
+`BERT_NER_GRAPH_QUALITY.md` (Vietnamese — decision analysis: local CPU sentence-embeddings
+to replace the billing-blocked `gemini-embedding-001` in step05, underthesea NER for news
+anchoring; explicitly rejects fine-tuning a greenwashing classifier, since no labels exist).
+`docs/SSRL_REASONING_LAYER.md` is referenced by `TEMPORAL_KG_DESIGN.md` but **is not in the
+repo** — the path-reasoning layer (steps 11–13) is unbuilt and its design doc is missing.
