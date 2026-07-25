@@ -116,6 +116,18 @@ Non-negotiable rules while this is in flight:
   (step04 → step03 → step02 → step01).
 - Extract helpers **verbatim**. Behaviour changes and refactoring are separate commits.
 
+**Goal of the refactor: `esg_kg` must be able to rebuild the graph from scratch — including
+for AAA** (DESIGN.md §5.4, decided 2026-07-26). So **"it would change `identity_keys` /
+node order / invalidate the paid dossiers" is NOT a veto any more** — it is a scheduled
+cost. When a refactor touches a mechanism whose correct fix belongs at an earlier stage,
+**canonicalize it there** instead of preserving the later patch; keep a late patch only
+under E2/E3 (those are about *information*, which a re-extraction cannot recover). E1
+patches (`anchor_method`, `provenance_method`, step03c's `kpi_id`) now have an expiry date.
+Two things do not relax: §5.3 still applies (a canonicalization is a behaviour change → its
+own commit, **both trees**, red-first test), and the re-extraction is a deliberate one-time
+decision — **deterministic `claim_id` (GitHub issue #2) must land first**, or step08's tier-1
+resolution misses silently. Until that run happens, `src/` is still the live pipeline.
+
 State: `core/` has `paths` (marker-based `REPO_ROOT`), `schema`, `naming`, `dates`, all
 covered by `test/test_esg_kg_equivalence.py`. **`step00` is the first migrated STAGE**
 (`esg_kg/report/quality.py`) — with it the run convention is settled: `src_module/run.py`
@@ -129,8 +141,10 @@ comparing all 5,214 real KPIObservation occurrences across both trees. Next: `st
 **`step07b` is deliberately NOT being ported** (DESIGN.md §4.1): the delivered surface is
 the `frontend/`+`api/` UI, which never reads its softmax scores, so `pipeline.py` carries
 it as `new_module=None` and `run.py --list` shows `(not ported)` and drops it from the
-denominator. It is NOT deleted — `src/step07b_enrich_dossiers.py` still runs, and the
-scores are already frozen into the pinned dossier either way.
+denominator. It is NOT deleted — `src/step07b_enrich_dossiers.py` still runs, and both
+consumers tolerate the scores being absent (step08 sets null, step09 skips the block). After
+the planned re-extraction the new dossiers start without scores; run that script by hand if
+you want them back — that is not a reason to port it.
 Known debt: `src/step00_graph_quality_report.py` still exists, so the T1/T2/T3 tier map that
 `test/test_schema_contract.py` imports lives in two trees — cleanup commit spelled out in
 `src_module/esg_kg/DESIGN.md` §6.1.

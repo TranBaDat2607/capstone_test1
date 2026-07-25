@@ -202,16 +202,30 @@ quả**. Ba trường `assessment_scores` / `score_components` /
   nguyên vẹn. Xoá nó là *thay đổi hành vi*, phải theo §5.3, và không có lợi ích gì
   bù lại rủi ro sửa đường đọc trong step08/step09 sát hạn bảo vệ.
 - ❌ **Không dọn dữ liệu.** 1093/1093 claim trong
-  `graph_output/crosscheck/aaa_claim_assessments.json` đã có sẵn `assessment_scores`,
-  và file đó nằm trong snapshot HF đã pin ở `data_version.json`. Bỏ stage **không**
-  làm mất field; step08 vẫn đẩy lên Neo4j, step09 vẫn in. Muốn con số biến mất khỏi
-  output thì sửa ở tầng trình bày, không phải ở đây.
+  `graph_output/crosscheck/aaa_claim_assessments.json` đã có sẵn `assessment_scores`.
+  Bỏ stage **không** làm mất field trên dossier hiện có; step08 vẫn đẩy lên Neo4j,
+  step09 vẫn in. Muốn con số biến mất khỏi output thì sửa ở tầng trình bày, không
+  phải ở đây.
+
+  ⚠️ **Sửa 2026-07-26 (§5.4).** Bản trước còn viện thêm *"và file đó nằm trong snapshot
+  HF đã pin ở `data_version.json`"* như thể điểm số đã đóng băng vĩnh viễn. **Căn cứ đó
+  hết hiệu lực**: sau lần trích lại theo kế hoạch, step07 sinh dossier MỚI và
+  `assessment_scores` biến mất khỏi đó. Quyết định không port **vẫn đứng vững** vì căn
+  cứ chính không hề dựa vào snapshot — UI không đọc (grep 0 kết quả) và **cả hai
+  consumer đều chịu được khi thiếu** (`step08:159,169-172` set null; `step09:268-274`
+  `if scores:` bỏ qua). Hệ quả thật sau lần trích lại chỉ là: con số vắng mặt trong
+  Neo4j/ledger cho tới khi ai đó chạy tay `python src/step07b_enrich_dossiers.py` —
+  rẻ, offline, idempotent, và đó chính là lý do KHÔNG xoá file đó khỏi `src/`.
 
 **Điều kiện đảo ngược.** Nếu `signals` generator trong `docs/CROSSCHECK_EXPANSION.md`
 được xây (lúc đó `lam_struct`/`lam_kpi`/`lam_bp` mới khác 0 — hiện chúng đóng góp
 đúng 0), hoặc nếu cần lại cờ `score_disagrees_with_assessment` như hàng đợi review
 (66/1093 claim mà argmax mâu thuẫn với nhãn LLM), thì dời `None` → module path và
 làm theo quy trình bước 3 bình thường.
+
+Lưu ý: **muốn có lại điểm số sau lần trích lại KHÔNG phải là điều kiện đảo ngược** —
+chạy tay `src/step07b_enrich_dossiers.py` trên dossier mới là đủ. Chỉ port khi stage
+này trở thành thứ có người tiêu thụ thường xuyên.
 
 Bảng stage được canh bởi `test/test_pipeline_table.py`: một stage `None` **bắt buộc**
 phải có note nói rõ "not ported", và `--list` không được phép hiển thị nó như "chưa dời".
@@ -319,6 +333,55 @@ chạy thật (`src/`) chứ không nằm chờ trong `esg_kg`.
 
 Arm tương đương của một symbol chỉ được **khai tử khi bản sinh đôi trong `src/`
 bị xoá**, không sớm hơn.
+
+### 5.4 Corpus AAA SẼ được trích lại — chuẩn hoá ngay trong lúc refactor (chốt 2026-07-26)
+
+**Mục tiêu của refactor không chỉ là dời code, mà là để chạy lại pipeline từ đầu — kể cả
+với AAA.** Cây `esg_kg` phải là thứ dựng lại được toàn bộ đồ thị từ JSONL đã gán nhãn, chứ
+không phải một bản chép đẹp hơn của các bản vá tích tụ quanh một snapshot đóng băng.
+
+Hệ quả trực tiếp: **"làm vậy sẽ đổi `identity_keys` / đổi thứ tự node / hỏng dossier đã trả
+tiền" KHÔNG còn là quyền phủ quyết.** Nó tụt xuống thành **chi phí phải lên lịch**. Trước
+2026-07-26 nó là lý do để chọn phương án vá bù; từ nay nó không còn là lý do đó nữa.
+
+**Luật quyết định (thay cho mặc định cũ):**
+
+> Khi refactor chạm tới một cơ chế mà bản sửa đúng nằm ở stage sớm hơn, **hãy đưa nó về
+> stage sớm đó**. Chỉ giữ lại bản vá ở stage sau khi nó thuộc **E2 hoặc E3** (§5.1) — hai
+> ngoại lệ này nói về *thông tin*, nên trích lại corpus không xoá được chúng.
+> **E1 thì khác hẳn**: E1 tồn tại *chỉ vì* dữ liệu cũ không trích lại được. Điều kiện khai
+> tử của E1 — *"gỡ được khi corpus được trích lại"* — nay là **một sự kiện đã lên lịch**,
+> không còn là giả định xa vời.
+
+**Những gì luật này lật lại trong chính tài liệu này:**
+
+| Chỗ | Trước | Từ 2026-07-26 |
+|---|---|---|
+| §5.2.1 "đường tiến hoá đúng": dạy `step01` sinh thẳng `kpi_id` | ghi lại để khỏi quên, chưa làm | **nằm trong phạm vi** — làm được thì làm; step03c tụt xuống E1 thuần rồi khai tử cùng lần trích lại |
+| step03b `anchor_method`, step05b `provenance_method` (E1) | vá vĩnh viễn | vá **có hạn sử dụng** — sau lần trích lại, phần dữ liệu cũ hết lý do tồn tại |
+| Tên `Standard`/`Regulation` (ca step04b, phát hiện 2026-07-26) | không đụng vì `identity_keys=['name']` → đổi thứ tự node → hỏng dossier | **chuẩn hoá ở step03** bằng alias map tĩnh; neo Stage A.3 của step05 còn lại chỉ là lưới an toàn |
+| Bất kỳ đề xuất nào bị bác vì "phải re-run step02/step05" | bác | cân nhắc lại theo chi phí, không bác thẳng |
+
+**Điều kiện tiên quyết phải xong TRƯỚC lần trích lại** (không phải rào cản để bàn thiết kế,
+nhưng là rào cản để bấm nút):
+
+1. **`claim_id` phải tất định** — dựng từ `(source_doc, source_page, sentence_index)` thay vì
+   để LLM tự đặt (GitHub issue #2). Không có cái này thì step08 miss tier-1 **âm thầm**,
+   không exception, và 209 evidence item đã trả tiền mất chỗ bám. Đây là món đầu tiên trong
+   danh sách, không phải món cuối.
+2. **Kế toán chi phí lần trích lại**: step01 + step02 (LLM, toàn corpus) + step07 (LLM, bắt
+   buộc). step05 hiện chạy `--no-llm` nên không tính.
+3. **Chụp `step00 --label` trước và sau**, rồi `data_sync.py push` + commit lại
+   `data_version.json` trong cùng một lần ngồi (CLAUDE.md) — nếu không, snapshot mới vô hình
+   với cả nhóm.
+
+**Vẫn giữ nguyên, không được nới:**
+
+- **§5.3 vẫn có hiệu lực.** Chuẩn hoá là *thay đổi hành vi* ⇒ commit riêng, sửa **cả hai
+  cây**, kèm test hành vi đã đỏ trước. Không bao giờ nhét vào commit "dời nguyên văn".
+- **Trích lại là một quyết định có chủ ý, không phải tác dụng phụ.** Không stage nào được tự
+  ý làm mất hiệu lực dossier hiện có giữa chừng; việc đó xảy ra đúng một lần, có kế hoạch.
+- Cho tới lúc đó, `src/` vẫn là pipeline chạy thật và dossier hiện có vẫn là bản giao.
 
 ## 6. Lưới an toàn & mắt xích yếu
 

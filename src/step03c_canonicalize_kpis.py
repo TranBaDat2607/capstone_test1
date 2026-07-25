@@ -9,12 +9,17 @@ rest arrive as free text ("Tiêu hao điện năng cho sản xuất", "Male empl
 same facts under a different name, and without a canonical code they cannot be joined to the
 indicator axis that step05c builds. This stage assigns that code.
 
-THE ONE INVARIANT THAT MATTERS HERE
-It writes a NEW property `kpi_id` and NEVER rewrites `kpi_type`. `kpi_type` is part of
-KPIObservation.identity_keys (config/schema.json), so rewriting it would change node identity,
-which would re-cluster step05, which would renumber the resolved node array — and the step07
-dossiers reference nodes by array position. Adding a non-identity property leaves step05's
-DSU untouched, so the node order (and therefore every paid dossier) survives.
+WHY IT ADDS `kpi_id` INSTEAD OF REWRITING `kpi_type`
+It writes a NEW property `kpi_id` and NEVER rewrites `kpi_type`. The reason is provenance, not
+convenience: `kpi_type` is the RAW wording the extractor read off the page, `kpi_id` is the
+canonical code it maps to. Overwrite the raw value and a wrong mapping can never be traced back
+to what the report actually said. That reason holds however often the corpus is re-extracted.
+
+Secondary, and NO LONGER a constraint: `kpi_type` sits in KPIObservation.identity_keys
+(config/schema.json), so rewriting it would re-cluster step05 and renumber the resolved node
+array, which the step07 dossiers index positionally. That used to be the headline reason here.
+It is not any more — a full re-extraction including AAA is a planned goal of the refactor, so
+node-order churn is a scheduled cost rather than a veto (src_module/esg_kg/DESIGN.md §5.4).
 
 PRECISION OVER RECALL
 ~85% of the unmapped tail is purely financial ("Lợi nhuận sau thuế", unit VND). Those are not
