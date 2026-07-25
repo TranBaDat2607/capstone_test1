@@ -101,9 +101,13 @@ Vì vậy ta **không rewire `src/`**. Thay vào đó:
    *Đã xong, verify: `REPO_ROOT` neo đúng repo thật dù ở sâu 3 cấp.*
 2. ⏳ **Phần còn lại của `core/`** (theo số importer):
    - ✅ `core/schema.py` — `load_schema_sets`, `validate_triple`, `get_identity_keys`.
-     *Verify byte-equivalent với `src/` gốc trên schema thật + 506 case validate.*
-   - `core/naming.py` — `normalize_name`, `name_tokens`, `merge_preserving_edits` (6 file)
-   - rồi `io_jsonl`, `dates`, `identity`, `text` (dedupe `node_text`), `llm`.
+   - ✅ `core/naming.py` — `normalize_name`, `name_tokens`, `merge_preserving_edits` (6 file).
+     `issuer_core_tokens`/`GENERIC_TOKENS` **ở lại** step04 (không ai khác import).
+   - Cả hai verify bằng `test/test_esg_kg_equivalence.py` (§5), chạy trên schema
+     thật + 5000 triple thật + 242 tên Organization thật.
+   - rồi `io_jsonl`, `dates`, `identity`, `text`, `llm`.
+     ⚠️ `text`: hai `node_text` **KHÔNG phải bản trùng** — `step05d:63` nhận *props dict*,
+     `step07:133` nhận *node* rồi rẽ nhánh theo class. Chuyển cả hai, giữ tên riêng.
 3. **Các stage LÁ** (không ai import): step00, step03c, step04b, step05, step05b,
    step05d, step06, step07b, step08, step09, step10, data_sync — chuyển an toàn,
    không làm gãy downstream. Đây là lúc đầu tiên `import` trỏ sang `esg_kg.core`.
@@ -112,8 +116,13 @@ Vì vậy ta **không rewire `src/`**. Thay vào đó:
 
 ## 5. Lưới an toàn & mắt xích yếu
 
-- **Test tương đương old-vs-new** là lưới chính khi xây `core/` (§4): pipeline cũ
-  không đổi nên chỉ cần chứng minh bản mới bằng hệt bản cũ.
+- **`test/test_esg_kg_equivalence.py`** là lưới chính khi xây `core/` (§4): pipeline cũ
+  không đổi nên chỉ cần chứng minh bản mới bằng hệt bản cũ. Import cả hai cây, chạy
+  trên input thật, assert bằng nhau. Offline (không LLM/Neo4j/mạng); arm nào cần
+  `graph_output/` (git-ignored, ship qua HF) sẽ SKIP có thông báo trên bare clone.
+  **Mỗi module `core/` mới phải thêm arm vào đây TRƯỚC khi trích** (xem quy tắc TDD
+  trong CLAUDE.md). Đã mutation-check: sửa lệch `SYNONYMS`/`LEGAL_FORMS` ở một cây
+  bị bắt bởi 3 arm.
 - `test/test_temporal_invariants.py` import theo **bare-module** (`from step03_...`).
   Nó vẫn xanh trong suốt giai đoạn `core/` (vì `src/` không đổi). Chỉ khi tới bước
   3–4 (dời stage) mới cần cập nhật import của nó **đồng bộ** với mỗi lần chuyển.
