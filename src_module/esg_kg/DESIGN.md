@@ -226,7 +226,9 @@ ngoại lệ nào ngay trong docstring của stage:
 - **E3 — Stage sớm cố ý giữ lại bất định thay vì đoán bừa.** Khi ấy stage sau xử
   lý `None`/cờ nghi ngờ là **tôn trọng hợp đồng**, không phải vá bù.
 
-Không thuộc E1/E2/E3 ⇒ sửa ngược lên stage sớm, không thêm code phòng thủ.
+Không thuộc E1/E2/E3 ⇒ sửa ngược lên stage sớm, không thêm code phòng thủ — **trừ khi
+stage sau không hề đang vá bù mà đang làm một việc khác về bản chất** (§5.2.1). Hỏi trước:
+*đây có thật là dọn hậu quả của stage trước không?* Nếu không, đừng ép nó vào E1/E2/E3.
 
 ### 5.2 Phân loại hiện trạng `src/` (quét ngày 2026-07-25)
 
@@ -234,13 +236,57 @@ Không thuộc E1/E2/E3 ⇒ sửa ngược lên stage sớm, không thêm code p
 |---|---|---|
 | step03b anchor KPI→Facility | **E1** | step02 prompt đã sinh `observedAtFacility` cho extraction mới (step02:181,191,224,281); step03b chỉ vá dữ liệu đã trả tiền, gắn `anchor_method="offline_gazetteer"` |
 | step05b stamp provenance | **E1** | step02:555–572 tự stamp `provenance_method="extraction"`; step05b:29 bỏ qua node đã có |
-| step03c gán `kpi_id` | **E2** | không làm ở step01 được: `kpi_type` nằm trong `identity_keys`, ghi đè sẽ đổi thứ tự node và phá dossier step07 đã trả tiền |
+| step03c gán `kpi_id` | **KHÔNG phải vá bù** — mối quan tâm riêng, xem §5.2.1 | ~~E2~~ *(phân loại cũ sai, sửa 2026-07-25)* |
 | step05c trục chỉ số | **E2** | cần đồ thị đã resolve |
 | step05:392 `date_start_key(...) or str(...)` | **E3, hợp lệ** | step03 cố ý trả `("Q2 2023", False)` giữ nguyên thay vì bịa ngày; step05 buộc phải xử lý `None`, nếu không mọi ngày không parse được sẽ gộp thành một version |
 | **step04:428 sniff `{nodes,edges}`** | **VI PHẠM** | step03 luôn ghi `List[Dict]` (step03:545,622); file thật là list 14 677 phần tử; step05 đọc đúng file đó mà không sniff. Nhánh này là **code chết giả vờ có bất định** → xoá khi dời step04, đọc theo đúng một hợp đồng |
 
 Kết luận: nguyên tắc này thực ra đã được tuân thủ gần như toàn bộ, nhưng chưa từng
 được viết ra — nên nó đang được giữ bằng trí nhớ. Bảng trên là chỗ ghi chính thức.
+
+### 5.2.1 Loại thứ tư: "mối quan tâm riêng" (không cần ngoại lệ nào)
+
+§5.1 viết như thể mọi stage-sau-xử-lý đều là *vá bù*, và không thuộc E1/E2/E3 thì phải
+đẩy ngược lên stage sớm. Thiếu một khả năng: stage sau có thể đang làm **một việc khác
+về bản chất**, không phải dọn hậu quả của ai cả. Khi đó không cần ngoại lệ, và đẩy ngược
+lên stage sớm là làm hỏng thiết kế.
+
+`step03c` là ca đó. Phân loại **E2 cũ là sai**, với hai lỗi:
+
+1. Căn cứ cũ ("`kpi_type` nằm trong `identity_keys`") giải thích vì sao step03c **ghi
+   property mới thay vì đè `kpi_type`** — nó không nói gì về việc *gán ở stage nào*. Nếu
+   step01 sinh thẳng `kpi_id` lúc trích thì node sinh ra đã có mã, **không hề có vấn đề
+   thứ tự node**. Căn cứ đúng cho một câu hỏi khác.
+2. E2 đòi "stage sớm về cấu trúc không thể biết" — sai thực tế: `step01:221` đã nhét
+   nguyên `KPI_DEFINITIONS` vào prompt và `step01:214` bảo LLM tự gán. Step01 **biết**,
+   chỉ là gán kém (488/5214 ≈ 9,4% ra được mã).
+
+Căn cứ thật để tách stage: **map từ vựng là hàm tất định, không được nhốt trong một lời
+gọi bất định.**
+
+| | step01 | step03c |
+|---|---|---|
+| Bản chất | đọc hiểu văn bản | tra từ điển |
+| Tính chất | LLM, bất định, trả phí | thuần, tất định, miễn phí |
+| Chạy lại | trả tiền lại, kết quả có thể khác | vài giây, `--dry-run`, luôn ra đúng thế |
+| Truy vết | "vì sao LLM chọn TT96-6.6.1?" → không trả lời được | `kpi_id_method` ghi rõ tier đã kích hoạt |
+
+Thêm nữa `config/kpi_type_aliases.json` là **vật sống**, được nuôi từ chính danh sách
+`no_match` trong file stats. Nhốt việc map vào step01 nghĩa là mỗi lần thêm một bí danh
+phải trích lại toàn bộ corpus bằng LLM.
+
+**Đường tiến hoá đúng** (chưa làm, ghi lại để không quên): dạy `step01` sinh thẳng
+`kpi_id` khi chắc chắn — lúc đó step03c tụt xuống thành **E1 thuần** ("bản sửa thật đã ở
+stage sớm, stage sau chỉ vá dữ liệu đã đóng băng"), kèm điều kiện khai tử *"gỡ được khi
+corpus được trích lại"*. Đúng khuôn mẫu step02→step03b (`anchor_method`) và
+step02→step05b (`provenance_method`) đã dùng.
+
+✅ **Đã làm 2026-07-25:** `kpi_id_method` được stamp lên từng node
+(`step03c:242`), đáp ứng yêu cầu "bắt buộc đánh dấu phương pháp trên chính dữ liệu" của
+§5.1 mà stage này đang thiếu. Quan trọng nhất là nó tách `rejected_unit` (2913 — cố ý từ
+chối KPI tài chính) khỏi `no_match` (1368 — lỗ hổng từ điển, tức việc cần làm); trước đó
+cả hai đều là `kpi_id: null` và không phân biệt được, nên 1368 ca đáng sửa bị chôn trong
+đống nhiễu gấp đôi. Canh bởi `test_step03c_stamps_the_rule_that_decided_each_kpi_id`.
 *(Ghi nhận: `load_triples()` trong `test/test_esg_kg_equivalence.py` cũng đang sniff
 kiểu tương tự — chấp nhận được cho test harness, nhưng siết lại khi step04 được dời.)*
 

@@ -22,6 +22,16 @@ missing ESG mappings, they are correctly-excluded noise: `reject_units` in
 config/kpi_type_aliases.json blocks them outright. Unmatched nodes keep `kpi_id = null` and are
 listed in the stats file so the alias dictionary can be grown deliberately.
 
+WHICH RULE DECIDED — `kpi_id_method`, stamped on every node
+A null `kpi_id` is ambiguous on its own: `rejected_unit` means we deliberately refused a
+financial KPI, `no_match` means the alias file has a hole. Only the second is a backlog
+item, and on the AAA corpus they are 2913 vs 1368 — so without the stamp the real work is
+buried in noise three times its size. The same property makes a wrong `measuredUnder` edge
+traceable back to the tier that minted it (`alias_exact` is curated, `fuzzy_NN` is a guess).
+Values: kpi_type | alias_exact | official_name | alias_contains | fuzzy_NN | rejected_unit |
+unit_mismatch | no_title | no_match. Marking the method on the data is required by
+src_module/esg_kg/DESIGN.md §5.1 — cf. step03b's `anchor_method`, step05b's `provenance_method`.
+
 Also does (same pass, same file, both offline):
   * `unit_normalized` / `value_normalized` — canonical unit spelling, and value rescaled to a
     base unit when a conversion factor is known (nghìn m3 → m³, MWh → kWh).
@@ -240,6 +250,14 @@ def canonicalize_kpis(triples: List[Dict[str, Any]], matcher: Matcher) -> Dict[s
             ind, method = matcher.match(props.get("title"), unit_norm)
 
         props["kpi_id"] = ind
+        # WHICH rule decided, stamped on the node itself (DESIGN.md §5.1, as step03b does
+        # with anchor_method and step05b with provenance_method). Two things need it:
+        # a wrong measuredUnder edge must be traceable back to the tier that minted it,
+        # and — more importantly — a null kpi_id is ambiguous without it. `rejected_unit`
+        # (a financial KPI we deliberately refused) and `no_match` (a hole in the alias
+        # file, i.e. real work) are indistinguishable on the node otherwise, and only the
+        # second is a backlog item.
+        props["kpi_id_method"] = method
         if unit_norm:
             props["unit_normalized"] = unit_norm
         base_val, base_unit = rescale_value(props.get("value"), raw_unit, matcher.unit_scales)

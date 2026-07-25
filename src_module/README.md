@@ -28,6 +28,11 @@ băng, bản sửa thật đã ở stage sớm), **E2** (stage sớm về cấu 
 trong docstring của stage. Bảng phân loại hiện trạng `src/` + trường hợp vi phạm đã
 tìm thấy: DESIGN.md §5.1–5.2.
 
+Hỏi trước khi phân loại: *stage sau có thật đang dọn hậu quả không?* Nếu nó đang làm
+**một việc khác về bản chất** (vd `step03c`: tra từ điển tất định, tách khỏi lời gọi
+LLM bất định của `step01`) thì không cần ngoại lệ nào, và ép nó ngược lên stage sớm là
+làm hỏng thiết kế — DESIGN.md §5.2.1.
+
 ## Cách chạy
 
 ```bash

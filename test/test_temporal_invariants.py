@@ -249,7 +249,9 @@ def test_step02_stamp_provenance():
 # --------------------------------------------------------------------------- #
 import json  # noqa: E402
 
-from step03c_canonicalize_kpis import Matcher, backfill_goal_target_date  # noqa: E402
+from step03c_canonicalize_kpis import (  # noqa: E402
+    Matcher, backfill_goal_target_date, canonicalize_kpis,
+)
 from step03_fix_invalid_triplets import load_schema_sets  # noqa: E402
 from step05c_link_standard_indicators import (  # noqa: E402
     GraphPatch, doc_key_for, match_keyword, build_keyword_index,
@@ -274,6 +276,60 @@ def test_step03c_matcher_rejects_financial_and_keeps_kpi_type():
     assert ind is None and method == "rejected_unit", (ind, method)
     # an already-standard code is passed through unchanged (never re-derived)
     assert "TT96-6.6.1" in {d["id"] for d in _DEFS}
+
+
+def _kpi_triple(props):
+    return {"subject": {"class": "KPIObservation", "properties": props},
+            "predicate": "reportsKPI",
+            "object": {"class": "Organization", "properties": {"name": "X"}}}
+
+
+def test_step03c_stamps_the_rule_that_decided_each_kpi_id():
+    """Every KPIObservation must carry HOW its kpi_id was decided, on the node itself.
+
+    Without it a wrong measuredUnder edge cannot be traced back to the rule that minted
+    it, which is exactly what Matcher's docstring promises — and DESIGN.md §5.1 requires
+    the method to be marked on the data (cf. anchor_method, provenance_method).
+    """
+    triples = [
+        _kpi_triple({"title": "Male employees", "unit": "người", "value": 775}),
+        _kpi_triple({"kpi_type": "TT96-6.6.1", "title": "Tổng số lao động",
+                     "unit": "người", "value": 500}),
+        _kpi_triple({"title": "Lợi nhuận sau thuế", "unit": "tỷ đồng", "value": 4.8e10}),
+        _kpi_triple({"title": "Zzz khong co trong tu dien nao ca", "unit": "cái",
+                     "value": 1}),
+    ]
+    canonicalize_kpis(triples, Matcher(_DEFS, _ALIASES))
+    got = [t["subject"]["properties"] for t in triples]
+
+    for p in got:
+        assert "kpi_id_method" in p, f"no kpi_id_method stamped on {p.get('title')!r}"
+
+    assert got[0]["kpi_id"] and got[0]["kpi_id_method"] == "alias_exact", got[0]
+    # a code step01 already emitted is passed through, and says so
+    assert got[1]["kpi_id"] == "TT96-6.6.1" and got[1]["kpi_id_method"] == "kpi_type", got[1]
+
+    # THE POINT: both of these end up kpi_id=None, but they mean opposite things —
+    # one is a deliberate refusal (financial KPI), the other a gap in the alias file.
+    assert got[2]["kpi_id"] is None and got[2]["kpi_id_method"] == "rejected_unit", got[2]
+    assert got[3]["kpi_id"] is None and got[3]["kpi_id_method"] == "no_match", got[3]
+    assert got[2]["kpi_id_method"] != got[3]["kpi_id_method"], \
+        "refused and failed are indistinguishable on the node"
+
+    # identity is untouched: kpi_type is in identity_keys, so stamping must not disturb it
+    assert "kpi_type" not in got[0], "stamping invented a kpi_type where step01 emitted none"
+    assert got[1]["kpi_type"] == "TT96-6.6.1", "stamping rewrote kpi_type (breaks node order)"
+
+
+def test_step03c_stamp_is_idempotent():
+    """Re-running over an already-stamped file must not change any decision."""
+    triples = [_kpi_triple({"title": "Male employees", "unit": "người", "value": 775}),
+               _kpi_triple({"title": "Lợi nhuận sau thuế", "unit": "tỷ đồng", "value": 1})]
+    canonicalize_kpis(triples, Matcher(_DEFS, _ALIASES))
+    first = [dict(t["subject"]["properties"]) for t in triples]
+    canonicalize_kpis(triples, Matcher(_DEFS, _ALIASES))
+    second = [t["subject"]["properties"] for t in triples]
+    assert first == second, f"second pass changed the nodes:\n{first}\n{second}"
 
 
 def test_step03c_goal_backfill_future_only():
