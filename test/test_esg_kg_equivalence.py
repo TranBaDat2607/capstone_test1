@@ -31,12 +31,14 @@ sys.path.insert(0, str(REPO / "src_module"))
 # --- old: the flat src/ scripts ------------------------------------------------
 import step00_graph_quality_report as old_step00  # noqa: E402
 import step01_extract_kpi_from_jsonl as old_step01  # noqa: E402
+import step03c_canonicalize_kpis as old_step03c  # noqa: E402
 import step02_extract_triplet_from_jsonl as old_step02  # noqa: E402
 import step03_fix_invalid_triplets as old_step03  # noqa: E402
 import step04_build_issuer_registry as old_step04  # noqa: E402
 
 # --- new: the esg_kg package ---------------------------------------------------
 from esg_kg.core import dates as new_dates  # noqa: E402
+from esg_kg.kpi import canonicalize as new_canonicalize  # noqa: E402
 from esg_kg.core import naming as new_naming  # noqa: E402
 from esg_kg.core import paths as new_paths  # noqa: E402
 from esg_kg.core import schema as new_schema  # noqa: E402
@@ -560,6 +562,130 @@ def test_quality_metrics_match_src_on_real_graph():
            old_step00.q7_traversability(nodes, edges, 4, True)
     assert new_quality.q8_independence(nodes) == old_step00.q8_independence(nodes)
     print(f"     ({len(nodes)} nodes / {len(edges)} edges compared, Q7 BFS skipped by design)")
+
+
+# --------------------------------------------------------------------------- #
+# step03c -> esg_kg.kpi.canonicalize  (STAGE arm)
+# --------------------------------------------------------------------------- #
+# A stage has no single return value, so — as with step00 — the arm compares the
+# three things that define it: module constants, each pure function, and the full
+# output produced on real input. The vocabulary inputs (kpi_definitions_construction
+# .json, config/kpi_type_aliases.json) are BOTH tracked in git, so every arm except
+# the corpus one runs on a bare clone.
+KPI_DEFS_FILE = REPO / "kpi_definitions_construction.json"
+KPI_ALIASES_FILE = REPO / "config" / "kpi_type_aliases.json"
+
+
+def load_kpi_vocab():
+    return (json.loads(KPI_DEFS_FILE.read_text(encoding="utf-8")),
+            json.loads(KPI_ALIASES_FILE.read_text(encoding="utf-8")))
+
+
+def kpi_props(triples: list) -> list:
+    """Every KPIObservation property dict in the corpus — the real matcher input."""
+    out = []
+    for t in triples:
+        for side in ("subject", "object"):
+            node = t.get(side)
+            if isinstance(node, dict) and node.get("class") == "KPIObservation":
+                p = node.get("properties")
+                if isinstance(p, dict):
+                    out.append(p)
+    return out
+
+
+def test_canonicalize_constants_match_src():
+    assert new_canonicalize.STANDARD_CODE_RE.pattern == old_step03c.STANDARD_CODE_RE.pattern
+    assert new_canonicalize.DEFAULT_FUZZY_THRESHOLD == old_step03c.DEFAULT_FUZZY_THRESHOLD
+    assert [p.pattern for p in new_canonicalize.GOAL_YEAR_PATTERNS] == \
+           [p.pattern for p in old_step03c.GOAL_YEAR_PATTERNS]
+
+
+def test_canonicalize_default_paths_match_src():
+    for name in ("DEFAULT_TRIPLES", "DEFAULT_DEFS", "DEFAULT_ALIASES", "DEFAULT_STATS_OUT"):
+        assert getattr(new_canonicalize, name) == getattr(old_step03c, name), name
+
+
+def test_canonicalize_pure_helpers_match_src():
+    titles = ["  Tiêu hao ĐIỆN năng  ", "Male employees", "", None,
+              "Lợi nhuận sau thuế.", "(Tổng số lao động)", "nước thải — sản xuất"]
+    for t in titles:
+        assert new_canonicalize.normalize_title(t) == old_step03c.normalize_title(t), t
+    for props in [{"year": 2012}, {"year": "2013"}, {"target_year": 2030},
+                  {"valid_from": "2011-01-01"}, {"year": 99}, {}]:
+        assert new_canonicalize.derive_period(props) == old_step03c.derive_period(props), props
+    scales = {"nghìn m3": {"factor": 1000, "base": "m³"}, "mwh": {"factor": 1000, "base": "kWh"}}
+    for value, unit in [(5, "nghìn m3"), (2.5, "MWh"), ("x", "MWh"), (5, "chưa biết")]:
+        assert new_canonicalize.rescale_value(value, unit, scales) == \
+               old_step03c.rescale_value(value, unit, scales), (value, unit)
+
+
+def test_canonicalize_matcher_matches_src_on_the_whole_vocabulary():
+    """Drive both matchers over every official name and every alias — not a sample."""
+    defs, aliases = load_kpi_vocab()
+    new_m, old_m = new_canonicalize.Matcher(defs, aliases), old_step03c.Matcher(defs, aliases)
+    assert new_m.valid_ids == old_m.valid_ids
+    assert new_m.exact == old_m.exact
+    assert new_m.contains == old_m.contains
+    assert new_m.reject_units == old_m.reject_units
+    assert new_m.units_of == old_m.units_of
+
+    probes = [(d["name"], "") for d in defs]
+    for rule in aliases.get("rules") or []:
+        units = rule.get("units") or [""]
+        for t in (rule.get("exact") or []) + (rule.get("contains") or []):
+            probes.append((t, units[0]))
+    probes += [("Lợi nhuận sau thuế", "tỷ đồng"), ("", "người"), ("khong ton tai", "cái")]
+    for title, unit in probes:
+        assert new_m.match(title, unit) == old_m.match(title, unit), (title, unit)
+    print(f"     ({len(probes)} vocabulary probes compared)")
+
+
+def test_canonicalize_matches_src_on_the_real_corpus():
+    """The strongest arm: patch the REAL corpus in both trees, compare every node.
+
+    Each tree gets its own deep copy, so the two runs cannot contaminate each other —
+    canonicalize_kpis mutates the property dicts in place.
+    """
+    triples = load_triples()
+    if not triples:
+        _skip("canonicalize/corpus", f"{TRIPLES_FILE.name} absent (run data_sync pull)")
+        return
+    defs, aliases = load_kpi_vocab()
+    new_triples = json.loads(json.dumps(triples))
+    old_triples = json.loads(json.dumps(triples))
+
+    new_stats = new_canonicalize.canonicalize_kpis(new_triples, new_canonicalize.Matcher(defs, aliases))
+    old_stats = old_step03c.canonicalize_kpis(old_triples, old_step03c.Matcher(defs, aliases))
+    assert new_stats == old_stats, "stats dict diverged"
+
+    new_props, old_props = kpi_props(new_triples), kpi_props(old_triples)
+    assert len(new_props) == len(old_props)
+    for i, (a, b) in enumerate(zip(new_props, old_props)):
+        assert a == b, f"KPIObservation #{i} diverged:\n  new={a}\n  old={b}"
+
+    new_goal = new_canonicalize.backfill_goal_target_date(new_triples)
+    old_goal = old_step03c.backfill_goal_target_date(old_triples)
+    assert new_goal == old_goal, "goal backfill stats diverged"
+    print(f"     ({len(new_props)} real KPIObservation occurrences compared, "
+          f"{new_stats['distinct_kpi_nodes']} distinct)")
+
+
+def test_canonicalize_corpus_arm_is_not_vacuous():
+    """Guard the arm above: if the corpus produced no mapped AND no rejected node, it
+    would be comparing two empty piles and still 'PASS'."""
+    triples = load_triples()
+    if not triples:
+        _skip("canonicalize/not-vacuous", f"{TRIPLES_FILE.name} absent")
+        return
+    defs, aliases = load_kpi_vocab()
+    work = json.loads(json.dumps(triples))
+    stats = new_canonicalize.canonicalize_kpis(work, new_canonicalize.Matcher(defs, aliases))
+    assert stats["distinct_kpi_nodes"] > 100, stats["distinct_kpi_nodes"]
+    assert stats["mapped"] > 0 and stats["unmapped"] > 0, stats
+    methods = stats["by_method"]
+    for tier in ("kpi_type", "alias_exact", "rejected_unit", "no_match"):
+        assert methods.get(tier, 0) > 0, f"tier {tier!r} never fired: {methods}"
 
 
 if __name__ == "__main__":

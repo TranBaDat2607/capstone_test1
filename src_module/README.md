@@ -72,7 +72,8 @@ python test/test_temporal_invariants.py   # bộ test sẵn có của src/, ph�
 | `core/dates.py` | ✅ `ISO_DATE_RE`, `normalize_date_string`, `date_start_key` |
 | `core/` còn lại | ⏳ `identity` (đang chặn `step05b`) → `io_jsonl` → `text` → `llm` |
 | `report/quality.py` | ✅ stage đầu tiên được dời (từ `step00`), chạy được |
-| Stage kế tiếp | ⏳ `step03c` → `step04b` (đã đủ điều kiện, DESIGN.md §4 bước 3) |
+| `kpi/canonicalize.py` | ✅ dời từ `step03c`; arm so **5 214 KPIObservation thật** giữa hai cây |
+| Stage kế tiếp | ⏳ `step04b` → `step05c` (`05c` buộc phải chốt chỗ ở cho `GraphPatch`/`temporal_md`) |
 | `step07b` (softmax) | ⛔ **không dời** — UI `frontend/`+`api/` không đọc; giữ chạy ở `src/` (DESIGN.md §4.1) |
 
 `src/` **vẫn là pipeline chạy thật**; mới đúng một stage chạy được từ đây, và bản

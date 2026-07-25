@@ -155,9 +155,21 @@ Vì vậy ta **không rewire `src/`**. Thay vào đó:
      | `step04b` | `merge_preserving_edits`, `normalize_name` | ✅ đã có trong `core/naming` |
      | `step05b` | + `parse_source_id` (step03b), `PROVENANCE_CLASSES`/`stamp_provenance` (step02) | ❌ **chặn**: chờ `core/identity.py` |
 
-     Thứ tự: **`step03c` trước**, rồi `step04b`. (`step07b` từng đứng đầu danh sách này
-     — đã loại, xem §4.1.) `step09`/`step06` cần Neo4j nên arm của chúng chỉ kiểm được
-     tới mức import + hàm thuần; để sau.
+     ✅ **`step03c` → `kpi/canonicalize.py` (2026-07-25), stage thứ hai.** `diff` với bản
+     `src/` đúng **hai hunk**: docstring và một dòng import (`REPO_ROOT` lấy từ
+     `core.paths`). Dời bằng cách *copy nguyên file rồi vá khối import* — không gõ lại,
+     nên "verbatim" là sự thật kiểm chứng được chứ không phải lời hứa.
+     Arm tương đương gồm 6 nhóm; mạnh nhất là chạy `canonicalize_kpis` ở **cả hai cây**
+     trên corpus thật rồi so **từng property dict của 5 214 KPIObservation** (4 913 node
+     phân biệt) + dict stats + `backfill_goal_target_date`. Mỗi cây nhận một deep copy
+     riêng vì hàm này mutate tại chỗ. Kèm `test_canonicalize_corpus_arm_is_not_vacuous`
+     canh 4 tier (`kpi_type`/`alias_exact`/`rejected_unit`/`no_match`) đều phải kích hoạt
+     — nếu không, arm chỉ đang so hai đống rỗng mà vẫn "PASS".
+
+     Còn lại: **`step04b`** (nhỏ, sạch), rồi **`step05c`** — cái này buộc phải chốt chỗ ở
+     cho `GraphPatch`/`temporal_md` (§2), vốn cũng là nút thắt đang chặn `step05d`.
+     (`step07b` từng đứng đầu danh sách này — đã loại, xem §4.1.) `step09`/`step06` cần
+     Neo4j nên arm của chúng chỉ kiểm được tới mức import + hàm thuần; để sau.
    - **CHƯA đủ điều kiện dù không ai import chúng**: `step05d` (cần `GraphPatch`/
      `temporal_md` từ step05c — hiện **chưa có chỗ trong `core/`**, xem §2),
      `step08` (cần `node_text` từ step07 → chờ `core/text.py`),
