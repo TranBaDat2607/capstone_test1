@@ -155,9 +155,9 @@ Vì vậy ta **không rewire `src/`**. Thay vào đó:
      | `step04b` | `merge_preserving_edits`, `normalize_name` | ✅ đã có trong `core/naming` |
      | `step05b` | + `parse_source_id` (step03b), `PROVENANCE_CLASSES`/`stamp_provenance` (step02) | ❌ **chặn**: chờ `core/identity.py` |
 
-     Thứ tự đề xuất: **`step07b` trước** (offline, tất định, không DB → arm tương
-     đương so được nguyên dossier), rồi `step03c`, `step04b`. `step09`/`step06` cần
-     Neo4j nên arm của chúng chỉ kiểm được tới mức import + hàm thuần; để sau.
+     Thứ tự: **`step03c` trước**, rồi `step04b`. (`step07b` từng đứng đầu danh sách này
+     — đã loại, xem §4.1.) `step09`/`step06` cần Neo4j nên arm của chúng chỉ kiểm được
+     tới mức import + hàm thuần; để sau.
    - **CHƯA đủ điều kiện dù không ai import chúng**: `step05d` (cần `GraphPatch`/
      `temporal_md` từ step05c — hiện **chưa có chỗ trong `core/`**, xem §2),
      `step08` (cần `node_text` từ step07 → chờ `core/text.py`),
@@ -165,6 +165,44 @@ Vì vậy ta **không rewire `src/`**. Thay vào đó:
      trong `try` — hỏng thì **im lặng**, chỉ mất arm LLM, không báo lỗi).
 4. **Các stage HUB cuối cùng**: step04 → step03 → step02 → step01 — lúc này phần
    dùng chung đã ở `core/`, phần còn lại chỉ là entrypoint mỏng.
+
+### 4.1 `step07b` KHÔNG được dời sang `esg_kg` (quyết định 2026-07-25)
+
+Refactor là lúc rẻ nhất để **không** mang một thứ sang kiến trúc mới. `step07b`
+(softmax cân bằng bằng chứng, `docs/SOFTMAX_SCORING.md`) từng là stage kế tiếp trong
+danh sách trên — nay bị loại khỏi phạm vi migrate.
+
+**Căn cứ (quét 2026-07-25).** Bề mặt được giao là UI `frontend/` + `api/`, và nó
+không đọc output của step07b — grep `score|softmax|abstain|assessment` trên
+`frontend/js/app.js` (318 dòng) và `api/evidence_service.py` (263 dòng) ra **0 kết
+quả**. Ba trường `assessment_scores` / `score_components` /
+`score_disagrees_with_assessment` chỉ được đọc ở đúng hai nơi, và **cả hai đã chịu
+được khi thiếu**: `step08:159,169-172` (`None` → `SET` null, tự xoá property cũ — ý
+đồ ghi rõ ở `step08:167`) và `step09:268-274,358-361` (`if scores:` bỏ qua khối in).
+
+**Phạm vi quyết định — đọc kỹ chỗ này:**
+
+- ✅ `esg_kg` **không bao giờ** có `crosscheck/enrich_dossiers.py`. Không viết arm
+  tương đương cho nó. `pipeline.py` để `new_module=None` (không xoá dòng: vị trí
+  của nó trong thứ tự chạy vẫn là tri thức thật), `run.py --list` in `(not ported)`
+  và loại nó khỏi mẫu số — nếu tính vào, tiến độ migrate sẽ vĩnh viễn không bao giờ đạt 100%.
+- ❌ **KHÔNG xoá `src/step07b_enrich_dossiers.py`.** Model A: cây cũ vẫn chạy được
+  nguyên vẹn. Xoá nó là *thay đổi hành vi*, phải theo §5.3, và không có lợi ích gì
+  bù lại rủi ro sửa đường đọc trong step08/step09 sát hạn bảo vệ.
+- ❌ **Không dọn dữ liệu.** 1093/1093 claim trong
+  `graph_output/crosscheck/aaa_claim_assessments.json` đã có sẵn `assessment_scores`,
+  và file đó nằm trong snapshot HF đã pin ở `data_version.json`. Bỏ stage **không**
+  làm mất field; step08 vẫn đẩy lên Neo4j, step09 vẫn in. Muốn con số biến mất khỏi
+  output thì sửa ở tầng trình bày, không phải ở đây.
+
+**Điều kiện đảo ngược.** Nếu `signals` generator trong `docs/CROSSCHECK_EXPANSION.md`
+được xây (lúc đó `lam_struct`/`lam_kpi`/`lam_bp` mới khác 0 — hiện chúng đóng góp
+đúng 0), hoặc nếu cần lại cờ `score_disagrees_with_assessment` như hàng đợi review
+(66/1093 claim mà argmax mâu thuẫn với nhãn LLM), thì dời `None` → module path và
+làm theo quy trình bước 3 bình thường.
+
+Bảng stage được canh bởi `test/test_pipeline_table.py`: một stage `None` **bắt buộc**
+phải có note nói rõ "not ported", và `--list` không được phép hiển thị nó như "chưa dời".
 
 ## 5. Sửa lỗi trong lúc refactor — nguyên tắc "vá ở stage sớm nhất"
 

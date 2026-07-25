@@ -1,8 +1,22 @@
 # Softmax Scoring — phân bố 3 chỉ số `green_washing / not_green_washing / abstain` cho mỗi claim
 
-> **Trạng thái:** đề xuất thiết kế (chưa cài đặt). Vấn đề 1 trong kế hoạch cải thiện trước
-> bảo vệ lần 1. Đọc cùng `docs/CROSSCHECK_EXPANSION.md` (Vấn đề 2 — nguồn tín hiệu
-> `kpi_gap` / `broken_promise` / `structural_contradiction` mà công thức ở đây tiêu thụ).
+> **Trạng thái (cập nhật 2026-07-25): ĐÃ cài đặt ở `src/step07b_enrich_dossiers.py`,
+> nhưng KHÔNG dùng trong bản giao cuối.** Đã chạy thật: 1093/1093 claim trong
+> `graph_output/crosscheck/aaa_claim_assessments.json` có `assessment_scores` (nằm trong
+> snapshot HF đã pin). Tuy nhiên bề mặt trình bày cuối là UI `frontend/` + `api/`, và nó
+> **không đọc** các trường này (grep `score|softmax|abstain` trên `frontend/js/app.js` +
+> `api/evidence_service.py` = 0 kết quả); chỉ `step08` (→ property Neo4j) và `step09`
+> (ledger text) đọc, và cả hai đều chạy được khi thiếu.
+>
+> Hệ quả: stage này **không được port** sang kiến trúc module `src_module/esg_kg/`
+> (lý do + điều kiện đảo ngược: `src_module/esg_kg/DESIGN.md` §4.1). Nó **không bị xoá** —
+> `python src/step07b_enrich_dossiers.py` vẫn chạy được. Tài liệu này vì vậy mô tả một
+> **hướng đã cân nhắc và đã loại khỏi phạm vi**, không phải một thành phần đang phục vụ.
+>
+> Vấn đề 1 trong kế hoạch cải thiện trước bảo vệ lần 1. Đọc cùng
+> `docs/CROSSCHECK_EXPANSION.md` (Vấn đề 2 — nguồn tín hiệu `kpi_gap` / `broken_promise` /
+> `structural_contradiction` mà công thức ở đây tiêu thụ; **chưa có generator nên cả ba số
+> hạng λ hiện đóng góp đúng 0**).
 
 ## 1. Mục tiêu và ràng buộc
 

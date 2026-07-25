@@ -41,6 +41,10 @@ cd src_module && python -m esg_kg.report.quality --label baseline   # tương đ
 neo theo `REPO_ROOT` (marker-based) nên không phụ thuộc cwd. Stage chưa dời thì
 `run.py` in ra đúng lệnh `src/` cần chạy. Lý do chọn cách này: DESIGN.md §3.
 
+Bảng phân biệt **ba** trạng thái, không phải hai: `ready` (đã dời), `still src/…`
+(chưa dời), và `(not ported)` — **cố ý không dời**, bị loại khỏi mẫu số vì nếu tính
+vào thì tiến độ migrate vĩnh viễn không thể đạt 100%.
+
 ## Cách làm việc
 
 Test-first, luôn luôn (xem CLAUDE.md → "Working rule: Test-Driven Development").
@@ -63,7 +67,8 @@ python test/test_temporal_invariants.py   # bộ test sẵn có của src/, ph�
 | `core/dates.py` | ✅ `ISO_DATE_RE`, `normalize_date_string`, `date_start_key` |
 | `core/` còn lại | ⏳ `identity` (đang chặn `step05b`) → `io_jsonl` → `text` → `llm` |
 | `report/quality.py` | ✅ stage đầu tiên được dời (từ `step00`), chạy được |
-| Stage kế tiếp | ⏳ `step07b` → `step03c` → `step04b` (đã đủ điều kiện, DESIGN.md §4 bước 3) |
+| Stage kế tiếp | ⏳ `step03c` → `step04b` (đã đủ điều kiện, DESIGN.md §4 bước 3) |
+| `step07b` (softmax) | ⛔ **không dời** — UI `frontend/`+`api/` không đọc; giữ chạy ở `src/` (DESIGN.md §4.1) |
 
 `src/` **vẫn là pipeline chạy thật**; mới đúng một stage chạy được từ đây, và bản
 `src/step00_graph_quality_report.py` vẫn còn (nợ đã ghi: DESIGN.md §6.1).

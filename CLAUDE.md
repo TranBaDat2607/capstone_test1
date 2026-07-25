@@ -122,8 +122,13 @@ covered by `test/test_esg_kg_equivalence.py`. **`step00` is the first migrated S
 is the only file that touches `sys.path`, and it reads the stage table from `pipeline.py`
 so `--list` reports migration status honestly. No `pip install` step.
 
-Next: `step07b` → `step03c` → `step04b` (already unblocked — they import nothing that is
-still trapped in a `src/` step). `step05b` is blocked on `core/identity.py` (`parse_source_id`).
+Next: `step03c` → `step04b` (already unblocked — they import nothing that is still trapped
+in a `src/` step). `step05b` is blocked on `core/identity.py` (`parse_source_id`).
+**`step07b` is deliberately NOT being ported** (DESIGN.md §4.1): the delivered surface is
+the `frontend/`+`api/` UI, which never reads its softmax scores, so `pipeline.py` carries
+it as `new_module=None` and `run.py --list` shows `(not ported)` and drops it from the
+denominator. It is NOT deleted — `src/step07b_enrich_dossiers.py` still runs, and the
+scores are already frozen into the pinned dossier either way.
 Known debt: `src/step00_graph_quality_report.py` still exists, so the T1/T2/T3 tier map that
 `test/test_schema_contract.py` imports lives in two trees — cleanup commit spelled out in
 `src_module/esg_kg/DESIGN.md` §6.1.
@@ -423,6 +428,11 @@ python test/test_indicator_axis.py         # drives step05c's real run() on a te
                                            # self-reported-zero Penalty gets NO conduct edge,
                                            # kpi_id-not-kpi_type boundary, confirmed-crosswalk
                                            # gate, stage-level append-only + idempotency.
+python test/test_pipeline_table.py         # refactor stage table (src_module/esg_kg/pipeline.py
+                                           # + run.py): every row points at a real src/ file,
+                                           # short names don't collide, and a stage that is
+                                           # NEVER being ported is rendered as such instead of
+                                           # as "not yet" (which would keep dead work queued).
 python test/test_esg_kg_equivalence.py     # refactor safety net: imports BOTH src/ and
                                            # src_module/esg_kg, runs them on the real
                                            # schema/corpus, asserts equal. Run after ANY

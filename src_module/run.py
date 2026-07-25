@@ -41,12 +41,18 @@ if str(HERE) not in sys.path:
 from esg_kg.pipeline import STAGES  # noqa: E402
 
 
-def short_name(module: str) -> str:
-    """`esg_kg.report.quality` -> `quality` (unique across STAGES)."""
-    return module.rsplit(".", 1)[-1]
+def short_name(module) -> str:
+    """`esg_kg.report.quality` -> `quality` (unique across STAGES).
+
+    A not-ported stage (module=None) has no new name; it is only ever addressed by its
+    old step id or filename, so `-` is a label, not an identifier.
+    """
+    return module.rsplit(".", 1)[-1] if module else "-"
 
 
-def is_migrated(module: str) -> bool:
+def is_migrated(module) -> bool:
+    if module is None:  # deliberately not ported — never "pending"
+        return False
     try:
         return importlib.util.find_spec(module) is not None
     except ModuleNotFoundError:
@@ -58,24 +64,37 @@ def resolve(token: str):
     """Accept the short name, the old step id ('03b'), or the old filename."""
     t = token.lower()
     for order, old, module, note in STAGES:
-        if t in {short_name(module).lower(), order.lower(), old.lower(),
-                 f"step{order}".lower(), module.lower()}:
+        keys = {order.lower(), old.lower(), f"step{order}".lower()}
+        if module:  # a not-ported stage has no module path or short name to match on
+            keys |= {short_name(module).lower(), module.lower()}
+        if t in keys:
             return order, old, module, note
     return None
 
 
 def print_list() -> None:
-    done = sum(1 for _, _, m, _ in STAGES if is_migrated(m))
-    print(f"esg_kg stages — {done}/{len(STAGES)} migrated from src/\n")
+    # Not-ported stages are excluded from the denominator: counting them would make the
+    # migration permanently unfinishable, since they are never coming.
+    portable = [s for s in STAGES if s[2] is not None]
+    done = sum(1 for _, _, m, _ in portable if is_migrated(m))
+    skipped = len(STAGES) - len(portable)
+    tail = f"  ({skipped} stage(s) deliberately not ported)" if skipped else ""
+    print(f"esg_kg stages — {done}/{len(portable)} migrated from src/{tail}\n")
     print(f"  {'':2} {'step':4} {'name':20} {'module':38} status")
     print("  " + "-" * 84)
     for order, old, module, note in STAGES:
+        if module is None:
+            print(f"  {'--':2} {order:4} {short_name(module):20} {'(not ported)':38} "
+                  f"src/{old}.py only")
+            continue
         ok = is_migrated(module)
         mark = "OK " if ok else "   "
         status = "ready" if ok else f"still src/{old}.py"
         print(f"  {mark} {order:4} {short_name(module):20} {module:38} {status}")
     print("\n  ready   -> python src_module/run.py <name> [args]")
     print("  src/    -> python src/<file>.py [args]   (not migrated yet)")
+    if skipped:
+        print("  --      -> python src/<file>.py [args]   (not ported BY DECISION — see note)")
     print("\nNotes:")
     for order, _, module, note in STAGES:
         print(f"  {order:4} {note}")
@@ -96,7 +115,11 @@ def main(argv: list) -> int:
         print("run `python src_module/run.py --list` for the stage names", file=sys.stderr)
         return 2
 
-    order, old, module, _ = hit
+    order, old, module, note = hit
+    if module is None:
+        print(f"stage {order} is not part of esg_kg by decision — {note}", file=sys.stderr)
+        print(f"    python src/{old}.py {' '.join(argv[1:])}".rstrip(), file=sys.stderr)
+        return 2
     if not is_migrated(module):
         print(f"stage {order} has not been migrated yet — it still runs from the old tree:",
               file=sys.stderr)

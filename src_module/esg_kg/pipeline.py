@@ -6,6 +6,12 @@ of stage code — so it stays importable while the package is half-migrated.
 
 Each entry: (order, old_step, new_module, note). ``order`` is the run sequence;
 'b'/'c'/'d' suffixes are offline patches that must run right after their base.
+
+``new_module`` is ``None`` for a stage that is deliberately NOT being ported. That is a
+decision, not a backlog item, and the distinction is load-bearing: ``run.py --list`` would
+otherwise render it as merely "not yet migrated" and keep dead work on the queue forever.
+The row itself stays, because the stage still exists and still runs from ``src/`` — its
+position in the run order is real knowledge that would be lost by deleting the line.
 """
 
 STAGES = [
@@ -23,7 +29,7 @@ STAGES = [
     ("05d", "step05d_align_claims_to_indicators",  "esg_kg.resolve.align_claims",     "OPTIONAL LLM; after 05c"),
     ("06",  "step06_load_graph_to_neo4j",          "esg_kg.load.neo4j_load",          "needs Neo4j running"),
     ("07",  "step07_crosscheck_claims_vs_conduct", "esg_kg.crosscheck.claims_vs_conduct", "LLM adjudication (mandatory)"),
-    ("07b", "step07b_enrich_dossiers",             "esg_kg.crosscheck.enrich_dossiers",   "offline softmax scores"),
+    ("07b", "step07b_enrich_dossiers",             None,                                  "offline softmax scores — NOT PORTED by decision (2026-07-25): nothing on the delivered surface reads them; stays runnable in src/"),
     ("08",  "step08_sync_crosscheck_to_neo4j",     "esg_kg.load.neo4j_sync",          "advisory layer -> Neo4j"),
     ("09",  "step09_report_claim_ledger",          "esg_kg.report.claim_ledger",      "Neo4j-only; run after 08"),
     ("10",  "step10_evaluate",                     "esg_kg.report.evaluate",          "P6 evaluation report"),
