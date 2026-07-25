@@ -3,6 +3,7 @@
 Đích đến của đợt refactor từ `src/`. Code cũ trong `src/` **vẫn là pipeline đang
 chạy thật**; ta chuyển **từng stage một** sang đây, không big-bang.
 
+- **Sơ đồ pipeline (bắt đầu từ đây nếu thấy rối): [`PIPELINE.md`](PIPELINE.md)**
 - Package thật: [`esg_kg/`](esg_kg/)
 - Bản thiết kế + bảng ánh xạ file cũ → module mới: [`esg_kg/DESIGN.md`](esg_kg/DESIGN.md)
 - Thứ tự chạy (thay cho tiền tố `stepNN_`): [`esg_kg/pipeline.py`](esg_kg/pipeline.py)
@@ -73,8 +74,9 @@ python test/test_temporal_invariants.py   # bộ test sẵn có của src/, ph�
 | `core/` còn lại | ⏳ `identity` (đang chặn `step05b`) → `io_jsonl` → `text` → `llm` |
 | `report/quality.py` | ✅ stage đầu tiên được dời (từ `step00`), chạy được |
 | `kpi/canonicalize.py` | ✅ dời từ `step03c`; arm so **5 214 KPIObservation thật** giữa hai cây |
-| Stage kế tiếp | ⏳ `step04b` → `step05c` (`05c` buộc phải chốt chỗ ở cho `GraphPatch`/`temporal_md`) |
+| `registry/standards.py` | ⛔ **không dời** — `step04b` đọc output của `step05` (vòng lặp) và lần quét đồ thị đóng góp 0; registry thành config tĩnh, `step00` audit độ phủ (DESIGN.md §4.2) |
+| Stage kế tiếp | ⏳ `step05c` — cân nhắc **chuyển lên trước `step05`** trước khi dời, để `GraphPatch` biến mất thay vì phải tìm chỗ ở (PIPELINE.md §5) |
 | `step07b` (softmax) | ⛔ **không dời** — UI `frontend/`+`api/` không đọc; giữ chạy ở `src/` (DESIGN.md §4.1) |
 
-`src/` **vẫn là pipeline chạy thật**; mới đúng một stage chạy được từ đây, và bản
+`src/` **vẫn là pipeline chạy thật**; mới hai stage chạy được từ đây, và bản
 `src/step00_graph_quality_report.py` vẫn còn (nợ đã ghi: DESIGN.md §6.1).
