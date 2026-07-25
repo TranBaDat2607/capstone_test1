@@ -399,6 +399,15 @@ python test/test_temporal_invariants.py    # offline, no LLM/DB; asserts date ca
                                            # provenance tier matching + node-order invariant,
                                            # kpi_id canonicalization, indicator-axis edge minting,
                                            # and step08 stable-id (claim_id) resolution
+python test/test_schema_contract.py        # config/schema.json itself: P1 both ways (T1 identity
+                                           # timeless / T2 observations KEEP their time key), every
+                                           # class in exactly one tier, indicator-axis edge pairs.
+                                           # Tier map is IMPORTED from step00, never re-declared.
+                                           # Run after ANY hand-edit to schema.json.
+python test/test_indicator_axis.py         # drives step05c's real run() on a temp workspace:
+                                           # self-reported-zero Penalty gets NO conduct edge,
+                                           # kpi_id-not-kpi_type boundary, confirmed-crosswalk
+                                           # gate, stage-level append-only + idempotency.
 python test/test_esg_kg_equivalence.py     # refactor safety net: imports BOTH src/ and
                                            # src_module/esg_kg, runs them on the real
                                            # schema/corpus, asserts equal. Run after ANY
