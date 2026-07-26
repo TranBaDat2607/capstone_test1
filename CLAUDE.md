@@ -40,17 +40,23 @@ repo and secrets, so it is never committed or pushed with this project.
   **Anyone pushing must commit `data_version.json` in the same sitting** — a pushed snapshot whose
   pin is not committed is invisible: the team keeps pulling the old revision with no error. `git pull`
   before pushing, so a pin conflict surfaces in Git rather than silently overwriting someone's
-  snapshot. `neo4j_data/` is never synced — rebuild it with step06.
+  snapshot. `neo4j_data/` is never synced — rebuild it with step06. Both `push` and `pull` are
+  scoped with `ALLOW_PATTERNS` to exactly those three folders: `local_dir` is the CODE repo, so
+  an unscoped pull writes the dataset's own root files over tracked ones — that is how the Hub's
+  `.gitattributes` came to be committed here (and why this repo now routes `*.png/jpg/zip/parquet`
+  through Git LFS). Guarded by `test/test_data_sync_scope.py`.
 - **Secrets:** copy `.env.example` → `.env` and set `GEMINI_API_KEY` (and optionally
   `OPENAI_API_KEY`, the fallback LLM provider for step 6's cross-check). All `src/` LLM
   scripts load `.env` from the repo root regardless of cwd. `.env` is git-ignored — never
   commit it.
 - **Layout principle (enforced):** code lives only in the package folders
   (`crawl_data/`, `data_processing/`, `esg_news_crawler/`, `src/`, `src_module/`,
-  `kpi_build/`, plus the UI pair `api/` + `frontend/`). Everything else is `config/`
+  `kpi_build/`, `gri/`, plus the UI pair `api/` + `frontend/`). Everything else is `config/`
   (schema + dictionaries), `neo4j/` (`init.cypher` constraints + `crosscheck_queries.cypher`
   analyst queries), or `data/` (`raw/` → `interim/` → `labeled/` → `outputs/`).
-  **No data files inside code packages.**
+  **No data files inside code packages** — with two named exceptions, both run-once
+  provenance builders that keep their sources beside them so a claim can be traced to a
+  page: `kpi_build/` and `gri/` (the latter carries 42 GRI Standards PDFs, ~45 MB, in Git).
 - **Two execution styles — do not mix them:**
   - `data_processing/` and `esg_news_crawler/` are **packages**, run as modules:
     `python -m data_processing.extract_esg`.
@@ -264,10 +270,14 @@ src/step05c_link_standard_indicators.py → patches resolved_graph.json in place
     nodes + edges: partOf (indicator→document), measuredUnder (KPIObservation/Emission→indicator,
     read from step03c's kpi_id — never guessed here), equivalentTo (TT96→GRI, from
     config/standard_crosswalk.json, confirmed rows only), and a keyword tier of alignsWithIndicator
-    (Claim/Goal/Initiative→indicator, unambiguous only). Penalty amount==0 = self-reported
+    (Claim/Goal/Initiative→indicator; longest matching phrase wins). Penalty amount==0 = self-reported
     "fined 0 times" → flagged self_reported_zero, NO conduct edge. APPEND-ONLY (asserts the
-    existing node/edge prefix is untouched — dossiers stay valid). Run after step05b, before
-    step06. See docs/STANDARD_INDICATOR_AXIS.md)
+    existing node/edge prefix is untouched — dossiers stay valid). Also RESTAMPS
+    StandardIndicator.pillar from the file entitled to say — kpi_definitions_construction.json
+    for the VN vocabulary, config/gri_catalog.json (--gri-catalog) for GRI — and never invents
+    one: an id neither covers keeps the pillar it had. The Evidence View reads that property
+    directly for a claim's E/S/G column, so a guess there is visible to the reader. Run after
+    step05b, before step06. See docs/STANDARD_INDICATOR_AXIS.md)
 src/step05d_align_claims_to_indicators.py → patches resolved_graph.json in place (+ indicator_align_llm_stats.json)
    (OPTIONAL, LLM, budgeted: alignsWithIndicator for the Claim/Goal/Initiative the keyword tier
     left unresolved. Topic classification only (alignment_method=llm), NOT a supports/contradicts
@@ -324,6 +334,22 @@ QĐ 2171, QCVN 09, SSC-IFC guide) and extract them **verbatim** into
 `kpi_definitions_construction.json` (35 KPIs, each carrying a `source` block). This file
 is the controlled KPI vocabulary consumed by stage C's KPI extractor. It rarely needs
 rebuilding; treat it as generated data.
+
+**D2. GRI catalog builder (`gri/`, run-once, same shape as `kpi_build/`)**
+`gri/crawl_full_gri.py` downloads the 42 GRI Standards PDFs into
+`gri/full_gri/Full set of GRI Standards - English/` and extracts them to
+`gri/full_gri/json/`; `gri/build_gri_catalog.py` folds those into
+**`config/gri_catalog.json`** — 136 GRI indicator codes with `title_vi`/`title_en`,
+`pillar`, `units`, `tt96_equivalent`, `versions[]` and per-PDF `sha256`. step05c reads it
+for GRI node names and pillars. **NOT a pipeline stage** (it reads no pipeline output, so
+unlike the old step04b there is no cycle) — rebuild by hand after editing the crawl or the
+crosswalk, then commit the regenerated JSON.
+*Ownership rule worth knowing before touching it:* a GRI standard's JSON also re-lists
+disclosures belonging to OTHER standards (the sector standards GRI 11–14 and the 2024/25
+rewrites GRI 101–103 do this), so a disclosure is attributed to the standard whose
+`standard_id` is its prefix — `standard_of()` — never to whichever file is read first.
+Getting that wrong mis-attributed 80/136 entries and mangled 31 titles. Covered by
+`test/test_gri_catalog_build.py`.
 
 **E. ESG Evidence View UI (`api/` + `frontend/`) — the demo surface**
 `api/main.py` is a **pure–standard-library `http.server`** (deliberately no FastAPI/Flask,
@@ -398,7 +424,8 @@ python src/step04_build_issuer_registry.py                                   # �
 #   (no step04b: config/standards_registry.json is static config, hand-edited; step00 audits its coverage)
 python src/step05_resolve_entities.py                                        # → graph_output/resolved/ (step 4: entity resolution + standards anchor)
 python src/step05b_stamp_provenance.py --dry-run                             # provenance patch preview (then run without --dry-run; offline, no LLM)
-python src/step05c_link_standard_indicators.py --dry-run                     # TT96/GRI indicator axis preview (then run without --dry-run; offline, no LLM)
+python gri/build_gri_catalog.py                                              # → config/gri_catalog.json (run-once builder, not a stage; commit the result)
+python src/step05c_link_standard_indicators.py --dry-run                     # TT96/GRI indicator axis preview (reports the pillar restamp too; then run without --dry-run)
 python src/step05d_align_claims_to_indicators.py --dry-run                   # OPTIONAL LLM: align remaining claims (then --max-llm-pairs N to run)
 python src/step06_load_graph_to_neo4j.py --dry-run                           # step 5: preview planned counts, no DB
 docker compose up -d                                                 # start Neo4j on :8687 (then run neo4j/init.cypher once — see docs)
@@ -470,6 +497,20 @@ python test/test_pipeline_table.py         # refactor stage table (src_module/es
                                            # short names don't collide, and a stage that is
                                            # NEVER being ported is rendered as such instead of
                                            # as "not yet" (which would keep dead work queued).
+python test/test_gri_catalog_build.py      # gri/build_gri_catalog.py: a disclosure is attributed
+                                           # to the standard whose id is its prefix (not to whichever
+                                           # file sorts first), pillar comes from the source via
+                                           # PILLAR_MAP (never a substring guess), provenance fields
+                                           # agree with the attributed standard, and GRI 306's real
+                                           # 2016+2020 versions still merge. Run after touching gri/.
+python test/test_console_utf8.py           # ensure_utf8_stdout in BOTH trees + the WIRING (main()
+                                           # actually calls it, nothing calls it at import). Closes
+                                           # the hole the equivalence test cannot see: it never
+                                           # executes main() or a __main__ block.
+python test/test_data_sync_scope.py        # data_sync pull is scoped to the three synced folders,
+                                           # so it can never overwrite a tracked repo-root file
+                                           # (that is how the Hub's .gitattributes got committed).
+                                           # Offline: snapshot_download is replaced by a recorder.
 python test/test_esg_kg_equivalence.py     # refactor safety net: imports BOTH src/ and
                                            # src_module/esg_kg, runs them on the real
                                            # schema/corpus, asserts equal. Run after ANY
@@ -513,7 +554,16 @@ signatures to auto-resolve step-4's lexically ambiguous `needs_review` cases),
 `NEWS_CRAWLER_OPTIMIZATION.md` (Vietnamese — architecture of the standalone, FPT-specific
 `crawl_data/crawler_news.py`, not the documented `esg_news_crawler/` pipeline). The root
 `ENTITY_RESOLUTION_PLAN.md` is the step-4 engineering checklist. `README.md` (root),
-`esg_news_crawler/README.md`, and `kpi_build/README.md` cover their respective subsystems.
+`esg_news_crawler/README.md`, `kpi_build/README.md`, and `gri/README.md` cover their
+respective subsystems.
+
+Added with the GRI catalog (2026-07-26), describing the `src/` pipeline as it runs today —
+none of them mention `src_module/`/`esg_kg`, so for the refactor's view of stage C read
+`src_module/PIPELINE.md` instead: `docs/PIPELINE_DIAGRAMS.md` (10 figures: architecture,
+collection, extraction, KPI, KG construction, entity resolution, cross-check, schema, data
+layout, end-to-end sequence), `docs/PIPELINE_UNIFIED.md`, `docs/PROJECT_OVERVIEW.md`,
+`docs/GRI_SCHEMA_DOCUMENTATION.md` (the shape of `gri/full_gri/json/*.json` and of
+`config/gri_catalog.json`), plus the rendered diagrams in `diagram/`.
 
 **Proposals, not implementations** (pre-defence-1 improvement plan — don't read them as
 descriptions of existing code): `CROSSCHECK_EXPANSION.md` (Vietnamese — the `signals`

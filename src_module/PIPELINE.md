@@ -110,7 +110,7 @@ flowchart TD
 | 04b | — | — | ~~resolved~~ | ~~`standards_registry.json`~~ | ⛔ **ngoài đường chạy** |
 | 05 | `entities` | 💰 (tùy chọn) | validated + 2 registry | `resolved_graph.json` | ⏳ |
 | 05b | `provenance` | — | resolved + các file page | vá tại chỗ | ⏳ |
-| 05c | `indicators` | — | resolved + `kpi_definitions` + crosswalk | vá tại chỗ (+37 node, +749 cạnh) | ⏳ |
+| 05c | `indicators` | — | resolved + `kpi_definitions` + crosswalk + `gri_catalog` | vá tại chỗ | ⏳ |
 | 05d | `align_claims` | 💰 tùy chọn | resolved | vá tại chỗ | ⏳ |
 | 06 | `neo4j_load` | — | resolved | Neo4j | ⏳ |
 | 07 | `claims_vs_conduct` | 💰 **bắt buộc** | resolved | `<ticker>_claim_assessments.json` | ⏳ |
@@ -181,18 +181,30 @@ flowchart LR
     end
 ```
 
-**Vì sao**: 749/749 cạnh chính của 05c **không cần đồ thị đã hợp nhất** — `measuredUnder`
+**Vì sao**: gần như toàn bộ cạnh của 05c **không cần đồ thị đã hợp nhất** — `measuredUnder`
 đọc `kpi_id` từng node, `equivalentTo` thuần config, `alignsWithIndicator` khớp text từng
 node. Chỉ mỗi việc chọn *đích* của `partOf` là cần. Chuyển lên sớm thì **bỏ được toàn bộ
 cơ chế APPEND-ONLY** (`GraphPatch.assert_append_only`) — thứ đang chặn việc dời `step05d`.
 
-**Rủi ro phải xử lý**: 35 node `StandardIndicator` sẽ đi qua Stage B/C của step05.
+**Rủi ro phải xử lý**: 67 node `StandardIndicator` sẽ đi qua Stage B/C của step05.
 `identity_keys=['id']` nên Stage A an toàn, nhưng embedding rất dễ gộp nhầm
 `TT96-6.3.1 Tiêu thụ năng lượng` với `TT96-6.3.2 Tiết kiệm năng lượng` → phải **đóng băng**
 `StandardIndicator` y như neo issuer và neo chuẩn.
 
-**Cách kiểm**: số liệu phải **không đổi** — vẫn đúng 641 `measuredUnder` và 73
-`alignsWithIndicator`, chỉ khác đường đi. Chụp `step00 --label before/after` để đối chiếu.
+**Cách kiểm**: số liệu phải **không đổi**. Mốc đo lại ngày 2026-07-26, trên đồ thị
+10 425 node / 14 402 cạnh (snapshot HF `09cfe062`):
+
+| | |
+|---|---|
+| `StandardIndicator` | **67** (Môi trường 31 · Xã hội 22 · Quản trị 14) |
+| `measuredUnder` | **641** |
+| `alignsWithIndicator` | **639** |
+| `equivalentTo` | **26** |
+| `partOf` | **102** |
+
+Chụp `step00 --label before/after` để đối chiếu. *(Bản trước ghi 749 cạnh / 73
+`alignsWithIndicator` / 35 chỉ số — số của thời trục chỉ số còn là no-op, trước khi
+`config/standard_crosswalk.json` được duyệt và `config/gri_catalog.json` xuất hiện.)*
 
 ---
 

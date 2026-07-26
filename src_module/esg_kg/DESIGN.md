@@ -174,6 +174,17 @@ Vì vậy ta **không rewire `src/`**. Thay vào đó:
 
      Còn lại: **`step05c`** — cái này buộc phải chốt chỗ ở cho `GraphPatch`/`temporal_md`
      (§2), vốn cũng là nút thắt đang chặn `step05d`.
+
+     ℹ️ **Cập nhật 2026-07-26 — một rào cản của `step05c` đã tự mất.** Bản merge nhánh `tuan`
+     thêm `get_gri_catalog()`: một global `GRI_CATALOG_PATH` hardcode + cache suốt vòng đời
+     tiến trình, tức là symbol thứ ba chưa có chỗ ở trong `core/`, và tệ hơn là không test
+     được (không inject được đường dẫn, cache rò rỉ giữa các test). Commit sửa bug pillar đã
+     thay nó bằng `load_gri_catalog(path)` thuần + cờ `--gri-catalog`, catalog nạp **một lần
+     trong `run()`** rồi truyền tay xuống `make_gri_node`/`build_keyword_index`. Nên khi dời
+     `step05c` **không cần** nghĩ chỗ ở cho nó nữa — chỉ còn `GraphPatch`/`temporal_md`.
+     Lưu ý khi viết arm tương đương: `match_keyword` nay là **"phrase dài nhất thắng"**, không
+     còn là "chỉ khớp khi không nhập nhằng" như tài liệu cũ mô tả — pin đúng hành vi hiện tại;
+     muốn đổi lại thì đó là commit hành vi riêng theo §5.3.
      (`step07b` từng đứng đầu danh sách này — đã loại, xem §4.1.) `step09`/`step06` cần
      Neo4j nên arm của chúng chỉ kiểm được tới mức import + hàm thuần; để sau.
    - **CHƯA đủ điều kiện dù không ai import chúng**: `step05d` (cần `GraphPatch`/
