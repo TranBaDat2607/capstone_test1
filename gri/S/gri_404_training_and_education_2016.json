@@ -1,0 +1,28 @@
+{
+  "standard_id": "GRI 404",
+  "title_en": "Training and Education 2016",
+  "title_vi": "Đào tạo và Giáo dục 2016",
+  "pillar": "S — Social",
+  "series": "Social (400 Series)",
+  "effective_date": "2018-07-01",
+  "description_vi": "Số giờ đào tạo trung bình mỗi năm, các chương trình phát triển kỹ năng và tỷ lệ nhân viên nhận đánh giá hiệu quả định kỳ.",
+  "source": "GRI Content Index Template 2021, Version 1.3 (January 2026)",
+  "disclosures_count": 3,
+  "disclosures": [
+    {
+      "code": "404-1",
+      "title_en": "Average hours of training per year per employee",
+      "title_vi": "Số giờ đào tạo trung bình mỗi năm trên mỗi nhân viên"
+    },
+    {
+      "code": "404-2",
+      "title_en": "Programs for upgrading employee skills and transition assistance programs",
+      "title_vi": "Chương trình nâng cao kỹ năng và hỗ trợ chuyển đổi nhân sự"
+    },
+    {
+      "code": "404-3",
+      "title_en": "Percentage of employees receiving regular performance and career development reviews",
+      "title_vi": "Tỷ lệ nhân viên nhận đánh giá hiệu quả công việc và phát triển nghề nghiệp định kỳ"
+    }
+  ]
+}

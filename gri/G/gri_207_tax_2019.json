@@ -1,0 +1,33 @@
+{
+  "standard_id": "GRI 207",
+  "title_en": "Tax 2019",
+  "title_vi": "Thuế 2019",
+  "pillar": "G — Governance",
+  "series": "Governance (Universal + 200 Series)",
+  "effective_date": "2021-01-01",
+  "description_vi": "Minh bạch chính sách thuế, quản trị rủi ro thuế và báo cáo đóng góp thuế chi tiết theo từng quốc gia.",
+  "source": "GRI Content Index Template 2021, Version 1.3 (January 2026)",
+  "disclosures_count": 4,
+  "disclosures": [
+    {
+      "code": "207-1",
+      "title_en": "Approach to tax",
+      "title_vi": "Phương pháp tiếp cận thuế"
+    },
+    {
+      "code": "207-2",
+      "title_en": "Tax governance, control, and risk management",
+      "title_vi": "Quản trị, kiểm soát và quản lý rủi ro thuế"
+    },
+    {
+      "code": "207-3",
+      "title_en": "Stakeholder engagement and management of concerns related to tax",
+      "title_vi": "Sự tham gia của các bên liên quan và quản lý quan ngại về thuế"
+    },
+    {
+      "code": "207-4",
+      "title_en": "Country-by-country reporting",
+      "title_vi": "Báo cáo nộp thuế theo từng quốc gia"
+    }
+  ]
+}

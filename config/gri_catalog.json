@@ -1,0 +1,4694 @@
+{
+  "GRI 101-1": {
+    "gri_standard": "GRI 101",
+    "standard_title_en": "Biodiversity 2024",
+    "title_en": "Policies to halt and reverse biodiversity loss",
+    "title_vi": "Policies to halt and reverse biodiversity loss",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 101-1: Policies to halt and reverse biodiversity loss",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_101_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 101_ Biodiversity 2024 - English.pdf",
+    "sha256": "e8b42d8fbabdec42e693db1e431690caa419dca77a20823a35fed7e9fa154732",
+    "page": 49
+  },
+  "GRI 101-2": {
+    "gri_standard": "GRI 101",
+    "standard_title_en": "Biodiversity 2024",
+    "title_en": "Management of biodiversity impacts",
+    "title_vi": "Management of biodiversity impacts",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 101-2: Management of biodiversity impacts",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_101_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_102_2025",
+        "version_year": 2025,
+        "effective_date": "2026-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 101_ Biodiversity 2024 - English.pdf",
+    "sha256": "e8b42d8fbabdec42e693db1e431690caa419dca77a20823a35fed7e9fa154732",
+    "page": 49
+  },
+  "GRI 101-3": {
+    "gri_standard": "GRI 101",
+    "standard_title_en": "Biodiversity 2024",
+    "title_en": "Access and benefit-sharing",
+    "title_vi": "Access and benefit-sharing",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 101-3: Access and benefit-sharing",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_101_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_13_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 101_ Biodiversity 2024 - English.pdf",
+    "sha256": "e8b42d8fbabdec42e693db1e431690caa419dca77a20823a35fed7e9fa154732",
+    "page": 49
+  },
+  "GRI 101-4": {
+    "gri_standard": "GRI 101",
+    "standard_title_en": "Biodiversity 2024",
+    "title_en": "Identification of biodiversity impacts",
+    "title_vi": "Identification of biodiversity impacts",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 101-4: Identification of biodiversity impacts",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_101_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 101_ Biodiversity 2024 - English.pdf",
+    "sha256": "e8b42d8fbabdec42e693db1e431690caa419dca77a20823a35fed7e9fa154732",
+    "page": 49
+  },
+  "GRI 101-5": {
+    "gri_standard": "GRI 101",
+    "standard_title_en": "Biodiversity 2024",
+    "title_en": "Locations with biodiversity impacts",
+    "title_vi": "Locations with biodiversity impacts",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 101-5: Locations with biodiversity impacts",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_101_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 101_ Biodiversity 2024 - English.pdf",
+    "sha256": "e8b42d8fbabdec42e693db1e431690caa419dca77a20823a35fed7e9fa154732",
+    "page": 49
+  },
+  "GRI 101-6": {
+    "gri_standard": "GRI 101",
+    "standard_title_en": "Biodiversity 2024",
+    "title_en": "Direct drivers of biodiversity loss",
+    "title_vi": "Direct drivers of biodiversity loss",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 101-6: Direct drivers of biodiversity loss",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_101_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 101_ Biodiversity 2024 - English.pdf",
+    "sha256": "e8b42d8fbabdec42e693db1e431690caa419dca77a20823a35fed7e9fa154732",
+    "page": 49
+  },
+  "GRI 101-7": {
+    "gri_standard": "GRI 101",
+    "standard_title_en": "Biodiversity 2024",
+    "title_en": "Changes to the state of biodiversity",
+    "title_vi": "Changes to the state of biodiversity",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 101-7: Changes to the state of biodiversity",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_101_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 101_ Biodiversity 2024 - English.pdf",
+    "sha256": "e8b42d8fbabdec42e693db1e431690caa419dca77a20823a35fed7e9fa154732",
+    "page": 49
+  },
+  "GRI 101-8": {
+    "gri_standard": "GRI 101",
+    "standard_title_en": "Biodiversity 2024",
+    "title_en": "Ecosystem services",
+    "title_vi": "Ecosystem services",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 101-8: Ecosystem services",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_101_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 101_ Biodiversity 2024 - English.pdf",
+    "sha256": "e8b42d8fbabdec42e693db1e431690caa419dca77a20823a35fed7e9fa154732",
+    "page": 49
+  },
+  "GRI 306-3": {
+    "gri_standard": "GRI 101",
+    "standard_title_en": "Biodiversity 2024",
+    "title_en": "Significant spills)",
+    "title_vi": "Significant spills)",
+    "pillar": "Môi trường",
+    "definition_vi": "Chỉ số công bố GRI 306-3: Significant spills)",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_101_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_306_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Superseded"
+      },
+      {
+        "version_id": "GRI_306_2020",
+        "version_year": 2020,
+        "effective_date": "2021-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 101_ Biodiversity 2024 - English.pdf",
+    "sha256": "e8b42d8fbabdec42e693db1e431690caa419dca77a20823a35fed7e9fa154732",
+    "page": 49
+  },
+  "GRI 3-3": {
+    "gri_standard": "GRI 101",
+    "standard_title_en": "Biodiversity 2024",
+    "title_en": "in GRI 3: Material Topics 2021.",
+    "title_vi": "in GRI 3: Material Topics 2021.",
+    "pillar": "Môi trường",
+    "definition_vi": "Chỉ số công bố GRI 3-3: in GRI 3: Material Topics 2021.",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_101_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_102_2025",
+        "version_year": 2025,
+        "effective_date": "2026-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_201_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_207_2019",
+        "version_year": 2019,
+        "effective_date": "2020-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_303_2018",
+        "version_year": 2018,
+        "effective_date": "2019-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_306_2020",
+        "version_year": 2020,
+        "effective_date": "2021-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 101_ Biodiversity 2024 - English.pdf",
+    "sha256": "e8b42d8fbabdec42e693db1e431690caa419dca77a20823a35fed7e9fa154732",
+    "page": 49
+  },
+  "GRI 2-23": {
+    "gri_standard": "GRI 101",
+    "standard_title_en": "Biodiversity 2024",
+    "title_en": "in GRI 2: General Disclosures 2021 or under 3-3-c in GRI 3: Material",
+    "title_vi": "in GRI 2: General Disclosures 2021 or under 3-3-c in GRI 3: Material",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 2-23: in GRI 2: General Disclosures 2021 or under 3-3-c in GRI 3: Material",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_101_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_102_2025",
+        "version_year": 2025,
+        "effective_date": "2026-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_2_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 101_ Biodiversity 2024 - English.pdf",
+    "sha256": "e8b42d8fbabdec42e693db1e431690caa419dca77a20823a35fed7e9fa154732",
+    "page": 49
+  },
+  "GRI 2-27": {
+    "gri_standard": "GRI 101",
+    "standard_title_en": "Biodiversity 2024",
+    "title_en": "in GRI 2: General",
+    "title_vi": "in GRI 2: General",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 2-27: in GRI 2: General",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": "TT96-6.5.1",
+    "versions": [
+      {
+        "version_id": "GRI_101_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_2_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 101_ Biodiversity 2024 - English.pdf",
+    "sha256": "e8b42d8fbabdec42e693db1e431690caa419dca77a20823a35fed7e9fa154732",
+    "page": 49
+  },
+  "GRI 305-7": {
+    "gri_standard": "GRI 101",
+    "standard_title_en": "Biodiversity 2024",
+    "title_en": "Nitrogen oxides (NOx), sulfur oxides (SOx), and other significant air",
+    "title_vi": "Nitrogen oxides (NOx), sulfur oxides (SOx), and other significant air",
+    "pillar": "Môi trường",
+    "definition_vi": "Chỉ số công bố GRI 305-7: Nitrogen oxides (NOx), sulfur oxides (SOx), and other significant air",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_101_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_305_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 101_ Biodiversity 2024 - English.pdf",
+    "sha256": "e8b42d8fbabdec42e693db1e431690caa419dca77a20823a35fed7e9fa154732",
+    "page": 49
+  },
+  "GRI 303-4": {
+    "gri_standard": "GRI 101",
+    "standard_title_en": "Biodiversity 2024",
+    "title_en": "Water discharge in GRI 303: Water and Effluents 2018 to have information",
+    "title_vi": "Water discharge in GRI 303: Water and Effluents 2018 to have information",
+    "pillar": "Môi trường",
+    "definition_vi": "Chỉ số công bố GRI 303-4: Water discharge in GRI 303: Water and Effluents 2018 to have information",
+    "requirement_type": "Quantitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_101_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_303_2018",
+        "version_year": 2018,
+        "effective_date": "2019-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 101_ Biodiversity 2024 - English.pdf",
+    "sha256": "e8b42d8fbabdec42e693db1e431690caa419dca77a20823a35fed7e9fa154732",
+    "page": 49
+  },
+  "GRI 2-25": {
+    "gri_standard": "GRI 101",
+    "standard_title_en": "Biodiversity 2024",
+    "title_en": "in GRI 2: General Disclosures 2021 for more",
+    "title_vi": "in GRI 2: General Disclosures 2021 for more",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 2-25: in GRI 2: General Disclosures 2021 for more",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_101_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_102_2025",
+        "version_year": 2025,
+        "effective_date": "2026-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_308_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 101_ Biodiversity 2024 - English.pdf",
+    "sha256": "e8b42d8fbabdec42e693db1e431690caa419dca77a20823a35fed7e9fa154732",
+    "page": 49
+  },
+  "GRI 102-1": {
+    "gri_standard": "GRI 102",
+    "standard_title_en": "Climate Change 2025",
+    "title_en": "Transition plan for climate change mitigation",
+    "title_vi": "Transition plan for climate change mitigation",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 102-1: Transition plan for climate change mitigation",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_102_2025",
+        "version_year": 2025,
+        "effective_date": "2026-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 102_ Climate Change 2025.pdf",
+    "sha256": "b082ea90a6f240a7d9fad443bdea3358381ba6fe85d4515f5c79c3a8420703ec",
+    "page": 60
+  },
+  "GRI 102-2": {
+    "gri_standard": "GRI 102",
+    "standard_title_en": "Climate Change 2025",
+    "title_en": "Climate change adaptation plan",
+    "title_vi": "Climate change adaptation plan",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 102-2: Climate change adaptation plan",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_102_2025",
+        "version_year": 2025,
+        "effective_date": "2026-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 102_ Climate Change 2025.pdf",
+    "sha256": "b082ea90a6f240a7d9fad443bdea3358381ba6fe85d4515f5c79c3a8420703ec",
+    "page": 60
+  },
+  "GRI 102-3": {
+    "gri_standard": "GRI 102",
+    "standard_title_en": "Climate Change 2025",
+    "title_en": "Just transition",
+    "title_vi": "Just transition",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 102-3: Just transition",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_102_2025",
+        "version_year": 2025,
+        "effective_date": "2026-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 102_ Climate Change 2025.pdf",
+    "sha256": "b082ea90a6f240a7d9fad443bdea3358381ba6fe85d4515f5c79c3a8420703ec",
+    "page": 60
+  },
+  "GRI 102-4": {
+    "gri_standard": "GRI 102",
+    "standard_title_en": "Climate Change 2025",
+    "title_en": "GHG emissions reduction targets and progress",
+    "title_vi": "GHG emissions reduction targets and progress",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 102-4: GHG emissions reduction targets and progress",
+    "requirement_type": "Quantitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_102_2025",
+        "version_year": 2025,
+        "effective_date": "2026-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 102_ Climate Change 2025.pdf",
+    "sha256": "b082ea90a6f240a7d9fad443bdea3358381ba6fe85d4515f5c79c3a8420703ec",
+    "page": 60
+  },
+  "GRI 102-5": {
+    "gri_standard": "GRI 102",
+    "standard_title_en": "Climate Change 2025",
+    "title_en": "Scope 1 GHG emissions",
+    "title_vi": "Scope 1 GHG emissions",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 102-5: Scope 1 GHG emissions",
+    "requirement_type": "Quantitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_102_2025",
+        "version_year": 2025,
+        "effective_date": "2026-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 102_ Climate Change 2025.pdf",
+    "sha256": "b082ea90a6f240a7d9fad443bdea3358381ba6fe85d4515f5c79c3a8420703ec",
+    "page": 60
+  },
+  "GRI 102-6": {
+    "gri_standard": "GRI 102",
+    "standard_title_en": "Climate Change 2025",
+    "title_en": "Scope 2 GHG emissions",
+    "title_vi": "Scope 2 GHG emissions",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 102-6: Scope 2 GHG emissions",
+    "requirement_type": "Quantitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_102_2025",
+        "version_year": 2025,
+        "effective_date": "2026-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 102_ Climate Change 2025.pdf",
+    "sha256": "b082ea90a6f240a7d9fad443bdea3358381ba6fe85d4515f5c79c3a8420703ec",
+    "page": 60
+  },
+  "GRI 102-7": {
+    "gri_standard": "GRI 102",
+    "standard_title_en": "Climate Change 2025",
+    "title_en": "Scope 3 GHG emissions",
+    "title_vi": "Scope 3 GHG emissions",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 102-7: Scope 3 GHG emissions",
+    "requirement_type": "Quantitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_102_2025",
+        "version_year": 2025,
+        "effective_date": "2026-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 102_ Climate Change 2025.pdf",
+    "sha256": "b082ea90a6f240a7d9fad443bdea3358381ba6fe85d4515f5c79c3a8420703ec",
+    "page": 60
+  },
+  "GRI 102-8": {
+    "gri_standard": "GRI 102",
+    "standard_title_en": "Climate Change 2025",
+    "title_en": "GHG emissions intensity",
+    "title_vi": "GHG emissions intensity",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 102-8: GHG emissions intensity",
+    "requirement_type": "Quantitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_102_2025",
+        "version_year": 2025,
+        "effective_date": "2026-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 102_ Climate Change 2025.pdf",
+    "sha256": "b082ea90a6f240a7d9fad443bdea3358381ba6fe85d4515f5c79c3a8420703ec",
+    "page": 60
+  },
+  "GRI 102-9": {
+    "gri_standard": "GRI 102",
+    "standard_title_en": "Climate Change 2025",
+    "title_en": "GHG removals in the value chain",
+    "title_vi": "GHG removals in the value chain",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 102-9: GHG removals in the value chain",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_102_2025",
+        "version_year": 2025,
+        "effective_date": "2026-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 102_ Climate Change 2025.pdf",
+    "sha256": "b082ea90a6f240a7d9fad443bdea3358381ba6fe85d4515f5c79c3a8420703ec",
+    "page": 60
+  },
+  "GRI 102-10": {
+    "gri_standard": "GRI 102",
+    "standard_title_en": "Climate Change 2025",
+    "title_en": "Carbon credits",
+    "title_vi": "Carbon credits",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 102-10: Carbon credits",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_102_2025",
+        "version_year": 2025,
+        "effective_date": "2026-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 102_ Climate Change 2025.pdf",
+    "sha256": "b082ea90a6f240a7d9fad443bdea3358381ba6fe85d4515f5c79c3a8420703ec",
+    "page": 60
+  },
+  "GRI 2-19": {
+    "gri_standard": "GRI 102",
+    "standard_title_en": "Climate Change 2025",
+    "title_en": "in GRI 2: General Disclosures 2021 requires information on the",
+    "title_vi": "in GRI 2: General Disclosures 2021 requires information on the",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 2-19: in GRI 2: General Disclosures 2021 requires information on the",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_102_2025",
+        "version_year": 2025,
+        "effective_date": "2026-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_2_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 102_ Climate Change 2025.pdf",
+    "sha256": "b082ea90a6f240a7d9fad443bdea3358381ba6fe85d4515f5c79c3a8420703ec",
+    "page": 60
+  },
+  "GRI 2-29": {
+    "gri_standard": "GRI 102",
+    "standard_title_en": "Climate Change 2025",
+    "title_en": "in GRI 2: General Disclosures 2021 covers the organization’s approach to",
+    "title_vi": "in GRI 2: General Disclosures 2021 covers the organization’s approach to",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 2-29: in GRI 2: General Disclosures 2021 covers the organization’s approach to",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_102_2025",
+        "version_year": 2025,
+        "effective_date": "2026-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_2_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 102_ Climate Change 2025.pdf",
+    "sha256": "b082ea90a6f240a7d9fad443bdea3358381ba6fe85d4515f5c79c3a8420703ec",
+    "page": 60
+  },
+  "GRI 2-4": {
+    "gri_standard": "GRI 102",
+    "standard_title_en": "Climate Change 2025",
+    "title_en": "in GRI 2:",
+    "title_vi": "in GRI 2:",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 2-4: in GRI 2:",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_102_2025",
+        "version_year": 2025,
+        "effective_date": "2026-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_1_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 102_ Climate Change 2025.pdf",
+    "sha256": "b082ea90a6f240a7d9fad443bdea3358381ba6fe85d4515f5c79c3a8420703ec",
+    "page": 60
+  },
+  "GRI 2-2": {
+    "gri_standard": "GRI 102",
+    "standard_title_en": "Climate Change 2025",
+    "title_en": "in GRI 2: General Disclosures 2021. See also section 5.1 in GRI 1: Foundation",
+    "title_vi": "in GRI 2: General Disclosures 2021. See also section 5.1 in GRI 1: Foundation",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 2-2: in GRI 2: General Disclosures 2021. See also section 5.1 in GRI 1: Foundation",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_102_2025",
+        "version_year": 2025,
+        "effective_date": "2026-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_1_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 102_ Climate Change 2025.pdf",
+    "sha256": "b082ea90a6f240a7d9fad443bdea3358381ba6fe85d4515f5c79c3a8420703ec",
+    "page": 60
+  },
+  "GRI 103-1": {
+    "gri_standard": "GRI 103",
+    "standard_title_en": "Energy 2025",
+    "title_en": "Energy policies and commitments",
+    "title_vi": "Energy policies and commitments",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 103-1: Energy policies and commitments",
+    "requirement_type": "Quantitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_103_2025",
+        "version_year": 2025,
+        "effective_date": "2026-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 103_ Energy 2025.pdf",
+    "sha256": "0de8c902906e4dc9f282d5600c2fed20e34b53ab4ee2df554cc0841110f34df0",
+    "page": 29
+  },
+  "GRI 103-2": {
+    "gri_standard": "GRI 103",
+    "standard_title_en": "Energy 2025",
+    "title_en": "Energy consumption and self-generation within the organization",
+    "title_vi": "Energy consumption and self-generation within the organization",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 103-2: Energy consumption and self-generation within the organization",
+    "requirement_type": "Quantitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_103_2025",
+        "version_year": 2025,
+        "effective_date": "2026-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 103_ Energy 2025.pdf",
+    "sha256": "0de8c902906e4dc9f282d5600c2fed20e34b53ab4ee2df554cc0841110f34df0",
+    "page": 29
+  },
+  "GRI 103-3": {
+    "gri_standard": "GRI 103",
+    "standard_title_en": "Energy 2025",
+    "title_en": "Upstream and downstream energy consumption",
+    "title_vi": "Upstream and downstream energy consumption",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 103-3: Upstream and downstream energy consumption",
+    "requirement_type": "Quantitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_103_2025",
+        "version_year": 2025,
+        "effective_date": "2026-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 103_ Energy 2025.pdf",
+    "sha256": "0de8c902906e4dc9f282d5600c2fed20e34b53ab4ee2df554cc0841110f34df0",
+    "page": 29
+  },
+  "GRI 103-4": {
+    "gri_standard": "GRI 103",
+    "standard_title_en": "Energy 2025",
+    "title_en": "Energy intensity",
+    "title_vi": "Energy intensity",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 103-4: Energy intensity",
+    "requirement_type": "Quantitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_103_2025",
+        "version_year": 2025,
+        "effective_date": "2026-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 103_ Energy 2025.pdf",
+    "sha256": "0de8c902906e4dc9f282d5600c2fed20e34b53ab4ee2df554cc0841110f34df0",
+    "page": 29
+  },
+  "GRI 103-5": {
+    "gri_standard": "GRI 103",
+    "standard_title_en": "Energy 2025",
+    "title_en": "Reduction in energy consumption",
+    "title_vi": "Reduction in energy consumption",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 103-5: Reduction in energy consumption",
+    "requirement_type": "Quantitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_103_2025",
+        "version_year": 2025,
+        "effective_date": "2026-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 103_ Energy 2025.pdf",
+    "sha256": "0de8c902906e4dc9f282d5600c2fed20e34b53ab4ee2df554cc0841110f34df0",
+    "page": 29
+  },
+  "GRI 416-1": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Assessment of the health and safety impacts of product and",
+    "title_vi": "Assessment of the health and safety impacts of product and",
+    "pillar": "Xã hội",
+    "definition_vi": "Chỉ số công bố GRI 416-1: Assessment of the health and safety impacts of product and",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_13_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_416_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 306-1": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Waste generation and significant waste-related impacts",
+    "title_vi": "Waste generation and significant waste-related impacts",
+    "pillar": "Môi trường",
+    "definition_vi": "Chỉ số công bố GRI 306-1: Waste generation and significant waste-related impacts",
+    "requirement_type": "Quantitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_306_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Superseded"
+      },
+      {
+        "version_id": "GRI_306_2020",
+        "version_year": 2020,
+        "effective_date": "2021-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 306-2": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Management of significant waste-related impacts",
+    "title_vi": "Management of significant waste-related impacts",
+    "pillar": "Môi trường",
+    "definition_vi": "Chỉ số công bố GRI 306-2: Management of significant waste-related impacts",
+    "requirement_type": "Quantitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_306_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Superseded"
+      },
+      {
+        "version_id": "GRI_306_2020",
+        "version_year": 2020,
+        "effective_date": "2021-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 306-4": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Waste diverted from disposal",
+    "title_vi": "Waste diverted from disposal",
+    "pillar": "Môi trường",
+    "definition_vi": "Chỉ số công bố GRI 306-4: Waste diverted from disposal",
+    "requirement_type": "Quantitative",
+    "units": [],
+    "tt96_equivalent": "SSCIFC-E7",
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_306_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Superseded"
+      },
+      {
+        "version_id": "GRI_306_2020",
+        "version_year": 2020,
+        "effective_date": "2021-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 306-5": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Waste directed to disposal",
+    "title_vi": "Waste directed to disposal",
+    "pillar": "Môi trường",
+    "definition_vi": "Chỉ số công bố GRI 306-5: Waste directed to disposal",
+    "requirement_type": "Quantitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_306_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Superseded"
+      },
+      {
+        "version_id": "GRI_306_2020",
+        "version_year": 2020,
+        "effective_date": "2021-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 303-1": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Interactions with water as a shared resource",
+    "title_vi": "Interactions with water as a shared resource",
+    "pillar": "Môi trường",
+    "definition_vi": "Chỉ số công bố GRI 303-1: Interactions with water as a shared resource",
+    "requirement_type": "Quantitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_303_2018",
+        "version_year": 2018,
+        "effective_date": "2019-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_306_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Superseded"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 303-2": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Management of water discharge-related impacts",
+    "title_vi": "Management of water discharge-related impacts",
+    "pillar": "Môi trường",
+    "definition_vi": "Chỉ số công bố GRI 303-2: Management of water discharge-related impacts",
+    "requirement_type": "Quantitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_303_2018",
+        "version_year": 2018,
+        "effective_date": "2019-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 303-3": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Water withdrawal",
+    "title_vi": "Water withdrawal",
+    "pillar": "Môi trường",
+    "definition_vi": "Chỉ số công bố GRI 303-3: Water withdrawal",
+    "requirement_type": "Quantitative",
+    "units": [],
+    "tt96_equivalent": "TT96-6.4.1",
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_303_2018",
+        "version_year": 2018,
+        "effective_date": "2019-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 303-5": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Water consumption",
+    "title_vi": "Water consumption",
+    "pillar": "Môi trường",
+    "definition_vi": "Chỉ số công bố GRI 303-5: Water consumption",
+    "requirement_type": "Quantitative",
+    "units": [],
+    "tt96_equivalent": "SSCIFC-E4",
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_303_2018",
+        "version_year": 2018,
+        "effective_date": "2019-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 402-1": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Minimum notice periods regarding operational changes",
+    "title_vi": "Minimum notice periods regarding operational changes",
+    "pillar": "Xã hội",
+    "definition_vi": "Chỉ số công bố GRI 402-1: Minimum notice periods regarding operational changes",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_402_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 404-2": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Programs for upgrading employee skills and transition",
+    "title_vi": "Programs for upgrading employee skills and transition",
+    "pillar": "Xã hội",
+    "definition_vi": "Chỉ số công bố GRI 404-2: Programs for upgrading employee skills and transition",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": "TT96-6.6.5",
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_404_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 403-1": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Occupational health and safety management system",
+    "title_vi": "Occupational health and safety management system",
+    "pillar": "Xã hội",
+    "definition_vi": "Chỉ số công bố GRI 403-1: Occupational health and safety management system",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_403_2018",
+        "version_year": 2018,
+        "effective_date": "2019-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 403-2": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Hazard identification, risk assessment, and incident",
+    "title_vi": "Hazard identification, risk assessment, and incident",
+    "pillar": "Xã hội",
+    "definition_vi": "Chỉ số công bố GRI 403-2: Hazard identification, risk assessment, and incident",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_403_2018",
+        "version_year": 2018,
+        "effective_date": "2019-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 403-3": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Occupational health services",
+    "title_vi": "Occupational health services",
+    "pillar": "Xã hội",
+    "definition_vi": "Chỉ số công bố GRI 403-3: Occupational health services",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_403_2018",
+        "version_year": 2018,
+        "effective_date": "2019-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 403-4": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Worker participation, consultation, and communication on",
+    "title_vi": "Worker participation, consultation, and communication on",
+    "pillar": "Xã hội",
+    "definition_vi": "Chỉ số công bố GRI 403-4: Worker participation, consultation, and communication on",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_403_2018",
+        "version_year": 2018,
+        "effective_date": "2019-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 403-5": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Worker training on occupational health and safety",
+    "title_vi": "Worker training on occupational health and safety",
+    "pillar": "Xã hội",
+    "definition_vi": "Chỉ số công bố GRI 403-5: Worker training on occupational health and safety",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_403_2018",
+        "version_year": 2018,
+        "effective_date": "2019-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 403-6": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Promotion of worker health",
+    "title_vi": "Promotion of worker health",
+    "pillar": "Xã hội",
+    "definition_vi": "Chỉ số công bố GRI 403-6: Promotion of worker health",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": "TT96-6.6.2",
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_403_2018",
+        "version_year": 2018,
+        "effective_date": "2019-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 403-7": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Prevention and mitigation of occupational health and safety",
+    "title_vi": "Prevention and mitigation of occupational health and safety",
+    "pillar": "Xã hội",
+    "definition_vi": "Chỉ số công bố GRI 403-7: Prevention and mitigation of occupational health and safety",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_403_2018",
+        "version_year": 2018,
+        "effective_date": "2019-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 403-8": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Workers covered by an occupational health and safety",
+    "title_vi": "Workers covered by an occupational health and safety",
+    "pillar": "Xã hội",
+    "definition_vi": "Chỉ số công bố GRI 403-8: Workers covered by an occupational health and safety",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_403_2018",
+        "version_year": 2018,
+        "effective_date": "2019-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 403-9": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Work-related injuries",
+    "title_vi": "Work-related injuries",
+    "pillar": "Xã hội",
+    "definition_vi": "Chỉ số công bố GRI 403-9: Work-related injuries",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": "SSCIFC-S5",
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_403_2018",
+        "version_year": 2018,
+        "effective_date": "2019-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 403-10": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Work-related ill health",
+    "title_vi": "Work-related ill health",
+    "pillar": "Xã hội",
+    "definition_vi": "Chỉ số công bố GRI 403-10: Work-related ill health",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_403_2018",
+        "version_year": 2018,
+        "effective_date": "2019-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 401-1": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "New employee hires and employee turnover",
+    "title_vi": "New employee hires and employee turnover",
+    "pillar": "Xã hội",
+    "definition_vi": "Chỉ số công bố GRI 401-1: New employee hires and employee turnover",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_401_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 401-2": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Benefits provided to full-time employees that are not provided",
+    "title_vi": "Benefits provided to full-time employees that are not provided",
+    "pillar": "Xã hội",
+    "definition_vi": "Chỉ số công bố GRI 401-2: Benefits provided to full-time employees that are not provided",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_401_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 401-3": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Parental leave",
+    "title_vi": "Parental leave",
+    "pillar": "Xã hội",
+    "definition_vi": "Chỉ số công bố GRI 401-3: Parental leave",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_401_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 404-1": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Average hours of training per year per employee",
+    "title_vi": "Average hours of training per year per employee",
+    "pillar": "Xã hội",
+    "definition_vi": "Chỉ số công bố GRI 404-1: Average hours of training per year per employee",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": "TT96-6.6.3",
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_404_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 414-1": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "New suppliers that were screened using social criteria",
+    "title_vi": "New suppliers that were screened using social criteria",
+    "pillar": "Xã hội",
+    "definition_vi": "Chỉ số công bố GRI 414-1: New suppliers that were screened using social criteria",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_414_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 414-2": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Negative social impacts in the supply chain and actions taken",
+    "title_vi": "Negative social impacts in the supply chain and actions taken",
+    "pillar": "Xã hội",
+    "definition_vi": "Chỉ số công bố GRI 414-2: Negative social impacts in the supply chain and actions taken",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_414_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 202-2": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Proportion of senior management hired from the local",
+    "title_vi": "Proportion of senior management hired from the local",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 202-2: Proportion of senior management hired from the local",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_202_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 405-1": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Diversity of governance bodies and employees",
+    "title_vi": "Diversity of governance bodies and employees",
+    "pillar": "Xã hội",
+    "definition_vi": "Chỉ số công bố GRI 405-1: Diversity of governance bodies and employees",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": "SSCIFC-S6",
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_205_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 405-2": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Ratio of basic salary and remuneration",
+    "title_vi": "Ratio of basic salary and remuneration",
+    "pillar": "Xã hội",
+    "definition_vi": "Chỉ số công bố GRI 405-2: Ratio of basic salary and remuneration",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": "TT96-6.6.1",
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_405_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 406-1": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Incidents of discrimination and corrective actions taken",
+    "title_vi": "Incidents of discrimination and corrective actions taken",
+    "pillar": "Xã hội",
+    "definition_vi": "Chỉ số công bố GRI 406-1: Incidents of discrimination and corrective actions taken",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_406_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 409-1": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Operations and suppliers at significant risk for incidents of",
+    "title_vi": "Operations and suppliers at significant risk for incidents of",
+    "pillar": "Xã hội",
+    "definition_vi": "Chỉ số công bố GRI 409-1: Operations and suppliers at significant risk for incidents of",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_409_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 407-1": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Operations and suppliers in which the right to freedom of",
+    "title_vi": "Operations and suppliers in which the right to freedom of",
+    "pillar": "Xã hội",
+    "definition_vi": "Chỉ số công bố GRI 407-1: Operations and suppliers in which the right to freedom of",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_407_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 201-1": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Direct economic value generated and distributed",
+    "title_vi": "Direct economic value generated and distributed",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 201-1: Direct economic value generated and distributed",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": "TT96-6.7.2",
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_201_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 203-1": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Infrastructure investments and services supported",
+    "title_vi": "Infrastructure investments and services supported",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 203-1: Infrastructure investments and services supported",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_203_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 203-2": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Significant indirect economic impacts",
+    "title_vi": "Significant indirect economic impacts",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 203-2: Significant indirect economic impacts",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_203_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 204-1": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Proportion of spending on local suppliers",
+    "title_vi": "Proportion of spending on local suppliers",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 204-1: Proportion of spending on local suppliers",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_204_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 413-1": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Operations with local community engagement, impact",
+    "title_vi": "Operations with local community engagement, impact",
+    "pillar": "Xã hội",
+    "definition_vi": "Chỉ số công bố GRI 413-1: Operations with local community engagement, impact",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": "TT96-6.7.1",
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_413_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 413-2": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Operations with significant actual and potential negative impacts",
+    "title_vi": "Operations with significant actual and potential negative impacts",
+    "pillar": "Xã hội",
+    "definition_vi": "Chỉ số công bố GRI 413-2: Operations with significant actual and potential negative impacts",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_413_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 411-1": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Incidents of violations involving rights of indigenous peoples",
+    "title_vi": "Incidents of violations involving rights of indigenous peoples",
+    "pillar": "Xã hội",
+    "definition_vi": "Chỉ số công bố GRI 411-1: Incidents of violations involving rights of indigenous peoples",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_411_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 410-1": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Security personnel trained in human rights policies or",
+    "title_vi": "Security personnel trained in human rights policies or",
+    "pillar": "Xã hội",
+    "definition_vi": "Chỉ số công bố GRI 410-1: Security personnel trained in human rights policies or",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_410_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 206-1": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Legal actions for anti-competitive behavior, anti-trust, and",
+    "title_vi": "Legal actions for anti-competitive behavior, anti-trust, and",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 206-1: Legal actions for anti-competitive behavior, anti-trust, and",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_13_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_206_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 205-1": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Operations assessed for risks related to corruption",
+    "title_vi": "Operations assessed for risks related to corruption",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 205-1: Operations assessed for risks related to corruption",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_205_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 205-2": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Communication and training about anti-corruption policies and",
+    "title_vi": "Communication and training about anti-corruption policies and",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 205-2: Communication and training about anti-corruption policies and",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_205_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 205-3": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Confirmed incidents of corruption and actions taken",
+    "title_vi": "Confirmed incidents of corruption and actions taken",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 205-3: Confirmed incidents of corruption and actions taken",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_205_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 201-4": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Financial assistance received from government",
+    "title_vi": "Financial assistance received from government",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 201-4: Financial assistance received from government",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_201_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 207-1": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Approach to tax",
+    "title_vi": "Approach to tax",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 207-1: Approach to tax",
+    "requirement_type": "Quantitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_207_2019",
+        "version_year": 2019,
+        "effective_date": "2020-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 207-2": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Tax governance, control, and risk management",
+    "title_vi": "Tax governance, control, and risk management",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 207-2: Tax governance, control, and risk management",
+    "requirement_type": "Quantitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_207_2019",
+        "version_year": 2019,
+        "effective_date": "2020-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 207-3": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Stakeholder engagement and management of concerns related",
+    "title_vi": "Stakeholder engagement and management of concerns related",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 207-3: Stakeholder engagement and management of concerns related",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_207_2019",
+        "version_year": 2019,
+        "effective_date": "2020-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 207-4": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Country-by-country reporting",
+    "title_vi": "Country-by-country reporting",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 207-4: Country-by-country reporting",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_207_2019",
+        "version_year": 2019,
+        "effective_date": "2020-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 415-1": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Political contributions",
+    "title_vi": "Political contributions",
+    "pillar": "Xã hội",
+    "definition_vi": "Chỉ số công bố GRI 415-1: Political contributions",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_415_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 89
+  },
+  "GRI 408-1": {
+    "gri_standard": "GRI 12",
+    "standard_title_en": "Coal Sector 2022 V1.1",
+    "title_en": "Operations and suppliers at significant risk for incidents of child",
+    "title_vi": "Operations and suppliers at significant risk for incidents of child",
+    "pillar": "Xã hội",
+    "definition_vi": "Chỉ số công bố GRI 408-1: Operations and suppliers at significant risk for incidents of child",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_408_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 12_ Coal Sector 2022 V1.1.pdf",
+    "sha256": "7e10320a11e4bb0cba8b13472abd877c119594bcf6d45034440f922c25c2acd5",
+    "page": 85
+  },
+  "GRI 202-1": {
+    "gri_standard": "GRI 12",
+    "standard_title_en": "Coal Sector 2022 V1.1",
+    "title_en": "Ratios of standard entry level wage by gender compared to local",
+    "title_vi": "Ratios of standard entry level wage by gender compared to local",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 202-1: Ratios of standard entry level wage by gender compared to local",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_12_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_1_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_202_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 12_ Coal Sector 2022 V1.1.pdf",
+    "sha256": "7e10320a11e4bb0cba8b13472abd877c119594bcf6d45034440f922c25c2acd5",
+    "page": 85
+  },
+  "GRI 305-6": {
+    "gri_standard": "GRI 13",
+    "standard_title_en": "Agriculture Aquaculture and Fishing Sectors 2022 V1.1",
+    "title_en": "Emissions of ozone-depleting substances (ODS)",
+    "title_vi": "Emissions of ozone-depleting substances (ODS)",
+    "pillar": "Môi trường",
+    "definition_vi": "Chỉ số công bố GRI 305-6: Emissions of ozone-depleting substances (ODS)",
+    "requirement_type": "Quantitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_13_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_305_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 13_ Agriculture Aquaculture and Fishing Sectors 2022 V1.1.pdf",
+    "sha256": "9f26759fa5a902466036a9bc3147084b076dfb6c4cd8e944ead9d8d1ba82e092",
+    "page": 96
+  },
+  "GRI 416-2": {
+    "gri_standard": "GRI 13",
+    "standard_title_en": "Agriculture Aquaculture and Fishing Sectors 2022 V1.1",
+    "title_en": "Incidents of non-compliance concerning the health and safety",
+    "title_vi": "Incidents of non-compliance concerning the health and safety",
+    "pillar": "Xã hội",
+    "definition_vi": "Chỉ số công bố GRI 416-2: Incidents of non-compliance concerning the health and safety",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_13_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_416_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 13_ Agriculture Aquaculture and Fishing Sectors 2022 V1.1.pdf",
+    "sha256": "9f26759fa5a902466036a9bc3147084b076dfb6c4cd8e944ead9d8d1ba82e092",
+    "page": 96
+  },
+  "GRI 2-6": {
+    "gri_standard": "GRI 13",
+    "standard_title_en": "Agriculture Aquaculture and Fishing Sectors 2022 V1.1",
+    "title_en": "Activities, value chain and other business relationships in GRI 2:",
+    "title_vi": "Activities, value chain and other business relationships in GRI 2:",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 2-6: Activities, value chain and other business relationships in GRI 2:",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_13_2022",
+        "version_year": 2022,
+        "effective_date": "2023-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_2_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_413_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 13_ Agriculture Aquaculture and Fishing Sectors 2022 V1.1.pdf",
+    "sha256": "9f26759fa5a902466036a9bc3147084b076dfb6c4cd8e944ead9d8d1ba82e092",
+    "page": 96
+  },
+  "GRI 2-28": {
+    "gri_standard": "GRI 14",
+    "standard_title_en": "Mining Sector 2024 V1.1",
+    "title_en": "in GRI 2: General Disclosures 2021 for further guidance on membership associations.",
+    "title_vi": "in GRI 2: General Disclosures 2021 for further guidance on membership associations.",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 2-28: in GRI 2: General Disclosures 2021 for further guidance on membership associations.",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_14_2024",
+        "version_year": 2024,
+        "effective_date": "2025-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_2_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 14_ Mining Sector 2024 V1.1.pdf",
+    "sha256": "78999daadb2de702559d45b0ce6eec71774649537a612abfc9422817d1212ae5",
+    "page": 100
+  },
+  "GRI 2-1": {
+    "gri_standard": "GRI 1",
+    "standard_title_en": "Foundation 2021",
+    "title_en": "Organizational details",
+    "title_vi": "Organizational details",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 2-1: Organizational details",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_1_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 1_ Foundation 2021.pdf",
+    "sha256": "c0333b1e7767abee07df7cf93ee5db3d8d46521f3f88ec963fb3a746a04058a5",
+    "page": 38
+  },
+  "GRI 2-3": {
+    "gri_standard": "GRI 1",
+    "standard_title_en": "Foundation 2021",
+    "title_en": "Reporting period, frequency and contact point",
+    "title_vi": "Reporting period, frequency and contact point",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 2-3: Reporting period, frequency and contact point",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_1_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 1_ Foundation 2021.pdf",
+    "sha256": "c0333b1e7767abee07df7cf93ee5db3d8d46521f3f88ec963fb3a746a04058a5",
+    "page": 38
+  },
+  "GRI 2-5": {
+    "gri_standard": "GRI 1",
+    "standard_title_en": "Foundation 2021",
+    "title_en": "External assurance",
+    "title_vi": "External assurance",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 2-5: External assurance",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_1_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_207_2019",
+        "version_year": 2019,
+        "effective_date": "2020-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 1_ Foundation 2021.pdf",
+    "sha256": "c0333b1e7767abee07df7cf93ee5db3d8d46521f3f88ec963fb3a746a04058a5",
+    "page": 38
+  },
+  "GRI 3-1": {
+    "gri_standard": "GRI 1",
+    "standard_title_en": "Foundation 2021",
+    "title_en": "Process to determine material topics",
+    "title_vi": "Process to determine material topics",
+    "pillar": "Môi trường",
+    "definition_vi": "Chỉ số công bố GRI 3-1: Process to determine material topics",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_1_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 1_ Foundation 2021.pdf",
+    "sha256": "c0333b1e7767abee07df7cf93ee5db3d8d46521f3f88ec963fb3a746a04058a5",
+    "page": 38
+  },
+  "GRI 305-3": {
+    "gri_standard": "GRI 1",
+    "standard_title_en": "Foundation 2021",
+    "title_en": "in",
+    "title_vi": "in",
+    "pillar": "Môi trường",
+    "definition_vi": "Chỉ số công bố GRI 305-3: in",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_1_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_302_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 1_ Foundation 2021.pdf",
+    "sha256": "c0333b1e7767abee07df7cf93ee5db3d8d46521f3f88ec963fb3a746a04058a5",
+    "page": 38
+  },
+  "GRI 3-2": {
+    "gri_standard": "GRI 1",
+    "standard_title_en": "Foundation 2021",
+    "title_en": "List of material topics",
+    "title_vi": "List of material topics",
+    "pillar": "Môi trường",
+    "definition_vi": "Chỉ số công bố GRI 3-2: List of material topics",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_1_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 1_ Foundation 2021.pdf",
+    "sha256": "c0333b1e7767abee07df7cf93ee5db3d8d46521f3f88ec963fb3a746a04058a5",
+    "page": 38
+  },
+  "GRI 2-14": {
+    "gri_standard": "GRI 1",
+    "standard_title_en": "Foundation 2021",
+    "title_en": "in GRI 2:",
+    "title_vi": "in GRI 2:",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 2-14: in GRI 2:",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_1_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 1_ Foundation 2021.pdf",
+    "sha256": "c0333b1e7767abee07df7cf93ee5db3d8d46521f3f88ec963fb3a746a04058a5",
+    "page": 38
+  },
+  "GRI 201-2": {
+    "gri_standard": "GRI 201",
+    "standard_title_en": "Economic Performance 2016",
+    "title_en": "in GRI 201: Economic Performance 2016 has been revised and will be",
+    "title_vi": "in GRI 201: Economic Performance 2016 has been revised and will be",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 201-2: in GRI 201: Economic Performance 2016 has been revised and will be",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_201_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 201_  Economic Performance 2016.pdf",
+    "sha256": "1ff3bc503b410aaf6ace049876f7228cc2772432a642829b252708f7d21435ea",
+    "page": 19
+  },
+  "GRI 201-3": {
+    "gri_standard": "GRI 201",
+    "standard_title_en": "Economic Performance 2016",
+    "title_en": "Defined benefit plan obligations and other retirement plans",
+    "title_vi": "Defined benefit plan obligations and other retirement plans",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 201-3: Defined benefit plan obligations and other retirement plans",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_201_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 201_  Economic Performance 2016.pdf",
+    "sha256": "1ff3bc503b410aaf6ace049876f7228cc2772432a642829b252708f7d21435ea",
+    "page": 19
+  },
+  "GRI 2-8": {
+    "gri_standard": "GRI 202",
+    "standard_title_en": "Market Presence 2016",
+    "title_en": "in GRI 2: General Disclosures 2021 to identify",
+    "title_vi": "in GRI 2: General Disclosures 2021 to identify",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 2-8: in GRI 2: General Disclosures 2021 to identify",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_202_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_2_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 202_ Market Presence 2016.pdf",
+    "sha256": "46303460479d1f6e1c973d22a7855420cdc855394f434ca5d5322d007676cec7",
+    "page": 15
+  },
+  "GRI 2-26": {
+    "gri_standard": "GRI 207",
+    "standard_title_en": "Tax 2019",
+    "title_en": "in GRI 2: General Disclosures 2021. If the",
+    "title_vi": "in GRI 2: General Disclosures 2021. If the",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 2-26: in GRI 2: General Disclosures 2021. If the",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_207_2019",
+        "version_year": 2019,
+        "effective_date": "2020-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_2_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 207_ Tax 2019.pdf",
+    "sha256": "acfad9084e7f731f71e0f6431e4a1653b5898e102f152e6cad0d31d7090b122a",
+    "page": 21
+  },
+  "GRI 2-7": {
+    "gri_standard": "GRI 2",
+    "standard_title_en": "General Disclosures 2021",
+    "title_en": "Employees",
+    "title_vi": "Employees",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 2-7: Employees",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": "TT96-6.6.1",
+    "versions": [
+      {
+        "version_id": "GRI_2_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_401_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 2_ General Disclosures 2021.pdf",
+    "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
+    "page": 58
+  },
+  "GRI 2-9": {
+    "gri_standard": "GRI 2",
+    "standard_title_en": "General Disclosures 2021",
+    "title_en": "Governance structure and composition",
+    "title_vi": "Governance structure and composition",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 2-9: Governance structure and composition",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_2_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 2_ General Disclosures 2021.pdf",
+    "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
+    "page": 58
+  },
+  "GRI 2-10": {
+    "gri_standard": "GRI 2",
+    "standard_title_en": "General Disclosures 2021",
+    "title_en": "Nomination and selection of the highest governance body",
+    "title_vi": "Nomination and selection of the highest governance body",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 2-10: Nomination and selection of the highest governance body",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_2_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 2_ General Disclosures 2021.pdf",
+    "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
+    "page": 58
+  },
+  "GRI 2-11": {
+    "gri_standard": "GRI 2",
+    "standard_title_en": "General Disclosures 2021",
+    "title_en": "Chair of the highest governance body",
+    "title_vi": "Chair of the highest governance body",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 2-11: Chair of the highest governance body",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_2_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 2_ General Disclosures 2021.pdf",
+    "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
+    "page": 58
+  },
+  "GRI 2-12": {
+    "gri_standard": "GRI 2",
+    "standard_title_en": "General Disclosures 2021",
+    "title_en": "Role of the highest governance body in overseeing the",
+    "title_vi": "Role of the highest governance body in overseeing the",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 2-12: Role of the highest governance body in overseeing the",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_2_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 2_ General Disclosures 2021.pdf",
+    "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
+    "page": 58
+  },
+  "GRI 2-13": {
+    "gri_standard": "GRI 2",
+    "standard_title_en": "General Disclosures 2021",
+    "title_en": "Delegation of responsibility for managing impacts",
+    "title_vi": "Delegation of responsibility for managing impacts",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 2-13: Delegation of responsibility for managing impacts",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_2_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 2_ General Disclosures 2021.pdf",
+    "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
+    "page": 58
+  },
+  "GRI 2-15": {
+    "gri_standard": "GRI 2",
+    "standard_title_en": "General Disclosures 2021",
+    "title_en": "Conflicts of interest",
+    "title_vi": "Conflicts of interest",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 2-15: Conflicts of interest",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_2_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 2_ General Disclosures 2021.pdf",
+    "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
+    "page": 58
+  },
+  "GRI 2-16": {
+    "gri_standard": "GRI 2",
+    "standard_title_en": "General Disclosures 2021",
+    "title_en": "Communication of critical concerns",
+    "title_vi": "Communication of critical concerns",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 2-16: Communication of critical concerns",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_2_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 2_ General Disclosures 2021.pdf",
+    "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
+    "page": 58
+  },
+  "GRI 2-17": {
+    "gri_standard": "GRI 2",
+    "standard_title_en": "General Disclosures 2021",
+    "title_en": "Collective knowledge of the highest governance body",
+    "title_vi": "Collective knowledge of the highest governance body",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 2-17: Collective knowledge of the highest governance body",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_2_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 2_ General Disclosures 2021.pdf",
+    "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
+    "page": 58
+  },
+  "GRI 2-18": {
+    "gri_standard": "GRI 2",
+    "standard_title_en": "General Disclosures 2021",
+    "title_en": "Evaluation of the performance of the highest governance body",
+    "title_vi": "Evaluation of the performance of the highest governance body",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 2-18: Evaluation of the performance of the highest governance body",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_2_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 2_ General Disclosures 2021.pdf",
+    "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
+    "page": 58
+  },
+  "GRI 2-20": {
+    "gri_standard": "GRI 2",
+    "standard_title_en": "General Disclosures 2021",
+    "title_en": "Process to determine remuneration",
+    "title_vi": "Process to determine remuneration",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 2-20: Process to determine remuneration",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_2_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 2_ General Disclosures 2021.pdf",
+    "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
+    "page": 58
+  },
+  "GRI 2-21": {
+    "gri_standard": "GRI 2",
+    "standard_title_en": "General Disclosures 2021",
+    "title_en": "Annual total compensation ratio",
+    "title_vi": "Annual total compensation ratio",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 2-21: Annual total compensation ratio",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_2_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 2_ General Disclosures 2021.pdf",
+    "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
+    "page": 58
+  },
+  "GRI 2-22": {
+    "gri_standard": "GRI 2",
+    "standard_title_en": "General Disclosures 2021",
+    "title_en": "Statement on sustainable development strategy",
+    "title_vi": "Statement on sustainable development strategy",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 2-22: Statement on sustainable development strategy",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_2_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 2_ General Disclosures 2021.pdf",
+    "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
+    "page": 58
+  },
+  "GRI 2-24": {
+    "gri_standard": "GRI 2",
+    "standard_title_en": "General Disclosures 2021",
+    "title_en": "Embedding policy commitments",
+    "title_vi": "Embedding policy commitments",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 2-24: Embedding policy commitments",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_2_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 2_ General Disclosures 2021.pdf",
+    "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
+    "page": 58
+  },
+  "GRI 2-30": {
+    "gri_standard": "GRI 2",
+    "standard_title_en": "General Disclosures 2021",
+    "title_en": "Collective bargaining agreements",
+    "title_vi": "Collective bargaining agreements",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 2-30: Collective bargaining agreements",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_2_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_402_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 2_ General Disclosures 2021.pdf",
+    "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
+    "page": 58
+  },
+  "GRI 301-1": {
+    "gri_standard": "GRI 301",
+    "standard_title_en": "Materials 2016",
+    "title_en": "Materials used by weight or volume",
+    "title_vi": "Materials used by weight or volume",
+    "pillar": "Môi trường",
+    "definition_vi": "Chỉ số công bố GRI 301-1: Materials used by weight or volume",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": "TT96-6.2.1",
+    "versions": [
+      {
+        "version_id": "GRI_301_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 301_ Materials 2016.pdf",
+    "sha256": "8341ae1ff5b0b7c03ff9f6b2f07cbaf66204a3a61fd693025174568ed85857d4",
+    "page": 13
+  },
+  "GRI 301-2": {
+    "gri_standard": "GRI 301",
+    "standard_title_en": "Materials 2016",
+    "title_en": "Recycled input materials used",
+    "title_vi": "Recycled input materials used",
+    "pillar": "Môi trường",
+    "definition_vi": "Chỉ số công bố GRI 301-2: Recycled input materials used",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": "TT96-6.2.2",
+    "versions": [
+      {
+        "version_id": "GRI_301_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 301_ Materials 2016.pdf",
+    "sha256": "8341ae1ff5b0b7c03ff9f6b2f07cbaf66204a3a61fd693025174568ed85857d4",
+    "page": 13
+  },
+  "GRI 301-3": {
+    "gri_standard": "GRI 301",
+    "standard_title_en": "Materials 2016",
+    "title_en": "Reclaimed products and their packaging materials",
+    "title_vi": "Reclaimed products and their packaging materials",
+    "pillar": "Môi trường",
+    "definition_vi": "Chỉ số công bố GRI 301-3: Reclaimed products and their packaging materials",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_301_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 301_ Materials 2016.pdf",
+    "sha256": "8341ae1ff5b0b7c03ff9f6b2f07cbaf66204a3a61fd693025174568ed85857d4",
+    "page": 13
+  },
+  "GRI 302-1": {
+    "gri_standard": "GRI 302",
+    "standard_title_en": "Energy 2016",
+    "title_en": "Energy consumption within the organization",
+    "title_vi": "Energy consumption within the organization",
+    "pillar": "Môi trường",
+    "definition_vi": "Chỉ số công bố GRI 302-1: Energy consumption within the organization",
+    "requirement_type": "Quantitative",
+    "units": [],
+    "tt96_equivalent": "TT96-6.3.1",
+    "versions": [
+      {
+        "version_id": "GRI_302_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 302_ Energy 2016.pdf",
+    "sha256": "0dcb278efdff5323f116fc4e5815b978f64ea3337b40e61f03a96a1cbccafb62",
+    "page": 19
+  },
+  "GRI 302-2": {
+    "gri_standard": "GRI 302",
+    "standard_title_en": "Energy 2016",
+    "title_en": "Energy consumption outside of the organization",
+    "title_vi": "Energy consumption outside of the organization",
+    "pillar": "Môi trường",
+    "definition_vi": "Chỉ số công bố GRI 302-2: Energy consumption outside of the organization",
+    "requirement_type": "Quantitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_302_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      },
+      {
+        "version_id": "GRI_306_2020",
+        "version_year": 2020,
+        "effective_date": "2021-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 302_ Energy 2016.pdf",
+    "sha256": "0dcb278efdff5323f116fc4e5815b978f64ea3337b40e61f03a96a1cbccafb62",
+    "page": 19
+  },
+  "GRI 302-3": {
+    "gri_standard": "GRI 302",
+    "standard_title_en": "Energy 2016",
+    "title_en": "Energy intensity",
+    "title_vi": "Energy intensity",
+    "pillar": "Môi trường",
+    "definition_vi": "Chỉ số công bố GRI 302-3: Energy intensity",
+    "requirement_type": "Quantitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_302_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 302_ Energy 2016.pdf",
+    "sha256": "0dcb278efdff5323f116fc4e5815b978f64ea3337b40e61f03a96a1cbccafb62",
+    "page": 19
+  },
+  "GRI 302-5": {
+    "gri_standard": "GRI 302",
+    "standard_title_en": "Energy 2016",
+    "title_en": "Reductions in energy requirements of products and services",
+    "title_vi": "Reductions in energy requirements of products and services",
+    "pillar": "Môi trường",
+    "definition_vi": "Chỉ số công bố GRI 302-5: Reductions in energy requirements of products and services",
+    "requirement_type": "Quantitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_302_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 302_ Energy 2016.pdf",
+    "sha256": "0dcb278efdff5323f116fc4e5815b978f64ea3337b40e61f03a96a1cbccafb62",
+    "page": 19
+  },
+  "GRI 305-1": {
+    "gri_standard": "GRI 302",
+    "standard_title_en": "Energy 2016",
+    "title_en": "of GRI 305: Emissions 2016. Consuming",
+    "title_vi": "of GRI 305: Emissions 2016. Consuming",
+    "pillar": "Môi trường",
+    "definition_vi": "Chỉ số công bố GRI 305-1: of GRI 305: Emissions 2016. Consuming",
+    "requirement_type": "Quantitative",
+    "units": [],
+    "tt96_equivalent": "TT96-6.1.1",
+    "versions": [
+      {
+        "version_id": "GRI_302_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 302_ Energy 2016.pdf",
+    "sha256": "0dcb278efdff5323f116fc4e5815b978f64ea3337b40e61f03a96a1cbccafb62",
+    "page": 19
+  },
+  "GRI 305-2": {
+    "gri_standard": "GRI 302",
+    "standard_title_en": "Energy 2016",
+    "title_en": "of GRI 305:",
+    "title_vi": "of GRI 305:",
+    "pillar": "Môi trường",
+    "definition_vi": "Chỉ số công bố GRI 305-2: of GRI 305:",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": "TT96-6.1.1",
+    "versions": [
+      {
+        "version_id": "GRI_302_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 302_ Energy 2016.pdf",
+    "sha256": "0dcb278efdff5323f116fc4e5815b978f64ea3337b40e61f03a96a1cbccafb62",
+    "page": 19
+  },
+  "GRI 302-4": {
+    "gri_standard": "GRI 302",
+    "standard_title_en": "Energy 2016",
+    "title_en": "Reduction of energy consumption",
+    "title_vi": "Reduction of energy consumption",
+    "pillar": "Môi trường",
+    "definition_vi": "Chỉ số công bố GRI 302-4: Reduction of energy consumption",
+    "requirement_type": "Quantitative",
+    "units": [],
+    "tt96_equivalent": "TT96-6.3.2",
+    "versions": [
+      {
+        "version_id": "GRI_302_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 302_ Energy 2016.pdf",
+    "sha256": "0dcb278efdff5323f116fc4e5815b978f64ea3337b40e61f03a96a1cbccafb62",
+    "page": 19
+  },
+  "GRI 305-4": {
+    "gri_standard": "GRI 305",
+    "standard_title_en": "Emissions 2016",
+    "title_en": "GHG emissions intensity",
+    "title_vi": "GHG emissions intensity",
+    "pillar": "Môi trường",
+    "definition_vi": "Chỉ số công bố GRI 305-4: GHG emissions intensity",
+    "requirement_type": "Quantitative",
+    "units": [
+      "metric tons CO2e"
+    ],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_305_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 305_ Emissions 2016.pdf",
+    "sha256": "fd6c10b99940e4ab96ba810658cebf182e7c0389af71f7444fa9ecf2038c3a1c",
+    "page": 26
+  },
+  "GRI 305-5": {
+    "gri_standard": "GRI 305",
+    "standard_title_en": "Emissions 2016",
+    "title_en": "Reduction of GHG emissions",
+    "title_vi": "Reduction of GHG emissions",
+    "pillar": "Môi trường",
+    "definition_vi": "Chỉ số công bố GRI 305-5: Reduction of GHG emissions",
+    "requirement_type": "Quantitative",
+    "units": [
+      "metric tons CO2e"
+    ],
+    "tt96_equivalent": "TT96-6.1.2",
+    "versions": [
+      {
+        "version_id": "GRI_305_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 305_ Emissions 2016.pdf",
+    "sha256": "fd6c10b99940e4ab96ba810658cebf182e7c0389af71f7444fa9ecf2038c3a1c",
+    "page": 26
+  },
+  "GRI 308-1": {
+    "gri_standard": "GRI 308",
+    "standard_title_en": "Supplier Environmental Assessment 2016",
+    "title_en": "New suppliers that were screened using environmental criteria",
+    "title_vi": "New suppliers that were screened using environmental criteria",
+    "pillar": "Môi trường",
+    "definition_vi": "Chỉ số công bố GRI 308-1: New suppliers that were screened using environmental criteria",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_308_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 308_ Supplier Environmental Assessment 2016.pdf",
+    "sha256": "51cd0d91694b9e91dca986b83d21ba499beaf7711cc20a7109c956e3b5e56ad8",
+    "page": 14
+  },
+  "GRI 308-2": {
+    "gri_standard": "GRI 308",
+    "standard_title_en": "Supplier Environmental Assessment 2016",
+    "title_en": "Negative environmental impacts in the supply chain and actions",
+    "title_vi": "Negative environmental impacts in the supply chain and actions",
+    "pillar": "Môi trường",
+    "definition_vi": "Chỉ số công bố GRI 308-2: Negative environmental impacts in the supply chain and actions",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_308_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 308_ Supplier Environmental Assessment 2016.pdf",
+    "sha256": "51cd0d91694b9e91dca986b83d21ba499beaf7711cc20a7109c956e3b5e56ad8",
+    "page": 14
+  },
+  "GRI 404-3": {
+    "gri_standard": "GRI 404",
+    "standard_title_en": "Training and Education 2016",
+    "title_en": "Percentage of employees receiving regular performance and",
+    "title_vi": "Percentage of employees receiving regular performance and",
+    "pillar": "Xã hội",
+    "definition_vi": "Chỉ số công bố GRI 404-3: Percentage of employees receiving regular performance and",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_404_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 404_ Training and Education 2016.pdf",
+    "sha256": "57036193c0a16f00a5278edee25c21770740952714eb00a32b3adb2523994ce5",
+    "page": 15
+  },
+  "GRI 417-2": {
+    "gri_standard": "GRI 416",
+    "standard_title_en": "Customer Health and Safety 2016",
+    "title_en": "of GRI 417: Marketing and Labelling 2016;",
+    "title_vi": "of GRI 417: Marketing and Labelling 2016;",
+    "pillar": "Xã hội",
+    "definition_vi": "Chỉ số công bố GRI 417-2: of GRI 417: Marketing and Labelling 2016;",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_416_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 416_ Customer Health and Safety 2016.pdf",
+    "sha256": "8992e3bdda9a006021af35aabccabd50cb0602b8b5584fa4c2ec0609c90a88c9",
+    "page": 12
+  },
+  "GRI 417-1": {
+    "gri_standard": "GRI 417",
+    "standard_title_en": "Marketing and Labeling 2016",
+    "title_en": "Requirements for product and service information and labeling",
+    "title_vi": "Requirements for product and service information and labeling",
+    "pillar": "Xã hội",
+    "definition_vi": "Chỉ số công bố GRI 417-1: Requirements for product and service information and labeling",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_417_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 417_ Marketing and Labeling 2016.pdf",
+    "sha256": "d0b95f61170636a8bfb0929309b7923da6d1062f80199789e842369aa02a19ae",
+    "page": 14
+  },
+  "GRI 417-3": {
+    "gri_standard": "GRI 417",
+    "standard_title_en": "Marketing and Labeling 2016",
+    "title_en": "Incidents of non-compliance concerning marketing",
+    "title_vi": "Incidents of non-compliance concerning marketing",
+    "pillar": "Xã hội",
+    "definition_vi": "Chỉ số công bố GRI 417-3: Incidents of non-compliance concerning marketing",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_417_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 417_ Marketing and Labeling 2016.pdf",
+    "sha256": "d0b95f61170636a8bfb0929309b7923da6d1062f80199789e842369aa02a19ae",
+    "page": 14
+  },
+  "GRI 418-1": {
+    "gri_standard": "GRI 418",
+    "standard_title_en": "Customer Privacy 2016",
+    "title_en": "Substantiated complaints concerning breaches of customer",
+    "title_vi": "Substantiated complaints concerning breaches of customer",
+    "pillar": "Xã hội",
+    "definition_vi": "Chỉ số công bố GRI 418-1: Substantiated complaints concerning breaches of customer",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_418_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 418_ Customer Privacy 2016.pdf",
+    "sha256": "7735430fcdcf04ba44c4bc110cb64c3d97afa642d15e1d17c859cf3783210be9",
+    "page": 12
+  }
+}

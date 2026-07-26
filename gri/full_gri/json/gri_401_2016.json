@@ -1,0 +1,148 @@
+{
+  "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
+  "standard_id": "GRI 401",
+  "title_en": "Employment 2016",
+  "title_vi": "Employment 2016",
+  "pillar": "S — Social",
+  "series": "Social (400 Series)",
+  "category": "Topic-Social",
+  "temporal_validity": {
+    "version_id": "GRI_401_2016",
+    "version_year": 2016,
+    "effective_date": "2017-01-01",
+    "valid_until_year": null,
+    "status": "Active",
+    "replaced_by_standard_id": null
+  },
+  "scope": {
+    "target_audience": "Tổ chức thuộc nhóm Social (400 Series)",
+    "sector_code": null,
+    "materiality_required": true,
+    "boundary_scope": "Toàn bộ tổ chức & Chuỗi giá trị"
+  },
+  "provenance": {
+    "relative_pdf_path": "Full set of GRI Standards - English\\GRI 401_ Employment 2016.pdf",
+    "file_size_bytes": 860990,
+    "page_count": 16,
+    "sha256": "a907f88ec011435a4d244fe61719cac4addb13756d36ac0aa607b2ad223d9965",
+    "indexed_at": "2026-07-25T14:35:58.958301"
+  },
+  "disclosures_count": 5,
+  "disclosures": [
+    {
+      "disclosure_id": "401-1",
+      "title_en": "New employee hires and employee turnover",
+      "title_vi": "New employee hires and employee turnover",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "401-1:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 401-1 (New employee hires and employee turnover)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "401-2",
+      "title_en": "Benefits provided to full-time employees that are not provided to",
+      "title_vi": "Benefits provided to full-time employees that are not provided to",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "401-2:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 401-2 (Benefits provided to full-time employees that are not provided to)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "401-3",
+      "title_en": "Parental leave",
+      "title_vi": "Parental leave",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "401-3:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 401-3 (Parental leave)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "2-7",
+      "title_en": "and Disclosure 2-8 in GRI 2: General Disclosures 2021 require information on employees",
+      "title_vi": "and Disclosure 2-8 in GRI 2: General Disclosures 2021 require information on employees",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "2-7:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 2-7 (and Disclosure 2-8 in GRI 2: General Disclosures 2021 require information on employees)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "3-3",
+      "title_en": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
+      "title_vi": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "3-3:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    }
+  ]
+}

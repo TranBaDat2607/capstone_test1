@@ -1,0 +1,233 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "GRI_Standard_Enterprise_Temporal_KG_Schema",
+  "description": "JSON Schema định nghĩa cấu trúc dữ liệu toàn diện cho GRI Standards, tuân thủ 100% Nguyên tắc thiết kế Temporal Knowledge Graph (TEMPORAL_KG_DESIGN.md): Mô hình 3 Tầng Node (T1 Identity, T2 Observation, T3 Assertion/Version), Quản lý mốc thời gian (P2 & P4), Neo đa chiều P3, và Xuất xứ P7.",
+  "type": "object",
+  "required": [
+    "node_tier",
+    "standard_id",
+    "title_en",
+    "title_vi",
+    "pillar",
+    "series",
+    "category",
+    "temporal_validity",
+    "scope",
+    "provenance",
+    "disclosures"
+  ],
+  "properties": {
+    "node_tier": {
+      "type": "string",
+      "enum": [
+        "T1 — Identity (Thực thể bền phi thời gian)",
+        "T2 — Observation (Sự kiện / Quan sát có mốc thời gian)",
+        "T3 — Assertion (Phát ngôn / Phiên bản Tiêu chuẩn)"
+      ],
+      "default": "T1 — Identity (Thực thể bền phi thời gian)",
+      "description": "Phân tầng Node theo thiết kế Temporal Knowledge Graph (§2 TEMPORAL_KG_DESIGN.md)"
+    },
+    "standard_id": {
+      "type": "string",
+      "example": "GRI 305",
+      "description": "Khóa danh tính phi thời gian (Timeless Identity Key P1): VD 'GRI 305', 'GRI 2', 'GRI 11'"
+    },
+    "title_en": {
+      "type": "string",
+      "example": "Emissions"
+    },
+    "title_vi": {
+      "type": "string",
+      "example": "Phát thải"
+    },
+    "pillar": {
+      "type": "string",
+      "enum": ["Universal", "Sector", "E — Environmental", "S — Social", "G — Governance"]
+    },
+    "series": {
+      "type": "string",
+      "example": "Environmental (300 Series)"
+    },
+    "category": {
+      "type": "string",
+      "example": "Topic-Environmental"
+    },
+    "temporal_validity": {
+      "type": "object",
+      "required": ["version_id", "version_year", "effective_date", "status"],
+      "description": "Quản lý mốc thời gian và phiên bản theo nguyên tắc Bitemporal (P2 & P4)",
+      "properties": {
+        "version_id": {
+          "type": "string",
+          "example": "GRI_305_2016",
+          "description": "Khóa định danh phiên bản: '<standard_id>:<version_year>'"
+        },
+        "version_year": {
+          "type": "integer",
+          "example": 2016
+        },
+        "effective_date": {
+          "type": "string",
+          "format": "date",
+          "example": "2018-07-01"
+        },
+        "valid_until_year": {
+          "type": ["integer", "null"],
+          "description": "Năm hết hiệu lực nếu bị thay thế bởi bản mới (null nếu active)"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["Active", "Superseded", "Under Revision", "Draft"]
+        },
+        "replaced_by_standard_id": {
+          "type": ["string", "null"],
+          "example": "GRI 101"
+        },
+        "superseded_notes": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+    "scope": {
+      "type": "object",
+      "required": ["target_audience", "materiality_required", "boundary_scope"],
+      "properties": {
+        "target_audience": {
+          "type": "string",
+          "description": "Tất cả tổ chức (Universal) / Ngành cụ thể (Sector) / Theo trọng yếu (Topic)"
+        },
+        "sector_code": {
+          "type": ["string", "null"],
+          "example": "GRI 11"
+        },
+        "materiality_required": {
+          "type": "boolean",
+          "default": true
+        },
+        "boundary_scope": {
+          "type": "string",
+          "example": "Toàn tập đoàn & Chuỗi giá trị (Scope 1, 2, 3)"
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "required": ["relative_pdf_path", "file_size_bytes", "page_count", "sha256", "indexed_at"],
+      "description": "Kiểm toán xuất xứ tài liệu (P7 Provenance First-Class)",
+      "properties": {
+        "relative_pdf_path": {
+          "type": "string",
+          "example": "Full set of GRI Standards - English/GRI 305_ Emissions 2016.pdf"
+        },
+        "file_size_bytes": {
+          "type": "integer",
+          "example": 1006697
+        },
+        "page_count": {
+          "type": "integer",
+          "example": 26
+        },
+        "sha256": {
+          "type": "string",
+          "example": "e8b42d8fbabdec42e693db1e431690caa419dca77a20823a35fed7e9fa154732"
+        },
+        "indexed_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "disclosures_count": {
+      "type": "integer"
+    },
+    "disclosures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["disclosure_id", "title_en", "title_vi", "disclosure_type", "requirements"],
+        "properties": {
+          "disclosure_id": {
+            "type": "string",
+            "example": "305-1"
+          },
+          "title_en": {
+            "type": "string",
+            "example": "Direct (Scope 1) GHG emissions"
+          },
+          "title_vi": {
+            "type": "string",
+            "example": "Phát thải khí nhà kính Trực tiếp (Phạm vi 1)"
+          },
+          "disclosure_type": {
+            "type": "string",
+            "enum": ["Management Approach", "Topic-Specific", "General Disclosures"]
+          },
+          "mandatory": {
+            "type": "boolean",
+            "default": true
+          },
+          "requirements": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["requirement_id", "item_code", "description_en", "requirement_type"],
+              "properties": {
+                "requirement_id": {
+                  "type": "string",
+                  "example": "305-1:a"
+                },
+                "item_code": {
+                  "type": "string",
+                  "example": "a"
+                },
+                "description_en": {
+                  "type": "string",
+                  "example": "Gross direct (Scope 1) GHG emissions in metric tons of CO2 equivalent."
+                },
+                "description_vi": {
+                  "type": ["string", "null"],
+                  "example": "Tổng lượng phát thải khí nhà kính trực tiếp (Scope 1) tính bằng tấn CO2 tương đương."
+                },
+                "requirement_type": {
+                  "type": "string",
+                  "enum": ["Quantitative", "Qualitative", "Hybrid"]
+                },
+                "unit_of_measure": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "example": ["metric tons CO2e", "tCO2e"]
+                },
+                "breakdown_dimensions": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "example": ["by business unit", "by GHG gas type"]
+                }
+              }
+            }
+          },
+          "recommendations_en": {
+            "type": ["string", "null"]
+          },
+          "recommendations_vi": {
+            "type": ["string", "null"]
+          },
+          "sdg_mapping": {
+            "type": "array",
+            "items": { "type": "string" },
+            "example": ["SDG 12", "SDG 13"]
+          },
+          "esrs_mapping": {
+            "type": "array",
+            "items": { "type": "string" },
+            "example": ["ESRS E1-6 Gross Scope 1, 2, 3 emissions"]
+          },
+          "issb_mapping": {
+            "type": "array",
+            "items": { "type": "string" },
+            "example": ["IFRS S2 Climate-related Disclosures"]
+          }
+        }
+      }
+    }
+  }
+}

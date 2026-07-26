@@ -1,0 +1,148 @@
+{
+  "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
+  "standard_id": "GRI 201",
+  "title_en": "Economic Performance 2016",
+  "title_vi": "Economic Performance 2016",
+  "pillar": "G — Governance",
+  "series": "Economic (200 Series)",
+  "category": "Topic-Economic",
+  "temporal_validity": {
+    "version_id": "GRI_201_2016",
+    "version_year": 2016,
+    "effective_date": "2017-01-01",
+    "valid_until_year": null,
+    "status": "Active",
+    "replaced_by_standard_id": null
+  },
+  "scope": {
+    "target_audience": "Tổ chức thuộc nhóm Economic (200 Series)",
+    "sector_code": null,
+    "materiality_required": true,
+    "boundary_scope": "Toàn bộ tổ chức & Chuỗi giá trị"
+  },
+  "provenance": {
+    "relative_pdf_path": "Full set of GRI Standards - English\\GRI 201_  Economic Performance 2016.pdf",
+    "file_size_bytes": 906276,
+    "page_count": 19,
+    "sha256": "1ff3bc503b410aaf6ace049876f7228cc2772432a642829b252708f7d21435ea",
+    "indexed_at": "2026-07-25T14:35:58.294593"
+  },
+  "disclosures_count": 5,
+  "disclosures": [
+    {
+      "disclosure_id": "201-2",
+      "title_en": "in GRI 201: Economic Performance 2016 has been revised and will be",
+      "title_vi": "in GRI 201: Economic Performance 2016 has been revised and will be",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "201-2:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 201-2 (in GRI 201: Economic Performance 2016 has been revised and will be)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "201-1",
+      "title_en": "Direct economic value generated and distributed",
+      "title_vi": "Direct economic value generated and distributed",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "201-1:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 201-1 (Direct economic value generated and distributed)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "201-3",
+      "title_en": "Defined benefit plan obligations and other retirement plans",
+      "title_vi": "Defined benefit plan obligations and other retirement plans",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "201-3:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 201-3 (Defined benefit plan obligations and other retirement plans)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "201-4",
+      "title_en": "Financial assistance received from government",
+      "title_vi": "Financial assistance received from government",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "201-4:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 201-4 (Financial assistance received from government)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "3-3",
+      "title_en": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
+      "title_vi": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "3-3:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    }
+  ]
+}

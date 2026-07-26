@@ -1,0 +1,171 @@
+{
+  "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
+  "standard_id": "GRI 303",
+  "title_en": "Water and Effluents 2018",
+  "title_vi": "Water and Effluents 2018",
+  "pillar": "E — Environmental",
+  "series": "Environmental (300 Series / Revisions)",
+  "category": "Topic-Environmental",
+  "temporal_validity": {
+    "version_id": "GRI_303_2018",
+    "version_year": 2018,
+    "effective_date": "2019-01-01",
+    "valid_until_year": null,
+    "status": "Active",
+    "replaced_by_standard_id": null
+  },
+  "scope": {
+    "target_audience": "Tổ chức thuộc nhóm Environmental (300 Series / Revisions)",
+    "sector_code": null,
+    "materiality_required": true,
+    "boundary_scope": "Toàn bộ tổ chức & Chuỗi giá trị"
+  },
+  "provenance": {
+    "relative_pdf_path": "Full set of GRI Standards - English\\GRI 303_ Water and Effluents 2018.pdf",
+    "file_size_bytes": 1028306,
+    "page_count": 29,
+    "sha256": "f51de08431cd5abcffb5fd37f70549eb3ba0c6c7a645af2ed8a9b7a3d722493c",
+    "indexed_at": "2026-07-25T14:35:58.666918"
+  },
+  "disclosures_count": 6,
+  "disclosures": [
+    {
+      "disclosure_id": "303-1",
+      "title_en": "Interactions with water as a shared resource",
+      "title_vi": "Interactions with water as a shared resource",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "303-1:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 303-1 (Interactions with water as a shared resource)",
+          "description_vi": null,
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "303-2",
+      "title_en": "Management of water discharge-related impacts",
+      "title_vi": "Management of water discharge-related impacts",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "303-2:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 303-2 (Management of water discharge-related impacts)",
+          "description_vi": null,
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "303-3",
+      "title_en": "Water withdrawal",
+      "title_vi": "Water withdrawal",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "303-3:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 303-3 (Water withdrawal)",
+          "description_vi": null,
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "303-4",
+      "title_en": "Water discharge",
+      "title_vi": "Water discharge",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "303-4:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 303-4 (Water discharge)",
+          "description_vi": null,
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "303-5",
+      "title_en": "Water consumption",
+      "title_vi": "Water consumption",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "303-5:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 303-5 (Water consumption)",
+          "description_vi": null,
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "3-3",
+      "title_en": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
+      "title_vi": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "3-3:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    }
+  ]
+}

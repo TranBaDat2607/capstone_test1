@@ -1,0 +1,125 @@
+{
+  "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
+  "standard_id": "GRI 308",
+  "title_en": "Supplier Environmental Assessment 2016",
+  "title_vi": "Supplier Environmental Assessment 2016",
+  "pillar": "E — Environmental",
+  "series": "Environmental (300 Series / Revisions)",
+  "category": "Topic-Environmental",
+  "temporal_validity": {
+    "version_id": "GRI_308_2016",
+    "version_year": 2016,
+    "effective_date": "2017-01-01",
+    "valid_until_year": null,
+    "status": "Active",
+    "replaced_by_standard_id": null
+  },
+  "scope": {
+    "target_audience": "Tổ chức thuộc nhóm Environmental (300 Series / Revisions)",
+    "sector_code": null,
+    "materiality_required": true,
+    "boundary_scope": "Toàn bộ tổ chức & Chuỗi giá trị"
+  },
+  "provenance": {
+    "relative_pdf_path": "Full set of GRI Standards - English\\GRI 308_ Supplier Environmental Assessment 2016.pdf",
+    "file_size_bytes": 851486,
+    "page_count": 14,
+    "sha256": "51cd0d91694b9e91dca986b83d21ba499beaf7711cc20a7109c956e3b5e56ad8",
+    "indexed_at": "2026-07-25T14:35:58.849836"
+  },
+  "disclosures_count": 4,
+  "disclosures": [
+    {
+      "disclosure_id": "308-1",
+      "title_en": "New suppliers that were screened using environmental criteria",
+      "title_vi": "New suppliers that were screened using environmental criteria",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "308-1:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 308-1 (New suppliers that were screened using environmental criteria)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "308-2",
+      "title_en": "Negative environmental impacts in the supply chain and actions",
+      "title_vi": "Negative environmental impacts in the supply chain and actions",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "308-2:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 308-2 (Negative environmental impacts in the supply chain and actions)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "3-3",
+      "title_en": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
+      "title_vi": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "3-3:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "2-25",
+      "title_en": "in GRI 2: General Disclosures 2021 for more",
+      "title_vi": "in GRI 2: General Disclosures 2021 for more",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "2-25:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 2-25 (in GRI 2: General Disclosures 2021 for more)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    }
+  ]
+}

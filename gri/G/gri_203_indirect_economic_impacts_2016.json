@@ -1,0 +1,23 @@
+{
+  "standard_id": "GRI 203",
+  "title_en": "Indirect Economic Impacts 2016",
+  "title_vi": "Tác động kinh tế gián tiếp 2016",
+  "pillar": "G — Governance",
+  "series": "Governance (Universal + 200 Series)",
+  "effective_date": "2018-07-01",
+  "description_vi": "Báo cáo các khoản đầu tư phát triển hạ tầng và dịch vụ cộng đồng cũng như các tác động kinh tế gián tiếp đáng kể của tổ chức đối với nền kinh tế địa phương.",
+  "source": "GRI Content Index Template 2021, Version 1.3 (January 2026)",
+  "disclosures_count": 2,
+  "disclosures": [
+    {
+      "code": "203-1",
+      "title_en": "Infrastructure investments and services supported",
+      "title_vi": "Đầu tư phát triển hạ tầng và các dịch vụ được hỗ trợ"
+    },
+    {
+      "code": "203-2",
+      "title_en": "Significant indirect economic impacts",
+      "title_vi": "Các tác động kinh tế gián tiếp đáng kể"
+    }
+  ]
+}

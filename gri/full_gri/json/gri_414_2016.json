@@ -1,0 +1,125 @@
+{
+  "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
+  "standard_id": "GRI 414",
+  "title_en": "Supplier Social Assessment 2016",
+  "title_vi": "Supplier Social Assessment 2016",
+  "pillar": "S — Social",
+  "series": "Social (400 Series)",
+  "category": "Topic-Social",
+  "temporal_validity": {
+    "version_id": "GRI_414_2016",
+    "version_year": 2016,
+    "effective_date": "2017-01-01",
+    "valid_until_year": null,
+    "status": "Active",
+    "replaced_by_standard_id": null
+  },
+  "scope": {
+    "target_audience": "Tổ chức thuộc nhóm Social (400 Series)",
+    "sector_code": null,
+    "materiality_required": true,
+    "boundary_scope": "Toàn bộ tổ chức & Chuỗi giá trị"
+  },
+  "provenance": {
+    "relative_pdf_path": "Full set of GRI Standards - English\\GRI 414_ Supplier Social Assessment 2016.pdf",
+    "file_size_bytes": 854076,
+    "page_count": 14,
+    "sha256": "b2f52706c73f064425dc91a30dd9005502f0f141d77cc4c5453bfca1131edda2",
+    "indexed_at": "2026-07-25T14:35:59.328838"
+  },
+  "disclosures_count": 4,
+  "disclosures": [
+    {
+      "disclosure_id": "414-1",
+      "title_en": "New suppliers that were screened using social criteria",
+      "title_vi": "New suppliers that were screened using social criteria",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "414-1:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 414-1 (New suppliers that were screened using social criteria)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "414-2",
+      "title_en": "Negative social impacts in the supply chain and actions taken",
+      "title_vi": "Negative social impacts in the supply chain and actions taken",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "414-2:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 414-2 (Negative social impacts in the supply chain and actions taken)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "3-3",
+      "title_en": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
+      "title_vi": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "3-3:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "2-25",
+      "title_en": "in GRI 2: General Disclosures 2021 for more",
+      "title_vi": "in GRI 2: General Disclosures 2021 for more",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "2-25:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 2-25 (in GRI 2: General Disclosures 2021 for more)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    }
+  ]
+}
