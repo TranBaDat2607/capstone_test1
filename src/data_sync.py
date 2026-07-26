@@ -216,6 +216,12 @@ def cmd_pull(args: argparse.Namespace) -> int:
         revision=revision,
         local_dir=str(REPO_ROOT),
         token=_load_token(),
+        # Scoped exactly like the upload. local_dir is the CODE repo, so an unscoped
+        # download writes the dataset's own root files over tracked ones — that is how
+        # the Hub's .gitattributes ended up committed here, turning on Git LFS for
+        # png/jpg/zip/parquet in a repo that never wanted it. Guarded by
+        # test/test_data_sync_scope.py.
+        allow_patterns=ALLOW_PATTERNS,
     )
     logger.info("Done. Rebuild Neo4j with: python src/step06_load_graph_to_neo4j.py --clear")
     return 0
