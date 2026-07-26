@@ -32,8 +32,18 @@ DEFS_PATH = REPO / "kpi_definitions_construction.json"
 ALIASES_PATH = REPO / "config" / "kpi_type_aliases.json"
 
 _ALL_DEFS = json.loads(DEFS_PATH.read_text(encoding="utf-8"))
-DEFS = [d for d in _ALL_DEFS if d["id"] in ("TT96-6.1.1", "TT96-6.5.1", "TT96-6.5.2")]
-assert len(DEFS) == 3, "fixture expects these three indicators to exist in the definitions"
+# TT96-6.6.3 earns its place: it is a SOCIAL indicator ("Tỷ lệ lao động được đào tạo")
+# whose code contains the substring "6.3", so the old environmental branch claimed it.
+# Without it in the fixture the pillar test passes vacuously -- TT96-6.1.1 is one the
+# broken heuristic happened to get right.
+DEFS = [d for d in _ALL_DEFS
+        if d["id"] in ("TT96-6.1.1", "TT96-6.5.1", "TT96-6.5.2", "TT96-6.6.3")]
+assert len(DEFS) == 4, "fixture expects these four indicators to exist in the definitions"
+
+# The authority for a TT96 pillar is the definitions file, never a guess. Read it rather
+# than hardcoding, so the fixture cannot drift away from the vocabulary it is testing.
+DEFS_PILLAR = {d["id"]: d.get("pillar") for d in DEFS}
+assert all(DEFS_PILLAR.values()), f"definitions must carry a pillar: {DEFS_PILLAR}"
 
 
 def props(node: dict) -> dict:
@@ -83,18 +93,74 @@ def crosswalk_doc() -> dict:
     }
 
 
-class Workspace:
-    """A temp dir holding graph + defs + crosswalk, and a run() invocation over them."""
+def catalog_doc() -> dict:
+    """A GRI catalog keyed like config/gri_catalog.json, kept tiny and local.
 
-    def __init__(self, graph=None, crosswalk=None):
+    Injected rather than inherited: the stage used to read the real 152 KB catalog
+    from a hardcoded module global and memoise it for the life of the process, so
+    no test could vary it and cache state leaked between test functions.
+    """
+    return {
+        "GRI 2-27": {"title_vi": "Tuân thủ pháp luật và quy định",
+                     "title_en": "Compliance with laws and regulations",
+                     "pillar": "Quản trị", "definition_vi": "Chỉ số công bố GRI 2-27"},
+        "GRI 305-1": {"title_vi": "Phát thải khí nhà kính trực tiếp (Scope 1)",
+                      "title_en": "Direct (Scope 1) GHG emissions",
+                      "pillar": "Môi trường", "definition_vi": "Chỉ số công bố GRI 305-1"},
+    }
+
+
+def graph_with_indicator(indicator_id: str, pillar, extra_props=None) -> dict:
+    """mini_graph() plus a PRE-EXISTING StandardIndicator, to exercise the restamp.
+
+    mini_graph() deliberately has none, which is why the append-only test can keep
+    asserting that no pre-existing property is ever mutated.
+    """
+    g = mini_graph()
+    p = {"id": indicator_id, "name": f"Chỉ số {indicator_id}", "pillar": pillar,
+         "definition": None, "section": None, "source_document": "Thông tư 96",
+         "valid_from": None, "valid_to": None, "is_current": True}
+    p.update(extra_props or {})
+    g["nodes"].append({"class": "StandardIndicator", "properties": p})
+    return g
+
+
+def indicator_by_id(graph: dict, indicator_id: str) -> dict:
+    hits = [props(n) for n in graph["nodes"]
+            if n.get("class") == "StandardIndicator" and props(n).get("id") == indicator_id]
+    assert len(hits) == 1, f"expected exactly one {indicator_id}, found {len(hits)}"
+    return hits[0]
+
+
+def capture_logs(fn) -> str:
+    """Collect what the stage reported, so --dry-run can be held to telling the truth."""
+    import io
+    import logging
+    buf = io.StringIO()
+    handler = logging.StreamHandler(buf)
+    root = logging.getLogger()
+    root.addHandler(handler)
+    try:
+        fn()
+    finally:
+        root.removeHandler(handler)
+    return buf.getvalue()
+
+
+class Workspace:
+    """A temp dir holding graph + defs + crosswalk + catalog, and a run() over them."""
+
+    def __init__(self, graph=None, crosswalk=None, catalog=None):
         self.dir = Path(tempfile.mkdtemp(prefix="esgkg_axis_"))
         self.graph_path = self.dir / "resolved_graph.json"
         self.defs_path = self.dir / "defs.json"
         self.crosswalk_path = self.dir / "crosswalk.json"
+        self.catalog_path = self.dir / "gri_catalog.json"
         self.stats_path = self.dir / "stats.json"
         self._write(self.graph_path, graph if graph is not None else mini_graph())
         self._write(self.defs_path, DEFS)
         self._write(self.crosswalk_path, crosswalk if crosswalk is not None else crosswalk_doc())
+        self._write(self.catalog_path, catalog if catalog is not None else catalog_doc())
 
     @staticmethod
     def _write(path: Path, obj) -> None:
@@ -103,7 +169,7 @@ class Workspace:
     def run(self, **overrides):
         args = argparse.Namespace(
             input=self.graph_path, defs=self.defs_path, crosswalk=self.crosswalk_path,
-            schema=SCHEMA_PATH, no_gri=False, no_align=False,
+            schema=SCHEMA_PATH, gri_catalog=self.catalog_path, no_gri=False, no_align=False,
             trust_draft_crosswalk=False, stats_out=self.stats_path, dry_run=False,
         )
         for k, v in overrides.items():
@@ -112,11 +178,101 @@ class Workspace:
         return self.graph
 
     @property
+    def stats(self) -> dict:
+        return json.loads(self.stats_path.read_text(encoding="utf-8"))
+
+    @property
     def graph(self) -> dict:
         return json.loads(self.graph_path.read_text(encoding="utf-8"))
 
     def close(self):
         shutil.rmtree(self.dir, ignore_errors=True)
+
+
+# --------------------------------------------------------------------------- #
+# Pillar: read from the authority, never guessed from the shape of the code.
+#
+# The stage used to end with a loop that overwrote `pillar` on EVERY
+# StandardIndicator from a substring chain -- `any(k in code for k in ("6.1",
+# "6.2", ...))` for environmental, `("6.6", "6.7")` for social, else "Quản trị".
+# "TT96-6.6.1" contains BOTH "6.6" and "6.1", and the environmental branch is
+# tested first, so all five TT96-6.6.* labour indicators (headcount, worker
+# safety, training, training hours, skills) were relabelled Môi trường. Measured
+# on the live graph: 7 of 65 indicator nodes wrong, 288 edges pointing at them,
+# and the Evidence View filing worker-safety claims under Environment.
+#
+# The loop also sat AFTER gp.assert_append_only() and AFTER the --dry-run return,
+# so no invariant guarded it and --dry-run under-reported what the stage would do.
+# --------------------------------------------------------------------------- #
+def test_pillar_is_restamped_from_the_authority():
+    """A stale pillar on a pre-existing node is corrected from the definitions.
+
+    Uses TT96-6.6.3 on purpose: "Tỷ lệ lao động được đào tạo" is Xã hội, but its code
+    contains "6.3" so the substring chain called it Môi trường. Asserting against
+    TT96-6.1.1 instead would pass without any fix.
+    """
+    truth = DEFS_PILLAR["TT96-6.6.3"]
+    assert truth == "Xã hội", f"fixture assumes TT96-6.6.3 is social, got {truth!r}"
+    ws = Workspace(graph=graph_with_indicator("TT96-6.6.3", "Môi trường"))
+    try:
+        after = ws.run()
+        assert indicator_by_id(after, "TT96-6.6.3")["pillar"] == truth, (
+            f"pillar not restamped from the definitions (expected {truth!r})")
+    finally:
+        ws.close()
+
+
+def test_restamp_never_invents_a_pillar_for_an_unknown_code():
+    """No authority, no opinion. The old `else "Quản trị"` is what swept QD2171-1
+    and QCVN09-1 -- both environmental -- into governance."""
+    ws = Workspace(graph=graph_with_indicator("XYZ-9", "Xã hội"))
+    try:
+        after = ws.run()
+        assert indicator_by_id(after, "XYZ-9")["pillar"] == "Xã hội", (
+            "an unknown code must keep the pillar it already had, not be defaulted")
+    finally:
+        ws.close()
+
+
+def test_restamp_touches_only_pillar_and_only_standard_indicator():
+    graph = graph_with_indicator("TT96-6.6.3", "Môi trường",
+                                 extra_props={"name": "Tên gốc phải giữ"})
+    before = json.loads(json.dumps(graph))  # deep copy of the pre-state
+    ws = Workspace(graph=graph)
+    try:
+        after = ws.run()
+        node = indicator_by_id(after, "TT96-6.6.3")
+        assert node["name"] == "Tên gốc phải giữ", "restamp rewrote a property other than pillar"
+        assert node["source_document"] == "Thông tư 96", "restamp rewrote source_document"
+        # Other classes keep every property they arrived with. Stage-level additions are
+        # allowed -- step05c legitimately stamps self_reported_zero on a Penalty -- so the
+        # rule is "nothing existing changed", matching the append-only test below.
+        for i, original in enumerate(before["nodes"]):
+            if original["class"] == "StandardIndicator":
+                continue
+            for k, v in props(original).items():
+                assert props(after["nodes"][i])[k] == v, (
+                    f"node {i} ({original['class']}) property {k!r} was changed by the restamp")
+    finally:
+        ws.close()
+
+
+def test_dry_run_reports_the_restamp_it_would_do():
+    """--dry-run must describe the pillar changes, not stay silent about them:
+    the repo verifies cheaply with --dry-run instead of re-running paid stages."""
+    truth = DEFS_PILLAR["TT96-6.1.1"]
+    stale = "Quản trị" if truth != "Quản trị" else "Xã hội"
+    ws = Workspace(graph=graph_with_indicator("TT96-6.1.1", stale))
+    try:
+        logged = capture_logs(lambda: ws.run(dry_run=True))
+        assert "pillar" in logged.lower(), f"--dry-run never mentions the restamp:\n{logged}"
+        assert indicator_by_id(ws.graph, "TT96-6.1.1")["pillar"] == stale, (
+            "--dry-run wrote to the graph file")
+        ws.run()  # for real
+        assert ws.stats.get("pillar_restamped") == 1, (
+            f"the stage must report how many pillars it corrected: {ws.stats.get('pillar_restamped')!r}")
+    finally:
+        ws.close()
 
 
 def edges_of(graph: dict, label: str, source_idx: int = None) -> list:

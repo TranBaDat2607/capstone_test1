@@ -30,6 +30,22 @@ WHAT IT WILL NOT DO
   * GRI equivalentTo edges are emitted only for crosswalk rows a human marked status=confirmed
     (the drafted rows sit in needs_review until reviewed); --trust-draft-crosswalk overrides for
     a demo.
+  * It does not guess an indicator's `pillar`. That comes from the file entitled to say —
+    kpi_definitions_construction.json for the Vietnamese vocabulary, config/gri_catalog.json for
+    GRI — and an id neither covers keeps whatever pillar it already had. The substring chain this
+    replaced ("6.1"/"6.2"/... => Môi trường, "6.6"/"6.7" => Xã hội, else Quản trị) mislabelled 7 of
+    65 live indicator nodes: "TT96-6.6.1" contains BOTH "6.6" and "6.1" and the environmental
+    branch ran first, so all five TT96-6.6.* labour indicators were filed under Môi trường, while
+    QD2171-1 and QCVN09-1 fell through to Quản trị. The Evidence View takes a claim's E/S/G column
+    straight from this property, so a guess here is visible to the reader.
+
+WHY IT RESTAMPS RATHER THAN JUST STOPPING
+Nodes are deduped by identity, so re-running never rewrites one that already exists — an indicator
+carrying a wrong pillar would stay wrong short of rebuilding from step05, which reorders nodes and
+invalidates the paid step07 dossiers. Correcting one property in place is allowed by the
+append-only invariant above, so the repair costs nothing and breaks nothing. The restamp runs
+BEFORE assert_append_only() and before the --dry-run return, so the invariant guards it and
+--dry-run reports it.
 
   python src/step05c_link_standard_indicators.py --dry-run
   python src/step05c_link_standard_indicators.py
@@ -210,31 +226,81 @@ def make_doc_node(dockey: str, kind: str, canonical: str) -> Dict[str, Any]:
 
 
 GRI_CATALOG_PATH = REPO_ROOT / "config" / "gri_catalog.json"
-_GRI_CATALOG_CACHE: Optional[Dict[str, Any]] = None
 
-def get_gri_catalog() -> Dict[str, Any]:
-    global _GRI_CATALOG_CACHE
-    if _GRI_CATALOG_CACHE is None:
-        if GRI_CATALOG_PATH.exists():
-            try:
-                _GRI_CATALOG_CACHE = json.loads(GRI_CATALOG_PATH.read_text(encoding="utf-8"))
-            except Exception:
-                _GRI_CATALOG_CACHE = {}
-        else:
-            _GRI_CATALOG_CACHE = {}
-    return _GRI_CATALOG_CACHE
 
-def make_gri_node(code: str, name: Optional[str]) -> Dict[str, Any]:
-    catalog = get_gri_catalog()
+def load_gri_catalog(path: Path) -> Dict[str, Any]:
+    """Read config/gri_catalog.json. Absent or unreadable degrades to {} — the GRI
+    tier is optional and a missing catalog must not take the whole stage down.
+
+    Loaded once per run() and passed down explicitly. It used to be a module-global
+    memo, which meant tests could neither vary it nor stop it leaking between them.
+    """
+    if not path or not Path(path).exists():
+        return {}
+    try:
+        return json.loads(Path(path).read_text(encoding="utf-8"))
+    except Exception:  # noqa: BLE001 - a broken catalog degrades, never aborts
+        logger.warning(f"Could not read GRI catalog at {path}; continuing without it.")
+        return {}
+
+
+def make_gri_node(code: str, name: Optional[str], catalog: Dict[str, Any]) -> Dict[str, Any]:
+    """A GRI indicator node. `pillar` comes from the catalog or stays None.
+
+    It is deliberately NOT guessed from the shape of the code. The guess this
+    replaced ("Môi trường" if "30"/"101"/"102"/"103" in code else "Xã hội" if "40"
+    in code else "Quản trị") disagreed with the catalog it was supposed to back up,
+    and a wrong pillar is worse than a missing one: the Evidence View files the
+    claim under the wrong E/S/G column instead of leaving it unplaced.
+    """
     cat_entry = catalog.get(code) or {}
-    pillar = cat_entry.get("pillar") or ("Môi trường" if "30" in code or "101" in code or "102" in code or "103" in code else ("Xã hội" if "40" in code else "Quản trị"))
     node_name = cat_entry.get("title_vi") or cat_entry.get("title_en") or name or code
     definition = cat_entry.get("definition_vi") or f"Chỉ số {code}: {node_name}"
-    
     return {"class": "StandardIndicator",
             "properties": {"id": code, "name": node_name, "definition": definition,
-                           "pillar": pillar, "section": None, "source_document": "GRI Standards",
+                           "pillar": cat_entry.get("pillar"), "section": None,
+                           "source_document": "GRI Standards",
                            "valid_from": None, "valid_to": None, "is_current": True}}
+
+
+def pillar_authority(defs: List[Dict[str, Any]], catalog: Dict[str, Any]) -> Dict[str, str]:
+    """indicator id -> pillar, from the two files that are entitled to say.
+
+    `kpi_definitions_construction.json` owns the Vietnamese vocabulary (TT96, SSC-IFC,
+    QĐ2171, QCVN09); `config/gri_catalog.json` owns GRI. Anything else has no entry,
+    and an indicator with no entry keeps whatever pillar it already had.
+    """
+    authority = {d["id"]: d.get("pillar") for d in defs if d.get("id") and d.get("pillar")}
+    for code, entry in (catalog or {}).items():
+        if entry.get("pillar"):
+            authority.setdefault(code, entry["pillar"])
+    return authority
+
+
+def restamp_pillars(nodes: List[Dict[str, Any]], authority: Dict[str, str]) -> Counter:
+    """Correct `pillar` on StandardIndicator nodes from the authority. Returns what changed.
+
+    Why a restamp and not just "stop overwriting": the stage dedups nodes by identity,
+    so re-running never rewrites a node that already exists. Indicators already carrying
+    a wrong pillar would stay wrong forever short of rebuilding from step05 — which
+    reorders nodes and invalidates the paid step07 dossiers. Mutating one property in
+    place is explicitly allowed by GraphPatch.assert_append_only(), so node order and
+    dossier positions survive.
+
+    Never invents a value: an id the authority does not cover is left alone. The loop
+    this replaced defaulted to "Quản trị", which is how QD2171-1 and QCVN09-1 — both
+    environmental — ended up filed under governance.
+    """
+    changed: Counter = Counter()
+    for n in nodes:
+        if n.get("class") != "StandardIndicator":
+            continue
+        p = n.setdefault("properties", {})
+        truth = authority.get(p.get("id"))
+        if truth and p.get("pillar") != truth:
+            changed[f"{p.get('id')}: {p.get('pillar')} -> {truth}"] += 1
+            p["pillar"] = truth
+    return changed
 
 
 def run(args: argparse.Namespace) -> None:
@@ -247,6 +313,7 @@ def run(args: argparse.Namespace) -> None:
     graph = json.loads(args.input.read_text(encoding="utf-8"))
     defs = json.loads(args.defs.read_text(encoding="utf-8"))
     crosswalk = json.loads(args.crosswalk.read_text(encoding="utf-8")) if args.crosswalk.exists() else {}
+    catalog = load_gri_catalog(getattr(args, "gri_catalog", GRI_CATALOG_PATH))
     entity_classes, edge_labels, edge_dirs = load_schema_sets(
         json.loads(args.schema.read_text(encoding="utf-8")))
 
@@ -327,7 +394,7 @@ def run(args: argparse.Namespace) -> None:
                 continue
             for j, gri in enumerate(row.get("gri") or []):
                 gname = row.get("gri_name")
-                gidx, gcreated = gp.ensure_node(make_gri_node(gri, gname))
+                gidx, gcreated = gp.ensure_node(make_gri_node(gri, gname, catalog))
                 if gcreated:
                     stats["created_nodes"]["StandardIndicator(GRI)"] += 1
                     # a GRI code is part of the GRI standard
@@ -344,7 +411,7 @@ def run(args: argparse.Namespace) -> None:
 
     # 4) alignsWithIndicator (keyword tier) for Claim/Goal/Initiative
     if not args.no_align:
-        kw = build_keyword_index(defs)
+        kw = build_keyword_index(defs, catalog)
         for i, n in enumerate(gp.nodes[:gp.n_nodes0]):
             cls = n.get("class")
             if cls not in ("SustainabilityClaim", "Goal", "Initiative"):
@@ -356,7 +423,7 @@ def run(args: argparse.Namespace) -> None:
                 if hit in ind_idx:
                     tgt_idx = ind_idx[hit]
                 elif hit.startswith("GRI"):
-                    tgt_idx, _ = gp.ensure_node(make_gri_node(hit, None))
+                    tgt_idx, _ = gp.ensure_node(make_gri_node(hit, None, catalog))
                 else:
                     tgt_idx = None
 
@@ -367,10 +434,15 @@ def run(args: argparse.Namespace) -> None:
                         stats["created_edges"]["alignsWithIndicator"] += 1
                         stats["aligned_by_indicator"][hit] += 1
 
+    # 5) pillar: correct every indicator node from the authority that owns it. Runs BEFORE
+    # assert_append_only() and before the --dry-run return, so the invariant guards it and
+    # --dry-run reports it. (It used to sit after both, unguarded and unreported.)
+    pillar_changes = restamp_pillars(graph["nodes"], pillar_authority(defs, catalog))
+
     added_nodes = len(gp.nodes) - gp.n_nodes0
     added_edges = len(gp.edges) - gp.n_edges0
     # invariant: existing prefix is the same objects in the same order (properties may be
-    # mutated in place, e.g. self_reported_zero on a Penalty).
+    # mutated in place, e.g. self_reported_zero on a Penalty, or a corrected pillar).
     gp.assert_append_only()
 
     def _c(counter):
@@ -385,31 +457,19 @@ def run(args: argparse.Namespace) -> None:
         "measured_by_indicator": _c(stats["measured_by_indicator"]),
         "aligned_by_indicator": _c(stats["aligned_by_indicator"]),
         "unmapped_kpi_ids": _c(stats["unmapped_kpi_ids"]),
+        "pillar_restamped": sum(pillar_changes.values()),
+        "pillar_changes": _c(pillar_changes),
     }
     logger.info(f"Nodes {gp.n_nodes0} → {len(gp.nodes)} (+{added_nodes}); "
                 f"edges {gp.n_edges0} → {len(gp.edges)} (+{added_edges}).")
     logger.info(f"created_edges: {report['created_edges']}")
     logger.info(f"penalty self_reported_zero (no conduct edge): {report['penalty_self_reported_zero']}")
+    logger.info(f"pillar corrected from the authority: {report['pillar_restamped']}"
+                + (f" {report['pillar_changes']}" if pillar_changes else ""))
 
     if args.dry_run:
         logger.info("--dry-run: nothing written.")
         return
-
-    # Ensure ALL StandardIndicator nodes (including pre-existing ones) have valid, accurate pillar properties
-    catalog = get_gri_catalog()
-    for n in graph["nodes"]:
-        if n.get("class") == "StandardIndicator":
-            p = n.setdefault("properties", {})
-            code = p.get("id") or p.get("name") or ""
-            if code in catalog and catalog[code].get("pillar"):
-                p["pillar"] = catalog[code]["pillar"]
-            else:
-                if any(x in code for x in ("GRI 3", "GRI 301", "GRI 302", "GRI 303", "GRI 304", "GRI 305", "GRI 306", "GRI 308", "E1", "E2", "E3", "E4", "E5", "E6", "E7", "6.1", "6.2", "6.3", "6.4", "6.5")):
-                    p["pillar"] = "Môi trường"
-                elif any(x in code for x in ("GRI 4", "GRI 401", "GRI 402", "GRI 403", "GRI 404", "GRI 405", "GRI 406", "GRI 413", "S1", "S2", "S3", "S4", "S5", "S6", "S7", "6.6", "6.7")):
-                    p["pillar"] = "Xã hội"
-                else:
-                    p["pillar"] = "Quản trị"
 
     args.input.write_text(json.dumps(graph, indent=2, ensure_ascii=False), encoding="utf-8")
     args.stats_out.parent.mkdir(parents=True, exist_ok=True)
@@ -458,8 +518,7 @@ KEYWORDS: Dict[str, List[str]] = {
 }
 
 
-def build_keyword_index(defs: List[Dict[str, Any]]) -> Dict[str, List[str]]:
-    catalog = get_gri_catalog()
+def build_keyword_index(defs: List[Dict[str, Any]], catalog: Dict[str, Any]) -> Dict[str, List[str]]:
     kw_index = {k: [p.lower() for p in v] for k, v in KEYWORDS.items()}
     # Add items from gri_catalog
     for code, info in catalog.items():
@@ -496,6 +555,8 @@ def main() -> None:
                    help="Resolved graph JSON (patched in place, append-only).")
     p.add_argument("--defs", type=Path, default=DEFAULT_DEFS)
     p.add_argument("--crosswalk", type=Path, default=DEFAULT_CROSSWALK)
+    p.add_argument("--gri-catalog", type=Path, default=GRI_CATALOG_PATH,
+                   help="GRI indicator catalog (titles + pillar); rebuild with gri/build_gri_catalog.py")
     p.add_argument("--schema", type=Path, default=DEFAULT_SCHEMA)
     p.add_argument("--no-gri", action="store_true", help="Skip equivalentTo → GRI edges.")
     p.add_argument("--no-align", action="store_true", help="Skip the keyword alignsWithIndicator tier.")

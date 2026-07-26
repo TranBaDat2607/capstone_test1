@@ -387,7 +387,10 @@ def test_step05c_doc_key_and_keyword_tier():
     assert doc_key_for("TT96-6.1.1") == ("TT96", "Regulation")
     assert doc_key_for("SSCIFC-E2") == ("SSCIFC", "Standard")
     assert doc_key_for("GRI 305-1") is None
-    kw = build_keyword_index(_DEFS)
+    # The catalog is passed in now rather than read from a module global, so this
+    # helper-level check runs against the KEYWORDS table alone -- no 152 KB of GRI
+    # titles leaking in and changing which phrase wins.
+    kw = build_keyword_index(_DEFS, {})
     # unambiguous keyword resolves
     assert match_keyword("Chúng tôi giảm phát thải khí nhà kính", kw) == "TT96-6.1.1"
     # generic text resolves to nothing (no false alignment)
