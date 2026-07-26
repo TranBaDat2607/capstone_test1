@@ -58,6 +58,7 @@ from typing import Any, Dict, List, Optional, Set, Tuple
 # The src/ original borrowed these from three sibling step files (step01, step03,
 # step04) — the step->step coupling this refactor exists to remove. They now come
 # from the shared kernel, so this stage depends on no other stage.
+from esg_kg.core.console import ensure_utf8_stdout
 from esg_kg.core.dates import ISO_DATE_RE, date_start_key, normalize_date_string
 from esg_kg.core.naming import normalize_name
 from esg_kg.core.paths import QUALITY_DIR, REPO_ROOT, RESOLVED_DIR, SCHEMA_PATH
@@ -683,6 +684,7 @@ def render_markdown(report: Dict[str, Any]) -> str:
 
 
 def main() -> None:
+    ensure_utf8_stdout()  # before the report echo can hit a cp1252 console
     p = argparse.ArgumentParser(description="Step 0 — offline Q1–Q8 quality report for the resolved graph.")
     p.add_argument("-g", "--graph", type=Path, default=DEFAULT_GRAPH)
     p.add_argument("-s", "--schema", type=Path, default=DEFAULT_SCHEMA)

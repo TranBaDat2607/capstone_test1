@@ -34,6 +34,7 @@ import json
 import logging
 import re
 import statistics
+import sys
 import unicodedata
 from collections import Counter, defaultdict, deque
 from datetime import datetime, timezone
@@ -59,6 +60,31 @@ DEFAULT_SCHEMA = REPO_ROOT / "config" / "schema.json"
 DEFAULT_OUT_DIR = REPO_ROOT / "graph_output" / "quality"
 DEFAULT_MAX_HOPS = 4  # for Q7(d) claim→conduct search
 DEFAULT_STANDARDS_REGISTRY = REPO_ROOT / "config" / "standards_registry.json"
+
+
+def ensure_utf8_stdout() -> None:
+    """Let ``sys.stdout`` carry non-ASCII on a Windows console. No-op elsewhere.
+
+    Both artifacts are written with an explicit encoding="utf-8", so the risk is
+    only the `print(render_markdown(report))` at the end of main(): a Windows
+    console defaults to the ANSI code page. Measured on the real report, the
+    characters cp1252 cannot encode are "→" and "≥" from this file's own section
+    headings (graph names add diacritics whenever a section lists them). So it
+    raises UnicodeEncodeError *after* the JSON and Markdown already landed — the
+    work is done, only the echo fails. Failures here are swallowed for the same
+    reason: losing the echo beats crashing a finished report.
+
+    The twin of this function lives in ``src_module/esg_kg/core/console.py``;
+    while the refactor is in flight it exists in both trees (Model A: the old tree
+    cannot import from ``esg_kg``). ``test/test_console_utf8.py`` keeps the two
+    copies equal and asserts main() actually calls it.
+    """
+    if sys.platform == "win32":
+        try:
+            sys.stdout.reconfigure(encoding="utf-8")
+        except Exception:  # noqa: BLE001 - losing the echo beats crashing
+            pass
+
 
 # --------------------------------------------------------------------------- #
 # The three node tiers (TEMPORAL_KG_DESIGN.md §2). T1 identity is timeless (P1);
@@ -671,6 +697,7 @@ def render_markdown(report: Dict[str, Any]) -> str:
 
 
 def main() -> None:
+    ensure_utf8_stdout()  # before the report echo can hit a cp1252 console
     p = argparse.ArgumentParser(description="Step 0 — offline Q1–Q8 quality report for the resolved graph.")
     p.add_argument("-g", "--graph", type=Path, default=DEFAULT_GRAPH)
     p.add_argument("-s", "--schema", type=Path, default=DEFAULT_SCHEMA)
@@ -727,10 +754,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    import sys
-    if sys.platform == "win32":
-        try:
-            sys.stdout.reconfigure(encoding='utf-8')
-        except Exception:
-            pass
     main()

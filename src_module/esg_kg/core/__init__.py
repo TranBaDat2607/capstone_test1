@@ -9,6 +9,8 @@ after it, each stage depends only on ``esg_kg.core`` and can be moved alone.
 Planned submodules (each line = symbols to move + where they live now):
 
     paths.py      REPO_ROOT, DEFAULT_* dirs           <- step01:36-44
+    console.py    ensure_utf8_stdout (win32 report echo)
+                                                       <- step00 __main__ (03a1592)
     io_jsonl.py   load_pages_from_jsonl, build_page_text, page_has_esg
                                                        <- step01:97-124
     schema.py     load_schema_sets, validate_triple   <- step03:150,260

@@ -42,6 +42,7 @@ src_module/esg_kg/
                        #                                       <- step07:133 (node, rẽ theo class)
     llm.py             #  RateLimiter                          <- step02:70
                        #  _Provider/_OpenAIProvider cascade    <- step07:284
+    console.py         #  ensure_utf8_stdout  ✅ ĐÃ LÀM        <- step00 __main__ (03a1592)
     datasync.py        #  HF snapshot pull/push                <- src/data_sync.py
 
   kpi/                 extract.py(step01)  canonicalize.py(step03c)
@@ -477,3 +478,34 @@ ra để chặn — chấp nhận tạm vì arm tương đương đang khoá hai
 4. cập nhật CLAUDE.md phần "Common commands".
 
 Không stage `src/` nào import `step00`, nên bước 1 không làm gãy pipeline đang chạy.
+
+### 6.2 Lỗ của lưới an toàn: test tương đương KHÔNG thấy entrypoint (phát hiện 2026-07-26)
+
+Merge nhánh `tuan` (`03a1592`) thêm một khối `sys.stdout.reconfigure(encoding="utf-8")`
+cho win32 vào **`__main__` của `src/step00`** — và chỉ ở đó. Bản twin
+`esg_kg/report/quality.py` không có, `run.py` cũng không xử lý encoding. Kết quả:
+`python src/step00_...` in được báo cáo, còn `python src_module/run.py quality` vẫn
+`UnicodeEncodeError` ở `print(render_markdown(report))`. **Cây đã refactor kém hơn cây nó
+thay thế**, đúng tại stage sinh ra để chạy trước/sau mọi thay đổi.
+
+`test_esg_kg_equivalence.py` **về mặt cấu trúc không thể bắt** ca này: nó so hằng số, từng
+hàm chỉ số và Markdown đã render — nó *import* module, không bao giờ chạy `main()` hay
+`__main__`. Mọi thứ nằm trong khối `__main__` là điểm mù.
+
+**Đã sửa** (§5.3: một commit, cả hai cây, test đỏ trước): helper thành
+`core/console.py::ensure_utf8_stdout()`, bản song sinh nằm ngay trong `src/step00`, và
+**điểm gọi là đầu `main()`, KHÔNG phải `__main__`** — vì đó là chỗ duy nhất cả ba cách chạy
+đều đi qua (`python src/stepNN_*.py`, `run.py <stage>` gọi `mod.main()`, và
+`python -m esg_kg...`). Nhờ vậy `run.py` vẫn là bộ sửa `sys.path` thuần, đúng như docstring
+của nó hứa.
+
+**Luật rút ra, áp cho mọi lần dời stage sau này:** khối `__main__` **không được chứa logic**.
+Nó chỉ được gọi `main()`. Bất cứ thứ gì cần chạy trước khi stage làm việc thì nằm ở đầu
+`main()` — nếu không, `run.py` sẽ bỏ qua nó một cách âm thầm.
+
+Lưới mới là `test/test_console_utf8.py`: nó vừa là **arm tương đương** cho
+`core/console.py` (chạy cả hai cây qua cùng ma trận `sys.platform`/`sys.stdout` giả rồi so),
+vừa canh **wiring** bằng `ast` (`main()` có thật sự gọi helper không, và helper có bị gọi lúc
+import không). Đã mutation-check: bỏ cổng `win32` ở một cây bị **2 arm** bắt.
+Kiểm end-to-end: `PYTHONIOENCODING=cp1252` chạy cả hai cây trên đồ thị thật đều
+**exit 0** và JSON **giống hệt nhau** (chỉ khác `generated_at`).
