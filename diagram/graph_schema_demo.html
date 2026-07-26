@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Graph Schema — Demo Figure 8</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0f1117;
+            --surface: #1a1d27;
+            --surface-2: #242836;
+            --border: #2e3348;
+            --text: #e8eaf0;
+            --text-muted: #8b90a5;
+            --accent: #6366f1;
+            --accent-glow: rgba(99, 102, 241, 0.3);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(15, 17, 23, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 14px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header h1 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header .subtitle {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        .legend {
+            position: fixed;
+            top: 64px;
+            right: 16px;
+            z-index: 90;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        .legend-title {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.75rem;
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+            flex-shrink: 0;
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 90;
+            display: flex;
+            gap: 8px;
+        }
+
+        .controls button {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .controls button:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        canvas {
+            display: block;
+        }
+
+        .tooltip {
+            position: absolute;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 0.78rem;
+            line-height: 1.5;
+            max-width: 320px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.15s;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+            z-index: 200;
+        }
+
+        .tooltip.visible {
+            opacity: 1;
+        }
+
+        .tooltip .tt-label {
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-bottom: 4px;
+        }
+
+        .tooltip .tt-group {
+            color: var(--text-muted);
+            font-size: 0.72rem;
+        }
+
+        .tooltip .tt-edges {
+            margin-top: 6px;
+            font-size: 0.72rem;
+            color: #a5b4fc;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div>
+            <h1>Knowledge Graph Schema — Figure 8</h1>
+            <div class="subtitle">Greenwashing Evidence System · Standard Indicator Axis (TT96 ↔ GRI equivalentTo)</div>
+        </div>
+        <div style="font-size:0.72rem;color:var(--text-muted);">Kéo thả node · Scroll zoom · Hover xem chi tiết</div>
+    </div>
+
+    <div class="legend" id="legend"></div>
+
+    <div class="controls">
+        <button onclick="resetView()">⟲ Reset View</button>
+        <button onclick="toggleLabels()">🏷️ Toggle Labels</button>
+    </div>
+
+    <div class="tooltip" id="tooltip">
+        <div class="tt-label" id="tt-label"></div>
+        <div class="tt-group" id="tt-group"></div>
+        <div class="tt-edges" id="tt-edges"></div>
+    </div>
+
+    <canvas id="canvas"></canvas>
+
+    <script>
+        // ─── DATA ─────────────────────────────────────────────────────────
+        const groups = {
+            'Core Entities': { color: '#38bdf8', bg: 'rgba(56,189,248,0.08)' },
+            'ESG Observations': { color: '#4ade80', bg: 'rgba(74,222,128,0.08)' },
+            'Standard Indicator Axis': { color: '#f472b6', bg: 'rgba(244,114,182,0.12)' },
+            'Standards & Compliance': { color: '#c084fc', bg: 'rgba(192,132,252,0.08)' },
+            'Goals & Initiatives': { color: '#22d3ee', bg: 'rgba(34,211,238,0.08)' },
+            'Claim Side': { color: '#fb923c', bg: 'rgba(251,146,60,0.08)' },
+            'Conduct Side': { color: '#f87171', bg: 'rgba(248,113,113,0.08)' },
+        };
+
+        const nodes = [
+            // Core
+            { id: 'Organization', group: 'Core Entities', r: 30 },
+            { id: 'Person', group: 'Core Entities', r: 16 },
+            { id: 'Facility', group: 'Core Entities', r: 20 },
+            { id: 'Product', group: 'Core Entities', r: 16 },
+            { id: 'Material', group: 'Core Entities', r: 14 },
+            { id: 'Location', group: 'Core Entities', r: 16 },
+            { id: 'Country', group: 'Core Entities', r: 14 },
+            { id: 'Community', group: 'Core Entities', r: 14 },
+            { id: 'Authority', group: 'Core Entities', r: 16 },
+            // Observations
+            { id: 'KPIObservation', group: 'ESG Observations', r: 22 },
+            { id: 'Emission', group: 'ESG Observations', r: 18 },
+            { id: 'Waste', group: 'ESG Observations', r: 16 },
+            { id: 'Investment', group: 'ESG Observations', r: 14 },
+            { id: 'Project', group: 'ESG Observations', r: 14 },
+            // Indicator Axis
+            { id: 'StandardIndicator\n(TT96/SSCIFC)', group: 'Standard Indicator Axis', r: 28, alias: 'SI_TT96' },
+            { id: 'StandardIndicator\n(GRI)', group: 'Standard Indicator Axis', r: 26, alias: 'SI_GRI' },
+            // Compliance
+            { id: 'Standard', group: 'Standards & Compliance', r: 20 },
+            { id: 'Certification', group: 'Standards & Compliance', r: 18 },
+            { id: 'Regulation', group: 'Standards & Compliance', r: 20 },
+            // Goals
+            { id: 'Initiative', group: 'Goals & Initiatives', r: 18 },
+            { id: 'Goal', group: 'Goals & Initiatives', r: 18 },
+            { id: 'ScienceBasedTarget', group: 'Goals & Initiatives', r: 14 },
+            { id: 'CarbonOffsetProject', group: 'Goals & Initiatives', r: 14 },
+            // Claim
+            { id: 'SustainabilityClaim', group: 'Claim Side', r: 26 },
+            { id: 'ClaimKeyword', group: 'Claim Side', r: 14 },
+            // Conduct
+            { id: 'Controversy', group: 'Conduct Side', r: 18 },
+            { id: 'Penalty', group: 'Conduct Side', r: 18 },
+            { id: 'MediaReport', group: 'Conduct Side', r: 18 },
+            { id: 'ThirdPartyVerification', group: 'Conduct Side', r: 18 },
+        ];
+
+        const SI_TT96 = 'StandardIndicator\n(TT96/SSCIFC)';
+        const SI_GRI = 'StandardIndicator\n(GRI)';
+
+        const edges = [
+            // ── equivalentTo (the key relationship) ──
+            { s: SI_TT96, t: SI_GRI, label: 'equivalentTo', highlight: true, bidirectional: true },
+
+            // ── Organization edges ──
+            { s: 'Organization', t: 'SustainabilityClaim', label: 'claims' },
+            { s: 'Organization', t: 'KPIObservation', label: 'reportsKPI' },
+            { s: 'Organization', t: 'Goal', label: 'setsGoal' },
+            { s: 'Organization', t: 'Emission', label: 'generatesEmission' },
+            { s: 'Organization', t: 'Facility', label: 'ownsFacility' },
+            { s: 'Organization', t: 'Standard', label: 'adoptsStandard' },
+            { s: 'Organization', t: 'Certification', label: 'holdsCertification' },
+            { s: 'Organization', t: 'Regulation', label: 'subjectToRegulation' },
+            { s: 'Organization', t: 'Initiative', label: 'takesPartIn' },
+            { s: 'Organization', t: 'ScienceBasedTarget', label: 'targetsScienceBased' },
+            { s: 'Organization', t: 'CarbonOffsetProject', label: 'offsetsWith' },
+            { s: 'Organization', t: 'Penalty', label: 'subjectToPenalty' },
+            { s: 'Organization', t: 'Community', label: 'impactsCommunity' },
+            { s: 'Organization', t: 'Location', label: 'locatedIn' },
+            { s: 'Organization', t: 'Investment', label: 'investsIn' },
+
+            // ── Claim → Indicator (alignsWithIndicator) ──
+            { s: 'SustainabilityClaim', t: SI_TT96, label: 'alignsWithIndicator', highlight: true },
+            { s: 'SustainabilityClaim', t: SI_GRI, label: 'alignsWithIndicator', highlight: true },
+            { s: 'Goal', t: SI_TT96, label: 'alignsWithIndicator', highlight: true },
+            { s: 'Initiative', t: SI_TT96, label: 'alignsWithIndicator', highlight: true },
+
+            // ── Observation → Indicator (measuredUnder) ──
+            { s: 'KPIObservation', t: SI_TT96, label: 'measuredUnder', highlight: true },
+            { s: 'Emission', t: SI_TT96, label: 'measuredUnder', highlight: true },
+            { s: 'Penalty', t: SI_TT96, label: 'measuredUnder', highlight: true },
+
+            // ── Indicator → Document (partOf) ──
+            { s: SI_TT96, t: 'Regulation', label: 'partOf', highlight: true },
+            { s: SI_GRI, t: 'Standard', label: 'partOf', highlight: true },
+
+            // ── Claim evidence edges ──
+            { s: 'SustainabilityClaim', t: 'ThirdPartyVerification', label: 'verifiedBy' },
+            { s: 'SustainabilityClaim', t: 'KPIObservation', label: 'verifiedBy' },
+            { s: 'SustainabilityClaim', t: 'Controversy', label: 'contradictedBy' },
+            { s: 'SustainabilityClaim', t: 'MediaReport', label: 'contradictedByMedia' },
+            { s: 'SustainabilityClaim', t: 'ClaimKeyword', label: 'hasKeyword' },
+
+            // ── Other edges ──
+            { s: 'Facility', t: 'Waste', label: 'generatesWaste' },
+            { s: 'Facility', t: 'Location', label: 'locatedIn' },
+            { s: 'Product', t: 'Material', label: 'usesMaterial' },
+            { s: 'Product', t: 'Organization', label: 'producedBy' },
+            { s: 'Initiative', t: 'Emission', label: 'reducesEmission' },
+            { s: 'Initiative', t: 'Waste', label: 'reducesWaste' },
+            { s: 'Penalty', t: 'Authority', label: 'enforcedBy' },
+            { s: 'Certification', t: 'Authority', label: 'issuedBy' },
+            { s: 'MediaReport', t: 'Organization', label: 'mentionsOrganization' },
+            { s: 'Person', t: 'Organization', label: 'worksAt' },
+            { s: 'Location', t: 'Country', label: 'isIn' },
+        ];
+
+        // ─── PHYSICS SIMULATION ───────────────────────────────────────────
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let W, H;
+        let showLabels = true;
+        let scale = 1, panX = 0, panY = 0;
+        let dragging = null, dragOffX = 0, dragOffY = 0;
+        let hoveredNode = null;
+
+        function resize() {
+            W = canvas.width = window.innerWidth;
+            H = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        // Position nodes by group in a circle layout
+        const groupList = Object.keys(groups);
+        const groupAngle = (2 * Math.PI) / groupList.length;
+        const groupRadius = Math.min(W, H) * 0.3;
+
+        const nodeMap = {};
+        nodes.forEach((n, i) => {
+            const gi = groupList.indexOf(n.group);
+            const membersInGroup = nodes.filter(nn => nn.group === n.group);
+            const mi = membersInGroup.indexOf(n);
+            const spread = membersInGroup.length;
+            const ga = groupAngle * gi - Math.PI / 2;
+            const cx = W / 2 + groupRadius * Math.cos(ga);
+            const cy = H / 2 + groupRadius * Math.sin(ga);
+            const localAngle = (2 * Math.PI / spread) * mi;
+            const localR = 40 + spread * 12;
+            n.x = cx + localR * Math.cos(localAngle);
+            n.y = cy + localR * Math.sin(localAngle);
+            n.vx = 0; n.vy = 0;
+            nodeMap[n.id] = n;
+        });
+
+        // Simple force simulation
+        function simulate() {
+            const dt = 0.3;
+            // Repulsion between all nodes
+            for (let i = 0; i < nodes.length; i++) {
+                for (let j = i + 1; j < nodes.length; j++) {
+                    const a = nodes[i], b = nodes[j];
+                    let dx = b.x - a.x, dy = b.y - a.y;
+                    let dist = Math.sqrt(dx * dx + dy * dy) || 1;
+                    const minDist = (a.r + b.r) * 3;
+                    if (dist < minDist) {
+                        const force = (minDist - dist) / dist * 2;
+                        a.vx -= dx * force * dt; a.vy -= dy * force * dt;
+                        b.vx += dx * force * dt; b.vy += dy * force * dt;
+                    }
+                }
+            }
+
+            // Attraction along edges
+            edges.forEach(e => {
+                const a = nodeMap[e.s], b = nodeMap[e.t];
+                if (!a || !b) return;
+                let dx = b.x - a.x, dy = b.y - a.y;
+                let dist = Math.sqrt(dx * dx + dy * dy) || 1;
+                const ideal = 160;
+                const force = (dist - ideal) / dist * 0.02;
+                a.vx += dx * force * dt; a.vy += dy * force * dt;
+                b.vx -= dx * force * dt; b.vy -= dy * force * dt;
+            });
+
+            // Center gravity
+            nodes.forEach(n => {
+                n.vx += (W / 2 - n.x) * 0.0005;
+                n.vy += (H / 2 - n.y) * 0.0005;
+            });
+
+            // Apply velocity with damping
+            nodes.forEach(n => {
+                if (n === dragging) return;
+                n.vx *= 0.85; n.vy *= 0.85;
+                n.x += n.vx; n.y += n.vy;
+            });
+        }
+
+        // ─── DRAWING ──────────────────────────────────────────────────────
+        function drawArrow(x1, y1, x2, y2, r2, color, lineWidth, dashed) {
+            const angle = Math.atan2(y2 - y1, x2 - x1);
+            const endX = x2 - (r2 + 6) * Math.cos(angle);
+            const endY = y2 - (r2 + 6) * Math.sin(angle);
+            const startX = x1 + (nodeMap[Object.keys(nodeMap).find(k => nodeMap[k].x === x1 && nodeMap[k].y === y1)]?.r || 16 + 4) * Math.cos(angle);
+            const startY = y1 + (nodeMap[Object.keys(nodeMap).find(k => nodeMap[k].x === x1 && nodeMap[k].y === y1)]?.r || 16 + 4) * Math.sin(angle);
+
+            ctx.beginPath();
+            if (dashed) ctx.setLineDash([6, 4]);
+            else ctx.setLineDash([]);
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(endX, endY);
+            ctx.strokeStyle = color;
+            ctx.lineWidth = lineWidth;
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Arrowhead
+            const aLen = 10;
+            ctx.beginPath();
+            ctx.moveTo(endX, endY);
+            ctx.lineTo(endX - aLen * Math.cos(angle - 0.35), endY - aLen * Math.sin(angle - 0.35));
+            ctx.lineTo(endX - aLen * Math.cos(angle + 0.35), endY - aLen * Math.sin(angle + 0.35));
+            ctx.closePath();
+            ctx.fillStyle = color;
+            ctx.fill();
+        }
+
+        function draw() {
+            ctx.save();
+            ctx.clearRect(0, 0, W, H);
+            ctx.translate(panX, panY);
+            ctx.scale(scale, scale);
+
+            // Draw edges
+            edges.forEach(e => {
+                const a = nodeMap[e.s], b = nodeMap[e.t];
+                if (!a || !b) return;
+                const hl = e.highlight;
+                const color = hl ? '#f472b6' : 'rgba(100,110,140,0.35)';
+                const lw = hl ? 2 : 1;
+
+                // Draw line
+                ctx.beginPath();
+                ctx.setLineDash([]);
+                ctx.moveTo(a.x, a.y);
+                ctx.lineTo(b.x, b.y);
+                ctx.strokeStyle = color;
+                ctx.lineWidth = lw;
+                ctx.stroke();
+
+                // Arrowhead
+                const angle = Math.atan2(b.y - a.y, b.x - a.x);
+                const endX = b.x - (b.r + 4) * Math.cos(angle);
+                const endY = b.y - (b.r + 4) * Math.sin(angle);
+                const aLen = hl ? 10 : 7;
+                ctx.beginPath();
+                ctx.moveTo(endX, endY);
+                ctx.lineTo(endX - aLen * Math.cos(angle - 0.3), endY - aLen * Math.sin(angle - 0.3));
+                ctx.lineTo(endX - aLen * Math.cos(angle + 0.3), endY - aLen * Math.sin(angle + 0.3));
+                ctx.closePath();
+                ctx.fillStyle = color;
+                ctx.fill();
+
+                // Bidirectional arrow
+                if (e.bidirectional) {
+                    const angle2 = Math.atan2(a.y - b.y, a.x - b.x);
+                    const endX2 = a.x - (a.r + 4) * Math.cos(angle2);
+                    const endY2 = a.y - (a.r + 4) * Math.sin(angle2);
+                    ctx.beginPath();
+                    ctx.moveTo(endX2, endY2);
+                    ctx.lineTo(endX2 - aLen * Math.cos(angle2 - 0.3), endY2 - aLen * Math.sin(angle2 - 0.3));
+                    ctx.lineTo(endX2 - aLen * Math.cos(angle2 + 0.3), endY2 - aLen * Math.sin(angle2 + 0.3));
+                    ctx.closePath();
+                    ctx.fillStyle = color;
+                    ctx.fill();
+                }
+
+                // Edge label
+                if (showLabels) {
+                    const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+                    ctx.font = `${hl ? 600 : 400} ${hl ? 10 : 9}px Inter, sans-serif`;
+                    ctx.fillStyle = hl ? '#f9a8d4' : 'rgba(140,150,170,0.6)';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(e.label, mx, my - 4);
+                }
+            });
+
+            // Draw nodes
+            nodes.forEach(n => {
+                const g = groups[n.group];
+                const isHovered = hoveredNode === n;
+
+                // Glow
+                if (isHovered || n.group === 'Standard Indicator Axis') {
+                    ctx.beginPath();
+                    ctx.arc(n.x, n.y, n.r + 8, 0, Math.PI * 2);
+                    const grd = ctx.createRadialGradient(n.x, n.y, n.r, n.x, n.y, n.r + 12);
+                    grd.addColorStop(0, g.color + '40');
+                    grd.addColorStop(1, 'transparent');
+                    ctx.fillStyle = grd;
+                    ctx.fill();
+                }
+
+                // Node circle
+                ctx.beginPath();
+                ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+                ctx.fillStyle = isHovered ? g.color : (g.color + '20');
+                ctx.fill();
+                ctx.strokeStyle = g.color;
+                ctx.lineWidth = isHovered ? 3 : 1.5;
+                ctx.stroke();
+
+                // Node label
+                if (showLabels) {
+                    ctx.font = `600 ${Math.max(9, n.r * 0.45)}px Inter, sans-serif`;
+                    ctx.fillStyle = isHovered ? '#fff' : g.color;
+                    ctx.textAlign = 'center';
+                    const lines = n.id.split('\n');
+                    lines.forEach((line, li) => {
+                        ctx.fillText(line, n.x, n.y + n.r + 14 + li * 13);
+                    });
+                }
+            });
+
+            ctx.restore();
+        }
+
+        // ─── INTERACTION ──────────────────────────────────────────────────
+        function getNodeAt(mx, my) {
+            const x = (mx - panX) / scale;
+            const y = (my - panY) / scale;
+            for (let i = nodes.length - 1; i >= 0; i--) {
+                const n = nodes[i];
+                const dx = x - n.x, dy = y - n.y;
+                if (dx * dx + dy * dy < n.r * n.r) return n;
+            }
+            return null;
+        }
+
+        canvas.addEventListener('mousedown', e => {
+            const n = getNodeAt(e.clientX, e.clientY);
+            if (n) {
+                dragging = n;
+                const x = (e.clientX - panX) / scale;
+                const y = (e.clientY - panY) / scale;
+                dragOffX = x - n.x;
+                dragOffY = y - n.y;
+            }
+        });
+
+        canvas.addEventListener('mousemove', e => {
+            if (dragging) {
+                const x = (e.clientX - panX) / scale;
+                const y = (e.clientY - panY) / scale;
+                dragging.x = x - dragOffX;
+                dragging.y = y - dragOffY;
+                dragging.vx = 0; dragging.vy = 0;
+            }
+
+            const n = getNodeAt(e.clientX, e.clientY);
+            hoveredNode = n;
+            const tooltip = document.getElementById('tooltip');
+            if (n) {
+                canvas.style.cursor = 'grab';
+                const connEdges = edges.filter(edge => edge.s === n.id || edge.t === n.id);
+                const outgoing = connEdges.filter(edge => edge.s === n.id).map(edge => `→ ${edge.label} → ${edge.t.split('\n')[0]}`);
+                const incoming = connEdges.filter(edge => edge.t === n.id).map(edge => `${edge.s.split('\n')[0]} → ${edge.label} →`);
+
+                document.getElementById('tt-label').textContent = n.id.replace('\n', ' ');
+                document.getElementById('tt-group').textContent = n.group;
+                document.getElementById('tt-edges').innerHTML =
+                    (outgoing.length ? '<b>Outgoing:</b><br>' + outgoing.join('<br>') : '') +
+                    (incoming.length ? '<br><b>Incoming:</b><br>' + incoming.join('<br>') : '');
+                tooltip.style.left = (e.clientX + 16) + 'px';
+                tooltip.style.top = (e.clientY - 10) + 'px';
+                tooltip.classList.add('visible');
+            } else {
+                canvas.style.cursor = 'default';
+                tooltip.classList.remove('visible');
+            }
+        });
+
+        canvas.addEventListener('mouseup', () => { dragging = null; });
+
+        canvas.addEventListener('wheel', e => {
+            e.preventDefault();
+            const zoomFactor = e.deltaY > 0 ? 0.92 : 1.08;
+            const mx = e.clientX, my = e.clientY;
+            panX = mx - (mx - panX) * zoomFactor;
+            panY = my - (my - panY) * zoomFactor;
+            scale *= zoomFactor;
+        }, { passive: false });
+
+        function resetView() { scale = 1; panX = 0; panY = 0; }
+        function toggleLabels() { showLabels = !showLabels; }
+
+        // ─── LEGEND ───────────────────────────────────────────────────────
+        const legendEl = document.getElementById('legend');
+        legendEl.innerHTML = '<div class="legend-title">Node Groups</div>' +
+            Object.entries(groups).map(([name, g]) =>
+                `<div class="legend-item"><div class="legend-dot" style="background:${g.color}"></div>${name}</div>`
+            ).join('') +
+            '<div class="legend-title" style="margin-top:8px">Key Relationships</div>' +
+            '<div class="legend-item"><div class="legend-dot" style="background:#f472b6"></div>equivalentTo (TT96 ↔ GRI)</div>' +
+            '<div class="legend-item"><div class="legend-dot" style="background:#f472b6"></div>alignsWithIndicator</div>' +
+            '<div class="legend-item"><div class="legend-dot" style="background:#f472b6"></div>measuredUnder / partOf</div>';
+
+        // ─── ANIMATION LOOP ──────────────────────────────────────────────
+        function loop() {
+            simulate();
+            draw();
+            requestAnimationFrame(loop);
+        }
+        loop();
+    </script>
+</body>
+
+</html>

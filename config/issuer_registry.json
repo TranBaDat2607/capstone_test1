@@ -16,13 +16,13 @@
       "An Phat Green Plastic and Environment JSC",
       "Nhựa An Phát Xanh",
       "Công ty Cổ phần Nhựa và Môi trường xanh An Phát",
+      "CTCP Nhựa An Phát Xanh",
       "An Phat Plastic and Green Environment JSC",
       "CÔNG TY CP NHỰA VÀ MÔI TRƯỜNG XANH AN PHÁT",
       "An Phat Green Environment Plastic Joint Stock Company",
       "Công ty cổ phần Nhựa và Môi trường xanh An Phát",
       "Công ty Cổ phần Nhựa và Môi trường Xanh An Phát",
       "AAA Company",
-      "CTCP Nhựa An Phát Xanh",
       "AAA Corporation",
       "An Phat Xanh Plastic",
       "Công ty Cổ phần Nhựa An Phát Xanh",
@@ -68,6 +68,18 @@
     ],
     "exclusions": [
       {
+        "name": "An Phat",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.003)"
+      },
+      {
+        "name": "An Phat - Yen Plastic and Mineral JSC",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000) and qualifier ['yen']"
+      },
+      {
+        "name": "An Phat Bioplastics Joint Stock Company",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.001)"
+      },
+      {
         "name": "An Phat Holdings",
         "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
       },
@@ -84,8 +96,84 @@
         "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
       },
       {
+        "name": "An Phat Plastic",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.001)"
+      },
+      {
+        "name": "An Phat Plastic and Environment JSC",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "An Phat Plastic and Environment Joint Stock Company",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.001)"
+      },
+      {
+        "name": "An Phat Plastic and Environmental J.S.C.",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "An Phat Plastic and Environmental Joint Stock Company",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "An Phat Plastic and Mineral Joint Stock Company - Yen Bai",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000) and qualifier ['bai', 'yen']"
+      },
+      {
+        "name": "An Phat Plastic and Packaging Joint Stock Company",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.001)"
+      },
+      {
+        "name": "An Phat Yen Bai Plastic and Mineral Joint Stock Company",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000) and qualifier ['bai', 'yen']"
+      },
+      {
+        "name": "An Phat – Yen Bai Mineral & Plastic Joint Stock Company",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000) and qualifier ['bai', 'yen']"
+      },
+      {
+        "name": "An Phát",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.018)"
+      },
+      {
+        "name": "An Phát Company",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "An Phát Complex",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
         "name": "An Phát Holdings",
         "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
+      },
+      {
+        "name": "An Phát Mineral",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "An Phát – Yên Bái",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000) and qualifier ['bai', 'yen']"
+      },
+      {
+        "name": "C6ng ty Cd phAn Nhpa vd M6i trucmg xanh An Ph6t",
+        "reason": "shares issuer core ['an', 'xanh'] but low graph similarity (0.001)"
+      },
+      {
+        "name": "C6ng ty c6 phdn Nhpa vd Mdi trudng xanh An Ph6t",
+        "reason": "shares issuer core ['an', 'xanh'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "C6ng ty cO phAn Nhga vd MOi trucrng Xanh An",
+        "reason": "shares issuer core ['an', 'xanh'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "COng ty CO phAn Nhga vd MOi truong xanh An Ph6t",
+        "reason": "shares issuer core ['an', 'xanh'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CT TNHH KCN Kỹ thuật cao An Phát",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
       },
       {
         "name": "CTCP An Phát Holdings",
@@ -100,12 +188,60 @@
         "reason": "An Tiến Industries (HII) — affiliate, separate listed entity"
       },
       {
+        "name": "CTCP KCN Kỹ thuật cao An Phát",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CTCP Nhem vd MOi trudng xanh An Phdt",
+        "reason": "shares issuer core ['an', 'xanh'] but low graph similarity (0.001)"
+      },
+      {
         "name": "CTCP Nhựa Hà Nội",
         "reason": "Nhựa Hà Nội (NHH) — affiliate, separate listed entity"
       },
       {
+        "name": "CTCP Nhựa và Bao bì An Phát",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.002) and qualifier ['bao', 'bi']"
+      },
+      {
+        "name": "CTCP Nhựa và Khoáng sản An Phát - Yên Bái",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000) and qualifier ['bai', 'khoang', 'yen']"
+      },
+      {
+        "name": "CTCP Nhựa và Khoáng sản An Phát Yên Bái",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.001) and qualifier ['bai', 'khoang', 'yen']"
+      },
+      {
+        "name": "CTCP Nhựa và Khoáng sản An Phát – Yên Bái",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.001) and qualifier ['bai', 'khoang', 'yen']"
+      },
+      {
+        "name": "CTCP Sản xuất PBAT An Phát",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.001)"
+      },
+      {
         "name": "CTCP Tập đoàn An Phát Holdings",
         "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
+      },
+      {
+        "name": "CTCP Tổ hợp Nhựa An Phát",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CTCP sản xuất PBAT An Phát",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty An Phát",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.004)"
+      },
+      {
+        "name": "Công ty An Phát Complex",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty An Phát Complex 1",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
       },
       {
         "name": "Công ty CP An Phát Holdings",
@@ -114,6 +250,14 @@
       {
         "name": "Công ty CP An Tiến Industries",
         "reason": "An Tiến Industries (HII) — affiliate, separate listed entity"
+      },
+      {
+        "name": "Công ty CP Nhựa và Khoán sản An Phát - Yên Bái",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000) and qualifier ['bai', 'yen']"
+      },
+      {
+        "name": "Công ty CP Nhựa và Khoáng sản An Phát - Yên Bái",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000) and qualifier ['bai', 'khoang', 'yen']"
       },
       {
         "name": "Công ty Cổ phần An Phát Holdings",
@@ -128,8 +272,48 @@
         "reason": "An Tiến Industries (HII) — affiliate, separate listed entity"
       },
       {
+        "name": "Công ty Cổ phần Khu Công nghiệp Kỹ thuật Cao An Phát",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Khu Công nghiệp Kỹ thuật cao An Phát",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Khu công nghiệp Kỹ thuật cao An Phát 1",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Khu công nghiệp kỹ thuật cao An Phát",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
         "name": "Công ty Cổ phần Nhựa Hà Nội",
         "reason": "Nhựa Hà Nội (NHH) — affiliate, separate listed entity"
+      },
+      {
+        "name": "Công ty Cổ phần Nhựa và Bao bì An Phát",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.002) and qualifier ['bao', 'bi']"
+      },
+      {
+        "name": "Công ty Cổ phần Nhựa và Khoáng Sản An Phát - Yên Bái",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000) and qualifier ['bai', 'khoang', 'yen']"
+      },
+      {
+        "name": "Công ty Cổ phần Nhựa và Khoáng Sản An Phát – Yên Bái",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000) and qualifier ['bai', 'khoang', 'yen']"
+      },
+      {
+        "name": "Công ty Cổ phần Nhựa và Khoáng sản An Phát - Yên Bái",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.002) and qualifier ['bai', 'khoang', 'yen']"
+      },
+      {
+        "name": "Công ty Cổ phần Nhựa và Khoáng sản An Phát Yên Bái",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000) and qualifier ['bai', 'khoang', 'yen']"
+      },
+      {
+        "name": "Công ty Cổ phần Nhựa và Khoáng sản An Phát – Yên Bái",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.002) and qualifier ['bai', 'khoang', 'yen']"
       },
       {
         "name": "Công ty Cổ phần Tập đoàn An Phát Holdings",
@@ -140,381 +324,82 @@
         "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
       },
       {
+        "name": "Công ty Cổ phần khu công nghiệp kỹ thuật cao An Phát",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.001)"
+      },
+      {
+        "name": "Công ty Cổ phần sản xuất PBAT An Phát",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư An Phát",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.001)"
+      },
+      {
+        "name": "Công ty Cổ phần đầu tư An Phát",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty KCN An Phát 1",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty KCN Kỹ thuật cao An Phát 1",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH KCN Kỹ thuật cao An Phát",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.002)"
+      },
+      {
+        "name": "Công ty TNHH KCN kỹ thuật cao An Phát",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.001)"
+      },
+      {
+        "name": "Công ty TNHH Khu Công Nghiệp Kỹ thuật cao An Phát",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH Khu Công nghiệp Kỹ thuật cao An Phát",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.001)"
+      },
+      {
+        "name": "Công ty TNHH Khu công nghiệp Kỹ thuật cao An Phát",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH khu công nghiệp kỹ thuật cao An Phát",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
         "name": "Công ty cổ phần Nhựa Hà Nội",
         "reason": "Nhựa Hà Nội (NHH) — affiliate, separate listed entity"
+      },
+      {
+        "name": "Công ty cổ phần Nhựa và Khoáng sản An Phát – Yên Bái",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000) and qualifier ['bai', 'khoang', 'yen']"
+      },
+      {
+        "name": "Công ty cổ phần nhựa và khoáng sản An Phát- Yên Bái",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000) and qualifier ['bai', 'khoang', 'yen']"
+      },
+      {
+        "name": "Công ty cổ phần nhựa và khóang sản An Phát- Yên Bái",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000) and qualifier ['bai', 'khoang', 'yen']"
+      },
+      {
+        "name": "Quỹ hỗ trợ và phát triển tài năng giáo dục An Phát",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Trung tâm đào tạo nghề An Phát",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
       },
       {
         "name": "Tập đoàn An Phát Holdings",
         "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
       }
     ],
-    "needs_review": [
-      {
-        "name": "An Phát",
-        "reason": "shares issuer core ['an', 'phat'] and is subject of 322 report edges → likely an issuer shorthand",
-        "subject_edges": 322,
-        "suggest": "include"
-      },
-      {
-        "name": "An Phat Plastic and Environment Joint Stock Company",
-        "reason": "shares issuer core ['an', 'phat'] and is subject of 58 report edges → likely an issuer shorthand",
-        "subject_edges": 58,
-        "suggest": "include"
-      },
-      {
-        "name": "An Phat",
-        "reason": "shares issuer core ['an', 'phat'] and is subject of 44 report edges → likely an issuer shorthand",
-        "subject_edges": 44,
-        "suggest": "include"
-      },
-      {
-        "name": "An Phat Plastic and Environmental J.S.C.",
-        "reason": "shares issuer core ['an', 'phat'] and is subject of 37 report edges → likely an issuer shorthand",
-        "subject_edges": 37,
-        "suggest": "include"
-      },
-      {
-        "name": "Công ty Cổ phần Nhựa và Khoáng sản An Phát - Yên Bái",
-        "reason": "shares issuer core ['an', 'phat'] but qualifier ['bai', 'khoang', 'yen'] → likely related-but-separate entity",
-        "subject_edges": 19,
-        "suggest": "exclude"
-      },
-      {
-        "name": "Công ty Cổ phần Nhựa và Khoáng sản An Phát – Yên Bái",
-        "reason": "shares issuer core ['an', 'phat'] but qualifier ['bai', 'khoang', 'yen'] → likely related-but-separate entity",
-        "subject_edges": 13,
-        "suggest": "exclude"
-      },
-      {
-        "name": "An Phat Bioplastics Joint Stock Company",
-        "reason": "shares issuer core ['an', 'phat'] and is subject of 11 report edges → likely an issuer shorthand",
-        "subject_edges": 11,
-        "suggest": "include"
-      },
-      {
-        "name": "CTCP Nhem vd MOi trudng xanh An Phdt",
-        "reason": "shares issuer core ['an', 'xanh'] and is subject of 11 report edges → likely an issuer shorthand",
-        "subject_edges": 11,
-        "suggest": "include"
-      },
-      {
-        "name": "Công ty An Phát",
-        "reason": "shares issuer core ['an', 'phat'] but weak structural support (8 report edges)",
-        "subject_edges": 8,
-        "suggest": "exclude"
-      },
-      {
-        "name": "C6ng ty Cd phAn Nhpa vd M6i trucmg xanh An Ph6t",
-        "reason": "shares issuer core ['an', 'xanh'] but weak structural support (7 report edges)",
-        "subject_edges": 7,
-        "suggest": "exclude"
-      },
-      {
-        "name": "An Phat – Yen Bai Mineral & Plastic Joint Stock Company",
-        "reason": "shares issuer core ['an', 'phat'] but qualifier ['bai', 'yen'] → likely related-but-separate entity",
-        "subject_edges": 6,
-        "suggest": "exclude"
-      },
-      {
-        "name": "An Phát – Yên Bái",
-        "reason": "shares issuer core ['an', 'phat'] but qualifier ['bai', 'yen'] → likely related-but-separate entity",
-        "subject_edges": 6,
-        "suggest": "exclude"
-      },
-      {
-        "name": "An Phat Plastic and Environmental Joint Stock Company",
-        "reason": "shares issuer core ['an', 'phat'] but weak structural support (4 report edges)",
-        "subject_edges": 4,
-        "suggest": "exclude"
-      },
-      {
-        "name": "An Phat Yen Bai Plastic and Mineral Joint Stock Company",
-        "reason": "shares issuer core ['an', 'phat'] but qualifier ['bai', 'yen'] → likely related-but-separate entity",
-        "subject_edges": 4,
-        "suggest": "exclude"
-      },
-      {
-        "name": "An Phát Company",
-        "reason": "shares issuer core ['an', 'phat'] but weak structural support (4 report edges)",
-        "subject_edges": 4,
-        "suggest": "exclude"
-      },
-      {
-        "name": "An Phát Mineral",
-        "reason": "shares issuer core ['an', 'phat'] but weak structural support (4 report edges)",
-        "subject_edges": 4,
-        "suggest": "exclude"
-      },
-      {
-        "name": "An Phat Plastic and Environment JSC",
-        "reason": "shares issuer core ['an', 'phat'] but weak structural support (3 report edges)",
-        "subject_edges": 3,
-        "suggest": "exclude"
-      },
-      {
-        "name": "CTCP Nhựa và Bao bì An Phát",
-        "reason": "shares issuer core ['an', 'phat'] but qualifier ['bao', 'bi'] → likely related-but-separate entity",
-        "subject_edges": 3,
-        "suggest": "exclude"
-      },
-      {
-        "name": "Công ty Cổ phần khu công nghiệp kỹ thuật cao An Phát",
-        "reason": "shares issuer core ['an', 'phat'] but weak structural support (3 report edges)",
-        "subject_edges": 3,
-        "suggest": "exclude"
-      },
-      {
-        "name": "An Phat Plastic",
-        "reason": "shares issuer core ['an', 'phat'] but weak structural support (2 report edges)",
-        "subject_edges": 2,
-        "suggest": "exclude"
-      },
-      {
-        "name": "An Phat Plastic and Mineral Joint Stock Company - Yen Bai",
-        "reason": "shares issuer core ['an', 'phat'] but qualifier ['bai', 'yen'] → likely related-but-separate entity",
-        "subject_edges": 2,
-        "suggest": "exclude"
-      },
-      {
-        "name": "An Phat Plastic and Packaging Joint Stock Company",
-        "reason": "shares issuer core ['an', 'phat'] but weak structural support (2 report edges)",
-        "subject_edges": 2,
-        "suggest": "exclude"
-      },
-      {
-        "name": "Công ty Cổ phần Nhựa và Bao bì An Phát",
-        "reason": "shares issuer core ['an', 'phat'] but qualifier ['bao', 'bi'] → likely related-but-separate entity",
-        "subject_edges": 2,
-        "suggest": "exclude"
-      },
-      {
-        "name": "Công ty TNHH KCN Kỹ thuật cao An Phát",
-        "reason": "shares issuer core ['an', 'phat'] but weak structural support (2 report edges)",
-        "subject_edges": 2,
-        "suggest": "exclude"
-      },
-      {
-        "name": "An Phát Complex",
-        "reason": "shares issuer core ['an', 'phat'] but weak structural support (1 report edges)",
-        "subject_edges": 1,
-        "suggest": "exclude"
-      },
-      {
-        "name": "CTCP Nhựa và Khoáng sản An Phát Yên Bái",
-        "reason": "shares issuer core ['an', 'phat'] but qualifier ['bai', 'khoang', 'yen'] → likely related-but-separate entity",
-        "subject_edges": 1,
-        "suggest": "exclude"
-      },
-      {
-        "name": "CTCP Nhựa và Khoáng sản An Phát – Yên Bái",
-        "reason": "shares issuer core ['an', 'phat'] but qualifier ['bai', 'khoang', 'yen'] → likely related-but-separate entity",
-        "subject_edges": 1,
-        "suggest": "exclude"
-      },
-      {
-        "name": "Công ty Cổ phần Khu Công nghiệp Kỹ thuật Cao An Phát",
-        "reason": "shares issuer core ['an', 'phat'] but weak structural support (1 report edges)",
-        "subject_edges": 1,
-        "suggest": "exclude"
-      },
-      {
-        "name": "Công ty KCN An Phát 1",
-        "reason": "shares issuer core ['an', 'phat'] but weak structural support (1 report edges)",
-        "subject_edges": 1,
-        "suggest": "exclude"
-      },
-      {
-        "name": "Công ty TNHH KCN kỹ thuật cao An Phát",
-        "reason": "shares issuer core ['an', 'phat'] but weak structural support (1 report edges)",
-        "subject_edges": 1,
-        "suggest": "exclude"
-      },
-      {
-        "name": "Công ty TNHH Khu Công Nghiệp Kỹ thuật cao An Phát",
-        "reason": "shares issuer core ['an', 'phat'] but weak structural support (1 report edges)",
-        "subject_edges": 1,
-        "suggest": "exclude"
-      },
-      {
-        "name": "Quỹ hỗ trợ và phát triển tài năng giáo dục An Phát",
-        "reason": "shares issuer core ['an', 'phat'] but weak structural support (1 report edges)",
-        "subject_edges": 1,
-        "suggest": "exclude"
-      },
-      {
-        "name": "An Phat - Yen Plastic and Mineral JSC",
-        "reason": "shares issuer core ['an', 'phat'] but qualifier ['yen'] → likely related-but-separate entity",
-        "subject_edges": 0,
-        "suggest": "exclude"
-      },
-      {
-        "name": "C6ng ty c6 phdn Nhpa vd Mdi trudng xanh An Ph6t",
-        "reason": "shares issuer core ['an', 'xanh'] but weak structural support (0 report edges)",
-        "subject_edges": 0,
-        "suggest": "exclude"
-      },
-      {
-        "name": "C6ng ty cO phAn Nhga vd MOi trucrng Xanh An",
-        "reason": "shares issuer core ['an', 'xanh'] but weak structural support (0 report edges)",
-        "subject_edges": 0,
-        "suggest": "exclude"
-      },
-      {
-        "name": "COng ty CO phAn Nhga vd MOi truong xanh An Ph6t",
-        "reason": "shares issuer core ['an', 'xanh'] but weak structural support (0 report edges)",
-        "subject_edges": 0,
-        "suggest": "exclude"
-      },
-      {
-        "name": "CTCP KCN Kỹ thuật cao An Phát",
-        "reason": "shares issuer core ['an', 'phat'] but weak structural support (0 report edges)",
-        "subject_edges": 0,
-        "suggest": "exclude"
-      },
-      {
-        "name": "CTCP Nhựa và Khoáng sản An Phát - Yên Bái",
-        "reason": "shares issuer core ['an', 'phat'] but qualifier ['bai', 'khoang', 'yen'] → likely related-but-separate entity",
-        "subject_edges": 0,
-        "suggest": "exclude"
-      },
-      {
-        "name": "CTCP Sản xuất PBAT An Phát",
-        "reason": "shares issuer core ['an', 'phat'] but weak structural support (0 report edges)",
-        "subject_edges": 0,
-        "suggest": "exclude"
-      },
-      {
-        "name": "CTCP sản xuất PBAT An Phát",
-        "reason": "shares issuer core ['an', 'phat'] but weak structural support (0 report edges)",
-        "subject_edges": 0,
-        "suggest": "exclude"
-      },
-      {
-        "name": "Công ty An Phát Complex",
-        "reason": "shares issuer core ['an', 'phat'] but weak structural support (0 report edges)",
-        "subject_edges": 0,
-        "suggest": "exclude"
-      },
-      {
-        "name": "Công ty An Phát Complex 1",
-        "reason": "shares issuer core ['an', 'phat'] but weak structural support (0 report edges)",
-        "subject_edges": 0,
-        "suggest": "exclude"
-      },
-      {
-        "name": "Công ty CP Nhựa và Khoán sản An Phát - Yên Bái",
-        "reason": "shares issuer core ['an', 'phat'] but qualifier ['bai', 'yen'] → likely related-but-separate entity",
-        "subject_edges": 0,
-        "suggest": "exclude"
-      },
-      {
-        "name": "Công ty CP Nhựa và Khoáng sản An Phát - Yên Bái",
-        "reason": "shares issuer core ['an', 'phat'] but qualifier ['bai', 'khoang', 'yen'] → likely related-but-separate entity",
-        "subject_edges": 0,
-        "suggest": "exclude"
-      },
-      {
-        "name": "Công ty Cổ phần Khu Công nghiệp Kỹ thuật cao An Phát",
-        "reason": "shares issuer core ['an', 'phat'] but weak structural support (0 report edges)",
-        "subject_edges": 0,
-        "suggest": "exclude"
-      },
-      {
-        "name": "Công ty Cổ phần Khu công nghiệp Kỹ thuật cao An Phát 1",
-        "reason": "shares issuer core ['an', 'phat'] but weak structural support (0 report edges)",
-        "subject_edges": 0,
-        "suggest": "exclude"
-      },
-      {
-        "name": "Công ty Cổ phần Khu công nghiệp kỹ thuật cao An Phát",
-        "reason": "shares issuer core ['an', 'phat'] but weak structural support (0 report edges)",
-        "subject_edges": 0,
-        "suggest": "exclude"
-      },
-      {
-        "name": "Công ty Cổ phần Nhựa và Khoáng Sản An Phát - Yên Bái",
-        "reason": "shares issuer core ['an', 'phat'] but qualifier ['bai', 'khoang', 'yen'] → likely related-but-separate entity",
-        "subject_edges": 0,
-        "suggest": "exclude"
-      },
-      {
-        "name": "Công ty Cổ phần Nhựa và Khoáng Sản An Phát – Yên Bái",
-        "reason": "shares issuer core ['an', 'phat'] but qualifier ['bai', 'khoang', 'yen'] → likely related-but-separate entity",
-        "subject_edges": 0,
-        "suggest": "exclude"
-      },
-      {
-        "name": "Công ty Cổ phần Nhựa và Khoáng sản An Phát Yên Bái",
-        "reason": "shares issuer core ['an', 'phat'] but qualifier ['bai', 'khoang', 'yen'] → likely related-but-separate entity",
-        "subject_edges": 0,
-        "suggest": "exclude"
-      },
-      {
-        "name": "Công ty Cổ phần sản xuất PBAT An Phát",
-        "reason": "shares issuer core ['an', 'phat'] but weak structural support (0 report edges)",
-        "subject_edges": 0,
-        "suggest": "exclude"
-      },
-      {
-        "name": "Công ty Cổ phần Đầu tư An Phát",
-        "reason": "shares issuer core ['an', 'phat'] but weak structural support (0 report edges)",
-        "subject_edges": 0,
-        "suggest": "exclude"
-      },
-      {
-        "name": "Công ty Cổ phần đầu tư An Phát",
-        "reason": "shares issuer core ['an', 'phat'] but weak structural support (0 report edges)",
-        "subject_edges": 0,
-        "suggest": "exclude"
-      },
-      {
-        "name": "Công ty KCN Kỹ thuật cao An Phát 1",
-        "reason": "shares issuer core ['an', 'phat'] but weak structural support (0 report edges)",
-        "subject_edges": 0,
-        "suggest": "exclude"
-      },
-      {
-        "name": "Công ty TNHH Khu Công nghiệp Kỹ thuật cao An Phát",
-        "reason": "shares issuer core ['an', 'phat'] but weak structural support (0 report edges)",
-        "subject_edges": 0,
-        "suggest": "exclude"
-      },
-      {
-        "name": "Công ty TNHH Khu công nghiệp Kỹ thuật cao An Phát",
-        "reason": "shares issuer core ['an', 'phat'] but weak structural support (0 report edges)",
-        "subject_edges": 0,
-        "suggest": "exclude"
-      },
-      {
-        "name": "Công ty TNHH khu công nghiệp kỹ thuật cao An Phát",
-        "reason": "shares issuer core ['an', 'phat'] but weak structural support (0 report edges)",
-        "subject_edges": 0,
-        "suggest": "exclude"
-      },
-      {
-        "name": "Công ty cổ phần Nhựa và Khoáng sản An Phát – Yên Bái",
-        "reason": "shares issuer core ['an', 'phat'] but qualifier ['bai', 'khoang', 'yen'] → likely related-but-separate entity",
-        "subject_edges": 0,
-        "suggest": "exclude"
-      },
-      {
-        "name": "Công ty cổ phần nhựa và khoáng sản An Phát- Yên Bái",
-        "reason": "shares issuer core ['an', 'phat'] but qualifier ['bai', 'khoang', 'yen'] → likely related-but-separate entity",
-        "subject_edges": 0,
-        "suggest": "exclude"
-      },
-      {
-        "name": "Công ty cổ phần nhựa và khóang sản An Phát- Yên Bái",
-        "reason": "shares issuer core ['an', 'phat'] but qualifier ['bai', 'khoang', 'yen'] → likely related-but-separate entity",
-        "subject_edges": 0,
-        "suggest": "exclude"
-      },
-      {
-        "name": "Trung tâm đào tạo nghề An Phát",
-        "reason": "shares issuer core ['an', 'phat'] but weak structural support (0 report edges)",
-        "subject_edges": 0,
-        "suggest": "exclude"
-      }
-    ]
+    "needs_review": []
   }
 }

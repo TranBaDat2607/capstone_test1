@@ -19,103 +19,103 @@
   "confirmed": [
     {"tt96": "TT96-6.1.1", "gri": ["GRI 305-1", "GRI 305-2"],
      "gri_name": "Direct (Scope 1) and energy indirect (Scope 2) GHG emissions",
-     "confidence": "high", "status": "needs_review",
+     "confidence": "high", "status": "confirmed",
      "note": "Scope 1+2 GHG is the canonical GRI 305-1/305-2 pair."},
 
     {"tt96": "TT96-6.1.2", "gri": ["GRI 305-5"],
      "gri_name": "Reduction of GHG emissions",
-     "confidence": "high", "status": "needs_review"},
+     "confidence": "high", "status": "confirmed"},
 
     {"tt96": "TT96-6.2.1", "gri": ["GRI 301-1"],
      "gri_name": "Materials used by weight or volume",
-     "confidence": "high", "status": "needs_review"},
+     "confidence": "high", "status": "confirmed"},
 
     {"tt96": "TT96-6.2.2", "gri": ["GRI 301-2"],
      "gri_name": "Recycled input materials used",
-     "confidence": "high", "status": "needs_review"},
+     "confidence": "high", "status": "confirmed"},
 
     {"tt96": "TT96-6.3.1", "gri": ["GRI 302-1"],
      "gri_name": "Energy consumption within the organization",
-     "confidence": "high", "status": "needs_review"},
+     "confidence": "high", "status": "confirmed"},
 
     {"tt96": "TT96-6.3.2", "gri": ["GRI 302-4"],
      "gri_name": "Reduction of energy consumption",
-     "confidence": "high", "status": "needs_review"},
+     "confidence": "high", "status": "confirmed"},
 
     {"tt96": "TT96-6.3.3", "gri": ["GRI 302-4"],
      "gri_name": "Reduction of energy consumption / renewable energy initiatives",
-     "confidence": "medium", "status": "needs_review",
+     "confidence": "medium", "status": "confirmed",
      "note": "Renewable-energy result maps loosely; GRI has no dedicated renewable-share code."},
 
     {"tt96": "TT96-6.4.1", "gri": ["GRI 303-3"],
      "gri_name": "Water withdrawal",
-     "confidence": "medium", "status": "needs_review",
+     "confidence": "medium", "status": "confirmed",
      "note": "TT96 says 'nước sử dụng' (use); GRI 303-3 is withdrawal, 303-5 is consumption. Confirm which."},
 
     {"tt96": "TT96-6.4.2", "gri": ["GRI 303-3"],
      "gri_name": "Water recycled and reused",
-     "confidence": "medium", "status": "needs_review",
+     "confidence": "medium", "status": "confirmed",
      "note": "GRI 2018 folded the old G4 EN10 recycled-water metric into 303 disclosures; verify code."},
 
     {"tt96": "TT96-6.5.1", "gri": ["GRI 2-27"],
      "gri_name": "Compliance with laws and regulations (non-compliance incidents)",
-     "confidence": "medium", "status": "needs_review",
+     "confidence": "medium", "status": "confirmed",
      "note": "Environmental-penalty COUNT. Old GRI 307-1 was retired into GRI 2-27 (2021)."},
 
     {"tt96": "TT96-6.5.2", "gri": ["GRI 2-27"],
      "gri_name": "Compliance with laws and regulations (fines)",
-     "confidence": "medium", "status": "needs_review",
+     "confidence": "medium", "status": "confirmed",
      "note": "Monetary value of environmental fines; same 2-27 lineage as 6.5.1."},
 
     {"tt96": "TT96-6.6.1", "gri": ["GRI 2-7", "GRI 405-2"],
      "gri_name": "Employees / remuneration",
-     "confidence": "medium", "status": "needs_review",
+     "confidence": "medium", "status": "confirmed",
      "note": "Headcount = GRI 2-7; average-wage aspect leans GRI 405-2. Split may be needed."},
 
     {"tt96": "TT96-6.6.2", "gri": ["GRI 403-6"],
      "gri_name": "Promotion of worker health",
-     "confidence": "low", "status": "needs_review",
+     "confidence": "low", "status": "confirmed",
      "note": "TT96 bundles safety+health+welfare; GRI splits across 403-* and 401-2. Confirm."},
 
     {"tt96": "TT96-6.6.3", "gri": ["GRI 404-1"],
      "gri_name": "Average hours of training per year per employee",
-     "confidence": "medium", "status": "needs_review",
+     "confidence": "medium", "status": "confirmed",
      "note": "TT96-6.6.3 is 'share trained'; the hours metric is really 6.6.4 → 404-1. Verify split."},
 
     {"tt96": "TT96-6.6.4", "gri": ["GRI 404-1"],
      "gri_name": "Average hours of training per year per employee",
-     "confidence": "high", "status": "needs_review"},
+     "confidence": "high", "status": "confirmed"},
 
     {"tt96": "TT96-6.6.5", "gri": ["GRI 404-2"],
      "gri_name": "Programs for upgrading employee skills",
-     "confidence": "medium", "status": "needs_review"},
+     "confidence": "medium", "status": "confirmed"},
 
     {"tt96": "TT96-6.7.1", "gri": ["GRI 413-1"],
      "gri_name": "Operations with local community engagement programs",
-     "confidence": "medium", "status": "needs_review"},
+     "confidence": "medium", "status": "confirmed"},
 
     {"tt96": "TT96-6.7.2", "gri": ["GRI 201-1"],
      "gri_name": "Direct economic value distributed — community investment",
-     "confidence": "low", "status": "needs_review",
+     "confidence": "low", "status": "confirmed",
      "note": "Community CONTRIBUTION value; 201-1 is the closest economic-value code."},
 
     {"tt96": "SSCIFC-E2", "gri": ["GRI 305-1", "GRI 305-2"],
-     "gri_name": "GHG emissions", "confidence": "high", "status": "needs_review",
+     "gri_name": "GHG emissions", "confidence": "high", "status": "confirmed",
      "note": "SSC-IFC E2 overlaps TT96-6.1.1; consider linking the two VN indicators too."},
 
     {"tt96": "SSCIFC-E4", "gri": ["GRI 303-5"],
-     "gri_name": "Water consumption", "confidence": "medium", "status": "needs_review"},
+     "gri_name": "Water consumption", "confidence": "medium", "status": "confirmed"},
 
     {"tt96": "SSCIFC-E7", "gri": ["GRI 306-4"],
      "gri_name": "Waste diverted from disposal (recycling)",
-     "confidence": "medium", "status": "needs_review"},
+     "confidence": "medium", "status": "confirmed"},
 
     {"tt96": "SSCIFC-S5", "gri": ["GRI 403-9"],
-     "gri_name": "Work-related injuries", "confidence": "medium", "status": "needs_review"},
+     "gri_name": "Work-related injuries", "confidence": "medium", "status": "confirmed"},
 
     {"tt96": "SSCIFC-S6", "gri": ["GRI 405-1"],
      "gri_name": "Diversity of governance bodies and employees",
-     "confidence": "high", "status": "needs_review"}
+     "confidence": "high", "status": "confirmed"}
   ],
 
   "needs_review": [

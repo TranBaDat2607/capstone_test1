@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ESG Knowledge Graph — Data Flow Diagram (Clean UI)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+  <style>
+    :root {
+      --bg-deep:      #080c14;
+      --bg-mid:       #0e1520;
+      --bg-card:      rgba(255,255,255,0.04);
+      --border:       rgba(255,255,255,0.08);
+      --text-primary: #e8edf5;
+      --text-muted:   #7d8fa8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg-deep); color: var(--text-primary); min-height: 100vh; }
+    header { padding: 24px 40px; background: rgba(59,130,246,0.06); border-bottom: 1px solid var(--border); }
+    h1 { font-size: 1.4rem; font-weight: 700; background: linear-gradient(135deg, #93c5fd, #c4b5fd); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    p { font-size: 0.82rem; color: var(--text-muted); margin-top: 4px; }
+    .workspace { display: flex; height: calc(100vh - 90px); position: relative; overflow: hidden; }
+    svg { width: 100%; height: 100%; cursor: grab; }
+  </style>
+</head>
+<body>
+<header>
+  <h1>Sơ đồ Luồng Dữ liệu (Data Flow Diagram) — ESG Knowledge Graph</h1>
+  <p>Thiết kế dạng tầng đa lớp (Multi-tier TD), nhãn nghiệp vụ rõ ràng, chuẩn hóa tỷ lệ hiển thị Draw.io</p>
+</header>
+<div class="workspace">
+  <svg id="dfd-svg"></svg>
+</div>
+<script>
+// Canvas & D3 rendering for visual preview
+const W=1200, H=900;
+const svg=d3.select('#dfd-svg').attr('viewBox',`0 0 ${W} ${H}`);
+// Render compact diagram overview
+</script>
+</body>
+</html>

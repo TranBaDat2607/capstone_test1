@@ -1,0 +1,79 @@
+{
+  "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
+  "standard_id": "GRI 410",
+  "title_en": "Security Practices 2016",
+  "title_vi": "Security Practices 2016",
+  "pillar": "S — Social",
+  "series": "Social (400 Series)",
+  "category": "Topic-Social",
+  "temporal_validity": {
+    "version_id": "GRI_410_2016",
+    "version_year": 2016,
+    "effective_date": "2017-01-01",
+    "valid_until_year": null,
+    "status": "Active",
+    "replaced_by_standard_id": null
+  },
+  "scope": {
+    "target_audience": "Tổ chức thuộc nhóm Social (400 Series)",
+    "sector_code": null,
+    "materiality_required": true,
+    "boundary_scope": "Toàn bộ tổ chức & Chuỗi giá trị"
+  },
+  "provenance": {
+    "relative_pdf_path": "Full set of GRI Standards - English\\GRI 410_ Security Practices 2016.pdf",
+    "file_size_bytes": 841542,
+    "page_count": 11,
+    "sha256": "7128a7c0a4925e481ebc88801baa5cfdd6119b938241c69048987c4c03882508",
+    "indexed_at": "2026-07-25T14:35:59.241706"
+  },
+  "disclosures_count": 2,
+  "disclosures": [
+    {
+      "disclosure_id": "410-1",
+      "title_en": "Security personnel trained in human rights policies or procedures",
+      "title_vi": "Security personnel trained in human rights policies or procedures",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "410-1:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 410-1 (Security personnel trained in human rights policies or procedures)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "3-3",
+      "title_en": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
+      "title_vi": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "3-3:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    }
+  ]
+}

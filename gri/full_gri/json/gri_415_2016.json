@@ -1,0 +1,79 @@
+{
+  "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
+  "standard_id": "GRI 415",
+  "title_en": "Public Policy 2016",
+  "title_vi": "Public Policy 2016",
+  "pillar": "S — Social",
+  "series": "Social (400 Series)",
+  "category": "Topic-Social",
+  "temporal_validity": {
+    "version_id": "GRI_415_2016",
+    "version_year": 2016,
+    "effective_date": "2017-01-01",
+    "valid_until_year": null,
+    "status": "Active",
+    "replaced_by_standard_id": null
+  },
+  "scope": {
+    "target_audience": "Tổ chức thuộc nhóm Social (400 Series)",
+    "sector_code": null,
+    "materiality_required": true,
+    "boundary_scope": "Toàn bộ tổ chức & Chuỗi giá trị"
+  },
+  "provenance": {
+    "relative_pdf_path": "Full set of GRI Standards - English\\GRI 415_ Public Policy 2016.pdf",
+    "file_size_bytes": 816102,
+    "page_count": 12,
+    "sha256": "4d95da5838a290a4fe89fbb67b3062dcd258f34a9c9d419b8b0eec0f026c7b17",
+    "indexed_at": "2026-07-25T14:35:59.350166"
+  },
+  "disclosures_count": 2,
+  "disclosures": [
+    {
+      "disclosure_id": "415-1",
+      "title_en": "Political contributions",
+      "title_vi": "Political contributions",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "415-1:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 415-1 (Political contributions)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "3-3",
+      "title_en": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
+      "title_vi": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "3-3:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    }
+  ]
+}

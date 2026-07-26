@@ -1,0 +1,28 @@
+{
+  "standard_id": "GRI 205",
+  "title_en": "Anti-corruption 2016",
+  "title_vi": "Chống tham nhũng 2016",
+  "pillar": "G — Governance",
+  "series": "Governance (Universal + 200 Series)",
+  "effective_date": "2018-07-01",
+  "description_vi": "Đánh giá rủi ro tham nhũng, công tác truyền thông, đào tạo phòng chống tham nhũng và các vụ việc vi phạm phát sinh.",
+  "source": "GRI Content Index Template 2021, Version 1.3 (January 2026)",
+  "disclosures_count": 3,
+  "disclosures": [
+    {
+      "code": "205-1",
+      "title_en": "Operations assessed for risks related to corruption",
+      "title_vi": "Các bộ phận/hoạt động được đánh giá rủi ro tham nhũng"
+    },
+    {
+      "code": "205-2",
+      "title_en": "Communication and training about anti-corruption policies and procedures",
+      "title_vi": "Truyền thông và đào tạo về chính sách và quy trình chống tham nhũng"
+    },
+    {
+      "code": "205-3",
+      "title_en": "Confirmed incidents of corruption and actions taken",
+      "title_vi": "Các vụ việc tham nhũng được xác nhận và biện pháp xử lý"
+    }
+  ]
+}

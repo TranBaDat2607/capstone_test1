@@ -1,0 +1,23 @@
+{
+  "standard_id": "GRI 308",
+  "title_en": "Supplier Environmental Assessment 2016",
+  "title_vi": "Đánh giá môi trường nhà cung cấp 2016",
+  "pillar": "E — Environmental",
+  "series": "Environmental (300 Series)",
+  "effective_date": "2018-07-01",
+  "description_vi": "Sử dụng các tiêu chí môi trường để sàng lọc nhà cung cấp mới và quản lý tác động môi trường tiêu cực trong chuỗi cung ứng.",
+  "source": "GRI Content Index Template 2021, Version 1.3 (January 2026)",
+  "disclosures_count": 2,
+  "disclosures": [
+    {
+      "code": "308-1",
+      "title_en": "New suppliers that were screened using environmental criteria",
+      "title_vi": "Nhà cung cấp mới được sàng lọc theo tiêu chí môi trường"
+    },
+    {
+      "code": "308-2",
+      "title_en": "Negative environmental impacts in the supply chain and actions taken",
+      "title_vi": "Tác động môi trường tiêu cực trong chuỗi cung ứng và hành động khắc phục"
+    }
+  ]
+}

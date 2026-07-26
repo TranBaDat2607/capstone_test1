@@ -1,0 +1,286 @@
+{
+  "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
+  "standard_id": "GRI 403",
+  "title_en": "Occupational Health and Safety 2018",
+  "title_vi": "Occupational Health and Safety 2018",
+  "pillar": "S — Social",
+  "series": "Social (400 Series)",
+  "category": "Topic-Social",
+  "temporal_validity": {
+    "version_id": "GRI_403_2018",
+    "version_year": 2018,
+    "effective_date": "2019-01-01",
+    "valid_until_year": null,
+    "status": "Active",
+    "replaced_by_standard_id": null
+  },
+  "scope": {
+    "target_audience": "Tổ chức thuộc nhóm Social (400 Series)",
+    "sector_code": null,
+    "materiality_required": true,
+    "boundary_scope": "Toàn bộ tổ chức & Chuỗi giá trị"
+  },
+  "provenance": {
+    "relative_pdf_path": "Full set of GRI Standards - English\\GRI 403_ Occupational Health and Safety 2018.pdf",
+    "file_size_bytes": 1073472,
+    "page_count": 35,
+    "sha256": "50011958a813af55c47b3b91a44c826338b5dea4d7af7ba21bdd375c370985e7",
+    "indexed_at": "2026-07-25T14:35:59.049820"
+  },
+  "disclosures_count": 11,
+  "disclosures": [
+    {
+      "disclosure_id": "403-1",
+      "title_en": "Occupational health and safety management system",
+      "title_vi": "Occupational health and safety management system",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "403-1:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 403-1 (Occupational health and safety management system)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "403-2",
+      "title_en": "Hazard identification, risk assessment, and incident investigation",
+      "title_vi": "Hazard identification, risk assessment, and incident investigation",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "403-2:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 403-2 (Hazard identification, risk assessment, and incident investigation)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "403-3",
+      "title_en": "Occupational health services",
+      "title_vi": "Occupational health services",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "403-3:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 403-3 (Occupational health services)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "403-4",
+      "title_en": "Worker participation, consultation, and communication on",
+      "title_vi": "Worker participation, consultation, and communication on",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "403-4:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 403-4 (Worker participation, consultation, and communication on)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "403-5",
+      "title_en": "Worker training on occupational health and safety",
+      "title_vi": "Worker training on occupational health and safety",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "403-5:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 403-5 (Worker training on occupational health and safety)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "403-6",
+      "title_en": "Promotion of worker health",
+      "title_vi": "Promotion of worker health",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "403-6:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 403-6 (Promotion of worker health)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "403-7",
+      "title_en": "Prevention and mitigation of occupational health and safety",
+      "title_vi": "Prevention and mitigation of occupational health and safety",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "403-7:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 403-7 (Prevention and mitigation of occupational health and safety)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "403-8",
+      "title_en": "Workers covered by an occupational health and safety",
+      "title_vi": "Workers covered by an occupational health and safety",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "403-8:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 403-8 (Workers covered by an occupational health and safety)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "403-9",
+      "title_en": "Work-related injuries",
+      "title_vi": "Work-related injuries",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "403-9:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 403-9 (Work-related injuries)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "403-10",
+      "title_en": "Work-related ill health",
+      "title_vi": "Work-related ill health",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "403-10:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 403-10 (Work-related ill health)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "3-3",
+      "title_en": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
+      "title_vi": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "3-3:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    }
+  ]
+}

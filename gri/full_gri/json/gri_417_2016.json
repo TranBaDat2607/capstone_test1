@@ -1,0 +1,125 @@
+{
+  "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
+  "standard_id": "GRI 417",
+  "title_en": "Marketing and Labeling 2016",
+  "title_vi": "Marketing and Labeling 2016",
+  "pillar": "S — Social",
+  "series": "Social (400 Series)",
+  "category": "Topic-Social",
+  "temporal_validity": {
+    "version_id": "GRI_417_2016",
+    "version_year": 2016,
+    "effective_date": "2017-01-01",
+    "valid_until_year": null,
+    "status": "Active",
+    "replaced_by_standard_id": null
+  },
+  "scope": {
+    "target_audience": "Tổ chức thuộc nhóm Social (400 Series)",
+    "sector_code": null,
+    "materiality_required": true,
+    "boundary_scope": "Toàn bộ tổ chức & Chuỗi giá trị"
+  },
+  "provenance": {
+    "relative_pdf_path": "Full set of GRI Standards - English\\GRI 417_ Marketing and Labeling 2016.pdf",
+    "file_size_bytes": 837158,
+    "page_count": 14,
+    "sha256": "d0b95f61170636a8bfb0929309b7923da6d1062f80199789e842369aa02a19ae",
+    "indexed_at": "2026-07-25T14:35:59.403477"
+  },
+  "disclosures_count": 4,
+  "disclosures": [
+    {
+      "disclosure_id": "417-1",
+      "title_en": "Requirements for product and service information and labeling",
+      "title_vi": "Requirements for product and service information and labeling",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "417-1:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 417-1 (Requirements for product and service information and labeling)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "417-2",
+      "title_en": "Incidents of non-compliance concerning product and service",
+      "title_vi": "Incidents of non-compliance concerning product and service",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "417-2:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 417-2 (Incidents of non-compliance concerning product and service)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "417-3",
+      "title_en": "Incidents of non-compliance concerning marketing",
+      "title_vi": "Incidents of non-compliance concerning marketing",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "417-3:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 417-3 (Incidents of non-compliance concerning marketing)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "3-3",
+      "title_en": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
+      "title_vi": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "3-3:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    }
+  ]
+}

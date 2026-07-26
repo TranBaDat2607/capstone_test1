@@ -1,0 +1,148 @@
+{
+  "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
+  "standard_id": "GRI 205",
+  "title_en": "Anti-corruption 2016",
+  "title_vi": "Anti-corruption 2016",
+  "pillar": "G — Governance",
+  "series": "Economic (200 Series)",
+  "category": "Topic-Economic",
+  "temporal_validity": {
+    "version_id": "GRI_205_2016",
+    "version_year": 2016,
+    "effective_date": "2017-01-01",
+    "valid_until_year": null,
+    "status": "Active",
+    "replaced_by_standard_id": null
+  },
+  "scope": {
+    "target_audience": "Tổ chức thuộc nhóm Economic (200 Series)",
+    "sector_code": null,
+    "materiality_required": true,
+    "boundary_scope": "Toàn bộ tổ chức & Chuỗi giá trị"
+  },
+  "provenance": {
+    "relative_pdf_path": "Full set of GRI Standards - English\\GRI 205_ Anti-corruption 2016.pdf",
+    "file_size_bytes": 856483,
+    "page_count": 16,
+    "sha256": "dc4ce16811bfe3306ae633e9b0a3ae738520ee8523ade8d87def81f64b688236",
+    "indexed_at": "2026-07-25T14:35:58.400237"
+  },
+  "disclosures_count": 5,
+  "disclosures": [
+    {
+      "disclosure_id": "205-1",
+      "title_en": "Operations assessed for risks related to corruption",
+      "title_vi": "Operations assessed for risks related to corruption",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "205-1:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 205-1 (Operations assessed for risks related to corruption)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "205-2",
+      "title_en": "Communication and training about anti-corruption policies and",
+      "title_vi": "Communication and training about anti-corruption policies and",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "205-2:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 205-2 (Communication and training about anti-corruption policies and)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "205-3",
+      "title_en": "Confirmed incidents of corruption and actions taken",
+      "title_vi": "Confirmed incidents of corruption and actions taken",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "205-3:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 205-3 (Confirmed incidents of corruption and actions taken)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "3-3",
+      "title_en": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
+      "title_vi": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "3-3:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "405-1",
+      "title_en": "in GRI 405: Diversity and",
+      "title_vi": "in GRI 405: Diversity and",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "405-1:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 405-1 (in GRI 405: Diversity and)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    }
+  ]
+}

@@ -1,0 +1,378 @@
+{
+  "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
+  "standard_id": "GRI 101",
+  "title_en": "Biodiversity 2024",
+  "title_vi": "Biodiversity 2024",
+  "pillar": "E — Environmental",
+  "series": "Environmental (300 Series / Revisions)",
+  "category": "Topic-Environmental",
+  "temporal_validity": {
+    "version_id": "GRI_101_2024",
+    "version_year": 2024,
+    "effective_date": "2025-01-01",
+    "valid_until_year": null,
+    "status": "Active",
+    "replaced_by_standard_id": null
+  },
+  "scope": {
+    "target_audience": "Tổ chức thuộc nhóm Environmental (300 Series / Revisions)",
+    "sector_code": null,
+    "materiality_required": true,
+    "boundary_scope": "Toàn bộ tổ chức & Chuỗi giá trị"
+  },
+  "provenance": {
+    "relative_pdf_path": "Full set of GRI Standards - English\\GRI 101_ Biodiversity 2024 - English.pdf",
+    "file_size_bytes": 1262397,
+    "page_count": 49,
+    "sha256": "e8b42d8fbabdec42e693db1e431690caa419dca77a20823a35fed7e9fa154732",
+    "indexed_at": "2026-07-25T14:35:57.091642"
+  },
+  "disclosures_count": 15,
+  "disclosures": [
+    {
+      "disclosure_id": "101-1",
+      "title_en": "Policies to halt and reverse biodiversity loss",
+      "title_vi": "Policies to halt and reverse biodiversity loss",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "101-1:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 101-1 (Policies to halt and reverse biodiversity loss)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "101-2",
+      "title_en": "Management of biodiversity impacts",
+      "title_vi": "Management of biodiversity impacts",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "101-2:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 101-2 (Management of biodiversity impacts)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "101-3",
+      "title_en": "Access and benefit-sharing",
+      "title_vi": "Access and benefit-sharing",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "101-3:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 101-3 (Access and benefit-sharing)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "101-4",
+      "title_en": "Identification of biodiversity impacts",
+      "title_vi": "Identification of biodiversity impacts",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "101-4:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 101-4 (Identification of biodiversity impacts)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "101-5",
+      "title_en": "Locations with biodiversity impacts",
+      "title_vi": "Locations with biodiversity impacts",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "101-5:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 101-5 (Locations with biodiversity impacts)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "101-6",
+      "title_en": "Direct drivers of biodiversity loss",
+      "title_vi": "Direct drivers of biodiversity loss",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "101-6:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 101-6 (Direct drivers of biodiversity loss)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "101-7",
+      "title_en": "Changes to the state of biodiversity",
+      "title_vi": "Changes to the state of biodiversity",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "101-7:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 101-7 (Changes to the state of biodiversity)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "101-8",
+      "title_en": "Ecosystem services",
+      "title_vi": "Ecosystem services",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "101-8:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 101-8 (Ecosystem services)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "306-3",
+      "title_en": "Significant spills)",
+      "title_vi": "Significant spills)",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "306-3:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 306-3 (Significant spills))",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "3-3",
+      "title_en": "in GRI 3: Material Topics 2021.",
+      "title_vi": "in GRI 3: Material Topics 2021.",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "3-3:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021.)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "2-23",
+      "title_en": "in GRI 2: General Disclosures 2021 or under 3-3-c in GRI 3: Material",
+      "title_vi": "in GRI 2: General Disclosures 2021 or under 3-3-c in GRI 3: Material",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "2-23:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 2-23 (in GRI 2: General Disclosures 2021 or under 3-3-c in GRI 3: Material)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "2-27",
+      "title_en": "in GRI 2: General",
+      "title_vi": "in GRI 2: General",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "2-27:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 2-27 (in GRI 2: General)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "305-7",
+      "title_en": "Nitrogen oxides (NOx), sulfur oxides (SOx), and other significant air",
+      "title_vi": "Nitrogen oxides (NOx), sulfur oxides (SOx), and other significant air",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "305-7:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 305-7 (Nitrogen oxides (NOx), sulfur oxides (SOx), and other significant air)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "303-4",
+      "title_en": "Water discharge in GRI 303: Water and Effluents 2018 to have information",
+      "title_vi": "Water discharge in GRI 303: Water and Effluents 2018 to have information",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "303-4:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 303-4 (Water discharge in GRI 303: Water and Effluents 2018 to have information)",
+          "description_vi": null,
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "2-25",
+      "title_en": "in GRI 2: General Disclosures 2021 for more",
+      "title_vi": "in GRI 2: General Disclosures 2021 for more",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "2-25:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 2-25 (in GRI 2: General Disclosures 2021 for more)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    }
+  ]
+}

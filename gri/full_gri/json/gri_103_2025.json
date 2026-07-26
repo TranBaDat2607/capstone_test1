@@ -1,0 +1,286 @@
+{
+  "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
+  "standard_id": "GRI 103",
+  "title_en": "Energy 2025",
+  "title_vi": "Energy 2025",
+  "pillar": "E — Environmental",
+  "series": "Environmental (300 Series / Revisions)",
+  "category": "Topic-Environmental",
+  "temporal_validity": {
+    "version_id": "GRI_103_2025",
+    "version_year": 2025,
+    "effective_date": "2026-01-01",
+    "valid_until_year": null,
+    "status": "Active",
+    "replaced_by_standard_id": null
+  },
+  "scope": {
+    "target_audience": "Tổ chức thuộc nhóm Environmental (300 Series / Revisions)",
+    "sector_code": null,
+    "materiality_required": true,
+    "boundary_scope": "Toàn bộ tổ chức & Chuỗi giá trị"
+  },
+  "provenance": {
+    "relative_pdf_path": "Full set of GRI Standards - English\\GRI 103_ Energy 2025.pdf",
+    "file_size_bytes": 1015876,
+    "page_count": 29,
+    "sha256": "0de8c902906e4dc9f282d5600c2fed20e34b53ab4ee2df554cc0841110f34df0",
+    "indexed_at": "2026-07-25T14:35:57.266696"
+  },
+  "disclosures_count": 11,
+  "disclosures": [
+    {
+      "disclosure_id": "103-1",
+      "title_en": "Energy policies and commitments",
+      "title_vi": "Energy policies and commitments",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "103-1:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 103-1 (Energy policies and commitments)",
+          "description_vi": null,
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "103-2",
+      "title_en": "Energy consumption and self-generation within the organization",
+      "title_vi": "Energy consumption and self-generation within the organization",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "103-2:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 103-2 (Energy consumption and self-generation within the organization)",
+          "description_vi": null,
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "103-3",
+      "title_en": "Upstream and downstream energy consumption",
+      "title_vi": "Upstream and downstream energy consumption",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "103-3:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 103-3 (Upstream and downstream energy consumption)",
+          "description_vi": null,
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "103-4",
+      "title_en": "Energy intensity",
+      "title_vi": "Energy intensity",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "103-4:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 103-4 (Energy intensity)",
+          "description_vi": null,
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "103-5",
+      "title_en": "Reduction in energy consumption",
+      "title_vi": "Reduction in energy consumption",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "103-5:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 103-5 (Reduction in energy consumption)",
+          "description_vi": null,
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "3-3",
+      "title_en": "in GRI 3: Material Topics 2021.",
+      "title_vi": "in GRI 3: Material Topics 2021.",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "3-3:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021.)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "2-29",
+      "title_en": "in GRI 2: General Disclosures 2021 covers the organization’s approach to",
+      "title_vi": "in GRI 2: General Disclosures 2021 covers the organization’s approach to",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "2-29:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 2-29 (in GRI 2: General Disclosures 2021 covers the organization’s approach to)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "101-2",
+      "title_en": "in GRI 101: Biodiversity 2024 to report the actions",
+      "title_vi": "in GRI 101: Biodiversity 2024 to report the actions",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "101-2:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 101-2 (in GRI 101: Biodiversity 2024 to report the actions)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "102-5",
+      "title_en": "in GRI",
+      "title_vi": "in GRI",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "102-5:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 102-5 (in GRI)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "102-6",
+      "title_en": "in GRI 102: Climate Change 2025.",
+      "title_vi": "in GRI 102: Climate Change 2025.",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "102-6:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 102-6 (in GRI 102: Climate Change 2025.)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "102-7",
+      "title_en": "in GRI 102: Climate Change 2025.",
+      "title_vi": "in GRI 102: Climate Change 2025.",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "102-7:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 102-7 (in GRI 102: Climate Change 2025.)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    }
+  ]
+}

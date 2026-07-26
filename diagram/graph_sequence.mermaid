@@ -1,0 +1,130 @@
+sequenceDiagram
+    autonumber
+    actor User as User
+    participant WebUI as Web UI
+    participant Backend as Backend API
+    participant ReportRepo as Annual Report Repo
+    participant NewsRepo as News Repo
+    participant Preprocess as ESG Preprocessor
+    participant ViDeBERTa as ViDeBERTa Classifier
+    participant GraphRAG as Graph-RAG Pipeline
+    participant Gemini as Gemini 2.5 Flash
+    participant ER as Entity Resolver
+    participant Neo4j as Neo4j Graph DB
+    participant Crosscheck as Cross-check Engine
+    participant LLMAdj as LLM Adjudicator
+    participant DossierGen as Dossier Generator
+    participant DB as System DB
+
+    rect rgb(245, 247, 250)
+    note over User, DB: Phase 1: Request Initialization & Data Ingestion
+    User->>WebUI: 1. Select company & request analysis
+    activate WebUI
+    WebUI->>Backend: 2. Send request (POST /api/analyze)
+    activate Backend
+
+    par Concurrent Data Fetching
+        Backend->>ReportRepo: 3a. Fetch Annual Reports
+        activate ReportRepo
+        ReportRepo-->>Backend: Return report text
+        deactivate ReportRepo
+    and
+        Backend->>NewsRepo: 3b. Fetch ESG News
+        activate NewsRepo
+        NewsRepo-->>Backend: Return news articles
+        deactivate NewsRepo
+    end
+
+    Backend->>Preprocess: 4. Invoke preprocessing
+    activate Preprocess
+    Preprocess->>Preprocess: 5. Extract text & segment
+    Preprocess-->>Backend: Return candidate sentences
+    deactivate Preprocess
+
+    Backend->>ViDeBERTa: 6. Send candidate sentences
+    activate ViDeBERTa
+    ViDeBERTa->>ViDeBERTa: 7. Classify E/S/G/Neutral
+    ViDeBERTa-->>Backend: 8. Return ESG sentences
+    deactivate ViDeBERTa
+    end
+
+    rect rgb(240, 248, 245)
+    note over User, DB: Phase 2: Graph Construction & Entity Resolution
+    Backend->>GraphRAG: 9. Invoke Graph-RAG Pipeline
+    activate GraphRAG
+
+    alt Alt Flow 2 (Failover): Gemini Unavailable
+        GraphRAG->>LLMAdj: 10a. Failover call (GPT-4o-mini)
+        activate LLMAdj
+        LLMAdj-->>GraphRAG: 11a. Return extractions
+        deactivate LLMAdj
+    else Primary Provider Available: Gemini 2.5 Flash
+        GraphRAG->>Gemini: 10. Extract entities & KPIs
+        activate Gemini
+        Gemini-->>GraphRAG: 11. Return extractions
+        deactivate Gemini
+    end
+
+    GraphRAG->>ER: 12. Invoke Entity Resolver
+    activate ER
+    opt Alt Flow 3: Duplicate Entities Found
+        ER->>ER: Merge duplicates into<br/>canonical entity
+    end
+    ER->>ER: 13. Canonicalize names &<br/>stamp provenance
+    ER-->>GraphRAG: Return resolved graph
+    deactivate ER
+
+    GraphRAG->>Neo4j: 14. Insert clean graph
+    activate Neo4j
+    Neo4j-->>GraphRAG: Confirm insertion
+    deactivate Neo4j
+    GraphRAG-->>Backend: Construction complete
+    deactivate GraphRAG
+    end
+
+    rect rgb(250, 245, 240)
+    note over User, DB: Phase 3: Dual Retrieval & LLM Cross-checking
+    Backend->>Crosscheck: 15. Invoke Cross-check Engine
+    activate Crosscheck
+    Crosscheck->>Neo4j: 16-17. Retrieve claim & conduct nodes
+    activate Neo4j
+    Neo4j-->>Crosscheck: Return claims, KPIs & news
+    deactivate Neo4j
+
+    alt Alt Flow 1: No Relevant News Found
+        Crosscheck->>LLMAdj: Send claim with empty context
+        activate LLMAdj
+        LLMAdj-->>Crosscheck: Return unverified + caveats
+        deactivate LLMAdj
+    else Evidence Found: Cross-check Adjudication
+        Crosscheck->>LLMAdj: 18. Send claim & evidence
+        activate LLMAdj
+        LLMAdj-->>Crosscheck: 19-20. Return assessment & rationale
+        deactivate LLMAdj
+    end
+
+    Crosscheck->>Neo4j: 21. Write verifiedBy / contradictedBy
+    activate Neo4j
+    Neo4j-->>Crosscheck: Confirm edges written
+    deactivate Neo4j
+
+    Crosscheck->>DossierGen: 22. Request Dossier creation
+    activate DossierGen
+    DossierGen->>DossierGen: Assemble Dossier
+    DossierGen-->>Crosscheck: Complete Dossier
+    deactivate DossierGen
+    Crosscheck-->>Backend: Return Dossier
+    deactivate Crosscheck
+
+    Backend->>DB: 23. Save Dossier
+    activate DB
+    DB-->>Backend: Saved confirmation
+    deactivate DB
+
+    Backend-->>WebUI: 24. Return Dossier
+    deactivate Backend
+
+    WebUI->>WebUI: 25. Visualize Evidence Dossier
+    WebUI-->>User: 26. Display Dossier for analyst review
+    deactivate WebUI
+    end

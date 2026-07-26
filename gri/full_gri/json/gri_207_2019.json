@@ -1,0 +1,194 @@
+{
+  "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
+  "standard_id": "GRI 207",
+  "title_en": "Tax 2019",
+  "title_vi": "Tax 2019",
+  "pillar": "G — Governance",
+  "series": "Economic (200 Series)",
+  "category": "Topic-Economic",
+  "temporal_validity": {
+    "version_id": "GRI_207_2019",
+    "version_year": 2019,
+    "effective_date": "2020-01-01",
+    "valid_until_year": null,
+    "status": "Active",
+    "replaced_by_standard_id": null
+  },
+  "scope": {
+    "target_audience": "Tổ chức thuộc nhóm Economic (200 Series)",
+    "sector_code": null,
+    "materiality_required": true,
+    "boundary_scope": "Toàn bộ tổ chức & Chuỗi giá trị"
+  },
+  "provenance": {
+    "relative_pdf_path": "Full set of GRI Standards - English\\GRI 207_ Tax 2019.pdf",
+    "file_size_bytes": 947779,
+    "page_count": 21,
+    "sha256": "acfad9084e7f731f71e0f6431e4a1653b5898e102f152e6cad0d31d7090b122a",
+    "indexed_at": "2026-07-25T14:35:58.466920"
+  },
+  "disclosures_count": 7,
+  "disclosures": [
+    {
+      "disclosure_id": "207-1",
+      "title_en": "Approach to tax",
+      "title_vi": "Approach to tax",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "207-1:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 207-1 (Approach to tax)",
+          "description_vi": null,
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "207-2",
+      "title_en": "Tax governance, control, and risk management",
+      "title_vi": "Tax governance, control, and risk management",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "207-2:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 207-2 (Tax governance, control, and risk management)",
+          "description_vi": null,
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "207-3",
+      "title_en": "Stakeholder engagement and management of concerns related",
+      "title_vi": "Stakeholder engagement and management of concerns related",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "207-3:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 207-3 (Stakeholder engagement and management of concerns related)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "207-4",
+      "title_en": "Country-by-country reporting",
+      "title_vi": "Country-by-country reporting",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "207-4:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 207-4 (Country-by-country reporting)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "3-3",
+      "title_en": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
+      "title_vi": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "3-3:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "2-26",
+      "title_en": "in GRI 2: General Disclosures 2021. If the",
+      "title_vi": "in GRI 2: General Disclosures 2021. If the",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "2-26:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 2-26 (in GRI 2: General Disclosures 2021. If the)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "2-5",
+      "title_en": "in GRI 2: General Disclosures 2021. If the",
+      "title_vi": "in GRI 2: General Disclosures 2021. If the",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "2-5:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 2-5 (in GRI 2: General Disclosures 2021. If the)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    }
+  ]
+}

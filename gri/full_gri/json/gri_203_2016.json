@@ -1,0 +1,102 @@
+{
+  "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
+  "standard_id": "GRI 203",
+  "title_en": "Indirect Economic Impacts 2016",
+  "title_vi": "Indirect Economic Impacts 2016",
+  "pillar": "G — Governance",
+  "series": "Economic (200 Series)",
+  "category": "Topic-Economic",
+  "temporal_validity": {
+    "version_id": "GRI_203_2016",
+    "version_year": 2016,
+    "effective_date": "2017-01-01",
+    "valid_until_year": null,
+    "status": "Active",
+    "replaced_by_standard_id": null
+  },
+  "scope": {
+    "target_audience": "Tổ chức thuộc nhóm Economic (200 Series)",
+    "sector_code": null,
+    "materiality_required": true,
+    "boundary_scope": "Toàn bộ tổ chức & Chuỗi giá trị"
+  },
+  "provenance": {
+    "relative_pdf_path": "Full set of GRI Standards - English\\GRI 203_ Indirect Economic Impacts 2016.pdf",
+    "file_size_bytes": 817612,
+    "page_count": 11,
+    "sha256": "fce4329654522da5812c5686f7ebfd3ac172801cb426953d6e420b2a62fb13a4",
+    "indexed_at": "2026-07-25T14:35:58.350271"
+  },
+  "disclosures_count": 3,
+  "disclosures": [
+    {
+      "disclosure_id": "203-1",
+      "title_en": "Infrastructure investments and services supported",
+      "title_vi": "Infrastructure investments and services supported",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "203-1:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 203-1 (Infrastructure investments and services supported)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "203-2",
+      "title_en": "Significant indirect economic impacts",
+      "title_vi": "Significant indirect economic impacts",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "203-2:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 203-2 (Significant indirect economic impacts)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "3-3",
+      "title_en": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
+      "title_vi": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "3-3:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    }
+  ]
+}

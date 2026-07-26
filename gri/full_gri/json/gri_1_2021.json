@@ -1,0 +1,332 @@
+{
+  "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
+  "standard_id": "GRI 1",
+  "title_en": "Foundation 2021",
+  "title_vi": "Foundation 2021",
+  "pillar": "Universal",
+  "series": "Universal Standards",
+  "category": "Universal",
+  "temporal_validity": {
+    "version_id": "GRI_1_2021",
+    "version_year": 2021,
+    "effective_date": "2022-01-01",
+    "valid_until_year": null,
+    "status": "Active",
+    "replaced_by_standard_id": null
+  },
+  "scope": {
+    "target_audience": "Tất cả tổ chức",
+    "sector_code": null,
+    "materiality_required": false,
+    "boundary_scope": "Toàn bộ tổ chức & Chuỗi giá trị"
+  },
+  "provenance": {
+    "relative_pdf_path": "Full set of GRI Standards - English\\GRI 1_ Foundation 2021.pdf",
+    "file_size_bytes": 1165198,
+    "page_count": 38,
+    "sha256": "c0333b1e7767abee07df7cf93ee5db3d8d46521f3f88ec963fb3a746a04058a5",
+    "indexed_at": "2026-07-25T14:35:58.261392"
+  },
+  "disclosures_count": 13,
+  "disclosures": [
+    {
+      "disclosure_id": "2-1",
+      "title_en": "Organizational details",
+      "title_vi": "Organizational details",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "2-1:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 2-1 (Organizational details)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "2-2",
+      "title_en": "Entities included in the organization’s sustainability reporting",
+      "title_vi": "Entities included in the organization’s sustainability reporting",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "2-2:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 2-2 (Entities included in the organization’s sustainability reporting)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "2-3",
+      "title_en": "Reporting period, frequency and contact point",
+      "title_vi": "Reporting period, frequency and contact point",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "2-3:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 2-3 (Reporting period, frequency and contact point)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "2-4",
+      "title_en": "Restatements of information",
+      "title_vi": "Restatements of information",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "2-4:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 2-4 (Restatements of information)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "2-5",
+      "title_en": "External assurance",
+      "title_vi": "External assurance",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "2-5:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 2-5 (External assurance)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "3-3",
+      "title_en": "Management of material topics in GRI 3.",
+      "title_vi": "Management of material topics in GRI 3.",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "3-3:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 3-3 (Management of material topics in GRI 3.)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "202-1",
+      "title_en": "Ratios of standard entry level wage by gender compared to local minimum wage in GRI",
+      "title_vi": "Ratios of standard entry level wage by gender compared to local minimum wage in GRI",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "202-1:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 202-1 (Ratios of standard entry level wage by gender compared to local minimum wage in GRI)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "405-2",
+      "title_en": "Ratio of basic salary and remuneration of women to men in GRI",
+      "title_vi": "Ratio of basic salary and remuneration of women to men in GRI",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "405-2:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 405-2 (Ratio of basic salary and remuneration of women to men in GRI)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "202-2",
+      "title_en": "Proportion of senior management hired from the local community in GRI 202), as",
+      "title_vi": "Proportion of senior management hired from the local community in GRI 202), as",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "202-2:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 202-2 (Proportion of senior management hired from the local community in GRI 202), as)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "3-1",
+      "title_en": "Process to determine material topics",
+      "title_vi": "Process to determine material topics",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "3-1:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 3-1 (Process to determine material topics)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "305-3",
+      "title_en": "in",
+      "title_vi": "in",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "305-3:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 305-3 (in)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "3-2",
+      "title_en": "List of material topics",
+      "title_vi": "List of material topics",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "3-2:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 3-2 (List of material topics)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "2-14",
+      "title_en": "in GRI 2:",
+      "title_vi": "in GRI 2:",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "2-14:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 2-14 (in GRI 2:)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    }
+  ]
+}

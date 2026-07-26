@@ -209,10 +209,31 @@ def make_doc_node(dockey: str, kind: str, canonical: str) -> Dict[str, Any]:
                            "is_current": True}}
 
 
+GRI_CATALOG_PATH = REPO_ROOT / "config" / "gri_catalog.json"
+_GRI_CATALOG_CACHE: Optional[Dict[str, Any]] = None
+
+def get_gri_catalog() -> Dict[str, Any]:
+    global _GRI_CATALOG_CACHE
+    if _GRI_CATALOG_CACHE is None:
+        if GRI_CATALOG_PATH.exists():
+            try:
+                _GRI_CATALOG_CACHE = json.loads(GRI_CATALOG_PATH.read_text(encoding="utf-8"))
+            except Exception:
+                _GRI_CATALOG_CACHE = {}
+        else:
+            _GRI_CATALOG_CACHE = {}
+    return _GRI_CATALOG_CACHE
+
 def make_gri_node(code: str, name: Optional[str]) -> Dict[str, Any]:
+    catalog = get_gri_catalog()
+    cat_entry = catalog.get(code) or {}
+    pillar = cat_entry.get("pillar") or ("Môi trường" if "30" in code or "101" in code or "102" in code or "103" in code else ("Xã hội" if "40" in code else "Quản trị"))
+    node_name = cat_entry.get("title_vi") or cat_entry.get("title_en") or name or code
+    definition = cat_entry.get("definition_vi") or f"Chỉ số {code}: {node_name}"
+    
     return {"class": "StandardIndicator",
-            "properties": {"id": code, "name": name or code, "definition": None,
-                           "pillar": None, "section": None, "source_document": "GRI Standards",
+            "properties": {"id": code, "name": node_name, "definition": definition,
+                           "pillar": pillar, "section": None, "source_document": "GRI Standards",
                            "valid_from": None, "valid_to": None, "is_current": True}}
 
 
@@ -331,11 +352,20 @@ def run(args: argparse.Namespace) -> None:
             p = n.get("properties") or {}
             text = " ".join(str(p.get(k) or "") for k in ("description", "name", "title"))
             hit = match_keyword(text, kw)
-            if hit and hit in ind_idx:
-                if gp.add_edge(i, "alignsWithIndicator", ind_idx[hit], temporal_md(p),
-                               extra={"alignment_method": "keyword"}):
-                    stats["created_edges"]["alignsWithIndicator"] += 1
-                    stats["aligned_by_indicator"][hit] += 1
+            if hit:
+                if hit in ind_idx:
+                    tgt_idx = ind_idx[hit]
+                elif hit.startswith("GRI"):
+                    tgt_idx, _ = gp.ensure_node(make_gri_node(hit, None))
+                else:
+                    tgt_idx = None
+
+                if tgt_idx is not None:
+                    axis_type = "gri_fallback" if str(hit).startswith("GRI") else "tt96"
+                    if gp.add_edge(i, "alignsWithIndicator", tgt_idx, temporal_md(p),
+                                   extra={"alignment_method": "keyword", "indicator_axis": axis_type}):
+                        stats["created_edges"]["alignsWithIndicator"] += 1
+                        stats["aligned_by_indicator"][hit] += 1
 
     added_nodes = len(gp.nodes) - gp.n_nodes0
     added_edges = len(gp.edges) - gp.n_edges0
@@ -365,6 +395,22 @@ def run(args: argparse.Namespace) -> None:
         logger.info("--dry-run: nothing written.")
         return
 
+    # Ensure ALL StandardIndicator nodes (including pre-existing ones) have valid, accurate pillar properties
+    catalog = get_gri_catalog()
+    for n in graph["nodes"]:
+        if n.get("class") == "StandardIndicator":
+            p = n.setdefault("properties", {})
+            code = p.get("id") or p.get("name") or ""
+            if code in catalog and catalog[code].get("pillar"):
+                p["pillar"] = catalog[code]["pillar"]
+            else:
+                if any(x in code for x in ("GRI 3", "GRI 301", "GRI 302", "GRI 303", "GRI 304", "GRI 305", "GRI 306", "GRI 308", "E1", "E2", "E3", "E4", "E5", "E6", "E7", "6.1", "6.2", "6.3", "6.4", "6.5")):
+                    p["pillar"] = "Môi trường"
+                elif any(x in code for x in ("GRI 4", "GRI 401", "GRI 402", "GRI 403", "GRI 404", "GRI 405", "GRI 406", "GRI 413", "S1", "S2", "S3", "S4", "S5", "S6", "S7", "6.6", "6.7")):
+                    p["pillar"] = "Xã hội"
+                else:
+                    p["pillar"] = "Quản trị"
+
     args.input.write_text(json.dumps(graph, indent=2, ensure_ascii=False), encoding="utf-8")
     args.stats_out.parent.mkdir(parents=True, exist_ok=True)
     args.stats_out.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
@@ -376,30 +422,71 @@ def run(args: argparse.Namespace) -> None:
 # Keyword tier — unambiguous only (one candidate indicator or nothing).
 # --------------------------------------------------------------------------- #
 KEYWORDS: Dict[str, List[str]] = {
-    "TT96-6.1.1": ["phát thải khí nhà kính", "khí nhà kính", "ghg", "co2", "carbon"],
-    "TT96-6.3.1": ["tiêu thụ năng lượng", "tiêu thụ điện", "energy consumption"],
-    "TT96-6.3.2": ["tiết kiệm năng lượng", "tiết kiệm điện", "energy saving"],
-    "TT96-6.4.1": ["tiêu thụ nước", "sử dụng nước", "water consumption", "water use"],
-    "TT96-6.4.2": ["tái sử dụng nước", "nước tái chế", "water recycl"],
-    "TT96-6.6.3": ["đào tạo nhân viên", "đào tạo lao động", "employee training"],
+    # Environmental (Môi trường)
+    "TT96-6.1.1": ["phát thải khí nhà kính", "khí nhà kính", "ghg", "co2", "carbon", "phát thải", "scope 1", "scope 2", "kiểm kê khí nhà kính"],
+    "TT96-6.3.1": ["tiêu thụ năng lượng", "tiêu thụ điện", "năng lượng", "điện năng", "energy consumption", "tiêu thụ nhiên liệu", "xăng dầu"],
+    "TT96-6.3.2": ["tiết kiệm năng lượng", "tiết kiệm điện", "tái tạo", "năng lượng mặt trời", "energy saving", "hiệu quả năng lượng", "xanh hóa"],
+    "TT96-6.4.1": ["tiêu thụ nước", "sử dụng nước", "nguồn nước", "water consumption", "water use", "lượng nước sử dụng"],
+    "TT96-6.4.2": ["tái sử dụng nước", "nước tái chế", "nước thải", "water recycl", "tuần hoàn nước", "nước làm mát"],
+    "SSCIFC-E7": ["tái chế chất thải", "tái chế rác", "chất thải", "rác thải", "waste recycl", "rác thải nhựa", "tự hủy sinh học", "aneco", "sản xuất tinh gọn", "rác thải nguy hại"],
+    "GRI 301-1": ["nguyên vật liệu", "nguyên liệu", "bao bì", "hạt nhựa", "nhựa tái chế", "nhựa sinh học", "vật liệu hạt"],
+    "GRI 305-5": ["giảm phát thải", "giảm khí nhà kính", "giảm co2", "cắt giảm phát thải"],
+
+    # Social (Xã hội)
+    "TT96-6.6.1": ["tỷ lệ lao động", "người lao động", "chính sách nhân sự", "chế độ đãi ngộ", "môi trường làm việc", "thu nhập trung bình", "tiền lương"],
+    "TT96-6.6.3": ["đào tạo nhân viên", "đào tạo lao động", "bồi dưỡng", "huấn luyện", "employee training", "đào tạo chuyên môn", "nâng cao tay nghề", "khóa đào tạo"],
     "TT96-6.6.4": ["giờ đào tạo", "training hours"],
-    "TT96-6.7.1": ["hoạt động cộng đồng", "vì cộng đồng", "community program"],
-    "TT96-6.7.2": ["đóng góp cộng đồng", "đầu tư cộng đồng", "community investment", "từ thiện"],
-    "SSCIFC-S5": ["an toàn lao động", "occupational safety", "tai nạn lao động"],
-    "SSCIFC-S6": ["đa dạng", "bình đẳng giới", "diversity", "gender"],
-    "SSCIFC-E7": ["tái chế chất thải", "tái chế rác", "waste recycl"],
+    "TT96-6.7.1": ["hoạt động cộng đồng", "vì cộng đồng", "xã hội", "tài trợ", "community program", "an sinh xã hội", "từ thiện", "người nghèo", "covid-19"],
+    "TT96-6.7.2": ["đóng góp cộng đồng", "đầu tư cộng đồng", "community investment", "tài trợ học bổng", "xây nhà tình nghĩa"],
+    "SSCIFC-S5": ["an toàn lao động", "sức khỏe lao động", "occupational safety", "tai nạn lao động", "bảo hộ", "pccc", "phòng cháy chữa cháy", "vệ sinh lao động"],
+    "SSCIFC-S6": ["đa dạng", "bình đẳng giới", "tỷ lệ nữ", "phụ nữ", "diversity", "gender", "cơ cấu giới tính", "nữ quản lý"],
+    "GRI 401-1": ["tuyển dụng", "nhân sự mới", "tỷ lệ nghỉ việc", "biến động lao động"],
+    "GRI 403-6": ["chăm sóc sức khỏe", "khám sức khỏe", "bảo hiểm y tế", "phúc lợi lao động", "bảo hiểm xã hội"],
+
+    # Governance (Quản trị)
+    "GRI 2-1": ["cơ cấu tổ chức", "thông tin tổ chức", "mô hình doanh nghiệp", "công ty mẹ", "công ty con"],
+    "GRI 2-9": ["hội đồng quản trị", "hđqt", "ban điều hành", "ban giám đốc", "thành viên hđqt", "cơ cấu quản trị", "nữ hđqt", "độc lập hđqt"],
+    "GRI 2-12": ["vai trò của hđqt", "quản trị công ty", "giám sát chiến lược", "chiến lược esg", "ủy ban quản trị"],
+    "GRI 2-14": ["giám sát công bố thông tin", "hđqt giám sát", "board oversight", "báo cáo thông tin", "minh bạch thông tin"],
+    "GRI 2-23": ["cam kết chính sách", "quy tắc ứng xử", "chuẩn mực đạo đức", "văn hóa doanh nghiệp"],
+    "GRI 2-27": ["tuân thủ pháp luật", "xử phạt", "phạt vi phạm", "quản lý môi trường", "tuân thủ quy định"],
+    "GRI 2-29": ["quan hệ nhà đầu tư", "ir department", "bộ phận ir", "stakeholder engagement", "cổ đông", "đại hội đồng cổ đông", "đối thoại cổ đông"],
+    "GRI 201-1": ["giá trị kinh tế", "doanh thu", "lợi nhuận", "đóng góp ngân sách", "thuế", "nộp ngân sách", "tài chính"],
+    "GRI 203-1": ["tác động kinh tế gián tiếp", "đầu tư cơ sở hạ tầng", "indirect economic impact", "phát triển địa phương", "cơ sở hạ tầng"],
+    "GRI 205-1": ["chống tham nhũng", "anti-corruption", "đạo đức kinh doanh", "phòng chống tham nhũng", "liêm chính", "rủi ro tham nhũng"],
+    "GRI 205-2": ["truyền thông và đào tạo về chống tham nhũng", "quy tắc ứng xử chống tham nhũng", "chính sách liêm chính"],
 }
 
 
 def build_keyword_index(defs: List[Dict[str, Any]]) -> Dict[str, List[str]]:
-    valid = {d["id"] for d in defs}
-    return {k: [p.lower() for p in v] for k, v in KEYWORDS.items() if k in valid}
+    catalog = get_gri_catalog()
+    kw_index = {k: [p.lower() for p in v] for k, v in KEYWORDS.items()}
+    # Add items from gri_catalog
+    for code, info in catalog.items():
+        if code not in kw_index:
+            title_vi = info.get("title_vi", "").lower()
+            title_en = info.get("title_en", "").lower()
+            phrases = []
+            if len(title_vi) > 10:
+                phrases.append(title_vi)
+            if len(title_en) > 10:
+                phrases.append(title_en)
+            if phrases:
+                kw_index[code] = phrases
+    return kw_index
 
 
 def match_keyword(text: str, kw: Dict[str, List[str]]) -> Optional[str]:
     t = text.lower()
-    hits = {ind for ind, phrases in kw.items() if any(p in t for p in phrases)}
-    return next(iter(hits)) if len(hits) == 1 else None   # unambiguous only
+    matched_candidates = []
+    for ind, phrases in kw.items():
+        for p in phrases:
+            if p in t:
+                matched_candidates.append((len(p), ind))
+    if not matched_candidates:
+        return None
+    matched_candidates.sort(key=lambda x: x[0], reverse=True)
+    return matched_candidates[0][1]
 
 
 def main() -> None:
