@@ -27,8 +27,11 @@ Run from the repo root:
     python test/test_esg_kg_equivalence.py
 """
 
+import argparse
 import json
+import shutil
 import sys
+import tempfile
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
@@ -42,14 +45,17 @@ import step03c_canonicalize_kpis as old_step03c  # noqa: E402
 import step02_extract_triplet_from_jsonl as old_step02  # noqa: E402
 import step03_fix_invalid_triplets as old_step03  # noqa: E402
 import step04_build_issuer_registry as old_step04  # noqa: E402
+import step05c_link_standard_indicators as old_step05c  # noqa: E402
 
 # --- new: the esg_kg package ---------------------------------------------------
 from esg_kg.core import dates as new_dates  # noqa: E402
+from esg_kg.core import graph_patch as new_graph_patch  # noqa: E402
 from esg_kg.kpi import canonicalize as new_canonicalize  # noqa: E402
 from esg_kg.core import naming as new_naming  # noqa: E402
 from esg_kg.core import paths as new_paths  # noqa: E402
 from esg_kg.core import schema as new_schema  # noqa: E402
 from esg_kg.report import quality as new_quality  # noqa: E402
+from esg_kg.resolve import indicators as new_indicators  # noqa: E402
 
 SCHEMA_FILE = REPO / "config" / "schema.json"
 TRIPLES_FILE = REPO / "graph_output" / "validated" / "all_validated_triples.json"
@@ -693,6 +699,423 @@ def test_canonicalize_corpus_arm_is_not_vacuous():
     methods = stats["by_method"]
     for tier in ("kpi_type", "alias_exact", "rejected_unit", "no_match"):
         assert methods.get(tier, 0) > 0, f"tier {tier!r} never fired: {methods}"
+
+
+# --------------------------------------------------------------------------- #
+# core/graph_patch.py  — GraphPatch / temporal_md, extracted out of step05c
+# --------------------------------------------------------------------------- #
+# These get their own arm group rather than riding along with the step05c stage arm
+# below, because their lifetime is different: step05d imports GraphPatch/temporal_md
+# STRAIGHT FROM CORE once it moves, so the shared contract has to be pinned
+# independently of how step05c happens to use it. Per DESIGN.md §5.3 this group only
+# retires when `src/step05c_link_standard_indicators.py` is deleted — later than the
+# stage arm.
+#
+# The fixture uses real schema labels so add_edge's direction check is exercised against
+# the real rules: partOf (StandardIndicator -> Regulation) is legal, measuredUnder
+# (Regulation -> StandardIndicator) is a real label pointed the wrong way, and
+# "notARealLabel" is not in the schema at all.
+def patch_fixture() -> dict:
+    """A tiny graph in a fixed order, so the append-only prefix check has something to hold."""
+    return {
+        "nodes": [
+            {"class": "Regulation",
+             "properties": {"name": "Thông tư 96/2020/TT-BTC", "is_current": True}},
+            {"class": "StandardIndicator",
+             "properties": {"id": "TT96-6.1.1", "name": "Phát thải khí nhà kính",
+                            "pillar": "Môi trường", "valid_from": "2020", "valid_to": None}},
+            {"class": "KPIObservation",
+             "properties": {"kpi_id": "TT96-6.1.1", "title": "Tổng phát thải",
+                            "valid_from": "2023", "valid_to": None}},
+        ],
+        "edges": [
+            {"subject": 2, "predicate": "measuredUnder", "object": 1,
+             "temporal_metadata": {"valid_from": "2023", "valid_to": None}},
+        ],
+    }
+
+
+def drive_graph_patch(mod, schema_sets) -> dict:
+    """Run the same scripted sequence through one tree's GraphPatch and report everything.
+
+    Each call builds its own fixture: GraphPatch mutates the graph dict in place, so the
+    two trees must never be handed the same object.
+    """
+    graph = patch_fixture()
+    gp = mod.GraphPatch(graph, *schema_sets)
+    out = {"n_nodes0": gp.n_nodes0, "n_edges0": gp.n_edges0}
+
+    # find(): index 0 is a legitimate answer, which is why the stage tests `is None`
+    out["find_doc"] = gp.find("Regulation", "Thông tư 96/2020/TT-BTC")
+    out["find_indicator"] = gp.find("StandardIndicator", "TT96-6.1.1")
+    out["find_missing"] = gp.find("StandardIndicator", "TT96-9.9.9")
+
+    # dedup by identity: the indicator already there is found, a new one is appended
+    out["ensure_dup"] = gp.ensure_node(
+        {"class": "StandardIndicator", "properties": {"id": "TT96-6.1.1", "name": "khác hẳn"}})
+    out["ensure_new"] = gp.ensure_node(
+        {"class": "StandardIndicator", "properties": {"id": "GRI 305-1", "name": "Direct GHG"}})
+
+    md = mod.temporal_md(graph["nodes"][1]["properties"])
+    out["edge_legal"] = gp.add_edge(1, "partOf", 0, md)
+    out["edge_duplicate"] = gp.add_edge(1, "partOf", 0, md)          # same triple -> False
+    out["edge_extra"] = gp.add_edge(out["ensure_new"][0], "partOf", 0, md,
+                                    extra={"confidence": 0.9})
+    out["edge_unknown_label"] = gp.add_edge(1, "notARealLabel", 0, md)
+    out["edge_wrong_direction"] = gp.add_edge(0, "measuredUnder", 1, md)
+
+    out["dropped_invalid"] = gp.dropped_invalid
+    out["by_id"] = dict(gp._by_id)
+    out["edgeset"] = set(gp._edgeset)
+    out["graph"] = graph
+    return out
+
+
+def append_only_verdict(mod, schema_sets, mutate) -> str:
+    """What assert_append_only() does after `mutate` — the message too, not just pass/fail."""
+    gp = mod.GraphPatch(patch_fixture(), *schema_sets)
+    mutate(gp)
+    try:
+        gp.assert_append_only()
+        return "ok"
+    except AssertionError as exc:
+        return f"AssertionError: {exc}"
+
+
+def test_graph_patch_temporal_md_matches_src():
+    # TODAY is computed at import time in both trees. Equal unless the run straddles
+    # midnight, which is worth failing over: it would mean the two trees stamped
+    # different recorded_at values in one pipeline run.
+    assert new_graph_patch.TODAY == old_step05c.TODAY
+    for props in [{"valid_from": "2023", "valid_to": "2024"},
+                  {"valid_from": "2023-01-01", "valid_to": None},
+                  {"valid_from": None}, {}, {"unrelated": 1}]:
+        assert new_graph_patch.temporal_md(props) == old_step05c.temporal_md(props), props
+
+
+def test_graph_patch_norm_matches_src():
+    for s in ["Thông tư 96/2020/TT-BTC", "  CÔNG TY CP Nhựa An Phát  ", "", None, 12]:
+        assert new_graph_patch.norm(s) == old_step05c.norm(s), s
+
+
+def test_graph_patch_dedup_and_append_matches_src():
+    sets = old_step03.load_schema_sets(load_schema())
+    new_out = drive_graph_patch(new_graph_patch, sets)
+    old_out = drive_graph_patch(old_step05c, sets)
+    for key in sorted(old_out):
+        assert new_out[key] == old_out[key], f"GraphPatch diverged on {key!r}"
+
+
+def test_graph_patch_assert_append_only_matches_src():
+    """Both trees must draw the line in the same place — this is the invariant behind
+    step06's `_node_key = "n{i}"` and the positional node refs in the step07 dossiers."""
+    sets = old_step03.load_schema_sets(load_schema())
+    cases = {
+        "untouched": lambda gp: None,
+        "appended": lambda gp: gp.nodes.append({"class": "Standard", "properties": {"name": "GRI"}}),
+        # allowed: the stage stamps self_reported_zero / a corrected pillar in place
+        "property_mutated": lambda gp: gp.nodes[0]["properties"].update({"pillar": "Xã hội"}),
+        "node_reordered": lambda gp: gp.nodes.reverse(),
+        "node_replaced": lambda gp: gp.nodes.__setitem__(0, dict(gp.nodes[0])),
+        "node_dropped": lambda gp: gp.nodes.pop(),
+        "edge_replaced": lambda gp: gp.edges.__setitem__(0, dict(gp.edges[0])),
+        "edge_dropped": lambda gp: gp.edges.clear(),
+    }
+    for name, mutate in cases.items():
+        new_v = append_only_verdict(new_graph_patch, sets, mutate)
+        old_v = append_only_verdict(old_step05c, sets, mutate)
+        assert new_v == old_v, f"{name}: new={new_v!r} old={old_v!r}"
+    # guard the guard: if every case returned "ok" this would be asserting nothing
+    verdicts = {n: append_only_verdict(new_graph_patch, sets, m) for n, m in cases.items()}
+    assert verdicts["untouched"] == "ok" and verdicts["property_mutated"] == "ok", verdicts
+    assert all(v.startswith("AssertionError") for n, v in verdicts.items()
+               if n in ("node_reordered", "node_replaced", "node_dropped",
+                        "edge_replaced", "edge_dropped")), verdicts
+
+
+# --------------------------------------------------------------------------- #
+# step05c -> esg_kg.resolve.indicators  (STAGE arm)
+# --------------------------------------------------------------------------- #
+# Same three layers as step00/step03c: module constants, each pure function, and the
+# full output of a real run(). run() reads and writes files, so "output" here means a
+# temp workspace: graph + defs + crosswalk + catalog in, patched graph + stats out.
+# The Workspace shape is lifted from test/test_indicator_axis.py:150 — same ten
+# Namespace fields the stage's main() builds.
+CROSSWALK_FILE = REPO / "config" / "standard_crosswalk.json"
+GRI_CATALOG_FILE = REPO / "config" / "gri_catalog.json"
+
+# The four indicators the fixture needs: 6.1.1 (GHG, keyword tier + Emission), 6.5.1/6.5.2
+# (the Penalty split), 6.6.3 (social, but its code contains "6.3" — the pillar trap).
+FIXTURE_IDS = ("TT96-6.1.1", "TT96-6.5.1", "TT96-6.5.2", "TT96-6.6.3")
+
+# What step05c mints. Stripping these is what turns the real-graph arm from a no-op
+# re-run into a full one — see strip_axis().
+AXIS_EDGE_LABELS = {"partOf", "measuredUnder", "equivalentTo", "alignsWithIndicator"}
+
+
+def fixture_defs() -> list:
+    defs = [d for d in json.loads(KPI_DEFS_FILE.read_text(encoding="utf-8"))
+            if d["id"] in FIXTURE_IDS]
+    assert len(defs) == len(FIXTURE_IDS), f"vocabulary lost one of {FIXTURE_IDS}"
+    return defs
+
+
+def fixture_graph() -> dict:
+    """One node per branch of run(), so the arm compares a busy stats dict, not an empty one."""
+    def n(cls, **p):
+        p.setdefault("valid_from", "2023")
+        p.setdefault("valid_to", None)
+        p.setdefault("is_current", True)
+        return {"class": cls, "properties": p}
+
+    return {
+        "nodes": [
+            # the document node already in the graph -> partOf must reuse it, not mint one
+            n("Regulation", name="Thông tư 96/2020/TT-BTC"),
+            n("KPIObservation", kpi_id="TT96-6.1.1", title="Tổng phát thải KNK",
+              value=12450, unit="tCO2e", source_type="report"),
+            n("KPIObservation", kpi_id="TT96-9.9.9", title="Chỉ số ngoài từ vựng"),  # unmapped
+            n("KPIObservation", kpi_type="TT96-6.1.1", title="Chưa canonical"),      # no kpi_id
+            n("Emission", category="Scope 1", value=8000, unit="tCO2e"),
+            n("Penalty", penalty_id="AAA_2022_EnvPenalty_0times", amount=0,
+              description="Số lần bị phạt vi phạm môi trường"),                      # self-reported
+            n("Penalty", penalty_id="AAA_2023_EnvPenalty", amount=150_000_000,
+              description="Xử phạt xả thải vượt chuẩn", source_type="news"),
+            n("SustainabilityClaim", description="Cam kết giảm phát thải khí nhà kính đến 2030"),
+            n("Goal", name="Tiết kiệm năng lượng toàn hệ thống", description=""),
+            # a stale pillar on a pre-existing node -> the restamp branch
+            n("StandardIndicator", id="TT96-6.6.3", name="Chỉ số TT96-6.6.3",
+              pillar="Môi trường", definition=None, section=None,
+              source_document="Thông tư 96"),
+        ],
+        "edges": [],
+    }
+
+
+def fixture_crosswalk() -> dict:
+    """Both review states, so the confirmed-only gate is exercised in both directions."""
+    return {"version": "test",
+            "confirmed": [
+                {"tt96": "TT96-6.1.1", "gri": ["GRI 305-1"], "gri_name": "Direct GHG",
+                 "status": "needs_review", "confidence": 0.5},
+                {"tt96": "TT96-6.5.1", "gri": ["GRI 2-27"], "gri_name": "Compliance",
+                 "status": "confirmed", "confidence": 0.9},
+            ],
+            "needs_review": []}
+
+
+def fixture_catalog() -> dict:
+    return {"GRI 2-27": {"title_vi": "Tuân thủ pháp luật và quy định",
+                         "title_en": "Compliance with laws and regulations",
+                         "pillar": "Quản trị", "definition_vi": "Chỉ số công bố GRI 2-27"},
+            "GRI 305-1": {"title_vi": "Phát thải khí nhà kính trực tiếp (Scope 1)",
+                          "title_en": "Direct (Scope 1) GHG emissions",
+                          "pillar": "Môi trường", "definition_vi": "Chỉ số công bố GRI 305-1"}}
+
+
+def run_indicators(mod, graph, defs, crosswalk, catalog, **overrides) -> tuple:
+    """Drive one tree's run() over a private temp workspace; return (graph_after, stats)."""
+    tmp = Path(tempfile.mkdtemp(prefix="esgkg_eq_axis_"))
+    try:
+        paths = {}
+        for name, obj in (("resolved_graph", graph), ("defs", defs),
+                          ("crosswalk", crosswalk), ("gri_catalog", catalog)):
+            paths[name] = tmp / f"{name}.json"
+            paths[name].write_text(json.dumps(obj, ensure_ascii=False, indent=1),
+                                   encoding="utf-8")
+        stats_path = tmp / "stats.json"
+        args = argparse.Namespace(
+            input=paths["resolved_graph"], defs=paths["defs"],
+            crosswalk=paths["crosswalk"], schema=SCHEMA_FILE,
+            gri_catalog=paths["gri_catalog"], no_gri=False, no_align=False,
+            trust_draft_crosswalk=False, stats_out=stats_path, dry_run=False)
+        for k, v in overrides.items():
+            setattr(args, k, v)
+        mod.run(args)
+        # --dry-run returns before writing either file; "no stats" is itself part of the
+        # behaviour being compared, so report None rather than papering over it.
+        stats = json.loads(stats_path.read_text(encoding="utf-8")) if stats_path.exists() else None
+        return (json.loads(paths["resolved_graph"].read_text(encoding="utf-8")), stats)
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
+def strip_axis(graph: dict) -> dict:
+    """Remove everything step05c mints, so a re-run does the real work.
+
+    Without this the real-graph arm is close to vacuous: the live graph is ALREADY
+    patched (67 StandardIndicator, 641 measuredUnder, 639 alignsWithIndicator, 26
+    equivalentTo, 102 partOf), and every counter in the stage's report sits behind
+    `if gp.add_edge(...)` (step05c:364,384,410,434) — so a second run reports ~nothing
+    and the arm would be comparing two empty piles.
+
+    Document nodes (Regulation TT96, Standard QCVN09, ...) are NOT stripped: they come
+    from extraction, not from this stage, so partOf gets reconnected to the real target.
+    Edges address nodes by ARRAY INDEX, hence the remap.
+    """
+    keep, old2new = [], {}
+    for i, node in enumerate(graph.get("nodes") or []):
+        if node.get("class") == "StandardIndicator":
+            continue
+        old2new[i] = len(keep)
+        keep.append(node)
+    edges = []
+    for edge in graph.get("edges") or []:
+        if edge.get("predicate") in AXIS_EDGE_LABELS:
+            continue
+        s, o = old2new.get(edge.get("subject")), old2new.get(edge.get("object"))
+        if s is None or o is None:
+            continue
+        edges.append({**edge, "subject": s, "object": o})
+    return {**graph, "nodes": keep, "edges": edges}
+
+
+def test_indicators_constants_match_src():
+    # TODAY / norm are NOT compared here: after the extraction they belong to
+    # core/graph_patch.py and nothing in the stage references them any more, so
+    # re-importing them into this module just to be asserted would be a dead import
+    # written to please a test. Their arms are test_graph_patch_* above.
+    assert new_indicators.DOC_OF_PREFIX == old_step05c.DOC_OF_PREFIX
+    assert new_indicators.DOC_CANONICAL == old_step05c.DOC_CANONICAL
+    assert new_indicators.KEYWORDS == old_step05c.KEYWORDS
+
+
+def test_indicators_default_paths_match_src():
+    for name in ("DEFAULT_RESOLVED", "DEFAULT_DEFS", "DEFAULT_CROSSWALK",
+                 "DEFAULT_SCHEMA", "DEFAULT_STATS_OUT", "GRI_CATALOG_PATH"):
+        assert getattr(new_indicators, name) == getattr(old_step05c, name), name
+
+
+def test_indicators_pure_helpers_match_src():
+    for ind in ["TT96-6.1.1", "QD2171-1", "QCVN09-1", "SSCIFC-S6", "GRI 305-1", "", "TT96"]:
+        assert new_indicators.doc_key_for(ind) == old_step05c.doc_key_for(ind), ind
+
+    defs, catalog = fixture_defs(), fixture_catalog()
+    for d in defs:
+        assert new_indicators.make_indicator_node(d) == old_step05c.make_indicator_node(d)
+    for key, kind in (("TT96", "Regulation"), ("GRI", "Standard")):
+        canonical = old_step05c.DOC_CANONICAL[key]
+        assert new_indicators.make_doc_node(key, kind, canonical) == \
+               old_step05c.make_doc_node(key, kind, canonical)
+    for code, name in [("GRI 305-1", "Direct GHG"), ("GRI 2-27", None),
+                       ("GRI 999-9", "Không có trong catalog"), ("GRI 999-9", None)]:
+        assert new_indicators.make_gri_node(code, name, catalog) == \
+               old_step05c.make_gri_node(code, name, catalog), code
+
+    assert new_indicators.pillar_authority(defs, catalog) == \
+           old_step05c.pillar_authority(defs, catalog)
+
+    # load_gri_catalog degrades to {} on a missing/broken file — pin that too
+    assert new_indicators.load_gri_catalog(REPO / "config" / "does_not_exist.json") == \
+           old_step05c.load_gri_catalog(REPO / "config" / "does_not_exist.json")
+    if GRI_CATALOG_FILE.exists():
+        assert new_indicators.load_gri_catalog(GRI_CATALOG_FILE) == \
+               old_step05c.load_gri_catalog(GRI_CATALOG_FILE)
+
+    # restamp mutates in place -> one fresh copy per tree
+    authority = old_step05c.pillar_authority(defs, catalog)
+    new_nodes, old_nodes = fixture_graph()["nodes"], fixture_graph()["nodes"]
+    assert new_indicators.restamp_pillars(new_nodes, authority) == \
+           old_step05c.restamp_pillars(old_nodes, authority)
+    assert new_nodes == old_nodes
+
+    # keyword tier: longest matching phrase wins (pinned as-is; changing it is a
+    # behaviour commit under DESIGN.md §5.3, not something to "fix" toward older docs)
+    new_kw = new_indicators.build_keyword_index(defs, catalog)
+    old_kw = old_step05c.build_keyword_index(defs, catalog)
+    assert new_kw == old_kw
+    probes = ["Cam kết giảm phát thải khí nhà kính đến 2030",
+              "Tiết kiệm năng lượng và tiêu thụ năng lượng",  # two candidates, longest wins
+              "An toàn lao động tại nhà máy", "Không liên quan gì cả", "",
+              "Tuân thủ pháp luật và quy định về môi trường"]
+    for text in probes:
+        assert new_indicators.match_keyword(text, new_kw) == \
+               old_step05c.match_keyword(text, old_kw), text
+
+
+def test_indicators_run_matches_src_on_temp_workspace():
+    """The stage-level arm: same inputs, two trees, compare the patched graph AND stats.
+
+    Runs on a synthetic fixture, so unlike the real-graph arm it also works on a bare
+    clone (no HF snapshot). The two are complementary, not redundant — measured by
+    mutation check: swapping step05c's `pen_ind = "TT96-6.5.2" if amount else ...` is
+    invisible to the real-graph arm, because all four Penalty nodes in the live graph
+    carry amount == 0 and take the self-reported-zero `continue` before ever reaching
+    that line. Only this fixture has a Penalty with a real fine.
+    """
+    defs, crosswalk, catalog = fixture_defs(), fixture_crosswalk(), fixture_catalog()
+    new_graph, new_stats = run_indicators(new_indicators, fixture_graph(), defs, crosswalk, catalog)
+    old_graph, old_stats = run_indicators(old_step05c, fixture_graph(), defs, crosswalk, catalog)
+    assert new_stats == old_stats, f"stats diverged:\n  new={new_stats}\n  old={old_stats}"
+    assert len(new_graph["nodes"]) == len(old_graph["nodes"])
+    for i, (a, b) in enumerate(zip(new_graph["nodes"], old_graph["nodes"])):
+        assert a == b, f"node #{i} diverged:\n  new={a}\n  old={b}"
+    assert new_graph["edges"] == old_graph["edges"]
+
+    # the same three flags run() branches on, so the arm covers the switches too
+    for overrides in ({"no_gri": True}, {"no_align": True}, {"trust_draft_crosswalk": True},
+                      {"dry_run": True}):
+        n_g, n_s = run_indicators(new_indicators, fixture_graph(), defs, crosswalk, catalog,
+                                  **overrides)
+        o_g, o_s = run_indicators(old_step05c, fixture_graph(), defs, crosswalk, catalog,
+                                  **overrides)
+        assert (n_g, n_s) == (o_g, o_s), f"diverged with {overrides}"
+
+
+def test_indicators_temp_workspace_arm_is_not_vacuous():
+    """Guard the arm above: every branch of run() must actually fire on the fixture."""
+    defs, crosswalk, catalog = fixture_defs(), fixture_crosswalk(), fixture_catalog()
+    graph, stats = run_indicators(new_indicators, fixture_graph(), defs, crosswalk, catalog)
+    for label in ("partOf", "measuredUnder", "equivalentTo", "alignsWithIndicator"):
+        assert stats["created_edges"].get(label, 0) > 0, f"{label} never minted: {stats}"
+    assert stats["created_nodes"].get("StandardIndicator", 0) > 0, stats
+    assert stats["created_nodes"].get("StandardIndicator(GRI)", 0) > 0, stats
+    assert stats["penalty_self_reported_zero"] > 0, stats
+    assert stats["unmapped_kpi_ids"], stats
+    assert stats["pillar_restamped"] > 0, stats
+    # the confirmed-only gate really gated: TT96-6.1.1's row is needs_review
+    assert stats["created_edges"]["equivalentTo"] == 1, stats
+    # and the document node already in the graph was reused, not duplicated
+    docs = [n for n in graph["nodes"]
+            if n.get("class") == "Regulation"
+            and (n.get("properties") or {}).get("name") == "Thông tư 96/2020/TT-BTC"]
+    assert len(docs) == 1, f"document node duplicated: {len(docs)}"
+
+
+def test_indicators_matches_src_on_the_real_graph():
+    """The strongest arm: the real resolved graph, stripped back to its pre-axis state so
+    the run does the full job (67 indicators / ~1,400 axis edges) rather than a no-op."""
+    if not RESOLVED_FILE.exists():
+        _skip("indicators/real-graph", f"{RESOLVED_FILE.name} absent (run data_sync pull)")
+        return
+    if not (KPI_DEFS_FILE.exists() and CROSSWALK_FILE.exists() and GRI_CATALOG_FILE.exists()):
+        _skip("indicators/real-graph", "defs/crosswalk/gri_catalog missing")
+        return
+
+    base = strip_axis(json.loads(RESOLVED_FILE.read_text(encoding="utf-8")))
+    defs = json.loads(KPI_DEFS_FILE.read_text(encoding="utf-8"))
+    crosswalk = json.loads(CROSSWALK_FILE.read_text(encoding="utf-8"))
+    catalog = json.loads(GRI_CATALOG_FILE.read_text(encoding="utf-8"))
+
+    new_graph, new_stats = run_indicators(new_indicators, base, defs, crosswalk, catalog)
+    old_graph, old_stats = run_indicators(old_step05c, base, defs, crosswalk, catalog)
+    assert new_stats == old_stats, "stats diverged on the real graph"
+    assert len(new_graph["nodes"]) == len(old_graph["nodes"])
+    for i, (a, b) in enumerate(zip(new_graph["nodes"], old_graph["nodes"])):
+        assert a == b, f"real node #{i} diverged:\n  new={a}\n  old={b}"
+    assert len(new_graph["edges"]) == len(old_graph["edges"])
+    for i, (a, b) in enumerate(zip(new_graph["edges"], old_graph["edges"])):
+        assert a == b, f"real edge #{i} diverged:\n  new={a}\n  old={b}"
+
+    # not vacuous: the stripped graph really was rebuilt, not re-read
+    for label in ("partOf", "measuredUnder", "equivalentTo", "alignsWithIndicator"):
+        assert new_stats["created_edges"].get(label, 0) > 0, \
+            f"{label} not rebuilt on the real graph: {new_stats['created_edges']}"
+    assert new_stats["created_nodes"].get("StandardIndicator", 0) > 0, new_stats
+    assert new_stats["penalty_self_reported_zero"] > 0, new_stats
+    print(f"     ({new_stats['nodes_before']} real nodes, "
+          f"+{new_stats['nodes_added']} indicators, +{new_stats['edges_added']} axis edges "
+          f"compared across both trees)")
 
 
 if __name__ == "__main__":

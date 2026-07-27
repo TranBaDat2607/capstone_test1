@@ -25,6 +25,11 @@ Phát hiện thêm: `node_text` tồn tại ở **hai** nơi — `step05d:63` v�
 nhưng **KHÔNG phải bản trùng** (xem §2, `text.py`). Cả hai cùng về `core/text.py`,
 giữ tên riêng.
 
+✅ **Nút `step05c` đã gỡ (2026-07-27).** `GraphPatch`/`temporal_md` — dòng cuối bảng trên,
+symbol mà `step05d:34` import ngược lên một stage — nay ở `core/graph_patch.py`. Đây đúng
+là ca §1 mô tả: một file stage kiêm vai thư viện. Khi `step05d` được dời, nó import từ
+kernel chứ không từ `esg_kg.resolve.indicators`.
+
 ## 2. Bố cục đề xuất
 
 ```
@@ -43,6 +48,8 @@ src_module/esg_kg/
     llm.py             #  RateLimiter                          <- step02:70
                        #  _Provider/_OpenAIProvider cascade    <- step07:284
     console.py         #  ensure_utf8_stdout  ✅ ĐÃ LÀM        <- step00 __main__ (03a1592)
+    graph_patch.py     #  GraphPatch, temporal_md  ✅ ĐÃ LÀM   <- step05c:76,102,109,114
+                       #  (norm + TODAY đi kèm; 05d import từ đây, không từ stage)
     datasync.py        #  HF snapshot pull/push                <- src/data_sync.py
 
   kpi/                 extract.py(step01)  canonicalize.py(step03c)
@@ -133,6 +140,10 @@ Vì vậy ta **không rewire `src/`**. Thay vào đó:
      **ở lại** step03 (chỉ test import). Xếp trước `io_jsonl` **không** vì số
      importer mà vì nó **mở khoá `step00`** (xem bước 3); `io_jsonl` chỉ step02
      dùng, mà step02 là hub cuối ở bước 4 — làm sớm không mở khoá được gì.
+   - ✅ `core/graph_patch.py` — `GraphPatch`, `temporal_md` (+ `norm`, `TODAY` đi kèm),
+     trích khi dời `step05c` (2026-07-27). Không xếp theo số importer mà theo stage cần:
+     nó là điều kiện của `step05c`, và là thứ `step05d` sẽ import thay cho việc gọi ngược
+     lên một stage.
    - `core/` còn lại, làm khi stage cần tới: `io_jsonl`, `identity`, `text`, `llm`.
      ⚠️ `text`: hai `node_text` **KHÔNG phải bản trùng** — `step05d:63` nhận *props dict*,
      `step07:133` nhận *node* rồi rẽ nhánh theo class. Chuyển cả hai, giữ tên riêng.
@@ -172,8 +183,18 @@ Vì vậy ta **không rewire `src/`**. Thay vào đó:
      kỹ file để viết arm tương đương thì lộ ra nợ thiết kế bên dưới — và theo §5.4, cái
      đúng là sửa chứ không phải bê nguyên sang kiến trúc mới. Xem **§4.2**.
 
-     Còn lại: **`step05c`** — cái này buộc phải chốt chỗ ở cho `GraphPatch`/`temporal_md`
-     (§2), vốn cũng là nút thắt đang chặn `step05d`.
+     ✅ **`step05c` → `resolve/indicators.py` (2026-07-27), stage thứ ba.** `diff` với bản
+     `src/`: **15 dòng thêm / 115 dòng xoá, 0 dòng logic mới** — docstring, khối import,
+     bỏ `from datetime import date` (chỉ `TODAY` dùng), và xoá phần đã trích sang
+     `core/graph_patch.py`. Sinh bằng script cắt file, không gõ lại.
+     Arm tương đương gồm 7 nhóm, **hai arm chạy `run()` thật bổ sung cho nhau chứ không
+     thừa** — đo bằng mutation check: hoán đổi `pen_ind = "TT96-6.5.2" if amount else …`
+     thì arm đồ thị thật **không thấy** (cả 4 node `Penalty` sống đều `amount == 0`, đi
+     nhánh `self_reported_zero` rồi `continue` trước khi tới dòng đó), chỉ fixture tổng hợp
+     bắt được. Ngược lại arm đồ thị thật chạy trên bản đã **strip trục chỉ số** — bỏ node
+     `StandardIndicator` + 4 nhãn cạnh rồi remap chỉ số mảng — nếu không thì đồ thị đã vá
+     sẵn khiến mọi counter về 0 và arm chỉ so hai bản báo cáo rỗng. Đã dựng lại đủ
+     67 chỉ số / 1 346 cạnh trên 10 358 node thật, khớp từng node và từng cạnh giữa hai cây.
 
      ℹ️ **Cập nhật 2026-07-26 — một rào cản của `step05c` đã tự mất.** Bản merge nhánh `tuan`
      thêm `get_gri_catalog()`: một global `GRI_CATALOG_PATH` hardcode + cache suốt vòng đời
@@ -187,8 +208,9 @@ Vì vậy ta **không rewire `src/`**. Thay vào đó:
      muốn đổi lại thì đó là commit hành vi riêng theo §5.3.
      (`step07b` từng đứng đầu danh sách này — đã loại, xem §4.1.) `step09`/`step06` cần
      Neo4j nên arm của chúng chỉ kiểm được tới mức import + hàm thuần; để sau.
-   - **CHƯA đủ điều kiện dù không ai import chúng**: `step05d` (cần `GraphPatch`/
-     `temporal_md` từ step05c — hiện **chưa có chỗ trong `core/`**, xem §2),
+   - **CHƯA đủ điều kiện dù không ai import chúng**: `step05d` (`GraphPatch`/`temporal_md`
+     nay đã ở `core/graph_patch.py` ✅, nhưng nó **còn chặn ở `core/llm.py`** —
+     `step05d:35` import `_OpenAIProvider`/`RateLimiter` từ step07),
      `step08` (cần `node_text` từ step07 → chờ `core/text.py`),
      `step10` (`step10_evaluate.py:367` giấu một lazy `from step07… import Adjudicator`
      trong `try` — hỏng thì **im lặng**, chỉ mất arm LLM, không báo lỗi).

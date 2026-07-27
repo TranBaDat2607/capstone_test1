@@ -7,7 +7,7 @@ bức tranh toàn hệ thống.
 Nguồn sự thật của thứ tự chạy là [`esg_kg/pipeline.py`](esg_kg/pipeline.py); file này
 là bản vẽ của cùng dữ liệu đó. `python src_module/run.py --list` luôn nói thật về tiến độ.
 
-**Trạng thái: 2/16 stage đã dời** (2 stage cố ý không dời, xem §4).
+**Trạng thái: 3/16 stage đã dời** (2 stage cố ý không dời, xem §4).
 
 ---
 
@@ -43,7 +43,7 @@ flowchart TD
         S04["step04 · issuer<br/>registry tên công ty (chạy 1 lần)"]:::pending
         S05["step05 · entities<br/>gộp node trùng, neo issuer + neo chuẩn"]:::pending
         S05B["step05b · provenance<br/>đóng dấu source_doc / source_page"]:::pending
-        S05C["step05c · indicators<br/>dựng trục TT96/GRI (offline)"]:::pending
+        S05C["step05c · indicators<br/>dựng trục TT96/GRI (offline)"]:::migrated
         S05D["step05d · align_claims<br/>LLM, TÙY CHỌN — phần keyword bỏ sót"]:::pending
     end
 
@@ -110,7 +110,7 @@ flowchart TD
 | 04b | — | — | ~~resolved~~ | ~~`standards_registry.json`~~ | ⛔ **ngoài đường chạy** |
 | 05 | `entities` | 💰 (tùy chọn) | validated + 2 registry | `resolved_graph.json` | ⏳ |
 | 05b | `provenance` | — | resolved + các file page | vá tại chỗ | ⏳ |
-| 05c | `indicators` | — | resolved + `kpi_definitions` + crosswalk + `gri_catalog` | vá tại chỗ | ⏳ |
+| 05c | `indicators` | — | resolved + `kpi_definitions` + crosswalk + `gri_catalog` | vá tại chỗ | ✅ **đã dời** |
 | 05d | `align_claims` | 💰 tùy chọn | resolved | vá tại chỗ | ⏳ |
 | 06 | `neo4j_load` | — | resolved | Neo4j | ⏳ |
 | 07 | `claims_vs_conduct` | 💰 **bắt buộc** | resolved | `<ticker>_claim_assessments.json` | ⏳ |
@@ -183,8 +183,17 @@ flowchart LR
 
 **Vì sao**: gần như toàn bộ cạnh của 05c **không cần đồ thị đã hợp nhất** — `measuredUnder`
 đọc `kpi_id` từng node, `equivalentTo` thuần config, `alignsWithIndicator` khớp text từng
-node. Chỉ mỗi việc chọn *đích* của `partOf` là cần. Chuyển lên sớm thì **bỏ được toàn bộ
-cơ chế APPEND-ONLY** (`GraphPatch.assert_append_only`) — thứ đang chặn việc dời `step05d`.
+node. Chỉ mỗi việc chọn *đích* của `partOf` là cần. Chuyển lên sớm thì riêng `05c`
+**bỏ được cơ chế APPEND-ONLY** (`GraphPatch.assert_append_only`).
+
+⚠️ **Sửa 2026-07-27:** bản trước viết cơ chế này "đang chặn việc dời `step05d`" — không còn
+đúng, và chỗ sai đổi hẳn sức nặng của đề xuất. `GraphPatch` nay ở `core/graph_patch.py`, nên
+`05d` không còn vướng ở đây; nó vướng `core/llm.py` (`step05d:35` import
+`_OpenAIProvider`/`RateLimiter` từ `step07`). Quan trọng hơn: **`05d` vẫn vá
+`resolved_graph.json` tại chỗ sau `step05`**, nên append-only sống tiếp dù đề xuất này có
+được làm hay không. Đó là lý lẽ *ủng hộ* việc `GraphPatch` lên `core/`, không phải lý lẽ
+chống lại — và đề xuất này giờ chỉ còn hứa được phần gọn của `05c`, không còn hứa xoá được
+một cơ chế.
 
 **Rủi ro phải xử lý**: 67 node `StandardIndicator` sẽ đi qua Stage B/C của step05.
 `identity_keys=['id']` nên Stage A an toàn, nhưng embedding rất dễ gộp nhầm
