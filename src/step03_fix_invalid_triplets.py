@@ -36,6 +36,7 @@ Pipeline:
 from __future__ import annotations
 
 import argparse
+import copy
 import json
 import logging
 import os
@@ -440,7 +441,14 @@ BATCH_FIX_PROMPT = (
     "4. **Schema compliance**:\n"
     "   - predicate must be in edge labels\n"
     "   - subject.class & object.class must be in entity classes\n"
-    "5. **Discard unfixable**: If triple cannot be corrected, omit it from output\n\n"
+    "5. **Discard unfixable**: If triple cannot be corrected, omit it from output\n"
+    "6. **NEVER touch property values**: You may only change `class`, `predicate`,\n"
+    "   `temporal_metadata`, and the node properties valid_from / valid_to / is_current.\n"
+    "   Copy EVERY other property value byte-for-byte from the input.\n"
+    "   - Do NOT translate. Vietnamese text stays Vietnamese, with its diacritics.\n"
+    "   - Do NOT reformat, re-case, round numbers, or normalize units.\n"
+    "   - Do NOT add properties that were not in the input, or remove any.\n"
+    "   These values are source-traceable evidence, not prose to improve.\n\n"
     "## TEMPORAL PROPERTIES (REQUIRED)\n"
     "All nodes MUST have:\n"
     "- valid_from: When information became valid (YYYY or YYYY-MM-DD)\n"
@@ -478,6 +486,61 @@ def extract_json_from_response(response_text: str) -> List[Any]:
         except json.JSONDecodeError as e:
             logger.warning(f"JSON decode failed: {e}")
     return []
+
+
+# The only property values phase 2 is authorised to write. They are exactly the
+# ones BATCH_FIX_PROMPT asks the model to add ("All nodes MUST have: valid_from,
+# valid_to, is_current"); `temporal_metadata` is handled at triple level.
+MUTABLE_NODE_PROPS = ("valid_from", "valid_to", "is_current")
+
+
+def preserve_property_values(original: Any, repaired: Dict[str, Any]) -> Tuple[Dict[str, Any], int]:
+    """Let phase 2 repair a triple's SHAPE, never the VALUES inside it.
+
+    `class`, `predicate`, `temporal_metadata` and the MUTABLE_NODE_PROPS are the
+    model's to fix — that is what it was asked for. Every other property value is
+    taken back from `original`, so a repair cannot translate a Vietnamese name,
+    strip its diacritics, round a KPI value, tidy a unit, invent a property, or
+    drop one. Nothing downstream would notice: `validate_triple` only checks
+    class/predicate/temporal keys, and a translated name does not fail — it
+    silently splits one entity into two in step05 Stage A, because normalize_name
+    maps a Vietnamese spelling and its English translation to different keys.
+
+    Returns (guarded_triple, n_blocked) and never mutates its inputs. `n_blocked`
+    counts the value overrides that were refused; it is signal, not decoration —
+    a batch with a high count means the prompt is drifting.
+    """
+    guarded = copy.deepcopy(repaired)
+    if not isinstance(original, dict):
+        return guarded, 0
+
+    blocked = 0
+    for side in ("subject", "object"):
+        orig_side = original.get(side)
+        new_side = guarded.get(side)
+        if not isinstance(orig_side, dict) or not isinstance(new_side, dict):
+            continue
+        orig_props = orig_side.get("properties")
+        if not isinstance(orig_props, dict):
+            continue
+        new_props = new_side.get("properties")
+        if not isinstance(new_props, dict):
+            new_props = {}
+
+        merged = copy.deepcopy(orig_props)
+        for k in MUTABLE_NODE_PROPS:
+            if k in new_props:
+                merged[k] = new_props[k]
+
+        for k, v in new_props.items():        # changed or invented
+            if k not in MUTABLE_NODE_PROPS and (k not in orig_props or orig_props[k] != v):
+                blocked += 1
+        for k in orig_props:                  # dropped
+            if k not in MUTABLE_NODE_PROPS and k not in new_props:
+                blocked += 1
+
+        new_side["properties"] = merged
+    return guarded, blocked
 
 
 def fix_batch_with_llm(batch: List[Dict[str, Any]], schema: Dict[str, Any],
@@ -572,6 +635,7 @@ def process_all_files(input_dir: pathlib.Path, out_dir: pathlib.Path, schema: Di
         else:
             logger.info(f"\n=== Phase 2: LLM batch fixing ({len(all_invalid)} triples) ===")
             n_batches = (len(all_invalid) - 1) // batch_size + 1
+            blocked_values = 0
             for i in range(0, len(all_invalid), batch_size):
                 batch = all_invalid[i:i + batch_size]
                 logger.info(f"Batch {i // batch_size + 1}/{n_batches} ({len(batch)} triples)")
@@ -587,6 +651,10 @@ def process_all_files(input_dir: pathlib.Path, out_dir: pathlib.Path, schema: Di
                     repaired_triple = repaired[j] if j < len(repaired) else None
                     if repaired_triple is None or not isinstance(repaired_triple, dict):
                         continue
+                    # Take back every value the model was not authorised to write,
+                    # BEFORE validating: what we validate must be what we keep.
+                    repaired_triple, n_blocked = preserve_property_values(original, repaired_triple)
+                    blocked_values += n_blocked
                     is_valid, _ = validate_triple(repaired_triple, entity_classes, edge_labels, edge_directions)
                     if is_valid:
                         clean = {k: v for k, v in repaired_triple.items() if not k.startswith("_")}
@@ -595,6 +663,12 @@ def process_all_files(input_dir: pathlib.Path, out_dir: pathlib.Path, schema: Di
                         validated += 1
                 logger.info(f"  Batch result: {returned} returned, {validated} validated")
             logger.info(f"\nLLM fixed: {len(fixed_triples)}/{len(all_invalid)} triples")
+            if blocked_values:
+                logger.warning(
+                    f"Phase 2 tried to rewrite {blocked_values} property value(s) it is not "
+                    "authorised to touch — restored from the originals. A high count means "
+                    "BATCH_FIX_PROMPT is drifting (translated names, 'tidied' units, invented keys)."
+                )
             all_valid.extend(fixed_triples)
     elif all_invalid and dry_run:
         logger.info(f"\n=== Phase 2: SKIPPED (--dry-run) — would have sent {len(all_invalid)} invalid triples ===")
