@@ -15,12 +15,17 @@ Offline: no LLM, no Neo4j, no network. `config/schema.json` is tracked in git so
 the core arms always run; arms that need git-ignored artifacts (graph_output/,
 shipped via the HF snapshot) SKIP with a message on a bare clone.
 
-ONE core module is deliberately compared elsewhere: `esg_kg.core.console`. Its arm
-lives in `test/test_console_utf8.py`, because proving the two copies equal needs
-`sys.platform` / `sys.stdout` swapped out, and because the same file also asserts
-the WIRING (that main() calls it). That is the hole this file structurally cannot
-cover — it never executes a `__main__` block or a main(), which is exactly how the
-win32 stdout fix came to exist in `src/` only. Do not add a duplicate arm here.
+TWO core modules are deliberately compared elsewhere. Do not add duplicate arms here:
+
+  - `esg_kg.core.console` -> `test/test_console_utf8.py`, because proving the two
+    copies equal needs `sys.platform` / `sys.stdout` swapped out, and because the same
+    file also asserts the WIRING (that main() calls it). That is the hole this file
+    structurally cannot cover — it never executes a `__main__` block or a main(),
+    which is exactly how the win32 stdout fix came to exist in `src/` only.
+  - `esg_kg.core.identity` -> `test/test_esg_kg_anchor_kpi.py`, which covers the
+    step03b migration slice end-to-end (the stage plus the kernel module that slice
+    had to extract). Splitting it off is organisational — this file was already past
+    1,100 lines — not a difference in contract.
 
 Run from the repo root:
 
