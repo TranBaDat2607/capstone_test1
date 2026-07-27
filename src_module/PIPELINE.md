@@ -12,6 +12,11 @@ là bản vẽ của cùng dữ liệu đó. `python src_module/run.py --list` l
 `05b` là stage đầu tiên dời được mà **không phải trích thêm module `core/` nào** — lần dời
 `03b` đã lifted sẵn cả 4 symbol nó cần.
 
+**11 stage còn lại VẪN CHẠY BẰNG `src/`**: `01`, `02`, **`03`**, `04`, `05`, `05d`, `06`,
+`07`, `08`, `09`, `10`. Chú ý `03` ≠ `03b`/`03c` — hai cái sau đã dời, **`03` thì chưa**
+(chưa có `esg_kg/graph/fix_triples.py`). Trong sơ đồ §1, ô viền đứt là **chưa dời**, không
+phải đã xong; chỉ ô nền xanh đặc gắn `✅ ĐÃ DỜI` mới là đã refactor.
+
 **`core/llm.py` đã xong (2026-07-27)** — `DEFAULT_RATE_LIMIT` + `RateLimiter` (từ `step02`)
 và `_Provider` + `_OpenAIProvider` (từ `step07`), trích **verbatim**, 0 dòng logic đổi.
 Nó **không dời stage nào** (vẫn 5/16) nhưng **mở khoá 4 stage cùng lúc**, nên số stage đủ
@@ -25,8 +30,8 @@ dời — xem §2.1). Test: `test/test_esg_kg_llm.py`.
 
 ```mermaid
 flowchart TD
-    classDef migrated fill:#d3f9d8,stroke:#2f9e44,color:#1a1a1a
-    classDef ready    fill:#b2f2bb,stroke:#2f9e44,stroke-dasharray:4 3,color:#1a1a1a
+    classDef migrated fill:#2f9e44,stroke:#1a7431,color:#ffffff
+    classDef ready    fill:#ffffff,stroke:#2f9e44,stroke-dasharray:4 3,color:#1a1a1a
     classDef pending  fill:#fff3bf,stroke:#e8a90c,color:#1a1a1a
     classDef notport  fill:#e9ecef,stroke:#868e96,color:#495057
     classDef data     fill:#e7f5ff,stroke:#1c7ed6,color:#1a1a1a
@@ -35,37 +40,37 @@ flowchart TD
     JSONL["data/labeled/*.jsonl<br/>(báo cáo + tin tức đã gán nhãn ESG)"]:::data
 
     subgraph P1["① Trích xuất — LLM, TỐN TIỀN"]
-        S01["step01 · extract<br/>trích KPI theo từ vựng 35 chỉ số"]:::ready
-        S02["step02 · extract_triples<br/>text + KPI + schema → node/cạnh<br/>--source report | news"]:::pending
+        S01["⚪ CHƯA DỜI · step01 · extract<br/>trích KPI theo từ vựng 35 chỉ số"]:::ready
+        S02["⏳ CHƯA DỜI · step02 · extract_triples<br/>text + KPI + schema → node/cạnh<br/>--source report | news"]:::pending
     end
 
     KPIOUT["kpi_output/<br/>page_NNN_kpis.json"]:::data
     GRAPHS["graph_output/graphs/&lt;doc&gt;/pageN.json"]:::data
 
     subgraph P2["② Làm sạch + chuẩn hoá — offline, MIỄN PHÍ"]
-        S03["step03 · fix_triples<br/>sửa chiều cạnh, validate schema,<br/>chuẩn hoá ngày ISO, gộp lại"]:::ready
-        S03B["step03b · anchor_kpi<br/>nối KPI → Facility bằng gazetteer"]:::migrated
-        S03C["step03c · canonicalize<br/>gán kpi_id chuẩn + đơn vị + kỳ"]:::migrated
+        S03["⚪ CHƯA DỜI · step03 · fix_triples<br/>sửa chiều cạnh, validate schema,<br/>chuẩn hoá ngày ISO, gộp lại"]:::ready
+        S03B["✅ ĐÃ DỜI · step03b · anchor_kpi<br/>nối KPI → Facility bằng gazetteer"]:::migrated
+        S03C["✅ ĐÃ DỜI · step03c · canonicalize<br/>gán kpi_id chuẩn + đơn vị + kỳ"]:::migrated
     end
 
     VALID["graph_output/validated/<br/>all_validated_triples.json"]:::data
 
     subgraph P3["③ Hợp nhất thực thể + trục chỉ số"]
-        S04["step04 · issuer<br/>registry tên công ty (chạy 1 lần)"]:::ready
-        S05["step05 · entities<br/>gộp node trùng, neo issuer + neo chuẩn"]:::ready
-        S05B["step05b · provenance<br/>đóng dấu source_doc / source_page"]:::migrated
-        S05C["step05c · indicators<br/>dựng trục TT96/GRI (offline)"]:::migrated
-        S05D["step05d · align_claims<br/>LLM, TÙY CHỌN — phần keyword bỏ sót"]:::ready
+        S04["⚪ CHƯA DỜI · step04 · issuer<br/>registry tên công ty (chạy 1 lần)"]:::ready
+        S05["⚪ CHƯA DỜI · step05 · entities<br/>gộp node trùng, neo issuer + neo chuẩn"]:::ready
+        S05B["✅ ĐÃ DỜI · step05b · provenance<br/>đóng dấu source_doc / source_page"]:::migrated
+        S05C["✅ ĐÃ DỜI · step05c · indicators<br/>dựng trục TT96/GRI (offline)"]:::migrated
+        S05D["⚪ CHƯA DỜI · step05d · align_claims<br/>LLM, TÙY CHỌN — phần keyword bỏ sót"]:::ready
     end
 
     RESOLVED["graph_output/resolved/<br/>resolved_graph.json"]:::data
 
     subgraph P4["④ Nạp + phân tích"]
-        S06["step06 · neo4j_load"]:::ready
-        S07["step07 · claims_vs_conduct<br/>LLM BẮT BUỘC — lõi phân tích"]:::ready
-        S08["step08 · neo4j_sync<br/>đẩy tầng advisory"]:::pending
-        S09["step09 · claim_ledger"]:::ready
-        S10["step10 · evaluate"]:::pending
+        S06["⚪ CHƯA DỜI · step06 · neo4j_load"]:::ready
+        S07["⚪ CHƯA DỜI · step07 · claims_vs_conduct<br/>LLM BẮT BUỘC — lõi phân tích"]:::ready
+        S08["⏳ CHƯA DỜI · step08 · neo4j_sync<br/>đẩy tầng advisory"]:::pending
+        S09["⚪ CHƯA DỜI · step09 · claim_ledger"]:::ready
+        S10["⏳ CHƯA DỜI · step10 · evaluate"]:::pending
     end
 
     REGI["config/issuer_registry.json"]:::cfg
@@ -73,9 +78,9 @@ flowchart TD
     DOSSIER["graph_output/crosscheck/<br/>&lt;ticker&gt;_claim_assessments.json"]:::data
     NEO[("Neo4j")]:::data
 
-    S00["step00 · quality<br/>ảnh chụp Q1–Q8 + audit registry<br/>CHẠY TRƯỚC VÀ SAU MỌI THAY ĐỔI"]:::migrated
-    S07B["step07b · điểm softmax<br/>KHÔNG DỜI (§4)"]:::notport
-    S04B["step04b · gây lại registry<br/>KHÔNG DỜI, ngoài đường chạy (§4)"]:::notport
+    S00["✅ ĐÃ DỜI · step00 · quality<br/>ảnh chụp Q1–Q8 + audit registry<br/>CHẠY TRƯỚC VÀ SAU MỌI THAY ĐỔI"]:::migrated
+    S07B["⛔ step07b · điểm softmax<br/>KHÔNG DỜI (§4)"]:::notport
+    S04B["⛔ step04b · gây lại registry<br/>KHÔNG DỜI, ngoài đường chạy (§4)"]:::notport
 
     JSONL --> S01 --> KPIOUT --> S02
     JSONL --> S02 --> GRAPHS --> S03 --> VALID
@@ -98,14 +103,20 @@ flowchart TD
 
 **Chú giải màu**
 
-| Màu | Nghĩa |
-|---|---|
-| 🟩 xanh đậm | đã dời sang `esg_kg` — chạy bằng `python src_module/run.py <tên>` |
-| 🟢 xanh nhạt, viền đứt | chưa dời nhưng **mọi symbol nó cần đã có trong `core/`** → dời được ngay (§2.1) |
-| 🟨 vàng | chưa dời **và còn bị chặn** bởi một module `core/` chưa viết (§2.1) |
-| ⬜ xám | **cố ý không dời** (§4), vẫn còn file trong `src/` |
-| 🟦 xanh dương | dữ liệu sinh ra (git-ignored, ship qua HF) |
-| 🟪 tím | config (tracked trong Git) |
+> ⚠️ **Chỉ ô nền xanh ĐẶC, chữ trắng, gắn nhãn `✅ ĐÃ DỜI` mới là đã refactor.**
+> Ô viền đứt gắn `⚪ CHƯA DỜI` nghĩa là **vẫn đang chạy bằng `src/`** — nó mới chỉ *đủ điều
+> kiện* để dời. Ba stage `03`, `03b`, `03c` nằm cạnh nhau nhưng **khác trạng thái**: `03b`
+> và `03c` đã dời, `03` thì chưa. Nghi ngờ thì hỏi `python src_module/run.py --list`, đừng
+> đọc màu.
+
+| Nhãn trong ô | Màu | Nghĩa |
+|---|---|---|
+| `✅ ĐÃ DỜI` | 🟩 xanh **đặc**, chữ trắng | đã dời sang `esg_kg` — chạy bằng `python src_module/run.py <tên>` |
+| `⚪ CHƯA DỜI` | ⬜ nền trắng, viền xanh đứt | **vẫn chạy bằng `src/`**; chỉ là mọi symbol nó cần đã có trong `core/` → dời được ngay (§2.1) |
+| `⏳ CHƯA DỜI` | 🟨 vàng | vẫn chạy bằng `src/` **và còn bị chặn** — chờ một stage khác dời (§2.1) |
+| `⛔` | 🩶 xám | **cố ý không dời** (§4), vẫn còn file trong `src/` |
+| — | 🟦 xanh dương | dữ liệu sinh ra (git-ignored, ship qua HF) |
+| — | 🟪 tím | config (tracked trong Git) |
 
 ---
 
@@ -114,22 +125,22 @@ flowchart TD
 | # | Tên | LLM? | Input chính | Output chính | Trạng thái |
 |---|---|---|---|---|---|
 | 00 | `quality` | — | `resolved_graph.json` | `quality/quality_report_<label>.{json,md}` | ✅ **đã dời** |
-| 01 | `extract` | 💰 | JSONL đã gán nhãn | `kpi_output/…_kpis.json` | 🟢 **dời được ngay** (hub, §2.1) |
+| 01 | `extract` | 💰 | JSONL đã gán nhãn | `kpi_output/…_kpis.json` | ⚪ **chưa dời** — đủ điều kiện (hub, §2.1) |
 | 02 | `extract_triples` | 💰 | JSONL + KPI + `schema.json` | `graphs/<doc>/pageN.json` | ⏳ chờ `core/io_jsonl` |
-| 03 | `fix_triples` | 💰 (chỉ pha 2) | các file page | `all_validated_triples.json` | 🟢 **dời được ngay** |
+| 03 | `fix_triples` | 💰 (chỉ pha 2) | các file page | `all_validated_triples.json` | ⚪ **chưa dời** — đủ điều kiện |
 | 03b | `anchor_kpi` | — | validated + JSONL | vá tại chỗ + `anchor_patch_stats.json` | ✅ **đã dời** |
 | 03c | `canonicalize` | — | validated + `kpi_type_aliases.json` | vá tại chỗ + `kpi_canonical_stats.json` | ✅ **đã dời** |
-| 04 | `issuer` | — | validated | `config/issuer_registry.json` | 🟢 **dời được ngay** |
+| 04 | `issuer` | — | validated | `config/issuer_registry.json` | ⚪ **chưa dời** — đủ điều kiện |
 | 04b | — | — | ~~resolved~~ | ~~`standards_registry.json`~~ | ⛔ **ngoài đường chạy** |
-| 05 | `entities` | 💰 (tùy chọn) | validated + 2 registry | `resolved_graph.json` | 🟢 **dời được ngay** ⚠️ §3.1 |
+| 05 | `entities` | 💰 (tùy chọn) | validated + 2 registry | `resolved_graph.json` | ⚪ **chưa dời** — đủ điều kiện ⚠️ §3.1 |
 | 05b | `provenance` | — | resolved + các file page | vá tại chỗ | ✅ **đã dời** |
 | 05c | `indicators` | — | resolved + `kpi_definitions` + crosswalk + `gri_catalog` | vá tại chỗ | ✅ **đã dời** |
-| 05d | `align_claims` | 💰 tùy chọn | resolved | vá tại chỗ | 🟢 **dời được ngay** |
-| 06 | `neo4j_load` | — | resolved | Neo4j | 🟢 **dời được ngay** |
-| 07 | `claims_vs_conduct` | 💰 **bắt buộc** | resolved | `<ticker>_claim_assessments.json` | 🟢 **dời được ngay** ⚠️ bẫy `node_text` |
+| 05d | `align_claims` | 💰 tùy chọn | resolved | vá tại chỗ | ⚪ **chưa dời** — đủ điều kiện |
+| 06 | `neo4j_load` | — | resolved | Neo4j | ⚪ **chưa dời** — đủ điều kiện |
+| 07 | `claims_vs_conduct` | 💰 **bắt buộc** | resolved | `<ticker>_claim_assessments.json` | ⚪ **chưa dời** — đủ điều kiện ⚠️ bẫy `node_text` |
 | 07b | — | — | dossier | dossier (thêm điểm) | ⛔ **không dời** |
 | 08 | `neo4j_sync` | — | dossier | Neo4j (tầng advisory) | ⏳ chờ `07` |
-| 09 | `claim_ledger` | — | **chỉ Neo4j** | `<ticker>_claim_ledger.md` | 🟢 **dời được ngay** |
+| 09 | `claim_ledger` | — | **chỉ Neo4j** | `<ticker>_claim_ledger.md` | ⚪ **chưa dời** — đủ điều kiện |
 | 10 | `evaluate` | 💰 1 nhánh 30 ca | dossier + stats | `<ticker>_evaluation_report.md` | ⏳ chờ `07` |
 
 💰 = tốn tiền. Đây là lý do mọi test đều offline và mọi stage đắt đều có `--dry-run`.
@@ -146,29 +157,29 @@ Bảng dưới là kết quả grep toàn bộ import chéo trong `src/` đối 
 
 | # | Symbol nó import từ cây `src/` | Còn thiếu gì trong `core/` |
 |---|---|---|
-| 01 | *(không import stage nào — `REPO_ROOT` là do **nó** định nghĩa, `step01:36`)* | — 🟢 **đủ hết**. `core/io_jsonl` KHÔNG phải điều kiện của `01`: nó là điều kiện của `02`, và nó **rơi ra từ chính lát cắt `01`** (đúng kiểu `03b` → `core/identity.py`) |
+| 01 | *(không import stage nào — `REPO_ROOT` là do **nó** định nghĩa, `step01:36`)* | — 🟢 **đủ symbol, nhưng VẪN CHƯA DỜI**. `core/io_jsonl` KHÔNG phải điều kiện của `01`: nó là điều kiện của `02`, và nó **rơi ra từ chính lát cắt `01`** (đúng kiểu `03b` → `core/identity.py`) |
 | 02 | 5 helper JSONL của `01` + `REPO_ROOT` | `core/io_jsonl` |
-| 03 | `REPO_ROOT`, `RateLimiter` | — 🟢 **đủ hết** (`core/llm` xong 2026-07-27) |
+| 03 | `REPO_ROOT`, `RateLimiter` | — 🟢 **đủ symbol, nhưng VẪN CHƯA DỜI** (`core/llm` xong 2026-07-27) |
 | 03b | `REPO_ROOT`, `load_schema_sets`, `validate_triple`, `normalize_name` | ✅ **đã dời** (2026-07-27) |
-| 04 | `REPO_ROOT` | — 🟢 **đủ hết** |
-| 05 | `date_start_key`, `load_schema_sets`, `normalize_name` ✅ + `RateLimiter` | — 🟢 **đủ hết** (`core/llm` xong) — nhưng đọc §3.1 trước khi dời |
+| 04 | `REPO_ROOT` | — 🟢 **đủ symbol, nhưng VẪN CHƯA DỜI** |
+| 05 | `date_start_key`, `load_schema_sets`, `normalize_name` (đã ở `core/`) + `RateLimiter` | — 🟢 **đủ symbol, nhưng VẪN CHƯA DỜI** (`core/llm` xong) — nhưng đọc §3.1 trước khi dời |
 | 05b | `get_identity_keys`, `PROVENANCE_CLASSES`, `get_stable_entity_id`, `parse_source_id` | ✅ **đã dời** (2026-07-27) — không phải viết thêm `core/` nào |
-| 05d | `load_schema_sets`, `GraphPatch`, `temporal_md` ✅ + `_OpenAIProvider`, `RateLimiter` | — 🟢 **đủ hết** (`core/llm` xong) |
-| 06 | `REPO_ROOT`, `load_schema_sets` | — 🟢 **đủ hết** |
-| 07 | `load_schema_sets`, `normalize_name`, `name_tokens` ✅ + `RateLimiter` | — 🟢 **đủ hết** (`core/llm` xong) — bẫy `node_text` ở dưới |
+| 05d | `load_schema_sets`, `GraphPatch`, `temporal_md` (đã ở `core/`) + `_OpenAIProvider`, `RateLimiter` | — 🟢 **đủ symbol, nhưng VẪN CHƯA DỜI** (`core/llm` xong) |
+| 06 | `REPO_ROOT`, `load_schema_sets` | — 🟢 **đủ symbol, nhưng VẪN CHƯA DỜI** |
+| 07 | `load_schema_sets`, `normalize_name`, `name_tokens` (đã ở `core/`) + `RateLimiter` | — 🟢 **đủ symbol, nhưng VẪN CHƯA DỜI** (`core/llm` xong) — bẫy `node_text` ở dưới |
 | 08 | `node_text` (của `step07`) | **chờ `step07` dời** — `node_text` KHÔNG vào `core/llm` (xem cảnh báo dưới) |
-| 09 | *(không import stage nào)* | — 🟢 **đủ hết** |
+| 09 | *(không import stage nào)* | — 🟢 **đủ symbol, nhưng VẪN CHƯA DỜI** |
 | 10 | `Adjudicator` (import **lười** trong `try`, `step10:368`) | **chờ `step07` dời** — `Adjudicator` là logic stage, cố ý KHÔNG vào `core/llm`; hỏng thì **im lặng**, không lỗi |
 
 ```mermaid
 flowchart LR
     classDef done fill:#d3f9d8,stroke:#2f9e44,color:#1a1a1a
-    classDef ready fill:#b2f2bb,stroke:#2f9e44,color:#1a1a1a
+    classDef ready fill:#ffffff,stroke:#2f9e44,stroke-dasharray:4 3,color:#1a1a1a
     classDef key  fill:#ffe3e3,stroke:#f03e3e,color:#1a1a1a
     classDef pend fill:#fff3bf,stroke:#e8a90c,color:#1a1a1a
 
     CORE["core/ hôm nay<br/>paths · schema · naming · dates<br/>console · graph_patch · identity · <b>llm</b>"]:::done
-    READY["🟢 dời được NGAY — 8 stage<br/>01 · 03 · 04 · 05 · 05d · 06 · 07 · 09"]:::ready
+    READY["⚪ CHƯA DỜI, đủ điều kiện dời — 8 stage<br/>01 · 03 · 04 · 05 · 05d · 06 · 07 · 09"]:::ready
     S07M["dời 07<br/>(mang theo node_text + Adjudicator)"]:::key
     IOJ["core/io_jsonl (+ text)<br/>rơi ra từ lát cắt 01"]:::key
     U1["08 · 10"]:::pend
