@@ -28,6 +28,7 @@ Run from the repo root:
     python test/test_esg_kg_anchor_kpi.py
 """
 
+import copy
 import json
 import sys
 from pathlib import Path
@@ -42,6 +43,7 @@ import step03b_anchor_kpi_facilities as old_step03b  # noqa: E402
 
 # --- new: the esg_kg package ---------------------------------------------------
 from esg_kg.core import identity as new_identity  # noqa: E402
+from esg_kg.graph import anchor_kpi as new_anchor  # noqa: E402
 
 SCHEMA_FILE = REPO / "config" / "schema.json"
 TRIPLES_FILE = REPO / "graph_output" / "validated" / "all_validated_triples.json"
@@ -200,6 +202,183 @@ def test_identity_provenance_classes_matches_src():
     assert not unknown, f"PROVENANCE_CLASSES names classes absent from schema.json: {unknown}"
     for t1 in ("Organization", "Person", "Facility", "Location"):
         assert t1 not in new_identity.PROVENANCE_CLASSES, f"{t1} must not be stamped per-page"
+
+
+# --------------------------------------------------------------------------- #
+# graph/anchor_kpi.py  <- step03b, the stage itself
+# --------------------------------------------------------------------------- #
+def test_anchor_module_constants_match_src():
+    """The gates that decide what enters the gazetteer. Silent to change, loud in the output."""
+    assert new_anchor.DEFAULT_MAX_PER_FACILITY == old_step03b.DEFAULT_MAX_PER_FACILITY
+    assert new_anchor.MIN_NAME_CHARS == old_step03b.MIN_NAME_CHARS
+    assert new_anchor.MIN_NAME_TOKENS == old_step03b.MIN_NAME_TOKENS
+    assert new_anchor.GENERIC_NAMES == old_step03b.GENERIC_NAMES
+    assert new_anchor.DEFAULT_SENTENCE_GLOBS == old_step03b.DEFAULT_SENTENCE_GLOBS
+    assert new_anchor.DEFAULT_TRIPLES == old_step03b.DEFAULT_TRIPLES
+    assert new_anchor.DEFAULT_SCHEMA == old_step03b.DEFAULT_SCHEMA
+    assert new_anchor.DEFAULT_STATS_OUT == old_step03b.DEFAULT_STATS_OUT
+    # the paths must be the REAL ones, not a temp dir the new tree invented
+    assert new_anchor.DEFAULT_TRIPLES == TRIPLES_FILE
+    assert new_anchor.DEFAULT_SCHEMA == SCHEMA_FILE
+
+
+def test_anchor_prop_richness_matches_src():
+    for props in [{}, {"a": 1}, {"a": None, "b": ""}, {"a": 0, "b": False},
+                  {"name": "x", "value": None, "unit": "t"}]:
+        got, want = new_anchor.prop_richness(props), old_step03b.prop_richness(props)
+        assert got == want, f"{props}: new={got} old={want}"
+    # 0 and False are NOT empty — the `not in (None, "")` test, not truthiness
+    assert new_anchor.prop_richness({"a": 0, "b": False}) == 2
+
+
+def test_anchor_load_sentences_matches_src():
+    """Both trees must read the same corpus off disk — same globs, same REPO_ROOT anchor."""
+    new_s = new_anchor.load_sentences(new_anchor.DEFAULT_SENTENCE_GLOBS)
+    old_s = old_step03b.load_sentences(old_step03b.DEFAULT_SENTENCE_GLOBS)
+    if not old_s:
+        _skip("anchor/load_sentences", "no labeled JSONL on disk (data_sync pull)")
+        return
+    assert new_s == old_s, (f"sentence corpora differ: "
+                            f"new={len(new_s)} old={len(old_s)} keys")
+    print(f"     ({len(new_s)} real sentences loaded identically)")
+
+
+def test_anchor_collect_inventory_matches_src_on_the_real_corpus():
+    triples = load_triples()
+    if not triples:
+        _skip("anchor/collect_inventory", f"{TRIPLES_FILE.name} absent (data_sync pull)")
+        return
+
+    new_f, new_k, new_a = new_anchor.collect_inventory(copy.deepcopy(triples))
+    old_f, old_k, old_a = old_step03b.collect_inventory(copy.deepcopy(triples))
+    assert new_f == old_f, "facility gazetteer diverged"
+    assert new_k == old_k, "KPI occurrence map diverged"
+    assert new_a == old_a, "existing-anchor set diverged"
+
+    # not vacuous, and the name gates really gated: raw Facility nodes far outnumber
+    # the gazetteer entries that survive MIN_NAME_CHARS / MIN_NAME_TOKENS / GENERIC_NAMES
+    raw = {(n.get("properties") or {}).get("name")
+           for n in iter_nodes(triples) if n.get("class") == "Facility"}
+    assert len(new_f) > 0 and len(new_k) > 0, (len(new_f), len(new_k))
+    assert len(new_f) < len(raw), f"gazetteer {len(new_f)} not filtered from {len(raw)} raw names"
+    print(f"     ({len(raw)} raw Facility names -> {len(new_f)} gazetteer entries, "
+          f"{len(new_k)} distinct KPIs, {len(new_a)} existing anchors)")
+
+
+def strip_anchors(triples: list) -> list:
+    """Drop this stage's OWN past output, restoring the corpus to its pre-patch state.
+
+    `all_validated_triples.json` on disk has already been patched — 95 of its 306
+    `observedAtFacility` triples carry `anchor_method: "offline_gazetteer"`. Those land in
+    `collect_inventory`'s `anchored` set, so re-running the stage over the live file emits
+    ZERO new triples and an arm built on it would compare two empty results while printing
+    PASS. Same trap as step05c's already-patched indicator axis, same answer as its
+    `strip_axis()`: rebuild the input, then rebuild the output.
+
+    Only the gazetteer-minted edges go. The other 211 came from the step02 extractor and
+    were present when the stage first ran, so they must stay in `anchored`.
+    """
+    return [t for t in triples if t.get("anchor_method") != "offline_gazetteer"]
+
+
+def test_anchor_build_patch_matches_src_on_the_real_corpus():
+    """The strongest arm: the whole stage body on the real corpus + the real sentences."""
+    triples = load_triples()
+    if not triples:
+        _skip("anchor/build_patch-real", f"{TRIPLES_FILE.name} absent (data_sync pull)")
+        return
+    sentences = old_step03b.load_sentences(old_step03b.DEFAULT_SENTENCE_GLOBS)
+    if not sentences:
+        _skip("anchor/build_patch-real", "no labeled JSONL on disk (data_sync pull)")
+        return
+    schema = load_schema()
+    cap = old_step03b.DEFAULT_MAX_PER_FACILITY
+    triples = strip_anchors(triples)
+
+    new_t, new_stats = new_anchor.build_patch(
+        copy.deepcopy(triples), dict(sentences), schema, cap)
+    old_t, old_stats = old_step03b.build_patch(
+        copy.deepcopy(triples), dict(sentences), schema, cap)
+
+    assert new_stats == old_stats, f"stats diverged:\n  new={new_stats}\n  old={old_stats}"
+    assert len(new_t) == len(old_t), f"{len(new_t)} != {len(old_t)} anchor triples"
+    for i, (a, b) in enumerate(zip(new_t, old_t)):
+        assert a == b, f"anchor triple #{i} diverged:\n  new={a}\n  old={b}"
+
+    # not vacuous: real anchors were actually minted, and they are the edge P3 wants
+    assert new_stats["new_anchor_triples"] > 0, new_stats
+    assert new_stats["facility_gazetteer_size"] > 0, new_stats
+    assert all(t["predicate"] == "observedAtFacility" for t in new_t)
+    assert all(t["anchor_method"] == "offline_gazetteer" for t in new_t)
+    print(f"     ({new_stats['new_anchor_triples']} anchor triples over "
+          f"{new_stats['kpi_observations']} KPIs, compared across both trees)")
+
+
+def test_anchor_build_patch_matches_src_on_the_hub_guard():
+    """The P5 degree guard the live corpus never trips (facilities_over_cap is [] there).
+
+    Without this arm the over-cap branch is compared by neither tree — the same gap the
+    synthetic Penalty fixture closed for step05c.
+    """
+    triples = load_triples()
+    if not triples:
+        _skip("anchor/build_patch-cap", f"{TRIPLES_FILE.name} absent (data_sync pull)")
+        return
+    sentences = old_step03b.load_sentences(old_step03b.DEFAULT_SENTENCE_GLOBS)
+    if not sentences:
+        _skip("anchor/build_patch-cap", "no labeled JSONL on disk (data_sync pull)")
+        return
+    schema = load_schema()
+    triples = strip_anchors(triples)
+
+    new_t, new_stats = new_anchor.build_patch(
+        copy.deepcopy(triples), dict(sentences), schema, 1)
+    old_t, old_stats = old_step03b.build_patch(
+        copy.deepcopy(triples), dict(sentences), schema, 1)
+
+    assert new_stats == old_stats, f"stats diverged at cap=1:\n  new={new_stats}\n  old={old_stats}"
+    assert new_t == old_t, "anchor triples diverged at cap=1"
+    # the branch really fired: some facility exceeded the cap and was dropped whole
+    assert new_stats["facilities_over_cap"], "cap=1 tripped no facility — arm is vacuous"
+    assert new_stats["new_anchor_triples"] < new_stats["raw_matches"], new_stats
+    print(f"     (cap=1 dropped {len(new_stats['facilities_over_cap'])} facilities, "
+          f"{new_stats['raw_matches']} raw -> {new_stats['new_anchor_triples']} kept)")
+
+
+def test_anchor_is_idempotent_on_the_already_patched_corpus():
+    """Re-running the stage over its own output must add nothing, in BOTH trees.
+
+    This is the arm the vacuous version of the two above accidentally was — kept
+    deliberately, because CLAUDE.md tells the operator to run step03b before step05 and
+    the live corpus is already patched, so idempotency is the property actually relied on.
+    Its non-vacuity guard is the inverse of the others': it asserts the input IS patched,
+    which is what makes an empty result meaningful rather than a silent no-op.
+    """
+    triples = load_triples()
+    if not triples:
+        _skip("anchor/idempotent", f"{TRIPLES_FILE.name} absent (data_sync pull)")
+        return
+    sentences = old_step03b.load_sentences(old_step03b.DEFAULT_SENTENCE_GLOBS)
+    if not sentences:
+        _skip("anchor/idempotent", "no labeled JSONL on disk (data_sync pull)")
+        return
+
+    already = len(triples) - len(strip_anchors(triples))
+    if already == 0:
+        _skip("anchor/idempotent", "corpus carries no gazetteer anchors — nothing to re-run over")
+        return
+
+    schema = load_schema()
+    cap = old_step03b.DEFAULT_MAX_PER_FACILITY
+    new_t, new_stats = new_anchor.build_patch(
+        copy.deepcopy(triples), dict(sentences), schema, cap)
+    old_t, old_stats = old_step03b.build_patch(
+        copy.deepcopy(triples), dict(sentences), schema, cap)
+
+    assert new_stats == old_stats, f"stats diverged:\n  new={new_stats}\n  old={old_stats}"
+    assert new_t == old_t == [], f"re-run minted {len(new_t)} duplicate anchors"
+    assert new_stats["raw_matches"] == 0, new_stats
+    print(f"     ({already} existing gazetteer anchors, re-run added 0 in both trees)")
 
 
 if __name__ == "__main__":
