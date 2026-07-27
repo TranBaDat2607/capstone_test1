@@ -10,9 +10,14 @@ là bản vẽ của cùng dữ liệu đó. `python src_module/run.py --list` l
 **Trạng thái (2026-07-27): 5/16 stage đã dời** — `00 quality`, `03c canonicalize`,
 `05c indicators`, `03b anchor_kpi`, `05b provenance`; 2 stage cố ý không dời (§4).
 `05b` là stage đầu tiên dời được mà **không phải trích thêm module `core/` nào** — lần dời
-`03b` đã lifted sẵn cả 4 symbol nó cần. Còn lại đủ điều kiện ngay: `04`, `06`, `09`;
-module `core/` mở khoá nhiều nhất là `core/llm.py` — xem §2.1, đó mới là bản đồ quyết định
-thứ tự làm, không phải sơ đồ chạy ở §1.
+`03b` đã lifted sẵn cả 4 symbol nó cần.
+
+**`core/llm.py` đã xong (2026-07-27)** — `DEFAULT_RATE_LIMIT` + `RateLimiter` (từ `step02`)
+và `_Provider` + `_OpenAIProvider` (từ `step07`), trích **verbatim**, 0 dòng logic đổi.
+Nó **không dời stage nào** (vẫn 5/16) nhưng **mở khoá 4 stage cùng lúc**, nên số stage đủ
+điều kiện nhảy từ 4 lên **8**: `01`, `03`, `04`, `05`, `05d`, `06`, `07`, `09`. Chỉ còn
+**ba** stage thật sự bị chặn: `02` (cần `core/io_jsonl`), `08` và `10` (cả hai chờ `step07`
+dời — xem §2.1). Test: `test/test_esg_kg_llm.py`.
 
 ---
 
@@ -30,7 +35,7 @@ flowchart TD
     JSONL["data/labeled/*.jsonl<br/>(báo cáo + tin tức đã gán nhãn ESG)"]:::data
 
     subgraph P1["① Trích xuất — LLM, TỐN TIỀN"]
-        S01["step01 · extract<br/>trích KPI theo từ vựng 35 chỉ số"]:::pending
+        S01["step01 · extract<br/>trích KPI theo từ vựng 35 chỉ số"]:::ready
         S02["step02 · extract_triples<br/>text + KPI + schema → node/cạnh<br/>--source report | news"]:::pending
     end
 
@@ -38,7 +43,7 @@ flowchart TD
     GRAPHS["graph_output/graphs/&lt;doc&gt;/pageN.json"]:::data
 
     subgraph P2["② Làm sạch + chuẩn hoá — offline, MIỄN PHÍ"]
-        S03["step03 · fix_triples<br/>sửa chiều cạnh, validate schema,<br/>chuẩn hoá ngày ISO, gộp lại"]:::pending
+        S03["step03 · fix_triples<br/>sửa chiều cạnh, validate schema,<br/>chuẩn hoá ngày ISO, gộp lại"]:::ready
         S03B["step03b · anchor_kpi<br/>nối KPI → Facility bằng gazetteer"]:::migrated
         S03C["step03c · canonicalize<br/>gán kpi_id chuẩn + đơn vị + kỳ"]:::migrated
     end
@@ -47,17 +52,17 @@ flowchart TD
 
     subgraph P3["③ Hợp nhất thực thể + trục chỉ số"]
         S04["step04 · issuer<br/>registry tên công ty (chạy 1 lần)"]:::ready
-        S05["step05 · entities<br/>gộp node trùng, neo issuer + neo chuẩn"]:::pending
+        S05["step05 · entities<br/>gộp node trùng, neo issuer + neo chuẩn"]:::ready
         S05B["step05b · provenance<br/>đóng dấu source_doc / source_page"]:::migrated
         S05C["step05c · indicators<br/>dựng trục TT96/GRI (offline)"]:::migrated
-        S05D["step05d · align_claims<br/>LLM, TÙY CHỌN — phần keyword bỏ sót"]:::pending
+        S05D["step05d · align_claims<br/>LLM, TÙY CHỌN — phần keyword bỏ sót"]:::ready
     end
 
     RESOLVED["graph_output/resolved/<br/>resolved_graph.json"]:::data
 
     subgraph P4["④ Nạp + phân tích"]
         S06["step06 · neo4j_load"]:::ready
-        S07["step07 · claims_vs_conduct<br/>LLM BẮT BUỘC — lõi phân tích"]:::pending
+        S07["step07 · claims_vs_conduct<br/>LLM BẮT BUỘC — lõi phân tích"]:::ready
         S08["step08 · neo4j_sync<br/>đẩy tầng advisory"]:::pending
         S09["step09 · claim_ledger"]:::ready
         S10["step10 · evaluate"]:::pending
@@ -109,23 +114,23 @@ flowchart TD
 | # | Tên | LLM? | Input chính | Output chính | Trạng thái |
 |---|---|---|---|---|---|
 | 00 | `quality` | — | `resolved_graph.json` | `quality/quality_report_<label>.{json,md}` | ✅ **đã dời** |
-| 01 | `extract` | 💰 | JSONL đã gán nhãn | `kpi_output/…_kpis.json` | ⏳ |
-| 02 | `extract_triples` | 💰 | JSONL + KPI + `schema.json` | `graphs/<doc>/pageN.json` | ⏳ |
-| 03 | `fix_triples` | 💰 (chỉ pha 2) | các file page | `all_validated_triples.json` | ⏳ |
+| 01 | `extract` | 💰 | JSONL đã gán nhãn | `kpi_output/…_kpis.json` | 🟢 **dời được ngay** (hub, §2.1) |
+| 02 | `extract_triples` | 💰 | JSONL + KPI + `schema.json` | `graphs/<doc>/pageN.json` | ⏳ chờ `core/io_jsonl` |
+| 03 | `fix_triples` | 💰 (chỉ pha 2) | các file page | `all_validated_triples.json` | 🟢 **dời được ngay** |
 | 03b | `anchor_kpi` | — | validated + JSONL | vá tại chỗ + `anchor_patch_stats.json` | ✅ **đã dời** |
 | 03c | `canonicalize` | — | validated + `kpi_type_aliases.json` | vá tại chỗ + `kpi_canonical_stats.json` | ✅ **đã dời** |
 | 04 | `issuer` | — | validated | `config/issuer_registry.json` | 🟢 **dời được ngay** |
 | 04b | — | — | ~~resolved~~ | ~~`standards_registry.json`~~ | ⛔ **ngoài đường chạy** |
-| 05 | `entities` | 💰 (tùy chọn) | validated + 2 registry | `resolved_graph.json` | ⏳ |
+| 05 | `entities` | 💰 (tùy chọn) | validated + 2 registry | `resolved_graph.json` | 🟢 **dời được ngay** ⚠️ §3.1 |
 | 05b | `provenance` | — | resolved + các file page | vá tại chỗ | ✅ **đã dời** |
 | 05c | `indicators` | — | resolved + `kpi_definitions` + crosswalk + `gri_catalog` | vá tại chỗ | ✅ **đã dời** |
-| 05d | `align_claims` | 💰 tùy chọn | resolved | vá tại chỗ | ⏳ |
+| 05d | `align_claims` | 💰 tùy chọn | resolved | vá tại chỗ | 🟢 **dời được ngay** |
 | 06 | `neo4j_load` | — | resolved | Neo4j | 🟢 **dời được ngay** |
-| 07 | `claims_vs_conduct` | 💰 **bắt buộc** | resolved | `<ticker>_claim_assessments.json` | ⏳ |
+| 07 | `claims_vs_conduct` | 💰 **bắt buộc** | resolved | `<ticker>_claim_assessments.json` | 🟢 **dời được ngay** ⚠️ bẫy `node_text` |
 | 07b | — | — | dossier | dossier (thêm điểm) | ⛔ **không dời** |
-| 08 | `neo4j_sync` | — | dossier | Neo4j (tầng advisory) | ⏳ |
+| 08 | `neo4j_sync` | — | dossier | Neo4j (tầng advisory) | ⏳ chờ `07` |
 | 09 | `claim_ledger` | — | **chỉ Neo4j** | `<ticker>_claim_ledger.md` | 🟢 **dời được ngay** |
-| 10 | `evaluate` | 💰 1 nhánh 30 ca | dossier + stats | `<ticker>_evaluation_report.md` | ⏳ |
+| 10 | `evaluate` | 💰 1 nhánh 30 ca | dossier + stats | `<ticker>_evaluation_report.md` | ⏳ chờ `07` |
 
 💰 = tốn tiền. Đây là lý do mọi test đều offline và mọi stage đắt đều có `--dry-run`.
 
@@ -141,19 +146,19 @@ Bảng dưới là kết quả grep toàn bộ import chéo trong `src/` đối 
 
 | # | Symbol nó import từ cây `src/` | Còn thiếu gì trong `core/` |
 |---|---|---|
-| 01 | *(không import stage nào)* | — 🟢 nhưng nó **là** nguồn của `build_page_text`/`load_pages_from_jsonl`/`page_has_esg`/`select_documents` → `core/io_jsonl` |
+| 01 | *(không import stage nào — `REPO_ROOT` là do **nó** định nghĩa, `step01:36`)* | — 🟢 **đủ hết**. `core/io_jsonl` KHÔNG phải điều kiện của `01`: nó là điều kiện của `02`, và nó **rơi ra từ chính lát cắt `01`** (đúng kiểu `03b` → `core/identity.py`) |
 | 02 | 5 helper JSONL của `01` + `REPO_ROOT` | `core/io_jsonl` |
-| 03 | `REPO_ROOT`, `RateLimiter` | **`core/llm`** |
+| 03 | `REPO_ROOT`, `RateLimiter` | — 🟢 **đủ hết** (`core/llm` xong 2026-07-27) |
 | 03b | `REPO_ROOT`, `load_schema_sets`, `validate_triple`, `normalize_name` | ✅ **đã dời** (2026-07-27) |
 | 04 | `REPO_ROOT` | — 🟢 **đủ hết** |
-| 05 | `date_start_key`, `load_schema_sets`, `normalize_name` ✅ + `RateLimiter` | **`core/llm`** |
+| 05 | `date_start_key`, `load_schema_sets`, `normalize_name` ✅ + `RateLimiter` | — 🟢 **đủ hết** (`core/llm` xong) — nhưng đọc §3.1 trước khi dời |
 | 05b | `get_identity_keys`, `PROVENANCE_CLASSES`, `get_stable_entity_id`, `parse_source_id` | ✅ **đã dời** (2026-07-27) — không phải viết thêm `core/` nào |
-| 05d | `load_schema_sets`, `GraphPatch`, `temporal_md` ✅ + `_OpenAIProvider`, `RateLimiter` | **`core/llm`** |
+| 05d | `load_schema_sets`, `GraphPatch`, `temporal_md` ✅ + `_OpenAIProvider`, `RateLimiter` | — 🟢 **đủ hết** (`core/llm` xong) |
 | 06 | `REPO_ROOT`, `load_schema_sets` | — 🟢 **đủ hết** |
-| 07 | `load_schema_sets`, `normalize_name`, `name_tokens` ✅ + `RateLimiter` | **`core/llm`** |
-| 08 | `node_text` (của `step07`) | `core/llm` hoặc `core/text` — xem cảnh báo dưới |
+| 07 | `load_schema_sets`, `normalize_name`, `name_tokens` ✅ + `RateLimiter` | — 🟢 **đủ hết** (`core/llm` xong) — bẫy `node_text` ở dưới |
+| 08 | `node_text` (của `step07`) | **chờ `step07` dời** — `node_text` KHÔNG vào `core/llm` (xem cảnh báo dưới) |
 | 09 | *(không import stage nào)* | — 🟢 **đủ hết** |
-| 10 | `Adjudicator` (import **lười** trong `try`, `step10:368`) | **`core/llm`** — hỏng thì **im lặng**, không lỗi |
+| 10 | `Adjudicator` (import **lười** trong `try`, `step10:368`) | **chờ `step07` dời** — `Adjudicator` là logic stage, cố ý KHÔNG vào `core/llm`; hỏng thì **im lặng**, không lỗi |
 
 ```mermaid
 flowchart LR
@@ -162,38 +167,65 @@ flowchart LR
     classDef key  fill:#ffe3e3,stroke:#f03e3e,color:#1a1a1a
     classDef pend fill:#fff3bf,stroke:#e8a90c,color:#1a1a1a
 
-    CORE["core/ hôm nay<br/>paths · schema · naming · dates<br/>console · graph_patch · identity"]:::done
-    READY["🟢 dời được NGAY<br/>04 · 06 · 09"]:::ready
-    LLM["core/llm<br/>RateLimiter + _OpenAIProvider"]:::key
-    IOJ["core/io_jsonl (+ text)"]:::key
-    U1["03 · 05 · 07 · 05d<br/>(rồi 08 · 10)"]:::pend
-    U3["01 · 02"]:::pend
+    CORE["core/ hôm nay<br/>paths · schema · naming · dates<br/>console · graph_patch · identity · <b>llm</b>"]:::done
+    READY["🟢 dời được NGAY — 8 stage<br/>01 · 03 · 04 · 05 · 05d · 06 · 07 · 09"]:::ready
+    S07M["dời 07<br/>(mang theo node_text + Adjudicator)"]:::key
+    IOJ["core/io_jsonl (+ text)<br/>rơi ra từ lát cắt 01"]:::key
+    U1["08 · 10"]:::pend
+    U3["02"]:::pend
 
     CORE --> READY
-    CORE --> LLM --> U1
-    CORE --> IOJ --> U3
+    READY -->|"dời 07 ⇒ mở"| S07M --> U1
+    READY -->|"dời 01 ⇒ trích được"| IOJ --> U3
 ```
+
+Từ 2026-07-27 **không còn module `core/` nào là điều kiện chặn**: cả ba stage còn lại đều
+chờ một *stage khác* dời, không chờ kernel. `02` chờ `core/io_jsonl` — nhưng module đó rơi
+ra từ lát cắt `01`, và `01` thì đã đủ điều kiện.
 
 **Đọc ra được ba điều, cả ba đều đổi thứ tự làm:**
 
-1. **Không bị kẹt.** Ba stage (`04`, `06`, `09`) vẫn đủ điều kiện — `09` thậm chí
-   không import stage nào cả. Không cần viết thêm module `core/` nào để đi tiếp.
-   ⚠️ Nhưng "đủ điều kiện symbol" **chưa phải** "nên làm ngay": `06`/`09` đọc Neo4j nên arm
-   tương đương của chúng chỉ với tới mức import + hàm thuần (DESIGN.md §4 bước 3 xếp lại
-   sau vì lý do đó), còn `04` nằm trong lô **hub** làm cuối. Ứng viên có lưới an toàn mạnh
-   nhất — `05b`, offline hoàn toàn, chạy được trên đồ thị thật — **đã dời xong
-   (2026-07-27)**. Nên lô "dời được ngay" giờ chỉ còn toàn stage mà arm tương đương *yếu
-   hơn* hẳn: đó là lý lẽ để chuyển sang viết `core/llm.py` thay vì vét nốt lô này.
-2. **`core/llm.py` là đòn bẩy lớn nhất: mở khoá 4 stage** (`03`, `05`, `07`, `05d`), rồi
-   kéo theo `08`/`10`. Bản trước của file này chỉ ghi nó chặn `05d` — đúng nhưng làm nó
-   trông như việc lẻ, trong khi nó là nút thắt của cả nửa sau pipeline.
-3. **`01` là hub cuối cùng còn lại.** Nó không import ai, nhưng `02` phụ thuộc 5 helper
-   JSONL của nó → `core/io_jsonl` là điều kiện của nhánh trích xuất.
+1. **Kernel đã hết đường chặn.** Sau `core/llm.py` (2026-07-27) có **8/11** stage chưa dời
+   đủ điều kiện: `01`, `03`, `04`, `05`, `05d`, `06`, `07`, `09`. Việc còn lại không phải
+   "viết thêm `core/`" nữa mà là **chọn stage nào dời trước**, và tiêu chí bây giờ là
+   *arm tương đương mạnh tới đâu*, không còn là *symbol đã sẵn chưa*:
+   - **`03` — mạnh nhất.** Pha 1 (sửa chiều cạnh + validate) và pha 1.5 (chuẩn hoá ngày
+     ISO) đều **offline**, chỉ pha 2 mới gọi LLM; và `test/test_temporal_invariants.py`
+     đã phủ sẵn đúng phần offline đó. Chạy được trên corpus thật, miễn phí.
+   - **`05d` — nhỏ nhất.** Đúng cái vừa được `core/llm` mở khoá, lại có `--dry-run`.
+   - `06`/`09` đọc Neo4j; `01`/`07` là stage trả tiền; `04` thuộc lô hub làm cuối; `05`
+     **không được dời nếu chưa xử §3.1** (nó ghi đè cả ba bản vá).
+2. **~~`core/llm.py` là đòn bẩy lớn nhất~~ → ĐÃ XONG (2026-07-27).** Đúng như dự đoán: nó
+   mở khoá 4 stage cùng lúc (`03`, `05`, `07`, `05d`). Lát cắt gồm `DEFAULT_RATE_LIMIT` +
+   `RateLimiter` (từ `step02`) và `_Provider` + `_OpenAIProvider` (từ `step07`) — bốn symbol
+   **buộc phải đi cùng nhau** vì `_OpenAIProvider.__init__` *khởi tạo* một `RateLimiter`,
+   tức `step07` đang với UP sang `step02` để lấy tiện ích. `Adjudicator` **cố ý ở lại**
+   `step07` (là logic stage: prompt + parse verdict + cascade), nên `08`/`10` **vẫn chưa**
+   được mở — chúng chờ chính `step07` dời, chứ không chờ kernel.
+3. **`01` là hub cuối cùng còn lại — nhưng nó KHÔNG bị chặn.** Nó không import ai, nên
+   theo đúng luật thì dời được ngay; thứ xếp nó xuống cuối là **thứ tự hub-làm-cuối** của
+   DESIGN.md §4 chứ không phải một module `core/` còn thiếu. Chiều phụ thuộc là chiều
+   ngược lại: `02` cần 5 helper JSONL **của nó** (`build_page_text`,
+   `load_pages_from_jsonl`, `page_has_esg`, `select_documents`,
+   `parse_company_year_from_filename`) → nên `core/io_jsonl` không phải việc phải làm
+   *trước* `01`, mà là thứ **rơi ra từ lát cắt `01`**, y như `core/identity.py` rơi ra từ
+   lát cắt `03b`. Điểm hay: cả 5 helper đó đều **thuần và offline**, nên riêng phần
+   `core/io_jsonl` có arm tương đương mạnh chạy trên corpus thật, dù bản thân stage `01`
+   là stage trả tiền.
 
-⚠️ **Cái bẫy khi làm `core/llm`:** có **hai** hàm tên `node_text` và chúng **không** trùng
-nhau — `step05d:63` nhận *dict thuộc tính*, `step07:133` nhận *node* rồi rẽ theo class.
-Gộp chung là **âm thầm viết lại prompt LLM đã trả tiền của `step07`**. Giữ hai tên khác
-nhau. (DESIGN.md ghi đây là lỗi trong chính nó, chưa gấp lại.)
+⚠️ **Cái bẫy — nay là bẫy của lần dời `step07`, không phải của `core/llm`:** có **hai** hàm
+tên `node_text` và chúng **không** trùng nhau — `step05d:63` nhận *dict thuộc tính*,
+`step07:133` nhận *node* rồi rẽ theo class. Gộp chung là **âm thầm viết lại prompt LLM đã
+trả tiền của `step07`**. Giữ hai tên khác nhau. (DESIGN.md ghi đây là lỗi trong chính nó,
+chưa gấp lại.) `core/llm.py` **cố ý không đụng** vào `node_text` — đó là lý do `08` (chỉ
+import đúng `node_text`) vẫn nằm trong nhóm chờ.
+
+✅ **Lát cắt `core/llm` đã tránh được bẫy tương tự.** Thứ nó bảo vệ là **hình dạng request
+đã trả tiền**: `temperature=0` và `response_format={"type": "json_object"}` không phải
+chuyện style — adjudicator parse phản hồi thành JSON và cả pipeline giả định tính tất định.
+Bỏ một trong hai thì lúc chạy **vẫn "chạy được"** nhưng mọi verdict đổi âm thầm.
+`test/test_esg_kg_llm.py` ghim nguyên hình dạng request bằng một client giả (kèm thứ tự
+`wait_if_needed` → `create`), nên bắt được hồi quy đó mà **không tốn một xu**.
 
 ---
 

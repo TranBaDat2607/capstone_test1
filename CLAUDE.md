@@ -190,11 +190,23 @@ arm really does compare 6,258 stamps. `strip_provenance` is still written, but t
 stronger property: none of the keys 05b writes appears in any `PROVENANCE_CLASSES`
 `identity_keys`, so `get_stable_entity_id` cannot see them and **the stage never reads its own
 output** — if that broke, the graph would drift on every re-run with no other signal.
-`step05d` is still blocked on `core/llm.py` (`step05d:35`
-imports `_OpenAIProvider`/`RateLimiter` from step07), NOT on `GraphPatch` any more —
-and `core/llm.py` is the biggest single unlock, freeing `step03`, `step05`, `step07`
-and `step05d` at once. `step04`/`step06`/`step09` are also symbol-eligible, but 06/09
-read Neo4j so their arms cannot run offline (DESIGN.md §4 step 3 defers them).
+**`core/llm.py` landed 2026-07-27 — the kernel now has no blocking module left.** It lifts
+`DEFAULT_RATE_LIMIT` + `RateLimiter` (from step02) and `_Provider` + `_OpenAIProvider` (from
+step07), verbatim, no logic line changed. Those four **cannot be split**: `_OpenAIProvider.
+__init__` constructs a `RateLimiter`, i.e. step07 was reaching UP into step02 for a utility.
+It migrates no stage (still 5/16) but unblocks four at once, taking the symbol-eligible set
+from 4 to **8**: `01`, `03`, `04`, `05`, `05d`, `06`, `07`, `09`. `Adjudicator` deliberately
+stayed in step07 (stage logic: prompt, verdict parsing, provider cascade), so **`step08` and
+`step10` are NOT unblocked** — they wait on step07 itself, not on the kernel; `step02` waits
+on `core/io_jsonl`, which falls out of the step01 slice rather than preceding it. Its arms
+are in `test/test_esg_kg_llm.py`, and the one that earns its keep pins the **paid request
+shape** with a stub client (`temperature=0`, `response_format={"type":"json_object"}`, the
+system/user split, and `wait_if_needed` firing before `create`) — drop any of those and
+step07 still "works" while every verdict silently changes. Choosing what moves next is now
+about **arm strength, not symbol availability**: `step03` is the strongest candidate (phases
+1 and 1.5 are offline and `test_temporal_invariants.py` already covers them), `step05d` the
+smallest; 06/09 read Neo4j, 01/07 cost money, 04 is a hub, and **`step05` must not move
+until §3.1 is resolved** (it overwrites all three patches).
 **`step07b` is deliberately NOT being ported** (DESIGN.md §4.1): the delivered surface is
 the `frontend/`+`api/` UI, which never reads its softmax scores, so `pipeline.py` carries
 it as `new_module=None` and `run.py --list` shows `(not ported)` and drops it from the
@@ -332,10 +344,13 @@ src/step06_load_graph_to_neo4j.py       → Neo4j (bolt://localhost:8687, db `ne
 src/step07_crosscheck_claims_vs_conduct.py → graph_output/crosscheck/<ticker>_claim_assessments.json   (step 6)
    (the analytical core: for each SustainabilityClaim, retrieve conduct-side candidates →
     LLM-adjudicate supports/contradicts/irrelevant → write verifiedBy / contradictedBy* edges.
-    LLM adjudication is MANDATORY (no deterministic fallback) — multi-provider cascade
-    (--provider-order, default `openai` = gpt-4o-mini while Gemini is billing-blocked;
-    `gemini,openai` puts gemini-2.5-flash first); aborts up front if no provider is
-    available. Self-verification guard drops company-own-domain "verify" edges.
+    LLM adjudication is MANDATORY (no deterministic fallback) — provider cascade
+    (--provider-order, default `openai` = gpt-4o-mini); aborts up front if no provider is
+    available. **OpenAI is the ONLY provider left**: Gemini support was removed outright
+    (step07:34) because the project behind GEMINI_API_KEY is permanently 403, so the
+    registry at step07:321 holds just `openai` and passing `gemini` logs "Unknown
+    adjudication provider — ignored". Do not plan a Gemini fallback here.
+    Self-verification guard drops company-own-domain "verify" edges.
     Emits advisory dossiers — NO greenwashing score/label. --dry-run / --to-neo4j)
 src/step07b_enrich_dossiers.py          → patches the step07 dossiers in place (idempotent)     (step 6c)
    (offline, NO LLM/DB: softmax over three evidence-balance components → assessment_scores
@@ -588,6 +603,18 @@ python test/test_esg_kg_provenance.py      # same contract, for the step05b migr
                                            # provenance_method="extraction" skip that no live
                                            # node exercises. Run after touching step05b, step02's
                                            # identity helpers, or the per-page graph writer.
+python test/test_esg_kg_llm.py             # same contract, for the core/llm slice (RateLimiter
+                                           # <- step02, _Provider/_OpenAIProvider <- step07).
+                                           # Needs NO artifacts, so every arm runs on a bare
+                                           # clone. Drives the throttle through a FAKE CLOCK
+                                           # (never really sleeps) and pins the PAID request
+                                           # shape with a stub client: temperature=0,
+                                           # response_format=json_object, the system/user
+                                           # split, and wait_if_needed BEFORE create. Those
+                                           # are behaviour, not style — dropping one still
+                                           # "works" while silently changing every verdict.
+                                           # Run after touching step02's RateLimiter, step07's
+                                           # providers, or any stage's DEFAULT_RATE_LIMIT.
 ```
 
 The rest of `test/` and `notebooks/` are Jupyter notebooks for manual validation

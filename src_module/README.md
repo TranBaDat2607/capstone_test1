@@ -62,6 +62,7 @@ arm so ba thứ: hằng số module, từng hàm, và output đã render.
 python test/test_esg_kg_equivalence.py    # lưới chống lệch giữa src/ và esg_kg
 python test/test_esg_kg_anchor_kpi.py     # lát cắt step03b: core/identity + graph/anchor_kpi
 python test/test_esg_kg_provenance.py     # lát cắt step05b: resolve/provenance
+python test/test_esg_kg_llm.py            # lát cắt core/llm: throttle + hình dạng request đã trả tiền
 python test/test_temporal_invariants.py   # bộ test sẵn có của src/, phải luôn xanh
 ```
 
@@ -84,15 +85,17 @@ theo nhãn cạnh hay tên key. Chi tiết + bảng ba ca: [`PIPELINE.md`](PIPEL
 | `core/console.py` | ✅ `ensure_utf8_stdout` — gọi ở **đầu `main()`**, không phải `__main__` (DESIGN.md §6.2) |
 | `core/graph_patch.py` | ✅ `GraphPatch`, `temporal_md` — gỡ khỏi `step05c` để `step05d` import từ kernel, không từ một stage |
 | `core/identity.py` | ✅ `parse_source_id`, `get_stable_entity_id`, `PROVENANCE_CLASSES` — gỡ khỏi `step03b`/`step02` (cùng lý do trên); mở khoá `step05b` |
-| `core/` còn lại | ⏳ `llm` (**chặn 4 stage**: `03`, `05`, `07`, `05d` — rồi kéo theo `08`/`10`) → `io_jsonl` (chặn `01`/`02`) → `text`. Bản đồ đầy đủ: [`PIPELINE.md`](PIPELINE.md) §2.1 |
+| `core/llm.py` | ✅ `DEFAULT_RATE_LIMIT`, `RateLimiter` (<- `step02`) + `_Provider`, `_OpenAIProvider` (<- `step07`) — verbatim, 0 dòng logic đổi; **mở khoá 4 stage** (`03`, `05`, `07`, `05d`). `Adjudicator` cố ý ở lại `step07`, nên `08`/`10` chờ stage đó chứ không chờ kernel. Test: `test/test_esg_kg_llm.py` |
+| `core/` còn lại | ⏳ `io_jsonl` (chặn `02`; **không** chặn `01`, mà rơi ra từ lát cắt `01`) → `text`. **Không còn module `core/` nào chặn stage nào khác.** Bản đồ đầy đủ: [`PIPELINE.md`](PIPELINE.md) §2.1 |
 | `report/quality.py` | ✅ stage đầu tiên được dời (từ `step00`), chạy được |
 | `kpi/canonicalize.py` | ✅ dời từ `step03c`; arm so **5 214 KPIObservation thật** giữa hai cây |
 | `resolve/indicators.py` | ✅ dời từ `step05c`; diff 15+/115− **0 dòng logic mới**; arm dựng lại 67 chỉ số + 1 346 cạnh trên đồ thị thật đã strip |
 | `graph/anchor_kpi.py` | ✅ dời từ `step03b` (2026-07-27); diff 17+/20− **0 dòng logic**; arm dựng lại 95 anchor trên corpus đã strip + nhánh hub-guard + idempotency. Test riêng: `test/test_esg_kg_anchor_kpi.py` |
 | `resolve/provenance.py` | ✅ dời từ `step05b` (2026-07-27); diff 18+/8− **0 dòng logic** — stage đầu tiên dời mà **không phải trích thêm `core/`** nào; arm so 6 258 dấu trên đồ thị thật + arm strip chứng minh stage không đọc output của chính nó + fixture nhánh `extraction`. Test riêng: `test/test_esg_kg_provenance.py` |
 | `registry/standards.py` | ⛔ **không dời** — `step04b` đọc output của `step05` (vòng lặp) và lần quét đồ thị đóng góp 0; registry thành config tĩnh, `step00` audit độ phủ (DESIGN.md §4.2) |
-| Stage kế tiếp | 🟢 còn **ba** stage đủ điều kiện: `step04`, `step06`, `step09` — nhưng `06`/`09` đọc Neo4j nên arm tương đương yếu hẳn, còn `04` thuộc lô hub làm cuối. Ứng viên có lưới an toàn mạnh nhất (`step05b`) đã dời xong, nên bước đáng làm tiếp là **`core/llm.py`** (mở khoá 4 stage) — PIPELINE.md §2.1 |
+| Stage kế tiếp | 🟢 sau `core/llm.py` có **tám** stage đủ điều kiện: `01`, `03`, `04`, `05`, `05d`, `06`, `07`, `09`. Tiêu chí giờ là *arm mạnh tới đâu*, không còn là *symbol sẵn chưa*: **`step03`** mạnh nhất (pha 1 + 1.5 offline, `test_temporal_invariants.py` đã phủ sẵn), `step05d` nhỏ nhất. `step05` **chưa được dời** cho tới khi xử §3.1 — PIPELINE.md §2.1 |
 | `step07b` (softmax) | ⛔ **không dời** — UI `frontend/`+`api/` không đọc; giữ chạy ở `src/` (DESIGN.md §4.1) |
 
-`src/` **vẫn là pipeline chạy thật**; mới ba stage chạy được từ đây, và bản
+`src/` **vẫn là pipeline chạy thật**; mới **năm** stage chạy được từ đây (`00`, `03b`,
+`03c`, `05b`, `05c` — `run.py --list` là nguồn sự thật), và bản
 `src/step00_graph_quality_report.py` vẫn còn (nợ đã ghi: DESIGN.md §6.1).
