@@ -144,10 +144,15 @@ Vì vậy ta **không rewire `src/`**. Thay vào đó:
      trích khi dời `step05c` (2026-07-27). Không xếp theo số importer mà theo stage cần:
      nó là điều kiện của `step05c`, và là thứ `step05d` sẽ import thay cho việc gọi ngược
      lên một stage.
-   - `core/` còn lại, làm khi stage cần tới: `io_jsonl`, `identity`, `text`, `llm`.
+   - ✅ `core/identity.py` — `parse_source_id` (<- step03b:98), `get_stable_entity_id` +
+     `PROVENANCE_CLASSES` (<- step02:104, :501), trích khi dời `step03b` (2026-07-27).
+     Cả ba đi cùng nhau vì `step05b:49-51` import cả ba một lượt. Cũng như `graph_patch`:
+     xếp theo stage cần, không theo số importer. **Điều này mở khoá `step05b`.**
+   - `core/` còn lại, làm khi stage cần tới: `llm`, `io_jsonl`, `text`.
      ⚠️ `text`: hai `node_text` **KHÔNG phải bản trùng** — `step05d:63` nhận *props dict*,
      `step07:133` nhận *node* rồi rẽ nhánh theo class. Chuyển cả hai, giữ tên riêng.
-     `identity` giờ là cái chặn duy nhất của `step05b` (xem bảng bước 3).
+     **`llm` là đòn bẩy lớn nhất**: nó chặn `step03`, `step05`, `step07`, `step05d` cùng
+     lúc (rồi kéo theo `step08`/`step10`) — bản đồ đầy đủ ở `PIPELINE.md` §2.1.
 3. **Các stage dời được** — tiêu chí là **"mọi symbol NÓ import đã nằm trong `core/`"**,
    KHÔNG phải "không ai import nó". Cả hai điều kiện đều cần, nhưng điều kiện thứ hai
    mới là thứ quyết định thời điểm dời được.
@@ -165,7 +170,14 @@ Vì vậy ta **không rewire `src/`**. Thay vào đó:
      | `step03c` | `REPO_ROOT` | ✅ đã có trong `core/paths` |
      | `step06` | `REPO_ROOT`, `load_schema_sets` | ✅ đã có |
      | `step04b` | `merge_preserving_edits`, `normalize_name` | ⛔ đủ điều kiện nhưng KHÔNG dời — §4.2 |
-     | `step05b` | + `parse_source_id` (step03b), `PROVENANCE_CLASSES`/`stamp_provenance` (step02) | ❌ **chặn**: chờ `core/identity.py` |
+     | `step05b` | + `parse_source_id` (step03b), `PROVENANCE_CLASSES`/`get_stable_entity_id` (step02) | ✅ **hết chặn** từ 2026-07-27 (`core/identity.py`) |
+
+     ⚠️ **Hai chỗ bảng trên từng ghi sai, sửa 2026-07-27:**
+     (a) symbol `step05b` cần từ step02 là **`get_stable_entity_id`**, không phải
+     `stamp_provenance` — xem `step05b:49-50`;
+     (b) bảng này là bản quét **2026-07-25** nên **thiếu `step03b` và `step04`**: cả hai
+     trở nên đủ điều kiện *về sau*, khi `core/naming` + `core/schema` hoàn tất. Đừng đọc
+     nó như danh sách đầy đủ — nguồn cập nhật là `PIPELINE.md` §2.1.
 
      ✅ **`step03c` → `kpi/canonicalize.py` (2026-07-25), stage thứ hai.** `diff` với bản
      `src/` đúng **hai hunk**: docstring và một dòng import (`REPO_ROOT` lấy từ
@@ -206,6 +218,22 @@ Vì vậy ta **không rewire `src/`**. Thay vào đó:
      Lưu ý khi viết arm tương đương: `match_keyword` nay là **"phrase dài nhất thắng"**, không
      còn là "chỉ khớp khi không nhập nhằng" như tài liệu cũ mô tả — pin đúng hành vi hiện tại;
      muốn đổi lại thì đó là commit hành vi riêng theo §5.3.
+     ✅ **`step03b` → `graph/anchor_kpi.py` (2026-07-27), stage thứ tư.** `diff` với bản
+     `src/`: **17 dòng thêm / 20 dòng xoá, 0 dòng logic** — docstring, khối import, bỏ
+     `Optional` khỏi `typing`, và **xoá** `parse_source_id` (nay lấy từ `core.identity`).
+     Sinh bằng script cắt file, có assert vị trí cắt trước khi cắt.
+     Arm nằm ở **file riêng** `test/test_esg_kg_anchor_kpi.py` — file equivalence đã quá
+     1 100 dòng; hợp đồng không đổi, chỉ là chuyện tổ chức.
+     **Bản nháp đầu của arm bị RỖNG, và đó là bài học đáng ghi**: corpus trên đĩa đã bị
+     chính stage này vá (95/306 cạnh `observedAtFacility` mang
+     `anchor_method=offline_gazetteer`), nên chạy lại là no-op và arm so hai kết quả rỗng
+     rồi in PASS. Đúng cái bẫy `strip_axis()` của `step05c` — nay đã **hai ca**, nên coi
+     là luật cho mọi stage vá tại chỗ: `strip_anchors()` dựng lại input trước-khi-vá, và
+     **strip theo nguồn gốc chứ không theo nhãn cạnh** (211 cạnh `observedAtFacility` còn
+     lại do extraction sinh, xoá nhầm là đo sai). Kết quả rỗng được giữ lại thành arm
+     **idempotency** riêng, vì đó mới là tính chất vận hành thật đang dựa vào.
+     Kiểm bằng mutation: `MIN_NAME_CHARS` 10 → 9 ở cây mới làm arm đỏ.
+
      (`step07b` từng đứng đầu danh sách này — đã loại, xem §4.1.) `step09`/`step06` cần
      Neo4j nên arm của chúng chỉ kiểm được tới mức import + hàm thuần; để sau.
    - **CHƯA đủ điều kiện dù không ai import chúng**: `step05d` (`GraphPatch`/`temporal_md`

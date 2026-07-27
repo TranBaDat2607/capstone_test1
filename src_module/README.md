@@ -60,8 +60,15 @@ arm so ba thứ: hằng số module, từng hàm, và output đã render.
 
 ```bash
 python test/test_esg_kg_equivalence.py    # lưới chống lệch giữa src/ và esg_kg
+python test/test_esg_kg_anchor_kpi.py     # lát cắt step03b: core/identity + graph/anchor_kpi
 python test/test_temporal_invariants.py   # bộ test sẵn có của src/, phải luôn xanh
 ```
+
+⚠️ **Bẫy khi viết arm cho một stage vá tại chỗ**: artifact trên đĩa **đã bị chính stage
+đó vá rồi**, nên chạy lại là no-op và arm sẽ so hai kết quả rỗng mà vẫn in PASS. Phải
+dựng lại input trước-khi-vá (`strip_axis` cho `05c`, `strip_anchors` cho `03b`) và strip
+đúng phần stage tự sinh, không strip theo nhãn cạnh. Chi tiết + bảng hai ca đã dính:
+[`PIPELINE.md`](PIPELINE.md) §3.
 
 ## Trạng thái
 
@@ -73,12 +80,14 @@ python test/test_temporal_invariants.py   # bộ test sẵn có của src/, ph�
 | `core/dates.py` | ✅ `ISO_DATE_RE`, `normalize_date_string`, `date_start_key` |
 | `core/console.py` | ✅ `ensure_utf8_stdout` — gọi ở **đầu `main()`**, không phải `__main__` (DESIGN.md §6.2) |
 | `core/graph_patch.py` | ✅ `GraphPatch`, `temporal_md` — gỡ khỏi `step05c` để `step05d` import từ kernel, không từ một stage |
-| `core/` còn lại | ⏳ `identity` (đang chặn `step05b`) → `llm` (đang chặn `step05d`) → `io_jsonl` → `text` |
+| `core/identity.py` | ✅ `parse_source_id`, `get_stable_entity_id`, `PROVENANCE_CLASSES` — gỡ khỏi `step03b`/`step02` (cùng lý do trên); mở khoá `step05b` |
+| `core/` còn lại | ⏳ `llm` (**chặn 4 stage**: `03`, `05`, `07`, `05d` — rồi kéo theo `08`/`10`) → `io_jsonl` (chặn `01`/`02`) → `text`. Bản đồ đầy đủ: [`PIPELINE.md`](PIPELINE.md) §2.1 |
 | `report/quality.py` | ✅ stage đầu tiên được dời (từ `step00`), chạy được |
 | `kpi/canonicalize.py` | ✅ dời từ `step03c`; arm so **5 214 KPIObservation thật** giữa hai cây |
 | `resolve/indicators.py` | ✅ dời từ `step05c`; diff 15+/115− **0 dòng logic mới**; arm dựng lại 67 chỉ số + 1 346 cạnh trên đồ thị thật đã strip |
+| `graph/anchor_kpi.py` | ✅ dời từ `step03b` (2026-07-27); diff 17+/20− **0 dòng logic**; arm dựng lại 95 anchor trên corpus đã strip + nhánh hub-guard + idempotency. Test riêng: `test/test_esg_kg_anchor_kpi.py` |
 | `registry/standards.py` | ⛔ **không dời** — `step04b` đọc output của `step05` (vòng lặp) và lần quét đồ thị đóng góp 0; registry thành config tĩnh, `step00` audit độ phủ (DESIGN.md §4.2) |
-| Stage kế tiếp | ⏳ `step06` (đủ điều kiện từ lâu: chỉ cần `REPO_ROOT` + `load_schema_sets`) hoặc `core/identity.py` để mở khoá `step05b`. **Không phải `step05d`** — nó còn chờ `core/llm.py` |
+| Stage kế tiếp | 🟢 **bốn stage đủ điều kiện dời ngay**: `step05b` (lưới an toàn mạnh nhất — offline hoàn toàn), `step04`, `step06`, `step09`. Nếu muốn mở khoá nhiều nhất thì viết `core/llm.py` trước — PIPELINE.md §2.1 |
 | `step07b` (softmax) | ⛔ **không dời** — UI `frontend/`+`api/` không đọc; giữ chạy ở `src/` (DESIGN.md §4.1) |
 
 `src/` **vẫn là pipeline chạy thật**; mới ba stage chạy được từ đây, và bản

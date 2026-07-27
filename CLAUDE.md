@@ -66,9 +66,10 @@ repo and secrets, so it is never committed or pushed with this project.
   - `src_module/esg_kg/` is the in-progress third style (see the refactor section below):
     a real package, run from the repo root via its dispatcher —
     `python src_module/run.py quality --label baseline` (equivalently
-    `python -m esg_kg.report.quality` from inside `src_module/`). Only **one** stage
-    has been migrated so far; `python src_module/run.py --list` shows which.
-    `src/` is still the pipeline you execute.
+    `python -m esg_kg.report.quality` from inside `src_module/`). Four stages have been
+    migrated so far; `python src_module/run.py --list` shows which, and it asks the
+    import system rather than trusting a hand-kept list. `src/` is still the pipeline
+    you execute.
 - **Sentence-level traceability** (`source_pdf`, `page`, `sentence_index`) is preserved
   through every stage so each graph node traces back to its source — keep it intact.
 - **Torch is intentionally absent from `requirements.txt`.** The ViDeBERTa ESG classifier
@@ -162,10 +163,26 @@ the array indices) because the live graph is already patched and every stats cou
 behind `if gp.add_edge(...)` — without stripping it compares two empty reports; and the
 synthetic arm is the only one that reaches the `Penalty` fine branch, since all four live
 `Penalty` nodes carry `amount == 0` and take the self-reported-zero `continue`.
-`step05b` is blocked on `core/identity.py` (`parse_source_id`); `step05d` is blocked on
-`core/llm.py` (`step05d:35` imports `_OpenAIProvider`/`RateLimiter` from step07), NOT on
-`GraphPatch` any more. Next unblocked candidate: `step06` (needs only `REPO_ROOT` +
-`load_schema_sets`, both already in `core/`).
+`step03b` is the fourth migrated stage (`esg_kg/graph/anchor_kpi.py`, 2026-07-27), diff
+17 added / 20 deleted with **no logic line changed**. It came with **`core/identity.py`**
+(`parse_source_id` <- step03b, `get_stable_entity_id`/`PROVENANCE_CLASSES` <- step02):
+`parse_source_id` was DEFINED in step03b and imported by `step05b:51`, so moving the stage
+without lifting it would have left the migrated 05b importing from a sibling stage — the
+same knot `core/graph_patch.py` untied a day earlier. Its arms live in a separate
+`test/test_esg_kg_anchor_kpi.py` (the equivalence file is past 1,100 lines) and the
+**first draft of them was vacuous**: the live `all_validated_triples.json` is already
+patched (95 of its 306 `observedAtFacility` edges carry `anchor_method=offline_gazetteer`),
+so a re-run emits nothing and the arm compared two empty results while printing PASS. This
+is now a known law for every in-place-patch stage, with two confirmed cases — strip the
+stage's OWN past output to rebuild the pre-patch input (`strip_axis` for 05c,
+`strip_anchors` for 03b), stripping by provenance and never by edge label (the other 211
+`observedAtFacility` edges came from extraction and must stay). See `src_module/PIPELINE.md` §3.
+With `core/identity.py` in place **`step05b` is unblocked** and is the strongest next
+candidate (fully offline). `step05d` is still blocked on `core/llm.py` (`step05d:35`
+imports `_OpenAIProvider`/`RateLimiter` from step07), NOT on `GraphPatch` any more —
+and `core/llm.py` is the biggest single unlock, freeing `step03`, `step05`, `step07`
+and `step05d` at once. `step04`/`step06`/`step09` are also symbol-eligible, but 06/09
+read Neo4j so their arms cannot run offline (DESIGN.md §4 step 3 defers them).
 **`step07b` is deliberately NOT being ported** (DESIGN.md §4.1): the delivered surface is
 the `frontend/`+`api/` UI, which never reads its softmax scores, so `pipeline.py` carries
 it as `new_module=None` and `run.py --list` shows `(not ported)` and drops it from the
@@ -452,10 +469,11 @@ python src/step09_report_claim_ledger.py --review-queue --markdown         #   c
 python src/step10_evaluate.py                                              # step 8 / P6: full Vietnamese evaluation report
 python src/step10_evaluate.py --ablation --no-llm                          #   free arms only (coverage/case studies/ablation are offline)
 
-# Refactor target (src_module/esg_kg) — step00 + step03c + step05c have moved so far
+# Refactor target (src_module/esg_kg) — step00 + step03b + step03c + step05c have moved so far
 python src_module/run.py --list                                            # stages + which are migrated
 python src_module/run.py quality --label baseline                          # == src/step00_graph_quality_report.py
 python src_module/run.py canonicalize --dry-run                            # == src/step03c_canonicalize_kpis.py
+python src_module/run.py anchor_kpi --dry-run                              # == src/step03b_anchor_kpi_facilities.py
 python src_module/run.py indicators --dry-run                              # == src/step05c_link_standard_indicators.py
 
 # ESG Evidence View UI (web front-end; reads the Neo4j advisory layer, no LLM — see docs/ESG_EVIDENCE_VIEW.md)
@@ -533,6 +551,17 @@ python test/test_esg_kg_equivalence.py     # refactor safety net: imports BOTH s
                                            # compared against esg_kg/report/quality.py —
                                            # real graph with --skip-slow, plus a synthetic
                                            # 20-node graph for the 44s Q7 BFS arms).
+python test/test_esg_kg_anchor_kpi.py      # same contract as the file above, for the step03b
+                                           # migration slice: core/identity (parse_source_id,
+                                           # get_stable_entity_id, PROVENANCE_CLASSES) and
+                                           # graph/anchor_kpi. Split off because that file is
+                                           # past 1,100 lines. Runs the stage in BOTH trees on
+                                           # the real corpus with strip_anchors() applied (the
+                                           # file on disk is already patched — without the
+                                           # strip the arm compares two empty results), plus a
+                                           # cap=1 arm for the P5 hub guard the live data never
+                                           # trips, plus an idempotency arm. Run after touching
+                                           # step03b, step02's identity helpers, or step05b.
 ```
 
 The rest of `test/` and `notebooks/` are Jupyter notebooks for manual validation
