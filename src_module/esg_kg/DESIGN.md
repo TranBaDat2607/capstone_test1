@@ -578,6 +578,84 @@ bằng cấu trúc, không bằng tài liệu.
    import `_OpenAIProvider`, `RateLimiter`) — chạy ngược chiều dòng dữ liệu. Nó là stage bị
    chặn nặng nhất của nhóm 05; đừng xếp lịch dời nó trước khi `core/llm.py` có.
 
+### 5.6 `step02` sẽ xuất tiếng Việt cho `name`/`title` — phạm vi và ranh giới (chốt 2026-07-27)
+
+Việc thực thi nằm ở GitHub issue **#6**; mục này ghi **quyết định và ranh giới**, vì đây là
+thứ phải cố định *trước* khi bấm nút trích lại (§5.4) chứ không phải thứ ứng biến lúc sửa prompt.
+
+**Hiện trạng đo được** (`graph_output/validated/all_validated_triples.json`, 14 677 triple,
+27 220 lượt node có `name`/`title`): `step02` **không có một dòng nào** hướng dẫn về ngôn ngữ,
+nên LLM tự quyết và đã dịch **52,7%** số tên sang tiếng Anh; chỉ 47,3% còn dấu tiếng Việt.
+Cùng một pháp nhân tồn tại song song hai bản.
+
+**Đây là sửa lỗi, không phải thêm rủi ro** — và lý lẽ nằm ở `normalize_name`, vốn đã hiểu
+tiếng Việt (bỏ dấu + bỏ từ chỉ loại hình pháp lý):
+
+```
+'CÔNG TY CỔ PHẦN NHỰA VÀ MÔI TRƯỜNG XANH AN PHÁT' -> 'nhua va moi truong xanh an phat'
+'Công ty Cổ phần Nhựa và Môi trường Xanh An Phát' -> 'nhua va moi truong xanh an phat'   ✅ gộp
+'An Phat Green Environment and Plastic Joint Stock Company'
+                                                 -> 'an phat xanh environment and plastic' ❌
+```
+
+Hai khoá khác nhau ⇒ **Stage A của `step05` không thể gộp deterministic**. Bản dịch không gây
+lỗi, nó **tách một thực thể thành hai** — đúng loại hỏng mà §5.1 bảo phải sửa ở stage sớm nhất
+có đủ thông tin, và stage đó là `step02`.
+
+**Phạm vi — ranh giới phải ghi thẳng vào prompt:**
+
+| Trường | Ngôn ngữ | Vì sao |
+|---|---|---|
+| `name`, `title`, `description`, văn bản tự do | **tiếng Việt, giữ dấu** | là bằng chứng truy vết được, và là khoá của `normalize_name` |
+| `valid_from`, `valid_to`, `date`, `recorded_at` | ISO `YYYY[-MM[-DD]]` | xem cảnh báo ngay dưới |
+| `class`, `predicate` | định danh schema | `validate_triple` khớp **chính xác** với `config/schema.json` |
+| id, `kpi_id`, `claim_id` | định danh máy | `claim_id` còn phải tất định (issue #2) |
+| `is_current`, `date_uncertain` | boolean | kiểu dữ liệu, không phải văn bản |
+| `unit`, `unit_normalized` | từ vựng có kiểm soát | `step03c` khớp theo alias, không theo văn xuôi |
+
+**Ngày là ranh giới nguy hiểm nhất.** Hôm nay chỉ **6 / 72 473** giá trị ngày không parse
+được, vì prompt `step02` đã ép ISO (`step02:152-153`). Cách viết bằng chữ tiếng Việt hỏng hết:
+
+```
+OK    '31/12/2024' -> '2024-12-31'      FAIL  'ngày 31 tháng 12 năm 2024'
+OK    '12/2024'    -> '2024-12'         FAIL  'Quý 4/2024' · 'năm 2024' · 'tháng 12/2024'
+```
+
+`normalize_date_string` **cố ý không bịa ngày**: nó trả lại nguyên chuỗi và chỉ cộng vào
+`dates_unparseable`. Không exception, không cảnh báo — và P4 (`valid_from > valid_to`, chuỗi
+version `is_current`) mất hiệu lực đúng trên những node đó. Đây là lý do phạm vi phải liệt kê
+**loại trừ tường minh**, không chỉ nói "xuất tiếng Việt".
+
+**Điều kiện tiên quyết:**
+
+1. **Issue #2 — `claim_id` tất định.** Thay đổi chỉ có hiệu lực qua một lần trích lại toàn
+   corpus, tức đúng sự kiện đã lên lịch ở §5.4, và §5.4 đã xếp #2 là *"món đầu tiên trong
+   danh sách, không phải món cuối"*.
+2. **Guard pha 2 của `step03` — ĐÃ XONG** (commit `046e572`, 2026-07-27).
+   `preserve_property_values` chặn LLM sửa giá trị thuộc tính: `BATCH_FIX_PROMPT` là tiếng
+   Anh và ra lệnh *"Fix typos/synonyms"* mà không giới hạn trường, nên đưa cho nó `name`
+   tiếng Việt là nó dịch hoặc khử dấu — mà `validate_triple` không hề kiểm giá trị. Làm
+   trước khi `step03` dời để chỉ phải sửa **một** cây (§5.3). Test:
+   `test/test_step03_llm_value_guard.py`.
+
+**Cái KHÔNG phải đổi.** `step03` bản thân nó miễn nhiễm với ngôn ngữ: pha 1
+(`fix_direction` + `validate_triple`, `step03:260-324`) chỉ đọc `class`, `predicate` và *sự
+có mặt* của các trường thời gian — không bao giờ đọc `name`/`title`; pha 1.5 chỉ đụng trường
+ngày; pha 3 đã ghi `ensure_ascii=False`. Chỉ prompt pha 2 cần guard, và guard đã có.
+`config/kpi_type_aliases.json` sẵn 26% chuỗi tiếng Việt nên `step03c` chịu được — nhưng rà
+lại độ phủ sau khi có dữ liệu mới.
+
+**Vấn đề riêng, đừng gộp vào đây:** 1 540 lượt tên chứa `Ƣ` (U+01A2 `LATIN CAPITAL LETTER
+OI`) thay vì `Ư` — di sản font VNI/TCVN3 trong PDF (`MÔI TRƢỜNG` 594 lượt vs `MÔI TRƯỜNG`
+571 lượt). Đã kiểm: `normalize_name` **gộp được** cả hai nên **không** phải lỗi định danh.
+Nhưng `name` hiển thị thẳng ra ledger `step09` và Evidence View, nên khi title thành tiếng
+Việt thì người đọc sẽ thấy nó. Chỗ sửa đúng là `data_processing/pdf_extractor.py`.
+
+**Nghiệm thu** (neo vào số đo, không neo vào cảm nhận): tỉ lệ tên có dấu tăng rõ so với mốc
+**47,3%**; `dates_unparseable` **không tăng** so với mốc **6 / 72 473**; số node
+`Organization` của chính doanh nghiệp phát hành **giảm** sau `step05`; chụp
+`step00 --label before/after` để đối chiếu Q1–Q8.
+
 ## 6. Lưới an toàn & mắt xích yếu
 
 - **`test/test_esg_kg_equivalence.py`** là lưới chính khi xây `core/` (§4): pipeline cũ
