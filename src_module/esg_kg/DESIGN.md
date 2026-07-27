@@ -449,6 +449,64 @@ nhưng là rào cản để bấm nút):
   ý làm mất hiệu lực dossier hiện có giữa chừng; việc đó xảy ra đúng một lần, có kế hoạch.
 - Cho tới lúc đó, `src/` vẫn là pipeline chạy thật và dossier hiện có vẫn là bản giao.
 
+### 5.5 `step05` khi được dời KHÔNG được ghi đè đồ thị đã vá (chốt 2026-07-27)
+
+Hôm nay đọc lại đường dữ liệu của cụm 05 thì lộ ra một khiếm khuyết thiết kế trong `src/`:
+**chuỗi vá là bắt buộc nhưng không có gì bảo vệ nó.** Bản `esg_kg` không được mang khiếm
+khuyết này sang.
+
+**Hiện trạng đo được (2026-07-27, trên snapshot HF `09cfe062`):**
+
+Chỉ tồn tại **một** file `graph_output/resolved/resolved_graph.json`. `05b`/`05c`/`05d` đều
+`write_text()` ngược lại đúng đường dẫn đó, còn `step05:655` ghi đè **toàn bộ** file — không
+merge, không cảnh báo. Nên chạy lại `step05` **xoá sạch cả ba bản vá**, và không có dấu hiệu
+nào cho biết điều đó đã xảy ra.
+
+| Chỗ | Bảo vệ hiện có | Hậu quả khi thiếu bản vá |
+|---|---|---|
+| `step05:655` | **không có** | ghi đè, mất `provenance_method` + trục chỉ số + align |
+| `step06:365-368` | chỉ `logger.warning` | vẫn nạp Neo4j, đồ thị thiếu `StandardIndicator` |
+| `step07:703-705` | **không có** — chỉ kiểm file tồn tại, thông báo lỗi còn chỉ nhắc `step05` | `step07:417-429` dựng index trục chỉ số ra rỗng ⇒ tầng retrieval tier-1 (`INDICATOR_BOOST`) đóng góp **0**, tụt về token overlap. Không lỗi, không cảnh báo; dấu vết duy nhất là `indicator_tier_pairs: 0` trong file stats |
+
+Thứ đang giữ cho chuỗi này chạy đúng chỉ là ba dòng log cuối stage (`05b:369`, `05c:477`,
+`05d:152` — đều nói *"Next: step06 --clear"*). Đó là **hợp đồng bằng trí nhớ**, đúng loại
+nợ mà §5.2 đã phải lập bảng để ghi lại.
+
+Dữ liệu xác nhận chuỗi hiện đang ở trạng thái đã vá: `provenance_method` trên 6 258 node
+(05b), 67 `StandardIndicator` + 4 `self_reported_zero` (05c), và `alignment_method` chỉ có
+`keyword` 639 — **`llm` bằng 0, tức `step05d` chưa từng chạy thật.** Nó là stage TÙY CHỌN
+(docstring `step05d:3-5`), nên "đồ thị hoàn chỉnh" = `05 → 05b → 05c`; `05d` là tuỳ thêm.
+
+**Quyết định.** Khi `step05` được dời sang `esg_kg/resolve/entities.py`, nó **không được ghi
+đè artifact mà `step06`/`step07` đọc**. Chuỗi `05b → 05c` là bắt buộc và phải được cưỡng chế
+bằng cấu trúc, không bằng tài liệu.
+
+**Cơ chế thì CHƯA chốt** — cố tình để mở, vì nó phụ thuộc đề xuất chuyển `05c` lên trước `05`
+(PIPELINE.md §5) vốn có thể xoá bỏ luôn khái niệm "vá tại chỗ". Ba phương án đang cân, quyết
+đúng lúc dời `step05`:
+
+| Phương án | Được | Mất |
+|---|---|---|
+| `step05` ghi artifact gốc riêng (`resolved_graph.base.json`), chuỗi vá sinh ra `resolved_graph.json` | `step06`/`step07` không phải sửa; chạy lại `step05` an toàn | thêm một bản 40 MB |
+| Mỗi stage một artifact bất biến (`.base` → `.prov` → `.axis` → `.aligned`) | diff được từng stage; khái niệm "vá tại chỗ" biến mất | 4 × 40 MB; phải đổi `DEFAULT_INPUT` của 06/07 |
+| Giữ một file, `step05` từ chối ghi khi phát hiện dấu vết vá (cần `--force`) | sửa ít nhất | vẫn một file; `--force` vẫn phá được |
+
+**Ràng buộc mà phương án nào cũng phải thoả:**
+
+1. **§5.4 vẫn ưu tiên.** Mục tiêu là dựng lại đồ thị **từ đầu**, nên "không ghi đè" bắt buộc
+   phải có đường thoát cho lần trích lại có chủ đích. Không được biến thành cái khoá làm
+   pipeline không rebuild được — đó sẽ là đánh đổi ngược hẳn với §5.4.
+2. **§5.3 áp dụng.** Đây là **thay đổi hành vi**, không phải dời nguyên văn ⇒ commit riêng,
+   sửa **cả hai cây**, kèm test hành vi đã đỏ trước. Test đó phải khẳng định được điều mà
+   hôm nay không có gì khẳng định: *chạy `step05` trên một đồ thị đã vá thì các bản vá phải
+   còn nguyên (hoặc stage phải dừng)*.
+3. **Cưỡng chế thứ tự là phần việc riêng.** Nâng `step06:365` từ warning lên lỗi cứng, và
+   thêm phép kiểm tương đương cho `step07`, là **commit khác** — nó đụng vào stage đã trả
+   tiền (`step07`), nên không gộp chung.
+4. `05d` phụ thuộc **cả** `05c` (`GraphPatch`/`temporal_md`) **lẫn** `step07` (`step05d:35`
+   import `_OpenAIProvider`, `RateLimiter`) — chạy ngược chiều dòng dữ liệu. Nó là stage bị
+   chặn nặng nhất của nhóm 05; đừng xếp lịch dời nó trước khi `core/llm.py` có.
+
 ## 6. Lưới an toàn & mắt xích yếu
 
 - **`test/test_esg_kg_equivalence.py`** là lưới chính khi xây `core/` (§4): pipeline cũ

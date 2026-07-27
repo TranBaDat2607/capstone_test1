@@ -71,6 +71,7 @@ python test/test_temporal_invariants.py   # bộ test sẵn có của src/, ph�
 | `core/schema.py` | ✅ `load_schema_sets`, `validate_triple`, `get_identity_keys` |
 | `core/naming.py` | ✅ `normalize_name`, `name_tokens`, `merge_preserving_edits` |
 | `core/dates.py` | ✅ `ISO_DATE_RE`, `normalize_date_string`, `date_start_key` |
+| `core/console.py` | ✅ `ensure_utf8_stdout` — gọi ở **đầu `main()`**, không phải `__main__` (DESIGN.md §6.2) |
 | `core/` còn lại | ⏳ `identity` (đang chặn `step05b`) → `io_jsonl` → `text` → `llm` |
 | `report/quality.py` | ✅ stage đầu tiên được dời (từ `step00`), chạy được |
 | `kpi/canonicalize.py` | ✅ dời từ `step03c`; arm so **5 214 KPIObservation thật** giữa hai cây |
