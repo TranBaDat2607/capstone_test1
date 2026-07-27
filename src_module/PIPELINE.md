@@ -7,9 +7,10 @@ bức tranh toàn hệ thống.
 Nguồn sự thật của thứ tự chạy là [`esg_kg/pipeline.py`](esg_kg/pipeline.py); file này
 là bản vẽ của cùng dữ liệu đó. `python src_module/run.py --list` luôn nói thật về tiến độ.
 
-**Trạng thái (2026-07-27): 4/16 stage đã dời** — `00 quality`, `03c canonicalize`,
-`05c indicators`, `03b anchor_kpi`; 2 stage cố ý không dời (§4). `core/identity.py` đi kèm
-lần dời `03b` đã **mở khoá luôn `05b`**. Còn lại đủ điều kiện ngay: `04`, `05b`, `06`, `09`;
+**Trạng thái (2026-07-27): 5/16 stage đã dời** — `00 quality`, `03c canonicalize`,
+`05c indicators`, `03b anchor_kpi`, `05b provenance`; 2 stage cố ý không dời (§4).
+`05b` là stage đầu tiên dời được mà **không phải trích thêm module `core/` nào** — lần dời
+`03b` đã lifted sẵn cả 4 symbol nó cần. Còn lại đủ điều kiện ngay: `04`, `06`, `09`;
 module `core/` mở khoá nhiều nhất là `core/llm.py` — xem §2.1, đó mới là bản đồ quyết định
 thứ tự làm, không phải sơ đồ chạy ở §1.
 
@@ -47,7 +48,7 @@ flowchart TD
     subgraph P3["③ Hợp nhất thực thể + trục chỉ số"]
         S04["step04 · issuer<br/>registry tên công ty (chạy 1 lần)"]:::ready
         S05["step05 · entities<br/>gộp node trùng, neo issuer + neo chuẩn"]:::pending
-        S05B["step05b · provenance<br/>đóng dấu source_doc / source_page"]:::ready
+        S05B["step05b · provenance<br/>đóng dấu source_doc / source_page"]:::migrated
         S05C["step05c · indicators<br/>dựng trục TT96/GRI (offline)"]:::migrated
         S05D["step05d · align_claims<br/>LLM, TÙY CHỌN — phần keyword bỏ sót"]:::pending
     end
@@ -116,7 +117,7 @@ flowchart TD
 | 04 | `issuer` | — | validated | `config/issuer_registry.json` | 🟢 **dời được ngay** |
 | 04b | — | — | ~~resolved~~ | ~~`standards_registry.json`~~ | ⛔ **ngoài đường chạy** |
 | 05 | `entities` | 💰 (tùy chọn) | validated + 2 registry | `resolved_graph.json` | ⏳ |
-| 05b | `provenance` | — | resolved + các file page | vá tại chỗ | 🟢 **dời được ngay** |
+| 05b | `provenance` | — | resolved + các file page | vá tại chỗ | ✅ **đã dời** |
 | 05c | `indicators` | — | resolved + `kpi_definitions` + crosswalk + `gri_catalog` | vá tại chỗ | ✅ **đã dời** |
 | 05d | `align_claims` | 💰 tùy chọn | resolved | vá tại chỗ | ⏳ |
 | 06 | `neo4j_load` | — | resolved | Neo4j | 🟢 **dời được ngay** |
@@ -146,7 +147,7 @@ Bảng dưới là kết quả grep toàn bộ import chéo trong `src/` đối 
 | 03b | `REPO_ROOT`, `load_schema_sets`, `validate_triple`, `normalize_name` | ✅ **đã dời** (2026-07-27) |
 | 04 | `REPO_ROOT` | — 🟢 **đủ hết** |
 | 05 | `date_start_key`, `load_schema_sets`, `normalize_name` ✅ + `RateLimiter` | **`core/llm`** |
-| 05b | `get_identity_keys`, `PROVENANCE_CLASSES`, `get_stable_entity_id`, `parse_source_id` | — 🟢 **đủ hết** kể từ `core/identity.py` |
+| 05b | `get_identity_keys`, `PROVENANCE_CLASSES`, `get_stable_entity_id`, `parse_source_id` | ✅ **đã dời** (2026-07-27) — không phải viết thêm `core/` nào |
 | 05d | `load_schema_sets`, `GraphPatch`, `temporal_md` ✅ + `_OpenAIProvider`, `RateLimiter` | **`core/llm`** |
 | 06 | `REPO_ROOT`, `load_schema_sets` | — 🟢 **đủ hết** |
 | 07 | `load_schema_sets`, `normalize_name`, `name_tokens` ✅ + `RateLimiter` | **`core/llm`** |
@@ -162,7 +163,7 @@ flowchart LR
     classDef pend fill:#fff3bf,stroke:#e8a90c,color:#1a1a1a
 
     CORE["core/ hôm nay<br/>paths · schema · naming · dates<br/>console · graph_patch · identity"]:::done
-    READY["🟢 dời được NGAY<br/>04 · 05b · 06 · 09"]:::ready
+    READY["🟢 dời được NGAY<br/>04 · 06 · 09"]:::ready
     LLM["core/llm<br/>RateLimiter + _OpenAIProvider"]:::key
     IOJ["core/io_jsonl (+ text)"]:::key
     U1["03 · 05 · 07 · 05d<br/>(rồi 08 · 10)"]:::pend
@@ -175,12 +176,14 @@ flowchart LR
 
 **Đọc ra được ba điều, cả ba đều đổi thứ tự làm:**
 
-1. **Không bị kẹt.** Bốn stage (`04`, `05b`, `06`, `09`) đã đủ điều kiện — `09` thậm chí
+1. **Không bị kẹt.** Ba stage (`04`, `06`, `09`) vẫn đủ điều kiện — `09` thậm chí
    không import stage nào cả. Không cần viết thêm module `core/` nào để đi tiếp.
    ⚠️ Nhưng "đủ điều kiện symbol" **chưa phải** "nên làm ngay": `06`/`09` đọc Neo4j nên arm
    tương đương của chúng chỉ với tới mức import + hàm thuần (DESIGN.md §4 bước 3 xếp lại
    sau vì lý do đó), còn `04` nằm trong lô **hub** làm cuối. Ứng viên có lưới an toàn mạnh
-   nhất là **`05b`** — offline hoàn toàn, chạy được trên đồ thị thật.
+   nhất — `05b`, offline hoàn toàn, chạy được trên đồ thị thật — **đã dời xong
+   (2026-07-27)**. Nên lô "dời được ngay" giờ chỉ còn toàn stage mà arm tương đương *yếu
+   hơn* hẳn: đó là lý lẽ để chuyển sang viết `core/llm.py` thay vì vét nốt lô này.
 2. **`core/llm.py` là đòn bẩy lớn nhất: mở khoá 4 stage** (`03`, `05`, `07`, `05d`), rồi
    kéo theo `08`/`10`. Bản trước của file này chỉ ghi nó chặn `05d` — đúng nhưng làm nó
    trông như việc lẻ, trong khi nó là nút thắt của cả nửa sau pipeline.
@@ -217,20 +220,45 @@ flowchart LR
   theo *vị trí* — nên 05c bắt buộc **chỉ được nối thêm vào cuối**, không sắp xếp lại.
 
 **Hệ quả cho MỌI test của stage vá tại chỗ** (đã dính hai lần, nên ghi ra thành luật):
-file trên đĩa **đã bị chính stage đó vá rồi**. Chạy lại stage trên nó là **no-op**, và một
-arm tương đương xây trên no-op sẽ so hai kết quả rỗng rồi in **PASS**.
+file trên đĩa **đã bị chính stage đó vá rồi**. Nhưng hậu quả thì tuỳ stage, và phải hỏi
+đúng **một** câu để biết là hậu quả nào:
 
-| Stage | Tàn dư của chính nó trong file | Cách dựng lại input trước khi vá |
-|---|---|---|
-| `05c` | 67 `StandardIndicator` + 4 nhãn cạnh trục | `strip_axis()` — xoá node + cạnh trục, remap chỉ số mảng |
-| `03b` | **95/306** cạnh `observedAtFacility` có `anchor_method=offline_gazetteer` | `strip_anchors()` — xoá đúng 95 cái đó, **giữ 211 cạnh do extraction sinh** |
+> Gặp lại phần nó tự sinh, stage **bỏ qua** (`continue`) hay **tính lại từ đầu**?
 
-Luật rút ra: **strip đúng phần stage tự sinh, không strip theo nhãn cạnh** — 211 cạnh
-`observedAtFacility` kia có từ trước, xoá nhầm là đo sai. Và kết quả rỗng đừng vứt đi: với
-`03b` nó được giữ lại thành arm **idempotency** (chạy lại không nhân bản anchor), vì
-CLAUDE.md bảo chạy `03b` trước `05` trên corpus vốn đã vá — nên đó mới là tính chất thật
-sự đang được dựa vào. Guard chống rỗng của arm đó **ngược lại**: nó khẳng định input
-*đã* được vá.
+| Stage | Tàn dư của chính nó trong file | Gặp lại thì làm gì | Cách dựng lại input trước khi vá |
+|---|---|---|---|
+| `05c` | 67 `StandardIndicator` + 4 nhãn cạnh trục | **bỏ qua** ⇒ arm rỗng | `strip_axis()` — xoá node + cạnh trục, remap chỉ số mảng |
+| `03b` | **95/306** cạnh `observedAtFacility` có `anchor_method=offline_gazetteer` | **bỏ qua** ⇒ arm rỗng | `strip_anchors()` — xoá đúng 95 cái đó, **giữ 211 cạnh do extraction sinh** |
+| `05b` | **6 258/10 425** node có `source_doc`/`source_page` | **tính lại** ⇒ arm KHÔNG rỗng | `strip_provenance()` — xoá 4 tier, **giữ node `provenance_method=extraction`** |
+
+**Luật 1 — strip đúng phần stage tự sinh, không strip theo nhãn/tên key.** 211 cạnh
+`observedAtFacility` kia có từ trước, xoá nhầm là đo sai; với `05b` cũng vậy, node đóng dấu
+`extraction` là output của `step02` chứ không phải của `05b`, phải giữ nguyên.
+
+**Luật 2 — "vá tại chỗ" KHÔNG tự động nghĩa là "arm sẽ rỗng".** `05b` chỉ `continue` đúng
+một trường hợp (`provenance_method == "extraction"`, hiện **0 node** trong đồ thị thật);
+mọi node còn lại nó khớp lại và đóng dấu lại từ đầu. Nên arm chạy trên file sống vẫn so
+**6 258 dấu** thật ở cả hai cây — không cần strip để cứu. Đừng suy diễn từ `05c`/`03b` sang
+mọi stage vá tại chỗ: kiểm cái `continue` trước.
+
+**Vậy strip để làm gì với `05b`?** Để chứng minh một tính chất *mạnh hơn* mà hai stage kia
+không có: **stage không bao giờ ĐỌC output của chính nó.** Không key nào nó ghi
+(`source_doc`, `source_page`, `provenance_method`, `source_pages`, 3 field tin tức) nằm
+trong `identity_keys` của bất kỳ lớp nào thuộc `PROVENANCE_CLASSES` — đã đối chiếu với
+`config/schema.json` — nên `get_stable_entity_id` (tier 3) không thể nhìn thấy chúng, và
+strip xong dựng lại **phải ra y hệt**. Nếu một sửa đổi tương lai làm một key đóng dấu quay
+vào vòng khớp, đồ thị sẽ **trôi dần sau mỗi lần chạy lại** mà không có dấu hiệu nào khác —
+arm này là thứ duy nhất bắt được.
+
+Và kết quả rỗng đừng vứt đi: với `03b` nó được giữ lại thành arm **idempotency** (chạy lại
+không nhân bản anchor), vì CLAUDE.md bảo chạy `03b` trước `05` trên corpus vốn đã vá — nên
+đó mới là tính chất thật sự đang được dựa vào. Guard chống rỗng của arm đó **ngược lại**:
+nó khẳng định input *đã* được vá.
+
+**Nhánh sống mà dữ liệu thật không bao giờ chạm** thì phải có fixture tổng hợp, cả ba stage
+đều đã cần: `05c` nhánh `Penalty` phạt tiền, `03b` guard hub `cap=1`, `05b` nhánh bỏ qua
+`provenance_method="extraction"` (0 node hôm nay — nó tồn tại cho output `step02` *sau* lần
+trích lại đã lên lịch ở DESIGN.md §5.4).
 
 ### 3.1 Chuỗi vá `05 → 05b → 05c` là BẮT BUỘC nhưng KHÔNG có gì bảo vệ
 

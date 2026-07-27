@@ -61,14 +61,17 @@ arm so ba thứ: hằng số module, từng hàm, và output đã render.
 ```bash
 python test/test_esg_kg_equivalence.py    # lưới chống lệch giữa src/ và esg_kg
 python test/test_esg_kg_anchor_kpi.py     # lát cắt step03b: core/identity + graph/anchor_kpi
+python test/test_esg_kg_provenance.py     # lát cắt step05b: resolve/provenance
 python test/test_temporal_invariants.py   # bộ test sẵn có của src/, phải luôn xanh
 ```
 
 ⚠️ **Bẫy khi viết arm cho một stage vá tại chỗ**: artifact trên đĩa **đã bị chính stage
-đó vá rồi**, nên chạy lại là no-op và arm sẽ so hai kết quả rỗng mà vẫn in PASS. Phải
-dựng lại input trước-khi-vá (`strip_axis` cho `05c`, `strip_anchors` cho `03b`) và strip
-đúng phần stage tự sinh, không strip theo nhãn cạnh. Chi tiết + bảng hai ca đã dính:
-[`PIPELINE.md`](PIPELINE.md) §3.
+đó vá rồi**. Hỏi đúng một câu — *gặp lại phần nó tự sinh, stage bỏ qua hay tính lại?*
+`05c`/`03b` **bỏ qua** ⇒ chạy lại là no-op và arm so hai kết quả rỗng mà vẫn in PASS, phải
+dựng lại input trước-khi-vá (`strip_axis`, `strip_anchors`). `05b` **tính lại** ⇒ arm trên
+file sống đã thật; strip (`strip_provenance`) ở đó dùng để chứng minh stage không đọc
+output của chính nó. Cả ba trường hợp đều strip **đúng phần stage tự sinh**, không strip
+theo nhãn cạnh hay tên key. Chi tiết + bảng ba ca: [`PIPELINE.md`](PIPELINE.md) §3.
 
 ## Trạng thái
 
@@ -86,8 +89,9 @@ dựng lại input trước-khi-vá (`strip_axis` cho `05c`, `strip_anchors` cho
 | `kpi/canonicalize.py` | ✅ dời từ `step03c`; arm so **5 214 KPIObservation thật** giữa hai cây |
 | `resolve/indicators.py` | ✅ dời từ `step05c`; diff 15+/115− **0 dòng logic mới**; arm dựng lại 67 chỉ số + 1 346 cạnh trên đồ thị thật đã strip |
 | `graph/anchor_kpi.py` | ✅ dời từ `step03b` (2026-07-27); diff 17+/20− **0 dòng logic**; arm dựng lại 95 anchor trên corpus đã strip + nhánh hub-guard + idempotency. Test riêng: `test/test_esg_kg_anchor_kpi.py` |
+| `resolve/provenance.py` | ✅ dời từ `step05b` (2026-07-27); diff 18+/8− **0 dòng logic** — stage đầu tiên dời mà **không phải trích thêm `core/`** nào; arm so 6 258 dấu trên đồ thị thật + arm strip chứng minh stage không đọc output của chính nó + fixture nhánh `extraction`. Test riêng: `test/test_esg_kg_provenance.py` |
 | `registry/standards.py` | ⛔ **không dời** — `step04b` đọc output của `step05` (vòng lặp) và lần quét đồ thị đóng góp 0; registry thành config tĩnh, `step00` audit độ phủ (DESIGN.md §4.2) |
-| Stage kế tiếp | 🟢 **bốn stage đủ điều kiện dời ngay**: `step05b` (lưới an toàn mạnh nhất — offline hoàn toàn), `step04`, `step06`, `step09`. Nếu muốn mở khoá nhiều nhất thì viết `core/llm.py` trước — PIPELINE.md §2.1 |
+| Stage kế tiếp | 🟢 còn **ba** stage đủ điều kiện: `step04`, `step06`, `step09` — nhưng `06`/`09` đọc Neo4j nên arm tương đương yếu hẳn, còn `04` thuộc lô hub làm cuối. Ứng viên có lưới an toàn mạnh nhất (`step05b`) đã dời xong, nên bước đáng làm tiếp là **`core/llm.py`** (mở khoá 4 stage) — PIPELINE.md §2.1 |
 | `step07b` (softmax) | ⛔ **không dời** — UI `frontend/`+`api/` không đọc; giữ chạy ở `src/` (DESIGN.md §4.1) |
 
 `src/` **vẫn là pipeline chạy thật**; mới ba stage chạy được từ đây, và bản

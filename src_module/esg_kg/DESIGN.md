@@ -170,7 +170,7 @@ Vì vậy ta **không rewire `src/`**. Thay vào đó:
      | `step03c` | `REPO_ROOT` | ✅ đã có trong `core/paths` |
      | `step06` | `REPO_ROOT`, `load_schema_sets` | ✅ đã có |
      | `step04b` | `merge_preserving_edits`, `normalize_name` | ⛔ đủ điều kiện nhưng KHÔNG dời — §4.2 |
-     | `step05b` | + `parse_source_id` (step03b), `PROVENANCE_CLASSES`/`get_stable_entity_id` (step02) | ✅ **hết chặn** từ 2026-07-27 (`core/identity.py`) |
+     | `step05b` | + `parse_source_id` (step03b), `PROVENANCE_CLASSES`/`get_stable_entity_id` (step02) | ✅ **ĐÃ DỜI** 2026-07-27 (`core/identity.py` mở khoá, rồi dời ngay trong ngày) |
 
      ⚠️ **Hai chỗ bảng trên từng ghi sai, sửa 2026-07-27:**
      (a) symbol `step05b` cần từ step02 là **`get_stable_entity_id`**, không phải
@@ -233,6 +233,27 @@ Vì vậy ta **không rewire `src/`**. Thay vào đó:
      lại do extraction sinh, xoá nhầm là đo sai). Kết quả rỗng được giữ lại thành arm
      **idempotency** riêng, vì đó mới là tính chất vận hành thật đang dựa vào.
      Kiểm bằng mutation: `MIN_NAME_CHARS` 10 → 9 ở cây mới làm arm đỏ.
+     ✅ **`step05b` → `resolve/provenance.py` (2026-07-27), stage thứ năm.** `diff` với bản
+     `src/`: **18 dòng thêm / 8 dòng xoá, 0 dòng logic** — chỉ docstring + khối import.
+     Là stage đầu tiên dời được mà **không phải trích thêm module `core/` nào**: lát cắt
+     `step03b` hôm trước đã lifted sẵn cả 4 symbol nó cần (`PROVENANCE_CLASSES`,
+     `get_stable_entity_id`, `parse_source_id` → `core.identity`; `get_identity_keys` →
+     `core.schema`). Đó chính là ý nghĩa vận hành của chữ "mở khoá" ở mục trên.
+     Arm ở file riêng `test/test_esg_kg_provenance.py` (12 nhóm, không nhóm nào skip).
+
+     **Luật vá-tại-chỗ ở §PIPELINE.md §3 được tinh chỉnh tại đây, và đây là phần đáng
+     ghi nhất của lát cắt này.** Dự đoán ban đầu là arm sẽ rỗng như `05c`/`03b`. **Sai**:
+     `step05b` chỉ `continue` đúng một trường hợp (`provenance_method == "extraction"`,
+     hiện **0 node**), còn lại nó **khớp lại và đóng dấu lại từ đầu** — nên arm trên đồ thị
+     sống so **6 258 dấu** thật ở cả hai cây, không cần strip để cứu. Luật đúng không phải
+     "stage vá tại chỗ ⇒ arm rỗng" mà là: **hỏi cái `continue` — nó bỏ qua hay tính lại?**
+     `strip_provenance()` vẫn được viết, nhưng để chứng minh tính chất *mạnh hơn*: không key
+     nào `05b` ghi nằm trong `identity_keys` của bất kỳ lớp `PROVENANCE_CLASSES` nào (đã đối
+     chiếu `config/schema.json`), nên `get_stable_entity_id` ở tier 3 không thể thấy chúng và
+     **stage không bao giờ đọc output của chính nó**. Nếu điều đó vỡ, đồ thị sẽ trôi dần sau
+     mỗi lần chạy lại mà không có tín hiệu nào khác. Thêm arm bất biến thứ tự node (step06
+     khoá Neo4j theo *chỉ số mảng*, dossier step07 trỏ theo `node_index`) và fixture tổng hợp
+     cho nhánh `extraction` mà dữ liệu thật chưa chạm tới.
 
      (`step07b` từng đứng đầu danh sách này — đã loại, xem §4.1.) `step09`/`step06` cần
      Neo4j nên arm của chúng chỉ kiểm được tới mức import + hàm thuần; để sau.

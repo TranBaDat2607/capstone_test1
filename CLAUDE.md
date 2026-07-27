@@ -66,7 +66,7 @@ repo and secrets, so it is never committed or pushed with this project.
   - `src_module/esg_kg/` is the in-progress third style (see the refactor section below):
     a real package, run from the repo root via its dispatcher —
     `python src_module/run.py quality --label baseline` (equivalently
-    `python -m esg_kg.report.quality` from inside `src_module/`). Four stages have been
+    `python -m esg_kg.report.quality` from inside `src_module/`). Five stages have been
     migrated so far; `python src_module/run.py --list` shows which, and it asks the
     import system rather than trusting a hand-kept list. `src/` is still the pipeline
     you execute.
@@ -177,8 +177,20 @@ is now a known law for every in-place-patch stage, with two confirmed cases — 
 stage's OWN past output to rebuild the pre-patch input (`strip_axis` for 05c,
 `strip_anchors` for 03b), stripping by provenance and never by edge label (the other 211
 `observedAtFacility` edges came from extraction and must stay). See `src_module/PIPELINE.md` §3.
-With `core/identity.py` in place **`step05b` is unblocked** and is the strongest next
-candidate (fully offline). `step05d` is still blocked on `core/llm.py` (`step05d:35`
+`step05b` is the fifth migrated stage (`esg_kg/resolve/provenance.py`, 2026-07-27), diff
+18 added / 8 deleted — docstring and imports only, **no logic line changed**. It is the
+first stage to move **without extracting any new `core/` module**: the step03b slice had
+already lifted all four symbols it needs. Its arms are in `test/test_esg_kg_provenance.py`.
+**It also corrected the in-place-patch law above, so read that law with this caveat**: the
+right question is not "does the stage patch in place" but **"when it meets its own past
+output, does it `continue` or recompute?"** 05c/03b skip, so their naive arms went vacuous;
+step05b's only skip is `provenance_method == "extraction"` (zero nodes today — it is for
+post-re-extraction step02 output), so it re-matches and re-stamps everything and the live-graph
+arm really does compare 6,258 stamps. `strip_provenance` is still written, but to prove a
+stronger property: none of the keys 05b writes appears in any `PROVENANCE_CLASSES`
+`identity_keys`, so `get_stable_entity_id` cannot see them and **the stage never reads its own
+output** — if that broke, the graph would drift on every re-run with no other signal.
+`step05d` is still blocked on `core/llm.py` (`step05d:35`
 imports `_OpenAIProvider`/`RateLimiter` from step07), NOT on `GraphPatch` any more —
 and `core/llm.py` is the biggest single unlock, freeing `step03`, `step05`, `step07`
 and `step05d` at once. `step04`/`step06`/`step09` are also symbol-eligible, but 06/09
@@ -469,11 +481,12 @@ python src/step09_report_claim_ledger.py --review-queue --markdown         #   c
 python src/step10_evaluate.py                                              # step 8 / P6: full Vietnamese evaluation report
 python src/step10_evaluate.py --ablation --no-llm                          #   free arms only (coverage/case studies/ablation are offline)
 
-# Refactor target (src_module/esg_kg) — step00 + step03b + step03c + step05c have moved so far
+# Refactor target (src_module/esg_kg) — step00 + step03b + step03c + step05b + step05c have moved so far
 python src_module/run.py --list                                            # stages + which are migrated
 python src_module/run.py quality --label baseline                          # == src/step00_graph_quality_report.py
 python src_module/run.py canonicalize --dry-run                            # == src/step03c_canonicalize_kpis.py
 python src_module/run.py anchor_kpi --dry-run                              # == src/step03b_anchor_kpi_facilities.py
+python src_module/run.py provenance --dry-run                              # == src/step05b_stamp_provenance.py
 python src_module/run.py indicators --dry-run                              # == src/step05c_link_standard_indicators.py
 
 # ESG Evidence View UI (web front-end; reads the Neo4j advisory layer, no LLM — see docs/ESG_EVIDENCE_VIEW.md)
@@ -562,6 +575,19 @@ python test/test_esg_kg_anchor_kpi.py      # same contract as the file above, fo
                                            # cap=1 arm for the P5 hub guard the live data never
                                            # trips, plus an idempotency arm. Run after touching
                                            # step03b, step02's identity helpers, or step05b.
+python test/test_esg_kg_provenance.py      # same contract, for the step05b migration slice
+                                           # (resolve/provenance). Note the CONTRAST with the
+                                           # file above: step05b does NOT skip its own past
+                                           # output, it re-stamps, so the live-graph arm is
+                                           # already non-vacuous (6,258 stamps compared in both
+                                           # trees). strip_provenance() is there to prove the
+                                           # stage never READS its own output — no key it writes
+                                           # is in any identity_keys, so a stripped rebuild must
+                                           # be identical. Plus a node-order arm (step06 keys
+                                           # Neo4j by array index) and a synthetic arm for the
+                                           # provenance_method="extraction" skip that no live
+                                           # node exercises. Run after touching step05b, step02's
+                                           # identity helpers, or the per-page graph writer.
 ```
 
 The rest of `test/` and `notebooks/` are Jupyter notebooks for manual validation
