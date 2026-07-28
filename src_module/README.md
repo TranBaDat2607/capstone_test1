@@ -66,6 +66,7 @@ python test/test_esg_kg_llm.py            # lát cắt core/llm: throttle + hìn
 python test/test_esg_kg_fix_triples.py    # lát cắt step03: corpus thật + pha 2 bằng LLM giả
 python test/test_esg_kg_validated_block.py # KHỐI 03→03b→03c: src/ làm oracle + "ghi đúng 1 lần"
 python test/test_esg_kg_align_claims.py    # lát cắt step05d: nhánh LLM bắt buộc, chạy bằng provider giả
+python test/test_esg_kg_crosscheck.py      # lát cắt step07: đòn bẩy lớn nhất, mở khoá 08+10
 python test/test_pipeline_table.py        # bảng STAGES/BLOCKS + run.py --list nói thật
 python test/test_temporal_invariants.py   # bộ test sẵn có của src/, phải luôn xanh
 ```
@@ -93,7 +94,7 @@ bảng bốn ca: [`PIPELINE.md`](PIPELINE.md) §3.
 | `core/console.py` | ✅ `ensure_utf8_stdout` — gọi ở **đầu `main()`**, không phải `__main__` (DESIGN.md §6.2) |
 | `core/graph_patch.py` | ✅ `GraphPatch`, `temporal_md` — gỡ khỏi `step05c` để `step05d` import từ kernel, không từ một stage |
 | `core/identity.py` | ✅ `parse_source_id`, `get_stable_entity_id`, `PROVENANCE_CLASSES` — gỡ khỏi `step03b`/`step02` (cùng lý do trên); mở khoá `step05b` |
-| `core/llm.py` | ✅ `DEFAULT_RATE_LIMIT`, `RateLimiter` (<- `step02`) + `_Provider`, `_OpenAIProvider` (<- `step07`) — verbatim, 0 dòng logic đổi; **mở khoá 4 stage** (`03`, `05`, `07`, `05d`). `Adjudicator` cố ý ở lại `step07`, nên `08`/`10` chờ stage đó chứ không chờ kernel. Test: `test/test_esg_kg_llm.py` |
+| `core/llm.py` | ✅ `DEFAULT_RATE_LIMIT`, `RateLimiter` (<- `step02`) + `_Provider`, `_OpenAIProvider` (<- `step07`) — verbatim, 0 dòng logic đổi; **mở khoá 4 stage** (`03`, `05`, `07`, `05d`). `Adjudicator` cố ý ở lại `step07` — nay đã dời, và chính điều đó mở khoá `08`/`10`. Test: `test/test_esg_kg_llm.py` |
 | `core/` còn lại | ⏳ `io_jsonl` (chặn `02`; **không** chặn `01`, mà rơi ra từ lát cắt `01`) → `text`. **Không còn module `core/` nào chặn stage nào khác.** Bản đồ đầy đủ: [`PIPELINE.md`](PIPELINE.md) §2.1 |
 | `report/quality.py` | ✅ stage đầu tiên được dời (từ `step00`), chạy được |
 | `kpi/canonicalize.py` | ✅ dời từ `step03c`; arm so **5 214 KPIObservation thật** giữa hai cây |
@@ -103,10 +104,11 @@ bảng bốn ca: [`PIPELINE.md`](PIPELINE.md) §3.
 | `graph/fix_triples.py` | ✅ dời từ `step03` (2026-07-28); stage **thứ hai** dời mà không phải trích thêm `core/`. Nó *trông* như hub (7 stage import) nhưng mọi symbol chúng lấy đã ở `core/dates`+`core/schema` ⇒ thực chất là leaf — **"hub" phải kiểm bằng CHIỀU import**. Arm corpus thật (14 492 validated + 1 036 unfixable) không cần `strip_*` vì stage không bao giờ gặp output của chính nó; pha 2 (trả tiền) có arm bằng LLM giả. Test riêng: `test/test_esg_kg_fix_triples.py` |
 | `graph/build_validated.py` | ✅ **KHỐI** `03 → 03b → 03c` (2026-07-28) — không phải stage, **không có bản `src/`** nên không tính vào mẫu số. Nối chuỗi in-memory, ghi `all_validated_triples.json` **1 lần**; `src/` giữ nguyên 3 stage và làm **oracle**. Pha 2 cache theo *nội dung* triple ⇒ chạy lại **0 lời gọi LLM**. Test riêng: `test/test_esg_kg_validated_block.py` (DESIGN.md §5.7) |
 | `resolve/align_claims.py` | ✅ dời từ `step05d` (2026-07-28); stage thứ **ba** dời mà không phải trích thêm `core/` — lát cắt `05c` đã đẩy `GraphPatch`/`temporal_md` lên kernel *chính vì* file này import chúng từ một stage. Stage **bắt buộc có LLM** — `--dry-run` return trước khi provider được dựng, nên nhánh đắt được phủ bằng **provider giả tiêm vào cả hai cây** (tất định theo CRC của prompt). Test riêng: `test/test_esg_kg_align_claims.py` (14 nhóm) |
+| `crosscheck/claims_vs_conduct.py` | ✅ dời từ `step07` (2026-07-28), stage thứ **tám** — đòn bẩy lớn nhất trước khi dời: stage DUY NHẤT còn chặn ai đó (`08` chờ `node_text`, `10` chờ `Adjudicator`). `_Provider`/`_OpenAIProvider` nay import NGƯỢC từ `core.llm` — đúng hai lớp mà slice đó đã trích TỪ CHÍNH file này ngày 2026-07-27; `Adjudicator` cố ý ở lại stage (prompt + parse verdict + cascade — logic, không phải kernel). Khác `05d`, `--dry-run` ở đây KHÔNG return trước khi dựng provider (chỉ bỏ ghi file cuối) nên arm dry-run cũng là kiểm tương đương thật. Không đọc lại output của chính nó (ghi khác thư mục) nên PIPELINE.md §3 không áp dụng. Test riêng: `test/test_esg_kg_crosscheck.py` (21 nhóm) |
 | `registry/standards.py` | ⛔ **không dời** — `step04b` đọc output của `step05` (vòng lặp) và lần quét đồ thị đóng góp 0; registry thành config tĩnh, `step00` audit độ phủ (DESIGN.md §4.2) |
-| Stage kế tiếp | 🟢 `03` rồi `05d` đã dời (2026-07-28), còn **sáu** stage đủ điều kiện: `01`, `04`, `05`, `06`, `07`, `09`. **`step07` là đòn bẩy lớn nhất còn lại** — nó là stage duy nhất còn chặn ai đó (`08` chờ `node_text`, `10` chờ `Adjudicator`), và lý do hoãn cũ ("trả tiền") vừa bị `05d` gỡ: stub provider cho arm thật, miễn phí. **`step04` nay cũng là leaf** — kiểm lại 2026-07-28, cả 3 symbol bị import đã ở `core/naming` (nhưng nó ghi một file **tracked + sửa tay**, arm phải dùng workspace tạm). `step05` **chưa được dời** cho tới khi xử §3.1 — nay mặc định là gộp khối theo §3.2. PIPELINE.md §2.1 |
+| Stage kế tiếp | 🟢 `03`, `05d`, `07` đã dời (2026-07-28), còn **năm** stage đủ điều kiện: `01`, `04`, `05`, `06`, `09` — cộng **`08`**/**`10`**, hai stage `07` vừa mở khoá (chờ `node_text`/`Adjudicator` từ chính stage đó, không còn chờ kernel). `step04` là leaf (3 symbol đã ở `core/naming`, nhưng ghi một file **tracked + sửa tay**, arm phải dùng workspace tạm). `step05` **chưa được dời** cho tới khi xử §3.1 — nay mặc định là gộp khối theo §3.2. PIPELINE.md §2.1 |
 | `step07b` (softmax) | ⛔ **không dời** — UI `frontend/`+`api/` không đọc; giữ chạy ở `src/` (DESIGN.md §4.1) |
 
-`src/` **vẫn là pipeline chạy thật**; mới **bảy** stage chạy được từ đây (`00`, `03`, `03b`,
-`03c`, `05b`, `05c`, `05d`) **cộng một khối** `build_validated` — `run.py --list` là nguồn sự thật —
+`src/` **vẫn là pipeline chạy thật**; mới **tám** stage chạy được từ đây (`00`, `03`, `03b`,
+`03c`, `05b`, `05c`, `05d`, `07`) **cộng một khối** `build_validated` — `run.py --list` là nguồn sự thật —
 và bản `src/step00_graph_quality_report.py` vẫn còn (nợ đã ghi: DESIGN.md §6.1).

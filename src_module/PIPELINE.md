@@ -7,16 +7,20 @@ bức tranh toàn hệ thống.
 Nguồn sự thật của thứ tự chạy là [`esg_kg/pipeline.py`](esg_kg/pipeline.py); file này
 là bản vẽ của cùng dữ liệu đó. `python src_module/run.py --list` luôn nói thật về tiến độ.
 
-**Trạng thái (2026-07-28): 7/16 stage đã dời** — `00 quality`, `03 fix_triples`,
+**Trạng thái (2026-07-28): 8/16 stage đã dời** — `00 quality`, `03 fix_triples`,
 `03b anchor_kpi`, `03c canonicalize`, `05b provenance`, `05c indicators`,
-`05d align_claims`; 2 stage cố ý không dời (§4).
+`05d align_claims`, `07 claims_vs_conduct`; 2 stage cố ý không dời (§4).
 `05b` là stage đầu tiên dời được mà **không phải trích thêm module `core/` nào** — lần dời
-`03b` đã lifted sẵn cả 4 symbol nó cần. `03` là stage thứ hai, **`05d` là stage thứ ba** —
+`03b` đã lifted sẵn cả 4 symbol nó cần. `03` là stage thứ hai, `05d` là stage thứ ba —
 lát cắt `05c` đã đẩy `GraphPatch`/`temporal_md` lên kernel *chính vì* `05d` đang import
-chúng từ một stage, nên tới lượt nó thì không còn gì phải trích.
+chúng từ một stage, nên tới lượt nó thì không còn gì phải trích. **`07` là stage thứ
+tám** (2026-07-28) và đòn bẩy lớn nhất trong cả đợt: nó là stage DUY NHẤT còn chặn ai đó
+(`08` chờ `node_text`, `10` chờ `Adjudicator`) — dời nó là mở khoá cả hai cùng lúc. Nó
+cũng là lượt import NGƯỢC đầu tiên: `_Provider`/`_OpenAIProvider` giờ lấy từ `core.llm`,
+đúng hai lớp mà kernel đó đã trích TỪ CHÍNH file `step07` một ngày trước.
 
-**9 stage còn lại VẪN CHẠY BẰNG `src/`**: `01`, `02`, `04`, `05`, `06`, `07`, `08`, `09`,
-`10`. Trong sơ đồ §1, ô viền đứt là **chưa dời**, không phải đã xong; chỉ ô nền xanh
+**8 stage còn lại VẪN CHẠY BẰNG `src/`**: `01`, `02`, `04`, `05`, `06`, `08`, `09`, `10`.
+Trong sơ đồ §1, ô viền đứt là **chưa dời**, không phải đã xong; chỉ ô nền xanh
 đặc gắn `✅ ĐÃ DỜI` mới là đã refactor.
 
 **Ngoài 7 stage đó, `esg_kg` còn có 1 KHỐI: `build_validated` = `03 → 03b → 03c`** nối chuỗi
@@ -40,9 +44,13 @@ Nó **không dời stage nào** (lúc đó vẫn 5/16) nhưng **mở khoá 4 sta
 **ba** stage thật sự bị chặn: `02` (cần `core/io_jsonl`), `08` và `10` (cả hai chờ `step07`
 dời — xem §2.1). Test: `test/test_esg_kg_llm.py`.
 
-**`03` rồi `05d` đã dùng suất đó (2026-07-28), nên đòn bẩy `core/llm` đã hiện thành stage
-thật: 5/16 → 6/16 → 7/16.** Cùng commit với `03` là khối `build_validated` đầu tiên (§3.2).
-Còn **6** stage đủ điều kiện chưa dời: `01`, `04`, `05`, `06`, `07`, `09`.
+**`03` rồi `05d` rồi `07` đã dùng suất đó (2026-07-28), nên đòn bẩy `core/llm` đã hiện
+thành stage thật: 5/16 → 6/16 → 7/16 → 8/16.** Cùng commit với `03` là khối
+`build_validated` đầu tiên (§3.2). `07` là lượt cuối cùng dùng suất này — nó cũng là
+stage đã TẠO RA `_Provider`/`_OpenAIProvider` cho `core/llm`, nên đây là lần đầu tiên
+kernel "trả" symbol lại đúng nơi sinh ra nó. Còn **5** stage đủ điều kiện chưa dời từ
+kernel: `01`, `04`, `05`, `06`, `09` — cộng **`08`** và **`10`**, hai stage `07` vừa
+tự mình mở khoá (chúng chờ `node_text`/`Adjudicator` từ `07`, không chờ `core/`).
 
 🔑 **Bài học lớn nhất của lát cắt `05d`, và nó đổi thứ tự làm phần còn lại: "stage trả tiền"
 KHÔNG còn là lý do hoãn.** `05d` bắt buộc phải có LLM (`--dry-run` return *trước* khi provider
@@ -120,10 +128,10 @@ flowchart TD
 
     subgraph P4["④ Nạp + phân tích"]
         S06["⚪ CHƯA DỜI · step06 · neo4j_load"]:::ready
-        S07["⚪ CHƯA DỜI · step07 · claims_vs_conduct<br/>LLM BẮT BUỘC — lõi phân tích"]:::ready
-        S08["⏳ CHƯA DỜI · step08 · neo4j_sync<br/>đẩy tầng advisory"]:::pending
+        S07["✅ ĐÃ DỜI · step07 · claims_vs_conduct<br/>LLM BẮT BUỘC — lõi phân tích"]:::migrated
+        S08["⚪ CHƯA DỜI · step08 · neo4j_sync<br/>đẩy tầng advisory — mở khoá bởi 07"]:::ready
         S09["⚪ CHƯA DỜI · step09 · claim_ledger"]:::ready
-        S10["⏳ CHƯA DỜI · step10 · evaluate"]:::pending
+        S10["⚪ CHƯA DỜI · step10 · evaluate<br/>mở khoá bởi 07"]:::ready
     end
 
     REGI["config/issuer_registry.json"]:::cfg
@@ -160,8 +168,10 @@ flowchart TD
 > ⚠️ **Chỉ ô nền xanh ĐẶC, chữ trắng, gắn nhãn `✅ ĐÃ DỜI` mới là đã refactor.**
 > Ô viền đứt gắn `⚪ CHƯA DỜI` nghĩa là **vẫn đang chạy bằng `src/`** — nó mới chỉ *đủ điều
 > kiện* để dời. Cụm `03` nay đã dời **trọn** (`03`+`03b`+`03c`); chỗ còn **khác trạng thái
-> ngay cạnh nhau** là cụm `05`: `05b`/`05c`/`05d` đã dời, chỉ còn `05` là chưa. Nghi ngờ thì hỏi
-> `python src_module/run.py --list`, đừng đọc màu.
+> ngay cạnh nhau** là cụm `05`: `05b`/`05c`/`05d` đã dời, chỉ còn `05` là chưa. `07` cũng đã
+> dời — và vì nó là stage duy nhất từng chặn `08`/`10`, hai ô đó đổi từ `⏳` (chờ stage khác)
+> sang `⚪` (chỉ còn chờ tới lượt dời) ngay khi `07` xong, không cần đụng tới `core/` nào
+> thêm. Nghi ngờ thì hỏi `python src_module/run.py --list`, đừng đọc màu.
 
 | Nhãn trong ô | Màu | Nghĩa |
 |---|---|---|
@@ -193,11 +203,11 @@ flowchart TD
 | 05c | `indicators` | — | resolved + `kpi_definitions` + crosswalk + `gri_catalog` | vá tại chỗ | ✅ **đã dời** |
 | 05d | `align_claims` | 💰 tùy chọn | resolved | vá tại chỗ | ✅ **đã dời** · nhánh trả tiền có arm bằng LLM giả |
 | 06 | `neo4j_load` | — | resolved | Neo4j | ⚪ **chưa dời** — đủ điều kiện |
-| 07 | `claims_vs_conduct` | 💰 **bắt buộc** | resolved | `<ticker>_claim_assessments.json` | ⚪ **chưa dời** — đủ điều kiện ⚠️ bẫy `node_text` |
+| 07 | `claims_vs_conduct` | 💰 **bắt buộc** | resolved | `<ticker>_claim_assessments.json` | ✅ **đã dời** (2026-07-28) — mở khoá `08`/`10` |
 | 07b | — | — | dossier | dossier (thêm điểm) | ⛔ **không dời** |
-| 08 | `neo4j_sync` | — | dossier | Neo4j (tầng advisory) | ⏳ chờ `07` |
+| 08 | `neo4j_sync` | — | dossier | Neo4j (tầng advisory) | ⚪ **chưa dời** — mở khoá bởi `07` (§2.1) |
 | 09 | `claim_ledger` | — | **chỉ Neo4j** | `<ticker>_claim_ledger.md` | ⚪ **chưa dời** — đủ điều kiện |
-| 10 | `evaluate` | 💰 1 nhánh 30 ca | dossier + stats | `<ticker>_evaluation_report.md` | ⏳ chờ `07` |
+| 10 | `evaluate` | 💰 1 nhánh 30 ca | dossier + stats | `<ticker>_evaluation_report.md` | ⚪ **chưa dời** — mở khoá bởi `07` (§2.1) |
 
 💰 = tốn tiền. Đây là lý do mọi test đều offline và mọi stage đắt đều có `--dry-run`.
 
@@ -222,10 +232,10 @@ Bảng dưới là kết quả grep toàn bộ import chéo trong `src/` đối 
 | 05b | `get_identity_keys`, `PROVENANCE_CLASSES`, `get_stable_entity_id`, `parse_source_id` | ✅ **đã dời** (2026-07-27) — không phải viết thêm `core/` nào |
 | 05d | `load_schema_sets`, `GraphPatch`, `temporal_md` (đã ở `core/`) + `_OpenAIProvider` | ✅ **đã dời** (2026-07-28) — không phải viết thêm `core/` nào, cây thứ ba làm được. `RateLimiter` trong `import` cũ là **rác**: không chỗ nào dùng |
 | 06 | `REPO_ROOT`, `load_schema_sets` | — 🟢 **đủ symbol, nhưng VẪN CHƯA DỜI** |
-| 07 | `load_schema_sets`, `normalize_name`, `name_tokens` (đã ở `core/`) + `RateLimiter` | — 🟢 **đủ symbol, nhưng VẪN CHƯA DỜI** (`core/llm` xong) — bẫy `node_text` ở dưới |
-| 08 | `node_text` (của `step07`) | **chờ `step07` dời** — `node_text` KHÔNG vào `core/llm` (xem cảnh báo dưới) |
+| 07 | `load_schema_sets`, `normalize_name`, `name_tokens` (đã ở `core/`) + `_Provider`/`_OpenAIProvider` | ✅ **đã dời** (2026-07-28) — không phải viết thêm `core/` nào; `RateLimiter` trong import cũ là **rác** (chỉ `_OpenAIProvider.__init__` cần, và lớp đó nay tới sẵn từ `core.llm`), y hệt phát hiện ở `05d` |
+| 08 | `node_text` (của `step07`) | **`step07` đã dời (2026-07-28)** — `08` giờ chỉ còn chờ tới lượt dời chính nó, không chờ ai khác. `node_text` KHÔNG vào `core/llm` (xem cảnh báo dưới), nó ở lại `esg_kg.crosscheck.claims_vs_conduct` cùng stage |
 | 09 | *(không import stage nào)* | — 🟢 **đủ symbol, nhưng VẪN CHƯA DỜI** |
-| 10 | `Adjudicator` (import **lười** trong `try`, `step10:368`) | **chờ `step07` dời** — `Adjudicator` là logic stage, cố ý KHÔNG vào `core/llm`; hỏng thì **im lặng**, không lỗi |
+| 10 | `Adjudicator` (import **lười** trong `try`, `step10:368`) | **`step07` đã dời (2026-07-28)** — `10` giờ chỉ còn chờ tới lượt dời chính nó. `Adjudicator` là logic stage, cố ý KHÔNG vào `core/llm`; hỏng thì **im lặng**, không lỗi — điều đó không đổi chỉ vì `07` đã dời |
 
 ```mermaid
 flowchart LR
@@ -235,14 +245,14 @@ flowchart LR
     classDef pend fill:#fff3bf,stroke:#e8a90c,color:#1a1a1a
 
     CORE["core/ hôm nay<br/>paths · schema · naming · dates<br/>console · graph_patch · identity · <b>llm</b>"]:::done
-    READY["⚪ CHƯA DỜI, đủ điều kiện dời — 6 stage<br/>01 · 04 · 05 · 06 · 07 · 09"]:::ready
-    S07M["dời 07<br/>(mang theo node_text + Adjudicator)"]:::key
+    S07D["✅ dời 07 (2026-07-28)<br/>mang theo node_text + Adjudicator"]:::done
+    READY["⚪ CHƯA DỜI, đủ điều kiện dời — 5 stage<br/>01 · 04 · 05 · 06 · 09"]:::ready
+    U1["⚪ 08 · 10 — mở khoá, chỉ còn chờ tới lượt"]:::ready
     IOJ["core/io_jsonl (+ text)<br/>rơi ra từ lát cắt 01"]:::key
-    U1["08 · 10"]:::pend
     U3["02"]:::pend
 
+    CORE --> S07D --> U1
     CORE --> READY
-    READY -->|"dời 07 ⇒ mở"| S07M --> U1
     READY -->|"dời 01 ⇒ trích được"| IOJ --> U3
 ```
 
@@ -253,10 +263,10 @@ ra từ lát cắt `01`, và `01` thì đã đủ điều kiện.
 **Đọc ra được ba điều, cả ba đều đổi thứ tự làm:**
 
 1. **Kernel đã hết đường chặn.** Sau `core/llm.py` (2026-07-27) có 8/11 stage chưa dời đủ
-   điều kiện; `03` đã dùng suất đó ngày 2026-07-28, còn lại **7**: `01`, `04`, `05`, `05d`,
-   `06`, `07`, `09`. Việc còn lại không phải "viết thêm `core/`" nữa mà là **chọn stage nào
-   dời trước**, và tiêu chí bây giờ là *arm tương đương mạnh tới đâu*, không còn là *symbol
-   đã sẵn chưa*:
+   điều kiện; `03` rồi `05d` rồi `07` đã dùng suất đó ngày 2026-07-28, còn lại **5**: `01`,
+   `04`, `05`, `06`, `09`. Việc còn lại không phải "viết thêm `core/`" nữa mà là **chọn
+   stage nào dời trước**, và tiêu chí bây giờ là *arm tương đương mạnh tới đâu*, không còn
+   là *symbol đã sẵn chưa*:
    - **~~`03` — mạnh nhất~~ → ĐÃ DỜI (2026-07-28).** Lý do nó được chọn vẫn đáng đọc, vì nó
      là khuôn cho các lần sau: pha 1 + pha 1.5 offline nên chạy được trên corpus thật miễn
      phí, còn **pha 2 (trả tiền) được lái bằng một LLM giả** nên nhánh đắt vẫn có arm. Kết
@@ -276,11 +286,20 @@ ra từ lát cắt `01`, và `01` thì đã đủ điều kiện.
      Thứ thật sự làm arm mạnh là **provider giả** (xem 🔑 ở đầu file). Ghi lại vì nó đảo
      tiêu chí chọn stage: **có `--dry-run` ≠ dễ test**; cái đáng hỏi là *nhánh đắt tiền có
      tiêm được stub không*.
-   - **`07` — đòn bẩy lớn nhất còn lại, và rào cản "tốn tiền" vừa bị gỡ.** Nó là stage
-     **duy nhất** còn chặn ai đó: `08` chờ `node_text`, `10` chờ `Adjudicator` — dời `07` là
-     mở nốt **hai** stage cuối cùng đang bị chặn. Trước đây lý do hoãn là "trả tiền", nhưng
-     `03` pha 2 và `05d` đã chứng minh hai lần rằng stub provider cho arm thật miễn phí.
-     ⚠️ Kèm bẫy `node_text` ngay dưới — nó phải mang theo bản của **chính nó**.
+   - **~~`07` — đòn bẩy lớn nhất còn lại~~ → ĐÃ DỜI (2026-07-28).** Nó là stage duy nhất
+     từng chặn ai đó: `08` chờ `node_text`, `10` chờ `Adjudicator` — dời nó mở nốt **hai**
+     stage cuối cùng đang bị chặn, cùng một lượt. Rào cản cũ "trả tiền" đã bị gỡ đúng như
+     dự đoán: `03` pha 2 và `05d` đã chứng minh hai lần rằng stub provider cho arm thật
+     miễn phí, và `07` là lần thứ ba — cộng thêm một điểm mới, `--dry-run` ở đây KHÔNG
+     `return` trước khi dựng provider (chỉ bỏ ghi file cuối), nên khác `05d`, arm dry-run
+     ở đây tự nó đã là một phép kiểm tương đương thật. Bẫy `node_text` (ngay dưới) đã được
+     giữ đúng: `esg_kg.crosscheck.claims_vs_conduct.node_text` (nhận NODE, rẽ theo class) và
+     `esg_kg.resolve.align_claims.node_text` (nhận dict thuộc tính) là hai hàm khác nhau,
+     pin bằng test hai chiều trong cả hai file test tương đương. Phát hiện thêm một khiếm
+     khuyết cùng dạng bug đã sửa ở `05d` (`a308608`): `_parse_verdict` cũng gọi `.get()`
+     trên JSON hợp lệ nhưng sai hình dạng — bán kính nhỏ hơn (bị `try/except` của
+     `Adjudicator.adjudicate` nuốt, chỉ mất một verdict chứ không mất cả lượt chạy), sửa ở
+     commit riêng theo §5.3, không nhét vào commit dời stage này.
    - **`04` — đã kiểm lại theo bài học (a) ngày 2026-07-28: hub của nó cũng đã tan.**
      Đúng như nghi ngờ ghi ở lần trước. 6 stage `src/` import `step04`
      (`00`, `03b`, `04b`, `05`, `05c`, `07`) nhưng tất cả chỉ lấy `normalize_name` /
@@ -291,15 +310,16 @@ ra từ lát cắt `01`, và `01` thì đã đủ điều kiện.
      `config/issuer_registry.json` — một file **tracked trong Git** và có **sửa tay của
      người** (`merge_preserving_edits`), nên arm phải chạy trên workspace tạm, đừng đụng
      bản thật.
-   - `06`/`09` đọc Neo4j; `01`/`07` là stage trả tiền; `05` **không được dời nếu chưa xử
+   - `06`/`09` đọc Neo4j; `01` là stage trả tiền; `05` **không được dời nếu chưa xử
      §3.1** (nó ghi đè cả ba bản vá) — và §3.2 nay là câu trả lời mặc định cho §3.1.
 2. **~~`core/llm.py` là đòn bẩy lớn nhất~~ → ĐÃ XONG (2026-07-27).** Đúng như dự đoán: nó
    mở khoá 4 stage cùng lúc (`03`, `05`, `07`, `05d`). Lát cắt gồm `DEFAULT_RATE_LIMIT` +
    `RateLimiter` (từ `step02`) và `_Provider` + `_OpenAIProvider` (từ `step07`) — bốn symbol
    **buộc phải đi cùng nhau** vì `_OpenAIProvider.__init__` *khởi tạo* một `RateLimiter`,
    tức `step07` đang với UP sang `step02` để lấy tiện ích. `Adjudicator` **cố ý ở lại**
-   `step07` (là logic stage: prompt + parse verdict + cascade), nên `08`/`10` **vẫn chưa**
-   được mở — chúng chờ chính `step07` dời, chứ không chờ kernel.
+   `step07` (là logic stage: prompt + parse verdict + cascade). ~~`08`/`10` vẫn chưa được
+   mở~~ → **đã mở (2026-07-28)**, cùng ngày `step07` dời: chúng chờ chính stage đó, không
+   chờ kernel, và stage đó nay đã dời.
 3. **`01` là hub cuối cùng còn lại — và sau lần kiểm `04` ở trên thì đây không còn là phỏng
    đoán, nó là hub DUY NHẤT.** `03` và `04` đều đã tan; `01` thì **không**, vì nó là stage
    duy nhất còn bị import phần *stage-local* (5 helper JSONL dưới đây) chứ không phải phần
@@ -315,12 +335,14 @@ ra từ lát cắt `01`, và `01` thì đã đủ điều kiện.
    `core/io_jsonl` có arm tương đương mạnh chạy trên corpus thật, dù bản thân stage `01`
    là stage trả tiền.
 
-⚠️ **Cái bẫy — nay là bẫy của lần dời `step07`, không phải của `core/llm`:** có **hai** hàm
-tên `node_text` và chúng **không** trùng nhau — `step05d:63` nhận *dict thuộc tính*,
-`step07:133` nhận *node* rồi rẽ theo class. Gộp chung là **âm thầm viết lại prompt LLM đã
-trả tiền của `step07`**. Giữ hai tên khác nhau. (DESIGN.md ghi đây là lỗi trong chính nó,
-chưa gấp lại.) `core/llm.py` **cố ý không đụng** vào `node_text` — đó là lý do `08` (chỉ
-import đúng `node_text`) vẫn nằm trong nhóm chờ.
+✅ **Cái bẫy của lần dời `step07` đã tránh được, không phải của `core/llm`:** có **hai** hàm
+tên `node_text` và chúng **không** trùng nhau — `esg_kg.resolve.align_claims.node_text`
+nhận *dict thuộc tính*, `esg_kg.crosscheck.claims_vs_conduct.node_text` (cũ: `step07:133`)
+nhận *node* rồi rẽ theo class. Gộp chung sẽ **âm thầm viết lại prompt LLM đã trả tiền** của
+một trong hai stage. Giữ hai tên khác nhau — cả hai file test tương đương
+(`test_esg_kg_align_claims.py` và `test_esg_kg_crosscheck.py`) đều pin sự khác biệt này từ
+phía của mình, nên bẫy bị bắt ở cả hai hướng. `core/llm.py` **cố ý không đụng** vào
+`node_text` — nó ở lại đúng stage sinh ra nó, không lên kernel.
 
 📌 **Lưu ý thứ tự cho `02` — thay đổi hành vi đi TRƯỚC lần dời, không đi sau.** DESIGN.md
 §5.6 đã chốt `step02` sẽ xuất `name`/`title` tiếng Việt (issue #6). Theo §5.3 mọi thay đổi

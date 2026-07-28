@@ -66,7 +66,7 @@ repo and secrets, so it is never committed or pushed with this project.
   - `src_module/esg_kg/` is the in-progress third style (see the refactor section below):
     a real package, run from the repo root via its dispatcher —
     `python src_module/run.py quality --label baseline` (equivalently
-    `python -m esg_kg.report.quality` from inside `src_module/`). Seven stages have been
+    `python -m esg_kg.report.quality` from inside `src_module/`). Eight stages have been
     migrated so far; `python src_module/run.py --list` shows which, and it asks the
     import system rather than trusting a hand-kept list. `src/` is still the pipeline
     you execute.
@@ -252,6 +252,32 @@ the migration surfaced and deliberately did not touch: `parse_reply` called `.ge
 whatever `json.loads` returned, so a reply of `[]` or `"text"` raised `AttributeError` instead
 of returning `None` — and since `run()` writes the graph only after the loop, one odd reply
 discarded every adjudication already paid for. Fixed in **both** trees per §5.3.
+`step07` is the eighth migrated stage (`esg_kg/crosscheck/claims_vs_conduct.py`, 2026-07-28)
+and the highest-leverage move in the refactor so far: it was the only stage still blocking
+others (`08` on `node_text`, `10` on `Adjudicator`, both via a lazy import), so migrating it
+unblocks both at once. It is also the first migration to import BACK from a kernel module
+built out of itself — `_Provider`/`_OpenAIProvider` came from `core/llm.py` (2026-07-27,
+extracted from this very file), and this slice is what finally has the stage import them
+rather than redefine them; the previously-dead `RateLimiter` import (from step02) is dropped,
+the same shape step05d's dead import had. `Adjudicator` stays in the stage, exactly as
+`core/llm.py`'s docstring always said it would — prompt text, verdict parsing, and the
+provider cascade are stage logic, not kernel. Unlike step05d, `--dry-run` here does NOT
+return before the provider is built (it only skips the final writes), so the dry-run arm is
+itself a real equivalence check, not a vacuous one. This stage reads `resolved_graph.json`
+and writes to a different directory (`graph_output/crosscheck/`), so it never meets its own
+past output — PIPELINE.md §3's in-place-patch question does not apply, the same shape step03
+had. Its arms are in `test/test_esg_kg_crosscheck.py` (21 groups), including a reciprocal
+`node_text` trap check (this stage's takes a NODE and dispatches on class; step05d's takes a
+properties dict — each test file pins the divergence from its own side), the self-verification
+guard (a company-owned domain must never get a `verifiedBy` edge), and the assessment-mapping
+priority (a contradiction always wins over supporting evidence in the same dossier). The
+migration surfaced the same class of defect step05d's `a308608` fixed: `_parse_verdict` also
+calls `.get()` on whatever `json.loads` returns, so a reply like `[]` crashes instead of being
+treated as unusable. Here the blast radius is smaller — the call sits inside
+`Adjudicator.adjudicate`'s own try/except, so it degrades to "no verdict for this pair"
+rather than losing a whole run — but it is still misfiled as a *provider failure* rather than
+an unusable-reply no-op. Following the same order as step05d, this landed as verbatim first;
+the fix is a separate commit, both trees, per §5.3.
 06/09 read Neo4j, 01 costs money, 04 is *nominally* a hub — re-checked 2026-07-28 per lesson
 (a) and **its hub has dissolved too**: all three symbols other stages take from it
 (`normalize_name`, `name_tokens`, `merge_preserving_edits`) are already in `core/naming.py`,
@@ -294,15 +320,18 @@ Known debt: `src/step00_graph_quality_report.py` still exists, so the T1/T2/T3 t
 `test/test_schema_contract.py` imports lives in two trees — cleanup commit spelled out in
 `src_module/esg_kg/DESIGN.md` §6.1.
 
-Corrections to DESIGN.md found by review, not yet folded into it:
-- The two `node_text` are **NOT duplicates** — `step05d:63` takes a *properties dict*,
-  `step07:133` takes a *node* and class-dispatches. Both move; keep separate names.
-  Merging them silently rewrites step07's paid LLM prompt.
-- `GraphPatch` / `temporal_md` (step05c) are shared but have **no home in the `core/` layout** —
-  this blocks step05d.
-- `step05d`, `step08`, `step10` are listed as safe "leaf" moves but are not: they import
-  from step05c/step07. `step10_evaluate.py:367` hides a lazy `from step07… import Adjudicator`
-  inside a `try` — it fails *silently* if broken.
+Corrections to DESIGN.md found by review, since resolved by the migrations themselves:
+- The two `node_text` are **NOT duplicates** — `step05d`'s takes a *properties dict*,
+  `step07`'s takes a *node* and class-dispatches. Both have now moved
+  (`esg_kg.resolve.align_claims.node_text` / `esg_kg.crosscheck.claims_vs_conduct.node_text`),
+  keeping separate names; each stage's equivalence test pins the divergence from its own side.
+- ~~`GraphPatch` / `temporal_md` (step05c) are shared but have no home in the `core/`
+  layout — this blocks step05d.~~ Resolved 2026-07-27: they live in `core/graph_patch.py`.
+- ~~`step05d`, `step08`, `step10` are listed as safe "leaf" moves but are not: they import
+  from step05c/step07.~~ `step05d` has since moved (2026-07-28). `step08`/`step10` were
+  blocked on `step07` itself (not a `core/` module) — `step10_evaluate.py:367`'s lazy
+  `from step07… import Adjudicator` inside a `try` still fails *silently* if broken, but
+  `step07` has now moved too (2026-07-28), so both are unblocked and just await their own turn.
 
 ## Pipeline architecture (the big picture)
 
@@ -572,7 +601,7 @@ python src/step09_report_claim_ledger.py --review-queue --markdown         #   c
 python src/step10_evaluate.py                                              # step 8 / P6: full Vietnamese evaluation report
 python src/step10_evaluate.py --ablation --no-llm                          #   free arms only (coverage/case studies/ablation are offline)
 
-# Refactor target (src_module/esg_kg) — step00 + step03 + step03b + step03c + step05b + step05c + step05d have moved so far
+# Refactor target (src_module/esg_kg) — step00 + step03 + step03b + step03c + step05b + step05c + step05d + step07 have moved so far
 python src_module/run.py --list                                            # stages + which are migrated
 python src_module/run.py quality --label baseline                          # == src/step00_graph_quality_report.py
 python src_module/run.py fix_triples --dry-run                             # == src/step03_fix_invalid_triplets.py
@@ -583,6 +612,7 @@ python src_module/run.py anchor_kpi --dry-run                              # == 
 python src_module/run.py provenance --dry-run                              # == src/step05b_stamp_provenance.py
 python src_module/run.py align_claims --dry-run                            # == src/step05d_align_claims_to_indicators.py
 python src_module/run.py indicators --dry-run                              # == src/step05c_link_standard_indicators.py
+python src_module/run.py claims_vs_conduct --dry-run                       # == src/step07_crosscheck_claims_vs_conduct.py
 
 # ESG Evidence View UI (web front-end; reads the Neo4j advisory layer, no LLM — see docs/ESG_EVIDENCE_VIEW.md)
 python api/main.py                                                         # 3-column TT96/GRI evidence view at http://localhost:8000
@@ -741,6 +771,34 @@ python test/test_esg_kg_align_claims.py    # same contract, for the step05d migr
                                            # Synthetic fixtures cover the 3-failure abort, an
                                            # indicator id with no node, and the re-run skip.
                                            # Run after touching step05d or core/graph_patch.
+python test/test_esg_kg_crosscheck.py      # same contract, for the step07 migration slice
+                                           # (crosscheck/claims_vs_conduct) — the highest-
+                                           # leverage move so far: the only stage that was
+                                           # still blocking others (08 on node_text, 10 on
+                                           # Adjudicator). _Provider/_OpenAIProvider now
+                                           # import FROM core.llm instead of being redefined
+                                           # (that kernel module was extracted FROM this file
+                                           # on 2026-07-27); Adjudicator stays in the stage.
+                                           # Unlike step05d, --dry-run here does NOT return
+                                           # before the provider is built, so the dry-run arm
+                                           # is a real equivalence check, not a vacuous one.
+                                           # Headline arm runs the full retrieval + stub
+                                           # adjudication + dossier path on the real resolved
+                                           # graph (1,093 claims, 3,461 candidate pairs) in
+                                           # both trees and compares dossiers/stats/edges
+                                           # (masking the one non-deterministic field,
+                                           # `recorded_at`). Pins the node_text trap from this
+                                           # side (this stage's takes a NODE and dispatches on
+                                           # class; step05d's takes a properties dict),
+                                           # ADJUDICATE_SYSTEM byte-for-byte, the self-
+                                           # verification guard (a company-owned domain must
+                                           # never get a verifiedBy edge), and the assessment-
+                                           # mapping priority (contradiction beats support in
+                                           # the same dossier) via synthetic fixtures. Does NOT
+                                           # yet fix _parse_verdict's non-dict-JSON crash (the
+                                           # same shape as step05d's a308608 bug, smaller blast
+                                           # radius here) — that is a separate follow-up commit
+                                           # in both trees. Run after touching step07 or core/llm.
 ```
 
 The rest of `test/` and `notebooks/` are Jupyter notebooks for manual validation
