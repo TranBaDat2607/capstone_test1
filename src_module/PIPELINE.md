@@ -7,10 +7,10 @@ bức tranh toàn hệ thống.
 Nguồn sự thật của thứ tự chạy là [`esg_kg/pipeline.py`](esg_kg/pipeline.py); file này
 là bản vẽ của cùng dữ liệu đó. `python src_module/run.py --list` luôn nói thật về tiến độ.
 
-**Trạng thái (2026-07-29): 11/15 stage đã dời** — `00 quality`, `01 extract`,
+**Trạng thái (2026-07-29): 13/15 stage đã dời** — `00 quality`, `01 extract`,
 `03 fix_triples`, `03b anchor_kpi`, `03c canonicalize`, `04 issuer`, `05b provenance`,
-`05c indicators`, `05d align_claims`, `07 claims_vs_conduct`, `08 neo4j_sync`; 2 stage cố ý
-không dời (§4).
+`05c indicators`, `05d align_claims`, `06 neo4j_load`, `07 claims_vs_conduct`, `08 neo4j_sync`,
+`09 claim_ledger`; 2 stage cố ý không dời (§4).
 Mẫu số đổi từ 16 xuống 15 cùng ngày vì **`step10` bị xoá hẳn khỏi dự án** (không phải hoãn
 dời — quyết định 2026-07-28, xem §4 và `esg_kg/DESIGN.md` §4.3): người dùng chốt bỏ hẳn kiểu
 đo P6 (coverage/case-study/ablation không có ground truth) khỏi danh sách sản phẩm giao, không
@@ -92,14 +92,47 @@ claims_vs_conduct.node_text`, pin bằng test. Test: `test/test_esg_kg_neo4j_syn
 nhóm, gồm cả arm `--clear-advisory`, arm graph thiếu (positional-only fallback), và arm
 thoát `sys.exit(1)` khi thiếu dossier).
 
-**4 stage còn lại VẪN CHẠY BẰNG `src/`**: `02`, `05`, `06`, `09`.
+**`06` và `09` là stage thứ mười hai và mười ba** (`esg_kg/load/neo4j_load.py` +
+`esg_kg/report/claim_ledger.py`, cùng ngày 2026-07-29, ngay sau `08`) — cả hai đã được xác
+nhận leaf từ trước qua bảng symbol ở §2.1 (`06` chỉ cần `REPO_ROOT` + `load_schema_sets`,
+cả hai đã ở `core/`; `09` không import stage nào cả), nên không có gì phải trích thêm vào
+`core/`. Điểm mới của cặp này nằm ở CÁCH kiểm nhánh Neo4j, không phải ở symbol:
+
+- **`06` là stage GHI Neo4j thứ hai**, nhưng client surface rộng hơn `08` — `ingest_nodes` /
+  `ingest_data_edges` / `ingest_supersedes` đều đi qua `session.execute_write(lambda tx:
+  tx.run(cypher, rows=...).consume())` thay vì `session.run()` trần, và `print_graph_stats`
+  còn ĐỌC LẠI (`.single()`, duyệt lặp). Stub `neo4j.GraphDatabase` của `08` không đủ; fake
+  session/tx ở đây phải đỡ được cả hai hình dạng gọi lẫn hình dạng đọc, nhưng vẫn chỉ GHI
+  LẠI `(cypher, params)` chứ không thực thi gì — cùng nguyên lý, chỉ rộng hơn. Arm mạnh nhất:
+  `build_payload()` thuần hàm trên corpus thật (10 425 node / 14 402 cạnh, khớp cả `counts`
+  lẫn nội dung `nodes_by_label`/`edges_by_pred`/`supersedes_edges`) cộng một arm ingestion
+  qua stub so **76 lệnh Neo4j giống hệt byte-for-byte** giữa hai cây trên cùng corpus đó.
+  Test: `test/test_esg_kg_neo4j_load.py` (5 nhóm, gồm `--clear` và `--dry-run`).
+- **`09` là stage ĐỌC Neo4j ĐẦU TIÊN dời** — khác hẳn `06`/`08` vốn chỉ ghi. `load_from_
+  neo4j()` thật sự XỬ LÝ dữ liệu Neo4j trả về (dựng dict dossier từ `.single()`/`list(...)`
+  /vòng lặp), nên fake driver kiểu "chỉ ghi lại lời gọi" của `06`/`08` sẽ cho arm RỖNG — nó
+  phải TRẢ DỮ LIỆU GIẢ THẬT, và hai cây phải nhận CÙNG một hàng đợi dữ liệu giả (4 bộ, đúng
+  thứ tự 4 lần `s.run()`: tên tổ chức → claim → cạnh advisory → conduct pool) để so được cả
+  câu Cypher lẫn dossier dựng ra. Cũng là stage đầu tiên KHÔNG có arm corpus thật trên đĩa —
+  luật CLAUDE.md "test phải offline, không Neo4j sống" không cho một live-DB arm, và stage
+  này không đọc file JSON nào (đúng luật xưa nay: mọi stage trước có ít nhất một file trên
+  đĩa để chạy arm miễn phí). Arm mạnh nhất thay vào đó là các hàm trình bày/sắp xếp thuần
+  (`build_header`, `render_header_text`, `render_entry_text`, `render_markdown`, `_sort_key`,
+  `is_review_queue`, …) — phần lớn logic thật của stage này — cộng arm driver-giả-có-dữ-liệu
+  ở trên. Một khác biệt cố ý, không phải lỗi: dòng "how to refresh" trong
+  `render_header_text` và thông báo lỗi thiếu claim đổi từ trỏ `src/step08_sync_crosscheck_
+  to_neo4j.py` sang `src_module/run.py neo4j_sync` — đúng khuôn đổi 1 dòng thông báo mà
+  `04`/`06`/`08` đã làm; test mask riêng khác biệt này (`_norm()`) thay vì coi là hồi quy.
+  Test: `test/test_esg_kg_claim_ledger.py` (10 nhóm).
+
+**Còn lại 2 stage VẪN CHẠY BẰNG `src/`**: `02`, `05`.
 Trong sơ đồ §1, ô viền đứt là **chưa dời**, không phải đã xong; chỉ ô nền xanh
 đặc gắn `✅ ĐÃ DỜI` mới là đã refactor. (`step10` không còn trong danh sách này —
 nó không "chưa dời", nó đã bị **xoá khỏi dự án**, xem §4.)
 
-**Ngoài 11 stage đó, `esg_kg` còn có 1 KHỐI: `build_validated` = `03 → 03b → 03c`** nối chuỗi
+**Ngoài 13 stage đó, `esg_kg` còn có 1 KHỐI: `build_validated` = `03 → 03b → 03c`** nối chuỗi
 in-memory, ghi `all_validated_triples.json` **đúng một lần** (§3.2). Khối **không phải một
-stage** nên không tính vào mẫu số `11/15` — nó là một **entrypoint thêm**, và cả ba stage thành
+stage** nên không tính vào mẫu số `13/15` — nó là một **entrypoint thêm**, và cả ba stage thành
 viên vẫn chạy lẻ được.
 
 **`03` đã dời (2026-07-28) → `esg_kg/graph/fix_triples.py`.** Nó *trông* như hub — **7 stage
@@ -208,10 +241,10 @@ flowchart TD
     RESOLVED["graph_output/resolved/<br/>resolved_graph.json"]:::data
 
     subgraph P4["④ Nạp + phân tích"]
-        S06["⚪ CHƯA DỜI · step06 · neo4j_load"]:::ready
+        S06["✅ ĐÃ DỜI · step06 · neo4j_load<br/>stub execute_write + đọc lại stats"]:::migrated
         S07["✅ ĐÃ DỜI · step07 · claims_vs_conduct<br/>LLM BẮT BUỘC — lõi phân tích"]:::migrated
         S08["✅ ĐÃ DỜI · step08 · neo4j_sync<br/>đẩy tầng advisory · stage Neo4j đầu tiên dời"]:::migrated
-        S09["⚪ CHƯA DỜI · step09 · claim_ledger"]:::ready
+        S09["✅ ĐÃ DỜI · step09 · claim_ledger<br/>stage ĐỌC Neo4j đầu tiên dời"]:::migrated
     end
 
     REGI["config/issuer_registry.json"]:::cfg
@@ -258,13 +291,16 @@ flowchart TD
 > `core/io_jsonl`, một module còn thiếu) sang `⚪` (module đó nay tồn tại; `02` chỉ còn chờ
 > tới lượt dời chính nó, cộng thay đổi hành vi đang xếp hàng ở §5.6 nên vẫn nên land trong
 > `src/` trước). **`08` đã dời hẳn** (2026-07-29) — ô đó tới lượt nó đổi từ `⚪` sang xanh đặc
-> `✅ ĐÃ DỜI`, và là stage NEO4J đầu tiên trong toàn bộ đợt refactor.
+> `✅ ĐÃ DỜI`, và là stage NEO4J đầu tiên trong toàn bộ đợt refactor. **`06` và `09` đã dời
+> hẳn cùng ngày** — cả hai chuyển từ `⚪` sang xanh đặc; `06` là stage GHI Neo4j thứ hai,
+> `09` là stage ĐỌC Neo4j đầu tiên (khác hẳn `06`/`08` vốn chỉ ghi). Chỉ còn `02`/`05` là
+> `⚪` trong toàn sơ đồ.
 > Nghi ngờ thì hỏi `python src_module/run.py --list`, đừng đọc màu.
 
 | Nhãn trong ô | Màu | Nghĩa |
 |---|---|---|
 | `✅ ĐÃ DỜI` | 🟩 xanh **đặc**, chữ trắng | đã dời sang `esg_kg` — chạy bằng `python src_module/run.py <tên>` |
-| `🧱 KHỐI` | 🟦 xanh dương **viền đậm** | **không phải stage** và **không có bản `src/`** — nhiều stage gộp thành một đơn vị ghi artifact 1 lần (§3.2). Không tính vào mẫu số `10/15` |
+| `🧱 KHỐI` | 🟦 xanh dương **viền đậm** | **không phải stage** và **không có bản `src/`** — nhiều stage gộp thành một đơn vị ghi artifact 1 lần (§3.2). Không tính vào mẫu số `13/15` |
 | `⚪ CHƯA DỜI` | ⬜ nền trắng, viền xanh đứt | **vẫn chạy bằng `src/`**; chỉ là mọi symbol nó cần đã có trong `core/` → dời được ngay (§2.1) |
 | `⏳ CHƯA DỜI` | 🟨 vàng | vẫn chạy bằng `src/` **và còn bị chặn** — chờ một stage khác dời (§2.1) |
 | `⛔` | 🩶 xám | **cố ý không dời** (§4), vẫn còn file trong `src/` |
@@ -291,11 +327,11 @@ flowchart TD
 | 05b | `provenance` | — | resolved + các file page | vá tại chỗ | ✅ **đã dời** |
 | 05c | `indicators` | — | resolved + `kpi_definitions` + crosswalk + `gri_catalog` | vá tại chỗ | ✅ **đã dời** |
 | 05d | `align_claims` | 💰 tùy chọn | resolved | vá tại chỗ | ✅ **đã dời** · nhánh trả tiền có arm bằng LLM giả |
-| 06 | `neo4j_load` | — | resolved | Neo4j | ⚪ **chưa dời** — đủ điều kiện |
+| 06 | `neo4j_load` | — | resolved | Neo4j | ✅ **đã dời** (2026-07-29) · stage GHI Neo4j thứ hai, stub `execute_write` + đọc lại |
 | 07 | `claims_vs_conduct` | 💰 **bắt buộc** | resolved | `<ticker>_claim_assessments.json` | ✅ **đã dời** (2026-07-28) — mở khoá `08` |
 | 07b | — | — | dossier | dossier (thêm điểm) | ⛔ **không dời** |
 | 08 | `neo4j_sync` | — | dossier | Neo4j (tầng advisory) | ✅ **đã dời** (2026-07-29) — stage Neo4j đầu tiên |
-| 09 | `claim_ledger` | — | **chỉ Neo4j** | `<ticker>_claim_ledger.md` | ⚪ **chưa dời** — đủ điều kiện |
+| 09 | `claim_ledger` | — | **chỉ Neo4j** | `<ticker>_claim_ledger.md` | ✅ **đã dời** (2026-07-29) · stage ĐỌC Neo4j đầu tiên, không có arm corpus thật |
 | 10 | `evaluate` | — | — | — | 🗑️ **đã XOÁ khỏi dự án** (2026-07-28) — không phải "chưa dời"; xem §4 |
 
 💰 = tốn tiền. Đây là lý do mọi test đều offline và mọi stage đắt đều có `--dry-run`.
@@ -320,10 +356,10 @@ Bảng dưới là kết quả grep toàn bộ import chéo trong `src/` đối 
 | 05 | `date_start_key`, `load_schema_sets`, `normalize_name` (đã ở `core/`) + `RateLimiter` | — 🟢 **đủ symbol, nhưng VẪN CHƯA DỜI** (`core/llm` xong) — nhưng đọc §3.1 trước khi dời |
 | 05b | `get_identity_keys`, `PROVENANCE_CLASSES`, `get_stable_entity_id`, `parse_source_id` | ✅ **đã dời** (2026-07-27) — không phải viết thêm `core/` nào |
 | 05d | `load_schema_sets`, `GraphPatch`, `temporal_md` (đã ở `core/`) + `_OpenAIProvider` | ✅ **đã dời** (2026-07-28) — không phải viết thêm `core/` nào, cây thứ ba làm được. `RateLimiter` trong `import` cũ là **rác**: không chỗ nào dùng |
-| 06 | `REPO_ROOT`, `load_schema_sets` | — 🟢 **đủ symbol, nhưng VẪN CHƯA DỜI** |
+| 06 | `REPO_ROOT`, `load_schema_sets` | ✅ **đã dời** (2026-07-29) — không phải viết thêm `core/` nào; client surface rộng hơn `08` (`execute_write` + đọc lại stats) nên fake driver cần mạnh hơn, không phải vì thiếu symbol |
 | 07 | `load_schema_sets`, `normalize_name`, `name_tokens` (đã ở `core/`) + `_Provider`/`_OpenAIProvider` | ✅ **đã dời** (2026-07-28) — không phải viết thêm `core/` nào; `RateLimiter` trong import cũ là **rác** (chỉ `_OpenAIProvider.__init__` cần, và lớp đó nay tới sẵn từ `core.llm`), y hệt phát hiện ở `05d` |
 | 08 | `node_text` (của `step07`) | ✅ **đã dời** (2026-07-29) — `node_text` KHÔNG vào `core/llm` (xem cảnh báo dưới), nó ở lại `esg_kg.crosscheck.claims_vs_conduct` cùng stage; `08` chỉ import nó |
-| 09 | *(không import stage nào)* | — 🟢 **đủ symbol, nhưng VẪN CHƯA DỜI** |
+| 09 | *(không import stage nào)* | ✅ **đã dời** (2026-07-29) — chưa từng là hub, chỉ đổi `REPO_ROOT` tự định nghĩa sang `core.paths` cho nhất quán; stage ĐỌC Neo4j đầu tiên nên arm cần fake driver TRẢ DỮ LIỆU, không chỉ ghi lại lời gọi |
 | 10 | *(đã bị xoá khỏi dự án 2026-07-28, không còn là một stage — xem §4)* | 🗑️ — |
 
 ```mermaid
@@ -338,10 +374,13 @@ flowchart LR
     S04D["✅ dời 04 (2026-07-28)<br/>hub đã tan, không trích thêm core/ nào"]:::done
     S01D["✅ dời 01 (2026-07-28)<br/>hub thật sự cuối cùng, cho ra core/io_jsonl"]:::done
     S08D["✅ dời 08 (2026-07-29)<br/>stage Neo4j đầu tiên, stub GraphDatabase"]:::done
-    READY["⚪ CHƯA DỜI, đủ điều kiện dời — 3 stage<br/>05 · 06 · 09"]:::ready
+    S06D["✅ dời 06 (2026-07-29)<br/>stage GHI Neo4j thứ hai, stub execute_write"]:::done
+    S09D["✅ dời 09 (2026-07-29)<br/>stage ĐỌC Neo4j đầu tiên, stub driver trả dữ liệu"]:::done
+    READY["⚪ CHƯA DỜI, đủ điều kiện dời — 1 stage<br/>05"]:::ready
     U3["⚪ 02 — mở khoá, chỉ còn chờ tới lượt<br/>(+ đổi hành vi §5.6 nên đi trước)"]:::ready
 
-    CORE --> S07D --> S08D
+    CORE --> S07D --> S08D --> S06D
+    S07D --> S09D
     CORE --> S04D
     CORE --> S01D --> U3
     CORE --> READY
@@ -354,10 +393,10 @@ lát cắt `01` (2026-07-28), và `01` giờ đã dời, nên `02` chỉ còn ch
 **Đọc ra được ba điều, cả ba đều đổi thứ tự làm:**
 
 1. **Kernel đã hết đường chặn.** Sau `core/llm.py` (2026-07-27) có 8/11 stage chưa dời đủ
-   điều kiện; `03` rồi `05d` rồi `07` rồi `04` rồi `01` đã dùng suất đó ngày 2026-07-28, còn
-   lại **3**: `05`, `06`, `09`. Việc còn lại không phải "viết thêm `core/`" nữa mà là **chọn
-   stage nào dời trước**, và tiêu chí bây giờ là *arm tương đương mạnh tới đâu*, không còn
-   là *symbol đã sẵn chưa*:
+   điều kiện; `03` rồi `05d` rồi `07` rồi `04` rồi `01` đã dùng suất đó ngày 2026-07-28, rồi
+   `08` rồi `06`/`09` ngày 2026-07-29, còn lại **1**: `05`. Việc còn lại không phải "viết
+   thêm `core/`" nữa mà là **chọn stage nào dời trước**, và tiêu chí bây giờ là *arm tương
+   đương mạnh tới đâu*, không còn là *symbol đã sẵn chưa*:
    - **~~`03` — mạnh nhất~~ → ĐÃ DỜI (2026-07-28).** Lý do nó được chọn vẫn đáng đọc, vì nó
      là khuôn cho các lần sau: pha 1 + pha 1.5 offline nên chạy được trên corpus thật miễn
      phí, còn **pha 2 (trả tiền) được lái bằng một LLM giả** nên nhánh đắt vẫn có arm. Kết
@@ -423,8 +462,35 @@ lát cắt `01` (2026-07-28), và `01` giờ đã dời, nên `02` chỉ còn ch
      Driver giả chỉ GHI LẠI Cypher + tham số, không thực thi — arm so **5 lệnh giống hệt
      byte-for-byte** giữa hai cây trên corpus thật (1 093 dossier). 0 dòng logic đổi so với
      `src/`. Test: `test/test_esg_kg_neo4j_sync.py` (8 nhóm).
-   - `06`/`09` đọc Neo4j; `05` **không được dời nếu chưa xử
-     §3.1** (nó ghi đè cả ba bản vá) — và §3.2 nay là câu trả lời mặc định cho §3.1.
+   - **`06` — mở khoá bởi `core/paths`+`core/schema`, chưa từng bị chặn** → **ĐÃ DỜI
+     (2026-07-29), cùng ngày `08`.** Leaf từ trước (chỉ `REPO_ROOT` + `load_schema_sets`,
+     cả hai đã ở `core/` từ 2026-07-28), nhưng client surface Neo4j **rộng hơn `08`**:
+     `ingest_nodes`/`ingest_data_edges`/`ingest_supersedes` đi qua `session.execute_write
+     (lambda tx: tx.run(...).consume())` chứ không phải `session.run()` trần, và
+     `print_graph_stats` còn ĐỌC LẠI (`.single()`, duyệt lặp) — nên stub `GraphDatabase` của
+     `08` không đủ, phải viết fake session/tx đỡ được cả hai hình dạng gọi lẫn hình dạng đọc.
+     Arm mạnh nhất: `build_payload()` thuần hàm trên corpus thật (10 425 node, khớp
+     `nodes_by_label`/`edges_by_pred`/`supersedes_edges`) cộng arm ingestion so **76 lệnh
+     Neo4j giống hệt byte-for-byte** giữa hai cây. Test: `test/test_esg_kg_neo4j_load.py`
+     (5 nhóm).
+   - **`09` — mở khoá bởi `07` (qua §2 điểm 1 trên), stage ĐỌC Neo4j đầu tiên** → **ĐÃ DỜI
+     (2026-07-29), cùng ngày `06`/`08`.** Không import stage nào (chưa từng là hub), chỉ đổi
+     `REPO_ROOT` tự định nghĩa sang `core.paths` cho nhất quán. Khác hẳn `06`/`08`: đây là
+     stage đầu tiên mà `load_from_neo4j()` thật sự XỬ LÝ dữ liệu Neo4j trả về (dựng dict
+     dossier từ `.single()`/`list(...)`/vòng lặp) — một fake driver kiểu "chỉ ghi lại lời
+     gọi" như `06`/`08` cho arm RỖNG, nên fake ở đây phải TRẢ DỮ LIỆU GIẢ THẬT, và cả hai cây
+     nhận CÙNG một hàng đợi 4 bộ dữ liệu (đúng thứ tự 4 lần `s.run()`) để so được cả câu
+     Cypher lẫn dossier dựng ra. Cũng là stage đầu tiên KHÔNG có arm corpus thật trên đĩa —
+     stage chỉ đọc Neo4j, không có file JSON nào để chạy một arm miễn phí như mọi stage
+     trước; arm mạnh nhất thay vào đó là các hàm trình bày/sắp xếp thuần (phần lớn logic
+     thật của stage) cộng arm driver-giả-có-dữ-liệu. Một khác biệt cố ý (không phải hồi
+     quy): dòng "how to refresh" đổi từ trỏ `src/step08_sync_crosscheck_to_neo4j.py` sang
+     `src_module/run.py neo4j_sync`, đúng khuôn đổi 1 dòng thông báo mà `04`/`06`/`08` đã
+     làm — test mask riêng khác biệt này thay vì coi là hồi quy. Test:
+     `test/test_esg_kg_claim_ledger.py` (10 nhóm).
+   - `05` **không được dời nếu chưa xử §3.1** (nó ghi đè cả ba bản vá) — và §3.2 nay là câu
+     trả lời mặc định cho §3.1. Đây là stage cuối cùng còn chờ, không tính `02` (chờ quyết
+     định lịch trình §5.6, không chờ cấu trúc).
 2. **~~`core/llm.py` là đòn bẩy lớn nhất~~ → ĐÃ XONG (2026-07-27).** Đúng như dự đoán: nó
    mở khoá 4 stage cùng lúc (`03`, `05`, `07`, `05d`). Lát cắt gồm `DEFAULT_RATE_LIMIT` +
    `RateLimiter` (từ `step02`) và `_Provider` + `_OpenAIProvider` (từ `step07`) — bốn symbol
@@ -447,8 +513,9 @@ lát cắt `01` (2026-07-28), và `01` giờ đã dời, nên `02` chỉ còn ch
    có arm tương đương mạnh chạy trên corpus thật (1 356 trang), dù bản thân stage `01` là
    stage trả tiền — và nhánh trả tiền đó cũng có arm, bằng đúng kỹ thuật stub-theo-CRC đã
    dùng cho `03`/`05d`/`07` (điểm 1 ở trên). **Sau lượt này không còn stage nào là hub theo
-   nghĩa "bị import phần stage-local"** — `02`/`05`/`06`/`09` chỉ còn chờ tới lượt hoặc một
-   quyết định lịch trình (§3.1, §5.6), không chờ một cấu trúc import nào nữa.
+   nghĩa "bị import phần stage-local"** — `06`/`09` đã dời tiếp ngay sau đó (2026-07-29,
+   điểm 1 ở trên); chỉ còn `02`/`05` chờ tới lượt hoặc một quyết định lịch trình (§3.1,
+   §5.6), không chờ một cấu trúc import nào nữa.
 
 ✅ **Cái bẫy của lần dời `step07` đã tránh được, không phải của `core/llm`:** có **hai** hàm
 tên `node_text` và chúng **không** trùng nhau — `esg_kg.resolve.align_claims.node_text`
