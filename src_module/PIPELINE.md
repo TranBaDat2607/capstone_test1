@@ -7,9 +7,9 @@ bức tranh toàn hệ thống.
 Nguồn sự thật của thứ tự chạy là [`esg_kg/pipeline.py`](esg_kg/pipeline.py); file này
 là bản vẽ của cùng dữ liệu đó. `python src_module/run.py --list` luôn nói thật về tiến độ.
 
-**Trạng thái (2026-07-28): 9/16 stage đã dời** — `00 quality`, `03 fix_triples`,
-`03b anchor_kpi`, `03c canonicalize`, `04 issuer`, `05b provenance`, `05c indicators`,
-`05d align_claims`, `07 claims_vs_conduct`; 2 stage cố ý không dời (§4).
+**Trạng thái (2026-07-28): 10/16 stage đã dời** — `00 quality`, `01 extract`,
+`03 fix_triples`, `03b anchor_kpi`, `03c canonicalize`, `04 issuer`, `05b provenance`,
+`05c indicators`, `05d align_claims`, `07 claims_vs_conduct`; 2 stage cố ý không dời (§4).
 `05b` là stage đầu tiên dời được mà **không phải trích thêm module `core/` nào** — lần dời
 `03b` đã lifted sẵn cả 4 symbol nó cần. `03` là stage thứ hai, `05d` là stage thứ ba —
 lát cắt `05c` đã đẩy `GraphPatch`/`temporal_md` lên kernel *chính vì* `05d` đang import
@@ -47,13 +47,31 @@ hai, không phải một cây lệch cây kia), rồi xoá nhánh, thấy cả h
 `AttributeError` — đúng như DESIGN.md muốn: một hợp đồng, sai thì báo lỗi rõ chứ không âm
 thầm "hiểu nhầm" dữ liệu.
 
-**7 stage còn lại VẪN CHẠY BẰNG `src/`**: `01`, `02`, `05`, `06`, `08`, `09`, `10`.
+**`01` là stage thứ mười** (2026-07-28), và stage HUB THẬT SỰ CUỐI CÙNG (PIPELINE.md
+§2.1 điểm 3 đã dự đoán đúng: sau `03`/`04` tan thành leaf, `01` là hub duy nhất còn lại,
+vì nó là stage duy nhất còn bị import phần *stage-local* — không phải phần đã lên
+kernel). Nó không dùng `_Provider`/`_OpenAIProvider` (không có Gemini provider để trích —
+`core/llm.py` đã ghi rõ dự án đứng sau `GEMINI_API_KEY` bị 403 vĩnh viễn), nên
+`KPIExtractor`, prompt, JSON schema và `normalize_kpi_response` ở lại stage nguyên vẹn;
+chỉ 5 helper JSONL thuần (`load_pages_from_jsonl`, `build_page_text`, `page_has_esg`,
+`select_documents`, `parse_company_year_from_filename`) dời sang **`core/io_jsonl.py`
+(module `core/` mới)** — đúng 5 symbol mà `step02:43-50` đang import từ nó, nên
+`core/io_jsonl` là điều kiện `02` đang chờ, không phải điều kiện đứng trước `01`.
+Nhánh trả tiền được kiểm bằng stub tiêm thẳng lên `google.genai.Client` (không có
+`_Provider` để đứng trước, nên stub thế chỗ chính `Client`), trả lời tất định theo CRC
+của prompt — cùng kỹ thuật đã dùng cho `03`/`05d`/`07`, áp lần thứ tư. Arm mạnh nhất
+chạy `load_pages_from_jsonl` + `build_page_text`/`page_has_esg` trên corpus thật
+(13 tài liệu / 1 356 trang) và `process_document` trên fixture tổng hợp qua cả hai cây,
+gồm cả tính idempotency ("output đã tồn tại" phải bỏ qua, không gọi lại client). Test:
+`test/test_esg_kg_extract.py` (10 nhóm).
+
+**6 stage còn lại VẪN CHẠY BẰNG `src/`**: `02`, `05`, `06`, `08`, `09`, `10`.
 Trong sơ đồ §1, ô viền đứt là **chưa dời**, không phải đã xong; chỉ ô nền xanh
 đặc gắn `✅ ĐÃ DỜI` mới là đã refactor.
 
-**Ngoài 9 stage đó, `esg_kg` còn có 1 KHỐI: `build_validated` = `03 → 03b → 03c`** nối chuỗi
+**Ngoài 10 stage đó, `esg_kg` còn có 1 KHỐI: `build_validated` = `03 → 03b → 03c`** nối chuỗi
 in-memory, ghi `all_validated_triples.json` **đúng một lần** (§3.2). Khối **không phải một
-stage** nên không tính vào mẫu số `9/16` — nó là một **entrypoint thêm**, và cả ba stage thành
+stage** nên không tính vào mẫu số `10/16` — nó là một **entrypoint thêm**, và cả ba stage thành
 viên vẫn chạy lẻ được.
 
 **`03` đã dời (2026-07-28) → `esg_kg/graph/fix_triples.py`.** Nó *trông* như hub — **7 stage
@@ -82,6 +100,10 @@ từ trước cả `core/llm`); được nêu ở đây chỉ để không ai t�
 suất `core/llm`. Còn **4** stage đủ điều kiện chưa dời từ kernel: `01`, `05`, `06`, `09`
 — cộng **`08`** và **`10`**, hai stage `07` vừa tự mình mở khoá (chúng chờ
 `node_text`/`Adjudicator` từ `07`, không chờ `core/`).
+
+**`01` đã dùng suất của chính nó ngay hôm sau (2026-07-28 → 10/16)** — không phải suất
+`core/llm` (nó không dùng `_Provider`/`_OpenAIProvider`), mà là hub cuối cùng tan theo
+đúng luật "kiểm bằng chiều import" (§2.1 điểm 3 dưới). Còn lại **3**: `05`, `06`, `09`.
 
 🔑 **Bài học lớn nhất của lát cắt `05d`, và nó đổi thứ tự làm phần còn lại: "stage trả tiền"
 KHÔNG còn là lý do hoãn.** `05d` bắt buộc phải có LLM (`--dry-run` return *trước* khi provider
@@ -131,8 +153,8 @@ flowchart TD
     JSONL["data/labeled/*.jsonl<br/>(báo cáo + tin tức đã gán nhãn ESG)"]:::data
 
     subgraph P1["① Trích xuất — LLM, TỐN TIỀN"]
-        S01["⚪ CHƯA DỜI · step01 · extract<br/>trích KPI theo từ vựng 35 chỉ số"]:::ready
-        S02["⏳ CHƯA DỜI · step02 · extract_triples<br/>text + KPI + schema → node/cạnh<br/>--source report | news"]:::pending
+        S01["✅ ĐÃ DỜI · step01 · extract<br/>trích KPI theo từ vựng 35 chỉ số"]:::migrated
+        S02["⚪ CHƯA DỜI · step02 · extract_triples<br/>text + KPI + schema → node/cạnh<br/>--source report | news"]:::ready
     end
 
     KPIOUT["kpi_output/<br/>page_NNN_kpis.json"]:::data
@@ -204,12 +226,16 @@ flowchart TD
 > `resolved_graph.json` (chỉ ghi `config/issuer_registry.json` từ `all_validated_triples.json`).
 > `07` cũng đã dời — và vì nó là stage duy nhất từng chặn `08`/`10`, hai ô đó đổi từ `⏳`
 > (chờ stage khác) sang `⚪` (chỉ còn chờ tới lượt dời) ngay khi `07` xong, không cần đụng
-> tới `core/` nào thêm. Nghi ngờ thì hỏi `python src_module/run.py --list`, đừng đọc màu.
+> tới `core/` nào thêm. **`01` cũng đã dời** (2026-07-28) — nó là hub thật sự cuối cùng
+> (§2.1 điểm 3), nên `02` đổi màu tương tự `08`/`10`: từ `⏳` (chờ `core/io_jsonl`, một
+> module còn thiếu) sang `⚪` (module đó nay tồn tại; `02` chỉ còn chờ tới lượt dời chính
+> nó, cộng thay đổi hành vi đang xếp hàng ở §5.6 nên vẫn nên land trong `src/` trước).
+> Nghi ngờ thì hỏi `python src_module/run.py --list`, đừng đọc màu.
 
 | Nhãn trong ô | Màu | Nghĩa |
 |---|---|---|
 | `✅ ĐÃ DỜI` | 🟩 xanh **đặc**, chữ trắng | đã dời sang `esg_kg` — chạy bằng `python src_module/run.py <tên>` |
-| `🧱 KHỐI` | 🟦 xanh dương **viền đậm** | **không phải stage** và **không có bản `src/`** — nhiều stage gộp thành một đơn vị ghi artifact 1 lần (§3.2). Không tính vào mẫu số `9/16` |
+| `🧱 KHỐI` | 🟦 xanh dương **viền đậm** | **không phải stage** và **không có bản `src/`** — nhiều stage gộp thành một đơn vị ghi artifact 1 lần (§3.2). Không tính vào mẫu số `10/16` |
 | `⚪ CHƯA DỜI` | ⬜ nền trắng, viền xanh đứt | **vẫn chạy bằng `src/`**; chỉ là mọi symbol nó cần đã có trong `core/` → dời được ngay (§2.1) |
 | `⏳ CHƯA DỜI` | 🟨 vàng | vẫn chạy bằng `src/` **và còn bị chặn** — chờ một stage khác dời (§2.1) |
 | `⛔` | 🩶 xám | **cố ý không dời** (§4), vẫn còn file trong `src/` |
@@ -223,8 +249,8 @@ flowchart TD
 | # | Tên | LLM? | Input chính | Output chính | Trạng thái |
 |---|---|---|---|---|---|
 | 00 | `quality` | — | `resolved_graph.json` | `quality/quality_report_<label>.{json,md}` | ✅ **đã dời** |
-| 01 | `extract` | 💰 | JSONL đã gán nhãn | `kpi_output/…_kpis.json` | ⚪ **chưa dời** — đủ điều kiện (hub, §2.1) |
-| 02 | `extract_triples` | 💰 | JSONL + KPI + `schema.json` | `graphs/<doc>/pageN.json` | ⏳ chờ `core/io_jsonl` ⚠️ sắp đổi hành vi (§5.6) |
+| 01 | `extract` | 💰 | JSONL đã gán nhãn | `kpi_output/…_kpis.json` | ✅ **đã dời** (2026-07-28) — hub thật sự cuối cùng, cho ra `core/io_jsonl` |
+| 02 | `extract_triples` | 💰 | JSONL + KPI + `schema.json` | `graphs/<doc>/pageN.json` | ⚪ **chưa dời** — đủ điều kiện ⚠️ sắp đổi hành vi (§5.6) |
 | 03 | `fix_triples` | 💰 (chỉ pha 2) | các file page | `all_validated_triples.json` | ✅ **đã dời** · pha 2 có guard giá trị |
 | 03b | `anchor_kpi` | — | validated + JSONL | vá tại chỗ + `anchor_patch_stats.json` | ✅ **đã dời** |
 | 03c | `canonicalize` | — | validated + `kpi_type_aliases.json` | vá tại chỗ + `kpi_canonical_stats.json` | ✅ **đã dời** |
@@ -252,12 +278,12 @@ DESIGN.md là: *một stage chỉ dời được khi **mọi symbol NÓ import**
 chiều pipeline (stage sau import helper của stage trước).
 
 Bảng dưới là kết quả grep toàn bộ import chéo trong `src/` đối chiếu với `core/`, **chạy lại
-2026-07-28** sau khi `03` dời — cột cuối là **thứ duy nhất còn thiếu**:
+2026-07-28** sau khi `04`/`07` dời — cột cuối là **thứ duy nhất còn thiếu**:
 
 | # | Symbol nó import từ cây `src/` | Còn thiếu gì trong `core/` |
 |---|---|---|
-| 01 | *(không import stage nào — `REPO_ROOT` là do **nó** định nghĩa, `step01:36`)* | — 🟢 **đủ symbol, nhưng VẪN CHƯA DỜI**. `core/io_jsonl` KHÔNG phải điều kiện của `01`: nó là điều kiện của `02`, và nó **rơi ra từ chính lát cắt `01`** (đúng kiểu `03b` → `core/identity.py`) |
-| 02 | 5 helper JSONL của `01` + `REPO_ROOT` | `core/io_jsonl` — và xem lưu ý §5.6 ngay dưới bảng: `02` còn một thay đổi hành vi **đang xếp hàng** |
+| 01 | *(không import stage nào — `REPO_ROOT` là do **nó** định nghĩa, `step01:36`)* | ✅ **đã dời** (2026-07-28) — hub thật sự cuối cùng của cả đợt (không ai chặn NÓ, mà chính NÓ giữ 5 helper JSONL mà `02` cần); dời ra `core/io_jsonl` đúng kiểu `03b` → `core/identity.py` |
+| 02 | 5 helper JSONL của `01` (nay `core/io_jsonl`) + `REPO_ROOT` | — 🟢 **đủ symbol, nhưng VẪN CHƯA DỜI** (`core/io_jsonl` xong khi `01` dời) — và xem lưu ý §5.6 ngay dưới bảng: `02` còn một thay đổi hành vi **đang xếp hàng**, nên dù đủ điều kiện, nên land §5.6 trong `src/` trước |
 | 03 | `REPO_ROOT`, `RateLimiter` | ✅ **đã dời** (2026-07-28) — không phải viết thêm `core/` nào, y như `05b` |
 | 03b | `REPO_ROOT`, `load_schema_sets`, `validate_triple`, `normalize_name` | ✅ **đã dời** (2026-07-27) |
 | 04 | `REPO_ROOT` (`step04:49`) | ✅ **đã dời** (2026-07-28) — hub đã tan (kiểm theo bài học (a): 6 stage import nó nhưng cả 3 symbol chúng lấy — `normalize_name`, `name_tokens`, `merge_preserving_edits` — đã ở `core/naming.py`; phần stage-local không ai import), nên không phải viết thêm `core/` nào |
@@ -277,29 +303,29 @@ flowchart LR
     classDef key  fill:#ffe3e3,stroke:#f03e3e,color:#1a1a1a
     classDef pend fill:#fff3bf,stroke:#e8a90c,color:#1a1a1a
 
-    CORE["core/ hôm nay<br/>paths · schema · naming · dates<br/>console · graph_patch · identity · <b>llm</b>"]:::done
+    CORE["core/ hôm nay<br/>paths · schema · naming · dates<br/>console · graph_patch · identity · llm · <b>io_jsonl</b>"]:::done
     S07D["✅ dời 07 (2026-07-28)<br/>mang theo node_text + Adjudicator"]:::done
     S04D["✅ dời 04 (2026-07-28)<br/>hub đã tan, không trích thêm core/ nào"]:::done
-    READY["⚪ CHƯA DỜI, đủ điều kiện dời — 4 stage<br/>01 · 05 · 06 · 09"]:::ready
+    S01D["✅ dời 01 (2026-07-28)<br/>hub thật sự cuối cùng, cho ra core/io_jsonl"]:::done
+    READY["⚪ CHƯA DỜI, đủ điều kiện dời — 3 stage<br/>05 · 06 · 09"]:::ready
     U1["⚪ 08 · 10 — mở khoá, chỉ còn chờ tới lượt"]:::ready
-    IOJ["core/io_jsonl (+ text)<br/>rơi ra từ lát cắt 01"]:::key
-    U3["02"]:::pend
+    U3["⚪ 02 — mở khoá, chỉ còn chờ tới lượt<br/>(+ đổi hành vi §5.6 nên đi trước)"]:::ready
 
     CORE --> S07D --> U1
     CORE --> S04D
+    CORE --> S01D --> U3
     CORE --> READY
-    READY -->|"dời 01 ⇒ trích được"| IOJ --> U3
 ```
 
-Từ 2026-07-27 **không còn module `core/` nào là điều kiện chặn**: cả ba stage còn lại đều
-chờ một *stage khác* dời, không chờ kernel. `02` chờ `core/io_jsonl` — nhưng module đó rơi
-ra từ lát cắt `01`, và `01` thì đã đủ điều kiện.
+Từ 2026-07-27 **không còn module `core/` nào là điều kiện chặn**: mọi stage chưa dời đều
+chờ một *stage khác* dời, không chờ kernel. `02` chờ `core/io_jsonl` — module đó rơi ra từ
+lát cắt `01` (2026-07-28), và `01` giờ đã dời, nên `02` chỉ còn chờ tới lượt chính nó.
 
 **Đọc ra được ba điều, cả ba đều đổi thứ tự làm:**
 
 1. **Kernel đã hết đường chặn.** Sau `core/llm.py` (2026-07-27) có 8/11 stage chưa dời đủ
-   điều kiện; `03` rồi `05d` rồi `07` rồi `04` đã dùng suất đó ngày 2026-07-28, còn lại
-   **4**: `01`, `05`, `06`, `09`. Việc còn lại không phải "viết thêm `core/`" nữa mà là **chọn
+   điều kiện; `03` rồi `05d` rồi `07` rồi `04` rồi `01` đã dùng suất đó ngày 2026-07-28, còn
+   lại **3**: `05`, `06`, `09`. Việc còn lại không phải "viết thêm `core/`" nữa mà là **chọn
    stage nào dời trước**, và tiêu chí bây giờ là *arm tương đương mạnh tới đâu*, không còn
    là *symbol đã sẵn chưa*:
    - **~~`03` — mạnh nhất~~ → ĐÃ DỜI (2026-07-28).** Lý do nó được chọn vẫn đáng đọc, vì nó
@@ -349,7 +375,17 @@ ra từ lát cắt `01`, và `01` thì đã đủ điều kiện.
      đó và một arm mô phỏng một người sửa tay rồi chạy lại để chứng minh bản sửa sống sót
      giống hệt ở cả hai cây. Test: `test/test_esg_kg_issuer.py` (12 nhóm, gồm cả arm cho
      bản sửa DESIGN.md §5.2 bên dưới).
-   - `06`/`09` đọc Neo4j; `01` là stage trả tiền; `05` **không được dời nếu chưa xử
+   - **~~`01` — hub thật sự cuối cùng~~ → ĐÃ DỜI (2026-07-28).** Không dùng `_Provider`/
+     `_OpenAIProvider` — không có Gemini provider để trích (`core/llm.py` đã ghi: dự án
+     đứng sau `GEMINI_API_KEY` bị 403 vĩnh viễn) — nên `KPIExtractor`/prompt/JSON schema/
+     `normalize_kpi_response` ở lại stage; chỉ 5 helper JSONL thuần dời sang
+     **`core/io_jsonl.py` (module `core/` mới)**. Nhánh trả tiền dùng đúng kỹ thuật của
+     `03`/`05d`/`07`: stub tiêm thẳng lên `google.genai.Client` (không có `_Provider` đứng
+     trước Gemini), trả lời tất định theo CRC prompt. Arm mạnh nhất: `load_pages_from_jsonl`
+     + `build_page_text`/`page_has_esg` trên corpus thật (13 tài liệu / 1 356 trang), cộng
+     `process_document` qua fixture tổng hợp ở cả hai cây kèm arm idempotency (output đã
+     tồn tại ⇒ không gọi lại client). Test: `test/test_esg_kg_extract.py` (10 nhóm).
+   - `06`/`09` đọc Neo4j; `05` **không được dời nếu chưa xử
      §3.1** (nó ghi đè cả ba bản vá) — và §3.2 nay là câu trả lời mặc định cho §3.1.
 2. **~~`core/llm.py` là đòn bẩy lớn nhất~~ → ĐÃ XONG (2026-07-27).** Đúng như dự đoán: nó
    mở khoá 4 stage cùng lúc (`03`, `05`, `07`, `05d`). Lát cắt gồm `DEFAULT_RATE_LIMIT` +
@@ -359,20 +395,22 @@ ra từ lát cắt `01`, và `01` thì đã đủ điều kiện.
    `step07` (là logic stage: prompt + parse verdict + cascade). ~~`08`/`10` vẫn chưa được
    mở~~ → **đã mở (2026-07-28)**, cùng ngày `step07` dời: chúng chờ chính stage đó, không
    chờ kernel, và stage đó nay đã dời.
-3. **`01` là hub cuối cùng còn lại — và sau lần kiểm `04` ở trên thì đây không còn là phỏng
-   đoán, nó là hub DUY NHẤT.** `03` và `04` đều đã tan; `01` thì **không**, vì nó là stage
-   duy nhất còn bị import phần *stage-local* (5 helper JSONL dưới đây) chứ không phải phần
-   đã lên kernel — đúng cái phép thử "kiểm bằng chiều import" của bài học (a).
-   **Nhưng hub ≠ bị chặn.** Nó không import ai, nên
-   theo đúng luật thì dời được ngay; thứ xếp nó xuống cuối là **thứ tự hub-làm-cuối** của
-   DESIGN.md §4 chứ không phải một module `core/` còn thiếu. Chiều phụ thuộc là chiều
-   ngược lại: `02` cần 5 helper JSONL **của nó** (`build_page_text`,
+3. **`01` từng là hub cuối cùng còn lại, và dự đoán đó đã đúng — nay nó đã dời (2026-07-28).**
+   `03` và `04` đều đã tan trước đó; `01` thì **không**, vì nó là stage duy nhất còn bị
+   import phần *stage-local* (5 helper JSONL) chứ không phải phần đã lên kernel — đúng cái
+   phép thử "kiểm bằng chiều import" của bài học (a). Nhưng **hub ≠ bị chặn**: nó không
+   import ai, nên dời được ngay theo đúng luật; cái xếp nó xuống gần cuối chỉ là **thứ tự
+   hub-làm-cuối** của DESIGN.md §4, không phải một module `core/` còn thiếu. Chiều phụ thuộc
+   là chiều ngược lại: `02` cần 5 helper JSONL **của `01`** (`build_page_text`,
    `load_pages_from_jsonl`, `page_has_esg`, `select_documents`,
    `parse_company_year_from_filename`) → nên `core/io_jsonl` không phải việc phải làm
-   *trước* `01`, mà là thứ **rơi ra từ lát cắt `01`**, y như `core/identity.py` rơi ra từ
-   lát cắt `03b`. Điểm hay: cả 5 helper đó đều **thuần và offline**, nên riêng phần
-   `core/io_jsonl` có arm tương đương mạnh chạy trên corpus thật, dù bản thân stage `01`
-   là stage trả tiền.
+   *trước* `01`, mà là thứ **rơi ra từ chính lát cắt `01`**, y như `core/identity.py` rơi ra
+   từ lát cắt `03b`. Cả 5 helper đó đều **thuần và offline**, nên riêng phần `core/io_jsonl`
+   có arm tương đương mạnh chạy trên corpus thật (1 356 trang), dù bản thân stage `01` là
+   stage trả tiền — và nhánh trả tiền đó cũng có arm, bằng đúng kỹ thuật stub-theo-CRC đã
+   dùng cho `03`/`05d`/`07` (điểm 1 ở trên). **Sau lượt này không còn stage nào là hub theo
+   nghĩa "bị import phần stage-local"** — `02`/`05`/`06`/`09` chỉ còn chờ tới lượt hoặc một
+   quyết định lịch trình (§3.1, §5.6), không chờ một cấu trúc import nào nữa.
 
 ✅ **Cái bẫy của lần dời `step07` đã tránh được, không phải của `core/llm`:** có **hai** hàm
 tên `node_text` và chúng **không** trùng nhau — `esg_kg.resolve.align_claims.node_text`
@@ -388,8 +426,12 @@ phía của mình, nên bẫy bị bắt ở cả hai hướng. `core/llm.py` **
 hành vi phải land ở **cả hai cây**, nên nếu `02` dời trước thì cùng một sửa đổi phải làm hai
 lần và phải giữ hai bản prompt đồng bộ. Guard pha 2 của `03` (`046e572`) đã áp đúng logic này
 và commit message nói thẳng lý do: *"deliberately BEFORE step03 migrates — one tree to edit
-now instead of two later"*. Với `02` thì sức nặng còn lớn hơn, vì nó bị chặn bởi
-`core/io_jsonl` nên **đằng nào cũng chưa dời được** — cứ làm §5.6 trong `src/` trước.
+now instead of two later"*. Với `02` thì sức nặng còn lớn hơn: trước 2026-07-28 nó **đằng
+nào cũng chưa dời được** (chờ `core/io_jsonl`) nên làm §5.6 trước không mất gì; nay `01` đã
+dời và `core/io_jsonl` đã có, `02` **đủ điều kiện dời ngay hôm nay** — nên lý do làm §5.6
+trước không còn là "đằng nào cũng phải chờ" nữa, mà là **tránh sửa hai cây** một cách chủ
+động: vẫn nên làm §5.6 trong `src/` trước khi dời `02`, chỉ là bây giờ đó là một lựa chọn
+lịch trình, không phải một ràng buộc kỹ thuật.
 
 ✅ **Lát cắt `core/llm` đã tránh được bẫy tương tự.** Thứ nó bảo vệ là **hình dạng request
 đã trả tiền**: `temperature=0` và `response_format={"type": "json_object"}` không phải

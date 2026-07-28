@@ -66,7 +66,7 @@ repo and secrets, so it is never committed or pushed with this project.
   - `src_module/esg_kg/` is the in-progress third style (see the refactor section below):
     a real package, run from the repo root via its dispatcher —
     `python src_module/run.py quality --label baseline` (equivalently
-    `python -m esg_kg.report.quality` from inside `src_module/`). Eight stages have been
+    `python -m esg_kg.report.quality` from inside `src_module/`). Ten stages have been
     migrated so far; `python src_module/run.py --list` shows which, and it asks the
     import system rather than trusting a hand-kept list. `src/` is still the pipeline
     you execute.
@@ -283,6 +283,45 @@ first, then a follow-up commit added an `isinstance(out, dict)` guard in **both*
 (a) and **its hub has dissolved too**: all three symbols other stages take from it
 (`normalize_name`, `name_tokens`, `merge_preserving_edits`) are already in `core/naming.py`,
 and step04 itself imports only `REPO_ROOT`. `step01` is now the ONLY genuine hub left.
+`step04` is the ninth migrated stage (`esg_kg/registry/issuer.py`, 2026-07-28, same day as
+`step07`): confirmed leaf per the check above, AST-diff shows **11 shared functions, 0
+bytes different**, `main()` changes exactly one error message (points at `build_validated`
+instead of `step03_fix_invalid_triplets.py`, since §3.2 renamed the stage that produces its
+input), and the 3 deleted functions are exactly the 3 now imported from `core/naming`. What
+is new here versus every prior leaf move: `step04` writes `config/issuer_registry.json`, a
+file **tracked in git with human edits** (that is why `merge_preserving_edits` exists), so
+every equivalence arm must run `build()` against a temp workspace and never touch the real
+file — covered by a dedicated arm plus one that simulates a person moving a `needs_review`
+entry into `exclusions` and re-running. Test: `test/test_esg_kg_issuer.py` (12 groups). A
+follow-up commit then removed a dead branch DESIGN.md §5.2 had already flagged: `build()`
+used to sniff `isinstance(data, dict) and "nodes" in data and "edges" in data` as an
+alternate input shape, but the only writer of its input (`step03`/`build_validated`) always
+emits `List[Dict]`, and `step05` reads that same file with no sniffing at all. Removed in
+**both** trees at once, red-first (`test_build_no_longer_silently_converts_a_nodes_edges_dict_in_either_tree`).
+`step01` is the tenth migrated stage (`esg_kg/kpi/extract.py`, 2026-07-28, the day after
+`04`/`07`) and the genuine hub the lesson-(a) recheck predicted: it does not use
+`_Provider`/`_OpenAIProvider` at all — `core/llm.py`'s own docstring records that no Gemini
+provider was ever lifted (the project behind `GEMINI_API_KEY` is permanently 403), so this
+stage talks to `google.genai.Client` directly, and `KPIExtractor`, its prompt, its JSON
+schema, and `normalize_kpi_response` all stay stage-local — nothing else in the pipeline
+imports them. Only the 5 pure JSONL-reconstruction helpers move, into a new kernel module
+**`core/io_jsonl.py`**: `load_pages_from_jsonl`, `build_page_text`, `page_has_esg`,
+`select_documents`, `parse_company_year_from_filename` — exactly the 5 symbols
+`step02_extract_triplet_from_jsonl.py:43-50` imports from step01, so this module is what
+`step02` needs, not a precondition for `step01` itself (the same shape `core/identity.py`
+fell out of the step03b slice). Diff against `src/`: docstring, import block, and the 5
+deleted function bodies — no logic line changed. The paid path has no `_Provider` to stand
+in front of, so the stub is injected directly over `google.genai.Client`, answering
+deterministically from a CRC of the prompt — the fourth use of the technique first proven on
+step03's phase 2, confirming it is a general pattern rather than an OpenAI-specific trick.
+Arms: the real corpus (13 documents / 1,356 pages, `load_pages_from_jsonl` output byte-equal
+between trees) plus a synthetic `process_document` run through both trees, including an
+idempotency check — `out_file.exists()` must skip without re-calling the client, the same
+"does it skip or recompute" question PIPELINE.md §3 asks of every stage that meets its own
+past output, just applied to files instead of graph nodes. Test:
+`test/test_esg_kg_extract.py` (10 groups). With this move, no stage is a "hub" in the
+import-direction sense any more (lesson (a)) — `02`/`05`/`06`/`09` wait only on their own
+turn or a scheduling decision (§3.1, §5.6), never on a symbol still stuck in a sibling stage.
 **BLOCKS — the shape `esg_kg` is allowed to change (DESIGN.md §5.7, decided 2026-07-28).**
 When N stages each read AND write the same artifact they are not N stages, they are one:
 in `esg_kg` they become a block that chains in memory and writes the artifact ONCE.
@@ -602,14 +641,16 @@ python src/step09_report_claim_ledger.py --review-queue --markdown         #   c
 python src/step10_evaluate.py                                              # step 8 / P6: full Vietnamese evaluation report
 python src/step10_evaluate.py --ablation --no-llm                          #   free arms only (coverage/case studies/ablation are offline)
 
-# Refactor target (src_module/esg_kg) — step00 + step03 + step03b + step03c + step05b + step05c + step05d + step07 have moved so far
+# Refactor target (src_module/esg_kg) — step00 + step01 + step03 + step03b + step03c + step04 + step05b + step05c + step05d + step07 have moved so far
 python src_module/run.py --list                                            # stages + which are migrated
 python src_module/run.py quality --label baseline                          # == src/step00_graph_quality_report.py
+python src_module/run.py extract --doc AAA_2023                            # == src/step01_extract_kpi_from_jsonl.py
 python src_module/run.py fix_triples --dry-run                             # == src/step03_fix_invalid_triplets.py
 python src_module/run.py canonicalize --dry-run                            # == src/step03c_canonicalize_kpis.py
 python src_module/run.py build_validated --dry-run                         # BLOCK: 03 -> 03b -> 03c in one pass,
                                                                            #   writes all_validated_triples.json ONCE (DESIGN.md §5.7)
 python src_module/run.py anchor_kpi --dry-run                              # == src/step03b_anchor_kpi_facilities.py
+python src_module/run.py issuer                                            # == src/step04_build_issuer_registry.py
 python src_module/run.py provenance --dry-run                              # == src/step05b_stamp_provenance.py
 python src_module/run.py align_claims --dry-run                            # == src/step05d_align_claims_to_indicators.py
 python src_module/run.py indicators --dry-run                              # == src/step05c_link_standard_indicators.py
@@ -803,6 +844,53 @@ python test/test_esg_kg_crosscheck.py      # same contract, for the step07 migra
                                            # here (caught by Adjudicator.adjudicate's own
                                            # try/except) but still wrong. Fixed in BOTH trees.
                                            # Run after touching step07 or core/llm.
+python test/test_esg_kg_issuer.py          # same contract, for the step04 migration slice
+                                           # (registry/issuer) — confirmed leaf, not hub:
+                                           # AST-diff shows 11 shared functions, 0 bytes
+                                           # different; the 3 deleted functions are exactly
+                                           # the 3 now imported from core/naming. The stage
+                                           # writes config/issuer_registry.json, a file
+                                           # TRACKED in git with human edits, so every arm
+                                           # runs build() against a temp workspace — one arm
+                                           # asserts the real tracked file is never touched,
+                                           # another simulates a person moving a needs_review
+                                           # entry into exclusions and re-running, proving the
+                                           # edit survives identically in both trees. Also
+                                           # covers a follow-up fix: build() used to silently
+                                           # accept an alternate {nodes,edges} input shape
+                                           # that no writer has produced since step03 started
+                                           # emitting List[Dict] — removed in BOTH trees,
+                                           # red-first. Run after touching step04 or
+                                           # core/naming.
+python test/test_esg_kg_extract.py         # same contract, for the step01 migration slice
+                                           # (kpi/extract) — the last genuine hub (nothing
+                                           # else was still importing another stage's
+                                           # stage-local symbols). This stage does NOT use
+                                           # _Provider/_OpenAIProvider: core/llm.py's own
+                                           # docstring records that no Gemini provider was
+                                           # ever lifted, so KPIExtractor talks to
+                                           # google.genai.Client directly and stays entirely
+                                           # stage-local — only the 5 pure JSONL helpers
+                                           # (load_pages_from_jsonl, build_page_text,
+                                           # page_has_esg, select_documents,
+                                           # parse_company_year_from_filename) move, into a
+                                           # NEW kernel module core/io_jsonl.py — exactly the
+                                           # 5 symbols step02 imports from step01, so this
+                                           # module is what step02 needs, not a precondition
+                                           # for step01 itself. The paid path has no
+                                           # _Provider to stand in front of, so the stub is
+                                           # injected directly over google.genai.Client,
+                                           # answering deterministically from a CRC of the
+                                           # prompt — the fourth use of that technique,
+                                           # confirming it is a general pattern and not an
+                                           # OpenAI-specific trick. Headline arm compares
+                                           # load_pages_from_jsonl/build_page_text/
+                                           # page_has_esg on the real corpus (13 documents /
+                                           # 1,356 pages) plus a synthetic process_document
+                                           # run through both trees, including an idempotency
+                                           # check (out_file.exists() must skip without
+                                           # re-calling the client). Run after touching
+                                           # step01 or core/llm.
 ```
 
 The rest of `test/` and `notebooks/` are Jupyter notebooks for manual validation

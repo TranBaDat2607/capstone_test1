@@ -36,17 +36,23 @@ kernel chứ không từ `esg_kg.resolve.indicators`.
 src_module/esg_kg/
   core/                # KERNEL dùng chung — tách ra TRƯỚC TIÊN
     paths.py           #  REPO_ROOT, DEFAULT_* dirs            <- step01:36-44
-    io_jsonl.py        #  load_pages_from_jsonl, build_page_text, page_has_esg  <- step01:97-124
+    io_jsonl.py        #  load_pages_from_jsonl, build_page_text, page_has_esg  <- step01:97-124  ✅ ĐÃ LÀM
     schema.py          #  load_schema_sets, validate_triple    <- step03:150,260
                        #  get_identity_keys                    <- step02:100
     naming.py          #  normalize_name, name_tokens, merge_preserving_edits  <- step04:138,158,399
     dates.py           #  date_start_key (+ canonicalize ISO)  <- step03:130
     identity.py        #  parse_source_id                      <- step03b:98
                        #  PROVENANCE_CLASSES, stable_id        <- step02
-    text.py            #  node_text x2 — KHÁC NHAU, giữ 2 tên  <- step05d:63 (props dict)
-                       #                                       <- step07:133 (node, rẽ theo class)
-    llm.py             #  RateLimiter                          <- step02:70
+    text.py            #  ❌ KHÔNG LÀM (xem PIPELINE.md §2.1 "bẫy node_text"): hai
+                       #  `node_text` (step05d:63 props dict, step07:133 node+class)
+                       #  hoá ra KHÔNG phải bản trùng — gộp sẽ viết lại prompt LLM đã
+                       #  trả tiền của một trong hai stage. Mỗi bản ở lại đúng stage
+                       #  sinh ra nó (`esg_kg.resolve.align_claims.node_text` /
+                       #  `esg_kg.crosscheck.claims_vs_conduct.node_text`), không lên kernel.
+    llm.py             #  RateLimiter                          <- step02:70            ✅ ĐÃ LÀM
                        #  _Provider/_OpenAIProvider cascade    <- step07:284
+                       #  (KHÔNG có provider Gemini — step01 tự nói chuyện với
+                       #  google.genai.Client trực tiếp, xem §3 lát cắt step01)
     console.py         #  ensure_utf8_stdout  ✅ ĐÃ LÀM        <- step00 __main__ (03a1592)
     graph_patch.py     #  GraphPatch, temporal_md  ✅ ĐÃ LÀM   <- step05c:76,102,109,114
                        #  (norm + TODAY đi kèm; 05d import từ đây, không từ stage)
@@ -148,11 +154,22 @@ Vì vậy ta **không rewire `src/`**. Thay vào đó:
      `PROVENANCE_CLASSES` (<- step02:104, :501), trích khi dời `step03b` (2026-07-27).
      Cả ba đi cùng nhau vì `step05b:49-51` import cả ba một lượt. Cũng như `graph_patch`:
      xếp theo stage cần, không theo số importer. **Điều này mở khoá `step05b`.**
-   - `core/` còn lại, làm khi stage cần tới: `llm`, `io_jsonl`, `text`.
-     ⚠️ `text`: hai `node_text` **KHÔNG phải bản trùng** — `step05d:63` nhận *props dict*,
-     `step07:133` nhận *node* rồi rẽ nhánh theo class. Chuyển cả hai, giữ tên riêng.
-     **`llm` là đòn bẩy lớn nhất**: nó chặn `step03`, `step05`, `step07`, `step05d` cùng
-     lúc (rồi kéo theo `step08`/`step10`) — bản đồ đầy đủ ở `PIPELINE.md` §2.1.
+   - ✅ `core/llm.py` — `RateLimiter` (<- step02:70), `_Provider`/`_OpenAIProvider`
+     (<- step07:284), trích 2026-07-27. **Đòn bẩy lớn nhất**: nó chặn `step03`, `step05`,
+     `step07`, `step05d` cùng lúc (rồi kéo theo `step08`/`step10`) — bản đồ đầy đủ ở
+     `PIPELINE.md` §2.1. KHÔNG có provider Gemini: dự án đứng sau `GEMINI_API_KEY` bị 403
+     vĩnh viễn, nên `step07` chỉ còn cascade OpenAI, và `step01` (dùng Gemini trực tiếp)
+     không hề đụng module này.
+   - ✅ `core/io_jsonl.py` — `load_pages_from_jsonl`, `build_page_text`, `page_has_esg`,
+     `select_documents`, `parse_company_year_from_filename` (<- step01), trích khi dời
+     `step01` (2026-07-28). Đúng 5 symbol mà `step02:43-50` import — module này là điều
+     kiện của `step02`, không phải của `step01` (nó rơi ra từ chính lát cắt đó).
+   - ❌ `core/text.py` — KHÔNG LÀM. Kế hoạch ban đầu định gộp hai `node_text`
+     (`step05d:63` nhận *props dict*, `step07:133` nhận *node* rồi rẽ nhánh theo class)
+     vào một module chung, giữ tên riêng. Khi hai stage đó thực sự dời (2026-07-28), lộ ra
+     đây **không phải bản trùng** theo nghĩa "cùng logic, khác chỗ ở" — gộp chung sẽ âm
+     thầm viết lại prompt LLM đã trả tiền của một trong hai. Mỗi hàm ở lại đúng stage sinh
+     ra nó; xem PIPELINE.md §2.1 "bẫy `node_text`".
 3. **Các stage dời được** — tiêu chí là **"mọi symbol NÓ import đã nằm trong `core/`"**,
    KHÔNG phải "không ai import nó". Cả hai điều kiện đều cần, nhưng điều kiện thứ hai
    mới là thứ quyết định thời điểm dời được.
@@ -257,14 +274,64 @@ Vì vậy ta **không rewire `src/`**. Thay vào đó:
 
      (`step07b` từng đứng đầu danh sách này — đã loại, xem §4.1.) `step09`/`step06` cần
      Neo4j nên arm của chúng chỉ kiểm được tới mức import + hàm thuần; để sau.
-   - **CHƯA đủ điều kiện dù không ai import chúng**: `step05d` (`GraphPatch`/`temporal_md`
-     nay đã ở `core/graph_patch.py` ✅, nhưng nó **còn chặn ở `core/llm.py`** —
-     `step05d:35` import `_OpenAIProvider`/`RateLimiter` từ step07),
-     `step08` (cần `node_text` từ step07 → chờ `core/text.py`),
-     `step10` (`step10_evaluate.py:367` giấu một lazy `from step07… import Adjudicator`
-     trong `try` — hỏng thì **im lặng**, chỉ mất arm LLM, không báo lỗi).
-4. **Các stage HUB cuối cùng**: step04 → step03 → step02 → step01 — lúc này phần
-   dùng chung đã ở `core/`, phần còn lại chỉ là entrypoint mỏng.
+
+     ✅ **Bốn lượt dời sau đó (2026-07-28), tường thuật đầy đủ ở `PIPELINE.md` §2.1 —
+     ở đây chỉ tóm để mục này khỏi lệch với hiện trạng thật:**
+     - **`step03` → `graph/fix_triples.py`, stage thứ sáu.** Trông như hub (7 stage
+       import nó) nhưng mọi symbol chúng lấy đã lên `core/` từ trước, phần stage-local
+       không ai import ⇒ luật "kiểm bằng CHIỀU import, không bằng số người import" áp
+       dụng — nó là leaf, không phải hub. Đi kèm khối `build_validated` đầu tiên (§5.7).
+     - **`step05d` → `resolve/align_claims.py`, stage thứ bảy.** `GraphPatch`/`temporal_md`
+       đã có sẵn từ lát cắt `05c`, nên dời không trích thêm `core/` nào. Bài học lớn nhất:
+       "có `--dry-run`" ≠ "dễ test" — ở đây `--dry-run` return trước khi provider được
+       dựng, nên thứ chứng minh tương đương là một **provider giả** tiêm vào cả hai cây.
+     - **`step07` → `crosscheck/claims_vs_conduct.py`, stage thứ tám** — đòn bẩy lớn nhất
+       cả đợt, vì nó là stage DUY NHẤT còn chặn ai đó (`08` chờ `node_text`, `10` chờ
+       `Adjudicator`); dời nó mở khoá cả hai cùng lúc. Cũng là lượt import NGƯỢC đầu
+       tiên: `_Provider`/`_OpenAIProvider` nay lấy từ `core.llm` — đúng hai lớp mà kernel
+       đó đã trích TỪ CHÍNH file này một ngày trước.
+     - **`step04` → `registry/issuer.py`, stage thứ chín, cùng ngày với `07`.** Trông như
+       hub (6 stage import nó) nhưng cả ba symbol chúng lấy (`normalize_name`,
+       `name_tokens`, `merge_preserving_edits`) đã ở `core/naming.py` — hub đã tan, dời
+       được ngay như một leaf. Ghi file **tracked + sửa tay** (`config/issuer_registry.json`),
+       nên mọi arm chạy trên workspace tạm, không đụng bản thật. Một commit theo sau xoá
+       nhánh chết `isinstance(data, dict) and "nodes"/"edges"` **trong CẢ HAI cây** (§5.2
+       bảng cuối, §5.3).
+
+     Với bốn lượt đó, `01` là hub **duy nhất** còn lại (§4 dưới không còn đúng như viết
+     ban đầu — xem sửa ngay sau).
+   - **CHƯA đủ điều kiện dù không ai import chúng, TÍNH TỚI THỜI ĐIỂM VIẾT ĐOẠN NÀY
+     (2026-07-27)** — bốn dòng dưới đã lỗi thời sau các lượt dời ở trên, giữ lại để thấy
+     dự đoán ban đầu sai ở đâu: ~~`step05d` (còn chặn ở `core/llm.py`)~~ → đã dời.
+     ~~`step08` (chờ `core/text.py`)~~ / ~~`step10` (chờ `Adjudicator`)~~ → cả hai chờ
+     đúng `step07` dời, không chờ `core/` nào — và `step07` đã dời, nên cả hai giờ chỉ
+     còn chờ tới lượt chính chúng.
+
+     ✅ **`step01` → `kpi/extract.py`, stage thứ mười (2026-07-28), một ngày sau `04`/`07`.**
+     Nó không dùng `_Provider`/`_OpenAIProvider` — `core/llm.py` đã ghi rõ không có provider
+     Gemini để trích (dự án đứng sau `GEMINI_API_KEY` bị 403 vĩnh viễn) — nên `KPIExtractor`,
+     prompt, JSON schema (`KPI_SCHEMA`/`_OBSERVATION_SCHEMA`/`_KPI_ITEM_SCHEMA`) và
+     `normalize_kpi_response` ở lại stage nguyên vẹn; không ai khác trong pipeline import
+     chúng. Chỉ 5 helper JSONL thuần dời sang **`core/io_jsonl.py` (module `core/` mới)** —
+     đúng 5 symbol mà `step02:43-50` import từ nó, nên module này là điều kiện của `02`,
+     không phải của `01`, đúng kiểu `core/identity.py` rơi ra từ lát cắt `03b`. Diff với bản
+     `src/`: docstring + khối import + xoá 5 hàm giờ import từ `core.io_jsonl`, **0 dòng
+     logic khác**. Nhánh trả tiền dùng đúng kỹ thuật của `03`/`05d`/`07`: vì không có
+     `_Provider` đứng trước Gemini, stub tiêm thẳng lên `google.genai.Client`, trả lời tất
+     định theo CRC của prompt — áp dụng lần thứ tư, xác nhận đây là khuôn chung chứ không
+     phải mẹo riêng cho stage OpenAI. Arm mạnh nhất: `load_pages_from_jsonl` +
+     `build_page_text`/`page_has_esg` trên corpus thật (13 tài liệu / 1 356 trang, 0 dòng
+     lệch), cộng `process_document` qua fixture tổng hợp ở cả hai cây — bao gồm arm
+     idempotency (`out_file.exists()` ⇒ không gọi lại client, cùng câu hỏi "gặp lại tàn dư
+     của chính nó thì bỏ qua hay tính lại" mà PIPELINE.md §3 đặt ra cho mọi stage vá tại
+     chỗ, chỉ khác là ở đây tàn dư là *file*, không phải *node đồ thị*). Test:
+     `test/test_esg_kg_extract.py` (10 nhóm).
+4. **Stage HUB cuối cùng: không còn.** ~~step04 → step03 → step02 → step01~~ — dự đoán ban
+   đầu sai theo thứ tự: `step04` và `step03` hoá ra là **leaf** (hub của chúng đã tan nhờ
+   `core/naming` và `core/schema`/`core/dates`), và `step01` — dự đoán đúng là hub thật sự
+   **duy nhất** còn lại — nay cũng đã dời (2026-07-28), cho ra `core/io_jsonl`. `step02`
+   không phải hub: nó chỉ còn chờ `core/io_jsonl` (nay đã có) và một quyết định lịch trình
+   (§5.6) chứ không chờ một cấu trúc import nào nữa — xem `PIPELINE.md` §2.1.
 
 ### 4.1 `step07b` KHÔNG được dời sang `esg_kg` (quyết định 2026-07-25)
 
