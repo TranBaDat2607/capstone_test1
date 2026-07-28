@@ -63,6 +63,10 @@ python test/test_esg_kg_equivalence.py    # lưới chống lệch giữa src/ v
 python test/test_esg_kg_anchor_kpi.py     # lát cắt step03b: core/identity + graph/anchor_kpi
 python test/test_esg_kg_provenance.py     # lát cắt step05b: resolve/provenance
 python test/test_esg_kg_llm.py            # lát cắt core/llm: throttle + hình dạng request đã trả tiền
+python test/test_esg_kg_fix_triples.py    # lát cắt step03: corpus thật + pha 2 bằng LLM giả
+python test/test_esg_kg_validated_block.py # KHỐI 03→03b→03c: src/ làm oracle + "ghi đúng 1 lần"
+python test/test_esg_kg_align_claims.py    # lát cắt step05d: nhánh LLM bắt buộc, chạy bằng provider giả
+python test/test_pipeline_table.py        # bảng STAGES/BLOCKS + run.py --list nói thật
 python test/test_temporal_invariants.py   # bộ test sẵn có của src/, phải luôn xanh
 ```
 
@@ -71,8 +75,12 @@ python test/test_temporal_invariants.py   # bộ test sẵn có của src/, ph�
 `05c`/`03b` **bỏ qua** ⇒ chạy lại là no-op và arm so hai kết quả rỗng mà vẫn in PASS, phải
 dựng lại input trước-khi-vá (`strip_axis`, `strip_anchors`). `05b` **tính lại** ⇒ arm trên
 file sống đã thật; strip (`strip_provenance`) ở đó dùng để chứng minh stage không đọc
-output của chính nó. Cả ba trường hợp đều strip **đúng phần stage tự sinh**, không strip
-theo nhãn cạnh hay tên key. Chi tiết + bảng ba ca: [`PIPELINE.md`](PIPELINE.md) §3.
+output của chính nó. `05d` là ca thứ tư và là ca mới: nó **bỏ qua**, nhưng artifact sống
+**chưa chứa tàn dư của nó** (stage chưa từng chạy) ⇒ arm không rỗng **do dữ liệu**, không do
+thiết kế — nên `strip_llm_alignments()` vẫn được viết và gọi dù hôm nay xoá 0 cạnh. Mọi
+trường hợp đều strip **đúng phần stage tự sinh**, không strip theo nhãn cạnh hay tên key
+(`05d` chỉ lấy `alignment_method=llm`, giữ nguyên 639 cạnh `keyword` của `05c`). Chi tiết +
+bảng bốn ca: [`PIPELINE.md`](PIPELINE.md) §3.
 
 ## Trạng thái
 
@@ -92,10 +100,13 @@ theo nhãn cạnh hay tên key. Chi tiết + bảng ba ca: [`PIPELINE.md`](PIPEL
 | `resolve/indicators.py` | ✅ dời từ `step05c`; diff 15+/115− **0 dòng logic mới**; arm dựng lại 67 chỉ số + 1 346 cạnh trên đồ thị thật đã strip |
 | `graph/anchor_kpi.py` | ✅ dời từ `step03b` (2026-07-27); diff 17+/20− **0 dòng logic**; arm dựng lại 95 anchor trên corpus đã strip + nhánh hub-guard + idempotency. Test riêng: `test/test_esg_kg_anchor_kpi.py` |
 | `resolve/provenance.py` | ✅ dời từ `step05b` (2026-07-27); diff 18+/8− **0 dòng logic** — stage đầu tiên dời mà **không phải trích thêm `core/`** nào; arm so 6 258 dấu trên đồ thị thật + arm strip chứng minh stage không đọc output của chính nó + fixture nhánh `extraction`. Test riêng: `test/test_esg_kg_provenance.py` |
+| `graph/fix_triples.py` | ✅ dời từ `step03` (2026-07-28); stage **thứ hai** dời mà không phải trích thêm `core/`. Nó *trông* như hub (7 stage import) nhưng mọi symbol chúng lấy đã ở `core/dates`+`core/schema` ⇒ thực chất là leaf — **"hub" phải kiểm bằng CHIỀU import**. Arm corpus thật (14 492 validated + 1 036 unfixable) không cần `strip_*` vì stage không bao giờ gặp output của chính nó; pha 2 (trả tiền) có arm bằng LLM giả. Test riêng: `test/test_esg_kg_fix_triples.py` |
+| `graph/build_validated.py` | ✅ **KHỐI** `03 → 03b → 03c` (2026-07-28) — không phải stage, **không có bản `src/`** nên không tính vào mẫu số. Nối chuỗi in-memory, ghi `all_validated_triples.json` **1 lần**; `src/` giữ nguyên 3 stage và làm **oracle**. Pha 2 cache theo *nội dung* triple ⇒ chạy lại **0 lời gọi LLM**. Test riêng: `test/test_esg_kg_validated_block.py` (DESIGN.md §5.7) |
+| `resolve/align_claims.py` | ✅ dời từ `step05d` (2026-07-28); stage thứ **ba** dời mà không phải trích thêm `core/` — lát cắt `05c` đã đẩy `GraphPatch`/`temporal_md` lên kernel *chính vì* file này import chúng từ một stage. Stage **bắt buộc có LLM** — `--dry-run` return trước khi provider được dựng, nên nhánh đắt được phủ bằng **provider giả tiêm vào cả hai cây** (tất định theo CRC của prompt). Test riêng: `test/test_esg_kg_align_claims.py` (14 nhóm) |
 | `registry/standards.py` | ⛔ **không dời** — `step04b` đọc output của `step05` (vòng lặp) và lần quét đồ thị đóng góp 0; registry thành config tĩnh, `step00` audit độ phủ (DESIGN.md §4.2) |
-| Stage kế tiếp | 🟢 sau `core/llm.py` có **tám** stage đủ điều kiện: `01`, `03`, `04`, `05`, `05d`, `06`, `07`, `09`. Tiêu chí giờ là *arm mạnh tới đâu*, không còn là *symbol sẵn chưa*: **`step03`** mạnh nhất (pha 1 + 1.5 offline, `test_temporal_invariants.py` đã phủ sẵn), `step05d` nhỏ nhất. `step05` **chưa được dời** cho tới khi xử §3.1 — PIPELINE.md §2.1 |
+| Stage kế tiếp | 🟢 `03` rồi `05d` đã dời (2026-07-28), còn **sáu** stage đủ điều kiện: `01`, `04`, `05`, `06`, `07`, `09`. **`step07` là đòn bẩy lớn nhất còn lại** — nó là stage duy nhất còn chặn ai đó (`08` chờ `node_text`, `10` chờ `Adjudicator`), và lý do hoãn cũ ("trả tiền") vừa bị `05d` gỡ: stub provider cho arm thật, miễn phí. **`step04` nay cũng là leaf** — kiểm lại 2026-07-28, cả 3 symbol bị import đã ở `core/naming` (nhưng nó ghi một file **tracked + sửa tay**, arm phải dùng workspace tạm). `step05` **chưa được dời** cho tới khi xử §3.1 — nay mặc định là gộp khối theo §3.2. PIPELINE.md §2.1 |
 | `step07b` (softmax) | ⛔ **không dời** — UI `frontend/`+`api/` không đọc; giữ chạy ở `src/` (DESIGN.md §4.1) |
 
-`src/` **vẫn là pipeline chạy thật**; mới **năm** stage chạy được từ đây (`00`, `03b`,
-`03c`, `05b`, `05c` — `run.py --list` là nguồn sự thật), và bản
-`src/step00_graph_quality_report.py` vẫn còn (nợ đã ghi: DESIGN.md §6.1).
+`src/` **vẫn là pipeline chạy thật**; mới **bảy** stage chạy được từ đây (`00`, `03`, `03b`,
+`03c`, `05b`, `05c`, `05d`) **cộng một khối** `build_validated` — `run.py --list` là nguồn sự thật —
+và bản `src/step00_graph_quality_report.py` vẫn còn (nợ đã ghi: DESIGN.md §6.1).

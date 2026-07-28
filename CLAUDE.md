@@ -66,7 +66,7 @@ repo and secrets, so it is never committed or pushed with this project.
   - `src_module/esg_kg/` is the in-progress third style (see the refactor section below):
     a real package, run from the repo root via its dispatcher —
     `python src_module/run.py quality --label baseline` (equivalently
-    `python -m esg_kg.report.quality` from inside `src_module/`). Five stages have been
+    `python -m esg_kg.report.quality` from inside `src_module/`). Seven stages have been
     migrated so far; `python src_module/run.py --list` shows which, and it asks the
     import system rather than trusting a hand-kept list. `src/` is still the pipeline
     you execute.
@@ -203,10 +203,86 @@ are in `test/test_esg_kg_llm.py`, and the one that earns its keep pins the **pai
 shape** with a stub client (`temperature=0`, `response_format={"type":"json_object"}`, the
 system/user split, and `wait_if_needed` firing before `create`) — drop any of those and
 step07 still "works" while every verdict silently changes. Choosing what moves next is now
-about **arm strength, not symbol availability**: `step03` is the strongest candidate (phases
-1 and 1.5 are offline and `test_temporal_invariants.py` already covers them), `step05d` the
-smallest; 06/09 read Neo4j, 01/07 cost money, 04 is a hub, and **`step05` must not move
-until §3.1 is resolved** (it overwrites all three patches).
+about **arm strength, not symbol availability**.
+`step03` is the sixth migrated stage (`esg_kg/graph/fix_triples.py`, 2026-07-28) and the
+second — after step05b — to move **without extracting any new `core/` module**. Two lessons
+worth reusing, both of which contradicted the plan:
+**(a) "hub" must be tested by import DIRECTION, not by how many files import you.** Seven
+`src/` stages import from step03, which is why DESIGN.md §4 had it queued in the late "hub"
+batch — but every symbol they take (`ISO_DATE_RE`/`normalize_date_string`/`date_start_key`
+→ `core/dates`, `load_schema_sets`/`validate_triple` → `core/schema`) had already been
+lifted by earlier slices, and nothing imports its stage-local functions. The hub had already
+dissolved; the rule that governs is the one about what a stage *itself* imports. Check the
+same way before scheduling `step04`.
+**(b) A same-named constant is not a shared constant.** `DEFAULT_RATE_LIMIT` exists in both
+step03 and `core/llm` and both are `10`, so importing the kernel's would have looked correct
+forever — and would silently retune step03 the day step02's limit changes. Only `RateLimiter`
+is shared; the constant stays module-local, pinned by an arm.
+Its arms are in `test/test_esg_kg_fix_triples.py`. The stage is also the first where the
+in-place-patch question (PIPELINE.md §3) answers *"never meets its own output"* — the main
+path reads step02's `graphs/` and writes a different file, so the real-corpus arm (14,492
+validated + 1,036 unfixable, both trees) is non-vacuous with no `strip_*` fixture. Only
+`--renormalize` re-reads the aggregated file, and that is where the idempotency arm sits.
+Phase 2 (the paid branch) is driven by a stubbed LLM in both trees, so
+`preserve_property_values` is proven wired in the migrated copy too — mutation-checked: unwiring
+the guard reddens the phase-2 arm, dropping `_bugged` files reddens the corpus arm.
+`step05d` is the seventh migrated stage (`esg_kg/resolve/align_claims.py`, 2026-07-28) and
+the third — after step05b and step03 — to move **without extracting any new `core/` module**:
+the step05c slice had already lifted `GraphPatch`/`temporal_md` into `core/graph_patch.py`
+*precisely because* this file imported them from a stage. No logic line changed; two dead
+symbols are dropped (`TODAY`, defined and never read, and an unused `RateLimiter` import).
+**Its real lesson is about test strategy, and it inverts a criterion this file used to state:
+"has `--dry-run`" is NOT what makes a stage easy to test.** `--dry-run` here returns *before*
+the provider is even constructed, so a dry-run-only arm proves almost nothing about a
+mandatory-LLM stage. What earns the arm is a **stub provider injected over `_OpenAIProvider`
+in both trees**, answering deterministically from a CRC of the prompt so both trees see
+identical replies — the same technique that covered step03's phase 2. Having now worked
+twice, it is a general pattern, so **"the stage costs money" is no longer a reason to defer
+one**: that removes the standing objection to `step07`, which is the only stage still
+blocking others (`08` waits on `node_text`, `10` on `Adjudicator`). Its arms are in
+`test/test_esg_kg_align_claims.py`, including the documented `node_text` trap (05d's takes a
+properties dict, step07's takes a node), `SYSTEM` pinned byte-for-byte, and an append-only /
+node-order arm that matters more here than elsewhere: unlike step05c this stage never calls
+`assert_append_only()` itself. It also adds a **fourth** case to the in-place-patch law
+(PIPELINE.md §3): 05d *does* skip its own output like 05c/03b, but the live artifact contains
+none of it (all 639 `alignsWithIndicator` edges are step05c's `keyword` tier, zero are `llm`),
+so the arm is non-vacuous **because of the data, not the design** — `strip_llm_alignments()`
+is written and applied anyway, removing 0 edges today. A separate commit then fixed a defect
+the migration surfaced and deliberately did not touch: `parse_reply` called `.get()` on
+whatever `json.loads` returned, so a reply of `[]` or `"text"` raised `AttributeError` instead
+of returning `None` — and since `run()` writes the graph only after the loop, one odd reply
+discarded every adjudication already paid for. Fixed in **both** trees per §5.3.
+06/09 read Neo4j, 01 costs money, 04 is *nominally* a hub — re-checked 2026-07-28 per lesson
+(a) and **its hub has dissolved too**: all three symbols other stages take from it
+(`normalize_name`, `name_tokens`, `merge_preserving_edits`) are already in `core/naming.py`,
+and step04 itself imports only `REPO_ROOT`. `step01` is now the ONLY genuine hub left.
+**BLOCKS — the shape `esg_kg` is allowed to change (DESIGN.md §5.7, decided 2026-07-28).**
+When N stages each read AND write the same artifact they are not N stages, they are one:
+in `esg_kg` they become a block that chains in memory and writes the artifact ONCE.
+`src/` is NOT touched and keeps the stages separate — this is a deliberate redesign, not
+drift, so §5.3's "land it in both trees" does not apply to block changes (§5.5's constraint
+2 is corrected accordingly). The first block is **`03 → 03b → 03c`**
+(`esg_kg/graph/build_validated.py`, `run.py build_validated`), registered in a `BLOCKS`
+table in `pipeline.py` separate from `STAGES` because a block has no `src/` counterpart by
+design. Three things make it safe, and they generalize:
+**(a) `src/` is still the oracle.** The change is to WHEN the file is written, never to
+WHAT is in it — so the test runs the `src/` chain 03→03b→03c and asserts the block's
+artifact is identical (14,584 triples / 92 anchors / 679 `kpi_id`, real corpus, free). The
+day a refactor breaks that property, stop: there is no oracle left.
+**(b) "intermediate artifact" ≠ "cache of a paid result".** Dropping the first is the goal;
+dropping the second would make every block run re-pay for phase 2 AND return something
+different each time (the LLM is not deterministic). Today 03b/03c re-run for free precisely
+BECAUSE they read a frozen file. So phase-2 repairs go to `phase2_repairs.json`, keyed by
+triple CONTENT (never by position — batch boundaries move), storing the model's raw reply
+with `preserve_property_values` applied on the way out.
+**(c) a block ADDS an entry point, never removes the per-stage ones** — losing the ability
+to run one stage alone loses the ability to diagnose it. Per-stage stats files stay too:
+they are diagnostics, not intermediate artifacts.
+Its arms are in `test/test_esg_kg_validated_block.py`; `test_pipeline_table.py` covers the
+`BLOCKS` table. `fix_triples` gained `run_phases()` (phases 1–1.5, writes nothing) with
+`process_all_files()` = `run_phases` + the writes, so the stage's behaviour is unchanged.
+**`step05` must not move until §3.1 is resolved** (it overwrites all three patches) — and
+the block pattern is now the default answer there, replacing the three options in §5.5.
 **`step07b` is deliberately NOT being ported** (DESIGN.md §4.1): the delivered surface is
 the `frontend/`+`api/` UI, which never reads its softmax scores, so `pipeline.py` carries
 it as `new_module=None` and `run.py --list` shows `(not ported)` and drops it from the
@@ -496,12 +572,16 @@ python src/step09_report_claim_ledger.py --review-queue --markdown         #   c
 python src/step10_evaluate.py                                              # step 8 / P6: full Vietnamese evaluation report
 python src/step10_evaluate.py --ablation --no-llm                          #   free arms only (coverage/case studies/ablation are offline)
 
-# Refactor target (src_module/esg_kg) — step00 + step03b + step03c + step05b + step05c have moved so far
+# Refactor target (src_module/esg_kg) — step00 + step03 + step03b + step03c + step05b + step05c + step05d have moved so far
 python src_module/run.py --list                                            # stages + which are migrated
 python src_module/run.py quality --label baseline                          # == src/step00_graph_quality_report.py
+python src_module/run.py fix_triples --dry-run                             # == src/step03_fix_invalid_triplets.py
 python src_module/run.py canonicalize --dry-run                            # == src/step03c_canonicalize_kpis.py
+python src_module/run.py build_validated --dry-run                         # BLOCK: 03 -> 03b -> 03c in one pass,
+                                                                           #   writes all_validated_triples.json ONCE (DESIGN.md §5.7)
 python src_module/run.py anchor_kpi --dry-run                              # == src/step03b_anchor_kpi_facilities.py
 python src_module/run.py provenance --dry-run                              # == src/step05b_stamp_provenance.py
+python src_module/run.py align_claims --dry-run                            # == src/step05d_align_claims_to_indicators.py
 python src_module/run.py indicators --dry-run                              # == src/step05c_link_standard_indicators.py
 
 # ESG Evidence View UI (web front-end; reads the Neo4j advisory layer, no LLM — see docs/ESG_EVIDENCE_VIEW.md)
@@ -615,6 +695,52 @@ python test/test_esg_kg_llm.py             # same contract, for the core/llm sli
                                            # "works" while silently changing every verdict.
                                            # Run after touching step02's RateLimiter, step07's
                                            # providers, or any stage's DEFAULT_RATE_LIMIT.
+python test/test_esg_kg_fix_triples.py     # same contract, for the step03 migration slice
+                                           # (graph/fix_triples). The headline arm runs the
+                                           # REAL corpus (43 doc dirs / 1,370 page files)
+                                           # through both trees with client=None — phase 2
+                                           # logs-and-skips, so it is offline and free — and
+                                           # compares the written artifacts (14,492 validated
+                                           # + 1,036 unfixable). No strip_* fixture needed:
+                                           # unlike 05c/03b/05b this stage never reads its own
+                                           # output. Phase 2 IS covered, by a stubbed tampering
+                                           # LLM in both trees, which is what proves
+                                           # preserve_property_values is wired into the
+                                           # migrated copy and not just src/. Also pins
+                                           # BATCH_FIX_PROMPT byte-for-byte (a reworded paid
+                                           # prompt still "works" while changing every repair)
+                                           # and asserts the new tree IMPORTS the four kernel
+                                           # helpers rather than re-copying them. Run after
+                                           # touching step03, core/dates, or core/schema.
+python test/test_esg_kg_validated_block.py # the 03 BLOCK (DESIGN.md §5.7): 03 -> 03b -> 03c
+                                           # as one unit writing the artifact ONCE. The main
+                                           # arm runs the src/ chain as an ORACLE and asserts
+                                           # the block's artifact is identical — that works
+                                           # because the redesign changes WHEN the file is
+                                           # written, not WHAT is in it. Paired with a
+                                           # non-vacuity arm (src/ chain must write it 3×,
+                                           # block exactly 1×) so "exactly 1" cannot be
+                                           # trivially true. Also pins the paid-repair cache:
+                                           # a second run calls the LLM ZERO times, and a
+                                           # rebuild with client=None still reproduces the
+                                           # cached repair. Run after touching the block,
+                                           # fix_triples.run_phases, anchor_kpi or canonicalize.
+python test/test_esg_kg_align_claims.py    # same contract, for the step05d migration slice
+                                           # (resolve/align_claims). This stage REQUIRES an
+                                           # LLM and --dry-run returns before the provider is
+                                           # built, so both trees are driven by a STUB provider
+                                           # injected over _OpenAIProvider, answering
+                                           # deterministically from a CRC of the prompt — the
+                                           # whole paid path compared for free, on the real
+                                           # resolved graph (1,810 candidates, 60 adjudications).
+                                           # Pins the node_text trap (05d takes a properties
+                                           # dict, step07 takes a node — merging them rewrites
+                                           # step07's paid prompt), SYSTEM byte-for-byte, and
+                                           # append-only/node order, which nothing else guards
+                                           # because 05d never calls assert_append_only itself.
+                                           # Synthetic fixtures cover the 3-failure abort, an
+                                           # indicator id with no node, and the re-run skip.
+                                           # Run after touching step05d or core/graph_patch.
 ```
 
 The rest of `test/` and `notebooks/` are Jupyter notebooks for manual validation
