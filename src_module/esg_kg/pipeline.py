@@ -29,12 +29,17 @@ STAGES = [
     ("05d", "step05d_align_claims_to_indicators",  "esg_kg.resolve.align_claims",     "OPTIONAL LLM; after 05c"),
     ("06",  "step06_load_graph_to_neo4j",          "esg_kg.load.neo4j_load",          "needs Neo4j running"),
     ("07",  "step07_crosscheck_claims_vs_conduct", "esg_kg.crosscheck.claims_vs_conduct",
-     "LLM adjudication (mandatory); migrating it unblocks 08 (node_text) and 10 (Adjudicator)"),
+     "LLM adjudication (mandatory); migrating it unblocks 08 (node_text)"),
     ("07b", "step07b_enrich_dossiers",             None,                                  "offline softmax scores — NOT PORTED by decision (2026-07-25): nothing on the delivered surface reads them; stays runnable in src/"),
-    ("08",  "step08_sync_crosscheck_to_neo4j",     "esg_kg.load.neo4j_sync",          "advisory layer -> Neo4j"),
+    ("08",  "step08_sync_crosscheck_to_neo4j",     "esg_kg.load.neo4j_sync",          "advisory layer -> Neo4j; first Neo4j-touching stage migrated"),
     ("09",  "step09_report_claim_ledger",          "esg_kg.report.claim_ledger",      "Neo4j-only; run after 08"),
-    ("10",  "step10_evaluate",                     "esg_kg.report.evaluate",          "P6 evaluation report"),
 ]
+
+# step10 (P6 evaluation report) is REMOVED, not merely unported — decided 2026-07-28: the
+# project dropped this style of measurement (coverage/case-study/ablation without ground
+# truth) as a deliverable outright, no replacement mechanism. Unlike 04b/07b it has no row
+# here and no src/ file: a STAGES row must point at a real file, and this one no longer
+# exists. See src_module/esg_kg/DESIGN.md §4.3 and src_module/PIPELINE.md §4 for the record.
 
 # --------------------------------------------------------------------------- #
 # BLOCKS — several stages collapsed into ONE unit that writes its artifact once.

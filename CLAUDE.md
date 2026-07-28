@@ -66,7 +66,7 @@ repo and secrets, so it is never committed or pushed with this project.
   - `src_module/esg_kg/` is the in-progress third style (see the refactor section below):
     a real package, run from the repo root via its dispatcher —
     `python src_module/run.py quality --label baseline` (equivalently
-    `python -m esg_kg.report.quality` from inside `src_module/`). Ten stages have been
+    `python -m esg_kg.report.quality` from inside `src_module/`). Eleven stages have been
     migrated so far; `python src_module/run.py --list` shows which, and it asks the
     import system rather than trusting a hand-kept list. `src/` is still the pipeline
     you execute.
@@ -77,7 +77,7 @@ repo and secrets, so it is never committed or pushed with this project.
   test `data_processing/esg_classifier.py` on CPU.
 - **Other deps are deliberately unlisted and imported lazily** — each degrades gracefully
   so a bare clone still runs: `huggingface_hub` (`data_sync.py`), `rapidfuzz` (step03c's
-  fuzzy tier; disabled with a warning if absent), `openai` (step07/step10). Install them
+  fuzzy tier; disabled with a warning if absent), `openai` (step07). Install them
   on demand rather than adding them to `requirements.txt`.
 - **Gemini is currently billing-blocked**, so the code has drifted to OpenAI where a
   choice exists: step07's `DEFAULT_PROVIDER_ORDER` is `"openai"` and step05 is run with
@@ -196,8 +196,11 @@ step07), verbatim, no logic line changed. Those four **cannot be split**: `_Open
 __init__` constructs a `RateLimiter`, i.e. step07 was reaching UP into step02 for a utility.
 It migrates no stage (still 5/16) but unblocks four at once, taking the symbol-eligible set
 from 4 to **8**: `01`, `03`, `04`, `05`, `05d`, `06`, `07`, `09`. `Adjudicator` deliberately
-stayed in step07 (stage logic: prompt, verdict parsing, provider cascade), so **`step08` and
-`step10` are NOT unblocked** — they wait on step07 itself, not on the kernel; `step02` waits
+stayed in step07 (stage logic: prompt, verdict parsing, provider cascade), so **`step08`
+(and, at the time, `step10`) are NOT unblocked** — they wait on step07 itself, not on the
+kernel. (`step10` was removed from the project outright on 2026-07-28 — see the note near
+the end of this section — so read "`step08` and `step10`" below as history, not a stage
+still pending.) `step02` waits
 on `core/io_jsonl`, which falls out of the step01 slice rather than preceding it. Its arms
 are in `test/test_esg_kg_llm.py`, and the one that earns its keep pins the **paid request
 shape** with a stub client (`temperature=0`, `response_format={"type":"json_object"}`, the
@@ -322,6 +325,25 @@ past output, just applied to files instead of graph nodes. Test:
 `test/test_esg_kg_extract.py` (10 groups). With this move, no stage is a "hub" in the
 import-direction sense any more (lesson (a)) — `02`/`05`/`06`/`09` wait only on their own
 turn or a scheduling decision (§3.1, §5.6), never on a symbol still stuck in a sibling stage.
+`step08` is the eleventh migrated stage (`esg_kg/load/neo4j_sync.py`, 2026-07-29) and the
+first Neo4j-touching stage to move: a confirmed leaf (it imports only its own `REPO_ROOT`
+and `node_text` from step07, which moved the day before and is what unblocked this one).
+Every earlier paid/networked stage covered its expensive branch for free by injecting a
+stub UNDER an existing abstraction layer (`_OpenAIProvider`, `google.genai.Client`) — step08
+has no such layer in front of the real call (`from neo4j import GraphDatabase`, a lazy
+import inside `run()`, executed only past `--dry-run`), so the stub instead replaces the
+installed `neo4j` package's `GraphDatabase` attribute directly, the same shape the step01
+migration used when there was no provider abstraction standing in front of the Gemini
+client either. The fake driver records every Cypher string + parameter dict it receives and
+executes nothing, so `test/test_esg_kg_neo4j_sync.py` compares 5 real Neo4j calls
+byte-for-byte between both trees on the real corpus (1,093 dossiers against the 10,425-node
+resolved graph) without touching a live database. Diff against `src/`: docstring, the
+`REPO_ROOT`/`node_text` import swap, and two comment/log strings pointing at `run.py`
+instead of the old `src/stepNN_*.py` filenames — no logic line changed. The `node_text`
+trap (§2 above) held for a third time: `esg_kg.load.neo4j_sync.node_text is
+esg_kg.crosscheck.claims_vs_conduct.node_text`, pinned by a dedicated test. Test:
+`test/test_esg_kg_neo4j_sync.py` (8 groups, incl. `--clear-advisory`, a missing-resolved-graph
+positional-only fallback, and the `sys.exit(1)` guard for a missing dossier file).
 **BLOCKS — the shape `esg_kg` is allowed to change (DESIGN.md §5.7, decided 2026-07-28).**
 When N stages each read AND write the same artifact they are not N stages, they are one:
 in `esg_kg` they become a block that chains in memory and writes the artifact ONCE.
@@ -360,6 +382,14 @@ Known debt: `src/step00_graph_quality_report.py` still exists, so the T1/T2/T3 t
 `test/test_schema_contract.py` imports lives in two trees — cleanup commit spelled out in
 `src_module/esg_kg/DESIGN.md` §6.1.
 
+**`step10` (P6 evaluation) was removed from the project outright on 2026-07-28** — a
+project-scope decision, not a refactor-scope one like `step07b`/`step04b` above: this style
+of measurement (coverage/case-study/ablation with no ground truth) is no longer a
+deliverable, not superseded by anything. Unlike `step07b`/`step04b`, `src/step10_evaluate.py`
+and `docs/EVALUATION.md` were both deleted rather than kept as standalone tools, and
+`esg_kg/pipeline.py::STAGES` no longer carries a `"10"` row. See
+`src_module/esg_kg/DESIGN.md` §4.3 and `src_module/PIPELINE.md` §4 for the record.
+
 Corrections to DESIGN.md found by review, since resolved by the migrations themselves:
 - The two `node_text` are **NOT duplicates** — `step05d`'s takes a *properties dict*,
   `step07`'s takes a *node* and class-dispatches. Both have now moved
@@ -371,7 +401,10 @@ Corrections to DESIGN.md found by review, since resolved by the migrations thems
   from step05c/step07.~~ `step05d` has since moved (2026-07-28). `step08`/`step10` were
   blocked on `step07` itself (not a `core/` module) — `step10_evaluate.py:367`'s lazy
   `from step07… import Adjudicator` inside a `try` still fails *silently* if broken, but
-  `step07` has now moved too (2026-07-28), so both are unblocked and just await their own turn.
+  `step07` has now moved too (2026-07-28), so `step08` is unblocked and just awaits its own
+  turn. (`step10` itself was removed from the project on 2026-07-28, after this was
+  written — see the "Known debt" note above and `src_module/esg_kg/DESIGN.md` §4.3; the
+  file path quoted above no longer exists.)
 
 ## Pipeline architecture (the big picture)
 
@@ -515,14 +548,11 @@ src/step09_report_claim_ledger.py       → stdout + graph_output/crosscheck/<ti
    (presentation only — NO LLM, reads ONLY Neo4j (run step 6b first). Per-company claim ledger,
     signal-first (contradicted → supported → unverified), with the coverage caveat.
     --review-queue (contradiction + no verification), --assessment, --claim-id, --markdown)
-src/step10_evaluate.py                  → graph_output/evaluation/<ticker>_evaluation_report.md      (step 8 / P6)
-   (evaluation WITHOUT ground truth — measures the evidence-linking machinery, never
-    "greenwashing accuracy": coverage metrics + case studies + manual link-precision
-    methodology + ablations. Offline-first (reads the step-6 dossiers/stats + coverage.csv);
-    the ONLY paid part is a fixed 30-case OpenAI gold-set arm, and it is cached.
-    Rendered report is in Vietnamese; code/comments stay English. --coverage,
-    --case-studies, --ablation, --no-llm)
 ```
+
+`src/step10_evaluate.py` (step 8 / P6 evaluation report, no-ground-truth coverage/case-study/
+ablation) was **removed from the project on 2026-07-28** — see the "Known debt" note above.
+The claim ledger (`step09`) is the last stage in the pipeline now.
 
 The `src/` scripts share helpers by importing across files: later stages import
 `REPO_ROOT`, `build_page_text`, `load_pages_from_jsonl`, `RateLimiter`, `load_schema_sets`,
@@ -638,10 +668,9 @@ python src/step07b_enrich_dossiers.py --dry-run                            # ste
 python src/step08_sync_crosscheck_to_neo4j.py                              # step 6b: push dossiers into Neo4j advisory layer (no LLM)
 python src/step09_report_claim_ledger.py                                   # step 7: render the AAA claim ledger FROM Neo4j (no LLM)
 python src/step09_report_claim_ledger.py --review-queue --markdown         #   contradiction-no-verification queue + Markdown file
-python src/step10_evaluate.py                                              # step 8 / P6: full Vietnamese evaluation report
-python src/step10_evaluate.py --ablation --no-llm                          #   free arms only (coverage/case studies/ablation are offline)
+# (step10_evaluate.py / P6 evaluation report was removed from the project 2026-07-28 — see CLAUDE.md "Known debt")
 
-# Refactor target (src_module/esg_kg) — step00 + step01 + step03 + step03b + step03c + step04 + step05b + step05c + step05d + step07 have moved so far
+# Refactor target (src_module/esg_kg) — step00 + step01 + step03 + step03b + step03c + step04 + step05b + step05c + step05d + step07 + step08 have moved so far
 python src_module/run.py --list                                            # stages + which are migrated
 python src_module/run.py quality --label baseline                          # == src/step00_graph_quality_report.py
 python src_module/run.py extract --doc AAA_2023                            # == src/step01_extract_kpi_from_jsonl.py
@@ -655,6 +684,7 @@ python src_module/run.py provenance --dry-run                              # == 
 python src_module/run.py align_claims --dry-run                            # == src/step05d_align_claims_to_indicators.py
 python src_module/run.py indicators --dry-run                              # == src/step05c_link_standard_indicators.py
 python src_module/run.py claims_vs_conduct --dry-run                       # == src/step07_crosscheck_claims_vs_conduct.py
+python src_module/run.py neo4j_sync --dry-run                              # == src/step08_sync_crosscheck_to_neo4j.py
 
 # ESG Evidence View UI (web front-end; reads the Neo4j advisory layer, no LLM — see docs/ESG_EVIDENCE_VIEW.md)
 python api/main.py                                                         # 3-column TT96/GRI evidence view at http://localhost:8000
@@ -673,7 +703,6 @@ python api/main.py                                                         # 3-c
 #   softmax scores (step07b): --dry-run, --calibrate (grid over tau/beta1/w_max), --bin-confidence, --params '{"tau":0.75}';
 #   sync (step08_sync_crosscheck_to_neo4j.py): --clear-advisory, --dry-run;
 #   ledger (step09_report_claim_ledger.py, Neo4j-only): --review-queue, --assessment, --claim-id, --limit, --markdown;
-#   evaluate (step10_evaluate.py): --coverage, --case-studies, --ablation, --no-llm (only the 30-case arm costs money)
 ```
 
 No pytest harness or linter is configured — tests are plain assert scripts under `test/`
@@ -891,6 +920,35 @@ python test/test_esg_kg_extract.py         # same contract, for the step01 migra
                                            # check (out_file.exists() must skip without
                                            # re-calling the client). Run after touching
                                            # step01 or core/llm.
+python test/test_esg_kg_neo4j_sync.py      # same contract, for the step08 migration slice
+                                           # (load/neo4j_sync) — the first NEO4J-touching
+                                           # stage to migrate. A confirmed leaf: it imports
+                                           # only its own REPO_ROOT and node_text from step07
+                                           # (moved the day before — that move is what
+                                           # unblocked this one). Every earlier paid/networked
+                                           # stage covered its expensive branch by stubbing
+                                           # UNDER an existing abstraction (_OpenAIProvider,
+                                           # google.genai.Client); step08 has no such layer in
+                                           # front of the real call (a lazy `from neo4j import
+                                           # GraphDatabase` inside run(), executed only past
+                                           # --dry-run), so the stub replaces the installed
+                                           # neo4j package's GraphDatabase attribute directly —
+                                           # the same shape step01 used when there was no
+                                           # provider abstraction in front of the Gemini
+                                           # client either. The fake driver records every
+                                           # Cypher string + parameter dict and executes
+                                           # nothing, so the headline arm compares 5 real
+                                           # Neo4j calls byte-for-byte between both trees on
+                                           # the real corpus (1,093 dossiers against the
+                                           # 10,425-node resolved graph) without touching a
+                                           # live database. Also covers --clear-advisory, a
+                                           # missing-resolved-graph positional-only fallback,
+                                           # the sys.exit(1) guard for a missing dossier file,
+                                           # and pins the node_text trap from a third angle
+                                           # (esg_kg.load.neo4j_sync.node_text IS
+                                           # esg_kg.crosscheck.claims_vs_conduct.node_text).
+                                           # Run after touching step08 or crosscheck's
+                                           # node_text.
 ```
 
 The rest of `test/` and `notebooks/` are Jupyter notebooks for manual validation
@@ -918,8 +976,6 @@ is explicitly not a greenwashing probability; read before changing step07b),
 `ESG_EVIDENCE_VIEW.md` (the 3-column TT96/GRI evidence-view UI, `api/` + `frontend/` — how to run the demo),
 `REAL_DATA_INTEGRATION_GUIDE.md` (Vietnamese — the mock→live-Neo4j swap for that UI; the
 rule that only `api/evidence_service.py` changes, never the frontend),
-`EVALUATION.md` (step 8 / P6 — why evaluation measures the linking machinery, not
-greenwashing accuracy; the four methods and their costs),
 `ENTITY_RESOLUTION_IMPROVEMENT.md` (Vietnamese — proposal to use graph structural
 signatures to auto-resolve step-4's lexically ambiguous `needs_review` cases),
 `KPI_DEFINITIONS_CONSTRUCTION_BUILD.md`, `VIETNAM_IMPROVEMENT_PLAN.md`,

@@ -7,9 +7,16 @@ bức tranh toàn hệ thống.
 Nguồn sự thật của thứ tự chạy là [`esg_kg/pipeline.py`](esg_kg/pipeline.py); file này
 là bản vẽ của cùng dữ liệu đó. `python src_module/run.py --list` luôn nói thật về tiến độ.
 
-**Trạng thái (2026-07-28): 10/16 stage đã dời** — `00 quality`, `01 extract`,
+**Trạng thái (2026-07-29): 11/15 stage đã dời** — `00 quality`, `01 extract`,
 `03 fix_triples`, `03b anchor_kpi`, `03c canonicalize`, `04 issuer`, `05b provenance`,
-`05c indicators`, `05d align_claims`, `07 claims_vs_conduct`; 2 stage cố ý không dời (§4).
+`05c indicators`, `05d align_claims`, `07 claims_vs_conduct`, `08 neo4j_sync`; 2 stage cố ý
+không dời (§4).
+Mẫu số đổi từ 16 xuống 15 cùng ngày vì **`step10` bị xoá hẳn khỏi dự án** (không phải hoãn
+dời — quyết định 2026-07-28, xem §4 và `esg_kg/DESIGN.md` §4.3): người dùng chốt bỏ hẳn kiểu
+đo P6 (coverage/case-study/ablation không có ground truth) khỏi danh sách sản phẩm giao, không
+phải vì có cơ chế khác thay thế. Khác `04b`/`07b` (vẫn còn file `src/`, chỉ loại khỏi phạm vi
+refactor), `step10` không còn dòng nào trong `pipeline.py::STAGES` và không còn
+`src/step10_evaluate.py` — không có gì để mà "dời" nữa.
 `05b` là stage đầu tiên dời được mà **không phải trích thêm module `core/` nào** — lần dời
 `03b` đã lifted sẵn cả 4 symbol nó cần. `03` là stage thứ hai, `05d` là stage thứ ba —
 lát cắt `05c` đã đẩy `GraphPatch`/`temporal_md` lên kernel *chính vì* `05d` đang import
@@ -65,13 +72,34 @@ chạy `load_pages_from_jsonl` + `build_page_text`/`page_has_esg` trên corpus t
 gồm cả tính idempotency ("output đã tồn tại" phải bỏ qua, không gọi lại client). Test:
 `test/test_esg_kg_extract.py` (10 nhóm).
 
-**6 stage còn lại VẪN CHẠY BẰNG `src/`**: `02`, `05`, `06`, `08`, `09`, `10`.
-Trong sơ đồ §1, ô viền đứt là **chưa dời**, không phải đã xong; chỉ ô nền xanh
-đặc gắn `✅ ĐÃ DỜI` mới là đã refactor.
+**`08` là stage thứ mười một** (`esg_kg/load/neo4j_sync.py`, 2026-07-29) — leaf ngay từ
+đầu (chỉ import `REPO_ROOT`, do chính nó định nghĩa, và `node_text` của `step07`, dời hôm
+trước), nhưng là **stage NEO4J đầu tiên** dời trong cả đợt. Mọi lát cắt trả tiền trước đó
+che được nhánh mạng bằng cách tiêm stub NGAY DƯỚI lớp `_Provider`/`google.genai.Client` —
+`08` không có lớp trung gian nào kiểu vậy trước driver Neo4j thật (`from neo4j import
+GraphDatabase`, import cục bộ bên trong `run()`, chỉ chạy sau `--dry-run`), nên stub thế
+chỗ thẳng thuộc tính `GraphDatabase` của package `neo4j` đã cài — đúng kỹ thuật đã dùng cho
+`google.genai.Client` ở lát cắt `01` khi không có `_Provider` để đứng trước. Driver giả chỉ
+GHI LẠI mọi câu Cypher + tham số, không thực thi gì, nên arm so **5 lệnh Neo4j giống hệt
+byte-for-byte giữa hai cây** trên corpus thật (1 093 dossier / đồ thị 10 425 node), không
+cần Neo4j sống, không cần mock phức tạp — vì mọi câu Cypher là f-string tĩnh và mọi tham số
+là hàm thuần của dossier + đồ thị (không có trường non-deterministic kiểu `recorded_at` của
+`07`, nên không cần mask gì). Diff thân hàm so `src/`: đúng import block (`REPO_ROOT` +
+`node_text` từ `core`/`crosscheck`) và 2 dòng comment/log trỏ sang `run.py`/`esg_kg.load.
+neo4j_load` thay vì tên file `src/` cũ — 0 dòng logic đổi. Bẫy `node_text` (đã ghi ở §2.1)
+được giữ đúng lần thứ ba: `esg_kg.load.neo4j_sync.node_text is esg_kg.crosscheck.
+claims_vs_conduct.node_text`, pin bằng test. Test: `test/test_esg_kg_neo4j_sync.py` (8
+nhóm, gồm cả arm `--clear-advisory`, arm graph thiếu (positional-only fallback), và arm
+thoát `sys.exit(1)` khi thiếu dossier).
 
-**Ngoài 10 stage đó, `esg_kg` còn có 1 KHỐI: `build_validated` = `03 → 03b → 03c`** nối chuỗi
+**4 stage còn lại VẪN CHẠY BẰNG `src/`**: `02`, `05`, `06`, `09`.
+Trong sơ đồ §1, ô viền đứt là **chưa dời**, không phải đã xong; chỉ ô nền xanh
+đặc gắn `✅ ĐÃ DỜI` mới là đã refactor. (`step10` không còn trong danh sách này —
+nó không "chưa dời", nó đã bị **xoá khỏi dự án**, xem §4.)
+
+**Ngoài 11 stage đó, `esg_kg` còn có 1 KHỐI: `build_validated` = `03 → 03b → 03c`** nối chuỗi
 in-memory, ghi `all_validated_triples.json` **đúng một lần** (§3.2). Khối **không phải một
-stage** nên không tính vào mẫu số `10/16` — nó là một **entrypoint thêm**, và cả ba stage thành
+stage** nên không tính vào mẫu số `11/15` — nó là một **entrypoint thêm**, và cả ba stage thành
 viên vẫn chạy lẻ được.
 
 **`03` đã dời (2026-07-28) → `esg_kg/graph/fix_triples.py`.** Nó *trông* như hub — **7 stage
@@ -182,9 +210,8 @@ flowchart TD
     subgraph P4["④ Nạp + phân tích"]
         S06["⚪ CHƯA DỜI · step06 · neo4j_load"]:::ready
         S07["✅ ĐÃ DỜI · step07 · claims_vs_conduct<br/>LLM BẮT BUỘC — lõi phân tích"]:::migrated
-        S08["⚪ CHƯA DỜI · step08 · neo4j_sync<br/>đẩy tầng advisory — mở khoá bởi 07"]:::ready
+        S08["✅ ĐÃ DỜI · step08 · neo4j_sync<br/>đẩy tầng advisory · stage Neo4j đầu tiên dời"]:::migrated
         S09["⚪ CHƯA DỜI · step09 · claim_ledger"]:::ready
-        S10["⚪ CHƯA DỜI · step10 · evaluate<br/>mở khoá bởi 07"]:::ready
     end
 
     REGI["config/issuer_registry.json"]:::cfg
@@ -195,6 +222,7 @@ flowchart TD
     S00["✅ ĐÃ DỜI · step00 · quality<br/>ảnh chụp Q1–Q8 + audit registry<br/>CHẠY TRƯỚC VÀ SAU MỌI THAY ĐỔI"]:::migrated
     S07B["⛔ step07b · điểm softmax<br/>KHÔNG DỜI (§4)"]:::notport
     S04B["⛔ step04b · gây lại registry<br/>KHÔNG DỜI, ngoài đường chạy (§4)"]:::notport
+    S10X["🗑️ step10 · evaluate<br/>ĐÃ XOÁ khỏi dự án (§4) — không phải chưa dời"]:::notport
 
     JSONL --> S01 --> KPIOUT --> S02
     JSONL --> S02 --> GRAPHS --> S03 --> VALID
@@ -208,7 +236,6 @@ flowchart TD
     RESOLVED --> S06 --> NEO
     RESOLVED --> S07 --> DOSSIER --> S08 --> NEO
     NEO --> S09
-    DOSSIER --> S10
 
     RESOLVED -.->|"đọc"| S00
     S00 -.->|"audit độ phủ"| REGS
@@ -224,21 +251,24 @@ flowchart TD
 > ngay cạnh nhau** là cụm `05`: `05b`/`05c`/`05d`/`04` đã dời, chỉ còn `05` chính nó là
 > chưa — `04` tuy nằm trong subgraph ③ cùng `05` nhưng dời được độc lập, vì nó không đọc
 > `resolved_graph.json` (chỉ ghi `config/issuer_registry.json` từ `all_validated_triples.json`).
-> `07` cũng đã dời — và vì nó là stage duy nhất từng chặn `08`/`10`, hai ô đó đổi từ `⏳`
-> (chờ stage khác) sang `⚪` (chỉ còn chờ tới lượt dời) ngay khi `07` xong, không cần đụng
-> tới `core/` nào thêm. **`01` cũng đã dời** (2026-07-28) — nó là hub thật sự cuối cùng
-> (§2.1 điểm 3), nên `02` đổi màu tương tự `08`/`10`: từ `⏳` (chờ `core/io_jsonl`, một
-> module còn thiếu) sang `⚪` (module đó nay tồn tại; `02` chỉ còn chờ tới lượt dời chính
-> nó, cộng thay đổi hành vi đang xếp hàng ở §5.6 nên vẫn nên land trong `src/` trước).
+> `07` cũng đã dời — và vì nó từng là stage duy nhất chặn `08` (và, tới trước khi bị xoá,
+> cũng chặn `10`), ô `08` đổi từ `⏳` (chờ stage khác) sang `⚪` (chỉ còn chờ tới lượt dời)
+> ngay khi `07` xong, không cần đụng tới `core/` nào thêm. **`01` cũng đã dời** (2026-07-28)
+> — nó là hub thật sự cuối cùng (§2.1 điểm 3), nên `02` đổi màu tương tự: từ `⏳` (chờ
+> `core/io_jsonl`, một module còn thiếu) sang `⚪` (module đó nay tồn tại; `02` chỉ còn chờ
+> tới lượt dời chính nó, cộng thay đổi hành vi đang xếp hàng ở §5.6 nên vẫn nên land trong
+> `src/` trước). **`08` đã dời hẳn** (2026-07-29) — ô đó tới lượt nó đổi từ `⚪` sang xanh đặc
+> `✅ ĐÃ DỜI`, và là stage NEO4J đầu tiên trong toàn bộ đợt refactor.
 > Nghi ngờ thì hỏi `python src_module/run.py --list`, đừng đọc màu.
 
 | Nhãn trong ô | Màu | Nghĩa |
 |---|---|---|
 | `✅ ĐÃ DỜI` | 🟩 xanh **đặc**, chữ trắng | đã dời sang `esg_kg` — chạy bằng `python src_module/run.py <tên>` |
-| `🧱 KHỐI` | 🟦 xanh dương **viền đậm** | **không phải stage** và **không có bản `src/`** — nhiều stage gộp thành một đơn vị ghi artifact 1 lần (§3.2). Không tính vào mẫu số `10/16` |
+| `🧱 KHỐI` | 🟦 xanh dương **viền đậm** | **không phải stage** và **không có bản `src/`** — nhiều stage gộp thành một đơn vị ghi artifact 1 lần (§3.2). Không tính vào mẫu số `10/15` |
 | `⚪ CHƯA DỜI` | ⬜ nền trắng, viền xanh đứt | **vẫn chạy bằng `src/`**; chỉ là mọi symbol nó cần đã có trong `core/` → dời được ngay (§2.1) |
 | `⏳ CHƯA DỜI` | 🟨 vàng | vẫn chạy bằng `src/` **và còn bị chặn** — chờ một stage khác dời (§2.1) |
 | `⛔` | 🩶 xám | **cố ý không dời** (§4), vẫn còn file trong `src/` |
+| `🗑️` | — | **đã bị xoá khỏi dự án** (§4) — không phải "chưa dời", không còn file `src/` để mà dời |
 | — | 🟦 xanh dương | dữ liệu sinh ra (git-ignored, ship qua HF) |
 | — | 🟪 tím | config (tracked trong Git) |
 
@@ -262,11 +292,11 @@ flowchart TD
 | 05c | `indicators` | — | resolved + `kpi_definitions` + crosswalk + `gri_catalog` | vá tại chỗ | ✅ **đã dời** |
 | 05d | `align_claims` | 💰 tùy chọn | resolved | vá tại chỗ | ✅ **đã dời** · nhánh trả tiền có arm bằng LLM giả |
 | 06 | `neo4j_load` | — | resolved | Neo4j | ⚪ **chưa dời** — đủ điều kiện |
-| 07 | `claims_vs_conduct` | 💰 **bắt buộc** | resolved | `<ticker>_claim_assessments.json` | ✅ **đã dời** (2026-07-28) — mở khoá `08`/`10` |
+| 07 | `claims_vs_conduct` | 💰 **bắt buộc** | resolved | `<ticker>_claim_assessments.json` | ✅ **đã dời** (2026-07-28) — mở khoá `08` |
 | 07b | — | — | dossier | dossier (thêm điểm) | ⛔ **không dời** |
-| 08 | `neo4j_sync` | — | dossier | Neo4j (tầng advisory) | ⚪ **chưa dời** — mở khoá bởi `07` (§2.1) |
+| 08 | `neo4j_sync` | — | dossier | Neo4j (tầng advisory) | ✅ **đã dời** (2026-07-29) — stage Neo4j đầu tiên |
 | 09 | `claim_ledger` | — | **chỉ Neo4j** | `<ticker>_claim_ledger.md` | ⚪ **chưa dời** — đủ điều kiện |
-| 10 | `evaluate` | 💰 1 nhánh 30 ca | dossier + stats | `<ticker>_evaluation_report.md` | ⚪ **chưa dời** — mở khoá bởi `07` (§2.1) |
+| 10 | `evaluate` | — | — | — | 🗑️ **đã XOÁ khỏi dự án** (2026-07-28) — không phải "chưa dời"; xem §4 |
 
 💰 = tốn tiền. Đây là lý do mọi test đều offline và mọi stage đắt đều có `--dry-run`.
 
@@ -292,9 +322,9 @@ Bảng dưới là kết quả grep toàn bộ import chéo trong `src/` đối 
 | 05d | `load_schema_sets`, `GraphPatch`, `temporal_md` (đã ở `core/`) + `_OpenAIProvider` | ✅ **đã dời** (2026-07-28) — không phải viết thêm `core/` nào, cây thứ ba làm được. `RateLimiter` trong `import` cũ là **rác**: không chỗ nào dùng |
 | 06 | `REPO_ROOT`, `load_schema_sets` | — 🟢 **đủ symbol, nhưng VẪN CHƯA DỜI** |
 | 07 | `load_schema_sets`, `normalize_name`, `name_tokens` (đã ở `core/`) + `_Provider`/`_OpenAIProvider` | ✅ **đã dời** (2026-07-28) — không phải viết thêm `core/` nào; `RateLimiter` trong import cũ là **rác** (chỉ `_OpenAIProvider.__init__` cần, và lớp đó nay tới sẵn từ `core.llm`), y hệt phát hiện ở `05d` |
-| 08 | `node_text` (của `step07`) | **`step07` đã dời (2026-07-28)** — `08` giờ chỉ còn chờ tới lượt dời chính nó, không chờ ai khác. `node_text` KHÔNG vào `core/llm` (xem cảnh báo dưới), nó ở lại `esg_kg.crosscheck.claims_vs_conduct` cùng stage |
+| 08 | `node_text` (của `step07`) | ✅ **đã dời** (2026-07-29) — `node_text` KHÔNG vào `core/llm` (xem cảnh báo dưới), nó ở lại `esg_kg.crosscheck.claims_vs_conduct` cùng stage; `08` chỉ import nó |
 | 09 | *(không import stage nào)* | — 🟢 **đủ symbol, nhưng VẪN CHƯA DỜI** |
-| 10 | `Adjudicator` (import **lười** trong `try`, `step10:368`) | **`step07` đã dời (2026-07-28)** — `10` giờ chỉ còn chờ tới lượt dời chính nó. `Adjudicator` là logic stage, cố ý KHÔNG vào `core/llm`; hỏng thì **im lặng**, không lỗi — điều đó không đổi chỉ vì `07` đã dời |
+| 10 | *(đã bị xoá khỏi dự án 2026-07-28, không còn là một stage — xem §4)* | 🗑️ — |
 
 ```mermaid
 flowchart LR
@@ -307,11 +337,11 @@ flowchart LR
     S07D["✅ dời 07 (2026-07-28)<br/>mang theo node_text + Adjudicator"]:::done
     S04D["✅ dời 04 (2026-07-28)<br/>hub đã tan, không trích thêm core/ nào"]:::done
     S01D["✅ dời 01 (2026-07-28)<br/>hub thật sự cuối cùng, cho ra core/io_jsonl"]:::done
+    S08D["✅ dời 08 (2026-07-29)<br/>stage Neo4j đầu tiên, stub GraphDatabase"]:::done
     READY["⚪ CHƯA DỜI, đủ điều kiện dời — 3 stage<br/>05 · 06 · 09"]:::ready
-    U1["⚪ 08 · 10 — mở khoá, chỉ còn chờ tới lượt"]:::ready
     U3["⚪ 02 — mở khoá, chỉ còn chờ tới lượt<br/>(+ đổi hành vi §5.6 nên đi trước)"]:::ready
 
-    CORE --> S07D --> U1
+    CORE --> S07D --> S08D
     CORE --> S04D
     CORE --> S01D --> U3
     CORE --> READY
@@ -385,6 +415,14 @@ lát cắt `01` (2026-07-28), và `01` giờ đã dời, nên `02` chỉ còn ch
      + `build_page_text`/`page_has_esg` trên corpus thật (13 tài liệu / 1 356 trang), cộng
      `process_document` qua fixture tổng hợp ở cả hai cây kèm arm idempotency (output đã
      tồn tại ⇒ không gọi lại client). Test: `test/test_esg_kg_extract.py` (10 nhóm).
+   - **`08` — mở khoá bởi `07`, không còn bị chặn** → **ĐÃ DỜI (2026-07-29).** Leaf ngay từ
+     đầu (chỉ `REPO_ROOT` tự định nghĩa + `node_text` của `07`), nhưng là **stage NEO4J đầu
+     tiên** dời trong cả đợt — không có lớp `_Provider` nào đứng trước driver Neo4j thật để
+     tiêm stub qua, nên stub thế chỗ thẳng thuộc tính `GraphDatabase` của package `neo4j` đã
+     cài (đúng kỹ thuật đã dùng cho `google.genai.Client` ở `01` khi không có lớp trung gian).
+     Driver giả chỉ GHI LẠI Cypher + tham số, không thực thi — arm so **5 lệnh giống hệt
+     byte-for-byte** giữa hai cây trên corpus thật (1 093 dossier). 0 dòng logic đổi so với
+     `src/`. Test: `test/test_esg_kg_neo4j_sync.py` (8 nhóm).
    - `06`/`09` đọc Neo4j; `05` **không được dời nếu chưa xử
      §3.1** (nó ghi đè cả ba bản vá) — và §3.2 nay là câu trả lời mặc định cho §3.1.
 2. **~~`core/llm.py` là đòn bẩy lớn nhất~~ → ĐÃ XONG (2026-07-27).** Đúng như dự đoán: nó
@@ -614,16 +652,25 @@ cho bảng ở §5.5 và là mặc định mới, thay cho ba dòng trong bảng
 
 ---
 
-## 4. Hai stage cố ý KHÔNG dời
+## 4. Hai stage cố ý KHÔNG dời, một stage đã bị xoá hẳn
 
-Không phải "chưa làm" — là **quyết định**. `run.py --list` in `(not ported)` và loại
-khỏi mẫu số; nếu tính vào thì tiến độ migrate vĩnh viễn không thể đạt 100%.
-Cả hai **vẫn còn file trong `src/`**.
+Không phải "chưa làm" — là **quyết định**, nhưng có **hai loại quyết định khác nhau**,
+đừng gộp chung:
 
-| Stage | Vì sao loại | Chi tiết |
+| Loại | Nghĩa | File `src/` |
 |---|---|---|
-| **04b** `build_standards_registry` | Nó đọc `resolved_graph.json` = **output của step05**, trong khi step05 đọc registry là output của nó → **vòng lặp**, bare clone không chạy được. Và lần quét đồ thị đóng góp **0**: cả 10 alias đều là seed hard-code. → registry thành **config tĩnh**, phần quét thành **audit trong step00**. | DESIGN.md §4.2 |
-| **07b** `enrich_dossiers` | Bề mặt giao (`frontend/` + `api/`) **không đọc** điểm softmax; cả step08 lẫn step09 đều chịu được khi thiếu. Muốn có điểm thì chạy tay. | DESIGN.md §4.1 |
+| ⛔ **cố ý không dời** | ngoài **phạm vi refactor**; stage vẫn là sản phẩm giao, vẫn chạy tay được | **còn giữ** |
+| 🗑️ **xoá khỏi dự án** | ngoài **phạm vi dự án**; không còn là sản phẩm giao nữa | **đã xoá** |
+
+`run.py --list` in `(not ported)` cho loại ⛔ và loại khỏi mẫu số; loại 🗑️ không còn dòng
+nào trong `pipeline.py::STAGES` để mà in ra — nếu tính cả hai loại vào mẫu số thì tiến độ
+migrate vĩnh viễn không thể đạt 100%.
+
+| Stage | Loại | Vì sao loại | Chi tiết |
+|---|---|---|---|
+| **04b** `build_standards_registry` | ⛔ | Nó đọc `resolved_graph.json` = **output của step05**, trong khi step05 đọc registry là output của nó → **vòng lặp**, bare clone không chạy được. Và lần quét đồ thị đóng góp **0**: cả 10 alias đều là seed hard-code. → registry thành **config tĩnh**, phần quét thành **audit trong step00**. | DESIGN.md §4.2 |
+| **07b** `enrich_dossiers` | ⛔ | Bề mặt giao (`frontend/` + `api/`) **không đọc** điểm softmax; cả step08 lẫn step09 đều chịu được khi thiếu. Muốn có điểm thì chạy tay. | DESIGN.md §4.1 |
+| **10** `evaluate` | 🗑️ | Quyết định 2026-07-28: bỏ hẳn kiểu đo P6 (coverage/case-study/ablation không có ground truth) khỏi danh sách sản phẩm giao — không phải vì bị thay thế bởi cơ chế khác, đơn giản là không cần đo kiểu này nữa. `src/step10_evaluate.py` và `docs/EVALUATION.md` đã bị xoá, khác `04b`/`07b` (giữ nguyên file). | DESIGN.md §4.3 |
 
 ---
 
