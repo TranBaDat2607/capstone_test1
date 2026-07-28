@@ -261,6 +261,12 @@ def _parse_verdict(raw: str) -> Optional[Dict[str, Any]]:
             out = json.loads(m.group(0))
         except Exception:
             return None
+    # Valid JSON of the wrong SHAPE ('[]', '"txt"', '42') must be refused like any other
+    # unusable reply. Without this the `.get` below raised AttributeError, and since that
+    # call sits inside Adjudicator.adjudicate's own try/except, it was misfiled as a
+    # provider *failure* instead of an unusable-reply no-op.
+    if not isinstance(out, dict):
+        return None
     if out.get("verdict") not in ("supports", "contradicts", "irrelevant"):
         return None
     out["confidence"] = float(out.get("confidence", 0.0) or 0.0)

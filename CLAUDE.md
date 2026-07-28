@@ -266,18 +266,19 @@ return before the provider is built (it only skips the final writes), so the dry
 itself a real equivalence check, not a vacuous one. This stage reads `resolved_graph.json`
 and writes to a different directory (`graph_output/crosscheck/`), so it never meets its own
 past output — PIPELINE.md §3's in-place-patch question does not apply, the same shape step03
-had. Its arms are in `test/test_esg_kg_crosscheck.py` (21 groups), including a reciprocal
+had. Its arms are in `test/test_esg_kg_crosscheck.py` (22 groups), including a reciprocal
 `node_text` trap check (this stage's takes a NODE and dispatches on class; step05d's takes a
 properties dict — each test file pins the divergence from its own side), the self-verification
 guard (a company-owned domain must never get a `verifiedBy` edge), and the assessment-mapping
 priority (a contradiction always wins over supporting evidence in the same dossier). The
 migration surfaced the same class of defect step05d's `a308608` fixed: `_parse_verdict` also
-calls `.get()` on whatever `json.loads` returns, so a reply like `[]` crashes instead of being
-treated as unusable. Here the blast radius is smaller — the call sits inside
-`Adjudicator.adjudicate`'s own try/except, so it degrades to "no verdict for this pair"
-rather than losing a whole run — but it is still misfiled as a *provider failure* rather than
-an unusable-reply no-op. Following the same order as step05d, this landed as verbatim first;
-the fix is a separate commit, both trees, per §5.3.
+called `.get()` on whatever `json.loads` returned, so a reply like `[]` crashed instead of
+being treated as unusable. Here the blast radius was smaller — the call sits inside
+`Adjudicator.adjudicate`'s own try/except, so it degraded to "no verdict for this pair"
+rather than losing a whole run — but it was still misfiled as a *provider failure* rather
+than an unusable-reply no-op. Following the same order as step05d, this landed as verbatim
+first, then a follow-up commit added an `isinstance(out, dict)` guard in **both** trees per
+§5.3, with a red-first test (`test_parse_verdict_rejects_non_object_json_in_BOTH_trees`).
 06/09 read Neo4j, 01 costs money, 04 is *nominally* a hub — re-checked 2026-07-28 per lesson
 (a) and **its hub has dissolved too**: all three symbols other stages take from it
 (`normalize_name`, `name_tokens`, `merge_preserving_edits`) are already in `core/naming.py`,
@@ -794,11 +795,14 @@ python test/test_esg_kg_crosscheck.py      # same contract, for the step07 migra
                                            # verification guard (a company-owned domain must
                                            # never get a verifiedBy edge), and the assessment-
                                            # mapping priority (contradiction beats support in
-                                           # the same dossier) via synthetic fixtures. Does NOT
-                                           # yet fix _parse_verdict's non-dict-JSON crash (the
-                                           # same shape as step05d's a308608 bug, smaller blast
-                                           # radius here) — that is a separate follow-up commit
-                                           # in both trees. Run after touching step07 or core/llm.
+                                           # the same dossier) via synthetic fixtures. Also
+                                           # covers a follow-up fix, same shape as step05d's
+                                           # a308608: _parse_verdict called .get() on whatever
+                                           # json.loads returned, so a reply like "[]" crashed
+                                           # instead of being refused — smaller blast radius
+                                           # here (caught by Adjudicator.adjudicate's own
+                                           # try/except) but still wrong. Fixed in BOTH trees.
+                                           # Run after touching step07 or core/llm.
 ```
 
 The rest of `test/` and `notebooks/` are Jupyter notebooks for manual validation

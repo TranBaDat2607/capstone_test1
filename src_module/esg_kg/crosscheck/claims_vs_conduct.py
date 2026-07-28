@@ -76,15 +76,16 @@ different directory (`graph_output/crosscheck/`) — it never meets its own past
 so the real-corpus equivalence arm is non-vacuous by construction, the same shape step03's
 migration established.
 
-A KNOWN LATENT DEFECT, DELIBERATELY NOT TOUCHED IN THIS COMMIT
-`_parse_verdict` has the same shape of bug `parse_reply` had in step05d before a308608:
-`json.loads("[]")` succeeds (returns a list, not a dict), and the next line calls
-`.get()` on it, raising `AttributeError`. Here the blast radius is smaller — the call
-happens inside `Adjudicator.adjudicate`'s own try/except, so it degrades to "no verdict
-for this pair" rather than losing an entire run's adjudications — but it still misfiles
-an oddly-shaped-but-parseable reply as a *provider failure* instead of an unusable-reply
-no-op. Following the same order step05d's fix did, this migration moves the stage AS IS
-first; the fix is a separate commit landing in both trees.
+A DEFECT FIXED IN A FOLLOW-UP COMMIT, BOTH TREES
+`_parse_verdict` had the same shape of bug `parse_reply` had in step05d before a308608:
+`json.loads("[]")` succeeds (returns a list, not a dict), and the next line called
+`.get()` on it, raising `AttributeError`. Here the blast radius was smaller — the call
+sits inside `Adjudicator.adjudicate`'s own try/except, so it degraded to "no verdict for
+this pair" rather than losing an entire run's adjudications — but it still misfiled an
+oddly-shaped-but-parseable reply as a *provider failure* instead of an unusable-reply
+no-op. Following the same order step05d's fix did, the migration moved the stage AS IS
+first (verbatim, bug included); the `isinstance(out, dict)` guard landed in a separate
+commit, in both trees, per DESIGN.md §5.3.
 """
 
 from __future__ import annotations
@@ -308,6 +309,12 @@ def _parse_verdict(raw: str) -> Optional[Dict[str, Any]]:
             out = json.loads(m.group(0))
         except Exception:
             return None
+    # Valid JSON of the wrong SHAPE ('[]', '"txt"', '42') must be refused like any other
+    # unusable reply. Without this the `.get` below raised AttributeError, and since that
+    # call sits inside Adjudicator.adjudicate's own try/except, it was misfiled as a
+    # provider *failure* instead of an unusable-reply no-op.
+    if not isinstance(out, dict):
+        return None
     if out.get("verdict") not in ("supports", "contradicts", "irrelevant"):
         return None
     out["confidence"] = float(out.get("confidence", 0.0) or 0.0)

@@ -49,16 +49,16 @@ DIFFERENT directory (`graph_output/crosscheck/`) — it never meets its own past
 the real-corpus arm is non-vacuous by construction. No `strip_*` fixture is needed, the
 same shape step03's migration already established.
 
-WHAT THIS FILE DELIBERATELY DOES NOT YET FIX
-`_parse_verdict` has the same latent defect step05d's `parse_reply` had before a308608:
-`json.loads("[]")` succeeds (a list, not a dict), and the very next line calls `.get()` on
-it. Here the blast radius is smaller (the call site is wrapped in `Adjudicator.adjudicate`'s
-own try/except, so it degrades to "no verdict for this pair" instead of losing an entire
-run) but it is still a real defect: a merely-oddly-shaped reply gets misfiled as a provider
-*failure* rather than as an unusable-reply no-op. `test_parse_verdict_matches` below only
-exercises the shapes the CURRENT code already handles safely; the non-dict-JSON case is
-covered later, once the fix lands in both trees (same order step05d's fix followed its
-migration).
+A DEFECT FOUND AND FIXED IN BOTH TREES (same file, follow-up commit to the migration)
+`_parse_verdict` had the same latent defect step05d's `parse_reply` had before a308608:
+`json.loads("[]")` succeeds (a list, not a dict), and the very next line called `.get()` on
+it. Here the blast radius was smaller (the call site sits inside `Adjudicator.adjudicate`'s
+own try/except, so it degraded to "no verdict for this pair" instead of losing an entire
+run) but it was still a real defect: a merely-oddly-shaped reply got misfiled as a provider
+*failure* rather than as an unusable-reply no-op. `test_parse_verdict_matches` exercises the
+shapes the code already handled safely (pinned BEFORE the fix, so it stayed green
+throughout); `test_parse_verdict_rejects_non_object_json_in_BOTH_trees` is the red-first
+test for the fix itself — same order step05d's fix followed its migration.
 
 Offline: no LLM, no Neo4j, no network — the stub replaces `_OpenAIProvider` before it can
 look for `OPENAI_API_KEY` (which happens to be set in this environment; the stub still
@@ -413,6 +413,33 @@ def test_parse_verdict_matches():
     assert new_step07._parse_verdict(cases[5]) is None, "an unknown verdict value must be rejected"
 
 
+def test_parse_verdict_rejects_non_object_json_in_BOTH_trees():
+    """Valid JSON of the wrong SHAPE must be refused like any other unusable reply.
+
+    Same class of defect step05d's `parse_reply` had before a308608:
+    `json.loads('[]')` succeeds (a list, not a dict), and the very next line calls
+    `.get()` on it, raising AttributeError. Here the blast radius is smaller — the call
+    site is inside `Adjudicator.adjudicate`'s own try/except, so a crash here degrades to
+    "no verdict for this pair" rather than losing an entire run — but it is still wrong:
+    it misfiles an oddly-shaped-but-parseable reply as a *provider failure* instead of an
+    unusable-reply no-op, which pollutes `p.failures` and the "active" provider-health flag
+    in the stats file for no good reason.
+
+    Not reachable through the real provider today (`response_format={"type":"json_object"}`
+    guarantees an object) — the same reason step05d's twin went unnoticed until a
+    migration was the moment someone read the parser closely enough to see it.
+    """
+    for raw in ("[]", '"just a string"', "42", "null", "true"):
+        for fn in (new_step07._parse_verdict, old_step07._parse_verdict):
+            assert fn(raw) is None, f"{fn.__module__} mishandled {raw!r}"
+
+    # the fix must not have made the parser lenient about anything else
+    ok = '{"verdict": "supports", "confidence": 0.5}'
+    assert new_step07._parse_verdict(ok)["verdict"] == "supports"
+    assert new_step07._parse_verdict('[{"verdict": "supports"}]') is None, \
+        "a LIST wrapping a good object must still be refused, not unwrapped"
+
+
 # --------------------------------------------------------------------------- #
 # 3. Graph indexing (pure, real corpus if available, else a tiny synthetic graph)
 # --------------------------------------------------------------------------- #
@@ -466,7 +493,10 @@ def test_full_run_on_real_graph_matches():
         n_edges, o_edges = nw.edges(), ow.edges()
         assert _edges_ignoring_recorded_at(n_edges) == _edges_ignoring_recorded_at(o_edges), \
             "linking edges diverged (ignoring recorded_at)"
-        assert [u for _, u in nstub.calls_seen] == [u for _, u in ostub.calls_seen], \
+        # Adjudication runs on a ThreadPoolExecutor, so the ORDER calls_seen is appended in
+        # (inside worker threads) is not deterministic run-to-run even though exe.map()
+        # itself yields results in submission order — compare as a multiset, not a sequence.
+        assert sorted(u for _, u in nstub.calls_seen) == sorted(u for _, u in ostub.calls_seen), \
             "the two trees sent different prompts to the LLM"
 
         s = nw.stats()
@@ -494,7 +524,9 @@ def test_dry_run_still_adjudicates_but_writes_nothing():
     try:
         assert nlogs == ologs, f"dry-run log diverged:\n  new={nlogs}\n  old={ologs}"
         assert any("Dry run" in m for m in nlogs), f"dry-run notice missing: {nlogs}"
-        assert [u for _, u in nstub.calls_seen] == [u for _, u in ostub.calls_seen]
+        # see test_full_run_on_real_graph_matches: thread scheduling makes calls_seen ORDER
+        # non-deterministic run-to-run, so compare as a multiset.
+        assert sorted(u for _, u in nstub.calls_seen) == sorted(u for _, u in ostub.calls_seen)
         assert len(nstub.calls_seen) == budget, "dry-run should still spend the adjudication budget"
         assert nw.dossiers() is None and ow.dossiers() is None, "--dry-run wrote a dossier file"
         assert nw.edges() is None and ow.edges() is None, "--dry-run wrote an edges file"
