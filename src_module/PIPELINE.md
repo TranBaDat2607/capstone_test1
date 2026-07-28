@@ -7,15 +7,24 @@ bức tranh toàn hệ thống.
 Nguồn sự thật của thứ tự chạy là [`esg_kg/pipeline.py`](esg_kg/pipeline.py); file này
 là bản vẽ của cùng dữ liệu đó. `python src_module/run.py --list` luôn nói thật về tiến độ.
 
-**Trạng thái (2026-07-27): 5/16 stage đã dời** — `00 quality`, `03c canonicalize`,
-`05c indicators`, `03b anchor_kpi`, `05b provenance`; 2 stage cố ý không dời (§4).
+**Trạng thái (2026-07-28): 6/16 stage đã dời** — `00 quality`, `03 fix_triples`,
+`03c canonicalize`, `05c indicators`, `03b anchor_kpi`, `05b provenance`; 2 stage cố ý
+không dời (§4).
 `05b` là stage đầu tiên dời được mà **không phải trích thêm module `core/` nào** — lần dời
-`03b` đã lifted sẵn cả 4 symbol nó cần.
+`03b` đã lifted sẵn cả 4 symbol nó cần. **`03` là stage thứ hai làm được điều đó.**
 
-**11 stage còn lại VẪN CHẠY BẰNG `src/`**: `01`, `02`, **`03`**, `04`, `05`, `05d`, `06`,
-`07`, `08`, `09`, `10`. Chú ý `03` ≠ `03b`/`03c` — hai cái sau đã dời, **`03` thì chưa**
-(chưa có `esg_kg/graph/fix_triples.py`). Trong sơ đồ §1, ô viền đứt là **chưa dời**, không
-phải đã xong; chỉ ô nền xanh đặc gắn `✅ ĐÃ DỜI` mới là đã refactor.
+**10 stage còn lại VẪN CHẠY BẰNG `src/`**: `01`, `02`, `04`, `05`, `05d`, `06`, `07`, `08`,
+`09`, `10`. Trong sơ đồ §1, ô viền đứt là **chưa dời**, không phải đã xong; chỉ ô nền xanh
+đặc gắn `✅ ĐÃ DỜI` mới là đã refactor.
+
+**`03` đã dời (2026-07-28) → `esg_kg/graph/fix_triples.py`.** Nó *trông* như hub — **7 stage
+`src/` import từ nó** — nhưng mọi symbol chúng lấy đều đã được các lát cắt trước rút vào
+`core/` rồi (`ISO_DATE_RE`/`normalize_date_string`/`date_start_key` → `core/dates`;
+`load_schema_sets`/`validate_triple` → `core/schema`), còn phần stage-local thì **không ai
+import**. Nên phần "hub" đã tan từ trước, và luật DESIGN.md §4 (*"chỉ xét symbol NÓ import"*)
+cho phép dời ngay. Diff 45 thêm / 212 xoá; đối chiếu bằng AST: **10 hàm chung, 0 hàm khác
+một byte**, 4 hàm bị xoá đúng là 4 hàm đã có trong `core/`, 0 hàm bịa thêm. Test:
+`test/test_esg_kg_fix_triples.py` (13 nhóm).
 
 **`core/llm.py` đã xong (2026-07-27)** — `DEFAULT_RATE_LIMIT` + `RateLimiter` (từ `step02`)
 và `_Provider` + `_OpenAIProvider` (từ `step07`), trích **verbatim**, 0 dòng logic đổi.
@@ -23,6 +32,27 @@ Nó **không dời stage nào** (vẫn 5/16) nhưng **mở khoá 4 stage cùng l
 điều kiện nhảy từ 4 lên **8**: `01`, `03`, `04`, `05`, `05d`, `06`, `07`, `09`. Chỉ còn
 **ba** stage thật sự bị chặn: `02` (cần `core/io_jsonl`), `08` và `10` (cả hai chờ `step07`
 dời — xem §2.1). Test: `test/test_esg_kg_llm.py`.
+
+**Từ đó tới nay KHÔNG stage nào dời thêm — vẫn đúng 5/16.** Nhưng hai commit đã đổi *giá*
+của nước đi kế tiếp, và cả hai đều rơi đúng vào `02`/`03`, tức đúng chỗ §2.1 đang chỉ tới:
+
+- `046e572` — **guard pha 2 của `step03`** (`preserve_property_values`): LLM được phép sửa
+  *hình dạng* một triple (`class`, `predicate`, `temporal_metadata`, `valid_from`/`valid_to`/
+  `is_current`), **không được sửa giá trị** của bất kỳ thuộc tính nào khác. Trước đó
+  `BATCH_FIX_PROMPT` bảo model *"Fix typos/synonyms"* mà không giới hạn trường, còn
+  `validate_triple` thì **không hề kiểm giá trị** — nên pha 2 tự do viết lại mọi property.
+  Cố ý làm **trước** khi `03` dời, để chỉ phải sửa **một** cây thay vì hai (DESIGN.md §5.3).
+  Kèm `test/test_step03_llm_value_guard.py` — 12 arm, offline, đã chạy lại 2026-07-28: xanh.
+- `b542fb5` — **DESIGN.md §5.6**: `step02` sẽ xuất `name`/`title` bằng **tiếng Việt có dấu**
+  (issue #6). Hôm nay `step02` không có *một dòng nào* hướng dẫn về ngôn ngữ, nên LLM đã tự
+  dịch **52,7%** số tên sang tiếng Anh; mà `normalize_name` gộp được mọi cách viết tiếng Việt
+  lại đẩy bản dịch sang một khoá khác ⇒ bản dịch **không gây lỗi**, nó **tách một pháp nhân
+  thành hai** ở Stage A của `step05`. Đây là quyết định phải chốt *trước* lần trích lại
+  (§5.4), không phải thứ ứng biến lúc ngồi sửa prompt.
+
+Hai cái này ăn khớp với nhau chứ không rời rạc: §5.6 là lý do guard pha 2 phải có trước —
+giao một `name` tiếng Việt cho một prompt viết bằng tiếng Anh ra lệnh "sửa typo" thì model
+rất dễ "sửa" thành bản dịch hoặc bản khử dấu, và không có gì ở hạ nguồn báo động.
 
 ---
 
@@ -48,7 +78,7 @@ flowchart TD
     GRAPHS["graph_output/graphs/&lt;doc&gt;/pageN.json"]:::data
 
     subgraph P2["② Làm sạch + chuẩn hoá — offline, MIỄN PHÍ"]
-        S03["⚪ CHƯA DỜI · step03 · fix_triples<br/>sửa chiều cạnh, validate schema,<br/>chuẩn hoá ngày ISO, gộp lại"]:::ready
+        S03["✅ ĐÃ DỜI · step03 · fix_triples<br/>sửa chiều cạnh, validate schema,<br/>chuẩn hoá ngày ISO, gộp lại"]:::migrated
         S03B["✅ ĐÃ DỜI · step03b · anchor_kpi<br/>nối KPI → Facility bằng gazetteer"]:::migrated
         S03C["✅ ĐÃ DỜI · step03c · canonicalize<br/>gán kpi_id chuẩn + đơn vị + kỳ"]:::migrated
     end
@@ -126,8 +156,8 @@ flowchart TD
 |---|---|---|---|---|---|
 | 00 | `quality` | — | `resolved_graph.json` | `quality/quality_report_<label>.{json,md}` | ✅ **đã dời** |
 | 01 | `extract` | 💰 | JSONL đã gán nhãn | `kpi_output/…_kpis.json` | ⚪ **chưa dời** — đủ điều kiện (hub, §2.1) |
-| 02 | `extract_triples` | 💰 | JSONL + KPI + `schema.json` | `graphs/<doc>/pageN.json` | ⏳ chờ `core/io_jsonl` |
-| 03 | `fix_triples` | 💰 (chỉ pha 2) | các file page | `all_validated_triples.json` | ⚪ **chưa dời** — đủ điều kiện |
+| 02 | `extract_triples` | 💰 | JSONL + KPI + `schema.json` | `graphs/<doc>/pageN.json` | ⏳ chờ `core/io_jsonl` ⚠️ sắp đổi hành vi (§5.6) |
+| 03 | `fix_triples` | 💰 (chỉ pha 2) | các file page | `all_validated_triples.json` | ✅ **đã dời** · pha 2 có guard giá trị |
 | 03b | `anchor_kpi` | — | validated + JSONL | vá tại chỗ + `anchor_patch_stats.json` | ✅ **đã dời** |
 | 03c | `canonicalize` | — | validated + `kpi_type_aliases.json` | vá tại chỗ + `kpi_canonical_stats.json` | ✅ **đã dời** |
 | 04 | `issuer` | — | validated | `config/issuer_registry.json` | ⚪ **chưa dời** — đủ điều kiện |
@@ -158,8 +188,8 @@ Bảng dưới là kết quả grep toàn bộ import chéo trong `src/` đối 
 | # | Symbol nó import từ cây `src/` | Còn thiếu gì trong `core/` |
 |---|---|---|
 | 01 | *(không import stage nào — `REPO_ROOT` là do **nó** định nghĩa, `step01:36`)* | — 🟢 **đủ symbol, nhưng VẪN CHƯA DỜI**. `core/io_jsonl` KHÔNG phải điều kiện của `01`: nó là điều kiện của `02`, và nó **rơi ra từ chính lát cắt `01`** (đúng kiểu `03b` → `core/identity.py`) |
-| 02 | 5 helper JSONL của `01` + `REPO_ROOT` | `core/io_jsonl` |
-| 03 | `REPO_ROOT`, `RateLimiter` | — 🟢 **đủ symbol, nhưng VẪN CHƯA DỜI** (`core/llm` xong 2026-07-27) |
+| 02 | 5 helper JSONL của `01` + `REPO_ROOT` | `core/io_jsonl` — và xem lưu ý §5.6 ngay dưới bảng: `02` còn một thay đổi hành vi **đang xếp hàng** |
+| 03 | `REPO_ROOT`, `RateLimiter` | ✅ **đã dời** (2026-07-28) — không phải viết thêm `core/` nào, y như `05b` |
 | 03b | `REPO_ROOT`, `load_schema_sets`, `validate_triple`, `normalize_name` | ✅ **đã dời** (2026-07-27) |
 | 04 | `REPO_ROOT` | — 🟢 **đủ symbol, nhưng VẪN CHƯA DỜI** |
 | 05 | `date_start_key`, `load_schema_sets`, `normalize_name` (đã ở `core/`) + `RateLimiter` | — 🟢 **đủ symbol, nhưng VẪN CHƯA DỜI** (`core/llm` xong) — nhưng đọc §3.1 trước khi dời |
@@ -179,7 +209,7 @@ flowchart LR
     classDef pend fill:#fff3bf,stroke:#e8a90c,color:#1a1a1a
 
     CORE["core/ hôm nay<br/>paths · schema · naming · dates<br/>console · graph_patch · identity · <b>llm</b>"]:::done
-    READY["⚪ CHƯA DỜI, đủ điều kiện dời — 8 stage<br/>01 · 03 · 04 · 05 · 05d · 06 · 07 · 09"]:::ready
+    READY["⚪ CHƯA DỜI, đủ điều kiện dời — 7 stage<br/>01 · 04 · 05 · 05d · 06 · 07 · 09"]:::ready
     S07M["dời 07<br/>(mang theo node_text + Adjudicator)"]:::key
     IOJ["core/io_jsonl (+ text)<br/>rơi ra từ lát cắt 01"]:::key
     U1["08 · 10"]:::pend
@@ -196,16 +226,29 @@ ra từ lát cắt `01`, và `01` thì đã đủ điều kiện.
 
 **Đọc ra được ba điều, cả ba đều đổi thứ tự làm:**
 
-1. **Kernel đã hết đường chặn.** Sau `core/llm.py` (2026-07-27) có **8/11** stage chưa dời
-   đủ điều kiện: `01`, `03`, `04`, `05`, `05d`, `06`, `07`, `09`. Việc còn lại không phải
-   "viết thêm `core/`" nữa mà là **chọn stage nào dời trước**, và tiêu chí bây giờ là
-   *arm tương đương mạnh tới đâu*, không còn là *symbol đã sẵn chưa*:
-   - **`03` — mạnh nhất.** Pha 1 (sửa chiều cạnh + validate) và pha 1.5 (chuẩn hoá ngày
-     ISO) đều **offline**, chỉ pha 2 mới gọi LLM; và `test/test_temporal_invariants.py`
-     đã phủ sẵn đúng phần offline đó. Chạy được trên corpus thật, miễn phí.
-   - **`05d` — nhỏ nhất.** Đúng cái vừa được `core/llm` mở khoá, lại có `--dry-run`.
-   - `06`/`09` đọc Neo4j; `01`/`07` là stage trả tiền; `04` thuộc lô hub làm cuối; `05`
-     **không được dời nếu chưa xử §3.1** (nó ghi đè cả ba bản vá).
+1. **Kernel đã hết đường chặn.** Sau `core/llm.py` (2026-07-27) có 8/11 stage chưa dời đủ
+   điều kiện; `03` đã dùng suất đó ngày 2026-07-28, còn lại **7**: `01`, `04`, `05`, `05d`,
+   `06`, `07`, `09`. Việc còn lại không phải "viết thêm `core/`" nữa mà là **chọn stage nào
+   dời trước**, và tiêu chí bây giờ là *arm tương đương mạnh tới đâu*, không còn là *symbol
+   đã sẵn chưa*:
+   - **~~`03` — mạnh nhất~~ → ĐÃ DỜI (2026-07-28).** Lý do nó được chọn vẫn đáng đọc, vì nó
+     là khuôn cho các lần sau: pha 1 + pha 1.5 offline nên chạy được trên corpus thật miễn
+     phí, còn **pha 2 (trả tiền) được lái bằng một LLM giả** nên nhánh đắt vẫn có arm. Kết
+     quả: arm ở **cả ba pha**, so `14 492` triple + `1 036` unfixable ở hai cây.
+     Hai điều đã học được, dùng lại cho lần sau:
+     - **"Hub" phải kiểm bằng chiều import, không bằng số người import.** `03` bị 7 stage
+       import nên trông như phải làm cuối, nhưng mọi symbol chúng lấy đã nằm trong `core/`
+       từ các lát cắt trước ⇒ nó thực chất là **leaf**. Trước khi xếp lịch một stage vào
+       "lô hub", hãy grep xem phần bị import còn nằm ở stage hay đã lên kernel.
+     - **Hằng số trùng tên không được import cho tiện.** `DEFAULT_RATE_LIMIT` có ở cả
+       `step03` lẫn `core/llm` và **cùng bằng 10**, nên import từ kernel sẽ "đúng" hôm nay
+       và âm thầm chỉnh throttle của `03` vào ngày ai đó sửa cho `02`. Chỉ `RateLimiter`
+       được dùng chung; hằng số ở lại module.
+   - **`05d` — nhỏ nhất, và là ứng viên kế tiếp.** Đúng cái `core/llm` mở khoá, lại có
+     `--dry-run`.
+   - `06`/`09` đọc Neo4j; `01`/`07` là stage trả tiền; `04` thuộc lô hub làm cuối (**nhớ
+     kiểm lại như trên** — có thể nó cũng đã hết hub); `05` **không được dời nếu chưa xử
+     §3.1** (nó ghi đè cả ba bản vá).
 2. **~~`core/llm.py` là đòn bẩy lớn nhất~~ → ĐÃ XONG (2026-07-27).** Đúng như dự đoán: nó
    mở khoá 4 stage cùng lúc (`03`, `05`, `07`, `05d`). Lát cắt gồm `DEFAULT_RATE_LIMIT` +
    `RateLimiter` (từ `step02`) và `_Provider` + `_OpenAIProvider` (từ `step07`) — bốn symbol
@@ -231,6 +274,14 @@ trả tiền của `step07`**. Giữ hai tên khác nhau. (DESIGN.md ghi đây l
 chưa gấp lại.) `core/llm.py` **cố ý không đụng** vào `node_text` — đó là lý do `08` (chỉ
 import đúng `node_text`) vẫn nằm trong nhóm chờ.
 
+📌 **Lưu ý thứ tự cho `02` — thay đổi hành vi đi TRƯỚC lần dời, không đi sau.** DESIGN.md
+§5.6 đã chốt `step02` sẽ xuất `name`/`title` tiếng Việt (issue #6). Theo §5.3 mọi thay đổi
+hành vi phải land ở **cả hai cây**, nên nếu `02` dời trước thì cùng một sửa đổi phải làm hai
+lần và phải giữ hai bản prompt đồng bộ. Guard pha 2 của `03` (`046e572`) đã áp đúng logic này
+và commit message nói thẳng lý do: *"deliberately BEFORE step03 migrates — one tree to edit
+now instead of two later"*. Với `02` thì sức nặng còn lớn hơn, vì nó bị chặn bởi
+`core/io_jsonl` nên **đằng nào cũng chưa dời được** — cứ làm §5.6 trong `src/` trước.
+
 ✅ **Lát cắt `core/llm` đã tránh được bẫy tương tự.** Thứ nó bảo vệ là **hình dạng request
 đã trả tiền**: `temperature=0` và `response_format={"type": "json_object"}` không phải
 chuyện style — adjudicator parse phản hồi thành JSON và cả pipeline giả định tính tất định.
@@ -241,6 +292,11 @@ Bỏ một trong hai thì lúc chạy **vẫn "chạy được"** nhưng mọi v
 ---
 
 ## 3. Ba khối lặp lại trên vòng đời một node
+
+> ⚠️ **Đọc mục này kèm §3.2.** Từ 2026-07-28, cụm `03/03b/03c` trong `esg_kg` **không còn
+> vá tại chỗ nữa** — nó là một khối ghi artifact đúng một lần. Mọi mô tả "vá tại chỗ" dưới
+> đây vẫn đúng cho **`src/`** và cho cụm `05` (chưa dời), nhưng với cây mới thì cụm `03` đã
+> hết. Luật §3 vẫn cần đọc: nó là thứ giải thích **vì sao** phải gộp khối.
 
 Cái làm pipeline trông rối là **vá tại chỗ**: nhiều stage đọc và ghi *cùng một file*.
 Ba khối dưới đây giải thích vì sao.
@@ -273,10 +329,18 @@ file trên đĩa **đã bị chính stage đó vá rồi**. Nhưng hậu quả t
 | `05c` | 67 `StandardIndicator` + 4 nhãn cạnh trục | **bỏ qua** ⇒ arm rỗng | `strip_axis()` — xoá node + cạnh trục, remap chỉ số mảng |
 | `03b` | **95/306** cạnh `observedAtFacility` có `anchor_method=offline_gazetteer` | **bỏ qua** ⇒ arm rỗng | `strip_anchors()` — xoá đúng 95 cái đó, **giữ 211 cạnh do extraction sinh** |
 | `05b` | **6 258/10 425** node có `source_doc`/`source_page` | **tính lại** ⇒ arm KHÔNG rỗng | `strip_provenance()` — xoá 4 tier, **giữ node `provenance_method=extraction`** |
+| `03` | *(không có — nó đọc `graphs/` của `02`, ghi ra file khác)* | **không bao giờ gặp** ⇒ arm KHÔNG rỗng | không cần strip; chạy thẳng trên corpus thật |
 
 **Luật 1 — strip đúng phần stage tự sinh, không strip theo nhãn/tên key.** 211 cạnh
 `observedAtFacility` kia có từ trước, xoá nhầm là đo sai; với `05b` cũng vậy, node đóng dấu
 `extraction` là output của `step02` chứ không phải của `05b`, phải giữ nguyên.
+
+**Luật 1b — hỏi câu đó TRƯỚC, đừng mặc định phải viết `strip_*`.** `03` là ca đầu tiên mà
+câu trả lời là *"không gặp bao giờ"*: đường chính của nó đọc `graph_output/graphs/` (output
+của `02`) và ghi ra một file **khác**, nên arm corpus thật không rỗng mà chẳng cần fixture
+nào. Chỉ `--renormalize` mới đọc lại chính `all_validated_triples.json` — và đó mới là chỗ
+đáng đặt arm **idempotency** (chạy pha 1.5 lần hai trên ngày đã ISO phải là no-op; nếu không,
+mỗi lần chạy lại sẽ âm thầm viết lại đồ thị).
 
 **Luật 2 — "vá tại chỗ" KHÔNG tự động nghĩa là "arm sẽ rỗng".** `05b` chỉ `continue` đúng
 một trường hợp (`provenance_method == "extraction"`, hiện **0 node** trong đồ thị thật);
@@ -319,6 +383,68 @@ báo điều đó đã xảy ra:
 Thứ đang giữ chuỗi này chạy đúng chỉ là ba dòng log cuối stage (đều nói *"Next: step06
 --clear"*) — **hợp đồng bằng trí nhớ**. Khi `step05` được dời, bản `esg_kg` **không được**
 mang khiếm khuyết này sang; ba phương án đang cân + ràng buộc: DESIGN.md §5.5.
+
+### 3.2 KHỐI: `03 → 03b → 03c` ghi artifact ĐÚNG MỘT LẦN (làm 2026-07-28)
+
+Đây là **luật chung cho mọi cụm về sau**, không phải xử lý riêng cụm 03 — chi tiết và lý lẽ
+ở DESIGN.md **§5.7**. `esg_kg` chỉ đổi **thời điểm ghi file**, không đổi **nội dung**.
+
+**Luật.** Khi N stage cùng đọc *và* ghi **một** artifact, chúng không phải N stage — chúng
+là **một khối**: chạy chuỗi **in-memory**, ghi file **một lần ở cuối**.
+
+**Cái giá đã đo được của việc không làm vậy** (chính là bảng phân rã ở §3.1 nhưng cho file
+sớm hơn):
+
+```
+14 492  ← 03 pha 1, offline        → dựng lại MIỄN PHÍ
++   90  ← 03 pha 2, LLM            → ĐÃ TRẢ TIỀN, không tất định
++   95  ← 03b anchor               → dựng lại miễn phí
+= 14 677  triple  (+ 683 lượt kpi_id của 03c)
+```
+
+Chạy lại `03` một mình ⇒ `write_text()` đè cả file ⇒ mất **toàn bộ phần dưới**, không cảnh
+báo. Đúng hình dạng lỗi của `step05:655` ở §3.1, chỉ sớm hơn một file.
+
+**Ranh giới quan trọng nhất — đừng gộp nhầm hai khái niệm:**
+
+| | Trả lời câu gì | Xử lý |
+|---|---|---|
+| **Artifact trung gian** | "pipeline chạy tới đâu rồi?" | trạng thái nội bộ ⇒ **bỏ** |
+| **Cache kết quả đã trả tiền** | "cái gì đã tốn tiền/thời gian?" | không tái tạo miễn phí ⇒ **giữ** |
+
+Bỏ nhầm cái thứ hai là **làm pipeline tệ đi**: mỗi lần chạy khối lại trả tiền pha 2, mà LLM
+không tất định nên kết quả còn khác nhau giữa các lần. Hôm nay `03b`/`03c` chạy lại miễn phí
+*chính vì* chúng đọc file đã đóng băng — tính chất đó phải sống sót. Nên pha 2 ghi ra
+**`phase2_repairs.json`**, khoá theo **nội dung** triple (không theo vị trí — ranh giới batch
+đổi là đưa nhầm bản sửa cho triple khác). Cache lưu **phản hồi thô** của model, còn
+`preserve_property_values` áp lúc *lấy ra* — nên guard vẫn là code của mình và cải tiến guard
+thì áp luôn cho các bản sửa cũ.
+
+**Cách chạy:**
+
+```bash
+python src_module/run.py build_validated --dry-run   # 03+03b+03c offline, không ghi gì
+python src_module/run.py build_validated             # ghi all_validated_triples.json MỘT lần
+```
+
+**Cái KHÔNG bị mất** — khối là **thêm** một entrypoint, không phải xoá ba cái cũ:
+`run.py fix_triples`, `run.py anchor_kpi`, `run.py canonicalize` vẫn chạy được (mất khả năng
+chạy lẻ là mất luôn khả năng chẩn đoán), và `anchor_patch_stats.json` /
+`kpi_canonical_stats.json` vẫn được ghi — chúng là **dữ liệu chẩn đoán**, không phải artifact
+trung gian.
+
+**Vì sao vẫn còn lưới an toàn dù `src/` không đổi.** Thay đổi chỉ đụng *thời điểm ghi*, nên
+`src/` vẫn làm **oracle** được: chạy chuỗi `src/` `03→03b→03c` trên bản copy, chạy khối, **kết
+quả cuối phải bằng nhau**. Arm đó đang so **14 584 triple / 92 anchor / 679 `kpi_id`** trên
+corpus thật, miễn phí. Kèm một arm ngược để arm kia không rỗng: chuỗi `src/` phải ghi artifact
+**đúng 3 lần**, khối phải ghi **đúng 1 lần**. Đã mutation-check cả hai chiều.
+Test: `test/test_esg_kg_validated_block.py` (9 nhóm).
+
+⚠️ **Ngày nào một refactor làm mất tính chất "cùng nội dung, khác thời điểm ghi" thì DỪNG
+lại bàn** — lúc đó không còn oracle nào nữa, và đó là loại rủi ro khác hẳn.
+
+**Cụm 05 sẽ theo đúng luật này** — xem DESIGN.md §5.7 phần cuối: đó là **phương án thứ tư**
+cho bảng ở §5.5 và là mặc định mới, thay cho ba dòng trong bảng đó.
 
 ---
 
@@ -422,6 +548,7 @@ Chụp `step00 --label before/after` để đối chiếu. *(Bản trước ghi 
 | Luật refactor (Model A, TDD, vá ở stage sớm nhất) | [`esg_kg/DESIGN.md`](esg_kg/DESIGN.md) §4–§5 |
 | Ba phương án cho việc `step05` không được ghi đè (§3.1) | DESIGN.md §5.5 |
 | Vì sao corpus AAA sẽ được trích lại và điều đó đổi những gì | DESIGN.md §5.4 |
+| Phạm vi + ranh giới của việc `step02` xuất tiếng Việt (issue #6) | DESIGN.md §5.6 |
 | Thứ tự chạy dạng dữ liệu (nguồn sự thật) | [`esg_kg/pipeline.py`](esg_kg/pipeline.py) |
 | Cách chạy + trạng thái từng phần | [`README.md`](README.md) |
 | Chi tiết từng stage, cờ dòng lệnh | `CLAUDE.md` mục "Pipeline architecture" |

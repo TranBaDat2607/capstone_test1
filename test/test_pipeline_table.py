@@ -95,6 +95,70 @@ def test_resolve_finds_a_not_ported_stage_by_its_old_id():
         assert hit[2] is None, f"{order} resolved to a module path {hit[2]!r}, expected None"
 
 
+# --------------------------------------------------------------------------- #
+# Blocks (DESIGN.md §5.7): several stages collapsed into one unit that writes its
+# artifact once. A block is NOT a stage — it has no `src/` counterpart by design,
+# because `src/` deliberately keeps the stages separate (Model A). So it needs its
+# own table and its own contract, or the stage arms above would reject it.
+# --------------------------------------------------------------------------- #
+def test_blocks_table_exists():
+    assert hasattr(run, "BLOCKS"), "pipeline.py must expose BLOCKS for the §5.7 block design"
+
+
+def test_every_block_names_real_stages():
+    stage_ids = {order for order, _, _, _ in STAGES}
+    for name, module, members, _note in run.BLOCKS:
+        assert members, f"block {name!r} lists no member stages"
+        for m in members:
+            assert m in stage_ids, f"block {name!r} names {m!r}, which is not a stage id"
+
+
+def test_every_block_module_is_importable():
+    for name, module, _members, _note in run.BLOCKS:
+        assert importlib.util.find_spec(module) is not None, (
+            f"block {name!r} points at {module!r}, which does not import")
+
+
+def test_block_names_do_not_collide_with_stage_names():
+    """`run.py` dispatches blocks and stages through one namespace."""
+    stage_names = {run.short_name(m) for _, _, m, _ in STAGES if m}
+    stage_ids = {order.lower() for order, _, _, _ in STAGES}
+    seen = set()
+    for name, _module, _members, _note in run.BLOCKS:
+        assert name not in stage_names, f"block {name!r} collides with a stage short name"
+        assert name.lower() not in stage_ids, f"block {name!r} collides with a step id"
+        assert name not in seen, f"duplicate block name {name!r}"
+        seen.add(name)
+
+
+def test_run_py_can_resolve_a_block():
+    for name, module, _members, _note in run.BLOCKS:
+        hit = run.resolve_block(name)
+        assert hit is not None, f"run.py cannot resolve block {name!r}"
+        assert hit[1] == module
+
+
+def test_block_members_are_all_migrated_stages():
+    """A block can only be built out of stages that already live in esg_kg — otherwise
+    it would silently run a subset and still look complete."""
+    by_id = {order: module for order, _, module, _ in STAGES}
+    for name, _module, members, _note in run.BLOCKS:
+        for m in members:
+            module = by_id[m]
+            assert module is not None, f"block {name!r} includes not-ported stage {m}"
+            assert run.is_migrated(module), (
+                f"block {name!r} includes {m}, which has not been migrated yet")
+
+
+def test_list_shows_the_blocks():
+    buf = io.StringIO()
+    with redirect_stdout(buf):
+        run.print_list()
+    out = buf.getvalue()
+    for name, _module, _members, _note in run.BLOCKS:
+        assert name in out, f"--list never mentions block {name!r}"
+
+
 def main():
     tests = [v for k, v in sorted(globals().items()) if k.startswith("test_") and callable(v)]
     failed = 0

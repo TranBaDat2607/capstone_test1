@@ -35,5 +35,28 @@ STAGES = [
     ("10",  "step10_evaluate",                     "esg_kg.report.evaluate",          "P6 evaluation report"),
 ]
 
+# --------------------------------------------------------------------------- #
+# BLOCKS — several stages collapsed into ONE unit that writes its artifact once.
+#
+# Each entry: (name, module, member step ids, note).
+#
+# A block is NOT a stage and deliberately has NO `src/` counterpart: `src/` keeps the
+# stages separate for ever (Model A), while `esg_kg` is allowed to redesign the shape.
+# That is why blocks live in their own table instead of as STAGES rows — a STAGES row
+# must point at a real `src/` file, and a block never can.
+#
+# The rule that produces a block (DESIGN.md §5.7): when N stages each read AND write
+# the same artifact, they are not N stages, they are one. The intermediate file is
+# internal state that leaked into being a contract, and re-running the first stage
+# silently destroys what the later ones added — including results that were paid for.
+#
+# Member stages stay individually runnable. A block ADDS an entry point; it never
+# removes the per-stage ones, or the ability to diagnose one stage alone goes too.
+BLOCKS = [
+    ("build_validated", "esg_kg.graph.build_validated", ("03", "03b", "03c"),
+     "03 -> 03b -> 03c in memory, writing all_validated_triples.json ONCE; phase-2 "
+     "repairs are cached so a re-run is free and deterministic (DESIGN.md §5.7)"),
+]
+
 # data_sync is a utility, not a pipeline stage:
 #   src/data_sync.py -> esg_kg.core.datasync

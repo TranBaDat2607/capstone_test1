@@ -552,9 +552,10 @@ Dữ liệu xác nhận chuỗi hiện đang ở trạng thái đã vá: `proven
 đè artifact mà `step06`/`step07` đọc**. Chuỗi `05b → 05c` là bắt buộc và phải được cưỡng chế
 bằng cấu trúc, không bằng tài liệu.
 
-**Cơ chế thì CHƯA chốt** — cố tình để mở, vì nó phụ thuộc đề xuất chuyển `05c` lên trước `05`
-(PIPELINE.md §5) vốn có thể xoá bỏ luôn khái niệm "vá tại chỗ". Ba phương án đang cân, quyết
-đúng lúc dời `step05`:
+**Cơ chế: xem §5.7 — mặc định bây giờ là PHƯƠNG ÁN KHỐI, không phải ba dòng dưới đây.**
+(Bản gốc để mở phần này. Ngày 2026-07-28 luật khối được chốt tổng quát ở §5.7 và nó là
+phương án **thứ tư**, tốt hơn cả ba: không tốn thêm 40 MB, không cần `--force`, và **xoá
+hẳn** khái niệm "vá tại chỗ" thay vì canh gác nó.) Ba phương án cũ giữ lại để đối chiếu:
 
 | Phương án | Được | Mất |
 |---|---|---|
@@ -567,10 +568,13 @@ bằng cấu trúc, không bằng tài liệu.
 1. **§5.4 vẫn ưu tiên.** Mục tiêu là dựng lại đồ thị **từ đầu**, nên "không ghi đè" bắt buộc
    phải có đường thoát cho lần trích lại có chủ đích. Không được biến thành cái khoá làm
    pipeline không rebuild được — đó sẽ là đánh đổi ngược hẳn với §5.4.
-2. **§5.3 áp dụng.** Đây là **thay đổi hành vi**, không phải dời nguyên văn ⇒ commit riêng,
-   sửa **cả hai cây**, kèm test hành vi đã đỏ trước. Test đó phải khẳng định được điều mà
-   hôm nay không có gì khẳng định: *chạy `step05` trên một đồ thị đã vá thì các bản vá phải
-   còn nguyên (hoặc stage phải dừng)*.
+2. ⚠️ **SỬA 2026-07-28 — ràng buộc này đã đổi, đọc §5.7.** Bản gốc viết: *"§5.3 áp dụng ⇒
+   commit riêng, sửa **cả hai cây**"*. Phần "cả hai cây" **không còn đúng**: §5.7 chốt rằng
+   gộp khối là **redesign có chủ ý của riêng `esg_kg`**, `src/` giữ nguyên. Phần còn lại vẫn
+   đúng nguyên: commit riêng, **test hành vi đỏ trước**, và test đó phải khẳng định điều hôm
+   nay không gì khẳng định — *chạy `step05` trên đồ thị đã vá thì các bản vá phải còn nguyên
+   (hoặc stage phải dừng)*. Với phương án khối thì câu đó thành: **không tồn tại trạng thái
+   "đồ thị đã vá" ở giữa** để mà mất.
 3. **Cưỡng chế thứ tự là phần việc riêng.** Nâng `step06:365` từ warning lên lỗi cứng, và
    thêm phép kiểm tương đương cho `step07`, là **commit khác** — nó đụng vào stage đã trả
    tiền (`step07`), nên không gộp chung.
@@ -655,6 +659,87 @@ Việt thì người đọc sẽ thấy nó. Chỗ sửa đúng là `data_proces
 **47,3%**; `dates_unparseable` **không tăng** so với mốc **6 / 72 473**; số node
 `Organization` của chính doanh nghiệp phát hành **giảm** sau `step05`; chụp
 `step00 --label before/after` để đối chiếu Q1–Q8.
+
+### 5.7 Gộp stage thành KHỐI: một artifact, ghi một lần (chốt 2026-07-28)
+
+Đây là **luật chung cho mọi cụm về sau**, không phải xử lý riêng cụm 03. §5.5 đã mô tả đúng
+triệu chứng ở cụm 05 nhưng để mở phần cơ chế; mục này chốt cơ chế đó, và chốt ở dạng tổng
+quát vì cùng một hình dạng lỗi xuất hiện ở **cả hai** cụm.
+
+**Luật.** Khi N stage cùng đọc *và* ghi **một** artifact, chúng không phải N stage — chúng là
+**một khối**. Trong `esg_kg`, khối được viết thành một hàm chạy chuỗi **in-memory** và ghi
+file **đúng một lần ở cuối**. Không có "output ở giữa pipeline".
+
+**Vì sao artifact trung gian là lỗi chứ không phải tính năng.** Nó không phải sản phẩm giao
+ra — nó là chi tiết cài đặt bị rò ra thành hợp đồng. Cái giá đo được ở cụm 03:
+
+| | Số đo (2026-07-28) |
+|---|---|
+| `all_validated_triples.json` trên đĩa | **14 677** triple |
+| ├─ `03` pha 1, offline | 14 492 — dựng lại **miễn phí** |
+| ├─ `03` pha 2, LLM | **90** — **đã trả tiền, không tất định** |
+| └─ `03b` anchor | 95 — dựng lại miễn phí |
+| `03c` `kpi_id` | 683 lượt node — dựng lại miễn phí |
+
+Chạy lại `03` đầy đủ ⇒ `write_text()` đè cả file ⇒ mất **toàn bộ** phần dưới, không cảnh báo.
+Y hệt `step05:655` trong §5.5, chỉ sớm hơn một file. Thứ giữ cho nó không hỏng là dòng log
+cuối stage — lại là **hợp đồng bằng trí nhớ**.
+
+**Ranh giới bắt buộc: "artifact trung gian" ≠ "cache của kết quả đã trả tiền".**
+Đây là chỗ dễ làm hỏng nhất khi áp luật này. Bỏ artifact trung gian thì đúng; nhưng nếu bỏ
+luôn chỗ lưu kết quả LLM thì mỗi lần chạy khối là **một lần trả tiền nữa**, và vì LLM không
+tất định, kết quả còn **khác nhau giữa các lần**. Hôm nay `03b`/`03c` chạy lại được miễn phí
+*chính vì* chúng đọc file đã đóng băng — gộp khối mà không tách cache ra là **đánh mất tính
+chất đó**, tức là làm pipeline tệ đi chứ không tốt lên.
+
+⇒ Phần trả tiền được ghi ra **cache riêng** (`graph_output/validated/phase2_repairs.json`),
+khoá theo nội dung triple đầu vào. Khối đọc cache trước, chỉ gọi LLM cho phần chưa có. Kết
+quả: **một** đầu ra duy nhất, mà khối vẫn chạy lại được **offline, miễn phí, tất định**.
+
+Nói gọn hai câu để lần sau khỏi cân lại:
+
+> *Artifact trung gian* trả lời câu "pipeline đang chạy tới đâu" — bỏ được, vì đó là trạng
+> thái nội bộ. *Cache* trả lời câu "cái này đã tốn tiền/thời gian rồi" — không bỏ được, vì
+> thông tin đó không tái tạo miễn phí.
+
+**Quan hệ với §5.3 — đây là NGOẠI LỆ, và phải đọc kỹ.** §5.3 bắt mọi thay đổi hành vi phải
+land ở **cả hai cây**. Luật đó tồn tại để chống **drift ngoài ý muốn**. Còn đây là
+**redesign có chủ ý của riêng `esg_kg`** (chốt với người dùng 2026-07-28), đúng tiền lệ
+`step04` entity resolution: `src/` **không đụng một dòng nào**, giữ nguyên 3 stage rời và
+artifact trung gian. Đồng bộ ngược sẽ là việc vô nghĩa — nó phá đúng cái Model A đang bảo vệ.
+**Hệ quả: ràng buộc 2 của §5.5 ("sửa cả hai cây") KHÔNG còn áp cho các thay đổi kiểu khối
+này.** Ai đọc §5.5 sau ngày này phải đọc kèm mục này.
+
+**Vì sao ngoại lệ đó KHÔNG làm mất lưới an toàn** — điểm quan trọng nhất của cả mục:
+thay đổi này chỉ đụng **thời điểm ghi file**, không đụng **nội dung kết quả**. Nên `src/`
+vẫn làm **oracle** được, dù vĩnh viễn không được sửa:
+
+> chạy chuỗi `src/` `03 → 03b → 03c` trên bản copy, chạy khối `esg_kg`, **kết quả cuối phải
+> bằng nhau**. Corpus thật, offline, miễn phí.
+
+Đó là tiêu chí nghiệm thu, và phải **đỏ trước**. Ngày nào một refactor làm mất tính chất
+"cùng nội dung, khác thời điểm ghi" thì **dừng lại bàn** — lúc đó không còn oracle nào nữa,
+và đó là loại thay đổi khác hẳn về mức rủi ro.
+
+**Áp cho cụm 05 (trả lời phần bỏ ngỏ của §5.5).** Cùng luật ⇒ `05 → 05b → 05c (→ 05d)` cũng
+là **một khối**, ghi `resolved_graph.json` một lần ở cuối. Đây thực chất là **phương án thứ
+tư** cho bảng ở §5.5, và nó tốt hơn cả ba dòng trong đó: không tốn thêm 40 MB như hai phương
+án artifact bất biến, không cần `--force` mong manh như phương án thứ ba, và **xoá hẳn** khái
+niệm "vá tại chỗ" thay vì canh gác nó. Ràng buộc riêng của cụm 05 vẫn phải giữ: `05d` là
+**tuỳ chọn** nên khối phải chạy đúng khi thiếu nó, và phần LLM của `05`/`05d` rơi vào đúng
+luật cache ở trên. Quyết định cuối cùng vẫn thuộc lúc dời `step05`, nhưng mặc định bây giờ là
+phương án khối, không phải ba dòng kia.
+
+**Cái KHÔNG được mất khi gộp khối:**
+
+1. **Vẫn phải vá được đồ thị đang có.** §5.4 đòi dựng lại từ đầu, nhưng không được biến
+   thành cái khoá chặn việc vá artifact hiện tại — giữ một lối vào đọc file đã có
+   (`--renormalize`, hoặc `--from-validated`).
+2. **Từng stage vẫn chạy riêng được.** Gộp khối là thêm một entrypoint, **không phải xoá**
+   `run.py anchor_kpi`. Mất khả năng chạy lẻ là mất luôn khả năng chẩn đoán.
+3. **Stats của từng stage vẫn phải ghi ra.** `anchor_patch_stats.json` /
+   `kpi_canonical_stats.json` là dữ liệu chẩn đoán, không phải artifact trung gian — chúng
+   không bị luật này đụng tới.
 
 ## 6. Lưới an toàn & mắt xích yếu
 

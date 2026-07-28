@@ -38,7 +38,7 @@ HERE = Path(__file__).resolve().parent
 if str(HERE) not in sys.path:
     sys.path.insert(0, str(HERE))
 
-from esg_kg.pipeline import STAGES  # noqa: E402
+from esg_kg.pipeline import BLOCKS, STAGES  # noqa: E402
 
 
 def short_name(module) -> str:
@@ -72,6 +72,22 @@ def resolve(token: str):
     return None
 
 
+def all_members_ready(members) -> bool:
+    """A block is only runnable once every stage it is built from has been migrated —
+    otherwise it would quietly run a subset of the work and still look complete."""
+    by_id = {order: module for order, _, module, _ in STAGES}
+    return all(by_id.get(m) and is_migrated(by_id[m]) for m in members)
+
+
+def resolve_block(token: str):
+    """A block is addressed only by its name — it has no step id and no `src/` file."""
+    t = token.lower()
+    for name, module, members, note in BLOCKS:
+        if t in {name.lower(), module.lower()}:
+            return name, module, members, note
+    return None
+
+
 def print_list() -> None:
     # Not-ported stages are excluded from the denominator: counting them would make the
     # migration permanently unfinishable, since they are never coming.
@@ -95,9 +111,21 @@ def print_list() -> None:
     print("  src/    -> python src/<file>.py [args]   (not migrated yet)")
     if skipped:
         print("  --      -> python src/<file>.py [args]   (not ported BY DECISION — see note)")
+    if BLOCKS:
+        # Blocks are listed apart from the stages on purpose: they have no `src/` file
+        # and no migration status, so putting them in the table above would invite the
+        # reading that some stage is now "done twice".
+        print("\nBlocks — several stages as ONE unit, artifact written once (DESIGN.md §5.7):")
+        for name, module, members, _note in BLOCKS:
+            mark = "OK " if all_members_ready(members) else "   "
+            print(f"  {mark} {name:20} {module:38} = {' -> '.join(members)}")
+        print("\n  block   -> python src_module/run.py <block name> [args]")
+
     print("\nNotes:")
     for order, _, module, note in STAGES:
         print(f"  {order:4} {note}")
+    for name, _, _, note in BLOCKS:
+        print(f"  {name:4} {note}")
 
 
 def main(argv: list) -> int:
@@ -108,6 +136,17 @@ def main(argv: list) -> int:
     if argv[0] in {"-l", "--list", "list"}:
         print_list()
         return 0
+
+    # Blocks are checked first: a block name can never collide with a stage name
+    # (test_pipeline_table asserts it), so the order is about clarity, not precedence.
+    block = resolve_block(argv[0])
+    if block is not None:
+        name, module, members, note = block
+        if not all_members_ready(members):
+            print(f"block {name} needs stages {', '.join(members)}, and not all are "
+                  f"migrated yet", file=sys.stderr)
+            return 2
+        return _call(module, name, argv[1:])
 
     hit = resolve(argv[0])
     if hit is None:
@@ -126,7 +165,11 @@ def main(argv: list) -> int:
         print(f"    python src/{old}.py {' '.join(argv[1:])}".rstrip(), file=sys.stderr)
         return 2
 
-    rest = argv[1:]
+    return _call(module, short_name(module), argv[1:])
+
+
+def _call(module: str, label: str, rest: list) -> int:
+    """Import a stage/block module and hand it the remaining argv."""
     if rest and rest[0] == "--":  # explicit separator, so `-- --help` reaches the stage
         rest = rest[1:]
     mod = importlib.import_module(module)
@@ -134,7 +177,7 @@ def main(argv: list) -> int:
         print(f"{module} has no main() to call", file=sys.stderr)
         return 2
     # the stage parses sys.argv itself, exactly as it did as a src/ script
-    sys.argv = [f"run.py {short_name(module)}"] + rest
+    sys.argv = [f"run.py {label}"] + rest
     mod.main()
     return 0
 
