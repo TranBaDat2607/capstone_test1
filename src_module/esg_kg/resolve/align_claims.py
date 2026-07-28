@@ -111,6 +111,12 @@ def parse_reply(raw: str, valid_ids: set) -> Optional[str]:
             out = json.loads(m.group(0))
         except Exception:
             return None
+    # Valid JSON of the wrong SHAPE ('[]', '"txt"', '42') must be refused like any other
+    # unusable reply. Without this the `.get` below raised AttributeError, and since run()
+    # writes the graph only after the loop and catches nothing here, one odd reply discarded
+    # every adjudication already paid for in that run.
+    if not isinstance(out, dict):
+        return None
     ind = out.get("indicator_id")
     return ind if ind in valid_ids else None
 

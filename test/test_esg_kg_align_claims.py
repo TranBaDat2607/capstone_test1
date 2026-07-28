@@ -324,28 +324,29 @@ def test_parse_reply_matches():
     assert new_05d.parse_reply(cases[4], valid) is None, "unknown id must be rejected"
 
 
-def test_parse_reply_crashes_on_non_object_json_in_BOTH_trees():
-    """A defect INHERITED from src/, pinned here rather than fixed in a migration commit.
+def test_parse_reply_rejects_non_object_json_in_BOTH_trees():
+    """Valid JSON of the wrong SHAPE must be refused like any other unusable reply.
 
-    `json.loads('[]')` succeeds and returns a list, then `out.get(...)` raises
-    AttributeError. Every other malformed shape returns None, so this one is a genuine
-    inconsistency — and an expensive one: `run()` writes the graph only AFTER the loop, and
-    nothing catches an exception from `parse_reply`, so ONE odd reply discards every
+    Before the fix, `json.loads('[]')` succeeded, returned a list, and `out.get(...)` raised
+    AttributeError. Every other malformed shape already returned None, so this was a genuine
+    inconsistency — and an expensive one: `run()` writes the graph only AFTER the loop and
+    nothing catches an exception from `parse_reply`, so ONE odd reply discarded every
     adjudication already paid for in that run.
 
-    Unreachable through the real provider today (`response_format={"type":"json_object"}`
-    guarantees an object), which is why it has survived. DESIGN.md §5.3: a behaviour change
-    is its own commit, landing in BOTH trees. This arm asserts the CURRENT shared behaviour
-    so the migration is provably behaviour-preserving; the fix commit flips it.
+    Not reachable through the real provider today (`response_format={"type":"json_object"}`
+    guarantees an object), which is why it survived unnoticed. It becomes reachable the
+    moment a provider without that guarantee is added — exactly the kind of latent trap a
+    migration is the right time to notice and the wrong time to fix silently, so this landed
+    as its own commit in BOTH trees (DESIGN.md §5.3).
     """
-    for fn in (new_05d.parse_reply, old_05d.parse_reply):
-        try:
-            fn("[]", {"TT96-6.1.1"})
-        except AttributeError:
-            continue
-        raise AssertionError(f"{fn.__module__}.parse_reply no longer raises on '[]' — if that "
-                             "was the intended fix, update this arm and the sibling in the "
-                             "other tree together")
+    for raw in ("[]", '"just a string"', "42", "null", "true"):
+        for fn in (new_05d.parse_reply, old_05d.parse_reply):
+            assert fn(raw, {"TT96-6.1.1"}) is None, f"{fn.__module__} mishandled {raw!r}"
+
+    # the fix must not have made the parser lenient about anything else
+    assert new_05d.parse_reply('{"indicator_id": "TT96-6.1.1"}', {"TT96-6.1.1"}) == "TT96-6.1.1"
+    assert new_05d.parse_reply('[{"indicator_id": "TT96-6.1.1"}]', {"TT96-6.1.1"}) is None, \
+        "a LIST wrapping a good object must still be refused, not unwrapped"
 
 
 # --------------------------------------------------------------------------- #
