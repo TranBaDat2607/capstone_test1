@@ -341,6 +341,45 @@ def test_build_preserves_human_edits_across_a_rerun_identically_in_both_trees():
     print(f"     (human edit on {some_ticker!r} survived a re-run identically in both trees)")
 
 
+# --------------------------------------------------------------------------- #
+# 4. DESIGN.md §5.2 "VI PHẠM": step04:428's dead `{nodes,edges}` sniff.
+# --------------------------------------------------------------------------- #
+# step03 / build_validated always write all_validated_triples.json as a flat
+# List[dict] (step03:545,622); step05 reads that exact file with no sniffing at
+# all. build()'s `{nodes,edges}` branch therefore never fires on any real input —
+# it is dead code pretending the input format is uncertain when it is not, flagged
+# for removal at exactly this migration ("xoá khi dời step04, đọc theo đúng một
+# hợp đồng"). Fixed in BOTH trees per DESIGN.md §5.3: a dict-shaped input must now
+# fail loudly (AttributeError, iterating dict keys as fake triples) instead of
+# being silently reinterpreted as a graph.
+NODES_EDGES_SHAPE = {
+    "nodes": [{"class": "Organization", "properties": {"name": "Test Co"}}],
+    "edges": [{"subject": 0, "object": 0, "predicate": "publishesReport"}],
+}
+
+
+def test_build_no_longer_silently_converts_a_nodes_edges_dict_in_either_tree():
+    prev = _quiet()
+    try:
+        with tempfile.TemporaryDirectory() as t:
+            input_file = Path(t) / "fake_validated.json"
+            input_file.write_text(json.dumps(NODES_EDGES_SHAPE), encoding="utf-8")
+            for mod in (new_issuer, old_step04):
+                out = Path(t) / f"registry_{mod.__name__.split('.')[-1]}.json"
+                raised = False
+                try:
+                    mod.build(input_file, COMPANIES_FILE, out,
+                              mod.DEFAULT_MIN_SUBJECT_EDGES, True, 0.8, 0.2)
+                except AttributeError:
+                    raised = True
+                assert raised, (
+                    f"{mod.__name__} still silently converts a {{nodes,edges}} dict — "
+                    "the DESIGN.md §5.2 dead branch was not removed")
+    finally:
+        _unquiet(prev)
+    print("     (both trees now reject the {nodes,edges} shape instead of sniffing it)")
+
+
 if __name__ == "__main__":
     fns = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     failed = 0

@@ -34,7 +34,18 @@ workspace tạm, không bao giờ đọc/ghi bản thật; test có hẳn một 
 đó (`test_build_never_touches_the_real_tracked_registry`) cộng một arm mô phỏng người
 di chuyển một mục `needs_review` sang `exclusions` rồi chạy lại — đúng kịch bản thật mà
 `merge_preserving_edits` được viết ra để phục vụ. Test: `test/test_esg_kg_issuer.py`
-(11 nhóm).
+(12 nhóm).
+
+Một commit riêng theo sau, cùng khuôn `a308608`/`95360c2`: `build()` từng có một nhánh
+`if isinstance(data, dict) and "nodes" in data and "edges" in data: …` sniff hai định
+dạng — DESIGN.md §5.2 đã ghi sẵn từ 2026-07-25 đây là **code chết**, vì nguồn ghi input
+DUY NHẤT của `04` (`step03`/`build_validated`) luôn xuất `List[Dict]`, và `step05` đọc
+đúng file đó mà không sniff gì cả — cùng lịch hẹn "xoá khi dời step04, đọc theo đúng một
+hợp đồng". Xoá **trong CẢ HAI cây** cùng một lúc, red-first: viết test trước, thấy cả hai
+cây đều "im lặng chấp nhận" một input dạng `{nodes,edges}` (hành vi SAI đang tồn tại ở cả
+hai, không phải một cây lệch cây kia), rồi xoá nhánh, thấy cả hai chuyển sang từ chối bằng
+`AttributeError` — đúng như DESIGN.md muốn: một hợp đồng, sai thì báo lỗi rõ chứ không âm
+thầm "hiểu nhầm" dữ liệu.
 
 **7 stage còn lại VẪN CHẠY BẰNG `src/`**: `01`, `02`, `05`, `06`, `08`, `09`, `10`.
 Trong sơ đồ §1, ô viền đứt là **chưa dời**, không phải đã xong; chỉ ô nền xanh
@@ -336,7 +347,8 @@ ra từ lát cắt `01`, và `01` thì đã đủ điều kiện.
      **sửa tay của người** (`merge_preserving_edits`), nên MỌI arm gọi `build()` phải chạy
      trên workspace tạm, không bao giờ đụng bản thật; test thêm hẳn một arm khẳng định điều
      đó và một arm mô phỏng một người sửa tay rồi chạy lại để chứng minh bản sửa sống sót
-     giống hệt ở cả hai cây. Test: `test/test_esg_kg_issuer.py` (11 nhóm).
+     giống hệt ở cả hai cây. Test: `test/test_esg_kg_issuer.py` (12 nhóm, gồm cả arm cho
+     bản sửa DESIGN.md §5.2 bên dưới).
    - `06`/`09` đọc Neo4j; `01` là stage trả tiền; `05` **không được dời nếu chưa xử
      §3.1** (nó ghi đè cả ba bản vá) — và §3.2 nay là câu trả lời mặc định cho §3.1.
 2. **~~`core/llm.py` là đòn bẩy lớn nhất~~ → ĐÃ XONG (2026-07-27).** Đúng như dự đoán: nó

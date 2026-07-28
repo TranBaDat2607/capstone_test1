@@ -422,34 +422,11 @@ def merge_preserving_edits(old: Dict[str, Any], new: Dict[str, Any]) -> Dict[str
 def build(input_file: Path, companies_xlsx: Path, output_file: Path,
           min_subject_edges: int, force: bool,
           graph_sim_upper: float, graph_sim_lower: float) -> None:
+    # step03 / build_validated always write all_validated_triples.json as a flat
+    # List[dict] (step03:545,622), and step05 reads that same file with no format
+    # sniffing at all — so this is the one contract, not one of several possible ones.
     data = json.loads(input_file.read_text(encoding="utf-8"))
-    
-    # Dynamically handle both {nodes, edges} graph format and flat triples list format
-    if isinstance(data, dict) and "nodes" in data and "edges" in data:
-        nodes = data["nodes"]
-        triples = []
-        for edge in data["edges"]:
-            if not isinstance(edge, dict):
-                continue
-            subj_idx = edge.get("subject")
-            obj_idx = edge.get("object")
-            pred = edge.get("predicate")
-            if subj_idx is None or obj_idx is None or not pred:
-                continue
-            if 0 <= subj_idx < len(nodes) and 0 <= obj_idx < len(nodes):
-                triples.append({
-                    "subject": {
-                        "class": nodes[subj_idx].get("class"),
-                        "properties": nodes[subj_idx].get("properties", {}),
-                    },
-                    "predicate": pred,
-                    "object": {
-                        "class": nodes[obj_idx].get("class"),
-                        "properties": nodes[obj_idx].get("properties", {}),
-                    }
-                })
-    else:
-        triples = data
+    triples = data
 
     logger.info(f"Loaded {len(triples)} validated triples from {input_file.name}")
     

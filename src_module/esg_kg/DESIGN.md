@@ -402,7 +402,7 @@ stage sau không hề đang vá bù mà đang làm một việc khác về bản
 | step03c gán `kpi_id` | **KHÔNG phải vá bù** — mối quan tâm riêng, xem §5.2.1 | ~~E2~~ *(phân loại cũ sai, sửa 2026-07-25)* |
 | step05c trục chỉ số | **E2** | cần đồ thị đã resolve |
 | step05:392 `date_start_key(...) or str(...)` | **E3, hợp lệ** | step03 cố ý trả `("Q2 2023", False)` giữ nguyên thay vì bịa ngày; step05 buộc phải xử lý `None`, nếu không mọi ngày không parse được sẽ gộp thành một version |
-| **step04:428 sniff `{nodes,edges}`** | **VI PHẠM** | step03 luôn ghi `List[Dict]` (step03:545,622); file thật là list 14 677 phần tử; step05 đọc đúng file đó mà không sniff. Nhánh này là **code chết giả vờ có bất định** → xoá khi dời step04, đọc theo đúng một hợp đồng |
+| ~~step04:428 sniff `{nodes,edges}`~~ | **VI PHẠM — ĐÃ SỬA (2026-07-28)** | step03 luôn ghi `List[Dict]` (step03:545,622); file thật là list 14 677 phần tử; step05 đọc đúng file đó mà không sniff. Nhánh chết đã bị xoá **trong CẢ HAI cây** cùng lúc step04 dời (§5.3), red-first: `test_build_no_longer_silently_converts_a_nodes_edges_dict_in_either_tree` trong `test/test_esg_kg_issuer.py` |
 
 Kết luận: nguyên tắc này thực ra đã được tuân thủ gần như toàn bộ, nhưng chưa từng
 được viết ra — nên nó đang được giữ bằng trí nhớ. Bảng trên là chỗ ghi chính thức.
