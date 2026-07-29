@@ -15,9 +15,11 @@ single unlock (PIPELINE.md §2.1).
 
 WHAT IS DELIBERATELY NOT HERE
 ``Adjudicator`` (``step07:311``) stays with its stage. It is prompt text, verdict parsing
-and the provider cascade — analysis, not kernel. Consequence worth remembering: ``step10``
-is NOT unblocked by this module, because its lazy ``from step07... import Adjudicator``
-(``step10:368``) sits inside a ``try`` and fails *silently*; it moves only after step07.
+and the provider cascade — analysis, not kernel. Consequence worth remembering (now
+historical): ``step10`` was NOT unblocked by this module, because its lazy ``from step07...
+import Adjudicator`` sat inside a ``try`` and failed *silently*; it would only have moved
+after step07. ``step10`` itself was removed from the project outright on 2026-07-28
+(DESIGN.md §4.3), so this no longer matters in practice.
 
 There is no Gemini provider to lift. ``step07:34`` records that it was removed outright —
 the project behind ``GEMINI_API_KEY`` is permanently 403, and every run wasted seconds

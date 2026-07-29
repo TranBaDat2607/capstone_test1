@@ -17,9 +17,10 @@ exists to untie.
 
 WHAT STAYS BEHIND, DELIBERATELY
 `Adjudicator` (step07:311) is NOT part of this slice. It is stage logic — prompt text,
-verdict parsing, the provider cascade — not kernel. That is also why `step10` stays
-blocked after this lands: its lazy `from step07... import Adjudicator` (step10:368) sits
-inside a `try` and fails SILENTLY, so it can only move once step07 itself moves.
+verdict parsing, the provider cascade — not kernel. That is also why `step10` stayed
+blocked after this lands: its lazy `from step07... import Adjudicator` sat inside a `try`
+and failed SILENTLY, so it could only move once step07 itself moved. (`step10` was removed
+from the project outright on 2026-07-28 — DESIGN.md §4.3 — so this is now historical.)
 
 WHY THIS HAS A STRONG OFFLINE ARM WHEN THE STAGES IT UNBLOCKS DO NOT
 Every stage still eligible to move (01/04/06/09) has a weak equivalence arm — Neo4j, or a

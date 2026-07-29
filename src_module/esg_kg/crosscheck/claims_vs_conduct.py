@@ -66,9 +66,9 @@ while changing every verdict this stage has ever produced, so
 
 `Adjudicator` stays HERE, not in core/llm.py, exactly as that module's docstring always
 said it would: it is prompt text + verdict parsing + the provider cascade — stage logic,
-not kernel. Migrating this stage is what finally unblocks step08 (needs `node_text`) and
-step10 (needs `Adjudicator`, via a lazy import inside a `try` — step10:368) — see
-PIPELINE.md §2.1.
+not kernel. Migrating this stage is what finally unblocks step08 (needs `node_text`) — see
+PIPELINE.md §2.1. (It also unblocked `step10`, via the same lazy-import pattern, until
+that stage was removed from the project outright on 2026-07-28 — DESIGN.md §4.3.)
 
 THE IN-PLACE-PATCH QUESTION (PIPELINE.md §3) DOES NOT APPLY
 This stage reads `resolved_graph.json` (the *previous* stages' output) and writes to a

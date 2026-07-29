@@ -2,9 +2,10 @@
 
 Extracted from ``src/step00_graph_quality_report.py``, where commit 03a1592 added
 it inline inside the ``__main__`` block. It lives in ``core/`` rather than in that
-one stage because it is not step00's concern: step09's claim ledger and step10's
-evaluation report are Vietnamese too, and every stage still to be migrated will
-want the same two lines.
+one stage because it is not step00's concern: step09's claim ledger is Vietnamese
+too (as step10's evaluation report was, before that stage was removed from the
+project outright on 2026-07-28 — DESIGN.md §4.3), and every stage still to be
+migrated will want the same two lines.
 
 The problem is Windows-only, and it is the *terminal echo*, not the files. Both
 artifacts are written with an explicit ``encoding="utf-8"``, so they were never at

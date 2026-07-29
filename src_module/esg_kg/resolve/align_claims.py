@@ -12,7 +12,9 @@ is honoured stays in step07's advisory layer (docs/STANDARD_INDICATOR_AXIS.md §
 
 Separated from step05c so each stage is cleanly "NO LLM" or "LLM": step05c stays free and
 re-runnable, step05d is the one place that spends money here. `alignment_method` on every edge
-lets step10 measure keyword-tier vs LLM-tier precision independently.
+let `step10` measure keyword-tier vs LLM-tier precision independently, before that stage was
+removed from the project outright (DESIGN.md §4.3). The property is still written; nothing
+consumes it today.
 
 Append-only over the resolved graph, like step05c. Budgeted by --max-llm-pairs.
 
