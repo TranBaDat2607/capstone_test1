@@ -62,6 +62,11 @@ BLOCKS = [
     ("build_validated", "esg_kg.graph.build_validated", ("03", "03b", "03c"),
      "03 -> 03b -> 03c in memory, writing all_validated_triples.json ONCE; phase-2 "
      "repairs are cached so a re-run is free and deterministic (DESIGN.md §5.7)"),
+    ("build_resolved", "esg_kg.resolve.build_resolved", ("05", "05b", "05c"),
+     "05 -> 05b -> 05c in memory, writing resolved_graph.json ONCE; Stage C entity "
+     "adjudication is cached (Stage B embeddings are not — see build_resolved.py "
+     "docstring). 05d (align_claims) stays a separate, optional, post-block LLM "
+     "stage, unchanged (DESIGN.md §5.7)"),
 ]
 
 # data_sync is a utility, not a pipeline stage:

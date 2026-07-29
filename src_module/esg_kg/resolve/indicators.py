@@ -203,20 +203,19 @@ def restamp_pillars(nodes: List[Dict[str, Any]], authority: Dict[str, str]) -> C
     return changed
 
 
-def run(args: argparse.Namespace) -> None:
-    for path, hint in ((args.input, "run step05_resolve_entities.py then step05b first"),
-                       (args.defs, "kpi_definitions_construction.json missing")):
-        if not path.exists():
-            logger.error(f"Input not found: {path} ({hint}).")
-            return
+def link_indicator_axis(graph: Dict[str, Any], defs: List[Dict[str, Any]],
+                        crosswalk: Dict[str, Any], catalog: Dict[str, Any],
+                        entity_classes, edge_labels, edge_dirs, *,
+                        no_gri: bool = False, no_align: bool = False,
+                        trust_draft_crosswalk: bool = False) -> Dict[str, Any]:
+    """Stage 05c, pure: mutates `graph` in place via GraphPatch, returns the report dict.
 
-    graph = json.loads(args.input.read_text(encoding="utf-8"))
-    defs = json.loads(args.defs.read_text(encoding="utf-8"))
-    crosswalk = json.loads(args.crosswalk.read_text(encoding="utf-8")) if args.crosswalk.exists() else {}
-    catalog = load_gri_catalog(getattr(args, "gri_catalog", GRI_CATALOG_PATH))
-    entity_classes, edge_labels, edge_dirs = load_schema_sets(
-        json.loads(args.schema.read_text(encoding="utf-8")))
-
+    Writes NOTHING — split out of `run()` so the resolve BLOCK
+    (`esg_kg/resolve/build_resolved.py`, DESIGN.md §5.7) can chain 05 -> 05b -> 05c in
+    memory with no intermediate `resolved_graph.json` write between them. Pure
+    extraction: no logic line differs from what `run()` used to do inline; `run()` below
+    now just does argparse + file I/O + calling this function.
+    """
     gp = GraphPatch(graph, entity_classes, edge_labels, edge_dirs)
     stats: Dict[str, Any] = {"created_nodes": Counter(), "created_edges": Counter(),
                              "measured_by_indicator": Counter(), "aligned_by_indicator": Counter(),
@@ -284,9 +283,9 @@ def run(args: argparse.Namespace) -> None:
                 stats["measured_by_indicator"][pen_ind] += 1
 
     # 3) equivalentTo TT96 → GRI (confirmed crosswalk rows only)
-    if not args.no_gri:
+    if not no_gri:
         for row in crosswalk.get("confirmed", []):
-            confirmed = row.get("status") == "confirmed" or args.trust_draft_crosswalk
+            confirmed = row.get("status") == "confirmed" or trust_draft_crosswalk
             if not confirmed:
                 continue
             tt = row.get("tt96")
@@ -310,7 +309,7 @@ def run(args: argparse.Namespace) -> None:
                     stats["created_edges"]["equivalentTo"] += 1
 
     # 4) alignsWithIndicator (keyword tier) for Claim/Goal/Initiative
-    if not args.no_align:
+    if not no_align:
         kw = build_keyword_index(defs, catalog)
         for i, n in enumerate(gp.nodes[:gp.n_nodes0]):
             cls = n.get("class")
@@ -360,12 +359,34 @@ def run(args: argparse.Namespace) -> None:
         "pillar_restamped": sum(pillar_changes.values()),
         "pillar_changes": _c(pillar_changes),
     }
-    logger.info(f"Nodes {gp.n_nodes0} → {len(gp.nodes)} (+{added_nodes}); "
-                f"edges {gp.n_edges0} → {len(gp.edges)} (+{added_edges}).")
+    return report
+
+
+def run(args: argparse.Namespace) -> None:
+    for path, hint in ((args.input, "run step05_resolve_entities.py then step05b first"),
+                       (args.defs, "kpi_definitions_construction.json missing")):
+        if not path.exists():
+            logger.error(f"Input not found: {path} ({hint}).")
+            return
+
+    graph = json.loads(args.input.read_text(encoding="utf-8"))
+    defs = json.loads(args.defs.read_text(encoding="utf-8"))
+    crosswalk = json.loads(args.crosswalk.read_text(encoding="utf-8")) if args.crosswalk.exists() else {}
+    catalog = load_gri_catalog(getattr(args, "gri_catalog", GRI_CATALOG_PATH))
+    entity_classes, edge_labels, edge_dirs = load_schema_sets(
+        json.loads(args.schema.read_text(encoding="utf-8")))
+
+    report = link_indicator_axis(
+        graph, defs, crosswalk, catalog, entity_classes, edge_labels, edge_dirs,
+        no_gri=args.no_gri, no_align=args.no_align,
+        trust_draft_crosswalk=args.trust_draft_crosswalk)
+
+    logger.info(f"Nodes {report['nodes_before']} → {report['nodes_after']} (+{report['nodes_added']}); "
+                f"edges {report['edges_before']} → {report['edges_after']} (+{report['edges_added']}).")
     logger.info(f"created_edges: {report['created_edges']}")
     logger.info(f"penalty self_reported_zero (no conduct edge): {report['penalty_self_reported_zero']}")
     logger.info(f"pillar corrected from the authority: {report['pillar_restamped']}"
-                + (f" {report['pillar_changes']}" if pillar_changes else ""))
+                + (f" {report['pillar_changes']}" if report['pillar_changes'] else ""))
 
     if args.dry_run:
         logger.info("--dry-run: nothing written.")
