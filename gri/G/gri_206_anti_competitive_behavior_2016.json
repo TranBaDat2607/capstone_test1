@@ -1,0 +1,18 @@
+{
+  "standard_id": "GRI 206",
+  "title_en": "Anti-competitive Behavior 2016",
+  "title_vi": "Hành vi chống cạnh tranh 2016",
+  "pillar": "G — Governance",
+  "series": "Governance (Universal + 200 Series)",
+  "effective_date": "2018-07-01",
+  "description_vi": "Theo dõi các hành động pháp lý liên quan đến hành vi chống cạnh tranh, vi phạm luật chống độc quyền.",
+  "source": "GRI Content Index Template 2021, Version 1.3 (January 2026)",
+  "disclosures_count": 1,
+  "disclosures": [
+    {
+      "code": "206-1",
+      "title_en": "Legal actions for anti-competitive behavior, anti-trust, and monopoly practices",
+      "title_vi": "Các vụ kiện tụng pháp lý về hành vi chống cạnh tranh, chống độc quyền"
+    }
+  ]
+}

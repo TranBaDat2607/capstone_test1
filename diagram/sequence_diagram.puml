@@ -1,0 +1,146 @@
+@startuml GraphRAG_Greenwashing_Sequence_Diagram
+title UML Sequence Diagram: Runtime Execution of Graph-RAG Greenwashing Detection System
+autonumber
+skinparam Style strictuml
+skinparam SequenceMessageAlignment left
+
+' Dynamic spacing & layout formatting for thesis-level clarity
+skinparam BoxPadding 30
+skinparam ParticipantPadding 25
+skinparam MaxMessageSize 220
+skinparam ResponseMessageBelowArrow true
+skinparam NotePadding 10
+skinparam Padding 5
+
+actor "User" as User
+participant "Web UI" as WebUI
+participant "Backend API" as Backend
+participant "Annual Report\nRepo" as ReportRepo
+participant "News Repo" as NewsRepo
+participant "ESG Preprocessor" as Preprocess
+participant "ViDeBERTa\nClassifier" as ViDeBERTa
+participant "Graph-RAG\nPipeline" as GraphRAG
+participant "Gemini 2.5\nFlash" as Gemini
+participant "Entity Resolver" as ER
+database "Neo4j Graph DB" as Neo4j
+participant "Cross-check\nEngine" as Crosscheck
+participant "LLM Adjudicator" as LLMAdj
+participant "Dossier Generator" as DossierGen
+database "System DB" as DB
+
+== Phase 1: Request Initialization & Data Ingestion ==
+
+User -> WebUI : 1. Select company & request ESG/Greenwashing analysis
+activate WebUI
+WebUI -> Backend : 2. Send analysis request (POST /api/analyze)
+activate Backend
+
+par Concurrent Data Fetching
+    Backend -> ReportRepo : 3a. Load annual report data
+    activate ReportRepo
+    ReportRepo --> Backend : Return report text documents
+    deactivate ReportRepo
+else
+    Backend -> NewsRepo : 3b. Load independent ESG news
+    activate NewsRepo
+    NewsRepo --> Backend : Return news articles
+    deactivate NewsRepo
+end
+
+Backend -> Preprocess : 4. Invoke text extraction & sentence splitting
+activate Preprocess
+Preprocess -> Preprocess : 5. Extract text & segment sentences
+Preprocess --> Backend : Return candidate sentences
+deactivate Preprocess
+
+Backend -> ViDeBERTa : 6. Send candidate sentences
+activate ViDeBERTa
+ViDeBERTa -> ViDeBERTa : 7. Classify sentences into E / S / G / Neutral
+ViDeBERTa --> Backend : 8. Return ESG-related sentences only
+deactivate ViDeBERTa
+
+== Phase 2: Graph Construction & Entity Resolution ==
+
+Backend -> GraphRAG : 9. Invoke Graph-RAG Pipeline
+activate GraphRAG
+
+alt #EFFFEF Primary Service Available (Gemini 2.5 Flash)
+    GraphRAG -> Gemini : 10. Extract entities, temporal relations, KPIs, claims
+    activate Gemini
+    Gemini --> GraphRAG : 11. Return structured JSON extractions
+    deactivate Gemini
+else #FFEFEB Alt Flow 2: Gemini Service Unavailable
+    GraphRAG -> LLMAdj : 10a. Automatic failover request (OpenAI GPT-4o-mini)
+    activate LLMAdj
+    LLMAdj --> GraphRAG : 11a. Return structured JSON extractions
+    deactivate LLMAdj
+end
+
+GraphRAG -> ER : 12. Invoke Entity Resolution Engine
+activate ER
+
+opt #FFF8EF Alt Flow 3: Duplicate Entities Detected
+    ER -> ER : Merge duplicated entities into canonical entity
+end
+
+ER -> ER : 13. Canonicalize names, link standards, stamp provenance
+ER --> GraphRAG : Return resolved graph structures
+deactivate ER
+
+GraphRAG -> Neo4j : 14. Insert clean entities & temporal relations
+activate Neo4j
+Neo4j --> GraphRAG : Insertion confirmation
+deactivate Neo4j
+
+GraphRAG --> Backend : Graph construction completed
+deactivate GraphRAG
+
+== Phase 3: Evidence Retrieval, Cross-checking & Dossier Generation ==
+
+Backend -> Crosscheck : 15. Request Cross-check Engine
+activate Crosscheck
+
+Crosscheck -> Neo4j : 16-17. Retrieve claims & candidate conduct evidence
+activate Neo4j
+Neo4j --> Crosscheck : Return SustainabilityClaim, KPIObservation, MediaReport, Controversy nodes
+deactivate Neo4j
+
+alt #FFF8EF Alt Flow 1: No Relevant News Evidence Found
+    Crosscheck -> LLMAdj : Send claim with empty context
+    activate LLMAdj
+    LLMAdj --> Crosscheck : Return "unverified_insufficient_evidence" + caveats
+    deactivate LLMAdj
+else #EFFFEF Evidence Found: LLM Adjudication
+    Crosscheck -> LLMAdj : 18. Send user query & retrieved evidence
+    activate LLMAdj
+    LLMAdj --> Crosscheck : 19-20. Return assessment, rationale, evidence & caveats
+    deactivate LLMAdj
+end
+
+Crosscheck -> Neo4j : 21. Write verifiedBy, contradictedBy, contradictedByMedia edges
+activate Neo4j
+Neo4j --> Crosscheck : Edges written confirmation
+deactivate Neo4j
+
+Crosscheck -> DossierGen : 22. Request Evidence Dossier generation
+activate DossierGen
+DossierGen -> DossierGen : Create complete advisory Evidence Dossier
+DossierGen --> Crosscheck : Return Evidence Dossier
+deactivate DossierGen
+
+Crosscheck --> Backend : Return Evidence Dossier
+deactivate Crosscheck
+
+Backend -> DB : 23. Store Evidence Dossier
+activate DB
+DB --> Backend : Confirmation saved
+deactivate DB
+
+Backend --> WebUI : 24. Return Evidence Dossier
+deactivate Backend
+
+WebUI -> WebUI : 25. Visualize supported/contradicted claims & missing disclosures
+WebUI --> User : 26. Display Evidence Dossier for human analyst review
+deactivate WebUI
+
+@enduml

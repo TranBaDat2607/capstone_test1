@@ -1,0 +1,225 @@
+{
+  "system_name": "GRI Standards Database (Global Reporting Initiative)",
+  "version": "2021/2023 Revision Standards",
+  "source_file": "gri-content-index-template-2021.xlsx (Version 1.3, January 2026)",
+  "total_standards": 24,
+  "total_disclosures": 104,
+  "standards": [
+    {
+      "standard_id": "GRI 2",
+      "title_en": "General Disclosures 2021",
+      "title_vi": "Công bố thông tin chung 2021",
+      "pillar": "G — Governance",
+      "series": "Governance (Universal + 200 Series)",
+      "disclosures_count": 30,
+      "relative_path": "G\\gri_2_general_disclosures_2021.json"
+    },
+    {
+      "standard_id": "GRI 3",
+      "title_en": "Material Topics 2021",
+      "title_vi": "Các chủ đề trọng yếu 2021",
+      "pillar": "G — Governance",
+      "series": "Governance (Universal + 200 Series)",
+      "disclosures_count": 3,
+      "relative_path": "G\\gri_3_material_topics_2021.json"
+    },
+    {
+      "standard_id": "GRI 201",
+      "title_en": "Economic Performance 2016",
+      "title_vi": "Hiệu quả kinh tế 2016",
+      "pillar": "G — Governance",
+      "series": "Governance (Universal + 200 Series)",
+      "disclosures_count": 4,
+      "relative_path": "G\\gri_201_economic_performance_2016.json"
+    },
+    {
+      "standard_id": "GRI 203",
+      "title_en": "Indirect Economic Impacts 2016",
+      "title_vi": "Tác động kinh tế gián tiếp 2016",
+      "pillar": "G — Governance",
+      "series": "Governance (Universal + 200 Series)",
+      "disclosures_count": 2,
+      "relative_path": "G\\gri_203_indirect_economic_impacts_2016.json"
+    },
+    {
+      "standard_id": "GRI 204",
+      "title_en": "Procurement Practices 2016",
+      "title_vi": "Thực hành mua sắm 2016",
+      "pillar": "G — Governance",
+      "series": "Governance (Universal + 200 Series)",
+      "disclosures_count": 1,
+      "relative_path": "G\\gri_204_procurement_practices_2016.json"
+    },
+    {
+      "standard_id": "GRI 205",
+      "title_en": "Anti-corruption 2016",
+      "title_vi": "Chống tham nhũng 2016",
+      "pillar": "G — Governance",
+      "series": "Governance (Universal + 200 Series)",
+      "disclosures_count": 3,
+      "relative_path": "G\\gri_205_anti_corruption_2016.json"
+    },
+    {
+      "standard_id": "GRI 206",
+      "title_en": "Anti-competitive Behavior 2016",
+      "title_vi": "Hành vi chống cạnh tranh 2016",
+      "pillar": "G — Governance",
+      "series": "Governance (Universal + 200 Series)",
+      "disclosures_count": 1,
+      "relative_path": "G\\gri_206_anti_competitive_behavior_2016.json"
+    },
+    {
+      "standard_id": "GRI 207",
+      "title_en": "Tax 2019",
+      "title_vi": "Thuế 2019",
+      "pillar": "G — Governance",
+      "series": "Governance (Universal + 200 Series)",
+      "disclosures_count": 4,
+      "relative_path": "G\\gri_207_tax_2019.json"
+    },
+    {
+      "standard_id": "GRI 301",
+      "title_en": "Materials 2016",
+      "title_vi": "Nguyên vật liệu 2016",
+      "pillar": "E — Environmental",
+      "series": "Environmental (300 Series)",
+      "disclosures_count": 3,
+      "relative_path": "E\\gri_301_materials_2016.json"
+    },
+    {
+      "standard_id": "GRI 302",
+      "title_en": "Energy 2016",
+      "title_vi": "Năng lượng 2016",
+      "pillar": "E — Environmental",
+      "series": "Environmental (300 Series)",
+      "disclosures_count": 5,
+      "relative_path": "E\\gri_302_energy_2016.json"
+    },
+    {
+      "standard_id": "GRI 303",
+      "title_en": "Water and Effluents 2018",
+      "title_vi": "Tài nguyên nước và Nước thải 2018",
+      "pillar": "E — Environmental",
+      "series": "Environmental (300 Series)",
+      "disclosures_count": 5,
+      "relative_path": "E\\gri_303_water_and_effluents_2018.json"
+    },
+    {
+      "standard_id": "GRI 304",
+      "title_en": "Biodiversity 2016",
+      "title_vi": "Đa dạng sinh học 2016",
+      "pillar": "E — Environmental",
+      "series": "Environmental (300 Series)",
+      "disclosures_count": 4,
+      "relative_path": "E\\gri_304_biodiversity_2016.json"
+    },
+    {
+      "standard_id": "GRI 305",
+      "title_en": "Emissions 2016",
+      "title_vi": "Phát thải 2016",
+      "pillar": "E — Environmental",
+      "series": "Environmental (300 Series)",
+      "disclosures_count": 7,
+      "relative_path": "E\\gri_305_emissions_2016.json"
+    },
+    {
+      "standard_id": "GRI 306",
+      "title_en": "Waste 2020",
+      "title_vi": "Chất thải 2020",
+      "pillar": "E — Environmental",
+      "series": "Environmental (300 Series)",
+      "disclosures_count": 5,
+      "relative_path": "E\\gri_306_waste_2020.json"
+    },
+    {
+      "standard_id": "GRI 307",
+      "title_en": "Environmental Compliance 2016",
+      "title_vi": "Tuân thủ môi trường 2016",
+      "pillar": "E — Environmental",
+      "series": "Environmental (300 Series)",
+      "disclosures_count": 1,
+      "relative_path": "E\\gri_307_environmental_compliance_2016.json"
+    },
+    {
+      "standard_id": "GRI 308",
+      "title_en": "Supplier Environmental Assessment 2016",
+      "title_vi": "Đánh giá môi trường nhà cung cấp 2016",
+      "pillar": "E — Environmental",
+      "series": "Environmental (300 Series)",
+      "disclosures_count": 2,
+      "relative_path": "E\\gri_308_supplier_environmental_assessment_2016.json"
+    },
+    {
+      "standard_id": "GRI 401",
+      "title_en": "Employment 2016",
+      "title_vi": "Việc làm 2016",
+      "pillar": "S — Social",
+      "series": "Social (400 Series)",
+      "disclosures_count": 3,
+      "relative_path": "S\\gri_401_employment_2016.json"
+    },
+    {
+      "standard_id": "GRI 402",
+      "title_en": "Labor/Management Relations 2016",
+      "title_vi": "Quan hệ lao động / Ban quản lý 2016",
+      "pillar": "S — Social",
+      "series": "Social (400 Series)",
+      "disclosures_count": 1,
+      "relative_path": "S\\gri_402_labor_management_relations_2016.json"
+    },
+    {
+      "standard_id": "GRI 403",
+      "title_en": "Occupational Health and Safety 2018",
+      "title_vi": "An toàn và Sức khỏe nghề nghiệp 2018",
+      "pillar": "S — Social",
+      "series": "Social (400 Series)",
+      "disclosures_count": 10,
+      "relative_path": "S\\gri_403_occupational_health_and_safety_2018.json"
+    },
+    {
+      "standard_id": "GRI 404",
+      "title_en": "Training and Education 2016",
+      "title_vi": "Đào tạo và Giáo dục 2016",
+      "pillar": "S — Social",
+      "series": "Social (400 Series)",
+      "disclosures_count": 3,
+      "relative_path": "S\\gri_404_training_and_education_2016.json"
+    },
+    {
+      "standard_id": "GRI 405",
+      "title_en": "Diversity and Equal Opportunity 2016",
+      "title_vi": "Đa dạng và Bình đẳng cơ hội 2016",
+      "pillar": "S — Social",
+      "series": "Social (400 Series)",
+      "disclosures_count": 2,
+      "relative_path": "S\\gri_405_diversity_and_equal_opportunity_2016.json"
+    },
+    {
+      "standard_id": "GRI 406",
+      "title_en": "Non-discrimination 2016",
+      "title_vi": "Chống phân biệt đối xử 2016",
+      "pillar": "S — Social",
+      "series": "Social (400 Series)",
+      "disclosures_count": 1,
+      "relative_path": "S\\gri_406_non_discrimination_2016.json"
+    },
+    {
+      "standard_id": "GRI 413",
+      "title_en": "Local Communities 2016",
+      "title_vi": "Cộng đồng địa phương 2016",
+      "pillar": "S — Social",
+      "series": "Social (400 Series)",
+      "disclosures_count": 2,
+      "relative_path": "S\\gri_413_local_communities_2016.json"
+    },
+    {
+      "standard_id": "GRI 414",
+      "title_en": "Supplier Social Assessment 2016",
+      "title_vi": "Đánh giá xã hội nhà cung cấp 2016",
+      "pillar": "S — Social",
+      "series": "Social (400 Series)",
+      "disclosures_count": 2,
+      "relative_path": "S\\gri_414_supplier_social_assessment_2016.json"
+    }
+  ]
+}

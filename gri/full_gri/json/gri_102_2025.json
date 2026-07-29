@@ -1,0 +1,447 @@
+{
+  "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
+  "standard_id": "GRI 102",
+  "title_en": "Climate Change 2025",
+  "title_vi": "Climate Change 2025",
+  "pillar": "E — Environmental",
+  "series": "Environmental (300 Series / Revisions)",
+  "category": "Topic-Environmental",
+  "temporal_validity": {
+    "version_id": "GRI_102_2025",
+    "version_year": 2025,
+    "effective_date": "2026-01-01",
+    "valid_until_year": null,
+    "status": "Active",
+    "replaced_by_standard_id": null
+  },
+  "scope": {
+    "target_audience": "Tổ chức thuộc nhóm Environmental (300 Series / Revisions)",
+    "sector_code": null,
+    "materiality_required": true,
+    "boundary_scope": "Toàn bộ tổ chức & Chuỗi giá trị"
+  },
+  "provenance": {
+    "relative_pdf_path": "Full set of GRI Standards - English\\GRI 102_ Climate Change 2025.pdf",
+    "file_size_bytes": 1470243,
+    "page_count": 60,
+    "sha256": "b082ea90a6f240a7d9fad443bdea3358381ba6fe85d4515f5c79c3a8420703ec",
+    "indexed_at": "2026-07-25T14:35:57.200053"
+  },
+  "disclosures_count": 18,
+  "disclosures": [
+    {
+      "disclosure_id": "102-1",
+      "title_en": "Transition plan for climate change mitigation",
+      "title_vi": "Transition plan for climate change mitigation",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "102-1:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 102-1 (Transition plan for climate change mitigation)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "102-2",
+      "title_en": "Climate change adaptation plan",
+      "title_vi": "Climate change adaptation plan",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "102-2:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 102-2 (Climate change adaptation plan)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "102-3",
+      "title_en": "Just transition",
+      "title_vi": "Just transition",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "102-3:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 102-3 (Just transition)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "102-4",
+      "title_en": "GHG emissions reduction targets and progress",
+      "title_vi": "GHG emissions reduction targets and progress",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "102-4:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 102-4 (GHG emissions reduction targets and progress)",
+          "description_vi": null,
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "102-5",
+      "title_en": "Scope 1 GHG emissions",
+      "title_vi": "Scope 1 GHG emissions",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "102-5:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 102-5 (Scope 1 GHG emissions)",
+          "description_vi": null,
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "102-6",
+      "title_en": "Scope 2 GHG emissions",
+      "title_vi": "Scope 2 GHG emissions",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "102-6:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 102-6 (Scope 2 GHG emissions)",
+          "description_vi": null,
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "102-7",
+      "title_en": "Scope 3 GHG emissions",
+      "title_vi": "Scope 3 GHG emissions",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "102-7:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 102-7 (Scope 3 GHG emissions)",
+          "description_vi": null,
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "102-8",
+      "title_en": "GHG emissions intensity",
+      "title_vi": "GHG emissions intensity",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "102-8:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 102-8 (GHG emissions intensity)",
+          "description_vi": null,
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "102-9",
+      "title_en": "GHG removals in the value chain",
+      "title_vi": "GHG removals in the value chain",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "102-9:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 102-9 (GHG removals in the value chain)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "102-10",
+      "title_en": "Carbon credits",
+      "title_vi": "Carbon credits",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "102-10:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 102-10 (Carbon credits)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "3-3",
+      "title_en": "in GRI 3: Material Topics 2021.",
+      "title_vi": "in GRI 3: Material Topics 2021.",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "3-3:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021.)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "2-23",
+      "title_en": "in GRI 2: General Disclosures 2021 or 3-3-c in GRI 3: Material Topics 2021, it can provide a",
+      "title_vi": "in GRI 2: General Disclosures 2021 or 3-3-c in GRI 3: Material Topics 2021, it can provide a",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "2-23:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 2-23 (in GRI 2: General Disclosures 2021 or 3-3-c in GRI 3: Material Topics 2021, it can provide a)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "2-19",
+      "title_en": "in GRI 2: General Disclosures 2021 requires information on the",
+      "title_vi": "in GRI 2: General Disclosures 2021 requires information on the",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "2-19:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 2-19 (in GRI 2: General Disclosures 2021 requires information on the)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "2-29",
+      "title_en": "in GRI 2: General Disclosures 2021 covers the organization’s approach to",
+      "title_vi": "in GRI 2: General Disclosures 2021 covers the organization’s approach to",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "2-29:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 2-29 (in GRI 2: General Disclosures 2021 covers the organization’s approach to)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "101-2",
+      "title_en": "in GRI 101: Biodiversity 2024 requires describing how the organization",
+      "title_vi": "in GRI 101: Biodiversity 2024 requires describing how the organization",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "101-2:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 101-2 (in GRI 101: Biodiversity 2024 requires describing how the organization)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "2-4",
+      "title_en": "in GRI 2:",
+      "title_vi": "in GRI 2:",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "2-4:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 2-4 (in GRI 2:)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "2-2",
+      "title_en": "in GRI 2: General Disclosures 2021. See also section 5.1 in GRI 1: Foundation",
+      "title_vi": "in GRI 2: General Disclosures 2021. See also section 5.1 in GRI 1: Foundation",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "2-2:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 2-2 (in GRI 2: General Disclosures 2021. See also section 5.1 in GRI 1: Foundation)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "2-25",
+      "title_en": "in GRI 2: General Disclosures 2021 for more",
+      "title_vi": "in GRI 2: General Disclosures 2021 for more",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "2-25:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 2-25 (in GRI 2: General Disclosures 2021 for more)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    }
+  ]
+}

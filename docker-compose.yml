@@ -1,4 +1,4 @@
-# Neo4j for the Graph-RAG greenwashing KG (step 5 — src/step06_load_graph_to_neo4j.py).
+# Neo4j for the Graph-RAG greenwashing KG (step 5 — src_module/esg_kg/load/neo4j_load.py).
 #
 # Enterprise image so the team shares one custom user (`greenwashing`) and a named
 # database (`greenwashingkg`) — Community only has the single `neo4j` user + default db.
@@ -11,7 +11,7 @@
 #   docker exec greenwashing-kg cypher-shell -u neo4j -p nammovuivui -d system -f /tmp/init.cypher
 #
 # Then load the graph:
-#   python src/step06_load_graph_to_neo4j.py --clear
+#   python src_module/run.py neo4j_load --clear
 #
 # Browser UI: http://localhost:8474  (bolt: bolt://localhost:8687)
 # NOTE: `nammovuivui` is a LOCAL DEV password — change it (and don't commit it) for

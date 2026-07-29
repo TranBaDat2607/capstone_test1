@@ -1,0 +1,285 @@
+{
+  "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
+  "standard_id": "GRI 305",
+  "title_en": "Emissions 2016",
+  "title_vi": "Emissions 2016",
+  "pillar": "E — Environmental",
+  "series": "Environmental (300 Series / Revisions)",
+  "category": "Topic-Environmental",
+  "temporal_validity": {
+    "version_id": "GRI_305_2016",
+    "version_year": 2016,
+    "effective_date": "2017-01-01",
+    "valid_until_year": null,
+    "status": "Active",
+    "replaced_by_standard_id": null
+  },
+  "scope": {
+    "target_audience": "Tổ chức thuộc nhóm Environmental (300 Series / Revisions)",
+    "sector_code": null,
+    "materiality_required": true,
+    "boundary_scope": "Toàn bộ tổ chức & Chuỗi giá trị"
+  },
+  "provenance": {
+    "relative_pdf_path": "Full set of GRI Standards - English\\GRI 305_ Emissions 2016.pdf",
+    "file_size_bytes": 1006697,
+    "page_count": 26,
+    "sha256": "fd6c10b99940e4ab96ba810658cebf182e7c0389af71f7444fa9ecf2038c3a1c",
+    "indexed_at": "2026-07-25T14:35:58.718941"
+  },
+  "disclosures_count": 9,
+  "disclosures": [
+    {
+      "disclosure_id": "305-1",
+      "title_en": "Direct (Scope 1) GHG emissions",
+      "title_vi": "Direct (Scope 1) GHG emissions",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "305-1:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 305-1 (Direct (Scope 1) GHG emissions)",
+          "description_vi": null,
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e"
+          ],
+          "breakdown_dimensions": [
+            "by Scope",
+            "by facility"
+          ]
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "305-2",
+      "title_en": "Energy indirect (Scope 2) GHG emissions",
+      "title_vi": "Energy indirect (Scope 2) GHG emissions",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "305-2:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 305-2 (Energy indirect (Scope 2) GHG emissions)",
+          "description_vi": null,
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e"
+          ],
+          "breakdown_dimensions": [
+            "by Scope",
+            "by facility"
+          ]
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "305-3",
+      "title_en": "Other indirect (Scope 3) GHG emissions",
+      "title_vi": "Other indirect (Scope 3) GHG emissions",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "305-3:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 305-3 (Other indirect (Scope 3) GHG emissions)",
+          "description_vi": null,
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e"
+          ],
+          "breakdown_dimensions": [
+            "by Scope",
+            "by facility"
+          ]
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "305-4",
+      "title_en": "GHG emissions intensity",
+      "title_vi": "GHG emissions intensity",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "305-4:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 305-4 (GHG emissions intensity)",
+          "description_vi": null,
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e"
+          ],
+          "breakdown_dimensions": [
+            "by Scope",
+            "by facility"
+          ]
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "305-5",
+      "title_en": "Reduction of GHG emissions",
+      "title_vi": "Reduction of GHG emissions",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "305-5:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 305-5 (Reduction of GHG emissions)",
+          "description_vi": null,
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e"
+          ],
+          "breakdown_dimensions": [
+            "by Scope",
+            "by facility"
+          ]
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "305-6",
+      "title_en": "Emissions of ozone-depleting substances (ODS)",
+      "title_vi": "Emissions of ozone-depleting substances (ODS)",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "305-6:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 305-6 (Emissions of ozone-depleting substances (ODS))",
+          "description_vi": null,
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e"
+          ],
+          "breakdown_dimensions": [
+            "by Scope",
+            "by facility"
+          ]
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "305-7",
+      "title_en": "Nitrogen oxides (NOx), sulfur oxides (SOx), and other significant",
+      "title_vi": "Nitrogen oxides (NOx), sulfur oxides (SOx), and other significant",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "305-7:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 305-7 (Nitrogen oxides (NOx), sulfur oxides (SOx), and other significant)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [
+            "metric tons CO2e"
+          ],
+          "breakdown_dimensions": [
+            "by Scope",
+            "by facility"
+          ]
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "3-3",
+      "title_en": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
+      "title_vi": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "3-3:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [
+            "metric tons CO2e"
+          ],
+          "breakdown_dimensions": [
+            "by Scope",
+            "by facility"
+          ]
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "302-1",
+      "title_en": "of GRI 302: Energy 2016.",
+      "title_vi": "of GRI 302: Energy 2016.",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "302-1:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 302-1 (of GRI 302: Energy 2016.)",
+          "description_vi": null,
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e"
+          ],
+          "breakdown_dimensions": [
+            "by Scope",
+            "by facility"
+          ]
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    }
+  ]
+}

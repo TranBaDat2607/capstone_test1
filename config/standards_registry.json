@@ -7,7 +7,17 @@
       "Thông tư 96/2020/TT-BTC"
     ],
     "exclusions": [],
-    "needs_review": []
+    "match_patterns": [
+      "96\\s*/\\s*2020"
+    ],
+    "exclude_hints": [
+      "200/2014",
+      "202/2014",
+      "155/2015",
+      "244/2009",
+      "ke toan",
+      "kiem toan"
+    ]
   },
   "GRI": {
     "canonical_name": "GRI Standards",
@@ -20,7 +30,10 @@
       "Global Reporting Initiative (GRI)"
     ],
     "exclusions": [],
-    "needs_review": []
+    "match_patterns": [
+      "\\bgri\\b|global reporting"
+    ],
+    "exclude_hints": []
   },
   "SSCIFC": {
     "canonical_name": "Sổ tay hướng dẫn công bố thông tin ESG (SSC-IFC)",
@@ -29,7 +42,12 @@
       "Hướng dẫn công bố thông tin về Môi trường & Xã hội"
     ],
     "exclusions": [],
-    "needs_review": []
+    "match_patterns": [
+      "cong bo thong tin.*moi truong|ssc|\\bifc\\b"
+    ],
+    "exclude_hints": [
+      "kiem toan"
+    ]
   },
   "QD2171": {
     "canonical_name": "Quyết định 2171/QĐ-BXD",
@@ -38,7 +56,12 @@
       "Quyết định 2171/QĐ-BXD"
     ],
     "exclusions": [],
-    "needs_review": []
+    "match_patterns": [
+      "2171"
+    ],
+    "exclude_hints": [
+      "15/2006"
+    ]
   },
   "QCVN09": {
     "canonical_name": "QCVN 09:2017/BXD",
@@ -47,6 +70,9 @@
       "QCVN 09:2017/BXD"
     ],
     "exclusions": [],
-    "needs_review": []
+    "match_patterns": [
+      "qcvn\\s*09|09\\s*:\\s*2017"
+    ],
+    "exclude_hints": []
   }
 }

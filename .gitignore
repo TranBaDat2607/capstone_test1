@@ -51,3 +51,11 @@ articles.json
 # pinned to the Neo4j image version. Teammates rebuild it with step06 from
 # graph_output/resolved/resolved_graph.json instead.
 neo4j_data/
+
+# ---- Local HF dataset clone (manual, not via data_sync.py) ----
+# capstone/ is a hand-cloned checkout of the HF dataset repo
+# (nammovuivui-capstone/capstone) with its own .git — same phantom-
+# submodule risk as EmeraldMind/. data_sync.py pull/push writes
+# data/, graph_output/, kpi_output/ directly into REPO_ROOT instead;
+# this folder is redundant with that flow.
+capstone/

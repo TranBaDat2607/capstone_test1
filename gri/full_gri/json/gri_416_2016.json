@@ -1,0 +1,125 @@
+{
+  "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
+  "standard_id": "GRI 416",
+  "title_en": "Customer Health and Safety 2016",
+  "title_vi": "Customer Health and Safety 2016",
+  "pillar": "S — Social",
+  "series": "Social (400 Series)",
+  "category": "Topic-Social",
+  "temporal_validity": {
+    "version_id": "GRI_416_2016",
+    "version_year": 2016,
+    "effective_date": "2017-01-01",
+    "valid_until_year": null,
+    "status": "Active",
+    "replaced_by_standard_id": null
+  },
+  "scope": {
+    "target_audience": "Tổ chức thuộc nhóm Social (400 Series)",
+    "sector_code": null,
+    "materiality_required": true,
+    "boundary_scope": "Toàn bộ tổ chức & Chuỗi giá trị"
+  },
+  "provenance": {
+    "relative_pdf_path": "Full set of GRI Standards - English\\GRI 416_ Customer Health and Safety 2016.pdf",
+    "file_size_bytes": 825762,
+    "page_count": 12,
+    "sha256": "8992e3bdda9a006021af35aabccabd50cb0602b8b5584fa4c2ec0609c90a88c9",
+    "indexed_at": "2026-07-25T14:35:59.375377"
+  },
+  "disclosures_count": 4,
+  "disclosures": [
+    {
+      "disclosure_id": "416-1",
+      "title_en": "Assessment of the health and safety impacts of product and",
+      "title_vi": "Assessment of the health and safety impacts of product and",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "416-1:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 416-1 (Assessment of the health and safety impacts of product and)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "416-2",
+      "title_en": "Incidents of non-compliance concerning the health and safety",
+      "title_vi": "Incidents of non-compliance concerning the health and safety",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "416-2:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 416-2 (Incidents of non-compliance concerning the health and safety)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "3-3",
+      "title_en": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
+      "title_vi": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "3-3:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "417-2",
+      "title_en": "of GRI 417: Marketing and Labelling 2016;",
+      "title_vi": "of GRI 417: Marketing and Labelling 2016;",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "417-2:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 417-2 (of GRI 417: Marketing and Labelling 2016;)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    }
+  ]
+}

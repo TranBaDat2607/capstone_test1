@@ -81,11 +81,11 @@ def _year_of(raw: Any) -> str:
 
 def _pillar_key(pillar: Any) -> str:
     p = str(pillar or "").lower()
-    if "xã hội" in p or "xa hoi" in p:
+    if any(k in p for k in ("xã hội", "xa hoi", "social", "s — social")):
         return "social"
-    if "quản trị" in p or "quan tri" in p:
+    if any(k in p for k in ("quản trị", "quan tri", "governance", "universal", "g — governance")):
         return "governance"
-    return "environment"  # default incl. "Môi trường"
+    return "environment"
 
 
 # --------------------------------------------------------------------------- #

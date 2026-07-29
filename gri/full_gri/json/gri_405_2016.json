@@ -1,0 +1,125 @@
+{
+  "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
+  "standard_id": "GRI 405",
+  "title_en": "Diversity and Equal Opportunity 2016",
+  "title_vi": "Diversity and Equal Opportunity 2016",
+  "pillar": "S — Social",
+  "series": "Social (400 Series)",
+  "category": "Topic-Social",
+  "temporal_validity": {
+    "version_id": "GRI_405_2016",
+    "version_year": 2016,
+    "effective_date": "2017-01-01",
+    "valid_until_year": null,
+    "status": "Active",
+    "replaced_by_standard_id": null
+  },
+  "scope": {
+    "target_audience": "Tổ chức thuộc nhóm Social (400 Series)",
+    "sector_code": null,
+    "materiality_required": true,
+    "boundary_scope": "Toàn bộ tổ chức & Chuỗi giá trị"
+  },
+  "provenance": {
+    "relative_pdf_path": "Full set of GRI Standards - English\\GRI 405_ Diversity and Equal Opportunity 2016.pdf",
+    "file_size_bytes": 856772,
+    "page_count": 15,
+    "sha256": "c4ed2948ce47a145d5afab5107754c6d2ea2d01757725a5997fdd477ea04b278",
+    "indexed_at": "2026-07-25T14:35:59.108074"
+  },
+  "disclosures_count": 4,
+  "disclosures": [
+    {
+      "disclosure_id": "405-1",
+      "title_en": "Diversity of governance bodies and employees",
+      "title_vi": "Diversity of governance bodies and employees",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "405-1:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 405-1 (Diversity of governance bodies and employees)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "405-2",
+      "title_en": "Ratio of basic salary and remuneration of women to men",
+      "title_vi": "Ratio of basic salary and remuneration of women to men",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "405-2:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 405-2 (Ratio of basic salary and remuneration of women to men)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "3-3",
+      "title_en": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
+      "title_vi": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "3-3:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "2-7",
+      "title_en": "in GRI 2: General Disclosures 2021 to identify the",
+      "title_vi": "in GRI 2: General Disclosures 2021 to identify the",
+      "disclosure_type": "Topic-Specific",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "2-7:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 2-7 (in GRI 2: General Disclosures 2021 to identify the)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    }
+  ]
+}

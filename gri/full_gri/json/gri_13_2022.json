@@ -1,0 +1,1459 @@
+{
+  "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
+  "standard_id": "GRI 13",
+  "title_en": "Agriculture Aquaculture and Fishing Sectors 2022 V1.1",
+  "title_vi": "Agriculture Aquaculture and Fishing Sectors 2022 V1.1",
+  "pillar": "Sector",
+  "series": "Sector Standards (GRI 13)",
+  "category": "Sector",
+  "temporal_validity": {
+    "version_id": "GRI_13_2022",
+    "version_year": 2022,
+    "effective_date": "2023-01-01",
+    "valid_until_year": null,
+    "status": "Active",
+    "replaced_by_standard_id": null
+  },
+  "scope": {
+    "target_audience": "Tổ chức thuộc nhóm Sector Standards (GRI 13)",
+    "sector_code": "GRI 13",
+    "materiality_required": true,
+    "boundary_scope": "Toàn bộ tổ chức & Chuỗi giá trị"
+  },
+  "provenance": {
+    "relative_pdf_path": "Full set of GRI Standards - English\\GRI 13_ Agriculture Aquaculture and Fishing Sectors 2022 V1.1.pdf",
+    "file_size_bytes": 2636742,
+    "page_count": 96,
+    "sha256": "9f26759fa5a902466036a9bc3147084b076dfb6c4cd8e944ead9d8d1ba82e092",
+    "indexed_at": "2026-07-25T14:35:57.919866"
+  },
+  "disclosures_count": 62,
+  "disclosures": [
+    {
+      "disclosure_id": "3-3",
+      "title_en": "in GRI 3:",
+      "title_vi": "in GRI 3:",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "3-3:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 3-3 (in GRI 3:)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "102-1",
+      "title_en": "Transition plan for climate change mitigation",
+      "title_vi": "Transition plan for climate change mitigation",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "102-1:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 102-1 (Transition plan for climate change mitigation)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "102-3",
+      "title_en": "Just transition",
+      "title_vi": "Just transition",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "102-3:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 102-3 (Just transition)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "102-4",
+      "title_en": "GHG emissions reduction targets and progress",
+      "title_vi": "GHG emissions reduction targets and progress",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "102-4:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 102-4 (GHG emissions reduction targets and progress)",
+          "description_vi": null,
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "102-5",
+      "title_en": "Scope 1 GHG emissions",
+      "title_vi": "Scope 1 GHG emissions",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "102-5:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 102-5 (Scope 1 GHG emissions)",
+          "description_vi": null,
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "102-6",
+      "title_en": "Scope 2 GHG emissions",
+      "title_vi": "Scope 2 GHG emissions",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "102-6:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 102-6 (Scope 2 GHG emissions)",
+          "description_vi": null,
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "102-7",
+      "title_en": "Scope 3 GHG emissions",
+      "title_vi": "Scope 3 GHG emissions",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "102-7:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 102-7 (Scope 3 GHG emissions)",
+          "description_vi": null,
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "102-8",
+      "title_en": "GHG emissions intensity",
+      "title_vi": "GHG emissions intensity",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "102-8:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 102-8 (GHG emissions intensity)",
+          "description_vi": null,
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "102-9",
+      "title_en": "GHG removals in the value chain",
+      "title_vi": "GHG removals in the value chain",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "102-9:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 102-9 (GHG removals in the value chain)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "102-10",
+      "title_en": "Carbon credits",
+      "title_vi": "Carbon credits",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "102-10:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 102-10 (Carbon credits)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "305-6",
+      "title_en": "Emissions of ozone-depleting substances (ODS)",
+      "title_vi": "Emissions of ozone-depleting substances (ODS)",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "305-6:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 305-6 (Emissions of ozone-depleting substances (ODS))",
+          "description_vi": null,
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "305-7",
+      "title_en": "Nitrogen oxides (NOX), sulfur oxides (SOX), and other significant",
+      "title_vi": "Nitrogen oxides (NOX), sulfur oxides (SOX), and other significant",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "305-7:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 305-7 (Nitrogen oxides (NOX), sulfur oxides (SOX), and other significant)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "102-2",
+      "title_en": "Climate change adaptation plan",
+      "title_vi": "Climate change adaptation plan",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "102-2:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 102-2 (Climate change adaptation plan)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "101-1",
+      "title_en": "Policies to halt and reverse biodiversity loss",
+      "title_vi": "Policies to halt and reverse biodiversity loss",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "101-1:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 101-1 (Policies to halt and reverse biodiversity loss)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "101-2",
+      "title_en": "Management of biodiversity impacts",
+      "title_vi": "Management of biodiversity impacts",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "101-2:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 101-2 (Management of biodiversity impacts)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "101-3",
+      "title_en": "Access and benefit-sharing",
+      "title_vi": "Access and benefit-sharing",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "101-3:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 101-3 (Access and benefit-sharing)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "101-4",
+      "title_en": "Identification of biodiversity impacts",
+      "title_vi": "Identification of biodiversity impacts",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "101-4:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 101-4 (Identification of biodiversity impacts)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "101-5",
+      "title_en": "Locations with biodiversity impacts",
+      "title_vi": "Locations with biodiversity impacts",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "101-5:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 101-5 (Locations with biodiversity impacts)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "101-6",
+      "title_en": "Direct drivers of biodiversity loss",
+      "title_vi": "Direct drivers of biodiversity loss",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "101-6:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 101-6 (Direct drivers of biodiversity loss)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "101-7",
+      "title_en": "Changes to the state of biodiversity",
+      "title_vi": "Changes to the state of biodiversity",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "101-7:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 101-7 (Changes to the state of biodiversity)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "101-8",
+      "title_en": "Ecosystem services",
+      "title_vi": "Ecosystem services",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "101-8:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 101-8 (Ecosystem services)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "303-1",
+      "title_en": "Interactions with water as a shared resource",
+      "title_vi": "Interactions with water as a shared resource",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "303-1:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 303-1 (Interactions with water as a shared resource)",
+          "description_vi": null,
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "303-2",
+      "title_en": "Management of water discharge-related impacts",
+      "title_vi": "Management of water discharge-related impacts",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "303-2:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 303-2 (Management of water discharge-related impacts)",
+          "description_vi": null,
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "303-3",
+      "title_en": "Water withdrawal",
+      "title_vi": "Water withdrawal",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "303-3:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 303-3 (Water withdrawal)",
+          "description_vi": null,
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "303-4",
+      "title_en": "Water discharge",
+      "title_vi": "Water discharge",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "303-4:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 303-4 (Water discharge)",
+          "description_vi": null,
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "303-5",
+      "title_en": "Water consumption",
+      "title_vi": "Water consumption",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "303-5:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 303-5 (Water consumption)",
+          "description_vi": null,
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "306-1",
+      "title_en": "Waste generation and significant waste-related impacts",
+      "title_vi": "Waste generation and significant waste-related impacts",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "306-1:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 306-1 (Waste generation and significant waste-related impacts)",
+          "description_vi": null,
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "306-2",
+      "title_en": "Management of significant waste-related impacts",
+      "title_vi": "Management of significant waste-related impacts",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "306-2:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 306-2 (Management of significant waste-related impacts)",
+          "description_vi": null,
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "306-3",
+      "title_en": "Waste generated",
+      "title_vi": "Waste generated",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "306-3:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 306-3 (Waste generated)",
+          "description_vi": null,
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "306-4",
+      "title_en": "Waste diverted from disposal",
+      "title_vi": "Waste diverted from disposal",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "306-4:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 306-4 (Waste diverted from disposal)",
+          "description_vi": null,
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "306-5",
+      "title_en": "Waste directed to disposal",
+      "title_vi": "Waste directed to disposal",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "306-5:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 306-5 (Waste directed to disposal)",
+          "description_vi": null,
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "416-1",
+      "title_en": "Assessment of the health and safety impacts of product and",
+      "title_vi": "Assessment of the health and safety impacts of product and",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "416-1:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 416-1 (Assessment of the health and safety impacts of product and)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "416-2",
+      "title_en": "Incidents of non-compliance concerning the health and safety",
+      "title_vi": "Incidents of non-compliance concerning the health and safety",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "416-2:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 416-2 (Incidents of non-compliance concerning the health and safety)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "2-25",
+      "title_en": "Processes to remediate negative",
+      "title_vi": "Processes to remediate negative",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "2-25:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 2-25 (Processes to remediate negative)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "413-1",
+      "title_en": "Operations with local community engagement, impact",
+      "title_vi": "Operations with local community engagement, impact",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "413-1:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 413-1 (Operations with local community engagement, impact)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "413-2",
+      "title_en": "Operations with significant actual and potential negative impacts",
+      "title_vi": "Operations with significant actual and potential negative impacts",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "413-2:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 413-2 (Operations with significant actual and potential negative impacts)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "411-1",
+      "title_en": "Incidents of violations involving rights of Indigenous Peoples",
+      "title_vi": "Incidents of violations involving rights of Indigenous Peoples",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "411-1:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 411-1 (Incidents of violations involving rights of Indigenous Peoples)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "405-1",
+      "title_en": "Diversity of governance bodies and employees",
+      "title_vi": "Diversity of governance bodies and employees",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "405-1:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 405-1 (Diversity of governance bodies and employees)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "405-2",
+      "title_en": "Ratio of basic salary and remuneration of women to men",
+      "title_vi": "Ratio of basic salary and remuneration of women to men",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "405-2:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 405-2 (Ratio of basic salary and remuneration of women to men)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "406-1",
+      "title_en": "Incidents of discrimination and corrective actions taken",
+      "title_vi": "Incidents of discrimination and corrective actions taken",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "406-1:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 406-1 (Incidents of discrimination and corrective actions taken)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "409-1",
+      "title_en": "Operations and suppliers at significant risk for incidents of",
+      "title_vi": "Operations and suppliers at significant risk for incidents of",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "409-1:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 409-1 (Operations and suppliers at significant risk for incidents of)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "408-1",
+      "title_en": "Operations and suppliers at significant risk for incidents of child",
+      "title_vi": "Operations and suppliers at significant risk for incidents of child",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "408-1:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 408-1 (Operations and suppliers at significant risk for incidents of child)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "407-1",
+      "title_en": "Operations and suppliers in which the right to freedom of",
+      "title_vi": "Operations and suppliers in which the right to freedom of",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "407-1:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 407-1 (Operations and suppliers in which the right to freedom of)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "403-1",
+      "title_en": "Occupational health and safety management system",
+      "title_vi": "Occupational health and safety management system",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "403-1:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 403-1 (Occupational health and safety management system)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "403-2",
+      "title_en": "Hazard identification, risk assessment, and incident",
+      "title_vi": "Hazard identification, risk assessment, and incident",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "403-2:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 403-2 (Hazard identification, risk assessment, and incident)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "403-3",
+      "title_en": "Occupational health services",
+      "title_vi": "Occupational health services",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "403-3:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 403-3 (Occupational health services)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "403-4",
+      "title_en": "Worker participation, consultation, and communication on",
+      "title_vi": "Worker participation, consultation, and communication on",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "403-4:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 403-4 (Worker participation, consultation, and communication on)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "403-5",
+      "title_en": "Worker training on occupational health and safety",
+      "title_vi": "Worker training on occupational health and safety",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "403-5:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 403-5 (Worker training on occupational health and safety)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "403-6",
+      "title_en": "Promotion of worker health",
+      "title_vi": "Promotion of worker health",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "403-6:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 403-6 (Promotion of worker health)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "403-7",
+      "title_en": "Prevention and mitigation of occupational health and safety",
+      "title_vi": "Prevention and mitigation of occupational health and safety",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "403-7:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 403-7 (Prevention and mitigation of occupational health and safety)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "403-8",
+      "title_en": "Workers covered by an occupational health and safety",
+      "title_vi": "Workers covered by an occupational health and safety",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "403-8:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 403-8 (Workers covered by an occupational health and safety)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "403-9",
+      "title_en": "Work-related injuries",
+      "title_vi": "Work-related injuries",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "403-9:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 403-9 (Work-related injuries)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "403-10",
+      "title_en": "Work-related ill health",
+      "title_vi": "Work-related ill health",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "403-10:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 403-10 (Work-related ill health)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "201-1",
+      "title_en": "Direct economic value generated and distributed",
+      "title_vi": "Direct economic value generated and distributed",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "201-1:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 201-1 (Direct economic value generated and distributed)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "203-1",
+      "title_en": "Infrastructure investments and services supported",
+      "title_vi": "Infrastructure investments and services supported",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "203-1:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 203-1 (Infrastructure investments and services supported)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "203-2",
+      "title_en": "Significant indirect economic impacts",
+      "title_vi": "Significant indirect economic impacts",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "203-2:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 203-2 (Significant indirect economic impacts)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "2-6",
+      "title_en": "Activities, value chain and other business relationships in GRI 2:",
+      "title_vi": "Activities, value chain and other business relationships in GRI 2:",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "2-6:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 2-6 (Activities, value chain and other business relationships in GRI 2:)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "415-1",
+      "title_en": "Political contributions",
+      "title_vi": "Political contributions",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "415-1:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 415-1 (Political contributions)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "206-1",
+      "title_en": "Legal actions for anti-competitive behavior, anti-trust, and",
+      "title_vi": "Legal actions for anti-competitive behavior, anti-trust, and",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "206-1:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 206-1 (Legal actions for anti-competitive behavior, anti-trust, and)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "205-1",
+      "title_en": "Operations assessed for risks related to corruption",
+      "title_vi": "Operations assessed for risks related to corruption",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "205-1:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 205-1 (Operations assessed for risks related to corruption)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "205-2",
+      "title_en": "Communication and training about anti-corruption policies and",
+      "title_vi": "Communication and training about anti-corruption policies and",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "205-2:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 205-2 (Communication and training about anti-corruption policies and)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "205-3",
+      "title_en": "Confirmed incidents of corruption and actions taken",
+      "title_vi": "Confirmed incidents of corruption and actions taken",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "205-3:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 205-3 (Confirmed incidents of corruption and actions taken)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    }
+  ]
+}

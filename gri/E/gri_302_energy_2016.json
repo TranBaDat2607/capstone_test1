@@ -1,0 +1,38 @@
+{
+  "standard_id": "GRI 302",
+  "title_en": "Energy 2016",
+  "title_vi": "Năng lượng 2016",
+  "pillar": "E — Environmental",
+  "series": "Environmental (300 Series)",
+  "effective_date": "2018-07-01",
+  "description_vi": "Đo lường mức tiêu thụ năng lượng trực tiếp, gián tiếp, cường độ năng lượng và kết quả các sáng kiến tiết kiệm năng lượng.",
+  "source": "GRI Content Index Template 2021, Version 1.3 (January 2026)",
+  "disclosures_count": 5,
+  "disclosures": [
+    {
+      "code": "302-1",
+      "title_en": "Energy consumption within the organization",
+      "title_vi": "Năng lượng tiêu thụ nội bộ tổ chức"
+    },
+    {
+      "code": "302-2",
+      "title_en": "Energy consumption outside of the organization",
+      "title_vi": "Năng lượng tiêu thụ bên ngoài tổ chức"
+    },
+    {
+      "code": "302-3",
+      "title_en": "Energy intensity",
+      "title_vi": "Cường độ năng lượng"
+    },
+    {
+      "code": "302-4",
+      "title_en": "Reduction of energy consumption",
+      "title_vi": "Mức giảm tiêu thụ năng lượng"
+    },
+    {
+      "code": "302-5",
+      "title_en": "Reductions in energy requirements of products and services",
+      "title_vi": "Mức giảm nhu cầu năng lượng của sản phẩm và dịch vụ"
+    }
+  ]
+}

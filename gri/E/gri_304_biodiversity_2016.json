@@ -1,0 +1,33 @@
+{
+  "standard_id": "GRI 304",
+  "title_en": "Biodiversity 2016",
+  "title_vi": "Đa dạng sinh học 2016",
+  "pillar": "E — Environmental",
+  "series": "Environmental (300 Series)",
+  "effective_date": "2018-07-01",
+  "description_vi": "Đánh giá tác động hoạt động của tổ chức tới các khu bảo tồn đa dạng sinh học và các loài có nguy cơ tuyệt chủng.",
+  "source": "GRI Content Index Template 2021, Version 1.3 (January 2026)",
+  "disclosures_count": 4,
+  "disclosures": [
+    {
+      "code": "304-1",
+      "title_en": "Operational sites owned, leased, managed in, or adjacent to, protected areas and areas of high biodiversity value outside protected areas",
+      "title_vi": "Vị trí hoạt động nằm trong hoặc liền kề khu bảo tồn và khu vực đa dạng sinh học cao"
+    },
+    {
+      "code": "304-2",
+      "title_en": "Significant impacts of activities, products and services on biodiversity",
+      "title_vi": "Các tác động đáng kể của hoạt động, sản phẩm, dịch vụ đến đa dạng sinh học"
+    },
+    {
+      "code": "304-3",
+      "title_en": "Habitats protected or restored",
+      "title_vi": "Môi trường sống được bảo vệ hoặc phục hồi"
+    },
+    {
+      "code": "304-4",
+      "title_en": "IUCN Red List species and national conservation list species with habitats in areas affected by operations",
+      "title_vi": "Các loài trong Sách Đỏ IUCN và Danh mục bảo tồn quốc gia bị ảnh hưởng bởi hoạt động"
+    }
+  ]
+}

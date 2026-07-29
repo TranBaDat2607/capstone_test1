@@ -786,6 +786,18 @@
       "temporal_properties": ["valid_from", "valid_to", "recorded_at"]
     },
     {
+      "label": "alignsWithIndicator",
+      "source_class": "Controversy",
+      "target_class": "StandardIndicator",
+      "temporal_properties": ["valid_from", "valid_to", "recorded_at"]
+    },
+    {
+      "label": "alignsWithIndicator",
+      "source_class": "MediaReport",
+      "target_class": "StandardIndicator",
+      "temporal_properties": ["valid_from", "valid_to", "recorded_at"]
+    },
+    {
       "label": "equivalentTo",
       "source_class": "StandardIndicator",
       "target_class": "StandardIndicator",

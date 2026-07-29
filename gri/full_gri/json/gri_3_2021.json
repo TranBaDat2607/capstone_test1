@@ -1,0 +1,194 @@
+{
+  "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
+  "standard_id": "GRI 3",
+  "title_en": "Material Topics 2021",
+  "title_vi": "Material Topics 2021",
+  "pillar": "Universal",
+  "series": "Universal Standards",
+  "category": "Universal",
+  "temporal_validity": {
+    "version_id": "GRI_3_2021",
+    "version_year": 2021,
+    "effective_date": "2022-01-01",
+    "valid_until_year": null,
+    "status": "Active",
+    "replaced_by_standard_id": null
+  },
+  "scope": {
+    "target_audience": "Tất cả tổ chức",
+    "sector_code": null,
+    "materiality_required": false,
+    "boundary_scope": "Toàn bộ tổ chức & Chuỗi giá trị"
+  },
+  "provenance": {
+    "relative_pdf_path": "Full set of GRI Standards - English\\GRI 3_ Material Topics 2021.pdf",
+    "file_size_bytes": 1043984,
+    "page_count": 30,
+    "sha256": "42e2c8c511efaab1bf027d2b80dd9a972f14384402a8b3b6a69ebd15030d5ca4",
+    "indexed_at": "2026-07-25T14:35:58.925133"
+  },
+  "disclosures_count": 7,
+  "disclosures": [
+    {
+      "disclosure_id": "3-1",
+      "title_en": "Process to determine material topics",
+      "title_vi": "Process to determine material topics",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "3-1:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 3-1 (Process to determine material topics)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "3-2",
+      "title_en": "List of material topics",
+      "title_vi": "List of material topics",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "3-2:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 3-2 (List of material topics)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "3-3",
+      "title_en": "Management of material topics",
+      "title_vi": "Management of material topics",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "3-3:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 3-3 (Management of material topics)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "2-12",
+      "title_en": "in GRI 2: General Disclosures 2021 requires information on the role of the",
+      "title_vi": "in GRI 2: General Disclosures 2021 requires information on the role of the",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "2-12:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 2-12 (in GRI 2: General Disclosures 2021 requires information on the role of the)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "2-14",
+      "title_en": "in GRI 2. The organization",
+      "title_vi": "in GRI 2. The organization",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "2-14:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 2-14 (in GRI 2. The organization)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "2-23",
+      "title_en": "in GRI 2: General Disclosures 2021. If the organization has described its",
+      "title_vi": "in GRI 2: General Disclosures 2021. If the organization has described its",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "2-23:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 2-23 (in GRI 2: General Disclosures 2021. If the organization has described its)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    },
+    {
+      "disclosure_id": "2-25",
+      "title_en": "in GRI 2 for more information on processes to remediate negative impacts.",
+      "title_vi": "in GRI 2 for more information on processes to remediate negative impacts.",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "2-25:a",
+          "item_code": "a",
+          "description_en": "Report according to requirement of 2-25 (in GRI 2 for more information on processes to remediate negative impacts.)",
+          "description_vi": null,
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": []
+        }
+      ],
+      "recommendations_en": null,
+      "recommendations_vi": null,
+      "sdg_mapping": [],
+      "esrs_mapping": [],
+      "issb_mapping": []
+    }
+  ]
+}
