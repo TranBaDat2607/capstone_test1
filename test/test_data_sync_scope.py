@@ -20,6 +20,10 @@ Offline: `snapshot_download` is replaced with a recorder, so nothing touches the
 network and nothing is written. Run from the repo root:
 
     python test/test_data_sync_scope.py
+
+Repointed at `esg_kg.core.datasync` (2026-07-29) now that the port exists and is proven
+equivalent to `src/data_sync.py` (`test/test_esg_kg_datasync.py`) — this file no longer
+depends on `src/`.
 """
 
 import argparse
@@ -27,11 +31,11 @@ import sys
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO / "src"))
+sys.path.insert(0, str(REPO / "src_module"))
 
 import huggingface_hub  # noqa: E402
 
-import data_sync  # noqa: E402
+from esg_kg.core import datasync as data_sync  # noqa: E402
 
 
 class Recorder:

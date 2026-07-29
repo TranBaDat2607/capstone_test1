@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
 """
-Old-vs-new equivalence for ONE migration slice: `src/step03_fix_invalid_triplets.py`
--> `esg_kg.graph.fix_triples`.
+Behavioural tests for `esg_kg.graph.fix_triples` (migrated from
+`src/step03_fix_invalid_triplets.py`).
 
-WHY THIS IS A SEPARATE FILE
-Same contract and same reason as `test_esg_kg_anchor_kpi.py` and
-`test_esg_kg_provenance.py`: import BOTH trees, run them on the same real input,
-assert equal. `test_esg_kg_equivalence.py` covers the kernel and is past 1,100 lines;
-a whole stage gets its own file.
+Repointed at esg_kg only (2026-07-29) now that src/ is scheduled for deletion — the
+old-vs-new comparison logic has been removed; the coverage of esg_kg's own behaviour
+(pinned prompts/constants, independent invariants, real-corpus arms) is unchanged.
 
 WHY THIS SLICE NEEDS NO NEW core/ MODULE
 step03 looks like a hub — seven src/ stages import from it — but every symbol they
@@ -53,13 +51,9 @@ import tempfile
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO / "src"))
 sys.path.insert(0, str(REPO / "src_module"))
 
-# --- old: the flat src/ script -------------------------------------------------
-import step03_fix_invalid_triplets as old_step03  # noqa: E402
-
-# --- new: the esg_kg package ---------------------------------------------------
+# --- the esg_kg package ---------------------------------------------------------
 from esg_kg.graph import fix_triples as new_fix  # noqa: E402
 
 # --- the kernel the new tree must be REUSING, not re-copying -------------------
@@ -91,7 +85,7 @@ def load_schema() -> dict:
 
 def schema_sets():
     if "sets" not in _cache:
-        _cache["sets"] = old_step03.load_schema_sets(load_schema())
+        _cache["sets"] = new_fix.load_schema_sets(load_schema())
     return _cache["sets"]
 
 
@@ -142,19 +136,19 @@ def _triple(subj_props=None, obj_props=None, predicate="ownsFacility"):
 # 1. Module surface — these run on a bare clone.
 # --------------------------------------------------------------------------- #
 def test_fix_triples_module_constants_match_src():
-    assert new_fix.DEFAULT_INPUT_DIR == old_step03.DEFAULT_INPUT_DIR
-    assert new_fix.DEFAULT_SCHEMA == old_step03.DEFAULT_SCHEMA
-    assert new_fix.DEFAULT_OUT_DIR == old_step03.DEFAULT_OUT_DIR
-    assert new_fix.DEFAULT_MODEL == old_step03.DEFAULT_MODEL
-    assert new_fix.DEFAULT_BATCH_SIZE == old_step03.DEFAULT_BATCH_SIZE
-    assert new_fix.DEFAULT_RATE_LIMIT == old_step03.DEFAULT_RATE_LIMIT
-    assert new_fix.NEWS_DATE_UNCERTAIN_CLASSES == old_step03.NEWS_DATE_UNCERTAIN_CLASSES
-    assert new_fix._NODE_DATE_PROPS == old_step03._NODE_DATE_PROPS
-    assert new_fix._EDGE_DATE_PROPS == old_step03._EDGE_DATE_PROPS
-    assert new_fix.MUTABLE_NODE_PROPS == old_step03.MUTABLE_NODE_PROPS
+    """Pinned against concrete expected values (not a cross-tree comparison)."""
     # the paths must be the REAL ones, not something the new tree invented
     assert new_fix.DEFAULT_INPUT_DIR == GRAPHS_DIR
     assert new_fix.DEFAULT_SCHEMA == SCHEMA_FILE
+    assert new_fix.DEFAULT_OUT_DIR == REPO / "graph_output" / "validated"
+    assert new_fix.DEFAULT_MODEL == "gemini-2.5-flash"
+    assert new_fix.DEFAULT_BATCH_SIZE == 25
+    assert new_fix.DEFAULT_RATE_LIMIT == 10
+    assert new_fix.NEWS_DATE_UNCERTAIN_CLASSES == {
+        "KPIObservation", "Controversy", "Penalty", "MediaReport"}
+    assert new_fix._NODE_DATE_PROPS == ("valid_from", "valid_to", "date")
+    assert new_fix._EDGE_DATE_PROPS == ("valid_from", "valid_to", "recorded_at")
+    assert new_fix.MUTABLE_NODE_PROPS == ("valid_from", "valid_to", "is_current")
 
 
 def test_fix_triples_keeps_its_own_rate_limit_constant():
@@ -180,8 +174,6 @@ def test_fix_triples_keeps_its_own_rate_limit_constant():
 def test_batch_fix_prompt_is_byte_identical():
     """The PAID prompt. A reworded prompt still 'works' while changing every repair,
     and phase 2 cannot be verified by re-running it (CLAUDE.md)."""
-    assert new_fix.BATCH_FIX_PROMPT == old_step03.BATCH_FIX_PROMPT, (
-        "BATCH_FIX_PROMPT diverged between the trees")
     # the issue-#6 guard clause must still be in it (belt and braces on the code guard)
     assert "NEVER touch property values" in new_fix.BATCH_FIX_PROMPT
     assert "Do NOT translate" in new_fix.BATCH_FIX_PROMPT
@@ -203,25 +195,33 @@ def test_new_tree_reuses_the_kernel_instead_of_copying_it():
 # --------------------------------------------------------------------------- #
 # 2. Pure functions, both trees — bare-clone safe.
 # --------------------------------------------------------------------------- #
+# (subject class, predicate, object class, expect_swapped) — reversed, correct,
+# unknown predicate, unknown class. Expectations are concrete: (Organization,
+# Facility) is the only legal direction for ownsFacility per schema.json, so the
+# reversed pair is the only one that swaps.
 DIRECTION_CASES = [
-    # (subject class, predicate, object class) — reversed, correct, unknown predicate
-    ("Facility", "ownsFacility", "Organization"),
-    ("Organization", "ownsFacility", "Facility"),
-    ("Organization", "notARealPredicate", "Facility"),
-    ("Organization", "ownsFacility", "NotARealClass"),
+    ("Facility", "ownsFacility", "Organization", True),
+    ("Organization", "ownsFacility", "Facility", False),
+    ("Organization", "notARealPredicate", "Facility", False),
+    ("Organization", "ownsFacility", "NotARealClass", False),
 ]
 
 
 def test_fix_direction_matches_src():
     _, _, edge_directions = schema_sets()
-    for s_cls, pred, o_cls in DIRECTION_CASES:
+    for s_cls, pred, o_cls, expect_swapped in DIRECTION_CASES:
         t = _triple(predicate=pred)
         t["subject"]["class"] = s_cls
         t["object"]["class"] = o_cls
-        got_new, sw_new = new_fix.fix_direction(copy.deepcopy(t), edge_directions)
-        got_old, sw_old = old_step03.fix_direction(copy.deepcopy(t), edge_directions)
-        assert sw_new == sw_old, f"swap flag diverged for {(s_cls, pred, o_cls)}"
-        assert got_new == got_old, f"triple diverged for {(s_cls, pred, o_cls)}"
+        got, swapped = new_fix.fix_direction(copy.deepcopy(t), edge_directions)
+        assert swapped == expect_swapped, f"swap flag wrong for {(s_cls, pred, o_cls)}"
+        if expect_swapped:
+            assert got["subject"]["class"] == o_cls and got["object"]["class"] == s_cls, (
+                f"swap did not exchange subject/object for {(s_cls, pred, o_cls)}")
+            assert got["temporal_metadata"] == t["temporal_metadata"], (
+                "swap must preserve temporal_metadata")
+        else:
+            assert got == t, f"unswapped triple must be returned unchanged for {(s_cls, pred, o_cls)}"
     # and the fixture is not vacuous: at least one case really swaps
     t = _triple()
     t["subject"]["class"], t["object"]["class"] = "Facility", "Organization"
@@ -229,23 +229,26 @@ def test_fix_direction_matches_src():
     assert swapped, "DIRECTION_CASES no longer contains a reversed triple"
 
 
+# (raw response, expected parsed value) — each case exercises one cleanup rule
+# (markdown fence, trailing comma, // comment, /* block */ comment, surrounding
+# prose) and the two failure modes (no JSON array found, unbalanced bracket).
 JSON_RESPONSE_CASES = [
-    '[{"a": 1}]',
-    '```json\n[{"a": 1}]\n```',
-    '[{"a": 1},]',                       # trailing comma
-    '// a comment\n[{"a": 1}]',
-    '/* block */ [{"a": 1}]',
-    'prose before [{"a": 1}] prose after',
-    'not json at all',
-    '',
-    '[',
+    ('[{"a": 1}]', [{"a": 1}]),
+    ('```json\n[{"a": 1}]\n```', [{"a": 1}]),
+    ('[{"a": 1},]', [{"a": 1}]),                       # trailing comma
+    ('// a comment\n[{"a": 1}]', [{"a": 1}]),
+    ('/* block */ [{"a": 1}]', [{"a": 1}]),
+    ('prose before [{"a": 1}] prose after', [{"a": 1}]),
+    ('not json at all', []),
+    ('', []),
+    ('[', []),
 ]
 
 
 def test_extract_json_from_response_matches_src():
-    for raw in JSON_RESPONSE_CASES:
-        assert new_fix.extract_json_from_response(raw) == \
-            old_step03.extract_json_from_response(raw), f"diverged on {raw!r}"
+    for raw, expected in JSON_RESPONSE_CASES:
+        got = new_fix.extract_json_from_response(raw)
+        assert got == expected, f"diverged on {raw!r}: got {got}, expected {expected}"
 
 
 def test_preserve_property_values_matches_src():
@@ -277,9 +280,6 @@ def test_preserve_property_values_matches_src():
     total_blocked = 0
     for original, repaired in cases:
         g_new, b_new = new_fix.preserve_property_values(original, copy.deepcopy(repaired))
-        g_old, b_old = old_step03.preserve_property_values(original, copy.deepcopy(repaired))
-        assert b_new == b_old, f"blocked count diverged: {b_new} vs {b_old}"
-        assert g_new == g_old, "guarded triple diverged"
         total_blocked += b_new
     assert total_blocked >= 5, (
         f"fixture stopped exercising the guard (only {total_blocked} blocked)")
@@ -302,12 +302,9 @@ def test_enforce_temporal_invariants_matches_src():
     news["predicate"] = "hasControversy"
     triples.append(news)
 
-    t_new, t_old = copy.deepcopy(triples), copy.deepcopy(triples)
+    t_new = copy.deepcopy(triples)
     s_new = new_fix.enforce_temporal_invariants(t_new)
-    s_old = old_step03.enforce_temporal_invariants(t_old)
 
-    assert s_new == s_old, f"stats diverged:\n  new={s_new}\n  old={s_old}"
-    assert t_new == t_old, "triples diverged"
     # the fixture really fires every counter — otherwise this compares four zeros
     for k, v in s_new.items():
         assert v > 0, f"counter {k} never fired; fixture is vacuous: {s_new}"
@@ -324,9 +321,6 @@ def test_load_triples_from_file_matches_src_on_real_pages():
     total = 0
     for fp in files:
         t_new, f_new = new_fix.load_triples_from_file(fp)
-        t_old, f_old = old_step03.load_triples_from_file(fp)
-        assert f_new == f_old, f"format diverged on {fp.name}"
-        assert t_new == t_old, f"triples diverged on {fp.name}"
         formats.add(f_new)
         total += len(t_new)
     assert total > 0, "read 200 real page files and got no triples — arm is vacuous"
@@ -342,12 +336,6 @@ def test_process_file_offline_matches_src_on_real_pages():
     for fp in files:
         v_new, i_new, s_new, fmt_new = new_fix.process_file_offline(
             fp, entity_classes, edge_labels, edge_directions)
-        v_old, i_old, s_old, fmt_old = old_step03.process_file_offline(
-            fp, entity_classes, edge_labels, edge_directions)
-        assert s_new == s_old, f"stats diverged on {fp.name}: {s_new} vs {s_old}"
-        assert v_new == v_old, f"valid triples diverged on {fp.name}"
-        assert i_new == i_old, f"invalid triples diverged on {fp.name}"
-        assert fmt_new == fmt_old, f"format diverged on {fp.name}"
         for k in agg:
             agg[k] += s_new[k]
     assert agg["valid"] > 0 and agg["invalid"] > 0, (
@@ -378,7 +366,7 @@ def _run_stage(mod, input_dir: Path, out_dir: Path) -> dict:
 
 
 def test_process_all_files_matches_src_on_the_real_corpus():
-    """The headline arm: 43 real doc dirs through both trees, artifacts compared."""
+    """The headline arm: the full 43-doc real corpus through the migrated stage."""
     if not real_page_files(limit=1):
         return _skip("process_all_files", "graph_output/graphs/ not present")
     prev = _quiet()
@@ -386,24 +374,17 @@ def test_process_all_files_matches_src_on_the_real_corpus():
         with tempfile.TemporaryDirectory() as tmp:
             tmp = Path(tmp)
             got_new = _run_stage(new_fix, GRAPHS_DIR, tmp / "new")
-            got_old = _run_stage(old_step03, GRAPHS_DIR, tmp / "old")
     finally:
         _unquiet(prev)
 
     valid_new = got_new["all_validated_triples.json"]
-    valid_old = got_old["all_validated_triples.json"]
     assert valid_new is not None, "the new tree wrote no all_validated_triples.json"
-    assert len(valid_new) == len(valid_old), (
-        f"validated count diverged: new={len(valid_new)} old={len(valid_old)}")
-    assert valid_new == valid_old, "validated triples diverged"
 
     uf_new = got_new["unfixable_triples.json"] or []
-    uf_old = got_old["unfixable_triples.json"] or []
-    assert uf_new == uf_old, f"unfixable diverged: {len(uf_new)} vs {len(uf_old)}"
 
     assert len(valid_new) > 1000, (
         f"only {len(valid_new)} triples — the real corpus was not actually read")
-    print(f"     ({len(valid_new)} validated, {len(uf_new)} unfixable — both trees equal)")
+    print(f"     ({len(valid_new)} validated, {len(uf_new)} unfixable)")
 
 
 def test_renormalize_existing_matches_src_and_is_idempotent():
@@ -417,17 +398,12 @@ def test_renormalize_existing_matches_src_and_is_idempotent():
     try:
         with tempfile.TemporaryDirectory() as tmp:
             tmp = Path(tmp)
-            d_new, d_old = tmp / "new", tmp / "old"
-            for d in (d_new, d_old):
-                d.mkdir()
-                (d / "all_validated_triples.json").write_text(original, encoding="utf-8")
+            d_new = tmp / "new"
+            d_new.mkdir()
+            (d_new / "all_validated_triples.json").write_text(original, encoding="utf-8")
 
             new_fix.renormalize_existing(d_new, entity_classes, edge_labels, edge_directions)
-            old_step03.renormalize_existing(d_old, entity_classes, edge_labels, edge_directions)
-
             out_new = (d_new / "all_validated_triples.json").read_text(encoding="utf-8")
-            out_old = (d_old / "all_validated_triples.json").read_text(encoding="utf-8")
-            assert out_new == out_old, "renormalize diverged between the trees"
 
             # idempotency: the file on disk is already normalized, so a second pass
             # must be a no-op. If it is not, every re-run silently rewrites the graph.
@@ -436,7 +412,7 @@ def test_renormalize_existing_matches_src_and_is_idempotent():
             assert out_twice == out_new, "renormalize_existing is not idempotent"
     finally:
         _unquiet(prev)
-    print("     (both trees equal, and a second pass changes nothing)")
+    print("     (a second pass changes nothing)")
 
 
 # --------------------------------------------------------------------------- #
@@ -493,21 +469,88 @@ def _run_phase2(mod, tmp: Path) -> list:
 def test_phase2_repair_path_matches_src_with_a_stubbed_llm():
     prev = _quiet()
     try:
-        with tempfile.TemporaryDirectory() as t1, tempfile.TemporaryDirectory() as t2:
+        with tempfile.TemporaryDirectory() as t1:
             got_new = _run_phase2(new_fix, Path(t1))
-            got_old = _run_phase2(old_step03, Path(t2))
     finally:
         _unquiet(prev)
 
-    assert got_new == got_old, f"phase 2 diverged:\n  new={got_new}\n  old={got_old}"
     assert len(got_new) == 1, f"expected the repaired triple to be kept, got {len(got_new)}"
     # the honest repair survived...
     assert got_new[0]["predicate"] == "ownsFacility", "the repair was lost"
-    # ...and the guard is wired into the MIGRATED tree too, not just src/
+    # ...and the guard is wired into process_all_files, not just preserve_property_values itself
     assert got_new[0]["subject"]["properties"]["name"] == VN_NAME, (
-        "the migrated stage wrote the LLM's translated name — "
+        "the stage wrote the LLM's translated name — "
         "preserve_property_values is not wired into process_all_files")
-    print("     (repair kept, tampering blocked, both trees equal)")
+    print("     (repair kept, tampering blocked)")
+
+
+# --------------------------------------------------------------------------- #
+# NEW (2026-07-29): the additive OpenAI path for phase 2. Gemini stays the
+# default; the provider is detected from `client`'s TYPE (isinstance check), not
+# a separate string parameter — so `fix_batch_with_llm`'s signature, and every
+# `mod.fix_batch_with_llm = stub` test hook above, is untouched. No src/
+# counterpart exists for this branch — single-tree only.
+# --------------------------------------------------------------------------- #
+def test_fix_batch_with_llm_openai_provider_wraps_and_unwraps():
+    from esg_kg.core.llm import _OpenAIProvider
+
+    import os
+    saved = os.environ.get("OPENAI_API_KEY")
+    os.environ["OPENAI_API_KEY"] = "sk-test-not-a-real-key"
+    try:
+        provider = _OpenAIProvider("gpt-4o-mini", 10)
+        assert provider.enabled is True
+        calls = []
+
+        def fake_call(system, user):
+            calls.append((system, user))
+            return json.dumps([{"predicate": "ownsFacility"}])
+
+        provider.call = fake_call
+        schema = load_schema()
+        out = new_fix.fix_batch_with_llm(
+            [{"subject": {}, "predicate": "ownsFacilty", "object": {}}],
+            schema, provider, rate_limiter=None, model="gpt-4o-mini")
+    finally:
+        if saved is None:
+            os.environ.pop("OPENAI_API_KEY", None)
+        else:
+            os.environ["OPENAI_API_KEY"] = saved
+
+    assert out == [{"predicate": "ownsFacility"}], out
+    assert len(calls) == 1
+    print("     (an _OpenAIProvider client takes the openai branch, gemini client untouched)")
+
+
+def test_fix_batch_with_llm_gemini_client_still_takes_the_gemini_branch():
+    """A plain object() (stands in for a genai.Client in these tests) must NOT be
+    mistaken for the openai path — isinstance detection must not over-match."""
+    class _FakeGeminiResp:
+        text = json.dumps([{"predicate": "ownsFacility"}])
+
+    class _FakeGeminiModels:
+        def generate_content(self, model, contents, config):
+            return _FakeGeminiResp()
+
+    class _FakeGeminiClient:
+        def __init__(self):
+            self.models = _FakeGeminiModels()
+
+    class _SpyRateLimiter:
+        def __init__(self):
+            self.waited = False
+
+        def wait_if_needed(self, idx):
+            self.waited = True
+
+    schema = load_schema()
+    rl = _SpyRateLimiter()
+    out = new_fix.fix_batch_with_llm(
+        [{"subject": {}, "predicate": "ownsFacilty", "object": {}}],
+        schema, _FakeGeminiClient(), rl, "gemini-2.5-flash")
+    assert out == [{"predicate": "ownsFacility"}], out
+    assert rl.waited is True, "the gemini branch must still throttle through rate_limiter"
+    print("     (a non-_OpenAIProvider client still takes the gemini branch, throttled)")
 
 
 if __name__ == "__main__":

@@ -21,8 +21,9 @@ mention that LOOKS LIKE one of the five documents but is not yet covered.
 Offline: no LLM, no Neo4j, no network, no artifacts on disk — the graph here is synthetic
 so the assertions stay true after any re-extraction.
 
-Both trees are driven by every test (DESIGN.md §5.3: a behaviour fix lands in `src/` and
-`esg_kg` in the same commit, and this file is what proves it landed identically).
+Was driven through both `src/` and `esg_kg` while both trees existed (DESIGN.md §5.3);
+repointed at `esg_kg` only (2026-07-29) now that `src/` is gone and
+`test_esg_kg_equivalence.py` already proved the two agreed on this exact behaviour.
 
     python test/test_standards_audit.py
 """
@@ -31,13 +32,9 @@ import sys
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO / "src"))
 sys.path.insert(0, str(REPO / "src_module"))
 
-import step00_graph_quality_report as old_step00  # noqa: E402
 from esg_kg.report import quality as new_quality  # noqa: E402
-
-TREES = (("src", old_step00), ("esg_kg", new_quality))
 
 # A registry shaped like config/standards_registry.json after the move: the match patterns
 # and exclude hints that used to live in step04b's SEEDS now ride along in the config.
@@ -75,14 +72,8 @@ def graph(names_with_degree):
 
 
 def audit(nodes, edges, registry=None, **kw):
-    """Run the audit in both trees; assert they agree; return the single result."""
     reg = REGISTRY if registry is None else registry
-    results = {}
-    for tree, mod in TREES:
-        results[tree] = mod.standards_registry_audit(nodes, edges, reg, **kw)
-    assert results["src"] == results["esg_kg"], (
-        f"the two trees disagree:\n  src   ={results['src']}\n  esg_kg={results['esg_kg']}")
-    return results["src"]
+    return new_quality.standards_registry_audit(nodes, edges, reg, **kw)
 
 
 def uncovered_names(result):

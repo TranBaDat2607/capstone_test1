@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 """
-Old-vs-new equivalence for ONE migration slice:
-`src/step08_sync_crosscheck_to_neo4j.py` -> `esg_kg.load.neo4j_sync`.
+Behaviour tests for ONE migration slice, `esg_kg.load.neo4j_sync`
+(originally ported from `src/step08_sync_crosscheck_to_neo4j.py`).
 
-WHY THIS IS A SEPARATE FILE
-Same contract as `test_esg_kg_crosscheck.py` / `_align_claims.py` / `_provenance.py` /
-`_anchor_kpi.py` / `_issuer.py` / `_extract.py`: import BOTH trees, run them on the same
-real input, assert equal.
+Repointed at `esg_kg` only (2026-07-29) now that `src/` is gone; this file used to import
+`src/step08_sync_crosscheck_to_neo4j.py` too and assert the two trees agreed —
+`test_esg_kg_equivalence.py` already proved that agreement while both trees existed.
 
 WHY THIS SLICE NEEDED NO NEW core/ MODULE
 step08 imports exactly two things from a sibling: `REPO_ROOT` (self-defined, -> now
@@ -61,11 +60,7 @@ import sys
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO / "src"))
 sys.path.insert(0, str(REPO / "src_module"))
-
-# --- old: the flat src/ script --------------------------------------------------
-import step08_sync_crosscheck_to_neo4j as old_step08  # noqa: E402
 
 # --- new: the esg_kg package -----------------------------------------------------
 from esg_kg.load import neo4j_sync as new_step08  # noqa: E402
@@ -184,8 +179,6 @@ def test_node_text_is_the_crosscheck_one():
         "resolve.align_claims.node_text (which takes a properties dict) — merging them "
         "would silently change what this stage matches evidence text against."
     )
-    node = {"class": "MediaReport", "properties": {"title": "Bai bao doc lap X"}}
-    assert new_step08.node_text(node) == old_step08.node_text(node)
 
 
 # --------------------------------------------------------------------------- #
@@ -234,22 +227,15 @@ def test_build_key_index_and_rows_match_both_trees():
     graph = _mini_graph()
     dossiers = _mini_dossiers()
 
-    old_by_claim, old_by_text = old_step08.build_key_index(graph)
-    new_by_claim, new_by_text = new_step08.build_key_index(graph)
-    assert old_by_claim == new_by_claim
-    assert old_by_text == new_by_text
+    by_claim, by_text = new_step08.build_key_index(graph)
 
-    old_rows, old_edges, old_how = old_step08.build_rows(dossiers, "aaa", old_by_claim, old_by_text)
-    new_rows, new_edges, new_how = new_step08.build_rows(dossiers, "aaa", new_by_claim, new_by_text)
-    assert old_rows == new_rows
-    assert old_edges == new_edges
-    assert old_how == new_how
+    rows, edges, how = new_step08.build_rows(dossiers, "aaa", by_claim, by_text)
 
     # sanity on the resolution mix itself, so the fixture is proven to exercise what it claims
-    assert old_how["claim_stable_id"] == 1
-    assert old_how["claim_positional"] == 1
-    assert old_how["claim_unresolved"] == 1
-    assert old_how["evidence_text"] == 1
+    assert how["claim_stable_id"] == 1
+    assert how["claim_positional"] == 1
+    assert how["claim_unresolved"] == 1
+    assert how["evidence_text"] == 1
 
 
 # --------------------------------------------------------------------------- #
@@ -265,16 +251,11 @@ def test_run_end_to_end_synthetic_both_trees_send_identical_neo4j_calls(tmp_path
         dossier_file = td / "aaa_claim_assessments.json"
         dossier_file.write_text(json.dumps(_mini_dossiers()), encoding="utf-8")
 
-        old_calls, old_driver_calls = _run_with_stub(
-            old_step08, _ns(input=dossier_file, resolved=graph_file))
-        new_calls, new_driver_calls = _run_with_stub(
+        calls, driver_calls = _run_with_stub(
             new_step08, _ns(input=dossier_file, resolved=graph_file))
 
-        assert old_driver_calls == new_driver_calls
-        assert len(old_calls) == len(new_calls) and len(old_calls) > 0
-        for (oq, op), (nq, np_) in zip(old_calls, new_calls):
-            assert oq == nq
-            assert op == np_
+        assert len(driver_calls) > 0
+        assert len(calls) > 0
 
 
 def test_run_clear_advisory_both_trees_send_identical_neo4j_calls():
@@ -287,17 +268,12 @@ def test_run_clear_advisory_both_trees_send_identical_neo4j_calls():
         dossier_file = td / "aaa_claim_assessments.json"
         dossier_file.write_text(json.dumps(_mini_dossiers()), encoding="utf-8")
 
-        old_calls, _ = _run_with_stub(
-            old_step08, _ns(input=dossier_file, resolved=graph_file, clear_advisory=True))
-        new_calls, _ = _run_with_stub(
+        calls, _ = _run_with_stub(
             new_step08, _ns(input=dossier_file, resolved=graph_file, clear_advisory=True))
 
-        assert len(old_calls) == len(new_calls) and len(old_calls) > 0
-        for (oq, op), (nq, np_) in zip(old_calls, new_calls):
-            assert oq == nq
-            assert op == np_
+        assert len(calls) > 0
         # the clear-advisory branch adds 2 queries up front that the default run lacks
-        assert "DELETE r" in old_calls[0][0]
+        assert "DELETE r" in calls[0][0]
 
 
 def test_dry_run_touches_no_driver_both_trees():
@@ -310,19 +286,16 @@ def test_dry_run_touches_no_driver_both_trees():
         dossier_file = td / "aaa_claim_assessments.json"
         dossier_file.write_text(json.dumps(_mini_dossiers()), encoding="utf-8")
 
-        old_calls, old_driver_calls = _run_with_stub(
-            old_step08, _ns(input=dossier_file, resolved=graph_file, dry_run=True))
-        new_calls, new_driver_calls = _run_with_stub(
+        calls, driver_calls = _run_with_stub(
             new_step08, _ns(input=dossier_file, resolved=graph_file, dry_run=True))
 
-        assert old_calls == [] and old_driver_calls == []
-        assert new_calls == [] and new_driver_calls == []
+        assert calls == [] and driver_calls == []
 
 
 def test_missing_resolved_graph_falls_back_to_positional_both_trees():
-    """No `--resolved` file on disk (e.g. before step05 ever ran) must not crash — both
-    trees fall back to `node_index`-only resolution, matching the module docstring's
-    documented tier 3."""
+    """No `--resolved` file on disk (e.g. before step05 ever ran) must not crash — falls
+    back to `node_index`-only resolution, matching the module docstring's documented
+    tier 3."""
     import json
     import tempfile
     with tempfile.TemporaryDirectory() as td:
@@ -331,27 +304,21 @@ def test_missing_resolved_graph_falls_back_to_positional_both_trees():
         dossier_file = td / "aaa_claim_assessments.json"
         dossier_file.write_text(json.dumps(_mini_dossiers()), encoding="utf-8")
 
-        old_calls, _ = _run_with_stub(
-            old_step08, _ns(input=dossier_file, resolved=missing_graph))
-        new_calls, _ = _run_with_stub(
+        calls, _ = _run_with_stub(
             new_step08, _ns(input=dossier_file, resolved=missing_graph))
 
-        assert len(old_calls) == len(new_calls) and len(old_calls) > 0
-        for (oq, op), (nq, np_) in zip(old_calls, new_calls):
-            assert oq == nq
-            assert op == np_
+        assert len(calls) > 0
 
 
 def test_no_dossier_file_exits_both_trees():
-    """`run()` calls `sys.exit(1)` when the dossier file is missing — both trees must
-    refuse the same way rather than one crashing with a raw exception."""
+    """`run()` calls `sys.exit(1)` when the dossier file is missing — it must refuse
+    rather than crashing with a raw exception."""
     missing = REPO / "graph_output" / "crosscheck" / "__does_not_exist__.json"
-    for module in (old_step08, new_step08):
-        try:
-            module.run(_ns(input=missing, ticker="ZZZ"))
-            assert False, f"{module} did not exit on a missing dossier file"
-        except SystemExit as e:
-            assert e.code == 1
+    try:
+        new_step08.run(_ns(input=missing, ticker="ZZZ"))
+        assert False, "did not exit on a missing dossier file"
+    except SystemExit as e:
+        assert e.code == 1
 
 
 # --------------------------------------------------------------------------- #
@@ -365,18 +332,14 @@ def test_real_corpus_both_trees_send_identical_neo4j_calls():
               "(git-ignored, shipped via the HF snapshot — see src/data_sync.py)")
         return
 
-    old_calls, old_driver_calls = _run_with_stub(old_step08, _ns())
-    new_calls, new_driver_calls = _run_with_stub(new_step08, _ns())
+    calls, driver_calls = _run_with_stub(new_step08, _ns())
 
-    assert old_driver_calls == new_driver_calls
-    assert len(old_calls) == len(new_calls) and len(old_calls) >= 3, \
-        f"expected >=3 real Neo4j calls (claim props + scoped clear + >=1 edge type), got {len(old_calls)}"
-    for i, ((oq, op), (nq, np_)) in enumerate(zip(old_calls, new_calls)):
-        assert oq == nq, f"call {i}: query text differs"
-        assert op == np_, f"call {i}: params differ"
+    assert len(driver_calls) > 0
+    assert len(calls) >= 3, \
+        f"expected >=3 real Neo4j calls (claim props + scoped clear + >=1 edge type), got {len(calls)}"
 
-    print(f"    real corpus: {len(old_calls)} Neo4j calls compared byte-identical "
-          f"across both trees ({len(old_calls[0][1].get('rows', []))} claim rows in call 0)")
+    print(f"    real corpus: {len(calls)} Neo4j calls issued "
+          f"({len(calls[0][1].get('rows', []))} claim rows in call 0)")
 
 
 if __name__ == "__main__":

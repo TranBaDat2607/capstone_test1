@@ -75,7 +75,7 @@ from google import genai
 from google.genai import types
 
 from esg_kg.core.dates import date_start_key
-from esg_kg.core.llm import RateLimiter
+from esg_kg.core.llm import RateLimiter, _OpenAIEmbeddingProvider, _OpenAIProvider
 from esg_kg.core.naming import normalize_name
 from esg_kg.core.paths import REPO_ROOT, load_env
 
@@ -303,20 +303,30 @@ Record 2: Type {cls}; {b}
 Return ONLY JSON: {{"same_entity": true}} or {{"same_entity": false}}."""
 
 
-def llm_same_entity(a: Dict[str, Any], b: Dict[str, Any], client: genai.Client,
+def llm_same_entity(a: Dict[str, Any], b: Dict[str, Any], client: Any,
                     model: str, rate_limiter: RateLimiter) -> bool:
+    """`client` is a `genai.Client` (default) or an `_OpenAIProvider` — detected by
+    type, so this signature (and any existing test that swaps the client) is
+    unaffected; additive."""
     prompt = ADJUDICATE_PROMPT.format(
         cls=a["class"],
         a=json.dumps(non_temporal_props(a), ensure_ascii=False),
         b=json.dumps(non_temporal_props(b), ensure_ascii=False),
     )
     try:
-        rate_limiter.wait_if_needed(0)
-        resp = client.models.generate_content(
-            model=model, contents=prompt,
-            config=types.GenerateContentConfig(temperature=0, response_mime_type="application/json"),
-        )
-        text = (resp.text or "").strip()
+        if isinstance(client, _OpenAIProvider):
+            # _OpenAIProvider throttles itself; `rate_limiter` here is gemini-only.
+            text = client.call(
+                "Return ONLY valid JSON: {\"same_entity\": true} or {\"same_entity\": false}.",
+                prompt,
+            ).strip()
+        else:
+            rate_limiter.wait_if_needed(0)
+            resp = client.models.generate_content(
+                model=model, contents=prompt,
+                config=types.GenerateContentConfig(temperature=0, response_mime_type="application/json"),
+            )
+            text = (resp.text or "").strip()
         m = re.search(r"\{.*\}", text, re.DOTALL)
         if m:
             return bool(json.loads(m.group(0)).get("same_entity", False))
@@ -328,16 +338,30 @@ def llm_same_entity(a: Dict[str, Any], b: Dict[str, Any], client: genai.Client,
 # --------------------------------------------------------------------------- #
 # Stage B — embeddings.
 # --------------------------------------------------------------------------- #
-def embed_texts(texts: List[str], client: genai.Client, model: str, dim: int,
+def embed_texts(texts: List[str], client: Any, model: str, dim: int,
                 rate_limiter: RateLimiter, batch: int, max_retries: int = 4) -> np.ndarray:
     """Batch-embed with retry. A batch that keeps failing falls back to zero vectors
-    (cosine 0 → no false matches) so the output stays aligned with `texts`."""
+    (cosine 0 → no false matches) so the output stays aligned with `texts`.
+
+    `client` is a `genai.Client` (default) or an `_OpenAIEmbeddingProvider` — detected
+    by type, additive. Cosine blocking downstream doesn't care which produced the
+    (L2-normalized) vectors."""
     out: List[np.ndarray] = []
     for i in range(0, len(texts), batch):
         chunk = texts[i:i + batch]
         vecs: Optional[List[np.ndarray]] = None
         for attempt in range(max_retries):
             try:
+                if isinstance(client, _OpenAIEmbeddingProvider):
+                    # _OpenAIEmbeddingProvider throttles itself; `rate_limiter` here
+                    # is gemini-only.
+                    raw = client.embed(chunk, dimensions=dim)
+                    vecs = []
+                    for values in raw:
+                        v = np.asarray(values, dtype=np.float32)
+                        nrm = np.linalg.norm(v)
+                        vecs.append(v / nrm if nrm > 0 else v)
+                    break
                 rate_limiter.wait_if_needed(0)
                 resp = client.models.embed_content(
                     model=model, contents=chunk,
@@ -499,7 +523,8 @@ def resolve_graph(triples: List[Dict[str, Any]], idkeys: Dict[str, List[str]], *
                   embed_batch: int = DEFAULT_EMBED_BATCH,
                   max_llm_pairs: int = DEFAULT_MAX_LLM_PAIRS,
                   no_llm: bool = True,
-                  client: Optional[genai.Client] = None,
+                  client: Optional[Any] = None,
+                  embed_client: Optional[Any] = None,
                   rate_limiter: Optional[RateLimiter] = None,
                   adjudication_cache: Any = None) -> Tuple[Dict[str, Any], Dict[str, Any]]:
     """Stage A -> B -> C -> D. Returns (resolved_graph, stats); writes nothing.
@@ -510,7 +535,15 @@ def resolve_graph(triples: List[Dict[str, Any]], idkeys: Dict[str, List[str]], *
     ``.get(a, b) -> (value, found)`` / ``.put(a, b, value)`` (same duck-typed shape as
     ``fix_triples.run_phases``'s ``repairs`` parameter) so Stage C's paid, non-
     deterministic verdicts can be replayed for free on a rerun.
+
+    ``embed_client`` is Stage B's client; it defaults to ``client`` because a Gemini
+    ``genai.Client`` does both embeddings (``.models.embed_content``) and adjudication
+    (``.models.generate_content``) — one object, two endpoints. OpenAI needs two
+    separate provider objects (``_OpenAIEmbeddingProvider`` vs ``_OpenAIProvider``), so
+    the additive OpenAI path passes both explicitly; the Gemini default path is
+    unaffected (it never sets ``embed_client``, so it silently falls back to ``client``).
     """
+    embed_client = embed_client if embed_client is not None else client
     nodes, edges = build_graph(triples)
     n = len(nodes)
     entity_idx = [i for i, x in enumerate(nodes) if x["class"] not in OBSERVATION_CLASSES]
@@ -629,7 +662,7 @@ def resolve_graph(triples: List[Dict[str, Any]], idkeys: Dict[str, List[str]], *
                 continue
             texts = [embedding_text(nodes[rep_of_root[r]]) for r in roots]
             logger.info(f"Stage B.2 embedding {len(roots)} '{cls}' clusters")
-            embs = embed_texts(texts, client, embed_model, embed_dim, rate_limiter, embed_batch)
+            embs = embed_texts(texts, embed_client, embed_model, embed_dim, rate_limiter, embed_batch)
             sims = embs @ embs.T
             for a in range(len(roots)):
                 for b in range(a + 1, len(roots)):
@@ -714,6 +747,15 @@ def main() -> None:
     p.add_argument("--embed-dim", type=int, default=DEFAULT_EMBED_DIM)
     p.add_argument("--embed-batch", type=int, default=DEFAULT_EMBED_BATCH)
     p.add_argument("--max-llm-pairs", type=int, default=DEFAULT_MAX_LLM_PAIRS)
+    p.add_argument("--provider", type=str, default="gemini", choices=["gemini", "openai"],
+                   help="LLM backend for Stage B/C (default gemini; openai needs OPENAI_API_KEY)")
+    p.add_argument("--openai-model", type=str, default="gpt-4o-mini",
+                   help="OpenAI chat model for Stage C, used only when --provider openai")
+    p.add_argument("--openai-embed-model", type=str, default="text-embedding-3-small",
+                   help="OpenAI embedding model for Stage B, used only when --provider openai")
+    p.add_argument("--openai-base-url", type=str, default=None,
+                   help="Override the OpenAI endpoint (e.g. an OpenAI-compatible "
+                        "third-party host); default is OpenAI's own API")
     p.add_argument("--no-llm", action="store_true", help="Stages A + B.1 only (no embeddings/LLM)")
     p.add_argument("--dry-run", action="store_true", help="--no-llm and write nothing (offline preview)")
     args = p.parse_args()
@@ -733,23 +775,36 @@ def main() -> None:
     logger.info(f"Loaded {len(triples)} validated triples")
 
     client = None
+    embed_client = None
     rate_limiter = None
+    model = args.model
+    embed_model = args.embed_model
     if not args.no_llm:
         load_env()
-        api_key = os.getenv("GEMINI_API_KEY")
-        if not api_key:
-            logger.error(f"GEMINI_API_KEY not set in {REPO_ROOT / '.env'}; rerun with --no-llm or --dry-run")
-            return
-        client = genai.Client(api_key=api_key)
+        if args.provider == "openai":
+            if not os.getenv("OPENAI_API_KEY"):
+                logger.error(f"OPENAI_API_KEY not set in {REPO_ROOT / '.env'}; rerun with --no-llm or --dry-run")
+                return
+            client = _OpenAIProvider(args.openai_model, args.rate_limit, base_url=args.openai_base_url)
+            embed_client = _OpenAIEmbeddingProvider(args.openai_embed_model, args.rate_limit,
+                                                    base_url=args.openai_base_url)
+            model = args.openai_model
+            embed_model = args.openai_embed_model
+        else:
+            api_key = os.getenv("GEMINI_API_KEY")
+            if not api_key:
+                logger.error(f"GEMINI_API_KEY not set in {REPO_ROOT / '.env'}; rerun with --no-llm or --dry-run")
+                return
+            client = genai.Client(api_key=api_key)
         rate_limiter = RateLimiter(max_calls_per_minute=args.rate_limit)
 
     resolved, stats = resolve_graph(
         triples, idkeys,
         registry_path=args.registry, standards_registry_path=args.standards_registry,
-        similarity_threshold=args.similarity_threshold, model=args.model,
-        embed_model=args.embed_model, embed_dim=args.embed_dim, embed_batch=args.embed_batch,
+        similarity_threshold=args.similarity_threshold, model=model,
+        embed_model=embed_model, embed_dim=args.embed_dim, embed_batch=args.embed_batch,
         max_llm_pairs=args.max_llm_pairs, no_llm=args.no_llm,
-        client=client, rate_limiter=rate_limiter, adjudication_cache=None,
+        client=client, embed_client=embed_client, rate_limiter=rate_limiter, adjudication_cache=None,
     )
 
     if args.dry_run:

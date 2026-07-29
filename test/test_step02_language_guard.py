@@ -34,9 +34,9 @@ import pathlib
 import sys
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO_ROOT / "src"))
+sys.path.insert(0, str(REPO_ROOT / "src_module"))
 
-from step02_extract_triplet_from_jsonl import (  # noqa: E402
+from esg_kg.graph.extract_triples import (  # noqa: E402
     NEWS_GRAPH_PROMPT_TEMPLATE,
     TEMPORAL_GRAPH_PROMPT_TEMPLATE,
     build_page_prompt,

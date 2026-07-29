@@ -2,11 +2,23 @@
 """
 Team data sync — distribute the generated pipeline data via a Hugging Face dataset repo.
 
-Not a pipeline step (hence no stepNN_ prefix): this is the transport layer that lets a
-teammate `git pull` the code and then land the exact `data/` + `graph_output/` +
-`kpi_output/` snapshot that code was built against, without re-running any of the
-expensive stages (the LLM extraction in step01/02/03/07 costs money; the ViDeBERTa
-labeling needs a GPU; and the news crawl is *not* reproducible — the web moves).
+Not a pipeline step (hence no `STAGES`/`BLOCKS` row in `pipeline.py`, and no `run.py`
+dispatch): this is the transport layer that lets a teammate `git pull` the code and then
+land the exact `data/` + `graph_output/` + `kpi_output/` snapshot that code was built
+against, without re-running any of the expensive stages (the LLM extraction in
+step01/02/03/07 costs money; the ViDeBERTa labeling needs a GPU; and the news crawl is
+*not* reproducible — the web moves).
+
+MOVED FROM ``src/data_sync.py`` (2026-07-29), the last file blocking `src/` deletion:
+verbatim except this docstring and the run line below. It resolves `REPO_ROOT` locally
+rather than importing it from `esg_kg.core.paths` — by design, so this tool still runs
+on a fresh clone before any LLM/pipeline dependency is installed (that constraint is
+older than the refactor and travels with the file unchanged). Nothing else in `esg_kg`
+imports from it, and it imports nothing else in `esg_kg`.
+`test/test_esg_kg_datasync.py` compares this against `src/data_sync.py` on the real
+repo (constants, `_git_commit`/`_read_version`/`_folder_size_mb`, `cmd_pull` incl.
+`--dry-run`/`--latest`, `cmd_status`, and `cmd_push --dry-run` — the only push path safe
+to compare for free, since the real path writes `data_version.json` and hits the network).
 
 Why not Git: these folders are ~342 MB of generated artifacts and one 71 MB PDF, which
 Git handles badly (binary deltas bloat history forever, and GitHub hard-blocks >100 MB
@@ -31,9 +43,9 @@ Auth: `hf auth login`, or set HF_TOKEN in .env / the environment.
 A write token is needed only for `push`; `pull` of a private repo needs a read token.
 
 Run from the repo root:
-    python src/data_sync.py push --repo-id <user_or_org>/<name>   # maintainer, after a rebuild
-    python src/data_sync.py pull                                  # teammate, reads data_version.json
-    python src/data_sync.py status                                # what is pinned vs what is local
+    python src_module/esg_kg/core/datasync.py push --repo-id <user_or_org>/<name>   # maintainer, after a rebuild
+    python src_module/esg_kg/core/datasync.py pull                                  # teammate, reads data_version.json
+    python src_module/esg_kg/core/datasync.py status                                # what is pinned vs what is local
 """
 
 from __future__ import annotations
@@ -63,9 +75,10 @@ logger = logging.getLogger(__name__)
 # why every import of it in this file is deliberately function-local.
 os.environ.setdefault("HF_HUB_DISABLE_XET", "1")
 
-# Resolved locally rather than imported from step01: this tool must run on a fresh clone
-# before the LLM/pipeline dependencies are installed, so it stays import-light on purpose.
-REPO_ROOT = Path(__file__).resolve().parents[1]
+# Resolved locally rather than imported from esg_kg.core.paths: this tool must run on a
+# fresh clone before the LLM/pipeline dependencies are installed, so it stays import-light
+# on purpose (three directories up from src_module/esg_kg/core/datasync.py).
+REPO_ROOT = Path(__file__).resolve().parents[3]
 VERSION_FILE = REPO_ROOT / "data_version.json"
 
 # The generated folders shipped to teammates. Everything here is git-ignored.
@@ -223,7 +236,7 @@ def cmd_pull(args: argparse.Namespace) -> int:
         # test/test_data_sync_scope.py.
         allow_patterns=ALLOW_PATTERNS,
     )
-    logger.info("Done. Rebuild Neo4j with: python src/step06_load_graph_to_neo4j.py --clear")
+    logger.info("Done. Rebuild Neo4j with: python src_module/run.py neo4j_load --clear")
     return 0
 
 

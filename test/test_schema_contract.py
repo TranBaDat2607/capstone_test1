@@ -12,10 +12,10 @@ These assertions are cheap and need no generated data, so they run on a bare clo
 
     python test/test_schema_contract.py
 
-IMPORTANT: the tier membership (T1/T2/T3) is IMPORTED from step00, never re-declared
-here. Re-declaring it is how you get a test that either raises false alarms or, worse,
-passes while the real lint is looking at a different set of classes. The tier map in
-step00 is the definition; this file checks the schema against it.
+IMPORTANT: the tier membership (T1/T2/T3) is IMPORTED from esg_kg.report.quality (step00),
+never re-declared here. Re-declaring it is how you get a test that either raises false
+alarms or, worse, passes while the real lint is looking at a different set of classes.
+The tier map in step00 is the definition; this file checks the schema against it.
 """
 
 import json
@@ -23,9 +23,9 @@ import sys
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO / "src"))
+sys.path.insert(0, str(REPO / "src_module"))
 
-from step00_graph_quality_report import (  # noqa: E402
+from esg_kg.report.quality import (  # noqa: E402
     REFERENCE_CLASSES,
     T1_CLASSES,
     T2_CLASSES,
@@ -59,7 +59,7 @@ def test_every_class_is_assigned_to_exactly_one_tier():
         member_of = [name for name, group in tiers.items() if cls in group]
         assert len(member_of) == 1, (
             f"{cls} is in {member_of or 'no tier'}; every schema class must be in "
-            f"exactly one of T1/T2/T3 (see step00_graph_quality_report.py)"
+            f"exactly one of T1/T2/T3 (see esg_kg/report/quality.py)"
         )
 
     # and the tier map must not name classes the schema does not define

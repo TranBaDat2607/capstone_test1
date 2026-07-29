@@ -58,7 +58,7 @@ from dotenv import load_dotenv
 from google import genai
 
 from esg_kg.core.dates import date_start_key, normalize_date_string
-from esg_kg.core.llm import RateLimiter
+from esg_kg.core.llm import RateLimiter, _OpenAIProvider
 from esg_kg.core.paths import REPO_ROOT
 from esg_kg.core.schema import load_schema_sets, validate_triple
 
@@ -377,7 +377,11 @@ def preserve_property_values(original: Any, repaired: Dict[str, Any]) -> Tuple[D
 
 
 def fix_batch_with_llm(batch: List[Dict[str, Any]], schema: Dict[str, Any],
-                       client: genai.Client, rate_limiter: RateLimiter, model: str) -> List[Optional[Dict[str, Any]]]:
+                       client: Any, rate_limiter: RateLimiter, model: str
+                       ) -> List[Optional[Dict[str, Any]]]:
+    """`client` is a `genai.Client` (default) or an `_OpenAIProvider` — detected by
+    type rather than a separate parameter, so this signature (and every existing
+    ``mod.fix_batch_with_llm = stub`` test hook) stays exactly as it was; additive."""
     if not batch:
         return []
     clean_batch = [{k: v for k, v in t.items() if not k.startswith("_")} for t in batch]
@@ -386,6 +390,15 @@ def fix_batch_with_llm(batch: List[Dict[str, Any]], schema: Dict[str, Any],
     ) + json.dumps(clean_batch, indent=2, ensure_ascii=False)
 
     try:
+        if isinstance(client, _OpenAIProvider):
+            # _OpenAIProvider throttles itself (own internal RateLimiter) — same split
+            # as step02's call_llm; `rate_limiter` here is the Gemini path's only.
+            system = ("Return ONLY valid JSON - the array BATCH_FIX_PROMPT above asks "
+                      "for, no prose, no markdown fences.")
+            raw = client.call(system, prompt)
+            fixed = extract_json_from_response(raw)
+            return fixed if isinstance(fixed, list) else []
+
         rate_limiter.wait_if_needed(0)
         response = client.models.generate_content(
             model=model,
@@ -410,7 +423,7 @@ def fix_batch_with_llm(batch: List[Dict[str, Any]], schema: Dict[str, Any],
 def run_phases(input_dir: pathlib.Path, out_dir: pathlib.Path, schema: Dict[str, Any],
                entity_classes: Set[str], edge_labels: Set[str],
                edge_directions: Dict[str, List[Tuple[str, str]]],
-               client: Optional[genai.Client], rate_limiter: RateLimiter,
+               client: Optional[Any], rate_limiter: RateLimiter,
                model: str, batch_size: int, dry_run: bool,
                *, llm=None, repairs=None):
     """Phases 1 -> 2 -> 1.5. Returns ``(all_valid, unfixable, summary)`` and WRITES NOTHING.
@@ -598,7 +611,7 @@ def log_summary(all_valid: List[Dict[str, Any]], unfixable: List[Dict[str, Any]]
 def process_all_files(input_dir: pathlib.Path, out_dir: pathlib.Path, schema: Dict[str, Any],
                       entity_classes: Set[str], edge_labels: Set[str],
                       edge_directions: Dict[str, List[Tuple[str, str]]],
-                      client: Optional[genai.Client], rate_limiter: RateLimiter,
+                      client: Optional[Any], rate_limiter: RateLimiter,
                       model: str, batch_size: int, dry_run: bool) -> None:
     """Stage entry point: phases 1-1.5 (``run_phases``) then phase 3 (write).
 
@@ -679,6 +692,13 @@ def main() -> None:
     parser.add_argument("--rate-limit", type=int, default=DEFAULT_RATE_LIMIT,
                         help="Max RPM for the LLM phase")
     parser.add_argument("--model", type=str, default=DEFAULT_MODEL, help="Gemini model id")
+    parser.add_argument("--provider", type=str, default="gemini", choices=["gemini", "openai"],
+                        help="LLM backend for phase 2 (default gemini; openai needs OPENAI_API_KEY)")
+    parser.add_argument("--openai-model", type=str, default="gpt-4o-mini",
+                        help="OpenAI model id, used only when --provider openai")
+    parser.add_argument("--openai-base-url", type=str, default=None,
+                        help="Override the OpenAI endpoint (e.g. an OpenAI-compatible "
+                             "third-party host); default is OpenAI's own API")
     parser.add_argument("--dry-run", action="store_true",
                         help="Stop after phase 1: report counts but don't call the LLM or write files")
     parser.add_argument("--renormalize", action="store_true",
@@ -705,21 +725,28 @@ def main() -> None:
         renormalize_existing(args.out_dir, entity_classes, edge_labels, edge_directions)
         return
 
-    client: Optional[genai.Client] = None
+    client: Optional[Any] = None
     if not args.dry_run:
         load_dotenv(REPO_ROOT / ".env")
-        api_key = os.getenv("GEMINI_API_KEY")
-        if not api_key:
-            logger.error(f"GEMINI_API_KEY not set in {REPO_ROOT / '.env'}; use --dry-run to skip phase 2")
-            return
-        client = genai.Client(api_key=api_key)
+        if args.provider == "openai":
+            if not os.getenv("OPENAI_API_KEY"):
+                logger.error(f"OPENAI_API_KEY not set in {REPO_ROOT / '.env'}; use --dry-run to skip phase 2")
+                return
+            client = _OpenAIProvider(args.openai_model, args.rate_limit, base_url=args.openai_base_url)
+        else:
+            api_key = os.getenv("GEMINI_API_KEY")
+            if not api_key:
+                logger.error(f"GEMINI_API_KEY not set in {REPO_ROOT / '.env'}; use --dry-run to skip phase 2")
+                return
+            client = genai.Client(api_key=api_key)
 
     rate_limiter = RateLimiter(max_calls_per_minute=args.rate_limit)
 
     process_all_files(
         args.input_dir, args.out_dir, schema,
         entity_classes, edge_labels, edge_directions,
-        client, rate_limiter, args.model, args.batch_size, args.dry_run,
+        client, rate_limiter, args.model if args.provider == "gemini" else args.openai_model,
+        args.batch_size, args.dry_run,
     )
 
 

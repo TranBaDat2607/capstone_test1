@@ -47,14 +47,14 @@ import sys
 import tempfile
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO_ROOT / "src"))
+sys.path.insert(0, str(REPO_ROOT / "src_module"))
 
-import step03_fix_invalid_triplets as step03  # noqa: E402
-from step03_fix_invalid_triplets import (  # noqa: E402
-    load_schema_sets,
+from esg_kg.graph import fix_triples as step03  # noqa: E402
+from esg_kg.graph.fix_triples import (  # noqa: E402
     preserve_property_values,
     process_all_files,
 )
+from esg_kg.core.schema import load_schema_sets  # noqa: E402
 
 VN_NAME = "CÔNG TY CỔ PHẦN NHỰA VÀ MÔI TRƯỜNG XANH AN PHÁT"
 EN_NAME = "An Phat Green Environment and Plastic Joint Stock Company"

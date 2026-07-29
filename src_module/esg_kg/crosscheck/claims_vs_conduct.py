@@ -328,12 +328,16 @@ class Adjudicator:
     with the provider that produced it. When one provider dies (e.g. a 403), the next takes
     over automatically; if all die, the caller falls back to deterministic signals."""
 
-    def __init__(self, openai_model: str, rate_limit: int, order: List[str]) -> None:
+    def __init__(self, openai_model: str, rate_limit: int, order: List[str],
+                 openai_api_key: Optional[str] = None, openai_base_url: Optional[str] = None) -> None:
         # override=True so the repo .env is authoritative — a stale shell OPENAI_API_KEY
-        # must not shadow the key the user edits in .env.
-        load_dotenv(REPO_ROOT / ".env", override=True)
+        # must not shadow the key the user edits in .env. Only applies when
+        # openai_api_key is not explicitly given (a one-off Novita-style override).
+        if openai_api_key is None:
+            load_dotenv(REPO_ROOT / ".env", override=True)
         registry = {
-            "openai": lambda: _OpenAIProvider(openai_model, rate_limit),
+            "openai": lambda: _OpenAIProvider(openai_model, rate_limit,
+                                              api_key=openai_api_key, base_url=openai_base_url),
         }
         self.providers: List[_Provider] = []
         for name in order:
@@ -449,7 +453,9 @@ def run(args: argparse.Namespace) -> None:
 
     # LLM adjudication is mandatory — no deterministic fallback. Abort up front if no
     # provider is available so the run never silently degrades into a weaker mode.
-    adjud = Adjudicator(args.openai_model, args.rate_limit, args.provider_order)
+    adjud = Adjudicator(args.openai_model, args.rate_limit, args.provider_order,
+                        openai_api_key=getattr(args, "openai_api_key", None),
+                        openai_base_url=getattr(args, "openai_base_url", None))
     if not adjud.enabled:
         logger.error("No LLM provider available (need OPENAI_API_KEY in .env) — "
                      "aborting: this pipeline requires LLM adjudication.")
@@ -701,6 +707,9 @@ def main() -> None:
     p.add_argument("--window-after", type=int, default=DEFAULT_WINDOW_AFTER)
     p.add_argument("--max-llm-pairs", type=int, default=DEFAULT_MAX_LLM_PAIRS)
     p.add_argument("--openai-model", type=str, default=DEFAULT_OPENAI_MODEL, help="OpenAI model id.")
+    p.add_argument("--openai-base-url", type=str, default=None,
+                   help="Override the OpenAI endpoint (e.g. an OpenAI-compatible "
+                        "third-party host); default is OpenAI's own API")
     p.add_argument("--provider-order", type=str, default=DEFAULT_PROVIDER_ORDER,
                    help="Comma-separated adjudication preference (currently only 'openai' is supported).")
     p.add_argument("--max-workers", type=int, default=8, help="Concurrent adjudication workers.")

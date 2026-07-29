@@ -3,34 +3,33 @@
 The 03 BLOCK: `03 -> 03b -> 03c` is one unit that writes ONE artifact, ONCE.
 
 WHAT CHANGED AND WHY (DESIGN.md §5.7, decided 2026-07-28)
-In `src/` these are three stages that each read AND write
+In the old flat-script pipeline these were three stages that each read AND write
 `graph_output/validated/all_validated_triples.json`. That intermediate artifact was never
 a deliverable — it is an implementation detail that leaked into being a contract, and it
-costs real money: re-running step03 alone rebuilds the file from `graphs/` and silently
-destroys 03b's 95 anchor triples, 03c's 683 kpi_id stamps, AND the 90 phase-2 repairs that
-were paid for. Nothing warns.
+costs real money: re-running the fix stage alone rebuilds the file from `graphs/` and
+silently destroys the anchor stage's 95 anchor triples, the canonicalize stage's 683
+`kpi_id` stamps, AND the 90 phase-2 repairs that were paid for. Nothing warns.
 
 `esg_kg` therefore collapses them into one block that passes triples IN MEMORY and writes
 the artifact exactly once at the end.
 
-THIS IS AN esg_kg-ONLY REDESIGN. `src/` is not touched (Model A) and keeps its three
-separate stages. That is deliberate, not drift — see DESIGN.md §5.7, which also records
-that §5.5's "fix both trees" constraint does not apply to block changes.
-
-WHY THE SAFETY NET SURVIVES THE REDESIGN — the point of this whole file
-The change is to WHEN the file is written, not to WHAT ends up in it. So the old tree is
-still a usable ORACLE even though it is frozen: run the `src/` chain 03 -> 03b -> 03c on a
-temp copy, run the block, and the final artifacts must be EQUAL. If a future refactor ever
-breaks that property, stop — at that point there is no oracle left, which is a different
-class of risk.
+WHY THE SAFETY NET SURVIVED THE REDESIGN
+The change was to WHEN the file is written, not to WHAT ends up in it. While `src/` still
+existed it served as an ORACLE: the old three-stage chain was run on a temp copy, the block
+was run, and the final artifacts were asserted EQUAL (14,584 triples / 92 anchors / 679
+`kpi_id`, real corpus). That oracle arm is gone now that `src/` has been deleted
+(repointed at `esg_kg` only, 2026-07-29) — see the note on
+`test_block_output_is_well_formed_on_the_real_corpus` below for what survives of it, and
+`test_src_chain_really_writes_it_three_times` (deleted) for what did not.
 
 THE ONE THING THE BLOCK MUST NOT SWALLOW
 "Intermediate artifact" and "cache of a paid result" are different things. Dropping the
 first is the point; dropping the second would mean every block run re-pays for phase 2 and
-— because the LLM is not deterministic — returns something different each time. Today 03b
-and 03c are free to re-run precisely BECAUSE they read a frozen file. So phase-2 repairs go
-to their own cache (`phase2_repairs.json`), keyed by input triple, and the block reads it
-before calling any LLM.
+— because the LLM is not deterministic — returns something different each time. Today the
+anchor/canonicalize stages are free to re-run precisely BECAUSE they read a frozen file. So
+phase-2 repairs go to their own cache (`phase2_repairs.json`), keyed by triple CONTENT
+(never by position — batch boundaries move), storing the model's raw reply with
+`preserve_property_values` applied on the way out.
 
 Offline: no LLM, no Neo4j, no network. The corpus arms SKIP on a bare clone.
 
@@ -47,23 +46,14 @@ import sys
 import tempfile
 
 REPO = pathlib.Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO / "src"))
 sys.path.insert(0, str(REPO / "src_module"))
 
-# --- old tree: the three separate stages that act as the ORACLE ----------------
-import step03_fix_invalid_triplets as old_step03  # noqa: E402
-import step03b_anchor_kpi_facilities as old_step03b  # noqa: E402
-import step03c_canonicalize_kpis as old_step03c  # noqa: E402
-
-# --- new tree: the block -------------------------------------------------------
 from esg_kg.graph import build_validated  # noqa: E402
 from esg_kg.graph import anchor_kpi as new_anchor  # noqa: E402
 from esg_kg.kpi import canonicalize as new_canon  # noqa: E402
 
 SCHEMA_FILE = REPO / "config" / "schema.json"
 GRAPHS_DIR = REPO / "graph_output" / "graphs"
-DEFS_FILE = REPO / "kpi_definitions_construction.json"
-ALIASES_FILE = REPO / "config" / "kpi_type_aliases.json"
 ARTIFACT = "all_validated_triples.json"
 
 VN_NAME = "CÔNG TY CỔ PHẦN NHỰA VÀ MÔI TRƯỜNG XANH AN PHÁT"
@@ -99,81 +89,33 @@ def _unquiet(prev) -> None:
     logging.getLogger().setLevel(prev)
 
 
-# --------------------------------------------------------------------------- #
-# The ORACLE: drive the three src/ stages exactly as the old pipeline does.
-# --------------------------------------------------------------------------- #
-def run_src_chain(out_dir: pathlib.Path, llm=None) -> list:
-    """`03 -> 03b -> 03c`, each writing the shared artifact in turn.
-
-    step03's own main() is NOT used: it would build a real genai client from .env.
-    process_all_files(client=None) is the same code path with phase 2 skipped, which
-    keeps this oracle offline and free.
-    """
-    schema = load_schema()
-    entity_classes, edge_labels, edge_directions = old_step03.load_schema_sets(schema)
-    out_dir.mkdir(parents=True, exist_ok=True)
-
-    real_llm = old_step03.fix_batch_with_llm
-    if llm is not None:
-        old_step03.fix_batch_with_llm = llm
-    try:
-        old_step03.process_all_files(
-            input_dir=GRAPHS_DIR, out_dir=out_dir, schema=schema,
-            entity_classes=entity_classes, edge_labels=edge_labels,
-            edge_directions=edge_directions,
-            client=(object() if llm is not None else None),
-            rate_limiter=None, model="stub", batch_size=25, dry_run=False,
-        )
-    finally:
-        old_step03.fix_batch_with_llm = real_llm
-
-    artifact = out_dir / ARTIFACT
-
-    # --- 03b: append gazetteer anchors, in place -------------------------------
-    triples = json.loads(artifact.read_text(encoding="utf-8"))
-    sentences = old_step03b.load_sentences(old_step03b.DEFAULT_SENTENCE_GLOBS)
-    new_triples, _ = old_step03b.build_patch(
-        triples, sentences, schema, old_step03b.DEFAULT_MAX_PER_FACILITY)
-    triples.extend(new_triples)
-    artifact.write_text(json.dumps(triples, indent=2, ensure_ascii=False), encoding="utf-8")
-
-    # --- 03c: canonicalize kpi_id + goals, in place ----------------------------
-    triples = json.loads(artifact.read_text(encoding="utf-8"))
-    defs = json.loads(DEFS_FILE.read_text(encoding="utf-8"))
-    aliases = json.loads(ALIASES_FILE.read_text(encoding="utf-8"))
-    matcher = old_step03c.Matcher(defs, aliases, old_step03c.DEFAULT_FUZZY_THRESHOLD)
-    old_step03c.canonicalize_kpis(triples, matcher)
-    old_step03c.backfill_goal_target_date(triples)
-    artifact.write_text(json.dumps(triples, indent=2, ensure_ascii=False), encoding="utf-8")
-
-    return json.loads(artifact.read_text(encoding="utf-8"))
-
-
 def run_block(out_dir: pathlib.Path, **kw):
-    """The new tree's single entry point."""
+    """The single entry point: `03 -> 03b -> 03c` chained in memory, writing once."""
     return build_validated.run_block(
         input_dir=GRAPHS_DIR, out_dir=out_dir, schema=load_schema(), **kw)
 
 
 # --------------------------------------------------------------------------- #
-# 1. The oracle arm — the whole reason the redesign is safe.
+# 1. The block's own output, on the real corpus.
+#
+# This used to ALSO assert the block's artifact was byte-identical to the src/
+# 03->03b->03c chain run as an oracle on a temp copy (DESIGN.md §5.7's whole safety
+# argument). That comparison is gone with src/ (repointed 2026-07-29) — but the
+# concrete claims below about the block's OWN output (corpus really read, both
+# sub-stages really contributed) do not depend on the oracle and are kept.
 # --------------------------------------------------------------------------- #
-def test_block_output_equals_src_chain_on_the_real_corpus():
+def test_block_output_is_well_formed_on_the_real_corpus():
     if not have_corpus():
-        return _skip("block vs src chain", "graph_output/graphs/ not present")
+        return _skip("block real corpus", "graph_output/graphs/ not present")
     prev = _quiet()
     try:
-        with tempfile.TemporaryDirectory() as t1, tempfile.TemporaryDirectory() as t2:
-            want = run_src_chain(pathlib.Path(t1) / "validated")
+        with tempfile.TemporaryDirectory() as t2:
             block_out = pathlib.Path(t2) / "validated"
             run_block(block_out)
             got = json.loads((block_out / ARTIFACT).read_text(encoding="utf-8"))
     finally:
         _unquiet(prev)
 
-    assert len(got) == len(want), (
-        f"triple count diverged: block={len(got)} src-chain={len(want)}")
-    assert got == want, "the block produced a different artifact than the src/ chain"
     assert len(got) > 1000, f"only {len(got)} triples — the corpus was not really read"
 
     anchors = sum(1 for t in got if t.get("anchor_method") == "offline_gazetteer")
@@ -181,7 +123,7 @@ def test_block_output_equals_src_chain_on_the_real_corpus():
                   if (t.get(s) or {}).get("properties", {}).get("kpi_id"))
     assert anchors > 0, "03b contributed nothing — the block is not running the anchor stage"
     assert kpi_ids > 0, "03c contributed nothing — the block is not running canonicalize"
-    print(f"     ({len(got)} triples, {anchors} anchors, {kpi_ids} kpi_id — identical)")
+    print(f"     ({len(got)} triples, {anchors} anchors, {kpi_ids} kpi_id)")
 
 
 # --------------------------------------------------------------------------- #
@@ -201,7 +143,7 @@ def _record_writes():
 
 
 def test_block_writes_the_artifact_exactly_once():
-    """The src/ chain writes it three times; the block must write it once."""
+    """The old three-stage chain wrote it three times; the block must write it once."""
     if not have_corpus():
         return _skip("single write", "graph_output/graphs/ not present")
     prev = _quiet()
@@ -218,25 +160,6 @@ def test_block_writes_the_artifact_exactly_once():
     # and it must be the LAST thing written, i.e. no stage reads it back afterwards
     assert calls[-1] == ARTIFACT or ARTIFACT in calls, calls
     print(f"     (writes: {calls})")
-
-
-def test_src_chain_really_writes_it_three_times():
-    """Guard against a vacuous version of the arm above: prove the OLD behaviour is
-    what we think it is, otherwise 'exactly 1' might be trivially true."""
-    if not have_corpus():
-        return _skip("triple-write baseline", "graph_output/graphs/ not present")
-    prev = _quiet()
-    calls, real = _record_writes()
-    try:
-        with tempfile.TemporaryDirectory() as tmp:
-            run_src_chain(pathlib.Path(tmp) / "validated")
-    finally:
-        pathlib.Path.write_text = real
-        _unquiet(prev)
-
-    n = calls.count(ARTIFACT)
-    assert n == 3, f"expected the src/ chain to write the artifact 3 times, saw {n}"
-    print(f"     (src/ chain writes it {n}× — the block writes it 1×)")
 
 
 # --------------------------------------------------------------------------- #

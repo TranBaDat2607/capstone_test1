@@ -952,3 +952,23 @@ vừa canh **wiring** bằng `ast` (`main()` có thật sự gọi helper không
 import không). Đã mutation-check: bỏ cổng `win32` ở một cây bị **2 arm** bắt.
 Kiểm end-to-end: `PYTHONIOENCODING=cp1252` chạy cả hai cây trên đồ thị thật đều
 **exit 0** và JSON **giống hệt nhau** (chỉ khác `generated_at`).
+
+## 7. `src/` đã bị xoá (2026-07-29) — refactor hoàn tất
+
+Toàn bộ nội dung §1-§6 ở trên là nhật ký lịch sử của quá trình dời — giữ nguyên vì nó ghi
+lại đúng cách "Model A" (§4) từng vận hành trong lúc `src/` còn là oracle sống. Sau khi cả
+15 stage dời xong (tổng kết ở CLAUDE.md, mục "Active refactor"), Model A đã hết nhiệm vụ:
+
+- `src/data_sync.py` dời sang `esg_kg/core/datasync.py` — file cuối cùng chặn việc xoá.
+- Toàn bộ 19 file test "hai cây" (`test_esg_kg_*`, `test_console_utf8.py`,
+  `test_standards_audit.py`) được viết lại thành test một cây: bỏ nhánh import `src/` và
+  phép so sánh cross-tree, giữ lại (hoặc thay bằng giá trị vàng lấy trực tiếp từ hàm) mọi
+  assertion có tuyên bố độc lập thật sự.
+- `step10`, `step04b`, `step07b` — ba stage §4 từng liệt là "cố ý không dời, vẫn chạy được
+  từ `src/`" — bị **xoá hẳn** cùng lúc với `src/`, không giữ lại làm công cụ độc lập.
+  `pipeline.py::STAGES` không còn hàng nào cho chúng.
+- `src/` đã bị xoá khỏi repo. Không còn "cây thứ hai" nào để `esg_kg` phải giữ tương đương
+  — `esg_kg` bây giờ tự nó là oracle.
+
+Đọc `esg_kg/pipeline.py` (bảng STAGES/BLOCKS thật) và `src_module/README.md` để biết trạng
+thái hiện tại; tài liệu §1-§6 ở trên mô tả LÀM SAO đi tới đây, không phải trạng thái bây giờ.

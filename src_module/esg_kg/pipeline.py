@@ -1,17 +1,13 @@
 """Canonical run order for the pipeline (stage C of the whole system).
 
-This preserves the information the ``stepNN_`` filename prefixes used to encode,
-now that modules are grouped by role instead of numbered. Pure data — no imports
-of stage code — so it stays importable while the package is half-migrated.
+This preserves the information the ``stepNN_`` filename prefixes used to encode, back
+when `src/` held one file per stage. `src/` is gone (deleted 2026-07-29, refactor
+complete — DESIGN.md §7): the ``old_step`` field is now a historical label only (it is
+what `run.py <old_id>` still resolves by, e.g. ``run.py 05b``), not a live file-existence
+check. Pure data — no imports of stage code.
 
 Each entry: (order, old_step, new_module, note). ``order`` is the run sequence;
 'b'/'c'/'d' suffixes are offline patches that must run right after their base.
-
-``new_module`` is ``None`` for a stage that is deliberately NOT being ported. That is a
-decision, not a backlog item, and the distinction is load-bearing: ``run.py --list`` would
-otherwise render it as merely "not yet migrated" and keep dead work on the queue forever.
-The row itself stays, because the stage still exists and still runs from ``src/`` — its
-position in the run order is real knowledge that would be lost by deleting the line.
 """
 
 STAGES = [
@@ -22,7 +18,6 @@ STAGES = [
     ("03b", "step03b_anchor_kpi_facilities",       "esg_kg.graph.anchor_kpi",         "offline; after 03, before 03c"),
     ("03c", "step03c_canonicalize_kpis",           "esg_kg.kpi.canonicalize",         "offline; after 03b, before 04"),
     ("04",  "step04_build_issuer_registry",        "esg_kg.registry.issuer",          "run-once bootstrap; writes a TRACKED, hand-edited config file"),
-    ("04b", "step04b_build_standards_registry",    None,                                  "NOT PORTED by decision (2026-07-26): it read step05's output while step05 read its output — a cycle. config/standards_registry.json is static config now and step00 audits its coverage; src/ keeps the file for a from-scratch reseed"),
     ("05",  "step05_resolve_entities",             "esg_kg.resolve.entities",         "entity resolution; migrated 2026-07-29 (14th stage) — also runnable as part of the build_resolved block"),
     ("05b", "step05b_stamp_provenance",            "esg_kg.resolve.provenance",       "offline; after 05"),
     ("05c", "step05c_link_standard_indicators",    "esg_kg.resolve.indicators",       "offline; after 05b"),
@@ -30,26 +25,34 @@ STAGES = [
     ("06",  "step06_load_graph_to_neo4j",          "esg_kg.load.neo4j_load",          "needs Neo4j running"),
     ("07",  "step07_crosscheck_claims_vs_conduct", "esg_kg.crosscheck.claims_vs_conduct",
      "LLM adjudication (mandatory); migrating it unblocks 08 (node_text)"),
-    ("07b", "step07b_enrich_dossiers",             None,                                  "offline softmax scores — NOT PORTED by decision (2026-07-25): nothing on the delivered surface reads them; stays runnable in src/"),
     ("08",  "step08_sync_crosscheck_to_neo4j",     "esg_kg.load.neo4j_sync",          "advisory layer -> Neo4j; first Neo4j-touching stage migrated"),
     ("09",  "step09_report_claim_ledger",          "esg_kg.report.claim_ledger",      "Neo4j-only; run after 08"),
 ]
 
-# step10 (P6 evaluation report) is REMOVED, not merely unported — decided 2026-07-28: the
-# project dropped this style of measurement (coverage/case-study/ablation without ground
-# truth) as a deliverable outright, no replacement mechanism. Unlike 04b/07b it has no row
-# here and no src/ file: a STAGES row must point at a real file, and this one no longer
-# exists. See src_module/esg_kg/DESIGN.md §4.3 and src_module/PIPELINE.md §4 for the record.
+# Three stages that were never ported and have NO row here — all REMOVED outright, not
+# merely unported, so there is nothing left for a STAGES row to point at:
+#   step10 (P6 evaluation report) — removed 2026-07-28: the project dropped this style of
+#     measurement (coverage/case-study/ablation without ground truth) as a deliverable
+#     outright, no replacement mechanism. DESIGN.md §4.3, PIPELINE.md §4.
+#   step04b (standards-registry reseed) — removed 2026-07-29 with `src/`: it read step05's
+#     output while step05 read its output (a cycle), and the scan earned nothing (every
+#     alias was a hardcoded seed). config/standards_registry.json stays static config;
+#     step00's `standards_registry_audit` is what replaced its coverage-checking role.
+#     Rebuilding it from scratch now means hand-editing the JSON, not running a script.
+#   step07b (softmax evidence-balance scores) — removed 2026-07-29 with `src/`: nothing on
+#     the delivered UI surface ever read `assessment_scores`/`score_components`; the
+#     categorical `assessment` from step07 was always the primary output
+#     (docs/SYSTEM_DESIGN.md §1.1 — no ground truth exists for a greenwashing probability).
 
 # --------------------------------------------------------------------------- #
 # BLOCKS — several stages collapsed into ONE unit that writes its artifact once.
 #
 # Each entry: (name, module, member step ids, note).
 #
-# A block is NOT a stage and deliberately has NO `src/` counterpart: `src/` keeps the
-# stages separate for ever (Model A), while `esg_kg` is allowed to redesign the shape.
-# That is why blocks live in their own table instead of as STAGES rows — a STAGES row
-# must point at a real `src/` file, and a block never can.
+# A block is NOT a stage: it has no `old_step` label of its own, and its member stages
+# stay individually runnable, which is why it lives in its own table instead of as a
+# STAGES row. Blocks were `esg_kg`'s redesign against `src/`'s three-separate-stages
+# shape while `src/` still existed (Model A, now historical — DESIGN.md §7).
 #
 # The rule that produces a block (DESIGN.md §5.7): when N stages each read AND write
 # the same artifact, they are not N stages, they are one. The intermediate file is
@@ -69,5 +72,5 @@ BLOCKS = [
      "stage, unchanged (DESIGN.md §5.7)"),
 ]
 
-# data_sync is a utility, not a pipeline stage:
-#   src/data_sync.py -> esg_kg.core.datasync
+# data_sync is a utility, not a pipeline stage: esg_kg.core.datasync
+# (moved from src/data_sync.py 2026-07-29, the last file blocking src/ deletion)

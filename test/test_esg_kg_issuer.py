@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
 """
-Old-vs-new equivalence for ONE migration slice: `src/step04_build_issuer_registry.py`
--> `esg_kg.registry.issuer`.
+Coverage for `esg_kg.registry.issuer` (formerly an old-vs-new equivalence test against
+`src/step04_build_issuer_registry.py`).
+
+Repointed at `esg_kg` only (2026-07-29) now that `src/` is gone. The cross-tree
+comparisons this file used to run have been removed; what remains are the independent,
+new-tree-only assertions each function already carried (specific expected values,
+invariants, non-vacuity checks) — see the per-function history below for what changed.
 
 WHY THIS IS A SEPARATE FILE
 Same reason as `test_esg_kg_anchor_kpi.py` / `test_esg_kg_provenance.py`: one file per
-migration slice. Same contract as all the siblings — import BOTH trees, run them on the
-same real input, assert equal.
+migration slice.
 
 WHY THIS SLICE NEEDED NO NEW core/ MODULE
 step04 imports exactly one symbol from a sibling stage file: `REPO_ROOT` (`step04:49`,
@@ -53,13 +57,9 @@ import tempfile
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO / "src"))
 sys.path.insert(0, str(REPO / "src_module"))
 
-# --- old: the flat src/ script --------------------------------------------------
-import step04_build_issuer_registry as old_step04  # noqa: E402
-
-# --- new: the esg_kg package -----------------------------------------------------
+# --- the esg_kg package -----------------------------------------------------------
 from esg_kg.registry import issuer as new_issuer  # noqa: E402
 
 # --- the kernel the new tree must be REUSING, not re-copying --------------------
@@ -111,13 +111,6 @@ def test_issuer_reuses_naming_kernel_not_re_copies_it():
 
 
 def test_issuer_module_constants_match_src():
-    assert new_issuer.DEFAULT_MIN_SUBJECT_EDGES == old_step04.DEFAULT_MIN_SUBJECT_EDGES
-    assert new_issuer.ISSUER_PREDICATES == old_step04.ISSUER_PREDICATES
-    assert new_issuer.RELATION_WEIGHTS == old_step04.RELATION_WEIGHTS
-    assert new_issuer.GENERIC_TOKENS == old_step04.GENERIC_TOKENS
-    assert new_issuer.QUALIFIER_TOKENS == old_step04.QUALIFIER_TOKENS
-    assert new_issuer.EXCLUDE_SEED == old_step04.EXCLUDE_SEED
-    assert new_issuer.REPORT_STEM_RE.pattern == old_step04.REPORT_STEM_RE.pattern
     # the paths must be the REAL ones, not a temp dir the new tree invented
     assert new_issuer.DEFAULT_INPUT == TRIPLES_FILE
     assert new_issuer.DEFAULT_COMPANIES == COMPANIES_FILE
@@ -145,8 +138,7 @@ NODE_IDENTIFIER_CASES = [
 def test_get_node_identifier_matches_src():
     for node in NODE_IDENTIFIER_CASES:
         got = new_issuer.get_node_identifier(copy.deepcopy(node))
-        want = old_step04.get_node_identifier(copy.deepcopy(node))
-        assert got == want, f"get_node_identifier({node!r}): new={got!r} old={want!r}"
+        assert isinstance(got, str), f"get_node_identifier({node!r}) returned non-str: {got!r}"
     # not vacuous: the priority list, the None/blank skip, and the non-dict path all fired
     assert new_issuer.get_node_identifier("bare string") == "bare string"
     assert new_issuer.get_node_identifier({"properties": {"name": "  An Phat  "}}) == "An Phat"
@@ -164,8 +156,8 @@ def test_issuer_core_tokens_matches_src():
         "AAA",
     ]
     for n in names:
-        got, want = new_issuer.issuer_core_tokens(n), old_step04.issuer_core_tokens(n)
-        assert got == want, f"issuer_core_tokens({n!r}): new={got} old={want}"
+        got = new_issuer.issuer_core_tokens(n)
+        assert isinstance(got, set), f"issuer_core_tokens({n!r}) returned non-set: {got!r}"
     # not vacuous: legal-form + generic-token stripping actually dropped tokens
     core = new_issuer.issuer_core_tokens("CÔNG TY CỔ PHẦN NHỰA VÀ MÔI TRƯỜNG XANH AN PHÁT")
     assert "cong" not in core and "ty" not in core, core
@@ -186,8 +178,8 @@ GRAPH_SIM_CASES = [
 def test_graph_similarity_matches_src():
     for a, b in GRAPH_SIM_CASES:
         got = new_issuer.graph_similarity(set(a), set(b))
-        want = old_step04.graph_similarity(set(a), set(b))
-        assert got == want, f"graph_similarity({a}, {b}): new={got} old={want}"
+        assert isinstance(got, float), f"graph_similarity({a}, {b}) returned non-float: {got!r}"
+        assert 0.0 <= got <= 1.0, f"graph_similarity({a}, {b}) out of [0,1]: {got!r}"
     # not vacuous: identical signatures -> 1.0, disjoint -> 0.0, empty/empty -> 0.0
     assert new_issuer.graph_similarity({("reportsKPI", "x")}, {("reportsKPI", "x")}) == 1.0
     assert new_issuer.graph_similarity({("subjectToPenalty", "p")}, {("locatedIn", "y")}) == 0.0
@@ -202,8 +194,6 @@ def test_load_ticker_official_names_matches_src_on_the_real_xlsx():
         _skip("issuer/load_ticker_official_names", "config/company_annual_report.xlsx absent")
         return
     got = new_issuer.load_ticker_official_names(COMPANIES_FILE)
-    want = old_step04.load_ticker_official_names(COMPANIES_FILE)
-    assert got == want, "ticker->name mapping diverged"
     assert got, "empty mapping — arm is vacuous"
     print(f"     ({len(got)} tickers, identical mapping)")
 
@@ -214,10 +204,6 @@ def test_collect_org_signals_matches_src_on_the_real_corpus():
         _skip("issuer/collect_org_signals", "all_validated_triples.json absent (data_sync pull)")
         return
     new_counts, new_orgs, new_tickers = new_issuer.collect_org_signals(triples)
-    old_counts, old_orgs, old_tickers = old_step04.collect_org_signals(triples)
-    assert new_orgs == old_orgs, "Organization name set diverged"
-    assert new_tickers == old_tickers, "ticker set diverged"
-    assert dict(new_counts) == dict(old_counts), "issuer-predicate subject counts diverged"
     assert new_orgs, "no Organization names found — arm is vacuous"
     assert new_tickers, "no tickers detected — arm is vacuous"
     print(f"     ({len(new_orgs)} org names, {len(new_tickers)} tickers, identical)")
@@ -243,11 +229,8 @@ def test_classify_for_ticker_matches_src_on_the_real_corpus():
         got = new_issuer.classify_for_ticker(
             ticker, official, org_names, subj_counts,
             new_issuer.DEFAULT_MIN_SUBJECT_EDGES, triples, 0.8, 0.2)
-        old_step04.build_signatures_cache(triples)
-        want = old_step04.classify_for_ticker(
-            ticker, official, org_names, subj_counts,
-            old_step04.DEFAULT_MIN_SUBJECT_EDGES, triples, 0.8, 0.2)
-        assert got == want, f"classify_for_ticker({ticker!r}) diverged:\n  new={got}\n  old={want}"
+        assert isinstance(got, dict), \
+            f"classify_for_ticker({ticker!r}) unexpected shape: {got!r}"
         n_classified += 1
 
     assert n_classified > 0, "no ticker had an official name — arm is vacuous"
@@ -262,22 +245,20 @@ def test_build_matches_src_on_a_temp_workspace():
         return
     prev = _quiet()
     try:
-        with tempfile.TemporaryDirectory() as t1, tempfile.TemporaryDirectory() as t2:
+        with tempfile.TemporaryDirectory() as t1:
             new_out = Path(t1) / "issuer_registry.json"
-            old_out = Path(t2) / "issuer_registry.json"
             new_issuer.build(TRIPLES_FILE, COMPANIES_FILE, new_out,
                               new_issuer.DEFAULT_MIN_SUBJECT_EDGES, True, 0.8, 0.2)
-            old_step04.build(TRIPLES_FILE, COMPANIES_FILE, old_out,
-                              old_step04.DEFAULT_MIN_SUBJECT_EDGES, True, 0.8, 0.2)
             got = json.loads(new_out.read_text(encoding="utf-8"))
-            want = json.loads(old_out.read_text(encoding="utf-8"))
     finally:
         _unquiet(prev)
 
-    assert got == want, "built registry diverged between trees"
     assert got, "empty registry — arm is vacuous"
+    for ticker, entry in got.items():
+        assert "aliases" in entry and "exclusions" in entry and "needs_review" in entry, \
+            f"{ticker}: registry entry missing expected keys: {sorted(entry)}"
     n_aliases = sum(len(v["aliases"]) for v in got.values())
-    print(f"     ({len(got)} ticker(s), {n_aliases} alias(es) total, identical)")
+    print(f"     ({len(got)} ticker(s), {n_aliases} alias(es) total)")
 
 
 def test_build_never_touches_the_real_tracked_registry():
@@ -297,19 +278,18 @@ def test_build_never_touches_the_real_tracked_registry():
 # 3. merge_preserving_edits, exercised through build() with a pre-existing registry
 #    (the whole reason the function exists — confirmed edits must survive a re-run).
 # --------------------------------------------------------------------------- #
-def test_build_preserves_human_edits_across_a_rerun_identically_in_both_trees():
+def test_build_preserves_human_edits_across_a_rerun():
+    """merge_preserving_edits' whole reason for existing: a human-made edit (moving a
+    needs_review entry into exclusions) must survive a re-run without --force."""
     if not load_triples() or not COMPANIES_FILE.exists():
         _skip("issuer/build-preserve-edits", "corpus or companies xlsx absent")
         return
     prev = _quiet()
     try:
-        with tempfile.TemporaryDirectory() as t1, tempfile.TemporaryDirectory() as t2:
+        with tempfile.TemporaryDirectory() as t1:
             new_out = Path(t1) / "issuer_registry.json"
-            old_out = Path(t2) / "issuer_registry.json"
             new_issuer.build(TRIPLES_FILE, COMPANIES_FILE, new_out,
                               new_issuer.DEFAULT_MIN_SUBJECT_EDGES, True, 0.8, 0.2)
-            old_step04.build(TRIPLES_FILE, COMPANIES_FILE, old_out,
-                              old_step04.DEFAULT_MIN_SUBJECT_EDGES, True, 0.8, 0.2)
 
             first = json.loads(new_out.read_text(encoding="utf-8"))
             some_ticker = next(iter(first), None)
@@ -317,28 +297,30 @@ def test_build_preserves_human_edits_across_a_rerun_identically_in_both_trees():
                 _skip("issuer/build-preserve-edits", "registry came out empty")
                 return
 
-            # simulate a human moving one needs_review entry into exclusions, by hand,
-            # in BOTH temp registries identically
-            for out in (new_out, old_out):
-                reg = json.loads(out.read_text(encoding="utf-8"))
-                entry = reg[some_ticker]
-                if entry["needs_review"]:
-                    moved = entry["needs_review"].pop(0)
-                    entry["exclusions"].append({"name": moved["name"], "reason": "human: false positive"})
-                out.write_text(json.dumps(reg, ensure_ascii=False), encoding="utf-8")
+            # simulate a human moving one needs_review entry into exclusions, by hand
+            reg = json.loads(new_out.read_text(encoding="utf-8"))
+            entry = reg[some_ticker]
+            if not entry["needs_review"]:
+                _skip("issuer/build-preserve-edits", f"{some_ticker} has no needs_review entries")
+                return
+            moved = entry["needs_review"].pop(0)
+            entry["exclusions"].append({"name": moved["name"], "reason": "human: false positive"})
+            new_out.write_text(json.dumps(reg, ensure_ascii=False), encoding="utf-8")
 
-            # re-run WITHOUT --force: the human edit must survive, identically in both trees
+            # re-run WITHOUT --force: the human edit must survive
             new_issuer.build(TRIPLES_FILE, COMPANIES_FILE, new_out,
                               new_issuer.DEFAULT_MIN_SUBJECT_EDGES, False, 0.8, 0.2)
-            old_step04.build(TRIPLES_FILE, COMPANIES_FILE, old_out,
-                              old_step04.DEFAULT_MIN_SUBJECT_EDGES, False, 0.8, 0.2)
             got = json.loads(new_out.read_text(encoding="utf-8"))
-            want = json.loads(old_out.read_text(encoding="utf-8"))
     finally:
         _unquiet(prev)
 
-    assert got == want, "re-run-with-preserved-edits diverged between trees"
-    print(f"     (human edit on {some_ticker!r} survived a re-run identically in both trees)")
+    got_entry = got[some_ticker]
+    assert any(e["name"] == moved["name"] for e in got_entry["exclusions"]), (
+        f"the human-moved exclusion for {moved['name']!r} did not survive the re-run "
+        f"(exclusions: {got_entry['exclusions']})")
+    assert not any(nr["name"] == moved["name"] for nr in got_entry["needs_review"]), (
+        f"{moved['name']!r} was re-added to needs_review — the human edit was not preserved")
+    print(f"     (human edit on {some_ticker!r} survived a re-run)")
 
 
 # --------------------------------------------------------------------------- #
@@ -358,26 +340,25 @@ NODES_EDGES_SHAPE = {
 }
 
 
-def test_build_no_longer_silently_converts_a_nodes_edges_dict_in_either_tree():
+def test_build_no_longer_silently_converts_a_nodes_edges_dict():
     prev = _quiet()
     try:
         with tempfile.TemporaryDirectory() as t:
             input_file = Path(t) / "fake_validated.json"
             input_file.write_text(json.dumps(NODES_EDGES_SHAPE), encoding="utf-8")
-            for mod in (new_issuer, old_step04):
-                out = Path(t) / f"registry_{mod.__name__.split('.')[-1]}.json"
-                raised = False
-                try:
-                    mod.build(input_file, COMPANIES_FILE, out,
-                              mod.DEFAULT_MIN_SUBJECT_EDGES, True, 0.8, 0.2)
-                except AttributeError:
-                    raised = True
-                assert raised, (
-                    f"{mod.__name__} still silently converts a {{nodes,edges}} dict — "
-                    "the DESIGN.md §5.2 dead branch was not removed")
+            out = Path(t) / "registry_esg_kg.json"
+            raised = False
+            try:
+                new_issuer.build(input_file, COMPANIES_FILE, out,
+                                  new_issuer.DEFAULT_MIN_SUBJECT_EDGES, True, 0.8, 0.2)
+            except AttributeError:
+                raised = True
+            assert raised, (
+                "esg_kg.registry.issuer still silently converts a {nodes,edges} dict — "
+                "the DESIGN.md §5.2 dead branch was not removed")
     finally:
         _unquiet(prev)
-    print("     (both trees now reject the {nodes,edges} shape instead of sniffing it)")
+    print("     (esg_kg now rejects the {nodes,edges} shape instead of sniffing it)")
 
 
 if __name__ == "__main__":

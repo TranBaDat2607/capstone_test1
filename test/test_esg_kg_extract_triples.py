@@ -32,6 +32,11 @@ Offline: no real Gemini call, no network, no GEMINI_API_KEY required. `data/labe
 and `kpi_output/` are git-ignored (shipped via the HF snapshot) — arms needing them SKIP
 with a message on a bare clone.
 
+Was driven through both `src/` and `esg_kg` while both trees existed (DESIGN.md §5.3);
+repointed at `esg_kg` only (2026-07-29) now that `src/` is gone. Cross-tree comparisons
+with no independent claim about correct behaviour were deleted rather than rewritten
+against a guessed value.
+
 Run from the repo root:
 
     python test/test_esg_kg_extract_triples.py
@@ -46,11 +51,7 @@ import zlib
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO / "src"))
 sys.path.insert(0, str(REPO / "src_module"))
-
-# --- old: the flat src/ script (already carries the issue-#6 language fix) -------
-import step02_extract_triplet_from_jsonl as old_mod  # noqa: E402
 
 # --- new: the esg_kg package -------------------------------------------------------
 from esg_kg.core import io_jsonl as core_io_jsonl  # noqa: E402
@@ -94,135 +95,25 @@ def test_new_tree_imports_the_kernel_rather_than_recopying():
 
 
 def test_schema_sets_replaced_by_load_schema_sets():
-    """The stage-local duplicate is gone; load_schema_sets's first two values match it."""
+    """The stage-local duplicate is gone."""
     assert not hasattr(new_mod, "schema_sets"), \
         "new tree must not carry a schema_sets duplicate of core.schema.load_schema_sets"
-    old_entities, old_edges = old_mod.schema_sets(SCHEMA)
     new_entities, new_edges, _edge_directions = core_schema.load_schema_sets(SCHEMA)
-    assert new_entities == old_entities
-    assert new_edges == old_edges
-
-
-def test_pages_for_doc_and_load_kpis_for_doc_real_corpus():
-    if not old_mod.DEFAULT_INPUT.exists():
-        _skip("test_pages_for_doc_and_load_kpis_for_doc_real_corpus",
-              f"{old_mod.DEFAULT_INPUT} not present (bare clone)")
-        return
-    docs = core_io_jsonl.load_pages_from_jsonl(old_mod.DEFAULT_INPUT)
-    compared = 0
-    for src, jsonl_pages in docs.items():
-        a = new_mod.pages_for_doc(jsonl_pages)
-        b = old_mod.pages_for_doc(jsonl_pages)
-        assert a == b, f"pages_for_doc diverged for {src}"
-        compared += 1
-        pdf_stem = src.rsplit(".", 1)[0]
-        ka = new_mod.load_kpis_for_doc(pdf_stem, old_mod.DEFAULT_KPI_DIR)
-        kb = old_mod.load_kpis_for_doc(pdf_stem, old_mod.DEFAULT_KPI_DIR)
-        assert ka == kb, f"load_kpis_for_doc diverged for {pdf_stem}"
-    assert compared > 0, "arm is vacuous: no documents compared"
-    print(f"  (compared {compared} document(s) from the real corpus)")
+    assert new_entities, "arm is vacuous: load_schema_sets returned no entity classes"
+    assert new_edges, "arm is vacuous: load_schema_sets returned no edge labels"
 
 
 # --------------------------------------------------------------------------- #
 # Part B — module surface: constants, prompt templates, pure helpers.
 # --------------------------------------------------------------------------- #
-def test_constants_match():
-    assert new_mod.DEFAULT_INPUT == old_mod.DEFAULT_INPUT
-    assert new_mod.DEFAULT_SCHEMA == old_mod.DEFAULT_SCHEMA
-    assert new_mod.DEFAULT_KPI_DIR == old_mod.DEFAULT_KPI_DIR
-    assert new_mod.DEFAULT_OUT_DIR == old_mod.DEFAULT_OUT_DIR
-    assert new_mod.DEFAULT_MODEL == old_mod.DEFAULT_MODEL
-    assert new_mod.DEFAULT_RATE_LIMIT == old_mod.DEFAULT_RATE_LIMIT
-    assert new_mod.DEFAULT_MAX_WORKERS == old_mod.DEFAULT_MAX_WORKERS
-
-
 def test_cfg_json_matches():
-    assert new_mod.CFG_JSON.temperature == old_mod.CFG_JSON.temperature == 0
-    assert new_mod.CFG_JSON.response_mime_type == old_mod.CFG_JSON.response_mime_type
-    assert new_mod.CFG_JSON.system_instruction == old_mod.CFG_JSON.system_instruction
+    assert new_mod.CFG_JSON.temperature == 0, new_mod.CFG_JSON.temperature
+    assert new_mod.CFG_JSON.response_mime_type == "application/json", new_mod.CFG_JSON.response_mime_type
 
 
 def test_prompt_templates_pin_the_vietnamese_language_fix_byte_for_byte():
-    # old_mod already carries the issue-#6 fix (Part A landed in src/ first) — this is
-    # a straightforward equality pin, same technique as test_esg_kg_crosscheck.py
-    # pinning ADJUDICATE_SYSTEM.
-    assert new_mod.TEMPORAL_GRAPH_PROMPT_TEMPLATE == old_mod.TEMPORAL_GRAPH_PROMPT_TEMPLATE
-    assert new_mod.NEWS_GRAPH_PROMPT_TEMPLATE == old_mod.NEWS_GRAPH_PROMPT_TEMPLATE
     assert "## OUTPUT LANGUAGE" in new_mod.TEMPORAL_GRAPH_PROMPT_TEMPLATE
     assert "## OUTPUT LANGUAGE" in new_mod.NEWS_GRAPH_PROMPT_TEMPLATE
-
-
-def test_build_page_prompt_matches_for_report_and_news():
-    report_kwargs = dict(schema=SCHEMA, page_text="Doanh thu nam 2023 dat 1.200 ty dong.",
-                         page_no=3, page_kpis=[{"kpi_type": "ESG-1-1", "value": 1}],
-                         company="AAA", year=2023, source="report")
-    a = new_mod.build_page_prompt(**report_kwargs)
-    b = old_mod.build_page_prompt(**report_kwargs)
-    assert a == b, "report-source build_page_prompt diverged"
-
-    news_kwargs = dict(schema=SCHEMA, page_text="Cong ty bi xu phat vi vi pham moi truong.",
-                       page_no=1, page_kpis=[], company="AAA", year=2024, source="news",
-                       article_meta={"source_domain": "vietnamnet.vn", "title": "AAA bi xu phat",
-                                     "publish_date": "2024-08-14", "url": "https://vietnamnet.vn/x"})
-    a2 = new_mod.build_page_prompt(**news_kwargs)
-    b2 = old_mod.build_page_prompt(**news_kwargs)
-    assert a2 == b2, "news-source build_page_prompt diverged"
-
-
-def test_json_cleaning_and_validation_helpers_match():
-    responses = [
-        '```json\n[{"a": 1}]\n```',
-        'Here is the JSON:\n[{"a": 1}]',
-        '[{"a": 1},]',
-        "not json at all",
-        "",
-        '{"a": 1, "b": 2,}',
-    ]
-    for r in responses:
-        ca = new_mod._clean_json_response(r)
-        cb = old_mod._clean_json_response(r)
-        assert ca == cb, f"_clean_json_response diverged for {r!r}"
-        pa = new_mod._parse_json_response(r)
-        pb = old_mod._parse_json_response(r)
-        assert pa == pb, f"_parse_json_response diverged for {r!r}"
-
-    legal_triple = [{
-        "subject": {"class": "Organization", "properties": {"name": "X"}},
-        "predicate": "reportsKPI",
-        "object": {"class": "KPIObservation", "properties": {"kpi_type": "ESG-1-1"}},
-    }]
-    illegal_triple = [{"subject": {"class": "NotAClass", "properties": {}},
-                       "predicate": "reportsKPI", "object": {"class": "KPIObservation", "properties": {}}}]
-    for data in (legal_triple, illegal_triple, [], "not a list", None):
-        va = new_mod._validate_extraction_format(data, SCHEMA)
-        vb = old_mod._validate_extraction_format(data, SCHEMA)
-        assert va == vb, f"_validate_extraction_format diverged for {data!r}"
-
-
-def test_triple_list_to_graph_and_stamping_match():
-    triples = [{
-        "subject": {"class": "Organization", "properties": {
-            "name": "CÔNG TY TEST", "valid_from": "2023-01-01", "valid_to": None, "is_current": True}},
-        "predicate": "reportsKPI",
-        "object": {"class": "KPIObservation", "properties": {
-            "kpi_type": "ESG-1-1", "value": 1, "unit": "MWh",
-            "valid_from": "2023-01-01", "valid_to": None, "is_current": True}},
-        "temporal_metadata": {"valid_from": "2023-01-01", "valid_to": None, "recorded_at": "2023-01-01"},
-    }]
-    ga = new_mod.triple_list_to_graph(triples, SCHEMA)
-    gb = old_mod.triple_list_to_graph(triples, SCHEMA)
-    assert ga == gb, "triple_list_to_graph diverged"
-
-    import copy
-    for source in ("report", "news"):
-        sa = new_mod.stamp_source_type(copy.deepcopy(ga), source)
-        sb = old_mod.stamp_source_type(copy.deepcopy(gb), source)
-        assert sa == sb, f"stamp_source_type diverged for source={source}"
-
-        meta = {"title": "T", "url": "https://x/y", "source_domain": "x.vn"} if source == "news" else None
-        pa = new_mod.stamp_provenance(copy.deepcopy(ga), "doc_2023", 1, source, meta)
-        pb = old_mod.stamp_provenance(copy.deepcopy(gb), "doc_2023", 1, source, meta)
-        assert pa == pb, f"stamp_provenance diverged for source={source}"
 
 
 # --------------------------------------------------------------------------- #
@@ -282,36 +173,31 @@ class _FakeClient:
         self.models = _FakeModels(self.calls_seen)
 
 
-def test_call_llm_matches_across_response_shapes():
+def test_call_llm_produces_a_valid_paid_request_shape_across_response_shapes():
     prompts = [
         "prompt A - legal triple shape",
         "prompt B - empty array shape",
         "prompt C - malformed text shape",
         "prompt D - empty text shape",
     ]
-    new_client, old_client = _FakeClient(), _FakeClient()
+    new_client = _FakeClient()
     new_rl = new_mod.RateLimiter(max_calls_per_minute=1000)
-    old_rl = old_mod.RateLimiter(max_calls_per_minute=1000)
     for p in prompts:
-        a = new_mod.call_llm(p, new_client, 0, new_rl, SCHEMA, "gemini-2.5-flash", retries=1)
-        b = old_mod.call_llm(p, old_client, 0, old_rl, SCHEMA, "gemini-2.5-flash", retries=1)
-        assert a == b, f"call_llm diverged for {p!r}: new={a} old={b}"
+        new_mod.call_llm(p, new_client, 0, new_rl, SCHEMA, "gemini-2.5-flash", retries=1)
 
-    assert len(new_client.calls_seen) == len(old_client.calls_seen)
-    for nc, oc in zip(new_client.calls_seen, old_client.calls_seen):
-        assert nc["temperature"] == 0 == oc["temperature"]
-        assert nc["response_mime_type"] == "application/json" == oc["response_mime_type"]
-        assert nc["system_instruction"] == oc["system_instruction"]
-        assert nc["model"] == oc["model"]
+    assert len(new_client.calls_seen) > 0, "arm is vacuous: call_llm never reached the client"
+    for nc in new_client.calls_seen:
+        assert nc["temperature"] == 0
+        assert nc["response_mime_type"] == "application/json"
 
 
-def test_process_page_matches():
+def test_process_page_skips_non_esg_pages_and_is_idempotent_on_rerun():
     tmp = Path(tempfile.mkdtemp(prefix="esgkg_02_page_"))
     try:
         for source in ("report", "news"):
-            new_g, old_g = tmp / f"{source}_new_g", tmp / f"{source}_old_g"
-            new_dbg, old_dbg = tmp / f"{source}_new_dbg", tmp / f"{source}_old_dbg"
-            for d in (new_g, old_g, new_dbg, old_dbg):
+            new_g = tmp / f"{source}_new_g"
+            new_dbg = tmp / f"{source}_new_dbg"
+            for d in (new_g, new_dbg):
                 d.mkdir(parents=True)
 
             article_meta = {"title": "T", "url": "https://x/y", "source_domain": "x.vn",
@@ -322,83 +208,29 @@ def test_process_page_matches():
                 {"page": 2, "text": "Khong co noi dung ESG.", "has_esg": False},
                 {"page": 3, "text": "", "has_esg": False},
             ]
-            new_client, old_client = _FakeClient(), _FakeClient()
+            new_client = _FakeClient()
             new_rl = new_mod.RateLimiter(max_calls_per_minute=1000)
-            old_rl = old_mod.RateLimiter(max_calls_per_minute=1000)
             for pg in pages:
                 new_mod.process_page(pg, [], new_client, 0, new_rl, SCHEMA, "gemini-2.5-flash",
                                      esg_only=True, pdf_stem="doc", dbg_pdf_dir=new_dbg, g_pdf_dir=new_g,
                                      company="AAA", year=2024, source=source, article_meta=article_meta)
-                old_mod.process_page(pg, [], old_client, 0, old_rl, SCHEMA, "gemini-2.5-flash",
-                                     esg_only=True, pdf_stem="doc", dbg_pdf_dir=old_dbg, g_pdf_dir=old_g,
-                                     company="AAA", year=2024, source=source, article_meta=article_meta)
-
-            new_files = sorted(p.name for p in new_g.glob("*"))
-            old_files = sorted(p.name for p in old_g.glob("*"))
-            assert new_files == old_files, f"[{source}] file set diverged: {new_files} vs {old_files}"
-            for name in new_files:
-                if name.endswith(".json"):
-                    nj = json.loads((new_g / name).read_text(encoding="utf-8"))
-                    oj = json.loads((old_g / name).read_text(encoding="utf-8"))
-                    assert nj == oj, f"[{source}] {name} content diverged"
 
             # page 2 (not ESG) and page 3 (empty text) must never reach the client — only
-            # page 1 can. How many calls page 1 itself takes depends on which of the 4 CRC
-            # shapes its (large, schema-embedded) prompt happens to hash to — a legal-triple
-            # shape resolves in 1 call, a losing shape retries up to process_page's own
-            # max_retries x call_llm's retries — so the real equivalence property is that
-            # BOTH trees make the same number of calls, not a specific constant.
-            assert len(new_client.calls_seen) == len(old_client.calls_seen) > 0, (
-                f"[{source}] call count diverged or vacuous: "
-                f"new={len(new_client.calls_seen)} old={len(old_client.calls_seen)}")
+            # page 1 can, so at least one call happened but the arm is not vacuous.
+            assert len(new_client.calls_seen) > 0, f"[{source}] arm is vacuous: no client call happened"
 
             # Re-run page 1. `out_file.exists()` skip only fires if page 1's CRC-selected
             # response shape happened to succeed on the first pass (a losing shape leaves no
             # out_file, so a legitimate retry is expected) — that depends on the prompt's
-            # hash, which this test does not control, but which is identical in both trees.
-            # So the equivalence property is "both trees grow by the same amount", not "zero
-            # growth" unconditionally.
-            new_before, old_before = len(new_client.calls_seen), len(old_client.calls_seen)
+            # hash, which this test does not control. So the property checked is
+            # conditional: IF page1.json already exists, a re-run must not call the client.
+            new_before = len(new_client.calls_seen)
             new_mod.process_page(pages[0], [], new_client, 0, new_rl, SCHEMA, "gemini-2.5-flash",
                                  esg_only=True, pdf_stem="doc", dbg_pdf_dir=new_dbg, g_pdf_dir=new_g,
                                  company="AAA", year=2024, source=source, article_meta=article_meta)
-            old_mod.process_page(pages[0], [], old_client, 0, old_rl, SCHEMA, "gemini-2.5-flash",
-                                 esg_only=True, pdf_stem="doc", dbg_pdf_dir=old_dbg, g_pdf_dir=old_g,
-                                 company="AAA", year=2024, source=source, article_meta=article_meta)
             new_growth = len(new_client.calls_seen) - new_before
-            old_growth = len(old_client.calls_seen) - old_before
-            assert new_growth == old_growth, (
-                f"[{source}] re-run call growth diverged: new={new_growth} old={old_growth}")
             if (new_g / "page1.json").exists():
                 assert new_growth == 0, f"[{source}] page1.json exists but re-run still called the client"
-    finally:
-        shutil.rmtree(tmp, ignore_errors=True)
-
-
-def test_process_document_matches():
-    tmp = Path(tempfile.mkdtemp(prefix="esgkg_02_doc_"))
-    try:
-        new_out, old_out = tmp / "new_out", tmp / "old_out"
-        jsonl_pages = {
-            1: [(0, "Cong ty giam phat thai 20% trong nam 2023.", True)],
-            2: [(0, "Khong co noi dung ESG o trang nay.", False)],
-        }
-        new_client, old_client = _FakeClient(), _FakeClient()
-        new_rl = new_mod.RateLimiter(max_calls_per_minute=1000)
-        old_rl = old_mod.RateLimiter(max_calls_per_minute=1000)
-        a = new_mod.process_document("AAA_Baocaothuongnien_2023.pdf", jsonl_pages, REPO / "kpi_output",
-                                     new_out, SCHEMA, "gemini-2.5-flash", new_client, new_rl,
-                                     esg_only=True, max_workers=1, source="report")
-        b = old_mod.process_document("AAA_Baocaothuongnien_2023.pdf", jsonl_pages, REPO / "kpi_output",
-                                     old_out, SCHEMA, "gemini-2.5-flash", old_client, old_rl,
-                                     esg_only=True, max_workers=1, source="report")
-        assert a == b, f"process_document (success, failed) diverged: new={a} old={b}"
-
-        new_files = sorted(p.relative_to(new_out).as_posix() for p in new_out.rglob("*") if p.is_file())
-        old_files = sorted(p.relative_to(old_out).as_posix() for p in old_out.rglob("*") if p.is_file())
-        new_files = [f.replace("new_out", "").replace("AAA_Baocaothuongnien_2023", "DOC") for f in new_files]
-        old_files = [f.replace("old_out", "").replace("AAA_Baocaothuongnien_2023", "DOC") for f in old_files]
-        assert new_files == old_files, f"directory contents diverged: {new_files} vs {old_files}"
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
 
@@ -413,6 +245,79 @@ def main():
         print(f"{len(_skips)} arm(s) skipped (missing local artifacts):")
         for s in _skips:
             print(f"  - {s}")
+
+
+# --------------------------------------------------------------------------- #
+# NEW (2026-07-29): the additive OpenAI path (`--provider openai`). Gemini stays the
+# default; no src/ counterpart exists for this branch, so it is single-tree only —
+# same discipline as test_esg_kg_extract.py's equivalent Part D.
+# --------------------------------------------------------------------------- #
+_VALID_TRIPLE = {
+    "subject": {"class": "Organization", "properties": {"name": "Test Co"}},
+    "predicate": "reportsKPI",
+    "object": {"class": "KPIObservation", "properties": {"kpi_type": "x", "title": "t"}},
+    "temporal_metadata": {"valid_from": "2023-01-01", "valid_to": None, "recorded_at": "2023-01-01"},
+}
+
+
+class _StubOpenAIProvider:
+    def __init__(self, reply):
+        self.reply = reply
+        self.calls: list = []
+
+    def call(self, system, user):
+        self.calls.append((system, user))
+        return self.reply
+
+
+def test_call_llm_openai_provider_unwraps_triples_object():
+    provider = _StubOpenAIProvider(json.dumps({"triples": [_VALID_TRIPLE]}))
+    rl = new_mod.RateLimiter(max_calls_per_minute=1000)
+    parsed, raw, rate_limited = new_mod.call_llm(
+        "prompt text", provider, 0, rl, SCHEMA, "gpt-4o-mini", retries=1, provider="openai")
+    assert rate_limited is False
+    assert parsed == [_VALID_TRIPLE], parsed
+    assert raw == provider.reply
+    assert len(provider.calls) == 1
+    system, user = provider.calls[0]
+    assert user == "prompt text", "the full templated prompt must reach the model verbatim"
+    assert "json" in system.lower(), "OpenAI json_object mode requires 'json' in the messages"
+    print("     (openai reply unwrapped from {'triples': [...]} and validated)")
+
+
+def test_call_llm_openai_provider_accepts_bare_array_too():
+    """Belt-and-braces: if the model ignores the wrapper instruction and returns a bare
+    array, that must still parse rather than being treated as a format error."""
+    provider = _StubOpenAIProvider(json.dumps([_VALID_TRIPLE]))
+    rl = new_mod.RateLimiter(max_calls_per_minute=1000)
+    parsed, _, rate_limited = new_mod.call_llm(
+        "prompt text", provider, 0, rl, SCHEMA, "gpt-4o-mini", retries=1, provider="openai")
+    assert rate_limited is False
+    assert parsed == [_VALID_TRIPLE], parsed
+    print("     (a bare JSON array reply is also accepted)")
+
+
+def test_call_llm_openai_provider_bad_json_does_not_crash():
+    provider = _StubOpenAIProvider("not json at all")
+    rl = new_mod.RateLimiter(max_calls_per_minute=1000)
+    parsed, raw, rate_limited = new_mod.call_llm(
+        "prompt text", provider, 0, rl, SCHEMA, "gpt-4o-mini", retries=1, provider="openai")
+    assert rate_limited is False
+    assert parsed == [], parsed
+    assert raw == "not json at all"
+    print("     (unparseable reply -> [] rather than raising)")
+
+
+def test_call_llm_gemini_default_unaffected_by_provider_arg():
+    """provider='gemini' (the default) must behave exactly as before this change."""
+    client = _FakeClient()
+    rl = new_mod.RateLimiter(max_calls_per_minute=1000)
+    a = new_mod.call_llm("prompt A - legal triple shape", client, 0, rl, SCHEMA,
+                         "gemini-2.5-flash", retries=1)
+    b = new_mod.call_llm("prompt A - legal triple shape", client, 0, rl, SCHEMA,
+                         "gemini-2.5-flash", retries=1, provider="gemini")
+    assert a == b, "omitting provider= must match provider='gemini' explicitly"
+    print("     (default call_llm() still takes the gemini path, untouched)")
 
 
 if __name__ == "__main__":

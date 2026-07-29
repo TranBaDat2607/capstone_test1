@@ -1,7 +1,16 @@
 #!/usr/bin/env python3
 """
-Old-vs-new equivalence for ONE migration slice:
-`src/step05d_align_claims_to_indicators.py` -> `esg_kg.resolve.align_claims`.
+Behavioural coverage for ONE migration slice: `esg_kg.resolve.align_claims`
+(originally ported from `src/step05d_align_claims_to_indicators.py`).
+
+REPOINTED AT esg_kg ONLY (2026-07-29)
+`src/` is scheduled for deletion now that all 15 stages have moved, so this file no
+longer imports it or asserts `new == old`. Where a test function ALSO made an
+independent claim about `esg_kg`'s own behaviour, only the cross-tree comparison
+lines were stripped; where a function was a pure `new == old` comparison, it was
+rewritten to assert concrete expected values (never fabricated — read straight off
+`esg_kg/resolve/align_claims.py`) or, when no safe concrete value existed, deleted
+(none were, here).
 
 WHY THIS IS A SEPARATE FILE
 Same reason as `test_esg_kg_anchor_kpi.py` / `_provenance.py` / `_fix_triples.py`:
@@ -17,12 +26,11 @@ five symbols from the old tree and every one was already lifted: `REPO_ROOT`
 
 HOW THE PAID BRANCH IS COVERED WITHOUT PAYING
 This is a mandatory-LLM stage: `--dry-run` returns before the provider is even built, so a
-dry-run-only arm would prove almost nothing. Both trees are therefore driven by a STUB
+dry-run-only arm would prove almost nothing. The stage is therefore driven by a STUB
 provider injected over `_OpenAIProvider`, exactly as the step03 slice drives phase 2. The
-stub answers deterministically from a CRC of the prompt, so the two trees see identical
-replies, and it deliberately returns all five reply shapes the parser must survive: clean
-JSON, "none", JSON embedded in prose, junk, and a well-formed id that is not in the
-vocabulary.
+stub answers deterministically from a CRC of the prompt, and it deliberately returns all
+five reply shapes the parser must survive: clean JSON, "none", JSON embedded in prose,
+junk, and a well-formed id that is not in the vocabulary.
 
 WHAT THE ALREADY-PATCHED-ARTIFACT LAW (PIPELINE.md §3) SAYS HERE
 Ask the one question: meeting its own past output, does the stage skip or recompute? It
@@ -36,6 +44,12 @@ defensively: it removes 0 edges today, and the day someone runs 05d for real it 
 keeps this arm honest instead of silently shrinking. Keyword edges are NEVER stripped —
 they are 05c's output, and 05d skipping them is the design (it handles the remainder), not
 self-output.
+
+WHAT `test_node_text_is_not_step07s` COMPARES AGAINST NOW
+It used to import `step07_crosscheck_claims_vs_conduct` from `src/`; it now imports
+`esg_kg.crosscheck.claims_vs_conduct`, the migrated stage's own copy of the trap — the
+divergence (properties dict vs. node) is a property of the current code, not of the old
+tree, so the check is exactly as strong post-conversion.
 
 THE TRAP THIS SLICE HAD TO AVOID (PIPELINE.md §2.1)
 There are TWO functions named `node_text` and they are NOT duplicates: this one takes a
@@ -63,18 +77,14 @@ import zlib
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO / "src"))
 sys.path.insert(0, str(REPO / "src_module"))
 
-# --- old: the flat src/ scripts ------------------------------------------------
-import step05d_align_claims_to_indicators as old_05d  # noqa: E402
-import step07_crosscheck_claims_vs_conduct as old_step07  # noqa: E402
-
-# --- new: the esg_kg package ---------------------------------------------------
+# --- esg_kg package --------------------------------------------------------
 from esg_kg.core import graph_patch as core_graph_patch  # noqa: E402
 from esg_kg.core import llm as core_llm  # noqa: E402
 from esg_kg.core import schema as core_schema  # noqa: E402
 from esg_kg.resolve import align_claims as new_05d  # noqa: E402
+from esg_kg.crosscheck import claims_vs_conduct as new_step07  # noqa: E402
 
 SCHEMA_FILE = REPO / "config" / "schema.json"
 DEFS_FILE = REPO / "kpi_definitions_construction.json"
@@ -108,7 +118,7 @@ def make_stub(valid_ids: list, mode: str = "mixed"):
     class _Stub:
         name = "openai"
 
-        def __init__(self, model, rate_limit):
+        def __init__(self, model, rate_limit, api_key=None, base_url=None):
             self.model = model
             self.rate_limit = rate_limit
             self.enabled = True
@@ -175,27 +185,24 @@ class Workspace:
         shutil.rmtree(self.dir, ignore_errors=True)
 
 
-def run_both(graph: dict, defs: list = None, stub_mode: str = "mixed", **overrides):
-    """Run the stage in BOTH trees on identical input; return (new_ws, old_ws, logs)."""
+def run_new(graph: dict, defs: list = None, stub_mode: str = "mixed", **overrides):
+    """Run the stage against esg_kg on the given input; return (ws, stub, logs)."""
     valid_ids = [d["id"] for d in (defs if defs is not None else load_defs())]
-    out = []
-    for mod in (new_05d, old_05d):
-        ws = Workspace(copy.deepcopy(graph), defs)
-        stub = make_stub(valid_ids, stub_mode)
-        original = mod._OpenAIProvider
-        handler = _LogCatcher()
-        mod.logger.addHandler(handler)
-        try:
-            mod._OpenAIProvider = stub
-            mod.run(ws.args(**overrides))
-        finally:
-            mod._OpenAIProvider = original
-            mod.logger.removeHandler(handler)
-        # Each tree gets its OWN temp workspace, and the final log line echoes that path —
-        # so compare logs with the workspace masked, or every arm "diverges" on a mkdtemp
-        # suffix. Everything else in the messages is real behaviour and stays compared.
-        out.append((ws, stub, [m.replace(str(ws.dir), "<WS>") for m in handler.messages]))
-    return out[0], out[1]
+    ws = Workspace(copy.deepcopy(graph), defs)
+    stub = make_stub(valid_ids, stub_mode)
+    original = new_05d._OpenAIProvider
+    handler = _LogCatcher()
+    new_05d.logger.addHandler(handler)
+    try:
+        new_05d._OpenAIProvider = stub
+        new_05d.run(ws.args(**overrides))
+    finally:
+        new_05d._OpenAIProvider = original
+        new_05d.logger.removeHandler(handler)
+    # The final log line echoes the workspace's mkdtemp path — mask it so a rerun's
+    # comparison against fixed strings (e.g. "unaligned") is not sensitive to it.
+    logs = [m.replace(str(ws.dir), "<WS>") for m in handler.messages]
+    return ws, stub, logs
 
 
 class _LogCatcher(logging.Handler):
@@ -232,15 +239,23 @@ def real_graph():
 # 1. Module surface: constants, and that the new tree IMPORTS the kernel
 # --------------------------------------------------------------------------- #
 def test_constants_match():
-    assert new_05d.ALIGN_CLASSES == old_05d.ALIGN_CLASSES, "ALIGN_CLASSES diverged"
-    assert new_05d.DEFAULT_RESOLVED == old_05d.DEFAULT_RESOLVED
-    assert new_05d.DEFAULT_DEFS == old_05d.DEFAULT_DEFS
-    assert new_05d.DEFAULT_SCHEMA == old_05d.DEFAULT_SCHEMA
-    assert new_05d.DEFAULT_STATS_OUT == old_05d.DEFAULT_STATS_OUT
+    """Concrete expected values (esg_kg/resolve/align_claims.py), not a cross-tree diff."""
+    assert new_05d.ALIGN_CLASSES == ("SustainabilityClaim", "Goal", "Initiative")
+    assert new_05d.DEFAULT_RESOLVED == REPO / "graph_output" / "resolved" / "resolved_graph.json"
+    assert new_05d.DEFAULT_DEFS == REPO / "kpi_definitions_construction.json"
+    assert new_05d.DEFAULT_SCHEMA == REPO / "config" / "schema.json"
+    assert new_05d.DEFAULT_STATS_OUT == REPO / "graph_output" / "resolved" / "indicator_align_llm_stats.json"
 
     # The SYSTEM prompt is PAID BEHAVIOUR, not style: reword it and the stage still "works"
-    # while every classification changes. Byte-for-byte, like BATCH_FIX_PROMPT in the 03 slice.
-    assert new_05d.SYSTEM == old_05d.SYSTEM, "the paid SYSTEM prompt was reworded"
+    # while every classification changes. Pinned byte-for-byte, like BATCH_FIX_PROMPT in the
+    # 03 slice.
+    assert new_05d.SYSTEM == (
+        "You classify a Vietnamese company ESG statement against a fixed list of disclosure "
+        "indicators (Circular 96/2020/TT-BTC and the SSC-IFC ESG guide). Choose the ONE indicator "
+        "the statement is primarily about, or \"none\" if it is generic / not about any of them. "
+        "Do not guess — 'none' is the right answer for boilerplate. Return only JSON: "
+        "{\"indicator_id\": \"TT96-6.1.1\"|...|\"none\", \"confidence\": 0-1}."
+    ), "the paid SYSTEM prompt was reworded"
 
 
 def test_new_tree_imports_the_kernel_rather_than_recopying():
@@ -255,12 +270,14 @@ def test_new_tree_imports_the_kernel_rather_than_recopying():
 # 2. Pure helpers
 # --------------------------------------------------------------------------- #
 def test_build_prompt_matches():
+    """Independent claim: every prompt is well-formed, and the 600-char cap is exact."""
     defs = load_defs()
     cases = ["Chúng tôi cam kết giảm phát thải khí nhà kính 20% vào năm 2030.",
              "", "x" * 599, "y" * 600, "z" * 601, "Đào tạo an toàn lao động cho 1.200 nhân viên"]
     for text in cases:
-        a, b = new_05d.build_prompt(text, defs), old_05d.build_prompt(text, defs)
-        assert a == b, f"prompt diverged for {text[:30]!r}"
+        prompt = new_05d.build_prompt(text, defs)
+        assert "INDICATORS:" in prompt and "STATEMENT:" in prompt, f"prompt malformed for {text[:30]!r}"
+        assert text[:600] in prompt, f"prompt dropped the statement for {text[:30]!r}"
 
     # the 600-char truncation is behaviour: it caps what each classification costs
     long_prompt = new_05d.build_prompt("z" * 5000, defs)
@@ -268,29 +285,30 @@ def test_build_prompt_matches():
 
 
 def test_node_text_matches():
+    """Concrete expected values for `node_text`'s join-and-strip over description/name/title."""
     cases = [
-        {"description": "d", "name": "n", "title": "t"},
-        {"name": "chỉ có tên"},
-        {"description": None, "name": "", "title": "T"},
-        {},
-        {"unrelated": "ignored"},
+        ({"description": "d", "name": "n", "title": "t"}, "d n t"),
+        ({"name": "chỉ có tên"}, "chỉ có tên"),
+        ({"description": None, "name": "", "title": "T"}, "T"),
+        ({}, ""),
+        ({"unrelated": "ignored"}, ""),
     ]
-    for props in cases:
-        assert new_05d.node_text(props) == old_05d.node_text(props), f"node_text diverged: {props}"
+    for props, expected in cases:
+        assert new_05d.node_text(props) == expected, f"node_text({props}) != {expected!r}"
 
 
 def test_node_text_is_not_step07s():
     """PIPELINE.md §2.1's documented trap: two same-named functions, DIFFERENT signatures.
 
-    This one takes a PROPERTIES DICT; step07's takes a NODE and dispatches on its class.
-    Unifying them silently rewrites step07's paid prompt, so the migration must keep 05d's
-    own. Feed a *node* to prove they are not interchangeable.
+    This one takes a PROPERTIES DICT; step07's (`esg_kg.crosscheck.claims_vs_conduct`) takes
+    a NODE and dispatches on its class. Unifying them silently rewrites step07's paid prompt,
+    so the migration must keep 05d's own. Feed a *node* to prove they are not interchangeable.
     """
     node = {"class": "SustainabilityClaim", "properties": {"description": "giảm phát thải"}}
     assert new_05d.node_text(node) == "", "05d's node_text accepted a node — it takes properties"
     assert new_05d.node_text(node["properties"]) == "giảm phát thải"
-    assert new_05d.node_text is not old_step07.node_text, "05d's node_text was merged with step07's"
-    assert old_step07.node_text(node) != "", "step07's node_text takes a NODE (guard is inverted)"
+    assert new_05d.node_text is not new_step07.node_text, "05d's node_text was merged with step07's"
+    assert new_step07.node_text(node) != "", "step07's node_text takes a NODE (guard is inverted)"
 
 
 def _outcome(fn, raw, valid):
@@ -302,29 +320,26 @@ def _outcome(fn, raw, valid):
 
 
 def test_parse_reply_matches():
+    """Concrete expected outcome per reply shape, replacing the old cross-tree diff."""
     valid = {"TT96-6.1.1", "SSCIFC-S6"}
     cases = [
-        '{"indicator_id": "TT96-6.1.1", "confidence": 0.9}',   # clean
-        '{"indicator_id": "none"}',                             # honest refusal
-        'blah {"indicator_id": "SSCIFC-S6"} trailing',          # regex fallback
-        'no json here',                                         # unparseable
-        '{"indicator_id": "TT96-9.9.9"}',                       # well-formed, unknown id
-        '{"confidence": 0.5}',                                  # key missing
-        '{broken json',                                         # malformed
-        '[]',                                                   # valid JSON, WRONG SHAPE — see below
-        '"just a string"',                                      # ditto
-        '',                                                     # empty
+        ('{"indicator_id": "TT96-6.1.1", "confidence": 0.9}', "TT96-6.1.1"),  # clean
+        ('{"indicator_id": "none"}', None),                                   # honest refusal
+        ('blah {"indicator_id": "SSCIFC-S6"} trailing', "SSCIFC-S6"),         # regex fallback
+        ('no json here', None),                                              # unparseable
+        ('{"indicator_id": "TT96-9.9.9"}', None),                            # well-formed, unknown id
+        ('{"confidence": 0.5}', None),                                       # key missing
+        ('{broken json', None),                                              # malformed
+        ('[]', None),                                                        # valid JSON, WRONG SHAPE
+        ('"just a string"', None),                                           # ditto
+        ('', None),                                                          # empty
     ]
-    for raw in cases:
-        a = _outcome(new_05d.parse_reply, raw, valid)
-        b = _outcome(old_05d.parse_reply, raw, valid)
-        assert a == b, f"parse_reply diverged on {raw!r}: {a} vs {b}"
-    assert new_05d.parse_reply(cases[0], valid) == "TT96-6.1.1", "clean parse regressed"
-    assert new_05d.parse_reply(cases[2], valid) == "SSCIFC-S6", "regex fallback regressed"
-    assert new_05d.parse_reply(cases[4], valid) is None, "unknown id must be rejected"
+    for raw, expected in cases:
+        got = _outcome(new_05d.parse_reply, raw, valid)
+        assert got == ("value", expected), f"parse_reply({raw!r}) = {got}, expected {expected!r}"
 
 
-def test_parse_reply_rejects_non_object_json_in_BOTH_trees():
+def test_parse_reply_rejects_non_object_json():
     """Valid JSON of the wrong SHAPE must be refused like any other unusable reply.
 
     Before the fix, `json.loads('[]')` succeeded, returned a list, and `out.get(...)` raised
@@ -337,11 +352,11 @@ def test_parse_reply_rejects_non_object_json_in_BOTH_trees():
     guarantees an object), which is why it survived unnoticed. It becomes reachable the
     moment a provider without that guarantee is added — exactly the kind of latent trap a
     migration is the right time to notice and the wrong time to fix silently, so this landed
-    as its own commit in BOTH trees (DESIGN.md §5.3).
+    as its own commit in both `src/` and `esg_kg` at the time (DESIGN.md §5.3); this file now
+    only proves esg_kg's own copy.
     """
     for raw in ("[]", '"just a string"', "42", "null", "true"):
-        for fn in (new_05d.parse_reply, old_05d.parse_reply):
-            assert fn(raw, {"TT96-6.1.1"}) is None, f"{fn.__module__} mishandled {raw!r}"
+        assert new_05d.parse_reply(raw, {"TT96-6.1.1"}) is None, f"mishandled {raw!r}"
 
     # the fix must not have made the parser lenient about anything else
     assert new_05d.parse_reply('{"indicator_id": "TT96-6.1.1"}', {"TT96-6.1.1"}) == "TT96-6.1.1"
@@ -352,36 +367,28 @@ def test_parse_reply_rejects_non_object_json_in_BOTH_trees():
 # --------------------------------------------------------------------------- #
 # 3. Stage runs — real corpus
 # --------------------------------------------------------------------------- #
-def test_dry_run_selects_same_candidates_and_writes_nothing():
+def test_dry_run_writes_nothing():
     graph, _ = real_graph()
     if graph is None:
-        return _skip("test_dry_run_selects_same_candidates_and_writes_nothing",
+        return _skip("test_dry_run_writes_nothing",
                      "graph_output/resolved/resolved_graph.json not present (HF snapshot)")
-    new_ws, old_ws = run_both(graph, dry_run=True)
-    (nw, _, nlogs), (ow, _, ologs) = new_ws, old_ws
+    nw, _, nlogs = run_new(graph, dry_run=True)
     try:
-        assert nlogs == ologs, f"dry-run log diverged:\n  new={nlogs}\n  old={ologs}"
         assert any("unaligned" in m for m in nlogs), f"candidate line missing: {nlogs}"
-        assert not nw.stats_path.exists() and not ow.stats_path.exists(), "--dry-run wrote stats"
-        assert nw.graph == ow.graph == graph, "--dry-run mutated the graph"
+        assert not nw.stats_path.exists(), "--dry-run wrote stats"
+        assert nw.graph == graph, "--dry-run mutated the graph"
     finally:
-        nw.close(), ow.close()
+        nw.close()
 
 
-def test_full_run_on_real_graph_matches():
-    """The headline arm: the whole paid path, both trees, real graph, stub LLM."""
+def test_full_run_on_real_graph():
+    """The headline arm: the whole paid path, esg_kg, real graph, stub LLM."""
     graph, removed = real_graph()
     if graph is None:
-        return _skip("test_full_run_on_real_graph_matches", "resolved_graph.json not present")
+        return _skip("test_full_run_on_real_graph", "resolved_graph.json not present")
     budget = 60
-    new_ws, old_ws = run_both(graph, max_llm_pairs=budget)
-    (nw, nstub, _), (ow, ostub, _) = new_ws, old_ws
+    nw, nstub, _ = run_new(graph, max_llm_pairs=budget)
     try:
-        assert nw.stats == ow.stats, f"stats diverged:\n  new={nw.stats}\n  old={ow.stats}"
-        assert nw.graph == ow.graph, "patched graphs diverged"
-        assert [u for _, u in nstub.calls_seen] == [u for _, u in ostub.calls_seen], \
-            "the two trees sent different prompts to the LLM"
-
         s = nw.stats
         # NON-VACUITY: this arm must actually adjudicate and actually write edges.
         assert s["candidates"] > 100, f"suspiciously few candidates: {s}"
@@ -390,10 +397,11 @@ def test_full_run_on_real_graph_matches():
         assert s["none_or_absent"] > 0, f"the 'none' branch never fired: {s}"
         assert s["dropped_invalid"] == 0, f"schema rejected an edge: {s}"
         assert s["llm_calls"] == budget and s["llm_failures"] == 0, s
+        assert len(nstub.calls_seen) == budget, "stub call count doesn't match the budget"
         print(f"     (stripped {removed} prior llm edge(s); {s['candidates']} candidates, "
               f"{s['edges_added']} edge(s) added from {budget} adjudications)")
     finally:
-        nw.close(), ow.close()
+        nw.close()
 
 
 def test_run_is_append_only_and_preserves_node_order():
@@ -407,8 +415,7 @@ def test_run_is_append_only_and_preserves_node_order():
         return _skip("test_run_is_append_only_and_preserves_node_order",
                      "resolved_graph.json not present")
     n_nodes0, n_edges0 = len(graph["nodes"]), len(graph["edges"])
-    new_ws, old_ws = run_both(graph, max_llm_pairs=40)
-    (nw, _, _), (ow, _, _) = new_ws, old_ws
+    nw, _, _ = run_new(graph, max_llm_pairs=40)
     try:
         out = nw.graph
         assert out["nodes"] == graph["nodes"], "05d added or reordered NODES (it must not)"
@@ -420,7 +427,7 @@ def test_run_is_append_only_and_preserves_node_order():
             assert e["alignment_method"] == "llm", f"new edge not tagged llm: {e}"
             assert e["temporal_metadata"]["recorded_at"] == core_graph_patch.TODAY, e
     finally:
-        nw.close(), ow.close()
+        nw.close()
 
 
 # --------------------------------------------------------------------------- #
@@ -457,43 +464,37 @@ def test_rerun_skips_what_it_already_aligned():
     walks further down a 1,810-long queue, which would prove nothing about skipping.
     """
     defs = _tiny_defs()
-    ws_pair = run_both(_tiny_graph(), defs=defs, max_llm_pairs=50)
-    (nw, _, _), (ow, _, _) = ws_pair
+    nw, _, _ = run_new(_tiny_graph(), defs=defs, max_llm_pairs=50)
     try:
-        assert nw.stats == ow.stats, "first run diverged"
         first = nw.stats
         assert first["edges_added"] > 0, f"fixture never wrote an edge — arm is vacuous: {first}"
 
-        # feed run 1's OUTPUT back in, both trees
-        second_new, second_old = run_both(nw.graph, defs=defs, max_llm_pairs=50)
-        (nw2, _, _), (ow2, _, _) = second_new, second_old
+        # feed run 1's OUTPUT back in
+        nw2, _, _ = run_new(nw.graph, defs=defs, max_llm_pairs=50)
         try:
-            assert nw2.stats == ow2.stats, "second run diverged"
             assert nw2.stats["edges_added"] == 0, f"re-run duplicated edges: {nw2.stats}"
             assert nw2.stats["candidates"] < first["candidates"], \
                 f"aligned nodes were NOT excluded on re-run: {nw2.stats}"
             assert nw2.graph["edges"] == nw.graph["edges"], "re-run changed the edge list"
         finally:
-            nw2.close(), ow2.close()
+            nw2.close()
     finally:
-        nw.close(), ow.close()
+        nw.close()
 
 
 def test_provider_failures_abort_branch():
     """3 failures with 0 successes must abort the loop. No live run has ever tripped it."""
     defs = _tiny_defs()
-    (nw, nstub, nlogs), (ow, ostub, ologs) = run_both(
+    nw, nstub, nlogs = run_new(
         _tiny_graph(), defs=defs, stub_mode="always_raise", max_llm_pairs=50)
     try:
-        assert nw.stats == ow.stats, f"stats diverged:\n  new={nw.stats}\n  old={ow.stats}"
-        assert nlogs == ologs, "log output diverged"
         s = nw.stats
         assert s["llm_failures"] == 3 and s["llm_calls"] == 0, f"abort branch not taken: {s}"
         assert s["adjudicated"] == 0 and s["edges_added"] == 0, s
         assert len(nstub.calls_seen) == 3, f"loop did not stop after 3 failures: {nstub.calls_seen}"
         assert any("aborting" in m.lower() for m in nlogs), f"no abort log: {nlogs}"
     finally:
-        nw.close(), ow.close()
+        nw.close()
 
 
 def test_indicator_absent_from_graph_is_counted_not_written():
@@ -502,29 +503,26 @@ def test_indicator_absent_from_graph_is_counted_not_written():
     graph = _tiny_graph()
     graph["nodes"] = [n for n in graph["nodes"] if n.get("class") != "StandardIndicator"]
     defs = _tiny_defs()
-    (nw, _, nlogs), (ow, _, ologs) = run_both(graph, defs=defs, max_llm_pairs=50)
+    nw, _, nlogs = run_new(graph, defs=defs, max_llm_pairs=50)
     try:
-        assert nw.stats == ow.stats, f"stats diverged:\n  new={nw.stats}\n  old={ow.stats}"
-        assert nlogs == ologs, "log output diverged"
         s = nw.stats
         assert s["edges_added"] == 0, f"wrote an edge to a missing indicator: {s}"
         assert s["none_or_absent"] == s["adjudicated"] > 0, s
         assert any("run step05c first" in m for m in nlogs), f"no missing-node warning: {nlogs}"
     finally:
-        nw.close(), ow.close()
+        nw.close()
 
 
 def test_missing_input_is_reported_not_crashed():
     ws = Workspace(_tiny_graph(), _tiny_defs())
     try:
-        for mod in (new_05d, old_05d):
-            handler = _LogCatcher()
-            mod.logger.addHandler(handler)
-            try:
-                mod.run(ws.args(input=ws.dir / "does_not_exist.json"))
-            finally:
-                mod.logger.removeHandler(handler)
-            assert any("not found" in m.lower() for m in handler.messages), handler.messages
+        handler = _LogCatcher()
+        new_05d.logger.addHandler(handler)
+        try:
+            new_05d.run(ws.args(input=ws.dir / "does_not_exist.json"))
+        finally:
+            new_05d.logger.removeHandler(handler)
+        assert any("not found" in m.lower() for m in handler.messages), handler.messages
     finally:
         ws.close()
 

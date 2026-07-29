@@ -1002,3 +1002,24 @@ Chụp `step00 --label before/after` để đối chiếu. *(Bản trước ghi 
 | Thứ tự chạy dạng dữ liệu (nguồn sự thật) | [`esg_kg/pipeline.py`](esg_kg/pipeline.py) |
 | Cách chạy + trạng thái từng phần | [`README.md`](README.md) |
 | Chi tiết từng stage, cờ dòng lệnh | `CLAUDE.md` mục "Pipeline architecture" |
+
+---
+
+## 7. `src/` đã bị xoá (2026-07-29)
+
+Mọi thứ ở trên mô tả quá trình dời — nội dung giữ nguyên vì đó là ghi chép có thật về
+cách tính tương đương từng được chứng minh trong lúc `src/` còn tồn tại làm oracle. Nhưng
+`src/` **không còn nữa**: sau khi 15/15 stage dời xong, 19 file test tương đương "cả hai
+cây" được chuyển thành test một cây (giữ nguyên assertion, bỏ phần so `src/`; nơi một
+assertion chỉ là "new == old" không có tuyên bố độc lập nào, nó được thay bằng một giá trị
+vàng cụ thể lấy trực tiếp từ hàm — không đoán — hoặc chuyển thành kiểm tra hình dạng/không
+rỗng khi việc gắn cứng một snapshot corpus/schema thật sẽ giòn trước một thay đổi dữ liệu
+hợp lệ trong tương lai), rồi `src/` bị xoá hẳn. `src/data_sync.py` dời sang
+`esg_kg/core/datasync.py` trước — nó là file cuối cùng chặn việc xoá.
+
+Ba stage `step10`, `step04b`, `step07b` — mà tài liệu trước đó gọi là "cố ý không dời,
+giữ nguyên trong `src/`" — quyết định thay đổi cùng lúc: **cả ba bị xoá hẳn**, không giữ
+lại làm công cụ độc lập. Không còn hàng nào trong `pipeline.py::STAGES` cho chúng (xem ghi
+chú ở đó). Đọc `esg_kg/pipeline.py` và `README.md` để biết trạng thái hiện tại — hai file
+đó phản ánh cây `esg_kg` như nó đang là, còn tài liệu này là nhật ký lịch sử của quá trình
+dời tới đó.

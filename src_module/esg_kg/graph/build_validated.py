@@ -241,6 +241,14 @@ def main() -> None:
     p.add_argument("--batch-size", type=int, default=fix_triples.DEFAULT_BATCH_SIZE)
     p.add_argument("--rate-limit", type=int, default=fix_triples.DEFAULT_RATE_LIMIT)
     p.add_argument("--model", type=str, default=fix_triples.DEFAULT_MODEL)
+    p.add_argument("--provider", type=str, default="gemini", choices=["gemini", "openai"],
+                   help="LLM backend for the phase-2 repair (default gemini; "
+                        "openai needs OPENAI_API_KEY)")
+    p.add_argument("--openai-model", type=str, default="gpt-4o-mini",
+                   help="OpenAI model id, used only when --provider openai")
+    p.add_argument("--openai-base-url", type=str, default=None,
+                   help="Override the OpenAI endpoint (e.g. an OpenAI-compatible "
+                        "third-party host); default is OpenAI's own API")
     p.add_argument("--cache", type=pathlib.Path, default=DEFAULT_CACHE,
                    help="Phase-2 repair cache; a re-run reuses it instead of paying again")
     p.add_argument("--no-cache", action="store_true",
@@ -260,24 +268,34 @@ def main() -> None:
     # Phase 2 is the only paid part; everything else in the block is offline.
     client = None
     rate_limiter = None
+    model = args.model
     if not args.dry_run:
         import os
 
         from esg_kg.core.paths import load_env
         load_env()
-        api_key = os.getenv("GEMINI_API_KEY")
-        if api_key:
-            from google import genai
-            client = genai.Client(api_key=api_key)
-            rate_limiter = fix_triples.RateLimiter(max_calls_per_minute=args.rate_limit)
+        if args.provider == "openai":
+            if os.getenv("OPENAI_API_KEY"):
+                client = fix_triples._OpenAIProvider(args.openai_model, args.rate_limit,
+                                                     base_url=args.openai_base_url)
+                rate_limiter = fix_triples.RateLimiter(max_calls_per_minute=args.rate_limit)
+                model = args.openai_model
+            else:
+                logger.warning("OPENAI_API_KEY not set — phase 2 will run from the cache only")
         else:
-            logger.warning("GEMINI_API_KEY not set — phase 2 will run from the cache only")
+            api_key = os.getenv("GEMINI_API_KEY")
+            if api_key:
+                from google import genai
+                client = genai.Client(api_key=api_key)
+                rate_limiter = fix_triples.RateLimiter(max_calls_per_minute=args.rate_limit)
+            else:
+                logger.warning("GEMINI_API_KEY not set — phase 2 will run from the cache only")
 
     run_block(
         input_dir=args.input_dir, out_dir=args.out_dir, schema=schema,
         sentences=args.sentences, max_per_facility=args.max_per_facility,
         fuzzy_threshold=args.fuzzy_threshold, no_goals=args.no_goals,
-        client=client, rate_limiter=rate_limiter, model=args.model,
+        client=client, rate_limiter=rate_limiter, model=model,
         batch_size=args.batch_size,
         cache_path=None if args.no_cache else args.cache,
         dry_run=args.dry_run,

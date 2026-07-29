@@ -170,7 +170,8 @@ def run_block(*, input_path: pathlib.Path, out_dir: pathlib.Path, schema: Dict[s
               embed_dim: int = entities.DEFAULT_EMBED_DIM,
               embed_batch: int = entities.DEFAULT_EMBED_BATCH,
               max_llm_pairs: int = entities.DEFAULT_MAX_LLM_PAIRS,
-              no_llm: bool = True, client: Any = None, rate_limiter: Any = None,
+              no_llm: bool = True, client: Any = None, embed_client: Any = None,
+              rate_limiter: Any = None,
               cache_path: Optional[pathlib.Path] = None,
               dry_run: bool = False) -> Dict[str, Any]:
     """Run 05 -> 05b -> 05c in memory and write the artifact once.
@@ -192,7 +193,8 @@ def run_block(*, input_path: pathlib.Path, out_dir: pathlib.Path, schema: Dict[s
         triples, idkeys, registry_path=registry_path, standards_registry_path=standards_registry_path,
         similarity_threshold=similarity_threshold, model=model, embed_model=embed_model,
         embed_dim=embed_dim, embed_batch=embed_batch, max_llm_pairs=max_llm_pairs,
-        no_llm=no_llm, client=client, rate_limiter=rate_limiter, adjudication_cache=cache,
+        no_llm=no_llm, client=client, embed_client=embed_client, rate_limiter=rate_limiter,
+        adjudication_cache=cache,
     )
     logger.info(f"  {len(resolved['nodes'])} nodes, {len(resolved['edges'])} edges")
 
@@ -269,6 +271,15 @@ def main() -> None:
     p.add_argument("--embed-dim", type=int, default=entities.DEFAULT_EMBED_DIM)
     p.add_argument("--embed-batch", type=int, default=entities.DEFAULT_EMBED_BATCH)
     p.add_argument("--max-llm-pairs", type=int, default=entities.DEFAULT_MAX_LLM_PAIRS)
+    p.add_argument("--provider", type=str, default="gemini", choices=["gemini", "openai"],
+                   help="LLM backend for Stage B/C (default gemini; openai needs OPENAI_API_KEY)")
+    p.add_argument("--openai-model", type=str, default="gpt-4o-mini",
+                   help="OpenAI chat model for Stage C, used only when --provider openai")
+    p.add_argument("--openai-embed-model", type=str, default="text-embedding-3-small",
+                   help="OpenAI embedding model for Stage B, used only when --provider openai")
+    p.add_argument("--openai-base-url", type=str, default=None,
+                   help="Override the OpenAI endpoint (e.g. an OpenAI-compatible "
+                        "third-party host); default is OpenAI's own API")
     p.add_argument("--no-llm", action="store_true", help="Stage A + B.1 only (no embeddings/LLM)")
     p.add_argument("--cache", type=pathlib.Path, default=DEFAULT_CACHE,
                    help="Stage C adjudication cache; a re-run reuses it instead of paying again")
@@ -291,20 +302,36 @@ def main() -> None:
 
     # Stage B/C is the only paid part; everything else in the block is offline.
     client = None
+    embed_client = None
     rate_limiter = None
+    model = args.model
+    embed_model = args.embed_model
     if not args.no_llm:
         import os
 
         from esg_kg.core.paths import load_env
         load_env()
-        api_key = os.getenv("GEMINI_API_KEY")
-        if api_key:
-            from google import genai
-            client = genai.Client(api_key=api_key)
-            rate_limiter = entities.RateLimiter(max_calls_per_minute=args.rate_limit)
+        if args.provider == "openai":
+            if os.getenv("OPENAI_API_KEY"):
+                client = entities._OpenAIProvider(args.openai_model, args.rate_limit,
+                                                  base_url=args.openai_base_url)
+                embed_client = entities._OpenAIEmbeddingProvider(args.openai_embed_model, args.rate_limit,
+                                                                 base_url=args.openai_base_url)
+                rate_limiter = entities.RateLimiter(max_calls_per_minute=args.rate_limit)
+                model = args.openai_model
+                embed_model = args.openai_embed_model
+            else:
+                logger.warning("OPENAI_API_KEY not set — Stage B/C will be skipped")
+                args.no_llm = True
         else:
-            logger.warning("GEMINI_API_KEY not set — Stage B/C will be skipped")
-            args.no_llm = True
+            api_key = os.getenv("GEMINI_API_KEY")
+            if api_key:
+                from google import genai
+                client = genai.Client(api_key=api_key)
+                rate_limiter = entities.RateLimiter(max_calls_per_minute=args.rate_limit)
+            else:
+                logger.warning("GEMINI_API_KEY not set — Stage B/C will be skipped")
+                args.no_llm = True
 
     run_block(
         input_path=args.input, out_dir=args.out_dir, schema=schema,
@@ -313,10 +340,10 @@ def main() -> None:
         crosswalk=(json.loads(args.crosswalk.read_text(encoding="utf-8")) if args.crosswalk.exists() else {}),
         catalog=catalog, no_gri=args.no_gri, no_align=args.no_align,
         trust_draft_crosswalk=args.trust_draft_crosswalk,
-        similarity_threshold=args.similarity_threshold, model=args.model,
-        embed_model=args.embed_model, embed_dim=args.embed_dim, embed_batch=args.embed_batch,
+        similarity_threshold=args.similarity_threshold, model=model,
+        embed_model=embed_model, embed_dim=args.embed_dim, embed_batch=args.embed_batch,
         max_llm_pairs=args.max_llm_pairs, no_llm=args.no_llm,
-        client=client, rate_limiter=rate_limiter,
+        client=client, embed_client=embed_client, rate_limiter=rate_limiter,
         cache_path=None if args.no_cache else args.cache,
         dry_run=args.dry_run,
     )

@@ -4,30 +4,30 @@ The 05 BLOCK: `05 entities -> 05b provenance -> 05c indicators` is one unit that
 ONE artifact, ONCE.
 
 WHAT CHANGED AND WHY (DESIGN.md §5.7, decided 2026-07-28, built 2026-07-29)
-In `src/` these are three scripts that each read AND write
+In `src/` these were three scripts that each read AND write
 `graph_output/resolved/resolved_graph.json`: `step05_resolve_entities.py` writes it from
 scratch, then `step05b_stamp_provenance.py` and `step05c_link_standard_indicators.py`
-patch it in place. `step05:655` overwrites the WHOLE file with no merge and no warning
-(`PIPELINE.md` §3.1) — re-running it alone silently destroys 05b's provenance stamps and
-05c's indicator axis.
+patch it in place. `step05:655` overwrote the WHOLE file with no merge and no warning
+(`PIPELINE.md` §3.1) — re-running it alone would silently destroy 05b's provenance stamps
+and 05c's indicator axis.
 
 `esg_kg` collapses the three into one block (`esg_kg/resolve/build_resolved.py`) that
 passes the resolved graph IN MEMORY and writes the artifact exactly once — the same
 redesign already proven for the `03` block
 (`esg_kg/graph/build_validated.py` / `test_esg_kg_validated_block.py`), which this file
-mirrors structurally.
-
-THIS IS AN esg_kg-ONLY REDESIGN. `src/` is not touched (Model A) and keeps its three
-separate scripts. `05d` (`esg_kg.resolve.align_claims`) is NOT part of this block — it
+mirrors structurally. `05d` (`esg_kg.resolve.align_claims`) is NOT part of this block — it
 stays a separate, optional, budgeted-LLM stage run AFTER the block, unchanged.
 
-WHY THE SAFETY NET SURVIVES THE REDESIGN — the point of this whole file
-The change is to WHEN the file is written, not to WHAT ends up in it. So the old tree is
-still a usable ORACLE even though it is frozen: run `src/`'s chain
-`step05(--no-llm) -> step05b -> step05c` on a temp copy, run the block, and the final
-`resolved_graph.json` must be EQUAL. `no_llm=True` is not a weakened proxy here — per
-CLAUDE.md ("Gemini is currently billing-blocked...") it is today's REAL operating mode for
-this stage, so the oracle arm is the actual pipeline, not a stand-in for it.
+Repointed at `esg_kg` only (2026-07-29) now that `src/` is gone. This file used to run
+`src/`'s three-stage chain as a live ORACLE and assert the block's artifact was byte-equal
+to it — that comparison is what originally proved "collapsing three writes into one changes
+WHEN the file is written, not WHAT ends up in it." With `src/` deleted there is no oracle
+left to run, so the equality assertion is gone; what remains is the independent, new-tree-
+only content the same function already carried (real corpus, >1000 nodes, indicator-axis
+edges present, provenance stamps present) plus a same-named counter-arm
+(`test_src_chain_really_writes_it_three_times`) that had NO independent claim of its own —
+its entire content was characterizing the now-deleted old tree's behavior — so it was
+deleted rather than kept as dead weight.
 
 THE PAID-PATH CACHE — SCOPED TO STAGE C ONLY (see build_resolved.py's docstring for why
 Stage B/embeddings is out of scope for now)
@@ -51,15 +51,9 @@ import tempfile
 import zlib
 
 REPO = pathlib.Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO / "src"))
 sys.path.insert(0, str(REPO / "src_module"))
 
-# --- old tree: the three separate scripts that act as the ORACLE ---------------
-import step05_resolve_entities as old_step05  # noqa: E402
-import step05b_stamp_provenance as old_step05b  # noqa: E402
-import step05c_link_standard_indicators as old_step05c  # noqa: E402
-
-# --- new tree: the block --------------------------------------------------------
+# --- the block --------------------------------------------------------------------
 from esg_kg.resolve import build_resolved  # noqa: E402
 from esg_kg.resolve import entities as new_entities  # noqa: E402
 
@@ -106,49 +100,6 @@ def _unquiet(prev) -> None:
     logging.getLogger().setLevel(prev)
 
 
-# --------------------------------------------------------------------------- #
-# The ORACLE: drive the three src/ scripts exactly as the old pipeline does.
-# --------------------------------------------------------------------------- #
-def run_src_chain(out_dir: pathlib.Path) -> dict:
-    """`05(--no-llm) -> 05b -> 05c`, each writing/patching the shared artifact in turn."""
-    schema = load_schema()
-    out_dir.mkdir(parents=True, exist_ok=True)
-
-    # --- 05: entity resolution, offline (today's real operating mode) ----------
-    args05 = old_step05.argparse.Namespace(
-        input=VALIDATED_FILE, schema=SCHEMA_FILE, out_dir=out_dir,
-        registry=ISSUER_REGISTRY, standards_registry=STANDARDS_REGISTRY,
-        similarity_threshold=old_step05.DEFAULT_SIM, rate_limit=old_step05.DEFAULT_RATE_LIMIT,
-        model=old_step05.DEFAULT_MODEL, embed_model=old_step05.DEFAULT_EMBED_MODEL,
-        embed_dim=old_step05.DEFAULT_EMBED_DIM, embed_batch=old_step05.DEFAULT_EMBED_BATCH,
-        max_llm_pairs=old_step05.DEFAULT_MAX_LLM_PAIRS, no_llm=True, dry_run=False,
-    )
-    old_step05.resolve(args05)
-    artifact = out_dir / ARTIFACT
-
-    # --- 05b: provenance stamping, in place -------------------------------------
-    graph = json.loads(artifact.read_text(encoding="utf-8"))
-    identity_keys_map = old_step05b.get_identity_keys(schema)
-    stable_idx, source_idx, docs = old_step05b.build_page_indexes(GRAPHS_DIR)
-    news_meta = old_step05b.load_news_article_meta(old_step05b.DEFAULT_NEWS_GLOBS)
-    report_docs = [d for d in docs if "__" not in d]
-    old_step05b.stamp_graph(graph, stable_idx, source_idx, news_meta, identity_keys_map, report_docs)
-    artifact.write_text(json.dumps(graph, indent=2, ensure_ascii=False), encoding="utf-8")
-
-    # --- 05c: indicator axis, in place -------------------------------------------
-    defs = json.loads(DEFS_FILE.read_text(encoding="utf-8"))
-    crosswalk = json.loads(CROSSWALK_FILE.read_text(encoding="utf-8")) if CROSSWALK_FILE.exists() else {}
-    catalog = old_step05c.load_gri_catalog(GRI_CATALOG_FILE)
-    argsc = old_step05c.argparse.Namespace(
-        input=artifact, defs=DEFS_FILE, crosswalk=CROSSWALK_FILE, gri_catalog=GRI_CATALOG_FILE,
-        schema=SCHEMA_FILE, no_gri=False, no_align=False, trust_draft_crosswalk=False,
-        stats_out=out_dir / "indicator_axis_stats.json", dry_run=False,
-    )
-    old_step05c.run(argsc)
-
-    return json.loads(artifact.read_text(encoding="utf-8"))
-
-
 def run_block(out_dir: pathlib.Path, **kw) -> dict:
     """The new tree's single entry point."""
     schema = load_schema()
@@ -165,24 +116,20 @@ def run_block(out_dir: pathlib.Path, **kw) -> dict:
 
 
 # --------------------------------------------------------------------------- #
-# 1. The oracle arm — the whole reason the redesign is safe.
+# 1. The block produces a complete, correctly-assembled graph on the real corpus.
 # --------------------------------------------------------------------------- #
-def test_block_output_equals_src_chain_on_the_real_corpus():
+def test_block_produces_a_complete_resolved_graph_on_the_real_corpus():
     if not have_corpus():
-        return _skip("block vs src chain", "graph_output/{validated,graphs}/ not present")
+        return _skip("block real corpus", "graph_output/{validated,graphs}/ not present")
     prev = _quiet()
     try:
-        with tempfile.TemporaryDirectory() as t1, tempfile.TemporaryDirectory() as t2:
-            want = run_src_chain(pathlib.Path(t1))
+        with tempfile.TemporaryDirectory() as t2:
             block_out = pathlib.Path(t2)
             run_block(block_out)
             got = json.loads((block_out / ARTIFACT).read_text(encoding="utf-8"))
     finally:
         _unquiet(prev)
 
-    assert len(got["nodes"]) == len(want["nodes"]), (
-        f"node count diverged: block={len(got['nodes'])} src-chain={len(want['nodes'])}")
-    assert got == want, "the block produced a different resolved_graph.json than the src/ chain"
     assert len(got["nodes"]) > 1000, f"only {len(got['nodes'])} nodes — the corpus was not really read"
 
     axis_edges = sum(1 for e in got["edges"]
@@ -191,7 +138,7 @@ def test_block_output_equals_src_chain_on_the_real_corpus():
     assert axis_edges > 0, "05c contributed nothing — the block is not running the indicator stage"
     assert stamped > 0, "05b contributed nothing — the block is not running the provenance stage"
     print(f"     ({len(got['nodes'])} nodes, {len(got['edges'])} edges, "
-          f"{stamped} provenance-stamped, {axis_edges} axis edges — identical)")
+          f"{stamped} provenance-stamped, {axis_edges} axis edges)")
 
 
 # --------------------------------------------------------------------------- #
@@ -224,24 +171,6 @@ def test_block_writes_the_artifact_exactly_once():
     n = calls.count(ARTIFACT)
     assert n == 1, f"the block wrote {ARTIFACT} {n} time(s); the whole point is exactly 1"
     print(f"     (writes: {calls})")
-
-
-def test_src_chain_really_writes_it_three_times():
-    """Guard against a vacuous version of the arm above."""
-    if not have_corpus():
-        return _skip("triple-write baseline", "graph_output/{validated,graphs}/ not present")
-    prev = _quiet()
-    calls, real = _record_writes()
-    try:
-        with tempfile.TemporaryDirectory() as tmp:
-            run_src_chain(pathlib.Path(tmp))
-    finally:
-        pathlib.Path.write_text = real
-        _unquiet(prev)
-
-    n = calls.count(ARTIFACT)
-    assert n == 3, f"expected the src/ chain to write the artifact 3 times, saw {n}"
-    print(f"     (src/ chain writes it {n}x — the block writes it 1x)")
 
 
 # --------------------------------------------------------------------------- #

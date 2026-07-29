@@ -1,7 +1,10 @@
-# src_module/ — module-architecture refactor target
+# src_module/ — the pipeline (refactor from `src/` complete, `src/` deleted 2026-07-29)
 
-Đích đến của đợt refactor từ `src/`. Code cũ trong `src/` **vẫn là pipeline đang
-chạy thật**; ta chuyển **từng stage một** sang đây, không big-bang.
+Đích đến của đợt refactor từ `src/`: **15/15 stage đã dời**, và `src/` — pipeline cũ,
+từng là bản đang chạy thật trong suốt đợt refactor — **đã bị xoá**. `esg_kg` là cây
+duy nhất còn lại. Phần lịch sử bên dưới (và trong PIPELINE.md/DESIGN.md) mô tả quá
+trình dời từng stage một, không big-bang — giữ nguyên vì đó là ghi chép có thật về
+cách tính tương đương được chứng minh, dù `src/` không còn tồn tại để đối chiếu nữa.
 
 - **Sơ đồ pipeline (bắt đầu từ đây nếu thấy rối): [`PIPELINE.md`](PIPELINE.md)**
 - Package thật: [`esg_kg/`](esg_kg/)
@@ -43,13 +46,13 @@ cd src_module && python -m esg_kg.report.quality --label baseline   # tương đ
 ```
 
 `run.py` là file duy nhất chạm `sys.path`, và đọc bảng stage từ `pipeline.py` nên
-`--list` luôn nói thật về tiến độ. **Không cần `pip install`.** Đường dẫn output
-neo theo `REPO_ROOT` (marker-based) nên không phụ thuộc cwd. Stage chưa dời thì
-`run.py` in ra đúng lệnh `src/` cần chạy. Lý do chọn cách này: DESIGN.md §3.
+`--list` luôn nói thật. **Không cần `pip install`.** Đường dẫn output neo theo
+`REPO_ROOT` (marker-based) nên không phụ thuộc cwd. Lý do chọn cách này: DESIGN.md §3.
 
-Bảng phân biệt **ba** trạng thái, không phải hai: `ready` (đã dời), `still src/…`
-(chưa dời), và `(not ported)` — **cố ý không dời**, bị loại khỏi mẫu số vì nếu tính
-vào thì tiến độ migrate vĩnh viễn không thể đạt 100%.
+Bảng phân biệt **hai** trạng thái (từng là ba, khi `src/` còn tồn tại và có trạng thái
+"chưa dời"): `ready` (15/15 stage) và `(removed)` — ba stage **cố ý không dời rồi bị xoá
+hẳn** (`step10`, `step04b`, `step07b`), bị loại khỏi mẫu số vì nếu tính vào thì tiến độ
+migrate vĩnh viễn không thể đạt 100%.
 
 ## Cách làm việc
 
@@ -59,25 +62,26 @@ khi được trích** — thêm arm, chạy, thấy đỏ, rồi mới viết co
 arm so ba thứ: hằng số module, từng hàm, và output đã render.
 
 ```bash
-python test/test_esg_kg_equivalence.py    # lưới chống lệch giữa src/ và esg_kg
+python test/test_esg_kg_equivalence.py    # regression: core/paths+schema+naming+dates+graph_patch, report/quality, resolve/indicators
 python test/test_esg_kg_anchor_kpi.py     # lát cắt step03b: core/identity + graph/anchor_kpi
 python test/test_esg_kg_provenance.py     # lát cắt step05b: resolve/provenance
 python test/test_esg_kg_llm.py            # lát cắt core/llm: throttle + hình dạng request đã trả tiền
 python test/test_esg_kg_fix_triples.py    # lát cắt step03: corpus thật + pha 2 bằng LLM giả
-python test/test_esg_kg_validated_block.py # KHỐI 03→03b→03c: src/ làm oracle + "ghi đúng 1 lần"
+python test/test_esg_kg_validated_block.py # KHỐI 03→03b→03c: "ghi đúng 1 lần", cache pha 2
 python test/test_esg_kg_align_claims.py    # lát cắt step05d: nhánh LLM bắt buộc, chạy bằng provider giả
-python test/test_esg_kg_crosscheck.py      # lát cắt step07: đòn bẩy lớn nhất, mở khoá 08+10
+python test/test_esg_kg_crosscheck.py      # lát cắt step07: đòn bẩy lớn nhất, mở khoá 08
 python test/test_esg_kg_issuer.py          # lát cắt step04: ghi file TRACKED + sửa tay, arm dùng workspace tạm
 python test/test_esg_kg_extract.py         # lát cắt step01: hub cuối cùng, cho ra core/io_jsonl
 python test/test_esg_kg_neo4j_load.py      # lát cắt step06: stage GHI Neo4j thứ hai, stub execute_write
 python test/test_esg_kg_neo4j_sync.py      # lát cắt step08: stage NEO4J đầu tiên dời, stub GraphDatabase
 python test/test_esg_kg_claim_ledger.py    # lát cắt step09: stage ĐỌC Neo4j đầu tiên, driver giả trả dữ liệu
 python test/test_esg_kg_entities.py        # lát cắt step05: hàm resolve_graph() thuần + stub trên google.genai.Client
-python test/test_esg_kg_resolve_block.py   # KHỐI 05→05b→05c: src/ làm oracle + cache Stage C
-python test/test_step02_language_guard.py  # issue #6: prompt tiếng Việt, đỏ trên prompt cũ
+python test/test_esg_kg_resolve_block.py   # KHỐI 05→05b→05c: "ghi đúng 1 lần", cache Stage C
+python test/test_esg_kg_datasync.py        # esg_kg.core.datasync: pull scope, push --dry-run
+python test/test_step02_language_guard.py  # issue #6: prompt tiếng Việt, đỏ trên prompt chưa sửa
 python test/test_esg_kg_extract_triples.py # lát cắt step02: stage cuối cùng, client giả truyền trực tiếp
 python test/test_pipeline_table.py        # bảng STAGES/BLOCKS + run.py --list nói thật
-python test/test_temporal_invariants.py   # bộ test sẵn có của src/, phải luôn xanh
+python test/test_temporal_invariants.py   # P3/P4 temporal logic, esg_kg-only
 ```
 
 ⚠️ **Bẫy khi viết arm cho một stage vá tại chỗ**: artifact trên đĩa **đã bị chính stage
@@ -117,15 +121,16 @@ bảng bốn ca: [`PIPELINE.md`](PIPELINE.md) §3.
 | `resolve/align_claims.py` | ✅ dời từ `step05d` (2026-07-28); stage thứ **ba** dời mà không phải trích thêm `core/` — lát cắt `05c` đã đẩy `GraphPatch`/`temporal_md` lên kernel *chính vì* file này import chúng từ một stage. Stage **bắt buộc có LLM** — `--dry-run` return trước khi provider được dựng, nên nhánh đắt được phủ bằng **provider giả tiêm vào cả hai cây** (tất định theo CRC của prompt). Ở NGOÀI khối `build_resolved` (§3.2b) — chạy sau, không đổi. Test riêng: `test/test_esg_kg_align_claims.py` (14 nhóm) |
 | `crosscheck/claims_vs_conduct.py` | ✅ dời từ `step07` (2026-07-28), stage thứ **tám** — đòn bẩy lớn nhất trước khi dời: stage DUY NHẤT còn chặn ai đó (`08` chờ `node_text`, `10` chờ `Adjudicator`). `_Provider`/`_OpenAIProvider` nay import NGƯỢC từ `core.llm` — đúng hai lớp mà slice đó đã trích TỪ CHÍNH file này ngày 2026-07-27; `Adjudicator` cố ý ở lại stage (prompt + parse verdict + cascade — logic, không phải kernel). Khác `05d`, `--dry-run` ở đây KHÔNG return trước khi dựng provider (chỉ bỏ ghi file cuối) nên arm dry-run cũng là kiểm tương đương thật. Không đọc lại output của chính nó (ghi khác thư mục) nên PIPELINE.md §3 không áp dụng. Test riêng: `test/test_esg_kg_crosscheck.py` (21 nhóm) |
 | `registry/issuer.py` | ✅ dời từ `step04` (2026-07-28), stage **thứ chín**; hub *trông* như còn nhưng đã tan từ trước (6 stage `src/` chỉ lấy `normalize_name`/`name_tokens`/`merge_preserving_edits`, cả ba đã ở `core/naming` — bản thân stage chỉ import `REPO_ROOT`). AST-diff: **11 hàm chung, 0 hàm khác một byte** (`main()` chỉ đổi 1 dòng thông báo, trỏ sang `build_validated` thay vì `step03…`), 3 hàm bị xoá đúng là 3 hàm đã có trong `core/naming`. Hoàn toàn offline — không LLM, không Neo4j — nhưng ghi `config/issuer_registry.json`, một file **tracked trong Git và có sửa tay của người**, nên MỌI arm gọi `build()` phải ghi ra workspace tạm, không bao giờ chạm bản thật; có arm riêng khẳng định điều đó (`test_build_never_touches_the_real_tracked_registry`) và một arm mô phỏng người di chuyển một `needs_review` sang `exclusions` rồi chạy lại để chứng minh `merge_preserving_edits` giữ đúng bản sửa ở cả hai cây. Một commit riêng theo sau xoá nhánh sniff `{nodes,edges}` chết mà DESIGN.md §5.2 đã ghi từ 2026-07-25 — **cả hai cây cùng lúc**, red-first (bug tồn tại ở cả hai, không phải một cây lệch cây kia). Test riêng: `test/test_esg_kg_issuer.py` (12 nhóm) |
-| `registry/standards.py` | ⛔ **không dời** — `step04b` đọc output của `step05` (vòng lặp) và lần quét đồ thị đóng góp 0; registry thành config tĩnh, `step00` audit độ phủ (DESIGN.md §4.2) |
+| `registry/standards.py` | 🗑️ **không tồn tại** — `step04b` đọc output của `step05` (vòng lặp) và lần quét đồ thị đóng góp 0; registry thành config tĩnh (hand-edited), `step00` audit độ phủ (DESIGN.md §4.2). Xoá hẳn cùng `src/` (2026-07-29), không phải "chưa dời" |
 | `load/neo4j_load.py` | ✅ dời từ `step06` (2026-07-29) — leaf từ trước, nhưng stage GHI Neo4j **thứ hai**: client surface rộng hơn `08` (`session.execute_write` + đọc lại `.single()`), nên fake session/tx phải đỡ cả hình dạng gọi lẫn hình dạng đọc. Arm mạnh nhất: `build_payload()` thuần hàm trên corpus thật + 76 lệnh Neo4j giống hệt byte-for-byte giữa hai cây. Test riêng: `test/test_esg_kg_neo4j_load.py` (5 nhóm) |
 | `load/neo4j_sync.py` | ✅ dời từ `step08` (2026-07-29) — leaf, nhưng stage NEO4J **đầu tiên** dời: không có lớp `_Provider` trước driver Neo4j thật, nên stub thế chỗ thẳng `neo4j.GraphDatabase` (đúng kỹ thuật `google.genai.Client` ở `01`). Driver giả chỉ ghi lại Cypher + tham số; arm so 5 lệnh giống hệt byte-for-byte trên corpus thật (1 093 dossier). `node_text` trap giữ đúng lần thứ ba. Test riêng: `test/test_esg_kg_neo4j_sync.py` (8 nhóm) |
 | `report/claim_ledger.py` | ✅ dời từ `step09` (2026-07-29) — stage ĐỌC Neo4j **đầu tiên**, khác `06`/`08` vốn chỉ ghi: fake driver phải TRẢ DỮ LIỆU GIẢ (hàng đợi 4 bộ, đúng thứ tự 4 lần `s.run()`), không chỉ ghi lại lời gọi. Stage đầu tiên KHÔNG có arm corpus thật trên đĩa (chỉ đọc Neo4j, không file JSON nào). Test riêng: `test/test_esg_kg_claim_ledger.py` (10 nhóm) |
 | `resolve/build_resolved.py` | ✅ **KHỐI** `05 → 05b → 05c` (2026-07-29) — không phải stage, **không có bản `src/`** nên không tính vào mẫu số. Nối chuỗi in-memory, ghi `resolved_graph.json` **1 lần**; `src/` giữ nguyên 3 script và làm **oracle** (`step05(--no-llm) → step05b → step05c`, so ra 10 425 node / 14 387 cạnh giống hệt). `05d` KHÔNG nằm trong khối — vẫn là stage tuỳ chọn chạy sau, không đổi. Cache chỉ bọc Stage C (adjudication LLM); Stage B (embedding) cố ý không cache — xem docstring của file. Test riêng: `test/test_esg_kg_resolve_block.py` (5 nhóm, DESIGN.md §5.7, PIPELINE.md §3.2b) |
 | `graph/extract_triples.py` | ✅ dời từ `step02` (2026-07-29), stage **thứ mười lăm và cuối cùng** — khép lại đợt refactor. Hai commit riêng: (1) prompt fix issue #6 land trong `src/` trước (thêm mục `## OUTPUT LANGUAGE` vào cả hai template, sửa lại ví dụ mẫu đang mô hình hoá lỗi dịch/khử dấu; test `test/test_step02_language_guard.py`), (2) dời thuần túy sau. Leaf xác nhận — mọi symbol đã ở `core/` (`io_jsonl`, `llm`, `schema`, `identity`); hàm trùng `schema_sets()` bị **xoá**, thay bằng `core.schema.load_schema_sets` (bỏ `edge_directions`, không dùng ở stage này). Khác `01`, step02 không tự dựng client — `call_llm`/`process_page`/`process_document` nhận `client` như tham số thuần, nên stub trả tiền trong test là một client giả truyền thẳng vào, không phải monkeypatch. Test riêng: `test/test_esg_kg_extract_triples.py` (12 nhóm) |
-| `step07b` (softmax) | ⛔ **không dời** — UI `frontend/`+`api/` không đọc; giữ chạy ở `src/` (DESIGN.md §4.1) |
+| `step07b` (softmax) | 🗑️ **không tồn tại** — UI `frontend/`+`api/` không đọc `assessment_scores`/`score_components`; xoá hẳn cùng `src/` (2026-07-29), không phải "chưa dời" |
 
-`src/` **vẫn chạy được** (Model A không xoá nó), nhưng **15/15** stage nay chạy được từ
-`esg_kg` **cộng hai khối** `build_validated` + `build_resolved` — không còn stage nào
-đang chờ dời. `run.py --list` là nguồn sự thật — và bản
-`src/step00_graph_quality_report.py` vẫn còn (nợ đã ghi: DESIGN.md §6.1).
+`src/` **đã bị xoá** (2026-07-29) — **15/15** stage chạy được từ `esg_kg` **cộng hai
+khối** `build_validated` + `build_resolved`; không còn stage nào đang chờ dời, và không
+còn cây thứ hai để đối chiếu. `run.py --list` là nguồn sự thật. `step10`/`step04b`/
+`step07b` không có hàng trong bảng — cả ba bị xoá hẳn, không phải "cố ý không dời"
+(xem ghi chú trong `pipeline.py`).

@@ -22,10 +22,10 @@ import tempfile
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO / "src"))
+sys.path.insert(0, str(REPO / "src_module"))
 
-from step03c_canonicalize_kpis import Matcher, canonicalize_kpis  # noqa: E402
-from step05c_link_standard_indicators import run  # noqa: E402
+from esg_kg.kpi.canonicalize import Matcher, canonicalize_kpis  # noqa: E402
+from esg_kg.resolve.indicators import run  # noqa: E402
 
 SCHEMA_PATH = REPO / "config" / "schema.json"
 DEFS_PATH = REPO / "kpi_definitions_construction.json"

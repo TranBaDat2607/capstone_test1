@@ -39,7 +39,12 @@ so every candidate pair clears the similarity threshold deterministically); the 
 trees see identical verdicts for identical inputs.
 
 Offline: no real Gemini call, no network. `GEMINI_API_KEY` is set to a dummy value only
-so the OLD tree's own "is a key configured" check does not abort first.
+so the resolver's own "is a key configured" check does not abort first.
+
+Was driven through both `src/` and `esg_kg` while both trees existed (DESIGN.md §5.3);
+repointed at `esg_kg` only (2026-07-29) now that `src/` is gone. Cross-tree comparisons
+with no independent claim about correct behaviour were deleted rather than rewritten
+against a guessed value.
 
 Run from the repo root:
 
@@ -54,11 +59,7 @@ import zlib
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO / "src"))
 sys.path.insert(0, str(REPO / "src_module"))
-
-# --- old: the flat src/ script --------------------------------------------------
-import step05_resolve_entities as old_entities  # noqa: E402
 
 # --- new: the esg_kg package -----------------------------------------------------
 from esg_kg.resolve import entities as new_entities  # noqa: E402
@@ -98,84 +99,6 @@ def load_schema() -> dict:
 
 
 # --------------------------------------------------------------------------- #
-# Part A — module surface: constants + pure helpers
-# --------------------------------------------------------------------------- #
-def test_constants_match():
-    for name in ("DEFAULT_MODEL", "DEFAULT_EMBED_MODEL", "DEFAULT_EMBED_DIM",
-                "DEFAULT_SIM", "DEFAULT_RATE_LIMIT", "DEFAULT_MAX_LLM_PAIRS",
-                "DEFAULT_EMBED_BATCH", "OBSERVATION_CLASSES", "TEMPORAL_FIELDS",
-                "DOC_EDGE_EXPECTED_CLASS", "DOC_EDGE_SWAP", "ADJUDICATE_PROMPT"):
-        a, b = getattr(new_entities, name), getattr(old_entities, name)
-        assert a == b, f"{name} diverged: new={a!r} old={b!r}"
-
-
-def test_dsu_matches():
-    for n in (1, 5, 20):
-        new_dsu, old_dsu = new_entities.DSU(n), old_entities.DSU(n)
-        pairs = [(i, (i * 3 + 1) % n) for i in range(n)]
-        for a, b in pairs:
-            new_dsu.union(a, b)
-            old_dsu.union(a, b)
-        assert new_dsu.parent == old_dsu.parent or \
-            [new_dsu.find(i) for i in range(n)] == [old_dsu.find(i) for i in range(n)]
-        assert new_dsu.n_components() == old_dsu.n_components()
-
-
-def test_identity_signature_and_primary_name_match():
-    schema = load_schema()
-    idkeys = new_entities.load_identity_keys(schema)
-    assert idkeys == old_entities.load_identity_keys(schema)
-    nodes = [
-        {"class": "Organization", "properties": {"name": VN_NAME}},
-        {"class": "Organization", "properties": {"name": "  "}},
-        {"class": "KPIObservation", "properties": {"kpi_type": "x", "source_id": "s1", "value": 5}},
-    ]
-    for node in nodes:
-        for normalize in (False, True):
-            a = new_entities.identity_signature(node, idkeys, normalize=normalize)
-            b = old_entities.identity_signature(node, idkeys, normalize=normalize)
-            assert a == b, f"diverged for {node} normalize={normalize}: new={a} old={b}"
-        assert new_entities.primary_name(node) == old_entities.primary_name(node)
-        assert new_entities.non_temporal_props(node) == old_entities.non_temporal_props(node)
-        assert new_entities.embedding_text(node) == old_entities.embedding_text(node)
-        assert new_entities.prop_completeness(node) == old_entities.prop_completeness(node)
-
-
-def test_build_graph_and_consolidate_match_on_a_synthetic_fixture():
-    triples = [
-        {"subject": {"class": "Organization", "properties": {"name": VN_NAME, "valid_from": "2023"}},
-         "predicate": "ownsFacility",
-         "object": {"class": "Facility", "properties": {"name": "Nhà máy 1", "valid_from": "2023"}},
-         "temporal_metadata": {"valid_from": "2023", "valid_to": None, "recorded_at": "2023"}},
-        {"subject": {"class": "Organization", "properties": {"name": VN_NAME, "valid_from": "2024"}},
-         "predicate": "ownsFacility",
-         "object": {"class": "Facility", "properties": {"name": "Nhà máy 1", "valid_from": "2024"}},
-         "temporal_metadata": {"valid_from": "2024", "valid_to": None, "recorded_at": "2024"}},
-    ]
-    import copy
-    new_nodes, new_edges = new_entities.build_graph(copy.deepcopy(triples))
-    old_nodes, old_edges = old_entities.build_graph(copy.deepcopy(triples))
-    assert new_nodes == old_nodes and new_edges == old_edges
-
-    schema = load_schema()
-    idkeys = new_entities.load_identity_keys(schema)
-    n = len(new_nodes)
-    new_dsu, old_dsu = new_entities.DSU(n), old_entities.DSU(n)
-    groups: dict = {}
-    for i in range(n):
-        sig = new_entities.identity_signature(new_nodes[i], idkeys)
-        groups.setdefault(sig, []).append(i)
-    for idxs in groups.values():
-        for j in idxs[1:]:
-            new_dsu.union(idxs[0], j)
-            old_dsu.union(idxs[0], j)
-    new_resolved, new_stats = new_entities.consolidate(new_nodes, new_edges, new_dsu, {})
-    old_resolved, old_stats = old_entities.consolidate(old_nodes, old_edges, old_dsu, {})
-    assert new_resolved == old_resolved, "consolidate() diverged on the synthetic fixture"
-    assert new_stats == old_stats
-
-
-# --------------------------------------------------------------------------- #
 # Part B — the real corpus, Stage A/B.1/D only (no_llm=True — today's real
 # operating mode per CLAUDE.md: "Gemini is currently billing-blocked").
 # --------------------------------------------------------------------------- #
@@ -193,26 +116,12 @@ def test_resolve_graph_matches_src_on_the_real_corpus_no_llm():
             registry_path=DEFAULT_ISSUER_REGISTRY, standards_registry_path=DEFAULT_STANDARDS_REGISTRY,
             no_llm=True, client=None, rate_limiter=None, adjudication_cache=None,
         )
-
-        with tempfile.TemporaryDirectory() as tmp:
-            out_dir = Path(tmp)
-            args = old_entities.argparse.Namespace(
-                input=DEFAULT_INPUT, schema=SCHEMA_FILE, out_dir=out_dir,
-                registry=DEFAULT_ISSUER_REGISTRY, standards_registry=DEFAULT_STANDARDS_REGISTRY,
-                similarity_threshold=old_entities.DEFAULT_SIM, rate_limit=old_entities.DEFAULT_RATE_LIMIT,
-                model=old_entities.DEFAULT_MODEL, embed_model=old_entities.DEFAULT_EMBED_MODEL,
-                embed_dim=old_entities.DEFAULT_EMBED_DIM, embed_batch=old_entities.DEFAULT_EMBED_BATCH,
-                max_llm_pairs=old_entities.DEFAULT_MAX_LLM_PAIRS, no_llm=True, dry_run=False,
-            )
-            old_entities.resolve(args)
-            old_resolved = json.loads((out_dir / "resolved_graph.json").read_text(encoding="utf-8"))
     finally:
         _unquiet(prev)
 
-    assert new_resolved == old_resolved, "resolved graph diverged on the real corpus (no_llm)"
     assert len(new_resolved["nodes"]) > 1000, "arm is vacuous: too few nodes"
     print(f"     ({len(new_resolved['nodes'])} nodes / {len(new_resolved['edges'])} edges, "
-          f"no_llm=True — identical)")
+          f"no_llm=True)")
 
 
 # --------------------------------------------------------------------------- #
@@ -285,41 +194,21 @@ def test_paid_path_matches_across_trees_on_a_synthetic_fixture():
 
     prev = _quiet()
     try:
-        # --- new tree: pass the fake client straight to the pure function ---------
         new_client = _FakeClient()
         new_resolved, new_stats = new_entities.resolve_graph(
             triples, idkeys, registry_path=missing_registry, standards_registry_path=missing_registry,
-            no_llm=False, client=new_client, rate_limiter=old_entities.RateLimiter(max_calls_per_minute=1000),
+            no_llm=False, client=new_client, rate_limiter=new_entities.RateLimiter(max_calls_per_minute=1000),
             adjudication_cache=None,
         )
-
-        # --- old tree: monkeypatch genai.Client, drive through the real resolve() -
-        original_client_cls = old_entities.genai.Client
-        old_entities.genai.Client = _FakeClient
-        try:
-            with tempfile.TemporaryDirectory() as tmp:
-                out_dir = Path(tmp)
-                input_file = out_dir / "triples.json"
-                input_file.write_text(json.dumps(triples, ensure_ascii=False), encoding="utf-8")
-                args = old_entities.argparse.Namespace(
-                    input=input_file, schema=SCHEMA_FILE, out_dir=out_dir,
-                    registry=missing_registry, standards_registry=missing_registry,
-                    similarity_threshold=old_entities.DEFAULT_SIM, rate_limit=1000,
-                    model=old_entities.DEFAULT_MODEL, embed_model=old_entities.DEFAULT_EMBED_MODEL,
-                    embed_dim=old_entities.DEFAULT_EMBED_DIM, embed_batch=old_entities.DEFAULT_EMBED_BATCH,
-                    max_llm_pairs=old_entities.DEFAULT_MAX_LLM_PAIRS, no_llm=False, dry_run=False,
-                )
-                old_entities.resolve(args)
-                old_resolved = json.loads((out_dir / "resolved_graph.json").read_text(encoding="utf-8"))
-        finally:
-            old_entities.genai.Client = original_client_cls
     finally:
         _unquiet(prev)
 
     assert new_stats["stages"]["llm_comparisons"] > 0, "arm is vacuous: Stage C never ran"
-    assert new_resolved == old_resolved, "paid-path result diverged between trees"
+    # the two orgs merged into one resolved entity via Stage B.2/C
+    org_names = {n["properties"]["name"] for n in new_resolved["nodes"] if n["class"] == "Organization"}
+    assert len(org_names) == 1, f"expected the near-duplicate orgs to merge, got {org_names}"
     print(f"     (llm_comparisons={new_stats['stages']['llm_comparisons']}, "
-          f"llm_matches={new_stats['stages']['llm_matches']} — identical both trees)")
+          f"llm_matches={new_stats['stages']['llm_matches']})")
 
 
 def test_adjudication_cache_is_reused_on_a_rerun():
@@ -356,7 +245,7 @@ def test_adjudication_cache_is_reused_on_a_rerun():
         client1 = _FakeClient()
         r1, s1 = new_entities.resolve_graph(
             triples, idkeys, registry_path=missing_registry, standards_registry_path=missing_registry,
-            no_llm=False, client=client1, rate_limiter=old_entities.RateLimiter(max_calls_per_minute=1000),
+            no_llm=False, client=client1, rate_limiter=new_entities.RateLimiter(max_calls_per_minute=1000),
             adjudication_cache=cache,
         )
         assert any(c[0] == "generate" for c in client1.calls_seen), "first run never called the LLM"
@@ -364,7 +253,7 @@ def test_adjudication_cache_is_reused_on_a_rerun():
         client2 = _FakeClient()
         r2, s2 = new_entities.resolve_graph(
             triples, idkeys, registry_path=missing_registry, standards_registry_path=missing_registry,
-            no_llm=False, client=client2, rate_limiter=old_entities.RateLimiter(max_calls_per_minute=1000),
+            no_llm=False, client=client2, rate_limiter=new_entities.RateLimiter(max_calls_per_minute=1000),
             adjudication_cache=cache,
         )
     finally:
@@ -375,6 +264,90 @@ def test_adjudication_cache_is_reused_on_a_rerun():
     assert r1 == r2, "cached rerun produced a different resolved graph"
     print(f"     (run 1 called generate_content {sum(1 for c in client1.calls_seen if c[0] == 'generate')}x, "
           f"run 2 called it 0x)")
+
+
+# --------------------------------------------------------------------------- #
+# NEW (2026-07-29): the additive OpenAI path for Stage B/C. Gemini stays the
+# default; the provider is detected by TYPE (isinstance _OpenAIProvider /
+# _OpenAIEmbeddingProvider), so resolve_graph()'s signature is unchanged for the
+# Gemini caller. No src/ counterpart exists for this branch — single-tree only.
+# --------------------------------------------------------------------------- #
+def test_openai_paid_path_resolves_the_near_duplicate_org():
+    import os
+    from esg_kg.core.llm import _OpenAIEmbeddingProvider, _OpenAIProvider
+
+    saved = os.environ.get("OPENAI_API_KEY")
+    os.environ["OPENAI_API_KEY"] = "sk-test-not-a-real-key"
+    schema = load_schema()
+    idkeys = new_entities.load_identity_keys(schema)
+    triples = _near_duplicate_org_fixture()
+    missing_registry = REPO / "config" / "__no_such_registry__.json"
+
+    prev = _quiet()
+    try:
+        chat = _OpenAIProvider("gpt-4o-mini", 1000)
+        embed = _OpenAIEmbeddingProvider("text-embedding-3-small", 1000)
+        assert chat.enabled and embed.enabled
+
+        embed_calls = []
+
+        def fake_embed(texts, dimensions=None):
+            embed_calls.append((tuple(texts), dimensions))
+            # identical vectors -> cosine 1.0 -> both orgs become one Stage B.2 candidate
+            return [[1.0] + [0.0] * (dimensions - 1) for _ in texts]
+
+        chat_calls = []
+
+        def fake_call(system, user):
+            chat_calls.append((system, user))
+            return json.dumps({"same_entity": True})
+
+        embed.embed = fake_embed
+        chat.call = fake_call
+
+        resolved, stats = new_entities.resolve_graph(
+            triples, idkeys, registry_path=missing_registry, standards_registry_path=missing_registry,
+            no_llm=False, client=chat, embed_client=embed,
+            rate_limiter=new_entities.RateLimiter(max_calls_per_minute=1000),
+            adjudication_cache=None,
+        )
+    finally:
+        _unquiet(prev)
+        if saved is None:
+            os.environ.pop("OPENAI_API_KEY", None)
+        else:
+            os.environ["OPENAI_API_KEY"] = saved
+
+    assert len(embed_calls) >= 1, "Stage B never called the OpenAI embedding provider"
+    assert len(chat_calls) >= 1, "Stage C never called the OpenAI chat provider"
+    assert stats["stages"]["llm_comparisons"] >= 1
+    assert stats["stages"]["llm_matches"] >= 1
+    # the two orgs merged into one resolved entity
+    org_names = {n["properties"]["name"] for n in resolved["nodes"] if n["class"] == "Organization"}
+    assert len(org_names) == 1, f"expected the near-duplicate orgs to merge, got {org_names}"
+    print("     (Stage B embeds via OpenAI, Stage C adjudicates via OpenAI, orgs merged)")
+
+
+def test_openai_and_gemini_clients_are_not_confused():
+    """embed_client defaults to client when omitted (the Gemini shape); passing an
+    _OpenAIEmbeddingProvider as embed_client must not also make llm_same_entity take
+    the openai branch for a plain Gemini-shaped client, and vice versa."""
+    from esg_kg.core.llm import _OpenAIEmbeddingProvider, _OpenAIProvider
+
+    import os
+    saved = os.environ.get("OPENAI_API_KEY")
+    os.environ["OPENAI_API_KEY"] = "sk-test-not-a-real-key"
+    try:
+        chat = _OpenAIProvider("gpt-4o-mini", 10)
+        embed = _OpenAIEmbeddingProvider("text-embedding-3-small", 10)
+        assert not isinstance(chat, _OpenAIEmbeddingProvider)
+        assert not isinstance(embed, _OpenAIProvider)
+    finally:
+        if saved is None:
+            os.environ.pop("OPENAI_API_KEY", None)
+        else:
+            os.environ["OPENAI_API_KEY"] = saved
+    print("     (the two OpenAI provider classes are distinct types, no accidental overlap)")
 
 
 if __name__ == "__main__":

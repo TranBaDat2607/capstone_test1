@@ -79,7 +79,7 @@ from esg_kg.core.io_jsonl import (
     parse_company_year_from_filename,
     select_documents,
 )
-from esg_kg.core.llm import DEFAULT_RATE_LIMIT, RateLimiter
+from esg_kg.core.llm import DEFAULT_RATE_LIMIT, RateLimiter, _OpenAIProvider
 from esg_kg.core.schema import get_identity_keys, load_schema_sets
 from esg_kg.core.identity import PROVENANCE_CLASSES, get_stable_entity_id
 
@@ -93,7 +93,20 @@ DEFAULT_SCHEMA = REPO_ROOT / "config" / "schema.json"
 DEFAULT_KPI_DIR = REPO_ROOT / "kpi_output"
 DEFAULT_OUT_DIR = REPO_ROOT / "graph_output"
 DEFAULT_MODEL = "gemini-2.5-flash"
+DEFAULT_OPENAI_MODEL = "gpt-4o-mini"
 DEFAULT_MAX_WORKERS = 4
+
+# Instruction appended for the OpenAI branch only. Gemini's CFG_JSON above has no
+# `response_schema` for this stage (the prompt template's own "STRICT EXTRACTION
+# RULES" section is what shapes the output) — so OpenAI's json_object mode needs no
+# schema hint either, just its own top-level-object requirement (OpenAI's JSON mode
+# returns an object, not a bare array like Gemini can), hence the "{"triples": [...]}"
+# wrapper this instructs and `call_llm` unwraps.
+_OPENAI_JSON_WRAPPER_INSTRUCTION = (
+    'Return *only* a single JSON object of the exact shape {"triples": [...]} - no '
+    "prose, no markdown fences. Each item of \"triples\" is one subject/predicate/"
+    "object/temporal_metadata record, following the STRICT EXTRACTION RULES above."
+)
 
 
 # --------------------------------------------------------------------------- #
@@ -668,14 +681,48 @@ def load_news_doc_meta(path: Path) -> Dict[str, Dict[str, Any]]:
 # --------------------------------------------------------------------------- #
 # LLM call (verbatim semantics, simplified for a single client).
 # --------------------------------------------------------------------------- #
-def call_llm(prompt: str, client: genai.Client, client_idx: int,
+def call_llm(prompt: str, client: Any, client_idx: int,
              rate_limiter: RateLimiter, schema: Dict[str, Any], model: str,
-             retries: int = 3) -> Tuple[Any, str, bool]:
+             retries: int = 3, provider: str = "gemini") -> Tuple[Any, str, bool]:
+    """`client` is a `genai.Client` for provider="gemini" (default), or an
+    `_OpenAIProvider` for provider="openai" — additive, Gemini path unchanged."""
     last_error: Optional[Exception] = None
     last_raw = ""
     rate_limit_failures = 0
     for attempt in range(1, retries + 1):
         try:
+            if provider == "openai":
+                # _OpenAIProvider throttles itself (its own internal RateLimiter);
+                # the caller's `rate_limiter`/`client_idx` are the Gemini path only.
+                last_raw = client.call(
+                    f"Return *only* valid JSON - no prose.\n\n{_OPENAI_JSON_WRAPPER_INSTRUCTION}",
+                    prompt,
+                )
+                try:
+                    obj = json.loads(last_raw)
+                except json.JSONDecodeError as e:
+                    logger.warning(f"Attempt {attempt}: could not parse valid JSON ({e})")
+                    parsed = None
+                else:
+                    if isinstance(obj, dict):
+                        parsed = obj.get("triples", [])
+                    elif isinstance(obj, list):
+                        parsed = obj
+                    else:
+                        parsed = None
+                if parsed is not None:
+                    if _validate_extraction_format(parsed, schema):
+                        logger.info(f"Extracted {len(parsed)} relations")
+                    else:
+                        logger.warning(f"Attempt {attempt}: valid JSON but format issues")
+                    return parsed, last_raw, False
+                logger.warning(f"Attempt {attempt}: could not parse valid JSON")
+                if attempt < retries:
+                    wait = 2 ** (attempt - 1)
+                    logger.info(f"Waiting {wait}s before retry...")
+                    time.sleep(wait)
+                continue  # openai has its own throttle+backoff above; skip the gemini path below
+
             rate_limiter.wait_if_needed(client_idx)
             resp = client.models.generate_content(model=model, contents=prompt, config=CFG_JSON)
             last_raw = _response_to_text(resp)
@@ -709,11 +756,12 @@ def call_llm(prompt: str, client: genai.Client, client_idx: int,
 # Per-page processing.
 # --------------------------------------------------------------------------- #
 def process_page(page_info: Dict[str, Any], page_kpis: List[Dict[str, Any]],
-                 client: genai.Client, client_idx: int, rate_limiter: RateLimiter,
+                 client: Any, client_idx: int, rate_limiter: RateLimiter,
                  schema: Dict[str, Any], model: str, esg_only: bool,
                  pdf_stem: str, dbg_pdf_dir: Path, g_pdf_dir: Path,
                  company: str, year: int,
-                 source: str = "report", article_meta: Optional[Dict[str, Any]] = None) -> Tuple[int, bool, bool]:
+                 source: str = "report", article_meta: Optional[Dict[str, Any]] = None,
+                 provider: str = "gemini") -> Tuple[int, bool, bool]:
     p_no = page_info["page"]
     page_text = page_info["text"]
     has_esg = page_info["has_esg"]
@@ -743,7 +791,7 @@ def process_page(page_info: Dict[str, Any], page_kpis: List[Dict[str, Any]],
     max_retries = 2
     for retry in range(max_retries):
         parsed, raw, rate_limited = call_llm(prompt, client, client_idx, rate_limiter,
-                                             schema, model, retries=2)
+                                             schema, model, retries=2, provider=provider)
         if rate_limited:
             logger.warning(f"Page {p_no} skipped due to rate limiting on client {client_idx}")
             return p_no, False, True
@@ -818,9 +866,10 @@ def process_page(page_info: Dict[str, Any], page_kpis: List[Dict[str, Any]],
 # --------------------------------------------------------------------------- #
 def process_document(source_pdf: str, jsonl_pages: Dict[int, List[Tuple[int, str, bool]]],
                      kpi_dir: Path, out_dir: Path, schema: Dict[str, Any], model: str,
-                     client: genai.Client, rate_limiter: RateLimiter,
+                     client: Any, rate_limiter: RateLimiter,
                      esg_only: bool, max_workers: int,
-                     source: str = "report", doc_meta: Optional[Dict[str, Any]] = None) -> Tuple[int, int]:
+                     source: str = "report", doc_meta: Optional[Dict[str, Any]] = None,
+                     provider: str = "gemini") -> Tuple[int, int]:
     if source == "news":
         # news source_pdf is an id like "AAA__vietstock.vn__<hash>" (no .pdf); do NOT
         # os.path.splitext it - that would strip ".vn__<hash>" and collapse every article
@@ -858,7 +907,7 @@ def process_document(source_pdf: str, jsonl_pages: Dict[int, List[Tuple[int, str
                 process_page, pg, page_kpi_map.get(pg["page"], []),
                 client, 0, rate_limiter, schema, model, esg_only,
                 pdf_stem, dbg_pdf_dir, g_pdf_dir, company, year,
-                source, article_meta,
+                source, article_meta, provider,
             ): pg["page"]
             for pg in pages
         }
@@ -947,6 +996,13 @@ def main() -> None:
     parser.add_argument("--max-workers", type=int, default=DEFAULT_MAX_WORKERS, help="Parallel page workers")
     parser.add_argument("--rate-limit", type=int, default=DEFAULT_RATE_LIMIT, help="Max RPM (default 10)")
     parser.add_argument("--model", type=str, default=DEFAULT_MODEL, help="Gemini model id")
+    parser.add_argument("--provider", type=str, default="gemini", choices=["gemini", "openai"],
+                        help="LLM backend (default gemini; openai needs OPENAI_API_KEY)")
+    parser.add_argument("--openai-model", type=str, default=DEFAULT_OPENAI_MODEL,
+                        help="OpenAI model id, used only when --provider openai")
+    parser.add_argument("--openai-base-url", type=str, default=None,
+                        help="Override the OpenAI endpoint (e.g. an OpenAI-compatible "
+                             "third-party host); default is OpenAI's own API")
     parser.add_argument("--source", choices=["report", "news"], default="report",
                         help="report (default): company self-reporting -> claim side. "
                              "news: third-party news -> conduct side; uses the news prompt and "
@@ -981,22 +1037,29 @@ def main() -> None:
         return
 
     load_dotenv(REPO_ROOT / ".env")
-    api_key = os.getenv("GEMINI_API_KEY")
-    if not api_key:
-        logger.error(f"GEMINI_API_KEY not set in {REPO_ROOT / '.env'}")
-        return
-
-    client = genai.Client(api_key=api_key)
     rate_limiter = RateLimiter(max_calls_per_minute=args.rate_limit)
+    if args.provider == "openai":
+        if not os.getenv("OPENAI_API_KEY"):
+            logger.error(f"OPENAI_API_KEY not set in {REPO_ROOT / '.env'}")
+            return
+        client = _OpenAIProvider(args.openai_model, args.rate_limit, base_url=args.openai_base_url)
+        model = args.openai_model
+    else:
+        api_key = os.getenv("GEMINI_API_KEY")
+        if not api_key:
+            logger.error(f"GEMINI_API_KEY not set in {REPO_ROOT / '.env'}")
+            return
+        client = genai.Client(api_key=api_key)
+        model = args.model
 
     total_success = 0
     total_failed = 0
     for src in selected:
         s, f = process_document(
             src, docs[src],
-            args.kpi_dir, args.out_dir, schema, args.model,
+            args.kpi_dir, args.out_dir, schema, model,
             client, rate_limiter, esg_only=esg_only, max_workers=args.max_workers,
-            source=args.source, doc_meta=news_meta.get(src),
+            source=args.source, doc_meta=news_meta.get(src), provider=args.provider,
         )
         total_success += s
         total_failed += f

@@ -2,9 +2,10 @@
 
 `pipeline.py` is load-bearing, not documentation: `run.py` reads it instead of keeping
 its own copy, so `--list` reports migration progress by asking the import system. That
-only stays true if the table itself stays true. This asserts the three ways it can rot:
+only stays true if the table itself stays true. This asserts the ways it can rot:
 
-  1. a row pointing at a `src/` file that does not exist (renamed/deleted stage),
+  1. a row's `old_step` label malformed or colliding with another row's (it is what
+     `run.py <old_id>` still resolves by, even though `src/` itself is gone),
   2. two rows colliding on the short name `run.py` dispatches by,
   3. a stage that will NEVER be ported being rendered as merely "not yet" — the lie
      that matters, because it silently keeps dead work on the migration queue.
@@ -14,12 +15,12 @@ Offline, no LLM/Neo4j/network. Run from the repo root:  python test/test_pipelin
 
 import importlib.util
 import io
+import re
 import sys
 from contextlib import redirect_stdout
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-SRC = REPO_ROOT / "src"
 
 
 def _load_run_py():
@@ -33,18 +34,20 @@ def _load_run_py():
 run = _load_run_py()
 STAGES = run.STAGES
 
-# Stages deliberately NOT ported to esg_kg. A row here is a decision, not a backlog item;
-# the reason belongs in the pipeline.py note and in DESIGN.md.
-#   07b — nothing on the delivered surface reads its softmax scores (DESIGN.md §4.1).
-#   04b — it read step05's output while step05 read its output, a dependency cycle, and the
-#         scan earned nothing (every alias was a hardcoded seed). The registry is static
-#         config now and step00 audits its coverage; src/ keeps the file for a reseed.
-EXPECTED_NOT_PORTED = {"07b", "04b"}
+# No stage currently sits in this state — `pipeline.py`'s own note records that the three
+# stages that were ever considered for it (step10, step04b, step07b) were all REMOVED
+# outright instead, precisely so a not-ported row never becomes permanent dead weight.
+# The mechanism (module=None) and its tests stay, so a future decision has somewhere to go.
+EXPECTED_NOT_PORTED = set()
 
 
-def test_every_stage_points_at_a_real_src_file():
-    missing = [(order, old) for order, old, _, _ in STAGES if not (SRC / f"{old}.py").exists()]
-    assert not missing, f"STAGES rows whose src/ file does not exist: {missing}"
+def test_every_old_step_label_is_well_formed_and_unique():
+    """`old_step` is a historical label now (src/ is gone) — it still has to look like one
+    (stepNN_name, matching the CLI id it's resolved by) and never collide."""
+    labels = [old for _, old, _, _ in STAGES]
+    assert len(labels) == len(set(labels)), f"duplicate old_step labels: {labels}"
+    for order, old, _, _ in STAGES:
+        assert re.match(r"^step\d{2}[a-z]?_[a-z0-9_]+$", old), f"{order}: malformed old_step {old!r}"
 
 
 def test_short_names_are_unique():
@@ -83,7 +86,7 @@ def test_list_denominator_excludes_not_ported_stages():
     with redirect_stdout(out):
         run.print_list()
     header = out.getvalue().splitlines()[0]
-    assert f"/{portable} migrated" in header, (
+    assert f"/{portable} ready" in header, (
         f"--list header should count only portable stages ({portable}), got: {header!r}")
 
 

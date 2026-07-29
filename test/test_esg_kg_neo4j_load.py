@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Old-vs-new equivalence for ONE migration slice:
-`src/step06_load_graph_to_neo4j.py` -> `esg_kg.load.neo4j_load`.
+Behaviour tests for ONE migration slice, `esg_kg.load.neo4j_load`
+(originally ported from `src/step06_load_graph_to_neo4j.py`).
 
 WHY THIS SLICE NEEDED NO NEW core/ MODULE
 step06 imports exactly two things from a sibling: `REPO_ROOT` (-> `esg_kg.core.paths`, the
@@ -28,6 +28,10 @@ Offline: no LLM, no real Neo4j, no network. The real-corpus arm needs
 `graph_output/resolved/resolved_graph.json` (git-ignored, shipped via the HF snapshot) and
 SKIPs with a message on a bare clone; the synthetic arms do not.
 
+Repointed at `esg_kg` only (2026-07-29) now that `src/` is gone; this file used to import
+`src/step06_load_graph_to_neo4j.py` too and assert the two trees agreed —
+`test_esg_kg_equivalence.py` already proved that agreement while both trees existed.
+
 Run from the repo root:
 
     python test/test_esg_kg_neo4j_load.py
@@ -39,11 +43,7 @@ import sys
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO / "src"))
 sys.path.insert(0, str(REPO / "src_module"))
-
-# --- old: the flat src/ script --------------------------------------------------
-import step06_load_graph_to_neo4j as old_step06  # noqa: E402
 
 # --- new: the esg_kg package -----------------------------------------------------
 from esg_kg.load import neo4j_load as new_step06  # noqa: E402
@@ -109,22 +109,14 @@ def test_build_payload_matches_both_trees_with_versions():
     graph = _mini_graph()
     schema_sets = _schema_sets()
 
-    old_payload = old_step06.build_payload(graph, schema_sets, include_versions=True)
-    new_payload = new_step06.build_payload(graph, schema_sets, include_versions=True)
-
-    assert old_payload["counts"] == new_payload["counts"]
-    assert old_payload["warnings"] == new_payload["warnings"]
-    assert old_payload["labels"] == new_payload["labels"]
-    assert old_payload["nodes_by_label"] == new_payload["nodes_by_label"]
-    assert old_payload["edges_by_pred"] == new_payload["edges_by_pred"]
-    assert old_payload["supersedes_edges"] == new_payload["supersedes_edges"]
+    payload = new_step06.build_payload(graph, schema_sets, include_versions=True)
 
     # sanity: fixture actually exercises the supersedes-materialization branch
     # (2 distinct versions for n1 -> 2 version nodes + 2 chained supersedes edges)
-    assert old_payload["counts"]["version_nodes"] == 2
-    assert len(old_payload["supersedes_edges"]) == 2
+    assert payload["counts"]["version_nodes"] == 2
+    assert len(payload["supersedes_edges"]) == 2
     # and the non-supersedes class kept its history as a JSON blob, not a version node
-    kpi_nodes = old_payload["nodes_by_label"]["KPIObservation"]
+    kpi_nodes = payload["nodes_by_label"]["KPIObservation"]
     assert len(kpi_nodes) == 1
     assert "temporal_versions" in kpi_nodes[0]
 
@@ -133,32 +125,10 @@ def test_build_payload_no_versions_flag_matches_both_trees():
     graph = _mini_graph()
     schema_sets = _schema_sets()
 
-    old_payload = old_step06.build_payload(graph, schema_sets, include_versions=False)
-    new_payload = new_step06.build_payload(graph, schema_sets, include_versions=False)
+    payload = new_step06.build_payload(graph, schema_sets, include_versions=False)
 
-    assert old_payload == new_payload
-    assert old_payload["counts"]["version_nodes"] == 0
-    assert old_payload["supersedes_edges"] == []
-
-
-def test_real_corpus_build_payload_matches_both_trees():
-    if not RESOLVED_FILE.exists():
-        _skip("test_real_corpus_build_payload_matches_both_trees",
-              "graph_output/resolved/resolved_graph.json not present "
-              "(git-ignored, shipped via the HF snapshot — see src/data_sync.py)")
-        return
-    graph = json.loads(RESOLVED_FILE.read_text(encoding="utf-8"))
-    schema_sets = _schema_sets()
-
-    old_payload = old_step06.build_payload(graph, schema_sets, include_versions=True)
-    new_payload = new_step06.build_payload(graph, schema_sets, include_versions=True)
-
-    assert old_payload["counts"] == new_payload["counts"]
-    assert old_payload["nodes_by_label"] == new_payload["nodes_by_label"]
-    assert old_payload["edges_by_pred"] == new_payload["edges_by_pred"]
-    assert old_payload["supersedes_edges"] == new_payload["supersedes_edges"]
-    assert old_payload["warnings"] == new_payload["warnings"]
-    print(f"    real corpus: {old_payload['counts']} (both trees identical)")
+    assert payload["counts"]["version_nodes"] == 0
+    assert payload["supersedes_edges"] == []
 
 
 # --------------------------------------------------------------------------- #
@@ -282,36 +252,28 @@ def _ns(payload, **kw) -> argparse.Namespace:
 
 def test_ingestion_calls_identical_both_trees():
     schema_sets = _schema_sets()
-    payload = old_step06.build_payload(_mini_graph(), schema_sets, include_versions=True)
+    payload = new_step06.build_payload(_mini_graph(), schema_sets, include_versions=True)
 
-    old_calls, old_driver_calls = _run_with_stub(old_step06, _ns(payload))
-    new_calls, new_driver_calls = _run_with_stub(new_step06, _ns(payload))
+    calls, driver_calls = _run_with_stub(new_step06, _ns(payload))
 
-    assert old_driver_calls == new_driver_calls
-    assert len(old_calls) == len(new_calls) and len(old_calls) > 0
-    for (oq, op), (nq, np_) in zip(old_calls, new_calls):
-        assert oq == nq
-        assert op == np_
+    assert len(driver_calls) > 0
+    assert len(calls) > 0
 
 
 def test_clear_flag_emits_identical_detach_delete_both_trees():
     schema_sets = _schema_sets()
-    payload = old_step06.build_payload(_mini_graph(), schema_sets, include_versions=True)
+    payload = new_step06.build_payload(_mini_graph(), schema_sets, include_versions=True)
 
-    old_calls, _ = _run_with_stub(old_step06, _ns(payload, clear=True))
-    new_calls, _ = _run_with_stub(new_step06, _ns(payload, clear=True))
+    calls, _ = _run_with_stub(new_step06, _ns(payload, clear=True))
 
-    assert len(old_calls) == len(new_calls) and len(old_calls) > 0
-    for (oq, op), (nq, np_) in zip(old_calls, new_calls):
-        assert oq == nq
-        assert op == np_
-    assert "DETACH DELETE" in old_calls[0][0]
+    assert len(calls) > 0
+    assert "DETACH DELETE" in calls[0][0]
 
 
 def test_dry_run_touches_no_driver_both_trees():
-    """Both trees build the payload and print planned counts without importing/using
-    `neo4j` at all when --dry-run is set — mirrored via main()'s own argparse path on a
-    tmp input file, since the dry-run branch returns before any driver code runs."""
+    """--dry-run builds the payload and prints planned counts without importing/using
+    `neo4j` at all — mirrored via main()'s own argparse path on a tmp input file, since
+    the dry-run branch returns before any driver code runs."""
     import tempfile
     schema_sets = _schema_sets()  # noqa: F841 (documents why this arm needs no schema swap)
     with tempfile.TemporaryDirectory() as td:
@@ -319,13 +281,12 @@ def test_dry_run_touches_no_driver_both_trees():
         graph_file = td / "resolved_graph.json"
         graph_file.write_text(json.dumps(_mini_graph()), encoding="utf-8")
 
-        for module in (old_step06, new_step06):
-            argv_backup = sys.argv
-            try:
-                sys.argv = ["prog", "-i", str(graph_file), "-s", str(SCHEMA_FILE), "--dry-run"]
-                module.main()
-            finally:
-                sys.argv = argv_backup
+        argv_backup = sys.argv
+        try:
+            sys.argv = ["prog", "-i", str(graph_file), "-s", str(SCHEMA_FILE), "--dry-run"]
+            new_step06.main()
+        finally:
+            sys.argv = argv_backup
 
 
 def test_real_corpus_ingestion_calls_identical_both_trees():
@@ -336,18 +297,13 @@ def test_real_corpus_ingestion_calls_identical_both_trees():
         return
     schema_sets = _schema_sets()
     graph = json.loads(RESOLVED_FILE.read_text(encoding="utf-8"))
-    payload = old_step06.build_payload(graph, schema_sets, include_versions=True)
+    payload = new_step06.build_payload(graph, schema_sets, include_versions=True)
 
-    old_calls, old_driver_calls = _run_with_stub(old_step06, _ns(payload))
-    new_calls, new_driver_calls = _run_with_stub(new_step06, _ns(payload))
+    calls, driver_calls = _run_with_stub(new_step06, _ns(payload))
 
-    assert old_driver_calls == new_driver_calls
-    assert len(old_calls) == len(new_calls) and len(old_calls) > 0
-    for (oq, op), (nq, np_) in zip(old_calls, new_calls):
-        assert oq == nq
-        assert op == np_
-    print(f"    real corpus: {len(old_calls)} Neo4j calls compared byte-identical "
-          f"across both trees")
+    assert len(driver_calls) > 0
+    assert len(calls) > 0
+    print(f"    real corpus: {len(calls)} Neo4j calls issued")
 
 
 if __name__ == "__main__":

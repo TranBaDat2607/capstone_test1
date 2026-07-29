@@ -42,12 +42,13 @@ tree must keep running and cannot import from here). ``test/test_esg_kg_llm.py``
 copies equal; that arm retires when the ``src/`` twins are deleted (DESIGN.md §5.3).
 """
 
+import json
 import logging
 import os
 import time
 from collections import deque
 from threading import Lock
-from typing import Dict
+from typing import Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -105,14 +106,20 @@ class _Provider:
 class _OpenAIProvider(_Provider):
     name = "openai"
 
-    def __init__(self, model: str, rate_limit: int) -> None:
+    def __init__(self, model: str, rate_limit: int,
+                 api_key: Optional[str] = None, base_url: Optional[str] = None) -> None:
+        """`api_key`/`base_url` default to OPENAI_API_KEY / OpenAI's own endpoint (every
+        existing call site) — passing them explicitly is how a one-off run points this
+        same OpenAI-shaped provider at an OpenAI-compatible third-party endpoint (e.g.
+        Novita) instead, without touching any stage's default."""
         super().__init__()
         self.model = model
-        if not os.getenv("OPENAI_API_KEY"):
+        api_key = api_key or os.getenv("OPENAI_API_KEY")
+        if not api_key:
             return
         try:
             from openai import OpenAI
-            self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+            self.client = OpenAI(api_key=api_key, base_url=base_url)
             self.rl = RateLimiter(max_calls_per_minute=rate_limit)
             self.enabled = True
         except Exception as e:  # pragma: no cover
@@ -127,3 +134,75 @@ class _OpenAIProvider(_Provider):
                       {"role": "user", "content": user}],
         )
         return (resp.choices[0].message.content or "").strip()
+
+
+# --------------------------------------------------------------------------- #
+# NEW (2026-07-29): an OpenAI path for the stages that were Gemini-only until now
+# (01 kpi.extract, 02 graph.extract_triples, 03 graph.fix_triples phase 2, 05
+# resolve.entities Stage B/C). Additive — Gemini stays each stage's default, this
+# only gives `--provider openai` somewhere real to call. Unlike everything above,
+# there is no `src/` twin to keep equal: these two pieces never existed there.
+# --------------------------------------------------------------------------- #
+class _OpenAIEmbeddingProvider(_Provider):
+    """OpenAI's analogue of step05 Stage B's `gemini-embedding-001` call.
+
+    Same shape as `_OpenAIProvider` (lazy client, RateLimiter, `enabled` flag) but the
+    request is `embeddings.create`, not `chat.completions.create` — a different OpenAI
+    endpoint, not a `call()` override, so it stays a sibling of `_OpenAIProvider` rather
+    than a subclass override.
+    """
+    name = "openai-embedding"
+
+    def __init__(self, model: str, rate_limit: int,
+                 api_key: Optional[str] = None, base_url: Optional[str] = None) -> None:
+        """Same override shape as `_OpenAIProvider` — see its docstring."""
+        super().__init__()
+        self.model = model
+        api_key = api_key or os.getenv("OPENAI_API_KEY")
+        if not api_key:
+            return
+        try:
+            from openai import OpenAI
+            self.client = OpenAI(api_key=api_key, base_url=base_url)
+            self.rl = RateLimiter(max_calls_per_minute=rate_limit)
+            self.enabled = True
+        except Exception as e:  # pragma: no cover
+            logger.warning(f"[openai-embedding] client init failed ({e}); provider disabled.")
+
+    def embed(self, texts: List[str], dimensions: Optional[int] = None) -> List[List[float]]:
+        """`dimensions` mirrors Gemini Stage B's `output_dimensionality=dim` (both
+        `text-embedding-3-small/large` support truncating via this OpenAI kwarg) —
+        omitted by default so the request shape test above stays unchanged."""
+        self.rl.wait_if_needed(0)
+        kwargs = {"model": self.model, "input": texts}
+        if dimensions is not None:
+            kwargs["dimensions"] = dimensions
+        resp = self.client.embeddings.create(**kwargs)
+        return [d.embedding for d in resp.data]
+
+
+def openai_json_call(provider: "_OpenAIProvider", system: str, user: str, schema_hint: dict) -> dict:
+    """Call an OpenAI-shaped provider and parse a JSON-mode reply.
+
+    Gemini's `response_schema` (steps 01/02) constrains the model's output structurally;
+    OpenAI's `response_format={"type": "json_object"}` (all `_OpenAIProvider.call` uses)
+    only guarantees *valid* JSON, not conformance to any particular shape — so the schema
+    has to travel as a prompt instruction instead. One retry with a sharper nudge covers
+    the "model added prose around the JSON" failure mode; a second failure raises rather
+    than silently returning an empty/wrong result, matching this project's rule against
+    a stage papering over an unusable LLM reply (see step05d/step07's `.get()` fixes).
+    """
+    schema_text = json.dumps(schema_hint, ensure_ascii=False)
+    system_with_schema = (
+        f"{system}\n\nRespond with a single JSON object that conforms exactly to this JSON "
+        f"Schema (no extra keys, no markdown fences, no prose):\n{schema_text}"
+    )
+    last_err: Exception = ValueError("openai_json_call: no attempt was made")
+    for attempt in range(2):
+        raw = provider.call(system_with_schema, user)
+        try:
+            return json.loads(raw)
+        except (json.JSONDecodeError, TypeError) as e:
+            last_err = e
+            user = user + "\n\n(Your previous reply was not valid JSON. Reply with ONLY the JSON object.)"
+    raise ValueError(f"openai_json_call: reply was not valid JSON after retry: {last_err}")

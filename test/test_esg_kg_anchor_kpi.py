@@ -1,14 +1,17 @@
 #!/usr/bin/env python3
 """
-Old-vs-new equivalence for ONE migration slice: `src/step03b_anchor_kpi_facilities.py`
--> `esg_kg.graph.anchor_kpi`, plus the `esg_kg.core.identity` module that slice had to
-extract on the way.
+Behaviour tests for ONE migration slice: `esg_kg.graph.anchor_kpi` (originally ported
+from `src/step03b_anchor_kpi_facilities.py`), plus the `esg_kg.core.identity` module
+that slice had to extract on the way.
 
 WHY THIS IS A SEPARATE FILE (and not another arm in test_esg_kg_equivalence.py)
 That file is past 1,100 lines and covers the whole kernel; this one covers a single
-slice end-to-end. Same contract as its sibling: import BOTH trees, run them on the
-same real input, assert equal. The split is organisational only — the safety net it
-provides is identical, and both must be run after touching anything they compare.
+slice end-to-end. The split is organisational only.
+
+Repointed at `esg_kg` only (2026-07-29) now that `src/` is gone; this file used to import
+`src/step02_extract_triplet_from_jsonl.py` and `src/step03b_anchor_kpi_facilities.py` too
+and assert the two trees agreed — `test_esg_kg_equivalence.py` already proved that
+agreement while both trees existed.
 
 WHY core/identity.py EXISTS AT ALL
 `parse_source_id` is DEFINED in `src/step03b_anchor_kpi_facilities.py:98` and IMPORTED
@@ -34,15 +37,11 @@ import sys
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO / "src"))
 sys.path.insert(0, str(REPO / "src_module"))
-
-# --- old: the flat src/ scripts ------------------------------------------------
-import step02_extract_triplet_from_jsonl as old_step02  # noqa: E402
-import step03b_anchor_kpi_facilities as old_step03b  # noqa: E402
 
 # --- new: the esg_kg package ---------------------------------------------------
 from esg_kg.core import identity as new_identity  # noqa: E402
+from esg_kg.core.schema import get_identity_keys  # noqa: E402
 from esg_kg.graph import anchor_kpi as new_anchor  # noqa: E402
 
 SCHEMA_FILE = REPO / "config" / "schema.json"
@@ -104,9 +103,7 @@ SOURCE_ID_EDGE_CASES = [
 
 def test_identity_parse_source_id_matches_src_on_edge_cases():
     for sid in SOURCE_ID_EDGE_CASES:
-        got = new_identity.parse_source_id(sid)
-        want = old_step03b.parse_source_id(sid)
-        assert got == want, f"parse_source_id({sid!r}): new={got!r} old={want!r}"
+        new_identity.parse_source_id(sid)  # must not raise for any shape, incl. None/int
 
     # not vacuous: both the parsed and the None path really fired
     parsed = [s for s in SOURCE_ID_EDGE_CASES if new_identity.parse_source_id(s) is not None]
@@ -129,13 +126,11 @@ def test_identity_parse_source_id_matches_src_on_the_real_corpus():
     n_parsed = 0
     for sid in sids:
         got = new_identity.parse_source_id(sid)
-        want = old_step03b.parse_source_id(sid)
-        assert got == want, f"parse_source_id({sid!r}): new={got!r} old={want!r}"
         if got is not None:
             n_parsed += 1
 
-    assert n_parsed > 0, "corpus arm parsed nothing — it is comparing two empty results"
-    print(f"     ({len(sids)} real source_ids, {n_parsed} parseable, compared across both trees)")
+    assert n_parsed > 0, "corpus arm parsed nothing"
+    print(f"     ({len(sids)} real source_ids, {n_parsed} parseable)")
 
 
 # --------------------------------------------------------------------------- #
@@ -148,13 +143,11 @@ def test_identity_get_stable_entity_id_matches_src_on_the_real_corpus():
         _skip("identity/stable_entity_id", f"{TRIPLES_FILE.name} absent (data_sync pull)")
         return
 
-    keys_map = old_step02.get_identity_keys(load_schema())
+    keys_map = get_identity_keys(load_schema())
     seen_classes = set()
     n = 0
     for node in iter_nodes(triples):
-        got = new_identity.get_stable_entity_id(node, keys_map)
-        want = old_step02.get_stable_entity_id(node, keys_map)
-        assert got == want, f"stable id diverged for {node.get('class')}: {got!r} != {want!r}"
+        new_identity.get_stable_entity_id(node, keys_map)
         seen_classes.add(node.get("class"))
         n += 1
 
@@ -176,11 +169,9 @@ def test_identity_get_stable_entity_id_matches_src_on_shapes_the_corpus_lacks():
         {"class": "Organization"},                                          # missing properties
     ]
     for entity in cases:
-        got = new_identity.get_stable_entity_id(entity, keys_map)
-        want = old_step02.get_stable_entity_id(entity, keys_map)
-        assert got == want, f"{entity}: new={got!r} old={want!r}"
+        new_identity.get_stable_entity_id(entity, keys_map)  # must not raise for any shape
 
-    # pin the two defaults explicitly, so a change to them fails loudly in BOTH trees
+    # pin the two defaults explicitly, so a change to them fails loudly
     assert new_identity.get_stable_entity_id({"properties": {"name": "y"}}, keys_map) == "Unknown|y"
     assert new_identity.get_stable_entity_id(
         {"class": "Organization", "properties": {"name": "  An Phat  "}}, keys_map
@@ -191,10 +182,6 @@ def test_identity_get_stable_entity_id_matches_src_on_shapes_the_corpus_lacks():
 # core/identity.py — PROVENANCE_CLASSES  <- step02:501
 # --------------------------------------------------------------------------- #
 def test_identity_provenance_classes_matches_src():
-    assert new_identity.PROVENANCE_CLASSES == old_step02.PROVENANCE_CLASSES, (
-        f"new={sorted(new_identity.PROVENANCE_CLASSES)} "
-        f"old={sorted(old_step02.PROVENANCE_CLASSES)}"
-    )
     # it is a set of real schema classes, and it deliberately excludes T1 entities
     # (PROVENANCE_PATCH.md: a merged Organization has no single source page)
     schema_classes = {n["class"] for n in load_schema()["nodes"]}
@@ -209,14 +196,6 @@ def test_identity_provenance_classes_matches_src():
 # --------------------------------------------------------------------------- #
 def test_anchor_module_constants_match_src():
     """The gates that decide what enters the gazetteer. Silent to change, loud in the output."""
-    assert new_anchor.DEFAULT_MAX_PER_FACILITY == old_step03b.DEFAULT_MAX_PER_FACILITY
-    assert new_anchor.MIN_NAME_CHARS == old_step03b.MIN_NAME_CHARS
-    assert new_anchor.MIN_NAME_TOKENS == old_step03b.MIN_NAME_TOKENS
-    assert new_anchor.GENERIC_NAMES == old_step03b.GENERIC_NAMES
-    assert new_anchor.DEFAULT_SENTENCE_GLOBS == old_step03b.DEFAULT_SENTENCE_GLOBS
-    assert new_anchor.DEFAULT_TRIPLES == old_step03b.DEFAULT_TRIPLES
-    assert new_anchor.DEFAULT_SCHEMA == old_step03b.DEFAULT_SCHEMA
-    assert new_anchor.DEFAULT_STATS_OUT == old_step03b.DEFAULT_STATS_OUT
     # the paths must be the REAL ones, not a temp dir the new tree invented
     assert new_anchor.DEFAULT_TRIPLES == TRIPLES_FILE
     assert new_anchor.DEFAULT_SCHEMA == SCHEMA_FILE
@@ -225,22 +204,19 @@ def test_anchor_module_constants_match_src():
 def test_anchor_prop_richness_matches_src():
     for props in [{}, {"a": 1}, {"a": None, "b": ""}, {"a": 0, "b": False},
                   {"name": "x", "value": None, "unit": "t"}]:
-        got, want = new_anchor.prop_richness(props), old_step03b.prop_richness(props)
-        assert got == want, f"{props}: new={got} old={want}"
+        new_anchor.prop_richness(props)  # must not raise for any shape
     # 0 and False are NOT empty — the `not in (None, "")` test, not truthiness
     assert new_anchor.prop_richness({"a": 0, "b": False}) == 2
 
 
 def test_anchor_load_sentences_matches_src():
-    """Both trees must read the same corpus off disk — same globs, same REPO_ROOT anchor."""
+    """Reads the real corpus off disk via the documented globs."""
     new_s = new_anchor.load_sentences(new_anchor.DEFAULT_SENTENCE_GLOBS)
-    old_s = old_step03b.load_sentences(old_step03b.DEFAULT_SENTENCE_GLOBS)
-    if not old_s:
+    if not new_s:
         _skip("anchor/load_sentences", "no labeled JSONL on disk (data_sync pull)")
         return
-    assert new_s == old_s, (f"sentence corpora differ: "
-                            f"new={len(new_s)} old={len(old_s)} keys")
-    print(f"     ({len(new_s)} real sentences loaded identically)")
+    assert len(new_s) > 0
+    print(f"     ({len(new_s)} real sentences loaded)")
 
 
 def test_anchor_collect_inventory_matches_src_on_the_real_corpus():
@@ -250,10 +226,6 @@ def test_anchor_collect_inventory_matches_src_on_the_real_corpus():
         return
 
     new_f, new_k, new_a = new_anchor.collect_inventory(copy.deepcopy(triples))
-    old_f, old_k, old_a = old_step03b.collect_inventory(copy.deepcopy(triples))
-    assert new_f == old_f, "facility gazetteer diverged"
-    assert new_k == old_k, "KPI occurrence map diverged"
-    assert new_a == old_a, "existing-anchor set diverged"
 
     # not vacuous, and the name gates really gated: raw Facility nodes far outnumber
     # the gazetteer entries that survive MIN_NAME_CHARS / MIN_NAME_TOKENS / GENERIC_NAMES
@@ -287,23 +259,16 @@ def test_anchor_build_patch_matches_src_on_the_real_corpus():
     if not triples:
         _skip("anchor/build_patch-real", f"{TRIPLES_FILE.name} absent (data_sync pull)")
         return
-    sentences = old_step03b.load_sentences(old_step03b.DEFAULT_SENTENCE_GLOBS)
+    sentences = new_anchor.load_sentences(new_anchor.DEFAULT_SENTENCE_GLOBS)
     if not sentences:
         _skip("anchor/build_patch-real", "no labeled JSONL on disk (data_sync pull)")
         return
     schema = load_schema()
-    cap = old_step03b.DEFAULT_MAX_PER_FACILITY
+    cap = new_anchor.DEFAULT_MAX_PER_FACILITY
     triples = strip_anchors(triples)
 
     new_t, new_stats = new_anchor.build_patch(
         copy.deepcopy(triples), dict(sentences), schema, cap)
-    old_t, old_stats = old_step03b.build_patch(
-        copy.deepcopy(triples), dict(sentences), schema, cap)
-
-    assert new_stats == old_stats, f"stats diverged:\n  new={new_stats}\n  old={old_stats}"
-    assert len(new_t) == len(old_t), f"{len(new_t)} != {len(old_t)} anchor triples"
-    for i, (a, b) in enumerate(zip(new_t, old_t)):
-        assert a == b, f"anchor triple #{i} diverged:\n  new={a}\n  old={b}"
 
     # not vacuous: real anchors were actually minted, and they are the edge P3 wants
     assert new_stats["new_anchor_triples"] > 0, new_stats
@@ -311,7 +276,7 @@ def test_anchor_build_patch_matches_src_on_the_real_corpus():
     assert all(t["predicate"] == "observedAtFacility" for t in new_t)
     assert all(t["anchor_method"] == "offline_gazetteer" for t in new_t)
     print(f"     ({new_stats['new_anchor_triples']} anchor triples over "
-          f"{new_stats['kpi_observations']} KPIs, compared across both trees)")
+          f"{new_stats['kpi_observations']} KPIs)")
 
 
 def test_anchor_build_patch_matches_src_on_the_hub_guard():
@@ -324,7 +289,7 @@ def test_anchor_build_patch_matches_src_on_the_hub_guard():
     if not triples:
         _skip("anchor/build_patch-cap", f"{TRIPLES_FILE.name} absent (data_sync pull)")
         return
-    sentences = old_step03b.load_sentences(old_step03b.DEFAULT_SENTENCE_GLOBS)
+    sentences = new_anchor.load_sentences(new_anchor.DEFAULT_SENTENCE_GLOBS)
     if not sentences:
         _skip("anchor/build_patch-cap", "no labeled JSONL on disk (data_sync pull)")
         return
@@ -333,11 +298,7 @@ def test_anchor_build_patch_matches_src_on_the_hub_guard():
 
     new_t, new_stats = new_anchor.build_patch(
         copy.deepcopy(triples), dict(sentences), schema, 1)
-    old_t, old_stats = old_step03b.build_patch(
-        copy.deepcopy(triples), dict(sentences), schema, 1)
 
-    assert new_stats == old_stats, f"stats diverged at cap=1:\n  new={new_stats}\n  old={old_stats}"
-    assert new_t == old_t, "anchor triples diverged at cap=1"
     # the branch really fired: some facility exceeded the cap and was dropped whole
     assert new_stats["facilities_over_cap"], "cap=1 tripped no facility — arm is vacuous"
     assert new_stats["new_anchor_triples"] < new_stats["raw_matches"], new_stats
@@ -358,7 +319,7 @@ def test_anchor_is_idempotent_on_the_already_patched_corpus():
     if not triples:
         _skip("anchor/idempotent", f"{TRIPLES_FILE.name} absent (data_sync pull)")
         return
-    sentences = old_step03b.load_sentences(old_step03b.DEFAULT_SENTENCE_GLOBS)
+    sentences = new_anchor.load_sentences(new_anchor.DEFAULT_SENTENCE_GLOBS)
     if not sentences:
         _skip("anchor/idempotent", "no labeled JSONL on disk (data_sync pull)")
         return
@@ -369,16 +330,13 @@ def test_anchor_is_idempotent_on_the_already_patched_corpus():
         return
 
     schema = load_schema()
-    cap = old_step03b.DEFAULT_MAX_PER_FACILITY
+    cap = new_anchor.DEFAULT_MAX_PER_FACILITY
     new_t, new_stats = new_anchor.build_patch(
         copy.deepcopy(triples), dict(sentences), schema, cap)
-    old_t, old_stats = old_step03b.build_patch(
-        copy.deepcopy(triples), dict(sentences), schema, cap)
 
-    assert new_stats == old_stats, f"stats diverged:\n  new={new_stats}\n  old={old_stats}"
-    assert new_t == old_t == [], f"re-run minted {len(new_t)} duplicate anchors"
+    assert new_t == [], f"re-run minted {len(new_t)} duplicate anchors"
     assert new_stats["raw_matches"] == 0, new_stats
-    print(f"     ({already} existing gazetteer anchors, re-run added 0 in both trees)")
+    print(f"     ({already} existing gazetteer anchors, re-run added 0)")
 
 
 if __name__ == "__main__":

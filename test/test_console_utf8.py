@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Both trees must set up a utf-8 stdout the SAME way (DESIGN.md §5.3).
+"""`esg_kg` must set up a utf-8 stdout on win32 (DESIGN.md §5.3).
 
 Why this file exists. Commit 03a1592 added a win32 ``sys.stdout.reconfigure(
 encoding="utf-8")`` block to ``src/step00_graph_quality_report.py``'s ``__main__``
@@ -9,20 +9,21 @@ only. The migrated twin ``esg_kg/report/quality.py`` never got it and
 src_module/run.py quality`` could still die with ``UnicodeEncodeError`` at
 ``print(render_markdown(report))``. The refactored tree was strictly worse than
 the one it replaces, at the one stage that exists to be run before AND after
-every change.
+every change. Repointed at `esg_kg` only (2026-07-29) now that `src/` is gone;
+the fix landed in both trees while both existed (DESIGN.md §5.3), and
+`test_both_trees_record_identical_calls` — the cross-tree proof of that — was
+retired along with the old tree it compared against.
 
-What actually fails is the terminal echo, not the files: both artifacts are
+What actually fails is the terminal echo, not the files: the artifact is
 written with an explicit ``encoding="utf-8"``. Measured on the real report, the
 characters cp1252 rejects are ``→`` and ``≥`` from step00's own headings — so the
 crash lands *after* the work is on disk, which is why the helper swallows its own
 failures.
 
-``test_esg_kg_equivalence.py`` structurally could not catch this: it imports both
-modules and compares constants / Q1-Q8 metrics / rendered Markdown, and never
-executes a ``__main__`` block. This file closes that hole, and it is also the
-equivalence arm for ``esg_kg.core.console`` (§6 rule: a new ``core/`` module
-needs an arm proving the two copies agree) — it imports BOTH trees and asserts
-they record identical calls, so the arm is not duplicated in that file.
+``test_esg_kg_equivalence.py`` structurally could not catch the original bug: it
+imports the module and compares constants / Q1-Q8 metrics / rendered Markdown,
+and never executes a ``__main__`` block. This file closes that hole, and it is
+also the behavioural coverage for ``esg_kg.core.console``.
 
 Two things are asserted, because either alone would be a false green:
 
@@ -32,13 +33,12 @@ Two things are asserted, because either alone would be a false green:
      the drift it was meant to fix.
 
 The call site is the top of ``main()``, NOT ``__main__``, deliberately: that is
-the only place all three documented invocations pass through — ``python
-src/step00_...``, ``python src_module/run.py quality`` (which calls
-``mod.main()``), and ``python -m esg_kg.report.quality`` — and it keeps
-``run.py`` a pure ``sys.path`` fixer that "adds no behaviour", as its own
-docstring promises. It must NOT run at import time: reconfiguring the stream out
-from under every importer (this test included) is a side effect no library
-should have.
+the only place both documented invocations pass through — ``python
+src_module/run.py quality`` (which calls ``mod.main()``) and ``python -m
+esg_kg.report.quality`` — and it keeps ``run.py`` a pure ``sys.path`` fixer that
+"adds no behaviour", as its own docstring promises. It must NOT run at import
+time: reconfiguring the stream out from under every importer (this test
+included) is a side effect no library should have.
 
 Offline, no LLM/Neo4j/network. Run from the repo root:
 
@@ -50,12 +50,8 @@ import sys
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO / "src"))
 sys.path.insert(0, str(REPO / "src_module"))
 
-import step00_graph_quality_report as old_step00  # noqa: E402
-
-OLD_FILE = REPO / "src" / "step00_graph_quality_report.py"
 NEW_FILE = REPO / "src_module" / "esg_kg" / "report" / "quality.py"
 CORE_FILE = REPO / "src_module" / "esg_kg" / "core" / "console.py"
 
@@ -117,21 +113,10 @@ def _run(fn, *, platform: str, stdout):
     return stdout
 
 
-def _load_trees():
-    """(src/ copy, esg_kg copy) of the helper. Both must exist — §5.3."""
-    missing = []
-    old = getattr(old_step00, HELPER, None)
-    if old is None:
-        missing.append(f"src/step00_graph_quality_report.py::{HELPER}")
-    try:
-        from esg_kg.core.console import ensure_utf8_stdout as new
-    except ImportError as exc:
-        new = None
-        missing.append(f"esg_kg.core.console::{HELPER} ({exc})")
-    assert not missing, (
-        "the fix has not landed in BOTH trees (DESIGN.md §5.3): missing "
-        + "; ".join(missing))
-    return old, new
+def _load_helper():
+    """The `esg_kg.core.console` copy of the helper."""
+    from esg_kg.core.console import ensure_utf8_stdout as new
+    return new
 
 
 def _parse(path: Path) -> ast.Module:
@@ -156,81 +141,57 @@ def _main_of(path: Path):
 # --------------------------------------------------------------------------- #
 def test_on_win32_stdout_is_reconfigured_to_utf8():
     """The whole point: a cp1252 console must be switched to utf-8."""
-    for label, fn in zip(("src", "esg_kg"), _load_trees()):
-        out = _run(fn, platform="win32", stdout=RecordingStdout())
-        assert out.calls == [{"encoding": "utf-8"}], (
-            f"{label}: expected one reconfigure(encoding='utf-8'), got {out.calls}")
+    fn = _load_helper()
+    out = _run(fn, platform="win32", stdout=RecordingStdout())
+    assert out.calls == [{"encoding": "utf-8"}], (
+        f"expected one reconfigure(encoding='utf-8'), got {out.calls}")
 
 
 def test_off_win32_stdout_is_left_alone():
     """The platform gate is deliberate — POSIX stdout is already utf-8, and
     reconfiguring a stream nobody asked us to touch is a side effect."""
-    for label, fn in zip(("src", "esg_kg"), _load_trees()):
-        for platform in ("linux", "darwin"):
-            out = _run(fn, platform=platform, stdout=RecordingStdout())
-            assert out.calls == [], (
-                f"{label}: reconfigured stdout on {platform}: {out.calls}")
+    fn = _load_helper()
+    for platform in ("linux", "darwin"):
+        out = _run(fn, platform=platform, stdout=RecordingStdout())
+        assert out.calls == [], f"reconfigured stdout on {platform}: {out.calls}"
 
 
 def test_a_stream_without_reconfigure_is_survived():
     """Python <3.7 streams and wrapped/redirected ones have no reconfigure().
     Printing a report is not worth crashing over — this pins the swallow."""
-    for label, fn in zip(("src", "esg_kg"), _load_trees()):
-        _run(fn, platform="win32", stdout=LegacyStdout())  # must not raise
-        print(f"     ({label}: no reconfigure attribute -> no crash)")
+    fn = _load_helper()
+    _run(fn, platform="win32", stdout=LegacyStdout())  # must not raise
+    print("     (no reconfigure attribute -> no crash)")
 
 
 def test_a_reconfigure_that_raises_is_swallowed():
     """Same contract for a stream that has the method but rejects the call."""
-    for label, fn in zip(("src", "esg_kg"), _load_trees()):
-        out = _run(fn, platform="win32",
-                   stdout=RecordingStdout(raises=ValueError("detached buffer")))
-        assert out.calls == [{"encoding": "utf-8"}], f"{label}: never attempted"
-
-
-def test_both_trees_record_identical_calls():
-    """The §5.3 proof: one fix, landed the same way in both trees.
-
-    This is the equivalence arm for ``esg_kg.core.console`` — same input matrix
-    through both copies, results compared, so the two cannot drift silently the
-    way they just did.
-    """
-    old, new = _load_trees()
-    cases = [
-        ("win32", lambda: RecordingStdout()),
-        ("win32", lambda: RecordingStdout(encoding="utf-8")),
-        ("linux", lambda: RecordingStdout()),
-        ("darwin", lambda: RecordingStdout()),
-        ("win32", lambda: RecordingStdout(raises=ValueError("detached buffer"))),
-    ]
-    for platform, make in cases:
-        a = _run(old, platform=platform, stdout=make()).calls
-        b = _run(new, platform=platform, stdout=make()).calls
-        assert a == b, f"trees disagree on ({platform}): src={a} esg_kg={b}"
-    assert len(cases) == 5
+    fn = _load_helper()
+    out = _run(fn, platform="win32",
+               stdout=RecordingStdout(raises=ValueError("detached buffer")))
+    assert out.calls == [{"encoding": "utf-8"}], "never attempted"
 
 
 # --------------------------------------------------------------------------- #
 # 2. Wiring — the part that would have caught the original bug
 # --------------------------------------------------------------------------- #
-def test_main_calls_the_helper_in_both_trees():
-    """Both stage entrypoints must actually call it.
+def test_main_calls_the_helper():
+    """The stage entrypoint must actually call it.
 
     Checked statically rather than by running ``main()``: that would rebuild the
     whole Q1-Q8 report (~44s of BFS) and need the git-ignored graph artifacts,
     while the thing under test is one call at the top of a function.
     """
-    for path in (OLD_FILE, NEW_FILE):
-        _, fn = _main_of(path)
-        assert _calls_helper(fn), (
-            f"{path.name}: main() never calls {HELPER}() — the helper exists but "
-            f"nothing invokes it, so the Vietnamese report can still crash")
+    _, fn = _main_of(NEW_FILE)
+    assert _calls_helper(fn), (
+        f"{NEW_FILE.name}: main() never calls {HELPER}() — the helper exists but "
+        f"nothing invokes it, so the Vietnamese report can still crash")
 
 
 def test_the_helper_never_runs_at_import_time():
     """Reconfiguring the stream as an import side effect would hit every
     importer — this test file included."""
-    for path in (OLD_FILE, NEW_FILE, CORE_FILE):
+    for path in (NEW_FILE, CORE_FILE):
         if not path.exists():
             continue
         tree = _parse(path)
@@ -243,7 +204,7 @@ def test_the_helper_never_runs_at_import_time():
 def test_the_core_module_is_where_the_new_tree_keeps_it():
     """`esg_kg/report/quality.py` must import the helper from the shared kernel,
     not keep a third private copy — every later stage prints Vietnamese too."""
-    _, _ = _load_trees()
+    _load_helper()
     assert CORE_FILE.exists(), f"expected the new-tree home at {CORE_FILE}"
     src = NEW_FILE.read_text(encoding="utf-8")
     assert "from esg_kg.core.console import" in src, (

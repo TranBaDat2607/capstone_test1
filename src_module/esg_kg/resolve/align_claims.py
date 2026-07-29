@@ -153,7 +153,9 @@ def run(args: argparse.Namespace) -> None:
         logger.info("--dry-run: no LLM calls, nothing written.")
         return
 
-    provider = _OpenAIProvider(args.openai_model, args.rate_limit)
+    provider = _OpenAIProvider(args.openai_model, args.rate_limit,
+                               api_key=getattr(args, "openai_api_key", None),
+                               base_url=getattr(args, "openai_base_url", None))
     if not provider.enabled:
         logger.error("No OpenAI provider (need OPENAI_API_KEY in .env) — step05d requires an LLM.")
         return
@@ -204,6 +206,9 @@ def main() -> None:
     p.add_argument("--schema", type=Path, default=DEFAULT_SCHEMA)
     p.add_argument("--max-llm-pairs", type=int, default=200, help="Max LLM classifications this run.")
     p.add_argument("--openai-model", default="gpt-4o-mini")
+    p.add_argument("--openai-base-url", type=str, default=None,
+                   help="Override the OpenAI endpoint (e.g. an OpenAI-compatible "
+                        "third-party host); default is OpenAI's own API")
     p.add_argument("--rate-limit", type=int, default=60)
     p.add_argument("--stats-out", type=Path, default=DEFAULT_STATS_OUT)
     p.add_argument("--dry-run", action="store_true", help="Count candidates; no LLM, no write.")

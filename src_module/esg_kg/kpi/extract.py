@@ -38,7 +38,7 @@ import argparse
 import collections
 import concurrent.futures
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 from logging import getLogger, basicConfig, INFO, WARNING
 
 from dotenv import load_dotenv
@@ -53,6 +53,7 @@ from esg_kg.core.io_jsonl import (
     parse_company_year_from_filename,
     select_documents,
 )
+from esg_kg.core.llm import DEFAULT_RATE_LIMIT, _OpenAIProvider, openai_json_call
 
 basicConfig(level=INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = getLogger(__name__)
@@ -62,6 +63,7 @@ DEFAULT_INPUT = REPO_ROOT / "data" / "labeled" / "annual_labeled" / "labeled_ann
 DEFAULT_KPI_DEFS = REPO_ROOT / "kpi_definitions_construction.json"
 DEFAULT_OUT_DIR = REPO_ROOT / "kpi_output"
 DEFAULT_MODEL = "gemini-2.5-flash"
+DEFAULT_OPENAI_MODEL = "gpt-4o-mini"
 
 # The construction KPI file is single-sector; sector detection is unnecessary.
 SECTOR = "Xây dựng - Vật liệu xây dựng - Bất động sản"
@@ -136,24 +138,40 @@ KPI_SCHEMA = {
 # Extractor
 # --------------------------------------------------------------------------- #
 class KPIExtractor:
-    def __init__(self, kpi_defs_path: Path, model: str = DEFAULT_MODEL, max_tokens: int = 8000):
+    def __init__(self, kpi_defs_path: Path, model: str = DEFAULT_MODEL, max_tokens: int = 8000,
+                 provider: str = "gemini", openai_model: str = DEFAULT_OPENAI_MODEL,
+                 rate_limit: int = DEFAULT_RATE_LIMIT,
+                 openai_api_key: Optional[str] = None, openai_base_url: Optional[str] = None):
         # Load the project-global .env at the repo root regardless of cwd.
         load_dotenv(REPO_ROOT / ".env")
-        api_key = os.getenv("GEMINI_API_KEY")
-        if not api_key:
-            raise RuntimeError(
-                f"GEMINI_API_KEY not set. Copy {REPO_ROOT / '.env.example'} to "
-                f"{REPO_ROOT / '.env'} and paste your key."
-            )
-        self.client = genai.Client(api_key=api_key)
-        self.model = model
+        self.provider = provider
         self.max_tokens = max_tokens
+
+        if provider == "openai":
+            if not (openai_api_key or os.getenv("OPENAI_API_KEY")):
+                raise RuntimeError(
+                    f"OPENAI_API_KEY not set. Copy {REPO_ROOT / '.env.example'} to "
+                    f"{REPO_ROOT / '.env'} and paste your key."
+                )
+            self._openai = _OpenAIProvider(openai_model, rate_limit,
+                                           api_key=openai_api_key, base_url=openai_base_url)
+            self.model = openai_model
+        else:
+            api_key = os.getenv("GEMINI_API_KEY")
+            if not api_key:
+                raise RuntimeError(
+                    f"GEMINI_API_KEY not set. Copy {REPO_ROOT / '.env.example'} to "
+                    f"{REPO_ROOT / '.env'} and paste your key."
+                )
+            self.client = genai.Client(api_key=api_key)
+            self.model = model
 
         with open(kpi_defs_path, "r", encoding="utf-8") as f:
             self.kpi_defs = json.load(f)
 
         logger.info(
-            f"KPIExtractor ready: model={model}, {len(self.kpi_defs)} KPI definitions, sector='{SECTOR}'"
+            f"KPIExtractor ready: provider={provider}, model={self.model}, "
+            f"{len(self.kpi_defs)} KPI definitions, sector='{SECTOR}'"
         )
 
     def _build_prompt(self, page_text: str, company: str, sector: str,
@@ -190,6 +208,11 @@ class KPIExtractor:
     def extract_page(self, page_text: str, company: str, sector: str,
                      page_num: int, doc_name: str) -> List[Dict[str, Any]]:
         system, user = self._build_prompt(page_text, company, sector, page_num, doc_name)
+
+        if self.provider == "openai":
+            data = openai_json_call(self._openai, system, user, KPI_SCHEMA)
+            kpis = data.get("kpis", [])
+            return normalize_kpi_response(kpis)
 
         resp = self.client.models.generate_content(
             model=self.model,
@@ -289,6 +312,13 @@ def main() -> None:
                         help="Run every non-empty page (default: only pages with >=1 ESG sentence)")
     parser.add_argument("--max-workers", type=int, default=4, help="Parallel page workers (default 4)")
     parser.add_argument("--model", type=str, default=DEFAULT_MODEL, help="Gemini model id")
+    parser.add_argument("--provider", type=str, default="gemini", choices=["gemini", "openai"],
+                        help="LLM backend (default gemini; openai needs OPENAI_API_KEY)")
+    parser.add_argument("--openai-model", type=str, default=DEFAULT_OPENAI_MODEL,
+                        help="OpenAI model id, used only when --provider openai")
+    parser.add_argument("--openai-base-url", type=str, default=None,
+                        help="Override the OpenAI endpoint (e.g. an OpenAI-compatible "
+                             "third-party host); default is OpenAI's own API")
     args = parser.parse_args()
 
     if not args.input.exists():
@@ -303,7 +333,8 @@ def main() -> None:
     if not selected:
         return
 
-    extractor = KPIExtractor(args.kpi_defs, model=args.model)
+    extractor = KPIExtractor(args.kpi_defs, model=args.model, provider=args.provider,
+                             openai_model=args.openai_model, openai_base_url=args.openai_base_url)
     esg_only = not args.all_pages
 
     grand_total = 0

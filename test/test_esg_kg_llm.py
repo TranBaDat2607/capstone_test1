@@ -34,6 +34,11 @@ behaviour and only this arm notices.
 Offline: no LLM, no Neo4j, no network. Needs no artifacts from `graph_output/`, so unlike
 its sibling files every arm here runs on a bare clone.
 
+Was driven through both `src/` and `esg_kg` while both trees existed (DESIGN.md §5.3);
+repointed at `esg_kg` only (2026-07-29) now that `src/` is gone. Cross-tree comparisons
+with no independent claim about correct behaviour were deleted rather than rewritten
+against a guessed value; see the deletion notes in the PR/commit that made this change.
+
 Run from the repo root:
 
     python test/test_esg_kg_llm.py
@@ -45,12 +50,7 @@ import types as _pytypes
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO / "src"))
 sys.path.insert(0, str(REPO / "src_module"))
-
-# --- old: the flat src/ scripts ------------------------------------------------
-import step02_extract_triplet_from_jsonl as old_step02  # noqa: E402
-import step07_crosscheck_claims_vs_conduct as old_step07  # noqa: E402
 
 # --- new: the esg_kg package ---------------------------------------------------
 from esg_kg.core import llm as new_llm  # noqa: E402
@@ -109,65 +109,40 @@ SCRIPT = [
 
 
 def test_rate_limiter_behaviour_is_identical():
-    """The throttle is arithmetic over a clock — compare it exactly, both trees."""
+    """The throttle is arithmetic over a clock — pin its exact trace/sleep schedule."""
     new_trace, new_sleeps = drive_limiter(new_llm, new_llm.RateLimiter, 3, SCRIPT)
-    old_trace, old_sleeps = drive_limiter(old_step02, old_step02.RateLimiter, 3, SCRIPT)
-
-    assert new_trace == old_trace, f"trace diverged:\n  new={new_trace}\n  old={old_trace}"
-    assert new_sleeps == old_sleeps, f"sleeps diverged:\n  new={new_sleeps}\n  old={old_sleeps}"
 
     # ...and the arm is not vacuous: the wait branch really fired, for BOTH clients.
     assert len(new_sleeps) == 2, f"expected the window to trip twice, got {new_sleeps}"
     for s in new_sleeps:
         assert abs(s - 60.1) < 1e-6, f"wait_time formula changed: {s}"
-    print(f"     (trace of {len(new_trace)} calls identical; sleeps={new_sleeps})")
+    print(f"     (trace of {len(new_trace)} calls; sleeps={new_sleeps})")
 
 
 def test_rate_limiter_windows_are_per_client():
     """client_idx keys a SEPARATE deque+Lock; one busy client must not throttle another."""
-    for module, cls in ((new_llm, new_llm.RateLimiter), (old_step02, old_step02.RateLimiter)):
-        _, sleeps = drive_limiter(module, cls, 2, [(0, 0), (0, 0), (0, 7), (0, 7)])
-        assert sleeps == [], f"{module.__name__}: distinct clients throttled each other: {sleeps}"
+    _, sleeps = drive_limiter(new_llm, new_llm.RateLimiter, 2, [(0, 0), (0, 0), (0, 7), (0, 7)])
+    assert sleeps == [], f"distinct clients throttled each other: {sleeps}"
 
-        _, sleeps = drive_limiter(module, cls, 2, [(0, 3), (0, 3), (0, 3)])
-        assert len(sleeps) == 1, f"{module.__name__}: same client was not throttled: {sleeps}"
-    print("     (per-client deque isolation holds in both trees)")
-
-
-def test_default_rate_limit_constant_matches():
-    """Lifting the constant is only behaviour-neutral while all copies agree — assert it.
-
-    Four stages each define their own `DEFAULT_RATE_LIMIT`; `core/llm.py` keeps one. If a
-    future edit makes one stage differ, this fails instead of that stage silently inheriting
-    a different RPM from the kernel.
-    """
-    assert new_llm.DEFAULT_RATE_LIMIT == old_step02.DEFAULT_RATE_LIMIT, "constant diverged"
-
-    import step03_fix_invalid_triplets as old_step03
-    import step05_resolve_entities as old_step05
-
-    for mod in (old_step02, old_step03, old_step05, old_step07):
-        assert mod.DEFAULT_RATE_LIMIT == new_llm.DEFAULT_RATE_LIMIT, (
-            f"{mod.__name__}.DEFAULT_RATE_LIMIT={mod.DEFAULT_RATE_LIMIT} but "
-            f"core/llm has {new_llm.DEFAULT_RATE_LIMIT} — the lift is no longer neutral")
-    print(f"     (DEFAULT_RATE_LIMIT == {new_llm.DEFAULT_RATE_LIMIT} across 4 stages + kernel)")
+    _, sleeps = drive_limiter(new_llm, new_llm.RateLimiter, 2, [(0, 3), (0, 3), (0, 3)])
+    assert len(sleeps) == 1, f"same client was not throttled: {sleeps}"
+    print("     (per-client deque isolation holds)")
 
 
 def test_provider_base_contract():
     """`_Provider` is the seam the cascade iterates over; its four attributes are API."""
-    for cls in (new_llm._Provider, old_step07._Provider):
-        p = cls()
-        assert p.name == "base", p.name
-        assert p.enabled is False, "a bare provider must never look usable"
-        assert p.calls == 0 and p.failures == 0
-        try:
-            p.call("sys", "user")
-        except NotImplementedError:
-            pass
-        else:
-            raise AssertionError(f"{cls}: base call() must raise NotImplementedError")
+    p = new_llm._Provider()
+    assert p.name == "base", p.name
+    assert p.enabled is False, "a bare provider must never look usable"
+    assert p.calls == 0 and p.failures == 0
+    try:
+        p.call("sys", "user")
+    except NotImplementedError:
+        pass
+    else:
+        raise AssertionError(f"{new_llm._Provider}: base call() must raise NotImplementedError")
     assert issubclass(new_llm._OpenAIProvider, new_llm._Provider)
-    print("     (base contract identical; _OpenAIProvider subclasses it)")
+    print("     (base contract holds; _OpenAIProvider subclasses it)")
 
 
 def _without_openai_key():
@@ -180,18 +155,46 @@ def _without_openai_key():
     return restore
 
 
+def test_openai_provider_accepts_an_explicit_key_and_base_url_override():
+    """NEW (2026-07-29): a caller may pass api_key=/base_url= explicitly — e.g. to point
+    the same OpenAI-shaped provider at an OpenAI-compatible third-party endpoint (Novita)
+    for a one-off test run — WITHOUT needing OPENAI_API_KEY set in the environment at all.
+    Default behaviour (env-only, no override) must be completely unaffected."""
+    restore = _without_openai_key()
+    try:
+        p = new_llm._OpenAIProvider("some-model", 10, api_key="explicit-key", base_url="https://example.invalid/v1")
+        assert p.enabled is True, "an explicit api_key must enable the provider even with no env var"
+        assert p.client.api_key == "explicit-key"
+        assert str(p.client.base_url).rstrip("/") == "https://example.invalid/v1"
+    finally:
+        restore()
+    print("     (explicit api_key/base_url override works with no OPENAI_API_KEY in env)")
+
+
+def test_openai_embedding_provider_accepts_an_explicit_key_and_base_url_override():
+    restore = _without_openai_key()
+    try:
+        p = new_llm._OpenAIEmbeddingProvider("some-embed-model", 10, api_key="explicit-key",
+                                             base_url="https://example.invalid/v1")
+        assert p.enabled is True
+        assert p.client.api_key == "explicit-key"
+        assert str(p.client.base_url).rstrip("/") == "https://example.invalid/v1"
+    finally:
+        restore()
+    print("     (embedding provider accepts the same override)")
+
+
 def test_openai_provider_disabled_without_key():
     """No key -> disabled, and NOT an exception: the cascade must be able to skip it."""
     restore = _without_openai_key()
     try:
-        for cls in (new_llm._OpenAIProvider, old_step07._OpenAIProvider):
-            p = cls("gpt-4o-mini", 10)
-            assert p.enabled is False, f"{cls} claimed to be enabled with no API key"
-            assert p.name == "openai", p.name
-            assert not hasattr(p, "client"), "a disabled provider must not hold a client"
+        p = new_llm._OpenAIProvider("gpt-4o-mini", 10)
+        assert p.enabled is False, f"{new_llm._OpenAIProvider} claimed to be enabled with no API key"
+        assert p.name == "openai", p.name
+        assert not hasattr(p, "client"), "a disabled provider must not hold a client"
     finally:
         restore()
-    print("     (both trees disable cleanly, no raise, no client)")
+    print("     (disables cleanly, no raise, no client)")
 
 
 class _StubResponse:
@@ -247,16 +250,11 @@ def test_openai_provider_request_shape():
     saved = os.environ.get("OPENAI_API_KEY")
     try:
         new_out, new_req, new_log = _call_with_stub(new_llm._OpenAIProvider)
-        old_out, old_req, old_log = _call_with_stub(old_step07._OpenAIProvider)
     finally:
         if saved is None:
             os.environ.pop("OPENAI_API_KEY", None)
         else:
             os.environ["OPENAI_API_KEY"] = saved
-
-    assert new_req == old_req, f"request diverged:\n  new={new_req}\n  old={old_req}"
-    assert new_out == old_out, f"reply handling diverged: {new_out!r} vs {old_out!r}"
-    assert new_log == old_log, f"call order diverged: {new_log} vs {old_log}"
 
     # The shape itself, spelled out so a regression names the field it broke.
     assert new_req["model"] == "gpt-4o-mini", new_req["model"]
@@ -270,31 +268,151 @@ def test_openai_provider_request_shape():
     # The reply is stripped, and the throttle is consulted BEFORE the request goes out.
     assert new_out == '{"verdict": "supports"}', repr(new_out)
     assert new_log == [("wait", 0), "create"], f"throttle must precede the request: {new_log}"
-    print("     (request shape, strip, and wait->create ordering pinned in both trees)")
+    print("     (request shape, strip, and wait->create ordering pinned)")
 
 
 def test_openai_provider_survives_a_none_reply():
-    """OpenAI can return `content=None`; both trees must yield '' rather than crash."""
+    """OpenAI can return `content=None`; the provider must yield '' rather than crash."""
     saved = os.environ.get("OPENAI_API_KEY")
     try:
-        outs = []
-        for cls in (new_llm._OpenAIProvider, old_step07._OpenAIProvider):
-            os.environ["OPENAI_API_KEY"] = "sk-test-not-a-real-key"
-            p = cls("gpt-4o-mini", 10)
-            log: list = []
-            completions = _StubCompletions(log, content=None)
-            p.client = _pytypes.SimpleNamespace(
-                chat=_pytypes.SimpleNamespace(completions=completions))
-            p.rl = _SpyLimiter(log)
-            outs.append(p.call("s", "u"))
+        os.environ["OPENAI_API_KEY"] = "sk-test-not-a-real-key"
+        p = new_llm._OpenAIProvider("gpt-4o-mini", 10)
+        log: list = []
+        completions = _StubCompletions(log, content=None)
+        p.client = _pytypes.SimpleNamespace(
+            chat=_pytypes.SimpleNamespace(completions=completions))
+        p.rl = _SpyLimiter(log)
+        out = p.call("s", "u")
     finally:
         if saved is None:
             os.environ.pop("OPENAI_API_KEY", None)
         else:
             os.environ["OPENAI_API_KEY"] = saved
 
-    assert outs[0] == outs[1] == "", f"None-reply handling diverged: {outs}"
-    print("     (content=None -> '' in both trees)")
+    assert out == "", f"None-reply handling diverged: {out!r}"
+    print("     (content=None -> '')")
+
+
+# --------------------------------------------------------------------------- #
+# NEW kernel surface (2026-07-29): _OpenAIEmbeddingProvider + openai_json_call.
+#
+# These have NO src/ counterpart — they exist to give steps 01/02/03/05 (Gemini-only
+# today) an additive OpenAI fallback for real-LLM testing. So unlike every arm above,
+# these are single-tree tests: there is nothing in `src/` to compare against. They
+# still follow the same "pin the exact paid request shape with a stub" discipline as
+# test_openai_provider_request_shape above, because that is what catches a silent
+# behaviour change (dropped schema hint, wrong embedding model) without spending
+# anything.
+# --------------------------------------------------------------------------- #
+
+def test_openai_embedding_provider_disabled_without_key():
+    restore = _without_openai_key()
+    try:
+        p = new_llm._OpenAIEmbeddingProvider("text-embedding-3-small", 10)
+        assert p.enabled is False
+        assert p.name == "openai-embedding", p.name
+        assert not hasattr(p, "client")
+    finally:
+        restore()
+    print("     (disables cleanly, no raise, no client)")
+
+
+class _StubEmbeddingData:
+    def __init__(self, vec):
+        self.embedding = vec
+
+
+class _StubEmbeddingResponse:
+    def __init__(self, vecs):
+        self.data = [_StubEmbeddingData(v) for v in vecs]
+
+
+class _StubEmbeddings:
+    def __init__(self, log, vecs):
+        self.log = log
+        self.vecs = vecs
+        self.captured = None
+
+    def create(self, **kwargs):
+        self.log.append("create")
+        self.captured = kwargs
+        return _StubEmbeddingResponse(self.vecs)
+
+
+def test_openai_embedding_provider_request_shape_and_order():
+    """Pin the embeddings.create request shape and wait->create ordering, same discipline
+    as test_openai_provider_request_shape for the chat-completions provider."""
+    saved = os.environ.get("OPENAI_API_KEY")
+    try:
+        os.environ["OPENAI_API_KEY"] = "sk-test-not-a-real-key"
+        p = new_llm._OpenAIEmbeddingProvider("text-embedding-3-small", 10)
+        assert p.enabled is True
+
+        log: list = []
+        vecs = [[0.1, 0.2, 0.3], [0.4, 0.5, 0.6]]
+        p.client = _pytypes.SimpleNamespace(embeddings=_StubEmbeddings(log, vecs))
+        p.rl = _SpyLimiter(log)
+
+        out = p.embed(["hello", "world"])
+    finally:
+        if saved is None:
+            os.environ.pop("OPENAI_API_KEY", None)
+        else:
+            os.environ["OPENAI_API_KEY"] = saved
+
+    assert out == vecs, out
+    assert p.client.embeddings.captured == {
+        "model": "text-embedding-3-small", "input": ["hello", "world"],
+    }, p.client.embeddings.captured
+    assert log == [("wait", 0), "create"], f"throttle must precede the request: {log}"
+    print("     (embeddings.create request shape + wait->create ordering pinned)")
+
+
+def test_openai_json_call_parses_valid_json():
+    log: list = []
+    p = _pytypes.SimpleNamespace(
+        call=lambda system, user: (log.append((system, user)) or '{"kpis": []}')
+    )
+    out = new_llm.openai_json_call(p, "SYS", "USER", {"type": "object"})
+    assert out == {"kpis": []}, out
+    # the schema must actually be folded into what the provider receives
+    called_system = log[0][0]
+    assert "SYS" in called_system, called_system
+    assert '"type": "object"' in called_system, called_system
+    print("     (valid JSON on the first attempt parses; schema folded into system prompt)")
+
+
+def test_openai_json_call_retries_once_then_raises():
+    calls = []
+
+    def flaky_call(system, user):
+        calls.append(user)
+        return "not json"
+
+    p = _pytypes.SimpleNamespace(call=flaky_call)
+    try:
+        new_llm.openai_json_call(p, "SYS", "USER", {"type": "object"})
+    except Exception:
+        pass
+    else:
+        raise AssertionError("expected a parse failure to raise after the retry")
+    assert len(calls) == 2, f"expected exactly one retry (2 total calls), got {len(calls)}"
+    assert calls[0] != calls[1], "the retry must nudge the user prompt, not repeat it verbatim"
+    print("     (bad JSON retried once with a nudge, then raises — no silent empty result)")
+
+
+def test_openai_json_call_recovers_on_the_retry():
+    calls = []
+
+    def recovers_second_time(system, user):
+        calls.append(user)
+        return "not json" if len(calls) == 1 else '{"ok": true}'
+
+    p = _pytypes.SimpleNamespace(call=recovers_second_time)
+    out = new_llm.openai_json_call(p, "SYS", "USER", {"type": "object"})
+    assert out == {"ok": True}, out
+    assert len(calls) == 2
+    print("     (a retry that succeeds is not treated as a failure)")
 
 
 if __name__ == "__main__":

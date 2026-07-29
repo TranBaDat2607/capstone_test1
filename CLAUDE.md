@@ -14,7 +14,8 @@ cross-checked against its *real-world* conduct.
 
 `EmeraldMind/` is an external reference implementation. **Never edit it and never
 treat its files as part of this codebase** (don't list, refactor, or count them as
-project files). You may read it to understand intent: `src/` here ports
+project files). You may read it to understand intent: `src_module/esg_kg` (originally
+`src/`, since migrated and deleted — see "Refactor history" below) ports
 `EmeraldMind/src/EmeraldKG/` steps 1→2→3 closely, then 4 (entity resolution) as a
 **deliberate redesign** — all adapted to take **labeled JSONL** input (not PDFs) and a
 **single `GEMINI_API_KEY`** (not a multi-key pool). When porting more EmeraldKG stages,
@@ -27,8 +28,8 @@ repo and secrets, so it is never committed or pushed with this project.
 
 - **Windows / PowerShell** host. `.rar`/`.7z` extraction in `crawl_data/extract_archives.py`
   shells out to external **UnRAR.exe / 7z.exe** (install WinRAR + 7-Zip separately).
-- **Generated data is distributed via Hugging Face, not Git** (`src/data_sync.py`, not a
-  pipeline step): `data/`, `graph_output/`, `kpi_output/` are git-ignored (~342 MB) and ship
+- **Generated data is distributed via Hugging Face, not Git** (`src_module/esg_kg/core/datasync.py`,
+  not a pipeline step): `data/`, `graph_output/`, `kpi_output/` are git-ignored (~342 MB) and ship
   as an HF dataset repo. The pushed revision is **pinned in `data_version.json`, which IS
   tracked in Git** — so a checkout recovers the data that went with that code, which is what
   makes the baseline vs after-Phase-0 comparison reproducible. Never re-run an expensive stage
@@ -40,17 +41,17 @@ repo and secrets, so it is never committed or pushed with this project.
   **Anyone pushing must commit `data_version.json` in the same sitting** — a pushed snapshot whose
   pin is not committed is invisible: the team keeps pulling the old revision with no error. `git pull`
   before pushing, so a pin conflict surfaces in Git rather than silently overwriting someone's
-  snapshot. `neo4j_data/` is never synced — rebuild it with step06. Both `push` and `pull` are
+  snapshot. `neo4j_data/` is never synced — rebuild it with `neo4j_load`. Both `push` and `pull` are
   scoped with `ALLOW_PATTERNS` to exactly those three folders: `local_dir` is the CODE repo, so
   an unscoped pull writes the dataset's own root files over tracked ones — that is how the Hub's
   `.gitattributes` came to be committed here (and why this repo now routes `*.png/jpg/zip/parquet`
   through Git LFS). Guarded by `test/test_data_sync_scope.py`.
 - **Secrets:** copy `.env.example` → `.env` and set `GEMINI_API_KEY` (and optionally
-  `OPENAI_API_KEY`, the fallback LLM provider for step 6's cross-check). All `src/` LLM
-  scripts load `.env` from the repo root regardless of cwd. `.env` is git-ignored — never
-  commit it.
+  `OPENAI_API_KEY`, the fallback LLM provider for the cross-check stage, and now also an
+  additive provider for the stages listed below). Every `esg_kg` LLM stage loads `.env`
+  from the repo root regardless of cwd. `.env` is git-ignored — never commit it.
 - **Layout principle (enforced):** code lives only in the package folders
-  (`crawl_data/`, `data_processing/`, `esg_news_crawler/`, `src/`, `src_module/`,
+  (`crawl_data/`, `data_processing/`, `esg_news_crawler/`, `src_module/`,
   `kpi_build/`, `gri/`, plus the UI pair `api/` + `frontend/`). Everything else is `config/`
   (schema + dictionaries), `neo4j/` (`init.cypher` constraints + `crosscheck_queries.cypher`
   analyst queries), or `data/` (`raw/` → `interim/` → `labeled/` → `outputs/`).
@@ -60,29 +61,36 @@ repo and secrets, so it is never committed or pushed with this project.
 - **Two execution styles — do not mix them:**
   - `data_processing/` and `esg_news_crawler/` are **packages**, run as modules:
     `python -m data_processing.extract_esg`.
-  - `src/` scripts are **standalone files** run directly (`python src/step02_extract_triplet_from_jsonl.py`);
-    they import each other by module name relying on Python putting `src/` on `sys.path`.
-    Run them from the repo root.
-  - `src_module/esg_kg/` is the third style (see the refactor section below): a real
-    package, run from the repo root via its dispatcher —
+  - `src_module/esg_kg/` is a real package, run from the repo root via its dispatcher —
     `python src_module/run.py quality --label baseline` (equivalently
-    `python -m esg_kg.report.quality` from inside `src_module/`). All 15/15 stages have
-    now been migrated; `python src_module/run.py --list` shows which, and it asks the
-    import system rather than trusting a hand-kept list. `src/` still exists and still
-    runs (Model A never deletes it), but `esg_kg` is no longer missing any stage.
+    `python -m esg_kg.report.quality` from inside `src_module/`). All 15/15 stages are
+    migrated (`python src_module/run.py --list` shows the table, reading it from the
+    import system rather than a hand-kept list). **`src/` is gone — deleted 2026-07-29,
+    refactor complete** (`src_module/esg_kg/DESIGN.md` §7, `src_module/PIPELINE.md` §7).
+    `esg_kg` is the only pipeline tree now.
 - **Sentence-level traceability** (`source_pdf`, `page`, `sentence_index`) is preserved
   through every stage so each graph node traces back to its source — keep it intact.
 - **Torch is intentionally absent from `requirements.txt`.** The ViDeBERTa ESG classifier
   runs on GPU via `notebooks/kaggle_esg_classify.ipynb`; install torch locally only to
   test `data_processing/esg_classifier.py` on CPU.
 - **Other deps are deliberately unlisted and imported lazily** — each degrades gracefully
-  so a bare clone still runs: `huggingface_hub` (`data_sync.py`), `rapidfuzz` (step03c's
-  fuzzy tier; disabled with a warning if absent), `openai` (step07). Install them
-  on demand rather than adding them to `requirements.txt`.
+  so a bare clone still runs: `huggingface_hub` (`datasync.py`), `rapidfuzz` (the
+  KPI-canonicalization stage's fuzzy tier; disabled with a warning if absent), `openai`
+  (the crosscheck stage, and now also the extract/extract_triples/fix_triples/entities
+  stages when `--provider openai` is passed). Install them on demand rather than adding
+  them to `requirements.txt`.
 - **Gemini is currently billing-blocked**, so the code has drifted to OpenAI where a
-  choice exists: step07's `DEFAULT_PROVIDER_ORDER` is `"openai"` and step05 is run with
-  `--no-llm` (Stages A + B.1 only — no embedding blocking, no adjudication). Don't
-  "fix" these back to Gemini without checking whether the key works.
+  choice exists: the crosscheck stage's `DEFAULT_PROVIDER_ORDER` is `"openai"` and entity
+  resolution is normally run with `--no-llm` (Stages A + B.1 only — no embedding blocking,
+  no adjudication). Don't "fix" these back to Gemini without checking whether the key
+  works. **`extract` (KPI), `extract_triples`, `fix_triples`, and `entities` now also
+  accept `--provider {gemini,openai}`** (default stays `gemini`, so existing invocations
+  are unchanged) — added so integration/system testing could run end-to-end on
+  `gpt-4o-mini` (or an OpenAI-compatible third-party endpoint via `--openai-base-url`)
+  while Gemini stays billing-blocked. Real-LLM tests for this path live in
+  `test/test_esg_kg_integration_llm.py` / `test/test_esg_kg_system_llm.py`, gated behind
+  `RUN_LLM_INTEGRATION_TESTS=1` / `RUN_LLM_SYSTEM_TEST=1` — they cost money and are
+  deliberately NOT part of the free/offline suite.
 
 ## Working rule: Test-Driven Development (applies to ALL code from now on)
 
@@ -105,23 +113,32 @@ Conventions (match `test/test_temporal_invariants.py`, the existing precedent):
 - Run from the repo root: `python test/<name>.py`.
 - Touching step03/03b/03c/05/05b/05c/08 still means re-running `test_temporal_invariants.py`.
 
-## Active refactor: `src/` → `src_module/esg_kg/`
+## Refactor history: `src/` → `src_module/esg_kg/` (COMPLETE — `src/` deleted 2026-07-29)
 
-Migrating the 19 flat `src/step*.py` scripts to a module architecture, **one stage at a
-time**. Design + old→new file mapping: `src_module/esg_kg/DESIGN.md`; canonical run order
-(replacing the `stepNN_` prefixes): `src_module/esg_kg/pipeline.py`.
+**Status: done.** All 15/15 stages migrated, `src/` has been deleted outright, and
+`src_module/esg_kg/` is now the only pipeline tree — there is no second copy left to stay
+equivalent with. `python src_module/run.py --list` is the live source of truth for stage
+status. `src_module/esg_kg/DESIGN.md` §7 and `src_module/PIPELINE.md` §7 record the closeout.
+The section below is kept as a **historical log of how the migration happened** (design
+rules that governed it while both trees existed, and a per-stage record of what moved and
+what was learned) — read it for *why the codebase looks the way it does*, not as a
+description of a refactor still in progress. Design + old→new file mapping:
+`src_module/esg_kg/DESIGN.md`; canonical run order: `src_module/esg_kg/pipeline.py`.
 
-Non-negotiable rules while this is in flight:
-- **Model A — never rewire `src/`.** The old pipeline must keep running untouched.
-  `esg_kg` is not on `src/`'s `sys.path`, so editing `src/` to import from it would just
-  `ImportError`. Helpers therefore **exist in both trees temporarily** — accepted cost.
-- **The TDD test for this refactor is an old-vs-new equivalence test**: import the `src/`
-  original *and* the `esg_kg` version, run both on real input, assert equal results. Write
-  it before extracting the module. This is the only thing preventing the two copies drifting.
-- **A stage may move only when every symbol IT imports already lives in `esg_kg.core`** —
-  *not* merely when nobody imports it. Order: finish `core/` → leaf stages → hubs
-  (step04 → step03 → step02 → step01).
-- Extract helpers **verbatim**. Behaviour changes and refactoring are separate commits.
+Rules that governed the migration while it was in flight (historical — `src/` no longer
+exists, so these no longer apply, but they explain decisions baked into `esg_kg` today):
+- **Model A — never rewire `src/`.** The old pipeline had to keep running untouched while
+  both trees existed. `esg_kg` was not on `src/`'s `sys.path`, so editing `src/` to import
+  from it would just `ImportError`. Helpers therefore existed in both trees temporarily —
+  an accepted cost, paid off once `src/` was deleted.
+- **The TDD test for the refactor was an old-vs-new equivalence test**: import the `src/`
+  original *and* the `esg_kg` version, run both on real input, assert equal results, written
+  before extracting the module. After `src/` was deleted these 19 test files were converted
+  to single-tree regression tests against `esg_kg` alone (still real, still offline, still
+  run every time — see the `test/` list in Common Commands below).
+- **A stage moved only when every symbol IT imported already lived in `esg_kg.core`** —
+  *not* merely when nobody imported it. Order: finish `core/` → leaf stages → hubs.
+- Helpers were extracted **verbatim**. Behaviour changes and refactoring were separate commits.
 
 **Goal of the refactor: `esg_kg` must be able to rebuild the graph from scratch — including
 for AAA** (DESIGN.md §5.4, decided 2026-07-26). So **"it would change `identity_keys` /
@@ -133,7 +150,9 @@ patches (`anchor_method`, `provenance_method`, step03c's `kpi_id`) now have an e
 Two things do not relax: §5.3 still applies (a canonicalization is a behaviour change → its
 own commit, **both trees**, red-first test), and the re-extraction is a deliberate one-time
 decision — **deterministic `claim_id` (GitHub issue #2) must land first**, or step08's tier-1
-resolution misses silently. Until that run happens, `src/` is still the live pipeline.
+resolution misses silently. That re-extraction has not happened yet — `claim_id` determinism
+(issue #2) is still the open prerequisite, tracked independently of the now-completed `src/`
+deletion.
 
 State: `core/` has `paths` (marker-based `REPO_ROOT`), `schema`, `naming`, `dates`, all
 covered by `test/test_esg_kg_equivalence.py`. **`step00` is the first migrated STAGE**
@@ -150,8 +169,10 @@ aliases in the committed registry are its own hardcoded `SEEDS`, and a re-run on
 step04b's own `canonical_name` as a to-review item). So **`config/standards_registry.json` is
 static config now** — nothing regenerates it, it carries `match_patterns`/`exclude_hints`
 inline, and **step00 audits its coverage** instead (`standards_registry_audit`, same family as
-the P1 identity lint). `src/step04b_build_standards_registry.py` is NOT deleted — it remains
-the from-scratch reseed tool.
+the P1 identity lint). `src/step04b_build_standards_registry.py` was the from-scratch reseed
+tool; it was **removed outright with the rest of `src/` on 2026-07-29** (see "`src/` deleted"
+below) rather than kept as a standalone tool — rebuilding the registry from scratch now means
+hand-editing `config/standards_registry.json` directly, not running a script.
 `step05c` is the third migrated stage (`esg_kg/resolve/indicators.py`, 2026-07-27). Moving it
 gave `GraphPatch`/`temporal_md` a home in **`core/graph_patch.py`** — they had been imported
 UP into `src/step05d:34` from a stage, the "a step file doubles as a utility library" knot
@@ -412,13 +433,15 @@ groups, stage-alone, incl. a `google.genai.Client` stub for Stage B/C — same t
 `step01`, no `_Provider` abstraction to stand in front of Gemini) and
 `test/test_esg_kg_resolve_block.py` (5 groups, incl. the "writes exactly once" pair and a
 smoke-check that `05d` still runs cleanly against the block's output).
-**`step07b` is deliberately NOT being ported** (DESIGN.md §4.1): the delivered surface is
-the `frontend/`+`api/` UI, which never reads its softmax scores, so `pipeline.py` carries
-it as `new_module=None` and `run.py --list` shows `(not ported)` and drops it from the
-denominator. It is NOT deleted — `src/step07b_enrich_dossiers.py` still runs, and both
-consumers tolerate the scores being absent (step08 sets null, step09 skips the block). After
-the planned re-extraction the new dossiers start without scores; run that script by hand if
-you want them back — that is not a reason to port it.
+**`step07b` was never ported** (DESIGN.md §4.1): the delivered surface is the `frontend/`+
+`api/` UI, which never reads its softmax scores, so `pipeline.py` carries it with
+`module=None` and `run.py --list` drops it from the denominator entirely. Both consumers
+already tolerate the scores being absent (step08 sets null, step09 skips the block). It was
+originally kept as a standalone `src/` tool for anyone who wanted the scores back by hand;
+**that changed on 2026-07-29 — `step07b_enrich_dossiers.py` was removed outright along with
+the rest of `src/`**, a deliberate simplification (accept losing the standalone tool rather
+than port or preserve it) rather than the earlier "not ported but kept runnable" stance.
+Dossiers never carry `assessment_scores`/`score_components` now.
 **`step02` moved on 2026-07-29 (the 15th and FINAL stage, `esg_kg/graph/extract_triples.py`)**,
 closing out the refactor — `python src_module/run.py --list` now reports 15/15. Two
 commits, in order, per the standing rule that a behaviour change lands in `src/` before
@@ -466,21 +489,26 @@ a pure move (§5.3, the same order `046e572` used for `03`):
   `build_page_prompt` compared for both `--source report` and `--source news`, and the
   paid path driven by a fake client across 4 deterministic response shapes.
 
-With `02` migrated there is no longer a "last remaining `src/` stage" — every stage that
-will ever be ported has moved (`04b`/`07b` stay off the run order by decision, `10` was
-deleted outright, both unchanged by this move).
+With `02` migrated there was no longer a "last remaining `src/` stage" — every stage that
+would ever be ported had moved. `04b`/`07b`/`10` never got a `STAGES` row (they were removed
+outright rather than ported — see below), so they don't count against the 15/15.
 
-Known debt: `src/step00_graph_quality_report.py` still exists, so the T1/T2/T3 tier map that
-`test/test_schema_contract.py` imports lives in two trees — cleanup commit spelled out in
-`src_module/esg_kg/DESIGN.md` §6.1.
+Known-debt note, since resolved: `src/step00_graph_quality_report.py` used to duplicate the
+T1/T2/T3 tier map that `test/test_schema_contract.py` imports — moot now that `src/` is gone
+(`src_module/esg_kg/DESIGN.md` §6.1 has the record).
 
-**`step10` (P6 evaluation) was removed from the project outright on 2026-07-28** — a
-project-scope decision, not a refactor-scope one like `step07b`/`step04b` above: this style
-of measurement (coverage/case-study/ablation with no ground truth) is no longer a
-deliverable, not superseded by anything. Unlike `step07b`/`step04b`, `src/step10_evaluate.py`
-and `docs/EVALUATION.md` were both deleted rather than kept as standalone tools, and
-`esg_kg/pipeline.py::STAGES` no longer carries a `"10"` row. See
-`src_module/esg_kg/DESIGN.md` §4.3 and `src_module/PIPELINE.md` §4 for the record.
+**Three stages were removed from the project outright rather than ported, all now gone with
+`src/` (2026-07-29):**
+- **`step10`** (P6 evaluation) — removed 2026-07-28, a *project-scope* decision: this style
+  of measurement (coverage/case-study/ablation with no ground truth) is no longer a
+  deliverable, not superseded by anything. `src/step10_evaluate.py` and `docs/EVALUATION.md`
+  were deleted at that time. See `src_module/esg_kg/DESIGN.md` §4.3 and
+  `src_module/PIPELINE.md` §4.
+- **`step04b`** (standards-registry reseed) and **`step07b`** (softmax evidence-balance
+  scores) — originally kept as standalone `src/` tools (DESIGN.md §4.1/§4.2), but removed
+  outright when `src/` was deleted on 2026-07-29 rather than moved to `src_module/tools/` or
+  ported: an intentional simplification, accepting the loss of both standalone tools.
+  `esg_kg/pipeline.py::STAGES` carries no rows for any of the three.
 
 Corrections to DESIGN.md found by review, since resolved by the migrations themselves:
 - The two `node_text` are **NOT duplicates** — `step05d`'s takes a *properties dict*,
@@ -523,76 +551,90 @@ data_processing.preprocess_news  → data/interim/news_preprocessed/  (P1: norma
    add publish_date_normalized / publish_year / date_uncertain, drop boilerplate; NO domain routing)
 ```
 Reports are the **claim** side ("what they say"); news is the **conduct** side ("what they do").
-Both feed the same `src/` graph-construction path and land in one temporal KG (see `docs/SYSTEM_DESIGN.md`).
+Both feed the same `esg_kg` graph-construction path and land in one temporal KG (see `docs/SYSTEM_DESIGN.md`).
 
 `crawl_data/crawler_news.py` is a separate, FPT-specific standalone news crawler (not a
 `-m` package, not wired into pipeline B above) — treat it as a legacy/experimental tool, not
 the documented news-ingestion path. See `docs/NEWS_CRAWLER_OPTIMIZATION.md` for its design.
 
-**C. Labeled JSONL → temporal knowledge graph (`src/`, the EmeraldKG port)**
+**C. Labeled JSONL → temporal knowledge graph (`src_module/esg_kg`)**
+
+Run via `python src_module/run.py <stage> [args]` from the repo root (`--list` shows every
+stage). The `stepNN_` labels below are the historical run-order names each stage carries as
+its `old_step` field in `pipeline.py` — `src/`, the tree that filename prefix used to name a
+real file in, was deleted 2026-07-29 (refactor complete, DESIGN.md §7); they are kept only
+because they encode run order and are still what `run.py <old_id>` resolves by (e.g.
+`run.py 05b`).
 ```
-src/step00_graph_quality_report.py      → graph_output/quality/quality_report_<label>.{json,md}
+quality        (step00) → graph_output/quality/quality_report_<label>.{json,md}
    (offline diagnostics, NO LLM/DB: measures the Q1–Q8 quality attributes of the resolved
     graph — consistency incl. P4 temporal invariants + P1 identity lint, conciseness,
     conduct completeness, Q7 traversability (median degree / leaves / masked-answerable /
     hub-free structural claim→conduct / T2 anchoring). Run BEFORE and AFTER any
     schema/pipeline change with --label; see docs/TEMPORAL_KG_DESIGN.md §4)
-src/step01_extract_kpi_from_jsonl.py    → kpi_output/<pdf_stem>_kpis/page_NNN_kpis.json
+extract         (step01) → kpi_output/<pdf_stem>_kpis/page_NNN_kpis.json
    (per page: Gemini 2.5 Flash w/ structured output → typed KPIObservation records,
-    only pages with ≥1 esg=true sentence are sent; uses kpi_definitions_construction.json)
-src/step02_extract_triplet_from_jsonl.py → graph_output/graphs/<pdf_stem>/page{N}.json  (+ _bugged.json, _malformed.txt)
+    only pages with ≥1 esg=true sentence are sent; uses kpi_definitions_construction.json.
+    --provider {gemini,openai} (default gemini) — openai path added for testing/scaling
+    when Gemini billing is blocked, see Environment & conventions above)
+extract_triples  (step02) → graph_output/graphs/<pdf_stem>/page{N}.json  (+ _bugged.json, _malformed.txt)
    (per page: page text + page KPIs + config/schema.json → temporal triples → node/edge graph.
     --source report (default) = claim-side prompt; --source news = conduct-side prompt (Controversy/
-    MediaReport/Penalty/observed KPIObservation); every node/edge stamped source_type=report|news)
-src/step03_fix_invalid_triplets.py      → graph_output/validated/all_validated_triples.json (+ unfixable_triples.json)
+    MediaReport/Penalty/observed KPIObservation); every node/edge stamped source_type=report|news.
+    --provider {gemini,openai}, default gemini)
+fix_triples      (step03) → graph_output/validated/all_validated_triples.json (+ unfixable_triples.json)
    (Phase 1 offline: swap reversed edge directions + schema-validate;
     Phase 1.5 offline (P4): canonicalize dates to ISO YYYY[-MM[-DD]], warn valid_from>valid_to,
     default missing date_uncertain on news T2 nodes; --renormalize applies only this phase to
     the existing aggregated file (no LLM, keeps prior repairs);
-    Phase 2 LLM: batch-repair invalid triples; Phase 3: aggregate)
-src/step03b_anchor_kpi_facilities.py    → appends to all_validated_triples.json (+ anchor_patch_stats.json)
+    Phase 2 LLM: batch-repair invalid triples (--provider {gemini,openai}, default gemini);
+    Phase 3: aggregate)
+anchor_kpi       (step03b) → appends to all_validated_triples.json (+ anchor_patch_stats.json)
    (P3 offline patch, NO LLM: gazetteer of Facility names already in the graph matched against
     each KPI's source sentence (source_id → labeled JSONL) → emits KPIObservation
     --observedAtFacility--> Facility edges, tagged anchor_method=offline_gazetteer.
-    Run after step03, before step05. New extractions get anchors from the step02 prompt instead)
-src/step03c_canonicalize_kpis.py        → appends/patches all_validated_triples.json (+ kpi_canonical_stats.json)
+    Run after fix_triples, before entities. New extractions get anchors from the extract_triples
+    prompt instead)
+canonicalize     (step03c) → appends/patches all_validated_triples.json (+ kpi_canonical_stats.json)
    (offline, NO LLM: assigns each KPIObservation a canonical `kpi_id` from the 35-indicator
     vocabulary via config/kpi_type_aliases.json + rapidfuzz on official names, writing a NEW
     property (NEVER rewrites `kpi_type`, which is in identity_keys — so node order is preserved
-    and paid step07 dossiers survive). Also unit_normalized/value_normalized/period and a
+    and paid dossiers survive). Also unit_normalized/value_normalized/period and a
     Goal.target_date regex backfill (future years only). Feeds the indicator axis, docs/
-    STANDARD_INDICATOR_AXIS.md §5.2. Run after step03b, before step04. Precision over recall:
+    STANDARD_INDICATOR_AXIS.md §5.2. Run after anchor_kpi, before issuer. Precision over recall:
     financial KPIs in VND are rejected, not force-mapped)
-src/step04_build_issuer_registry.py     → config/issuer_registry.json                       (run-once bootstrap)
+build_validated  BLOCK: fix_triples -> anchor_kpi -> canonicalize in one pass, writing
+    all_validated_triples.json ONCE (DESIGN.md §5.7) — the normal way to run all three
+issuer           (step04) → config/issuer_registry.json                       (run-once bootstrap)
    (drafts the reporting company's name variants → aliases / exclusions / needs_review;
     re-running preserves human edits, --force rebuilds; a human confirms needs_review)
-config/standards_registry.json          — STATIC CONFIG, no longer a pipeline stage (2026-07-26)
+config/standards_registry.json          — STATIC CONFIG, not a pipeline stage
    (the 5 reference documents behind the indicator vocabulary (TT96, QĐ2171, QCVN09, SSC-IFC,
-    GRI) with their aliases/exclusions + `match_patterns`/`exclude_hints`. step05's standards
+    GRI) with their aliases/exclusions + `match_patterns`/`exclude_hints`. entities' standards
     anchor freezes GRI's ≥4 spellings and TT96 VN/EN onto one canonical node each (diagnosis C3).
-    Hand-edited: add an alias, then re-run step05. NOTHING generates it — step00's
-    `standards_registry_audit` reports uncovered mentions instead, which is all the old
-    generator ever produced. `src/step04b_build_standards_registry.py` still exists as the
-    from-scratch reseed tool, but it is OFF the run order: it read step05's output while
-    step05 read its output. See DESIGN.md §4.2)
-src/step05_resolve_entities.py          → graph_output/resolved/resolved_graph.json (+ _stats.json)
+    Hand-edited: add an alias, then re-run entities. NOTHING generates it — quality's
+    `standards_registry_audit` reports uncovered mentions instead. The old from-scratch reseed
+    tool, `step04b_build_standards_registry.py`, was removed outright with `src/` on 2026-07-29
+    (DESIGN.md §4.2) — rebuilding from scratch now means hand-editing the JSON.)
+entities         (step05) → graph_output/resolved/resolved_graph.json (+ _stats.json)
    (step 4: collapse duplicate entity nodes into canonical entities, keeping temporal history.
     Stage A deterministic identity_keys merge + FROZEN issuer anchor (issuer_registry.json) +
     FROZEN standards anchor (Stage A.3, standards_registry.json — Standard/Regulation mentions);
-    Stage B VN-aware blocking (normalized signature + gemini-embedding-001 cosine);
-    Stage C gemini-2.5-flash adjudication on ambiguous pairs (budgeted); Stage D consolidate)
-src/step05b_stamp_provenance.py         → patches resolved_graph.json in place (+ provenance_patch_stats.json)
+    Stage B VN-aware blocking (normalized signature + gemini-embedding-001 cosine, or an
+    OpenAI embedding model via --provider openai); Stage C adjudication on ambiguous pairs
+    (budgeted; gemini-2.5-flash or gpt-4o-mini); Stage D consolidate. --no-llm skips B+C)
+provenance       (step05b) → patches resolved_graph.json in place (+ provenance_patch_stats.json)
    (offline provenance patch, NO LLM: matches claim/evidence nodes (PROVENANCE_CLASSES, never
     T1 entities) back to the per-page graph_output/graphs/<doc>/page{N}.json files via a 4-tier
     precedence (parseable source_id → exact source_id index → recomputed stable_id → _pageNN_
     token) and stamps source_doc/source_page (+ article_title/url/domain for news docs from the
-    news JSONL). NEVER reorders nodes (step06 _node_key + dossier node_index are positional).
-    Run after step05, before step06; re-run after any step05 re-run. New step02 extractions
-    self-stamp (provenance_method=extraction) and are skipped. See docs/PROVENANCE_PATCH.md)
-src/step05c_link_standard_indicators.py → patches resolved_graph.json in place (+ indicator_axis_stats.json)
+    news JSONL). NEVER reorders nodes (neo4j_load _node_key + dossier node_index are positional).
+    Run after entities, before neo4j_load; re-run after any entities re-run. New extract_triples
+    output self-stamps (provenance_method=extraction) and is skipped. See docs/PROVENANCE_PATCH.md)
+indicators       (step05c) → patches resolved_graph.json in place (+ indicator_axis_stats.json)
    (offline, NO LLM: materializes the TT96/GRI indicator axis. APPENDS ~35 StandardIndicator
     nodes + edges: partOf (indicator→document), measuredUnder (KPIObservation/Emission→indicator,
-    read from step03c's kpi_id — never guessed here), equivalentTo (TT96→GRI, from
+    read from canonicalize's kpi_id — never guessed here), equivalentTo (TT96→GRI, from
     config/standard_crosswalk.json, confirmed rows only), and a keyword tier of alignsWithIndicator
     (Claim/Goal/Initiative→indicator; longest matching phrase wins). Penalty amount==0 = self-reported
     "fined 0 times" → flagged self_reported_zero, NO conduct edge. APPEND-ONLY (asserts the
@@ -601,56 +643,53 @@ src/step05c_link_standard_indicators.py → patches resolved_graph.json in place
     for the VN vocabulary, config/gri_catalog.json (--gri-catalog) for GRI — and never invents
     one: an id neither covers keeps the pillar it had. The Evidence View reads that property
     directly for a claim's E/S/G column, so a guess there is visible to the reader. Run after
-    step05b, before step06. See docs/STANDARD_INDICATOR_AXIS.md)
-src/step05d_align_claims_to_indicators.py → patches resolved_graph.json in place (+ indicator_align_llm_stats.json)
+    provenance, before neo4j_load. See docs/STANDARD_INDICATOR_AXIS.md)
+build_resolved   BLOCK: entities -> provenance -> indicators in one pass, writing
+    resolved_graph.json ONCE (DESIGN.md §5.7) — the normal way to run all three
+align_claims     (step05d) → patches resolved_graph.json in place (+ indicator_align_llm_stats.json)
    (OPTIONAL, LLM, budgeted: alignsWithIndicator for the Claim/Goal/Initiative the keyword tier
     left unresolved. Topic classification only (alignment_method=llm), NOT a supports/contradicts
-    judgement. Pipeline is complete without it. Run after step05c; --max-llm-pairs, --dry-run)
-src/step06_load_graph_to_neo4j.py       → Neo4j (bolt://localhost:8687, db `neo4j`)            (step 5)
+    judgement. Pipeline is complete without it. Run after build_resolved; --max-llm-pairs, --dry-run)
+neo4j_load       (step06) → Neo4j (bolt://localhost:8687, db `neo4j`)            (step 5)
    (load the resolved {nodes,edges} graph as a property graph — NO LLM. Nodes keyed by
     array index (entities already resolved; not re-deduped); edges keep temporal_metadata and
     MERGE on a temporal _edge_key so multi-year edges stay distinct; temporal_versions become
     supersedes version-node chains for supersedes-legal classes, else a JSON property)
-src/step07_crosscheck_claims_vs_conduct.py → graph_output/crosscheck/<ticker>_claim_assessments.json   (step 6)
+claims_vs_conduct (step07) → graph_output/crosscheck/<ticker>_claim_assessments.json   (step 6)
    (the analytical core: for each SustainabilityClaim, retrieve conduct-side candidates →
     LLM-adjudicate supports/contradicts/irrelevant → write verifiedBy / contradictedBy* edges.
     LLM adjudication is MANDATORY (no deterministic fallback) — provider cascade
     (--provider-order, default `openai` = gpt-4o-mini); aborts up front if no provider is
     available. **OpenAI is the ONLY provider left**: Gemini support was removed outright
-    (step07:34) because the project behind GEMINI_API_KEY is permanently 403, so the
-    registry at step07:321 holds just `openai` and passing `gemini` logs "Unknown
-    adjudication provider — ignored". Do not plan a Gemini fallback here.
+    because the project behind GEMINI_API_KEY is permanently 403, so passing `gemini` logs
+    "Unknown adjudication provider — ignored". Do not plan a Gemini fallback here.
     Self-verification guard drops company-own-domain "verify" edges.
     Emits advisory dossiers — NO greenwashing score/label. --dry-run / --to-neo4j)
-src/step07b_enrich_dossiers.py          → patches the step07 dossiers in place (idempotent)     (step 6c)
-   (offline, NO LLM/DB: softmax over three evidence-balance components → assessment_scores
-    {contradicted, supported, abstain} + score_components + score_disagrees_with_assessment,
-    written back into <ticker>_claim_assessments.json. This is NOT a greenwashing
-    probability (SYSTEM_DESIGN §1.1 — no ground truth); the categorical `assessment` stays
-    the primary output. Deterministic over the frozen dossier, so it never needs the paid
-    step07 re-run. The `signals` terms (lam_struct/lam_kpi/lam_bp) contribute 0 until the
-    generator in docs/CROSSCHECK_EXPANSION.md lands — safe to run today. Consumed by
-    step08 + step09. Read docs/SOFTMAX_SCORING.md before touching the formula; beta0 is a
-    design decision, not a fitted parameter. --dry-run, --calibrate, --bin-confidence, --params)
-src/step08_sync_crosscheck_to_neo4j.py  → Neo4j advisory layer                                        (step 6b)
+neo4j_sync       (step08) → Neo4j advisory layer                                        (step 6b)
    (NO LLM — reuses the paid step-6 dossier. MERGEs assessment/caveats/signals onto claim nodes +
     llm_supports / llm_contradicts / llm_flagged_support evidence edges (incl. KPI contradictions
     the base schema can't express). Idempotent; --clear-advisory, --dry-run)
-src/step09_report_claim_ledger.py       → stdout + graph_output/crosscheck/<ticker>_claim_ledger.md   (step 7)
-   (presentation only — NO LLM, reads ONLY Neo4j (run step 6b first). Per-company claim ledger,
-    signal-first (contradicted → supported → unverified), with the coverage caveat.
+claim_ledger     (step09) → stdout + graph_output/crosscheck/<ticker>_claim_ledger.md   (step 7)
+   (presentation only — NO LLM, reads ONLY Neo4j (run neo4j_sync first). Per-company claim
+    ledger, signal-first (contradicted → supported → unverified), with the coverage caveat.
     --review-queue (contradiction + no verification), --assessment, --claim-id, --markdown)
 ```
 
-`src/step10_evaluate.py` (step 8 / P6 evaluation report, no-ground-truth coverage/case-study/
-ablation) was **removed from the project on 2026-07-28** — see the "Known debt" note above.
+The step07b offline softmax evidence-balance scoring stage (P6-adjacent, not shown above) was
+never wired into the delivered UI surface and was removed outright with `src/` on 2026-07-29,
+same decision as step04b above — see "Refactor history" for the record.
+
+`step10_evaluate.py` (step 8 / P6 evaluation report, no-ground-truth coverage/case-study/
+ablation) was **removed from the project on 2026-07-28** — see "Refactor history" above.
 The claim ledger (`step09`) is the last stage in the pipeline now.
 
-The `src/` scripts share helpers by importing across files: later stages import
-`REPO_ROOT`, `build_page_text`, `load_pages_from_jsonl`, `RateLimiter`, `load_schema_sets`,
-`normalize_name`, etc. from the earlier ones (`step01_extract_kpi_from_jsonl`,
-`step02_extract_triplet_from_jsonl`, `step03_fix_invalid_triplets`, `step04_build_issuer_registry`). Changing a
-shared helper's signature affects every downstream stage.
+Stages share helpers through `esg_kg/core/`: `paths` (`REPO_ROOT`), `io_jsonl`
+(`build_page_text`, `load_pages_from_jsonl`, ...), `llm` (`RateLimiter`, `_OpenAIProvider`,
+...), `schema` (`load_schema_sets`, ...), `naming` (`normalize_name`, ...), `dates`,
+`identity`, `graph_patch`. No stage imports another stage's internals any more — that
+sibling-importing shape belonged to the old `src/` scripts and was untied module by module
+during the refactor (see "Refactor history" above). Changing a `core/` helper's signature
+affects every stage that imports it.
 
 **D. KPI definition builder (`kpi_build/`, run-once provenance pipeline)**
 Stages `01_…`→`06_…` download official Vietnamese ESG regulations (Circular 96/2020,
@@ -691,7 +730,7 @@ per `docs/REAL_DATA_INTEGRATION_GUIDE.md`, data-source changes belong in
 
 The single source of truth for the knowledge graph: ~28 node classes (Organization,
 KPIObservation, Emission, SustainabilityClaim, Controversy, …) and ~50 directed edge
-labels. Key invariants the `src/` validation relies on (see docs/TEMPORAL_KG_DESIGN.md
+labels. Key invariants the `esg_kg` validation relies on (see docs/TEMPORAL_KG_DESIGN.md
 for the T1/T2/T3 tier model behind them):
 - **At extraction (step02/step03) every node carries** `valid_from`, `valid_to`,
   `is_current`; every edge carries `temporal_metadata` (`valid_from`, `valid_to`,
@@ -720,9 +759,9 @@ See `docs/SCHEMA_EXPLAINED.md` for the rationale.
 pip install -r requirements.txt
 
 # 0. Land the data snapshot this commit was built against (instead of re-running the pipeline)
-python src/data_sync.py status                              # what is pinned vs what is local
-python src/data_sync.py pull                                # teammate: fetch the revision in data_version.json
-python src/data_sync.py push                                # after a rebuild: upload + re-pin (needs org `write`)
+python src_module/esg_kg/core/datasync.py status            # what is pinned vs what is local
+python src_module/esg_kg/core/datasync.py pull               # teammate: fetch the revision in data_version.json
+python src_module/esg_kg/core/datasync.py push                # after a rebuild: upload + re-pin (needs org `write`)
                                                             #   then: git add data_version.json && git commit
 
 # A. Annual report → labeled ESG sentences
@@ -735,79 +774,68 @@ python -m data_processing.extract_esg            # labeled JSONL → esg_extract
 python -m esg_news_crawler.run --ticker AAA --limit 1
 python -m data_processing.preprocess_news                             # P1: → data/interim/news_preprocessed/ (date-normalize + drop boilerplate)
 
-# C. Labeled JSONL → temporal KG (run from repo root, in order)
-python src/step00_graph_quality_report.py --label baseline                   # Q1–Q8 snapshot (before/after any change; offline)
-python src/step01_extract_kpi_from_jsonl.py     -i <labeled.jsonl>            # → kpi_output/
-python src/step02_extract_triplet_from_jsonl.py -i <report_labeled.jsonl>    # → graph_output/graphs/ (claim side; --source report default)
-python src/step02_extract_triplet_from_jsonl.py -i <news_preprocessed.jsonl> --source news   # conduct side (stamps source_type=news)
-python src/step03_fix_invalid_triplets.py                                    # → graph_output/validated/
-python src/step03_fix_invalid_triplets.py --renormalize                      #   P4-only pass on the existing validated file (no LLM)
-python src/step03b_anchor_kpi_facilities.py --dry-run                        # P3 offline anchor patch preview (then run without --dry-run)
-python src/step03c_canonicalize_kpis.py --dry-run                            # assign canonical kpi_id (then run without --dry-run; offline, no LLM)
-python src/step04_build_issuer_registry.py                                   # → config/issuer_registry.json (run-once; then hand-confirm needs_review)
-#   (no step04b: config/standards_registry.json is static config, hand-edited; step00 audits its coverage)
-python src/step05_resolve_entities.py                                        # → graph_output/resolved/ (step 4: entity resolution + standards anchor)
-python src/step05b_stamp_provenance.py --dry-run                             # provenance patch preview (then run without --dry-run; offline, no LLM)
+# C. Labeled JSONL → temporal KG (src_module/esg_kg — run from the repo root, in order)
+python src_module/run.py --list                                            # every stage + status
+python src_module/run.py quality --label baseline                         # Q1–Q8 snapshot (before/after any change; offline)
+python src_module/run.py extract -i <labeled.jsonl>                       # → kpi_output/
+python src_module/run.py extract_triples -i <report_labeled.jsonl>        # → graph_output/graphs/ (claim side; --source report default)
+python src_module/run.py extract_triples -i <news_preprocessed.jsonl> --source news   # conduct side (stamps source_type=news)
+python src_module/run.py build_validated --dry-run                        # BLOCK fix_triples -> anchor_kpi -> canonicalize, writes
+                                                                           #   all_validated_triples.json ONCE (DESIGN.md §5.7); then without --dry-run
+python src_module/run.py fix_triples --renormalize                        #   P4-only pass on the existing validated file (no LLM; not part of the block)
+python src_module/run.py issuer                                           # → config/issuer_registry.json (run-once; then hand-confirm needs_review)
+#   (no step04b: config/standards_registry.json is static config, hand-edited; quality audits its coverage)
 python gri/build_gri_catalog.py                                              # → config/gri_catalog.json (run-once builder, not a stage; commit the result)
-python src/step05c_link_standard_indicators.py --dry-run                     # TT96/GRI indicator axis preview (reports the pillar restamp too; then run without --dry-run)
-python src/step05d_align_claims_to_indicators.py --dry-run                   # OPTIONAL LLM: align remaining claims (then --max-llm-pairs N to run)
-python src/step06_load_graph_to_neo4j.py --dry-run                           # step 5: preview planned counts, no DB
+python src_module/run.py build_resolved --dry-run                         # BLOCK entities -> provenance -> indicators, writes
+                                                                           #   resolved_graph.json ONCE (DESIGN.md §5.7); then without --dry-run
+python src_module/run.py align_claims --dry-run                           # OPTIONAL LLM: align remaining claims (then --max-llm-pairs N to run)
+python src_module/run.py neo4j_load --dry-run                             # preview planned counts, no DB
 docker compose up -d                                                 # start Neo4j on :8687 (then run neo4j/init.cypher once — see docs)
-python src/step06_load_graph_to_neo4j.py --clear                            # → Neo4j (wipe + load; needs the instance running)
-python src/step07_crosscheck_claims_vs_conduct.py --dry-run                 # step 6: preview claim↔conduct pairs (runs LLM, writes nothing)
-python src/step07_crosscheck_claims_vs_conduct.py                           # → graph_output/crosscheck/ (advisory dossiers + linking edges)
-python src/step07b_enrich_dossiers.py --dry-run                            # step 6c: softmax evidence-balance scores (then run without --dry-run; offline, no LLM)
-python src/step08_sync_crosscheck_to_neo4j.py                              # step 6b: push dossiers into Neo4j advisory layer (no LLM)
-python src/step09_report_claim_ledger.py                                   # step 7: render the AAA claim ledger FROM Neo4j (no LLM)
-python src/step09_report_claim_ledger.py --review-queue --markdown         #   contradiction-no-verification queue + Markdown file
-# (step10_evaluate.py / P6 evaluation report was removed from the project 2026-07-28 — see CLAUDE.md "Known debt")
-
-# Refactor target (src_module/esg_kg) — 15/15 stages have moved (all of them); see src_module/PIPELINE.md
-python src_module/run.py --list                                            # stages + which are migrated
-python src_module/run.py quality --label baseline                          # == src/step00_graph_quality_report.py
-python src_module/run.py extract --doc AAA_2023                            # == src/step01_extract_kpi_from_jsonl.py
-python src_module/run.py extract_triples --doc AAA_2023 --source report    # == src/step02_extract_triplet_from_jsonl.py (--source report|news)
-python src_module/run.py fix_triples --dry-run                             # == src/step03_fix_invalid_triplets.py
-python src_module/run.py canonicalize --dry-run                            # == src/step03c_canonicalize_kpis.py
-python src_module/run.py build_validated --dry-run                         # BLOCK: 03 -> 03b -> 03c in one pass,
-                                                                           #   writes all_validated_triples.json ONCE (DESIGN.md §5.7)
-python src_module/run.py anchor_kpi --dry-run                              # == src/step03b_anchor_kpi_facilities.py
-python src_module/run.py issuer                                            # == src/step04_build_issuer_registry.py
-python src_module/run.py entities --dry-run                                # == src/step05_resolve_entities.py (--no-llm for --dry-run)
-python src_module/run.py provenance --dry-run                              # == src/step05b_stamp_provenance.py
-python src_module/run.py indicators --dry-run                              # == src/step05c_link_standard_indicators.py
-python src_module/run.py build_resolved --dry-run                          # BLOCK: 05 -> 05b -> 05c in one pass,
-                                                                           #   writes resolved_graph.json ONCE (DESIGN.md §5.7); 05d stays separate, after
-python src_module/run.py align_claims --dry-run                            # == src/step05d_align_claims_to_indicators.py (optional, runs after the block)
-python src_module/run.py neo4j_load --dry-run                              # == src/step06_load_graph_to_neo4j.py
-python src_module/run.py claims_vs_conduct --dry-run                       # == src/step07_crosscheck_claims_vs_conduct.py
-python src_module/run.py neo4j_sync --dry-run                              # == src/step08_sync_crosscheck_to_neo4j.py
-python src_module/run.py claim_ledger                                      # == src/step09_report_claim_ledger.py (Neo4j-only)
+python src_module/run.py neo4j_load --clear                               # → Neo4j (wipe + load; needs the instance running)
+python src_module/run.py claims_vs_conduct --dry-run                      # preview claim↔conduct pairs (runs LLM, writes nothing)
+python src_module/run.py claims_vs_conduct                                # → graph_output/crosscheck/ (advisory dossiers + linking edges)
+python src_module/run.py neo4j_sync                                       # push dossiers into Neo4j advisory layer (no LLM)
+python src_module/run.py claim_ledger                                     # render the AAA claim ledger FROM Neo4j (no LLM)
+python src_module/run.py claim_ledger --review-queue --markdown           #   contradiction-no-verification queue + Markdown file
+# (step07b softmax scores and step10 P6 evaluation were both removed outright with src/ on
+#  2026-07-29 — see "Refactor history" above; there is no replacement command for either)
 
 # ESG Evidence View UI (web front-end; reads the Neo4j advisory layer, no LLM — see docs/ESG_EVIDENCE_VIEW.md)
 python api/main.py                                                         # 3-column TT96/GRI evidence view at http://localhost:8000
 
-# Useful src/ flags: --doc <substr>, --limit-docs N, --all (scope);
-#   --all-pages (don't restrict to ESG pages); --dry-run (fix/resolve/load steps: offline only, no LLM/DB/writes);
-#   quality (step00): --label <name>, --skip-slow (skip the BFS-heavy Q7(c)/(d)), --max-hops, --standards-registry;
-#   fix (step03): --renormalize (P4 pass only); anchor patch (step03b): --max-per-facility, --dry-run;
-#   kpi canonical (step03c): --aliases, --fuzzy-threshold, --no-goals, --dry-run;
-#   provenance patch (step05b): --graphs-dir, --news-globs, --stats-out, --dry-run;
-#   indicator axis (step05c): --crosswalk, --no-gri, --no-align, --trust-draft-crosswalk, --dry-run;
-#   claim→indicator LLM (step05d): --max-llm-pairs, --openai-model, --dry-run;
-#   resolve: --no-llm (Stages A+B.1 only), --standards-registry, --similarity-threshold, --max-llm-pairs;
-#   load: --clear (wipe first), --no-versions (canonical only), --database, --strict (env: NEO4J_URI/USER/PASSWORD);
-#   crosscheck: LLM adjudication is mandatory (no --no-llm); --max-llm-pairs, --provider-order (default openai), --to-neo4j;
-#   softmax scores (step07b): --dry-run, --calibrate (grid over tau/beta1/w_max), --bin-confidence, --params '{"tau":0.75}';
-#   sync (step08_sync_crosscheck_to_neo4j.py): --clear-advisory, --dry-run;
-#   ledger (step09_report_claim_ledger.py, Neo4j-only): --review-queue, --assessment, --claim-id, --limit, --markdown;
+# Useful flags: --doc <substr>, --limit-docs N, --all (scope);
+#   --all-pages (don't restrict to ESG pages); --dry-run (fix/resolve/load stages: offline only, no LLM/DB/writes);
+#   --provider {gemini,openai} on extract/extract_triples/fix_triples/entities (default gemini;
+#     --openai-model, --openai-base-url for a third-party OpenAI-compatible endpoint);
+#   quality: --label <name>, --skip-slow (skip the BFS-heavy Q7(c)/(d)), --max-hops, --standards-registry;
+#   fix_triples: --renormalize (P4 pass only); anchor_kpi: --max-per-facility, --dry-run;
+#   canonicalize: --aliases, --fuzzy-threshold, --no-goals, --dry-run;
+#   provenance: --graphs-dir, --news-globs, --stats-out, --dry-run;
+#   indicators: --crosswalk, --no-gri, --no-align, --trust-draft-crosswalk, --dry-run;
+#   align_claims: --max-llm-pairs, --openai-model, --openai-base-url, --dry-run;
+#   entities: --no-llm (Stages A+B.1 only), --standards-registry, --similarity-threshold, --max-llm-pairs,
+#     --openai-embed-model;
+#   neo4j_load: --clear (wipe first), --no-versions (canonical only), --database, --strict (env: NEO4J_URI/USER/PASSWORD);
+#   claims_vs_conduct: LLM adjudication is mandatory (no --no-llm); --max-llm-pairs, --provider-order (default openai),
+#     --openai-base-url, --to-neo4j;
+#   neo4j_sync: --clear-advisory, --dry-run;
+#   claim_ledger (Neo4j-only): --review-queue, --assessment, --claim-id, --limit, --markdown;
 ```
 
 No pytest harness or linter is configured — tests are plain assert scripts under `test/`
 (see the TDD working rule above; new code adds new files here, test-first). The existing
 check covers the P3/P4 Phase-0 temporal logic, the step05b provenance matching, and the
 indicator-axis stages (step03c/step05c/step08) — run it from the repo root after touching
-step03/step03b/step03c/step05/step05b/step05c/step08:
+step03/step03b/step03c/step05/step05b/step05c/step08.
+
+**Reading note on the per-file comments below**: many were written while `src/` and
+`esg_kg` existed side by side, so phrases like "both trees" / "BOTH trees" describe how
+that test *proved the migration correct at the time* — importing `src/` as the oracle and
+comparing. After `src/` was deleted (2026-07-29), every one of those files (`test_esg_kg_*`,
+`test_console_utf8.py`, `test_standards_audit.py`) was converted to a single-tree test
+against `esg_kg` alone — same assertions, same non-vacuity guarantees, no `src/` import
+left anywhere. Read "both trees" in what follows as history, not as what the test imports
+today:
 
 ```bash
 python test/test_temporal_invariants.py    # offline, no LLM/DB; asserts date canonicalization,
@@ -824,18 +852,21 @@ python test/test_indicator_axis.py         # drives step05c's real run() on a te
                                            # self-reported-zero Penalty gets NO conduct edge,
                                            # kpi_id-not-kpi_type boundary, confirmed-crosswalk
                                            # gate, stage-level append-only + idempotency.
-python test/test_standards_audit.py        # step00's standards-registry audit, in BOTH trees:
+python test/test_standards_audit.py        # esg_kg's standards-registry audit (quality.py):
                                            # an uncurated GRI spelling surfaces, an out-of-scope
                                            # accounting standard does NOT (the noise filter that
                                            # makes the section readable), a curated exclusion
                                            # stays closed, and canonical_name is never reported
                                            # as unknown (step04b's old feedback artifact).
                                            # Run after touching step00 or the registry config.
-python test/test_pipeline_table.py         # refactor stage table (src_module/esg_kg/pipeline.py
-                                           # + run.py): every row points at a real src/ file,
-                                           # short names don't collide, and a stage that is
-                                           # NEVER being ported is rendered as such instead of
-                                           # as "not yet" (which would keep dead work queued).
+python test/test_pipeline_table.py         # esg_kg stage table (esg_kg/pipeline.py + run.py):
+                                           # every old_step label is well-formed and unique
+                                           # (src/ is gone, so this no longer checks a real
+                                           # file exists — see pipeline.py's own docstring),
+                                           # short names don't collide, block members are all
+                                           # migrated stages, and a stage that will NEVER be
+                                           # ported is rendered as such instead of "not yet"
+                                           # (which would keep dead work permanently queued).
 python test/test_gri_catalog_build.py      # gri/build_gri_catalog.py: a disclosure is attributed
                                            # to the standard whose id is its prefix (not to whichever
                                            # file sorts first), pillar comes from the source via
@@ -846,18 +877,25 @@ python test/test_console_utf8.py           # ensure_utf8_stdout in BOTH trees + 
                                            # actually calls it, nothing calls it at import). Closes
                                            # the hole the equivalence test cannot see: it never
                                            # executes main() or a __main__ block.
-python test/test_data_sync_scope.py        # data_sync pull is scoped to the three synced folders,
-                                           # so it can never overwrite a tracked repo-root file
-                                           # (that is how the Hub's .gitattributes got committed).
-                                           # Offline: snapshot_download is replaced by a recorder.
-python test/test_esg_kg_equivalence.py     # refactor safety net: imports BOTH src/ and
-                                           # src_module/esg_kg, runs them on the real
-                                           # schema/corpus, asserts equal. Run after ANY
-                                           # edit to a src/ helper that has a core/ twin,
-                                           # or to step00 (whose whole Q1-Q8 surface is
-                                           # compared against esg_kg/report/quality.py —
-                                           # real graph with --skip-slow, plus a synthetic
-                                           # 20-node graph for the 44s Q7 BFS arms).
+python test/test_data_sync_scope.py        # esg_kg.core.datasync pull is scoped to the three
+                                           # synced folders, so it can never overwrite a tracked
+                                           # repo-root file (that is how the Hub's .gitattributes
+                                           # got committed). Offline: snapshot_download is a recorder.
+python test/test_esg_kg_datasync.py        # esg_kg.core.datasync (the src/data_sync.py port,
+                                           # 2026-07-29 — the last file that blocked deleting
+                                           # src/): constants match the documented shape, push/pull
+                                           # scoping, status reporting. Offline: huggingface_hub
+                                           # calls replaced by recorders, nothing touches the network.
+python test/test_esg_kg_equivalence.py     # regression net for esg_kg's core/ helpers and
+                                           # quality.py (step00's whole Q1-Q8 surface), run on
+                                           # the real schema/corpus against golden values
+                                           # captured from esg_kg itself (converted from a
+                                           # src/-vs-esg_kg comparison once src/ was proven
+                                           # equivalent and then deleted, 2026-07-29). Run
+                                           # after ANY edit to a core/ helper, or to
+                                           # esg_kg/report/quality.py — real graph with
+                                           # --skip-slow, plus a synthetic 20-node graph for
+                                           # the 44s Q7 BFS arms.
 python test/test_esg_kg_anchor_kpi.py      # same contract as the file above, for the step03b
                                            # migration slice: core/identity (parse_source_id,
                                            # get_stable_entity_id, PROVENANCE_CLASSES) and
@@ -1178,8 +1216,6 @@ stamping of the resolved graph so the UI/ledger can cite report page + article t
 `GRAPH_LOAD_NEO4J.md` (step 5 — Neo4j load; also a redesign),
 `CLAIM_CONDUCT_CROSSCHECK.md` (step 6 — claim↔conduct cross-check, the analytical core),
 `CLAIM_LEDGER.md` (step 6b sync + step 7 — dossier → Neo4j advisory layer, then the Neo4j-only claim ledger + analyst Cypher),
-`SOFTMAX_SCORING.md` (step 6c — the evidence-balance formula, its parameters, and why it
-is explicitly not a greenwashing probability; read before changing step07b),
 `ESG_EVIDENCE_VIEW.md` (the 3-column TT96/GRI evidence-view UI, `api/` + `frontend/` — how to run the demo),
 `REAL_DATA_INTEGRATION_GUIDE.md` (Vietnamese — the mock→live-Neo4j swap for that UI; the
 rule that only `api/evidence_service.py` changes, never the frontend),
@@ -1192,9 +1228,10 @@ signatures to auto-resolve step-4's lexically ambiguous `needs_review` cases),
 `esg_news_crawler/README.md`, `kpi_build/README.md`, and `gri/README.md` cover their
 respective subsystems.
 
-Added with the GRI catalog (2026-07-26), describing the `src/` pipeline as it runs today —
-none of them mention `src_module/`/`esg_kg`, so for the refactor's view of stage C read
-`src_module/PIPELINE.md` instead: `docs/PIPELINE_DIAGRAMS.md` (10 figures: architecture,
+Added with the GRI catalog (2026-07-26), describing stage C by its now-deleted `src/`
+filenames — the pipeline shape/diagrams are still accurate, but none of them mention
+`src_module/`/`esg_kg`'s stage names, so for the current view of stage C read
+`src_module/PIPELINE.md` and `esg_kg/pipeline.py` instead: `docs/PIPELINE_DIAGRAMS.md` (10 figures: architecture,
 collection, extraction, KPI, KG construction, entity resolution, cross-check, schema, data
 layout, end-to-end sequence), `docs/PIPELINE_UNIFIED.md`, `docs/PROJECT_OVERVIEW.md`,
 `docs/GRI_SCHEMA_DOCUMENTATION.md` (the shape of `gri/full_gri/json/*.json` and of

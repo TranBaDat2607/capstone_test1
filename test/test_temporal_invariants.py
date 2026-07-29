@@ -11,17 +11,14 @@ is a plain assert script — run it from the repo root:
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src_module"))
 
-from step03_fix_invalid_triplets import (  # noqa: E402
-    date_start_key,
-    enforce_temporal_invariants,
-    normalize_date_string,
-)
-from step02_extract_triplet_from_jsonl import stamp_provenance  # noqa: E402
-from step03b_anchor_kpi_facilities import parse_source_id  # noqa: E402
-from step05_resolve_entities import DSU, consolidate  # noqa: E402
-from step05b_stamp_provenance import (  # noqa: E402
+from esg_kg.core.dates import date_start_key, normalize_date_string  # noqa: E402
+from esg_kg.graph.fix_triples import enforce_temporal_invariants  # noqa: E402
+from esg_kg.graph.extract_triples import stamp_provenance  # noqa: E402
+from esg_kg.core.identity import parse_source_id  # noqa: E402
+from esg_kg.resolve.entities import DSU, consolidate  # noqa: E402
+from esg_kg.resolve.provenance import (  # noqa: E402
     candidate_locations,
     choose_primary,
     parse_page_token,
@@ -249,14 +246,15 @@ def test_step02_stamp_provenance():
 # --------------------------------------------------------------------------- #
 import json  # noqa: E402
 
-from step03c_canonicalize_kpis import (  # noqa: E402
+from esg_kg.kpi.canonicalize import (  # noqa: E402
     Matcher, backfill_goal_target_date, canonicalize_kpis,
 )
-from step03_fix_invalid_triplets import load_schema_sets  # noqa: E402
-from step05c_link_standard_indicators import (  # noqa: E402
-    GraphPatch, doc_key_for, match_keyword, build_keyword_index,
+from esg_kg.core.schema import load_schema_sets  # noqa: E402
+from esg_kg.core.graph_patch import GraphPatch  # noqa: E402
+from esg_kg.resolve.indicators import (  # noqa: E402
+    doc_key_for, match_keyword, build_keyword_index,
 )
-from step08_sync_crosscheck_to_neo4j import (  # noqa: E402
+from esg_kg.load.neo4j_sync import (  # noqa: E402
     build_key_index, resolve_claim, resolve_evidence,
 )
 

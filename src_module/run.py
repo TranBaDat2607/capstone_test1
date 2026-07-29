@@ -90,27 +90,28 @@ def resolve_block(token: str):
 
 def print_list() -> None:
     # Not-ported stages are excluded from the denominator: counting them would make the
-    # migration permanently unfinishable, since they are never coming.
+    # migration permanently unfinishable, since they are never coming. `src/` is gone
+    # (deleted 2026-07-29, DESIGN.md §7) and the refactor is complete, so `is_migrated()`
+    # returning False for a real module now means a genuine breakage, not "still in src/".
     portable = [s for s in STAGES if s[2] is not None]
     done = sum(1 for _, _, m, _ in portable if is_migrated(m))
     skipped = len(STAGES) - len(portable)
-    tail = f"  ({skipped} stage(s) deliberately not ported)" if skipped else ""
-    print(f"esg_kg stages — {done}/{len(portable)} migrated from src/{tail}\n")
+    tail = f"  ({skipped} stage(s) removed outright — see the notes below the table)" if skipped else ""
+    print(f"esg_kg stages — {done}/{len(portable)} ready{tail}\n")
     print(f"  {'':2} {'step':4} {'name':20} {'module':38} status")
     print("  " + "-" * 84)
     for order, old, module, note in STAGES:
         if module is None:
-            print(f"  {'--':2} {order:4} {short_name(module):20} {'(not ported)':38} "
-                  f"src/{old}.py only")
+            print(f"  {'--':2} {order:4} {short_name(module):20} {'(removed)':38} "
+                  f"was {old}.py")
             continue
         ok = is_migrated(module)
-        mark = "OK " if ok else "   "
-        status = "ready" if ok else f"still src/{old}.py"
+        mark = "OK " if ok else "!! "
+        status = "ready" if ok else "BROKEN — module does not import"
         print(f"  {mark} {order:4} {short_name(module):20} {module:38} {status}")
     print("\n  ready   -> python src_module/run.py <name> [args]")
-    print("  src/    -> python src/<file>.py [args]   (not migrated yet)")
     if skipped:
-        print("  --      -> python src/<file>.py [args]   (not ported BY DECISION — see note)")
+        print("  --      -> removed outright, no longer runnable — see note")
     if BLOCKS:
         # Blocks are listed apart from the stages on purpose: they have no `src/` file
         # and no migration status, so putting them in the table above would invite the
@@ -156,13 +157,12 @@ def main(argv: list) -> int:
 
     order, old, module, note = hit
     if module is None:
-        print(f"stage {order} is not part of esg_kg by decision — {note}", file=sys.stderr)
-        print(f"    python src/{old}.py {' '.join(argv[1:])}".rstrip(), file=sys.stderr)
+        print(f"stage {order} ({old}) was removed outright, not merely unported — {note}",
+              file=sys.stderr)
         return 2
     if not is_migrated(module):
-        print(f"stage {order} has not been migrated yet — it still runs from the old tree:",
-              file=sys.stderr)
-        print(f"    python src/{old}.py {' '.join(argv[1:])}".rstrip(), file=sys.stderr)
+        print(f"stage {order} ({module}) does not import — this is a real breakage, "
+              f"not a pending migration (src/ was deleted 2026-07-29)", file=sys.stderr)
         return 2
 
     return _call(module, short_name(module), argv[1:])
