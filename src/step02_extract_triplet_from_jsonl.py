@@ -192,6 +192,20 @@ TEMPORAL_GRAPH_PROMPT_TEMPLATE = (
     "Only anchor to entities the text actually names - NEVER invent a facility, location or\n"
     "authority that is not in the text.\n\n"
     "------------------\n"
+    "## OUTPUT LANGUAGE (name / title / description / free text)\n"
+    "------------------\n"
+    "Write every `name`, `title`, `description` and other free-text property VALUE in "
+    "VIETNAMESE, with full diacritics, exactly matching the source text. Do NOT translate "
+    "into English. Do NOT strip diacritics (khong duoc bo dau).\n"
+    "  - WRONG (translated): \"An Phat Green Environment and Plastic Joint Stock Company\"\n"
+    "  - WRONG (diacritics stripped): \"CONG TY CO PHAN NHUA VA MOI TRUONG XANH AN PHAT\"\n"
+    "  - RIGHT: \"CÔNG TY CỔ PHẦN NHỰA VÀ MÔI TRƯỜNG XANH AN PHÁT\"\n"
+    "This rule does NOT apply to: dates (valid_from/valid_to/date/recorded_at - always ISO "
+    "YYYY[-MM[-DD]], never a Vietnamese date phrase), `class`/`predicate` (schema "
+    "vocabulary, must match the schema exactly), ids (source_id/kpi_id/claim_id), booleans "
+    "(is_current/date_uncertain), and unit (controlled vocabulary). Leave those exactly as "
+    "specified elsewhere in this prompt.\n\n"
+    "------------------\n"
     "## STRICT EXTRACTION RULES\n"
     "------------------\n"
     "Return a single JSON *array* of objects with keys:\n"
@@ -207,7 +221,7 @@ TEMPORAL_GRAPH_PROMPT_TEMPLATE = (
     "and the facility the text names)\n"
     "-----------------\n"
     "[{{\n"
-    '  "subject": {{"class": "Organization", "properties": {{"name": "Acme Corp", "industry": "Textiles", '
+    '  "subject": {{"class": "Organization", "properties": {{"name": "Công ty Cổ phần Vật liệu Xây dựng Sông Hồng", "industry": "Textiles", '
     '"valid_from": "2020-01-01", "valid_to": null, "is_current": true}}}},\n'
     '  "predicate": "reportsKPI",\n'
     '  "object": {{"class": "KPIObservation", "properties": {{"kpi_type": "ESG-1-1", "title": "Total energy consumed", '
@@ -222,7 +236,7 @@ TEMPORAL_GRAPH_PROMPT_TEMPLATE = (
     '"baseline_year": 2020, "source_id": "acme_2023.pdf_1_2", "company": "acme", '
     '"valid_from": "2023-01-01", "valid_to": "2023-12-31", "is_current": false}}}},\n'
     '  "predicate": "observedAtFacility",\n'
-    '  "object": {{"class": "Facility", "properties": {{"name": "Acme Hanoi Plant", "type": "factory", '
+    '  "object": {{"class": "Facility", "properties": {{"name": "Nhà máy Sông Hồng Hà Nội", "type": "factory", '
     '"valid_from": "2020-01-01", "valid_to": null, "is_current": true}}}},\n'
     '  "temporal_metadata": {{"valid_from": "2023-01-01", "valid_to": "2023-12-31", "recorded_at": "{year}-01-01"}}\n'
     "}}]\n\n"
@@ -310,6 +324,20 @@ NEWS_GRAPH_PROMPT_TEMPLATE = (
     "5. Controversy, Penalty, MediaReport, and KPIObservation nodes MUST include a boolean "
     "date_uncertain property set per rules #1/#2/#4 above.\n\n"
     "------------------\n"
+    "## OUTPUT LANGUAGE (name / title / description / free text)\n"
+    "------------------\n"
+    "Write every `name`, `title`, `description` and other free-text property VALUE in "
+    "VIETNAMESE, with full diacritics, exactly matching the source text. Do NOT translate "
+    "into English. Do NOT strip diacritics (khong duoc bo dau).\n"
+    "  - WRONG (translated): \"An Phat Green Environment and Plastic Joint Stock Company\"\n"
+    "  - WRONG (diacritics stripped): \"CONG TY CO PHAN NHUA VA MOI TRUONG XANH AN PHAT\"\n"
+    "  - RIGHT: \"CÔNG TY CỔ PHẦN NHỰA VÀ MÔI TRƯỜNG XANH AN PHÁT\"\n"
+    "This rule does NOT apply to: dates (valid_from/valid_to/date/recorded_at - always ISO "
+    "YYYY[-MM[-DD]], never a Vietnamese date phrase), `class`/`predicate` (schema "
+    "vocabulary, must match the schema exactly), ids (source_id/kpi_id/claim_id), booleans "
+    "(is_current/date_uncertain), and unit (controlled vocabulary). Leave those exactly as "
+    "specified elsewhere in this prompt.\n\n"
+    "------------------\n"
     "## STRICT EXTRACTION RULES\n"
     "------------------\n"
     "Return a single JSON *array* of objects with keys:\n"
@@ -322,20 +350,20 @@ NEWS_GRAPH_PROMPT_TEMPLATE = (
     "-----------------\n"
     "[{{\n"
     '  "subject": {{"class": "MediaReport", "properties": {{"report_id": "vietnamnet_2024_aaa_tax", '
-    '"title": "Khai sai thue, Nhua An Phat Xanh bi xu ly hon 1,7 ty dong", "publisher": "vietnamnet.vn", '
+    '"title": "Khai sai thuế, Nhựa An Phát Xanh bị xử lý hơn 1,7 tỷ đồng", "publisher": "vietnamnet.vn", '
     '"date": "2024-08-14", "date_uncertain": false, "valid_from": "2024-08-14", "valid_to": null, '
     '"is_current": true}}}},\n'
     '  "predicate": "mentionsOrganization",\n'
-    '  "object": {{"class": "Organization", "properties": {{"name": "CTCP Nhua An Phat Xanh", '
+    '  "object": {{"class": "Organization", "properties": {{"name": "CTCP Nhựa An Phát Xanh", '
     '"valid_from": "2024-01-01", "valid_to": null, "is_current": true}}}},\n'
     '  "temporal_metadata": {{"valid_from": "2024-08-14", "valid_to": null, "recorded_at": "{year}-01-01"}}\n'
     "}},\n"
     "{{\n"
-    '  "subject": {{"class": "Organization", "properties": {{"name": "CTCP Nhua An Phat Xanh", '
+    '  "subject": {{"class": "Organization", "properties": {{"name": "CTCP Nhựa An Phát Xanh", '
     '"valid_from": "2024-01-01", "valid_to": null, "is_current": true}}}},\n'
     '  "predicate": "subjectToPenalty",\n'
     '  "object": {{"class": "Penalty", "properties": {{"penalty_id": "aaa_tax_2024", '
-    '"description": "Tax mis-declaration penalty", "amount": "1.7 billion VND", "date": "2024-08-14", '
+    '"description": "Xử phạt do khai sai thuế", "amount": "1.7 billion VND", "date": "2024-08-14", '
     '"date_uncertain": false, "valid_from": "2024-08-14", "valid_to": null, "is_current": true}}}},\n'
     '  "temporal_metadata": {{"valid_from": "2024-08-14", "valid_to": null, "recorded_at": "{year}-01-01"}}\n'
     "}}]\n\n"
@@ -344,11 +372,11 @@ NEWS_GRAPH_PROMPT_TEMPLATE = (
     "must NOT assume it means the publish year; fall back to publish date and flag it)\n"
     "-----------------\n"
     "[{{\n"
-    '  "subject": {{"class": "Organization", "properties": {{"name": "CTCP Nhua An Phat Xanh", '
+    '  "subject": {{"class": "Organization", "properties": {{"name": "CTCP Nhựa An Phát Xanh", '
     '"valid_from": "2024-01-01", "valid_to": null, "is_current": true}}}},\n'
     '  "predicate": "reportsKPI",\n'
     '  "object": {{"class": "KPIObservation", "properties": {{"kpi_type": "profit", '
-    '"title": "Loi nhuan quy 2 tang truong 24.6 phan tram", "value": 24.6, "unit": "percent", "kind": "achieved", '
+    '"title": "Lợi nhuận quý 2 tăng trưởng 24,6 phần trăm", "value": 24.6, "unit": "percent", "kind": "achieved", '
     '"direction": "increase", "year": {year}, "source_id": "doanhnhan_baophapluat_20260614", '
     '"date_uncertain": true, "valid_from": "{publish_date}", "valid_to": null, "is_current": true}}}},\n'
     '  "temporal_metadata": {{"valid_from": "{publish_date}", "valid_to": null, "recorded_at": "{year}-01-01"}}\n'
