@@ -333,8 +333,8 @@ Vì vậy ta **không rewire `src/`**. Thay vào đó:
    đầu sai theo thứ tự: `step04` và `step03` hoá ra là **leaf** (hub của chúng đã tan nhờ
    `core/naming` và `core/schema`/`core/dates`), và `step01` — dự đoán đúng là hub thật sự
    **duy nhất** còn lại — nay cũng đã dời (2026-07-28), cho ra `core/io_jsonl`. `step02`
-   không phải hub: nó chỉ còn chờ `core/io_jsonl` (nay đã có) và một quyết định lịch trình
-   (§5.6) chứ không chờ một cấu trúc import nào nữa — xem `PIPELINE.md` §2.1.
+   không phải hub, và nay cũng đã dời (2026-07-29, sau khi §5.6 land trong `src/` trước)
+   — nó là stage cuối cùng, xem `PIPELINE.md` §2.1.
 
 ### 4.1 `step07b` KHÔNG được dời sang `esg_kg` (quyết định 2026-07-25)
 
@@ -767,6 +767,20 @@ Việt thì người đọc sẽ thấy nó. Chỗ sửa đúng là `data_proces
 **47,3%**; `dates_unparseable` **không tăng** so với mốc **6 / 72 473**; số node
 `Organization` của chính doanh nghiệp phát hành **giảm** sau `step05`; chụp
 `step00 --label before/after` để đối chiếu Q1–Q8.
+
+**Thực thi — phần mã nguồn ĐÃ LÀM (2026-07-29), phần nghiệm thu CHƯA LÀM.** Hai commit
+riêng, đúng thứ tự đã chốt ở trên: (1) prompt fix land trong `src/` trước — thêm mục
+`## OUTPUT LANGUAGE` vào cả hai template đúng bảng phạm vi ở trên, sửa lại các ví dụ mẫu
+của cả hai template (chính chúng cũng đang mô hình hoá lỗi dịch/khử dấu), test
+`test/test_step02_language_guard.py` (`Refs #6`); (2) dời sang
+`esg_kg.graph.extract_triples` — stage thứ mười lăm và cuối cùng của đợt refactor, test
+`test/test_esg_kg_extract_triples.py`. Điều kiện tiên quyết #2 ở trên (guard pha 2 step03)
+đã xong từ trước; điều kiện tiên quyết #1 (issue #2, `claim_id` tất định) **vẫn OPEN**.
+Vì vậy mục **Nghiệm thu** ngay trên đây **vẫn chưa được đo** — cả 4 số đo cần một lần
+trích lại thật trên toàn corpus bằng `step02` mới, và CLAUDE.md cấm verify bằng cách chạy
+lại một stage trả tiền. Bốn số đo đó để dành cho sự kiện trích lại toàn corpus đã lên
+lịch ở §5.4, sau khi issue #2 xong — **không được coi mục 5.6 này là "đã nghiệm thu"**
+chỉ vì phần code đã land.
 
 ### 5.7 Gộp stage thành KHỐI: một artifact, ghi một lần (chốt 2026-07-28)
 

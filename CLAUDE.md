@@ -63,13 +63,13 @@ repo and secrets, so it is never committed or pushed with this project.
   - `src/` scripts are **standalone files** run directly (`python src/step02_extract_triplet_from_jsonl.py`);
     they import each other by module name relying on Python putting `src/` on `sys.path`.
     Run them from the repo root.
-  - `src_module/esg_kg/` is the in-progress third style (see the refactor section below):
-    a real package, run from the repo root via its dispatcher —
+  - `src_module/esg_kg/` is the third style (see the refactor section below): a real
+    package, run from the repo root via its dispatcher —
     `python src_module/run.py quality --label baseline` (equivalently
-    `python -m esg_kg.report.quality` from inside `src_module/`). 14 of 15 stages have been
-    migrated so far (everything except step02); `python src_module/run.py --list` shows which, and it asks the
-    import system rather than trusting a hand-kept list. `src/` is still the pipeline
-    you execute.
+    `python -m esg_kg.report.quality` from inside `src_module/`). All 15/15 stages have
+    now been migrated; `python src_module/run.py --list` shows which, and it asks the
+    import system rather than trusting a hand-kept list. `src/` still exists and still
+    runs (Model A never deletes it), but `esg_kg` is no longer missing any stage.
 - **Sentence-level traceability** (`source_pdf`, `page`, `sentence_index`) is preserved
   through every stage so each graph node traces back to its source — keep it intact.
 - **Torch is intentionally absent from `requirements.txt`.** The ViDeBERTa ESG classifier
@@ -419,6 +419,57 @@ denominator. It is NOT deleted — `src/step07b_enrich_dossiers.py` still runs, 
 consumers tolerate the scores being absent (step08 sets null, step09 skips the block). After
 the planned re-extraction the new dossiers start without scores; run that script by hand if
 you want them back — that is not a reason to port it.
+**`step02` moved on 2026-07-29 (the 15th and FINAL stage, `esg_kg/graph/extract_triples.py`)**,
+closing out the refactor — `python src_module/run.py --list` now reports 15/15. Two
+commits, in order, per the standing rule that a behaviour change lands in `src/` before
+a pure move (§5.3, the same order `046e572` used for `03`):
+- **Prompt fix first** (issue #6): `TEMPORAL_GRAPH_PROMPT_TEMPLATE` and
+  `NEWS_GRAPH_PROMPT_TEMPLATE` had no instruction about output language, so the LLM
+  translated ~52.7% of entity names into English — `normalize_name` (step05) sends a
+  Vietnamese spelling and its English translation to different keys, so a translated
+  name doesn't error, it silently splits one entity into two nodes. Added an
+  `## OUTPUT LANGUAGE` section to both templates (Vietnamese, full diacritics, for
+  `name`/`title`/`description`/free text; explicitly excluding dates/`class`/`predicate`/
+  ids/booleans/units) and reworded both templates' worked examples, which were
+  themselves modelling the drift (`"Acme Corp"`/`"Acme Hanoi Plant"`; the news template's
+  `"CTCP Nhua An Phat Xanh"` diacritic-stripped ×3, an English `description`, and a
+  diacritic-stripped profit sentence). No downstream runtime guard was added at step02
+  itself — unlike step03's `preserve_property_values` (`046e572`), step02 is the point
+  of *origin* for these values, not a repair step comparing against something earlier,
+  so there is nothing to compare against; the consequence-guard for a downstream LLM
+  "fixing" a Vietnamese name already exists at step03. Test:
+  `test/test_step02_language_guard.py` (6 arms, red against the unfixed prompt, green
+  after) — pins the directive text and the reworded examples; CLAUDE.md's "never verify
+  by re-running a paid stage" rule means issue #6's own 4 acceptance-criteria numbers
+  (diacritic ratio, `dates_unparseable`, Organization-node-count drop, `step00
+  --label` diff) are **not** measured here — they need a real-corpus re-run, deferred to
+  the scheduled full re-extraction (DESIGN.md §5.4), which additionally needs issue #2
+  (deterministic `claim_id`) first.
+- **Migration second**: confirmed leaf — every symbol it imports was already lifted
+  (5 JSONL helpers → `core/io_jsonl`, `RateLimiter`/`DEFAULT_RATE_LIMIT` → `core/llm`,
+  `get_identity_keys` → `core/schema`, `get_stable_entity_id`/`PROVENANCE_CLASSES` →
+  `core/identity`). The one stage-local duplicate, `schema_sets(schema) ->
+  (classes, edges)`, is **deleted** rather than kept: its first two return values were
+  byte-identical to `core.schema.load_schema_sets(schema) -> (classes, edges,
+  edge_directions)`, so call sites now unpack the 3-tuple and discard
+  `edge_directions` (step02 never validates edge direction — that's step03's job), the
+  same "drop the duplicate once a kernel equivalent exists" precedent as step03/step04.
+  Unlike step01's `KPIExtractor`, step02 never constructs its own client —
+  `call_llm`/`process_page`/`process_document` all take `client` as a plain parameter,
+  so the equivalence test's paid-path stub is a fake client object passed in directly
+  rather than a `genai.Client` monkeypatch; `_response_to_text` also only reads
+  `.candidates` for a real `GenerateContentResponse` instance, so the fake response
+  answers via `__str__` with no `finish_reason` branch to fake. Test:
+  `test/test_esg_kg_extract_triples.py` (12 groups): kernel-reuse identity checks, the
+  `schema_sets` deletion proven equivalent on the real schema, a real-corpus arm (13
+  documents), both prompt templates pinned byte-for-byte (carrying the language fix),
+  `build_page_prompt` compared for both `--source report` and `--source news`, and the
+  paid path driven by a fake client across 4 deterministic response shapes.
+
+With `02` migrated there is no longer a "last remaining `src/` stage" — every stage that
+will ever be ported has moved (`04b`/`07b` stay off the run order by decision, `10` was
+deleted outright, both unchanged by this move).
+
 Known debt: `src/step00_graph_quality_report.py` still exists, so the T1/T2/T3 tier map that
 `test/test_schema_contract.py` imports lives in two trees — cleanup commit spelled out in
 `src_module/esg_kg/DESIGN.md` §6.1.
@@ -711,10 +762,11 @@ python src/step09_report_claim_ledger.py                                   # ste
 python src/step09_report_claim_ledger.py --review-queue --markdown         #   contradiction-no-verification queue + Markdown file
 # (step10_evaluate.py / P6 evaluation report was removed from the project 2026-07-28 — see CLAUDE.md "Known debt")
 
-# Refactor target (src_module/esg_kg) — 14/15 stages have moved so far (everything except step02); see src_module/PIPELINE.md
+# Refactor target (src_module/esg_kg) — 15/15 stages have moved (all of them); see src_module/PIPELINE.md
 python src_module/run.py --list                                            # stages + which are migrated
 python src_module/run.py quality --label baseline                          # == src/step00_graph_quality_report.py
 python src_module/run.py extract --doc AAA_2023                            # == src/step01_extract_kpi_from_jsonl.py
+python src_module/run.py extract_triples --doc AAA_2023 --source report    # == src/step02_extract_triplet_from_jsonl.py (--source report|news)
 python src_module/run.py fix_triples --dry-run                             # == src/step03_fix_invalid_triplets.py
 python src_module/run.py canonicalize --dry-run                            # == src/step03c_canonicalize_kpis.py
 python src_module/run.py build_validated --dry-run                         # BLOCK: 03 -> 03b -> 03c in one pass,
@@ -1078,6 +1130,32 @@ python test/test_esg_kg_resolve_block.py   # the 05 BLOCK (DESIGN.md §5.7, §3.
                                            # --dry-run against the block's output, since 05d
                                            # is deliberately NOT part of the block. Run after
                                            # touching step05, step05b, step05c, or the block.
+python test/test_step02_language_guard.py  # issue #6: pins that TEMPORAL_GRAPH_PROMPT_TEMPLATE
+                                           # and NEWS_GRAPH_PROMPT_TEMPLATE require Vietnamese
+                                           # output (name/title/description/free text) and no
+                                           # longer model the drift in their own worked examples.
+                                           # Prompt-text-only (no runtime guard at step02 itself —
+                                           # the consequence-guard already lives at step03,
+                                           # preserve_property_values, 046e572); red against the
+                                           # unfixed prompt. Run after touching either template.
+python test/test_esg_kg_extract_triples.py # same contract as the files above, for the step02
+                                           # migration slice (graph/extract_triples) — the 15th
+                                           # and FINAL stage. Confirmed leaf: every symbol it
+                                           # imports was already lifted (core/io_jsonl, core/llm,
+                                           # core/schema, core/identity); the one stage-local
+                                           # duplicate, schema_sets(), is deleted in favour of
+                                           # core.schema.load_schema_sets(). Unlike step01,
+                                           # step02 never constructs its own client — call_llm/
+                                           # process_page/process_document all take `client` as a
+                                           # plain parameter, so the paid-path stub is a fake
+                                           # client object passed in directly, not a genai.Client
+                                           # monkeypatch. 12 groups: kernel-reuse identity checks,
+                                           # a real-corpus arm (13 documents), both prompt
+                                           # templates pinned byte-for-byte (carrying the issue-#6
+                                           # language fix), build_page_prompt compared for both
+                                           # --source report and --source news, and the paid path
+                                           # driven by 4 deterministic response shapes. Run after
+                                           # touching step02 or core/io_jsonl.
 ```
 
 The rest of `test/` and `notebooks/` are Jupyter notebooks for manual validation

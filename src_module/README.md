@@ -74,6 +74,8 @@ python test/test_esg_kg_neo4j_sync.py      # lát cắt step08: stage NEO4J đ�
 python test/test_esg_kg_claim_ledger.py    # lát cắt step09: stage ĐỌC Neo4j đầu tiên, driver giả trả dữ liệu
 python test/test_esg_kg_entities.py        # lát cắt step05: hàm resolve_graph() thuần + stub trên google.genai.Client
 python test/test_esg_kg_resolve_block.py   # KHỐI 05→05b→05c: src/ làm oracle + cache Stage C
+python test/test_step02_language_guard.py  # issue #6: prompt tiếng Việt, đỏ trên prompt cũ
+python test/test_esg_kg_extract_triples.py # lát cắt step02: stage cuối cùng, client giả truyền trực tiếp
 python test/test_pipeline_table.py        # bảng STAGES/BLOCKS + run.py --list nói thật
 python test/test_temporal_invariants.py   # bộ test sẵn có của src/, phải luôn xanh
 ```
@@ -120,9 +122,10 @@ bảng bốn ca: [`PIPELINE.md`](PIPELINE.md) §3.
 | `load/neo4j_sync.py` | ✅ dời từ `step08` (2026-07-29) — leaf, nhưng stage NEO4J **đầu tiên** dời: không có lớp `_Provider` trước driver Neo4j thật, nên stub thế chỗ thẳng `neo4j.GraphDatabase` (đúng kỹ thuật `google.genai.Client` ở `01`). Driver giả chỉ ghi lại Cypher + tham số; arm so 5 lệnh giống hệt byte-for-byte trên corpus thật (1 093 dossier). `node_text` trap giữ đúng lần thứ ba. Test riêng: `test/test_esg_kg_neo4j_sync.py` (8 nhóm) |
 | `report/claim_ledger.py` | ✅ dời từ `step09` (2026-07-29) — stage ĐỌC Neo4j **đầu tiên**, khác `06`/`08` vốn chỉ ghi: fake driver phải TRẢ DỮ LIỆU GIẢ (hàng đợi 4 bộ, đúng thứ tự 4 lần `s.run()`), không chỉ ghi lại lời gọi. Stage đầu tiên KHÔNG có arm corpus thật trên đĩa (chỉ đọc Neo4j, không file JSON nào). Test riêng: `test/test_esg_kg_claim_ledger.py` (10 nhóm) |
 | `resolve/build_resolved.py` | ✅ **KHỐI** `05 → 05b → 05c` (2026-07-29) — không phải stage, **không có bản `src/`** nên không tính vào mẫu số. Nối chuỗi in-memory, ghi `resolved_graph.json` **1 lần**; `src/` giữ nguyên 3 script và làm **oracle** (`step05(--no-llm) → step05b → step05c`, so ra 10 425 node / 14 387 cạnh giống hệt). `05d` KHÔNG nằm trong khối — vẫn là stage tuỳ chọn chạy sau, không đổi. Cache chỉ bọc Stage C (adjudication LLM); Stage B (embedding) cố ý không cache — xem docstring của file. Test riêng: `test/test_esg_kg_resolve_block.py` (5 nhóm, DESIGN.md §5.7, PIPELINE.md §3.2b) |
-| Stage kế tiếp | 🟢 Chỉ còn **`02`** ở `src/` — mọi stage khác đã dời (14/15) và cả hai khối (`build_validated`, `build_resolved`) đã xong. `02` đủ điều kiện symbol từ lâu (`core/io_jsonl` đã có) nhưng có một thay đổi hành vi đang xếp hàng trước nó (§5.6, xuất `name`/`title` tiếng Việt, issue #6) nên đợi land ở `src/` trước khi dời, theo đúng khuôn `046e572` đã dùng cho pha 2 của `03`. PIPELINE.md §2.1 |
+| `graph/extract_triples.py` | ✅ dời từ `step02` (2026-07-29), stage **thứ mười lăm và cuối cùng** — khép lại đợt refactor. Hai commit riêng: (1) prompt fix issue #6 land trong `src/` trước (thêm mục `## OUTPUT LANGUAGE` vào cả hai template, sửa lại ví dụ mẫu đang mô hình hoá lỗi dịch/khử dấu; test `test/test_step02_language_guard.py`), (2) dời thuần túy sau. Leaf xác nhận — mọi symbol đã ở `core/` (`io_jsonl`, `llm`, `schema`, `identity`); hàm trùng `schema_sets()` bị **xoá**, thay bằng `core.schema.load_schema_sets` (bỏ `edge_directions`, không dùng ở stage này). Khác `01`, step02 không tự dựng client — `call_llm`/`process_page`/`process_document` nhận `client` như tham số thuần, nên stub trả tiền trong test là một client giả truyền thẳng vào, không phải monkeypatch. Test riêng: `test/test_esg_kg_extract_triples.py` (12 nhóm) |
 | `step07b` (softmax) | ⛔ **không dời** — UI `frontend/`+`api/` không đọc; giữ chạy ở `src/` (DESIGN.md §4.1) |
 
-`src/` **vẫn là pipeline chạy thật**; **14/15** stage chạy được từ `esg_kg` (mọi stage trừ
-`02`) **cộng hai khối** `build_validated` + `build_resolved` — `run.py --list` là nguồn sự
-thật — và bản `src/step00_graph_quality_report.py` vẫn còn (nợ đã ghi: DESIGN.md §6.1).
+`src/` **vẫn chạy được** (Model A không xoá nó), nhưng **15/15** stage nay chạy được từ
+`esg_kg` **cộng hai khối** `build_validated` + `build_resolved` — không còn stage nào
+đang chờ dời. `run.py --list` là nguồn sự thật — và bản
+`src/step00_graph_quality_report.py` vẫn còn (nợ đã ghi: DESIGN.md §6.1).
