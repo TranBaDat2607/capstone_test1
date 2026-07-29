@@ -66,8 +66,8 @@ repo and secrets, so it is never committed or pushed with this project.
   - `src_module/esg_kg/` is the in-progress third style (see the refactor section below):
     a real package, run from the repo root via its dispatcher —
     `python src_module/run.py quality --label baseline` (equivalently
-    `python -m esg_kg.report.quality` from inside `src_module/`). Eleven stages have been
-    migrated so far; `python src_module/run.py --list` shows which, and it asks the
+    `python -m esg_kg.report.quality` from inside `src_module/`). 14 of 15 stages have been
+    migrated so far (everything except step02); `python src_module/run.py --list` shows which, and it asks the
     import system rather than trusting a hand-kept list. `src/` is still the pipeline
     you execute.
 - **Sentence-level traceability** (`source_pdf`, `page`, `sentence_index`) is preserved
@@ -344,6 +344,17 @@ trap (§2 above) held for a third time: `esg_kg.load.neo4j_sync.node_text is
 esg_kg.crosscheck.claims_vs_conduct.node_text`, pinned by a dedicated test. Test:
 `test/test_esg_kg_neo4j_sync.py` (8 groups, incl. `--clear-advisory`, a missing-resolved-graph
 positional-only fallback, and the `sys.exit(1)` guard for a missing dossier file).
+`step06` (`esg_kg/load/neo4j_load.py`) and `step09` (`esg_kg/report/claim_ledger.py`) moved
+the same day as `step08` (the twelfth and thirteenth migrated stages): `step06` is the
+second Neo4j-*writing* stage, with a wider client surface than `step08`
+(`session.execute_write` + a read-back via `.single()`), so its fake session/tx has to
+answer both shapes, not just record calls (`test/test_esg_kg_neo4j_load.py`, 5 groups).
+`step09` is the first Neo4j-*reading* stage migrated — `load_from_neo4j()` actually
+processes what the driver returns, so its fake driver must serve real fake data (a queue of
+4 result sets, one per `session.run()` call) rather than just record what it was asked, and
+it is the first migrated stage with no real-corpus arm at all (it reads only Neo4j, no JSON
+file on disk) — the strongest arm instead covers its pure presentation/sorting helpers
+(`test/test_esg_kg_claim_ledger.py`, 10 groups).
 **BLOCKS — the shape `esg_kg` is allowed to change (DESIGN.md §5.7, decided 2026-07-28).**
 When N stages each read AND write the same artifact they are not N stages, they are one:
 in `esg_kg` they become a block that chains in memory and writes the artifact ONCE.
@@ -369,8 +380,38 @@ they are diagnostics, not intermediate artifacts.
 Its arms are in `test/test_esg_kg_validated_block.py`; `test_pipeline_table.py` covers the
 `BLOCKS` table. `fix_triples` gained `run_phases()` (phases 1–1.5, writes nothing) with
 `process_all_files()` = `run_phases` + the writes, so the stage's behaviour is unchanged.
-**`step05` must not move until §3.1 is resolved** (it overwrites all three patches) — and
-the block pattern is now the default answer there, replacing the three options in §5.5.
+**`step05` moved on 2026-07-29 (the fourteenth migrated stage, `esg_kg/resolve/entities.py`)
+together with a SECOND block, `05 → 05b → 05c`** (`esg_kg/resolve/build_resolved.py`,
+`run.py build_resolved`) — the answer §3.1 (below) used to defer. Confirmed leaf per the
+symbol rule: every import (`REPO_ROOT`, `RateLimiter`, `date_start_key`, `normalize_name`)
+already lived in `core/`; one dead import (`load_schema_sets`, never called) is dropped,
+the same "garbage import" shape already seen in `05d`/`07`. Unlike most leaf moves,
+`resolve(args)` was split at migration time (not as a block follow-up the way
+`fix_triples` gained `run_phases()`): `resolve_graph(triples, idkeys, ...) ->
+(resolved, stats)` is pure — no file I/O, no client construction — so the block calls it
+directly and chains straight into 05b/05c in memory; `main()` keeps the exact `src/`
+CLI/file-write behaviour for standalone `run.py entities`. `indicators.py` (05c) got the
+same `run_phases`-style split for the block: `link_indicator_axis(graph, defs, crosswalk,
+catalog, ...)` pulled out of `run()`, pure extraction, 0 logic lines changed
+(`test/test_indicator_axis.py` stays green untouched). `provenance.py` (05b) needed no
+change at all — `stamp_graph()` was already pure since it moved. **`05d` (align_claims) is
+deliberately NOT part of the block**: it is optional (budgeted LLM) and already patches
+`resolved_graph.json` in place AFTER 05c, unchanged — the block must produce a correct
+graph with 05d entirely absent. The paid-path cache is scoped narrower than §5.7 first
+sketched: cluster 05 has TWO paid branches (Stage B embeddings, Stage C adjudication), and
+only Stage C — the non-deterministic LLM verdict, the exact analogue of `03`'s phase-2
+repairs — gets `AdjudicationCache` (keyed by pair content, same shape as `RepairCache`).
+Stage B is deliberately left uncached: it is billed but deterministic per model version,
+and per "Gemini is currently billing-blocked" above, Stages B/C do not run in the live
+pipeline at all today (`--no-llm` is the default), so an embedding cache would be
+speculative work for a currently-dormant path — a candidate follow-up, not a gap. The
+oracle arm runs `src/`'s real chain `step05(--no-llm) -> step05b -> step05c` (today's
+actual operating mode, not a weakened proxy) and compares to the block: 10,425 nodes /
+14,387 edges identical on the real corpus. Tests: `test/test_esg_kg_entities.py` (7
+groups, stage-alone, incl. a `google.genai.Client` stub for Stage B/C — same technique as
+`step01`, no `_Provider` abstraction to stand in front of Gemini) and
+`test/test_esg_kg_resolve_block.py` (5 groups, incl. the "writes exactly once" pair and a
+smoke-check that `05d` still runs cleanly against the block's output).
 **`step07b` is deliberately NOT being ported** (DESIGN.md §4.1): the delivered surface is
 the `frontend/`+`api/` UI, which never reads its softmax scores, so `pipeline.py` carries
 it as `new_module=None` and `run.py --list` shows `(not ported)` and drops it from the
@@ -670,7 +711,7 @@ python src/step09_report_claim_ledger.py                                   # ste
 python src/step09_report_claim_ledger.py --review-queue --markdown         #   contradiction-no-verification queue + Markdown file
 # (step10_evaluate.py / P6 evaluation report was removed from the project 2026-07-28 — see CLAUDE.md "Known debt")
 
-# Refactor target (src_module/esg_kg) — step00 + step01 + step03 + step03b + step03c + step04 + step05b + step05c + step05d + step07 + step08 have moved so far
+# Refactor target (src_module/esg_kg) — 14/15 stages have moved so far (everything except step02); see src_module/PIPELINE.md
 python src_module/run.py --list                                            # stages + which are migrated
 python src_module/run.py quality --label baseline                          # == src/step00_graph_quality_report.py
 python src_module/run.py extract --doc AAA_2023                            # == src/step01_extract_kpi_from_jsonl.py
@@ -680,11 +721,16 @@ python src_module/run.py build_validated --dry-run                         # BLO
                                                                            #   writes all_validated_triples.json ONCE (DESIGN.md §5.7)
 python src_module/run.py anchor_kpi --dry-run                              # == src/step03b_anchor_kpi_facilities.py
 python src_module/run.py issuer                                            # == src/step04_build_issuer_registry.py
+python src_module/run.py entities --dry-run                                # == src/step05_resolve_entities.py (--no-llm for --dry-run)
 python src_module/run.py provenance --dry-run                              # == src/step05b_stamp_provenance.py
-python src_module/run.py align_claims --dry-run                            # == src/step05d_align_claims_to_indicators.py
 python src_module/run.py indicators --dry-run                              # == src/step05c_link_standard_indicators.py
+python src_module/run.py build_resolved --dry-run                          # BLOCK: 05 -> 05b -> 05c in one pass,
+                                                                           #   writes resolved_graph.json ONCE (DESIGN.md §5.7); 05d stays separate, after
+python src_module/run.py align_claims --dry-run                            # == src/step05d_align_claims_to_indicators.py (optional, runs after the block)
+python src_module/run.py neo4j_load --dry-run                              # == src/step06_load_graph_to_neo4j.py
 python src_module/run.py claims_vs_conduct --dry-run                       # == src/step07_crosscheck_claims_vs_conduct.py
 python src_module/run.py neo4j_sync --dry-run                              # == src/step08_sync_crosscheck_to_neo4j.py
+python src_module/run.py claim_ledger                                      # == src/step09_report_claim_ledger.py (Neo4j-only)
 
 # ESG Evidence View UI (web front-end; reads the Neo4j advisory layer, no LLM — see docs/ESG_EVIDENCE_VIEW.md)
 python api/main.py                                                         # 3-column TT96/GRI evidence view at http://localhost:8000
@@ -949,6 +995,89 @@ python test/test_esg_kg_neo4j_sync.py      # same contract, for the step08 migra
                                            # esg_kg.crosscheck.claims_vs_conduct.node_text).
                                            # Run after touching step08 or crosscheck's
                                            # node_text.
+python test/test_esg_kg_neo4j_load.py      # same contract, for the step06 migration slice
+                                           # (load/neo4j_load) — the second Neo4j-WRITING
+                                           # stage. Wider client surface than step08:
+                                           # ingest_nodes/ingest_data_edges/ingest_supersedes
+                                           # go through session.execute_write(lambda tx:
+                                           # tx.run(...).consume()) rather than a bare
+                                           # session.run(), and print_graph_stats reads
+                                           # back (.single(), iteration) — so the fake
+                                           # session/tx must answer both call shapes and
+                                           # read shapes, still recording (cypher, params)
+                                           # and executing nothing. Headline arm:
+                                           # build_payload() as a pure function on the real
+                                           # corpus (10,425 nodes) plus an ingestion arm
+                                           # comparing 76 Neo4j calls byte-for-byte between
+                                           # both trees. Run after touching step06.
+python test/test_esg_kg_claim_ledger.py    # same contract, for the step09 migration slice
+                                           # (report/claim_ledger) — the first Neo4j-READING
+                                           # stage migrated, unlike step06/step08 which only
+                                           # write. load_from_neo4j() actually processes what
+                                           # the driver returns, so a "just record the call"
+                                           # fake driver (step06/step08's shape) would give a
+                                           # vacuous arm — the fake here must return REAL FAKE
+                                           # DATA, a queue of 4 result sets in the exact order
+                                           # of the 4 session.run() calls, so both the Cypher
+                                           # and the assembled dossier can be compared. Also
+                                           # the first migrated stage with NO real-corpus arm
+                                           # at all (it reads only Neo4j, no JSON file on
+                                           # disk) — the strongest arm instead covers the pure
+                                           # presentation/sorting helpers (build_header,
+                                           # render_markdown, _sort_key, ...), which is most of
+                                           # the stage's real logic. Run after touching step09.
+python test/test_esg_kg_entities.py        # same contract, for the step05 migration slice
+                                           # (resolve/entities) — confirmed leaf (every import
+                                           # already in core/; one dead import,
+                                           # load_schema_sets, dropped — same "garbage import"
+                                           # shape as 05d/07). Unlike most leaf moves,
+                                           # resolve() was split into resolve_graph() (pure,
+                                           # no file I/O, no client construction) + main() AT
+                                           # MIGRATION TIME, not as a later block follow-up
+                                           # (contrast fix_triples/run_phases), because the
+                                           # resolve BLOCK (build_resolved.py) needs to call it
+                                           # directly. Headline arm: resolve_graph() vs the old
+                                           # resolve() on the real corpus with no_llm=True —
+                                           # today's actual operating mode per "Gemini is
+                                           # currently billing-blocked" above, not a weakened
+                                           # proxy — comparing the full resolved graph
+                                           # (10,356 nodes / 13,041 edges, identical). The paid
+                                           # path (Stage B embeddings + Stage C adjudication)
+                                           # is covered by a stub over google.genai.Client —
+                                           # same technique as step01 (no _Provider
+                                           # abstraction stands in front of Gemini) — on a
+                                           # synthetic near-duplicate-org fixture (a VN name
+                                           # and its English translation, engineered to reach
+                                           # Stage B/C since Stage A/B.1 cannot merge them).
+                                           # Also proves the new-tree-only AdjudicationCache
+                                           # property: a second resolve_graph() call with the
+                                           # same cache object calls the LLM zero times and
+                                           # reproduces the identical result. Run after
+                                           # touching step05 or core/llm.
+python test/test_esg_kg_resolve_block.py   # the 05 BLOCK (DESIGN.md §5.7, §3.2b): 05 -> 05b
+                                           # -> 05c as one unit writing resolved_graph.json
+                                           # ONCE. Same shape as test_esg_kg_validated_block.py
+                                           # for the 03 block. Headline arm runs the REAL
+                                           # src/ chain step05(--no-llm) -> step05b -> step05c
+                                           # as an ORACLE on the real corpus (14,677 validated
+                                           # triples) and asserts the block's artifact is
+                                           # identical (10,425 nodes / 14,387 edges). Paired
+                                           # with the "writes exactly once" arm and its
+                                           # counter-arm (the src/ chain must write it 3x, the
+                                           # block exactly 1x) — same technique as the 03
+                                           # block. The paid-path cache arm runs the block
+                                           # twice through a stubbed google.genai.Client on the
+                                           # same near-duplicate-org fixture as
+                                           # test_esg_kg_entities.py: the second run calls
+                                           # generate_content ZERO times and reproduces the
+                                           # identical artifact — proving AdjudicationCache
+                                           # (Stage C only; Stage B/embeddings is deliberately
+                                           # NOT cached, see build_resolved.py's docstring).
+                                           # Also a smoke-check that the ALREADY-migrated,
+                                           # UNCHANGED 05d (align_claims) still runs cleanly
+                                           # --dry-run against the block's output, since 05d
+                                           # is deliberately NOT part of the block. Run after
+                                           # touching step05, step05b, step05c, or the block.
 ```
 
 The rest of `test/` and `notebooks/` are Jupyter notebooks for manual validation

@@ -7,16 +7,62 @@ bức tranh toàn hệ thống.
 Nguồn sự thật của thứ tự chạy là [`esg_kg/pipeline.py`](esg_kg/pipeline.py); file này
 là bản vẽ của cùng dữ liệu đó. `python src_module/run.py --list` luôn nói thật về tiến độ.
 
-**Trạng thái (2026-07-29): 13/15 stage đã dời** — `00 quality`, `01 extract`,
-`03 fix_triples`, `03b anchor_kpi`, `03c canonicalize`, `04 issuer`, `05b provenance`,
-`05c indicators`, `05d align_claims`, `06 neo4j_load`, `07 claims_vs_conduct`, `08 neo4j_sync`,
-`09 claim_ledger`; 2 stage cố ý không dời (§4).
+**Trạng thái (2026-07-29): 14/15 stage đã dời** — `00 quality`, `01 extract`,
+`03 fix_triples`, `03b anchor_kpi`, `03c canonicalize`, `04 issuer`, `05 entities`,
+`05b provenance`, `05c indicators`, `05d align_claims`, `06 neo4j_load`,
+`07 claims_vs_conduct`, `08 neo4j_sync`, `09 claim_ledger`; 2 stage cố ý không dời (§4).
+Cùng ngày, **`05` dời kèm một KHỐI thứ hai: `build_resolved` = `05 → 05b → 05c`**
+(`esg_kg/resolve/build_resolved.py`, DESIGN.md §5.7), đúng khuôn `build_validated` đã
+làm cho cụm 03 — xem đoạn "**`05` là stage thứ mười bốn**" bên dưới và §3.2b. Chỉ còn
+`02` là stage `src/` duy nhất.
 Mẫu số đổi từ 16 xuống 15 cùng ngày vì **`step10` bị xoá hẳn khỏi dự án** (không phải hoãn
 dời — quyết định 2026-07-28, xem §4 và `esg_kg/DESIGN.md` §4.3): người dùng chốt bỏ hẳn kiểu
 đo P6 (coverage/case-study/ablation không có ground truth) khỏi danh sách sản phẩm giao, không
 phải vì có cơ chế khác thay thế. Khác `04b`/`07b` (vẫn còn file `src/`, chỉ loại khỏi phạm vi
 refactor), `step10` không còn dòng nào trong `pipeline.py::STAGES` và không còn
 `src/step10_evaluate.py` — không có gì để mà "dời" nữa.
+
+**`05` là stage thứ mười bốn** (`esg_kg/resolve/entities.py`, 2026-07-29) và stage cuối
+cùng còn lại từng bị coi là "khó dời" trong cả đợt — không phải vì thiếu symbol (đúng
+luật §2.1: mọi thứ nó import — `REPO_ROOT`/`load_env`, `RateLimiter`, `date_start_key`,
+`normalize_name` — đã ở `core/` từ trước, một dead import `load_schema_sets` bị bỏ, cùng
+hình dạng "rác" đã thấy ở `05d`/`07`), mà vì nó ngồi giữa chuỗi vá `05 → 05b → 05c` mà
+§3.1 mô tả: `step05:655` ghi đè TOÀN BỘ `resolved_graph.json`, xoá sạch bản vá của 05b/05c
+nếu chạy lại một mình. §5.7 đã chốt phương án khối từ 2026-07-28 (đọc "Áp cho cụm 05"
+trong DESIGN.md §5.7); lượt dời này là lúc phương án đó THÀNH CODE, không còn là quyết
+định trên giấy. Hai điều khác mọi lần dời stage trước:
+- **`resolve()` được tách làm hai NGAY LÚC DỜI**, không phải như một việc làm thêm sau khi
+  khối đã tồn tại (khác `fix_triples`/`run_phases`, tách sau khi khối 03 đã quyết định
+  cần nó): `resolve_graph(triples, idkeys, ...) -> (resolved, stats)` là hàm thuần, không
+  I/O, không tự dựng client — để khối gọi thẳng nó và nối luôn với 05b/05c trong bộ nhớ;
+  `main()` giữ nguyên hành vi CLI/ghi file của bản `src/` cho `run.py entities` chạy lẻ.
+- **Cache pha trả tiền CHỈ áp cho Stage C** (`llm_same_entity`, gemini-2.5-flash), không
+  áp cho Stage B (`gemini-embedding-001`). Đây là quyết định phạm vi, không phải thiếu
+  sót: Stage C là bản sao đúng nghĩa của pha 2 khối 03 (LLM, không tất định, tốn tiền);
+  Stage B tốn tiền nhưng tất định theo phiên bản model, và theo CLAUDE.md pipeline hôm
+  nay (và tương lai đã ghi) chạy bằng `--no-llm` nên Stage B/C **không hề chạy trong
+  pipeline sống** — viết cache cho Stage B lúc này là làm việc đầu cơ cho một nhánh đang
+  ngủ đông. `AdjudicationCache` (trong `build_resolved.py`, khoá theo nội dung cặp node,
+  giống hệt `RepairCache` của khối 03) chỉ bọc quanh Stage C; Stage B để lại một dòng
+  TODO nếu sau này billing được mở lại và Stage B quay lại dùng thường xuyên.
+- **`indicators.py` (05c) được sửa THÊM một lần nữa**, cùng khuôn `fix_triples`/
+  `run_phases`: thân `run()` cũ được tách thành `link_indicator_axis(graph, defs,
+  crosswalk, catalog, ...)` — hàm thuần, không đọc/ghi file — rồi `run()` chỉ còn
+  argparse + I/O + gọi hàm đó. Trích nguyên văn, **0 dòng logic đổi**: `test/
+  test_indicator_axis.py` (15 nhóm) và phần indicator-axis trong `test_esg_kg_
+  equivalence.py` xanh không cần sửa gì, và `run.py indicators --dry-run` in ra hệt như
+  trước. `esg_kg/resolve/provenance.py` (05b) thì KHÔNG cần sửa gì — `stamp_graph()` đã
+  là hàm thuần từ lúc dời (2026-07-27), khối gọi thẳng.
+Kết quả kiểm: arm oracle chạy chuỗi thật `src/` `step05(--no-llm) → step05b → step05c`
+trên corpus thật (14 677 triple đã validate) và so với khối — **10 425 node / 14 387
+cạnh giống hệt tuyệt đối**, cộng arm "ghi đúng 1 lần" (chuỗi `src/` ghi 3 lần, khối ghi 1
+lần) và arm cache (chạy khối 2 lần với client giả trên fixture VN/EN đồng nghĩa quen
+thuộc — lần hai gọi `generate_content` **0 lần**, artifact giống hệt lần một). Nhánh trả
+tiền (Stage B/C) được kiểm bằng đúng kỹ thuật đã dùng cho `03`/`05d`/`07`/`01`: stub tiêm
+thẳng lên `google.genai.Client` (không có `_Provider` đứng trước Gemini, y hệt `01`), trả
+lời tất định theo CRC. Test: `test/test_esg_kg_entities.py` (7 nhóm) +
+`test/test_esg_kg_resolve_block.py` (5 nhóm, gồm cả arm khói cho `05d` chạy trên output
+của khối để chắc nó vẫn nhận input đúng hình dạng). Chi tiết đầy đủ: §3.2b.
 `05b` là stage đầu tiên dời được mà **không phải trích thêm module `core/` nào** — lần dời
 `03b` đã lifted sẵn cả 4 symbol nó cần. `03` là stage thứ hai, `05d` là stage thứ ba —
 lát cắt `05c` đã đẩy `GraphPatch`/`temporal_md` lên kernel *chính vì* `05d` đang import
@@ -130,10 +176,11 @@ Trong sơ đồ §1, ô viền đứt là **chưa dời**, không phải đã xo
 đặc gắn `✅ ĐÃ DỜI` mới là đã refactor. (`step10` không còn trong danh sách này —
 nó không "chưa dời", nó đã bị **xoá khỏi dự án**, xem §4.)
 
-**Ngoài 13 stage đó, `esg_kg` còn có 1 KHỐI: `build_validated` = `03 → 03b → 03c`** nối chuỗi
-in-memory, ghi `all_validated_triples.json` **đúng một lần** (§3.2). Khối **không phải một
-stage** nên không tính vào mẫu số `13/15` — nó là một **entrypoint thêm**, và cả ba stage thành
-viên vẫn chạy lẻ được.
+**Ngoài 14 stage đó, `esg_kg` còn có 2 KHỐI: `build_validated` = `03 → 03b → 03c`** nối chuỗi
+in-memory, ghi `all_validated_triples.json` **đúng một lần** (§3.2), **và `build_resolved`
+= `05 → 05b → 05c`** nối chuỗi in-memory, ghi `resolved_graph.json` **đúng một lần** (§3.2b,
+2026-07-29). Khối **không phải một stage** nên không tính vào mẫu số `14/15` — mỗi khối là
+một **entrypoint thêm**, và mọi stage thành viên (cả 6) vẫn chạy lẻ được.
 
 **`03` đã dời (2026-07-28) → `esg_kg/graph/fix_triples.py`.** Nó *trông* như hub — **7 stage
 `src/` import từ nó** — nhưng mọi symbol chúng lấy đều đã được các lát cắt trước rút vào
@@ -232,10 +279,11 @@ flowchart TD
 
     subgraph P3["③ Hợp nhất thực thể + trục chỉ số"]
         S04["✅ ĐÃ DỜI · step04 · issuer<br/>registry tên công ty (chạy 1 lần)"]:::migrated
-        S05["⚪ CHƯA DỜI · step05 · entities<br/>gộp node trùng, neo issuer + neo chuẩn"]:::ready
+        S05["✅ ĐÃ DỜI · step05 · entities<br/>gộp node trùng, neo issuer + neo chuẩn"]:::migrated
         S05B["✅ ĐÃ DỜI · step05b · provenance<br/>đóng dấu source_doc / source_page"]:::migrated
         S05C["✅ ĐÃ DỜI · step05c · indicators<br/>dựng trục TT96/GRI (offline)"]:::migrated
         S05D["✅ ĐÃ DỜI · step05d · align_claims<br/>LLM, TÙY CHỌN — phần keyword bỏ sót"]:::migrated
+        BLK2["🧱 KHỐI · build_resolved — CHỈ CÓ TRONG esg_kg<br/>nối 05 → 05b → 05c in-memory,<br/>ghi artifact ĐÚNG MỘT LẦN (§3.2b)"]:::block
     end
 
     RESOLVED["graph_output/resolved/<br/>resolved_graph.json"]:::data
@@ -264,8 +312,9 @@ flowchart TD
     VALID --> S04 --> REGI --> S05
     REGS --> S05
     VALID --> S05
-    S05 -->|"⚠️ ghi đè TOÀN BỘ file (§3.1)"| RESOLVED
+    S05 -->|"⚠️ src/: ghi đè TOÀN BỘ file (§3.1)"| RESOLVED
     RESOLVED --> S05B --> S05C --> S05D --> RESOLVED
+    VALID -.->|"cây esg_kg: 1 lần chạy"| BLK2 -.->|"1 lần GHI"| RESOLVED
     RESOLVED --> S06 --> NEO
     RESOLVED --> S07 --> DOSSIER --> S08 --> NEO
     NEO --> S09
@@ -280,9 +329,10 @@ flowchart TD
 
 > ⚠️ **Chỉ ô nền xanh ĐẶC, chữ trắng, gắn nhãn `✅ ĐÃ DỜI` mới là đã refactor.**
 > Ô viền đứt gắn `⚪ CHƯA DỜI` nghĩa là **vẫn đang chạy bằng `src/`** — nó mới chỉ *đủ điều
-> kiện* để dời. Cụm `03` nay đã dời **trọn** (`03`+`03b`+`03c`); chỗ còn **khác trạng thái
-> ngay cạnh nhau** là cụm `05`: `05b`/`05c`/`05d`/`04` đã dời, chỉ còn `05` chính nó là
-> chưa — `04` tuy nằm trong subgraph ③ cùng `05` nhưng dời được độc lập, vì nó không đọc
+> kiện* để dời. Cụm `03` đã dời **trọn** (`03`+`03b`+`03c`) từ 2026-07-28; **cụm `05` nay
+> cũng đã dời trọn** (`05`+`05b`+`05c`+`05d`, 2026-07-29) — `05` chính nó (thứ mười bốn)
+> cộng khối `build_resolved` mới (`BLK2`, §3.2b) đúng khuôn `build_validated`. `04` tuy
+> nằm trong subgraph ③ cùng `05` nhưng dời độc lập từ trước, vì nó không đọc
 > `resolved_graph.json` (chỉ ghi `config/issuer_registry.json` từ `all_validated_triples.json`).
 > `07` cũng đã dời — và vì nó từng là stage duy nhất chặn `08` (và, tới trước khi bị xoá,
 > cũng chặn `10`), ô `08` đổi từ `⏳` (chờ stage khác) sang `⚪` (chỉ còn chờ tới lượt dời)
@@ -293,14 +343,14 @@ flowchart TD
 > `src/` trước). **`08` đã dời hẳn** (2026-07-29) — ô đó tới lượt nó đổi từ `⚪` sang xanh đặc
 > `✅ ĐÃ DỜI`, và là stage NEO4J đầu tiên trong toàn bộ đợt refactor. **`06` và `09` đã dời
 > hẳn cùng ngày** — cả hai chuyển từ `⚪` sang xanh đặc; `06` là stage GHI Neo4j thứ hai,
-> `09` là stage ĐỌC Neo4j đầu tiên (khác hẳn `06`/`08` vốn chỉ ghi). Chỉ còn `02`/`05` là
-> `⚪` trong toàn sơ đồ.
+> `09` là stage ĐỌC Neo4j đầu tiên (khác hẳn `06`/`08` vốn chỉ ghi). Chỉ còn `02` là
+> `⚪` trong toàn sơ đồ — stage `src/` duy nhất còn lại.
 > Nghi ngờ thì hỏi `python src_module/run.py --list`, đừng đọc màu.
 
 | Nhãn trong ô | Màu | Nghĩa |
 |---|---|---|
 | `✅ ĐÃ DỜI` | 🟩 xanh **đặc**, chữ trắng | đã dời sang `esg_kg` — chạy bằng `python src_module/run.py <tên>` |
-| `🧱 KHỐI` | 🟦 xanh dương **viền đậm** | **không phải stage** và **không có bản `src/`** — nhiều stage gộp thành một đơn vị ghi artifact 1 lần (§3.2). Không tính vào mẫu số `13/15` |
+| `🧱 KHỐI` | 🟦 xanh dương **viền đậm** | **không phải stage** và **không có bản `src/`** — nhiều stage gộp thành một đơn vị ghi artifact 1 lần (§3.2, §3.2b). Không tính vào mẫu số `14/15` |
 | `⚪ CHƯA DỜI` | ⬜ nền trắng, viền xanh đứt | **vẫn chạy bằng `src/`**; chỉ là mọi symbol nó cần đã có trong `core/` → dời được ngay (§2.1) |
 | `⏳ CHƯA DỜI` | 🟨 vàng | vẫn chạy bằng `src/` **và còn bị chặn** — chờ một stage khác dời (§2.1) |
 | `⛔` | 🩶 xám | **cố ý không dời** (§4), vẫn còn file trong `src/` |
@@ -323,10 +373,11 @@ flowchart TD
 | 🧱 | `build_validated` **(KHỐI)** | 💰 chỉ pha 2, **có cache** | các file page (như `03`) | `all_validated_triples.json` — **ghi 1 lần** | ✅ **chỉ có trong `esg_kg`**, không có bản `src/` (§3.2) |
 | 04 | `issuer` | — | validated | `config/issuer_registry.json` | ✅ **đã dời** (2026-07-28) · ghi file **tracked + sửa tay**, arm dùng workspace tạm |
 | 04b | — | — | ~~resolved~~ | ~~`standards_registry.json`~~ | ⛔ **ngoài đường chạy** |
-| 05 | `entities` | 💰 (tùy chọn) | validated + 2 registry | `resolved_graph.json` | ⚪ **chưa dời** — đủ điều kiện ⚠️ §3.1 |
+| 05 | `entities` | 💰 (tùy chọn) | validated + 2 registry | `resolved_graph.json` | ✅ **đã dời** (2026-07-29) — stage thứ mười bốn |
 | 05b | `provenance` | — | resolved + các file page | vá tại chỗ | ✅ **đã dời** |
-| 05c | `indicators` | — | resolved + `kpi_definitions` + crosswalk + `gri_catalog` | vá tại chỗ | ✅ **đã dời** |
-| 05d | `align_claims` | 💰 tùy chọn | resolved | vá tại chỗ | ✅ **đã dời** · nhánh trả tiền có arm bằng LLM giả |
+| 05c | `indicators` | — | resolved + `kpi_definitions` + crosswalk + `gri_catalog` | vá tại chỗ | ✅ **đã dời** · `link_indicator_axis()` tách khỏi `run()` cho khối gọi |
+| 🧱 | `build_resolved` **(KHỐI)** | 💰 chỉ Stage C, **có cache** | validated + registry + page files + defs/crosswalk/catalog | `resolved_graph.json` — **ghi 1 lần** | ✅ **chỉ có trong `esg_kg`**, không có bản `src/` (§3.2b) |
+| 05d | `align_claims` | 💰 tùy chọn | resolved | vá tại chỗ | ✅ **đã dời** · nhánh trả tiền có arm bằng LLM giả · NGOÀI khối (§3.2b) |
 | 06 | `neo4j_load` | — | resolved | Neo4j | ✅ **đã dời** (2026-07-29) · stage GHI Neo4j thứ hai, stub `execute_write` + đọc lại |
 | 07 | `claims_vs_conduct` | 💰 **bắt buộc** | resolved | `<ticker>_claim_assessments.json` | ✅ **đã dời** (2026-07-28) — mở khoá `08` |
 | 07b | — | — | dossier | dossier (thêm điểm) | ⛔ **không dời** |
@@ -376,27 +427,30 @@ flowchart LR
     S08D["✅ dời 08 (2026-07-29)<br/>stage Neo4j đầu tiên, stub GraphDatabase"]:::done
     S06D["✅ dời 06 (2026-07-29)<br/>stage GHI Neo4j thứ hai, stub execute_write"]:::done
     S09D["✅ dời 09 (2026-07-29)<br/>stage ĐỌC Neo4j đầu tiên, stub driver trả dữ liệu"]:::done
-    READY["⚪ CHƯA DỜI, đủ điều kiện dời — 1 stage<br/>05"]:::ready
+    S05D2["✅ dời 05 (2026-07-29)<br/>+ khối build_resolved (§3.2b)"]:::done
     U3["⚪ 02 — mở khoá, chỉ còn chờ tới lượt<br/>(+ đổi hành vi §5.6 nên đi trước)"]:::ready
 
     CORE --> S07D --> S08D --> S06D
     S07D --> S09D
     CORE --> S04D
     CORE --> S01D --> U3
-    CORE --> READY
+    CORE --> S05D2
 ```
 
 Từ 2026-07-27 **không còn module `core/` nào là điều kiện chặn**: mọi stage chưa dời đều
 chờ một *stage khác* dời, không chờ kernel. `02` chờ `core/io_jsonl` — module đó rơi ra từ
-lát cắt `01` (2026-07-28), và `01` giờ đã dời, nên `02` chỉ còn chờ tới lượt chính nó.
+lát cắt `01` (2026-07-28), và `01` giờ đã dời, nên `02` chỉ còn chờ tới lượt chính nó. `05`
+đã dùng suất còn lại của mình ngày 2026-07-29 (điểm 1 dưới), nên **`02` giờ là stage
+`src/` DUY NHẤT còn lại**.
 
 **Đọc ra được ba điều, cả ba đều đổi thứ tự làm:**
 
 1. **Kernel đã hết đường chặn.** Sau `core/llm.py` (2026-07-27) có 8/11 stage chưa dời đủ
    điều kiện; `03` rồi `05d` rồi `07` rồi `04` rồi `01` đã dùng suất đó ngày 2026-07-28, rồi
-   `08` rồi `06`/`09` ngày 2026-07-29, còn lại **1**: `05`. Việc còn lại không phải "viết
-   thêm `core/`" nữa mà là **chọn stage nào dời trước**, và tiêu chí bây giờ là *arm tương
-   đương mạnh tới đâu*, không còn là *symbol đã sẵn chưa*:
+   `08` rồi `06`/`09` rồi **`05`** ngày 2026-07-29 — còn lại **0** stage đủ điều kiện chưa
+   dời (chỉ `02` còn ở `src/`, và nó chờ quyết định lịch trình §5.6, không chờ cấu trúc).
+   Việc còn lại không phải "viết thêm `core/`" nữa mà là **chọn stage nào dời trước**, và
+   tiêu chí bây giờ là *arm tương đương mạnh tới đâu*, không còn là *symbol đã sẵn chưa*:
    - **~~`03` — mạnh nhất~~ → ĐÃ DỜI (2026-07-28).** Lý do nó được chọn vẫn đáng đọc, vì nó
      là khuôn cho các lần sau: pha 1 + pha 1.5 offline nên chạy được trên corpus thật miễn
      phí, còn **pha 2 (trả tiền) được lái bằng một LLM giả** nên nhánh đắt vẫn có arm. Kết
@@ -488,9 +542,12 @@ lát cắt `01` (2026-07-28), và `01` giờ đã dời, nên `02` chỉ còn ch
      `src_module/run.py neo4j_sync`, đúng khuôn đổi 1 dòng thông báo mà `04`/`06`/`08` đã
      làm — test mask riêng khác biệt này thay vì coi là hồi quy. Test:
      `test/test_esg_kg_claim_ledger.py` (10 nhóm).
-   - `05` **không được dời nếu chưa xử §3.1** (nó ghi đè cả ba bản vá) — và §3.2 nay là câu
-     trả lời mặc định cho §3.1. Đây là stage cuối cùng còn chờ, không tính `02` (chờ quyết
-     định lịch trình §5.6, không chờ cấu trúc).
+   - **~~`05` không được dời nếu chưa xử §3.1~~ → ĐÃ DỜI (2026-07-29), kèm khối
+     `build_resolved`.** Đây là stage cuối cùng từng chờ một quyết định cấu trúc (không
+     tính `02`, vốn chỉ chờ quyết định lịch trình §5.6) — và câu trả lời đúng như dự đoán
+     là phương án khối của §3.2, áp cho `resolved_graph.json` thay vì
+     `all_validated_triples.json`. Chi tiết đầy đủ: §3.2b và đoạn "`05` là stage thứ mười
+     bốn" ở đầu file.
 2. **~~`core/llm.py` là đòn bẩy lớn nhất~~ → ĐÃ XONG (2026-07-27).** Đúng như dự đoán: nó
    mở khoá 4 stage cùng lúc (`03`, `05`, `07`, `05d`). Lát cắt gồm `DEFAULT_RATE_LIMIT` +
    `RateLimiter` (từ `step02`) và `_Provider` + `_OpenAIProvider` (từ `step07`) — bốn symbol
@@ -513,9 +570,9 @@ lát cắt `01` (2026-07-28), và `01` giờ đã dời, nên `02` chỉ còn ch
    có arm tương đương mạnh chạy trên corpus thật (1 356 trang), dù bản thân stage `01` là
    stage trả tiền — và nhánh trả tiền đó cũng có arm, bằng đúng kỹ thuật stub-theo-CRC đã
    dùng cho `03`/`05d`/`07` (điểm 1 ở trên). **Sau lượt này không còn stage nào là hub theo
-   nghĩa "bị import phần stage-local"** — `06`/`09` đã dời tiếp ngay sau đó (2026-07-29,
-   điểm 1 ở trên); chỉ còn `02`/`05` chờ tới lượt hoặc một quyết định lịch trình (§3.1,
-   §5.6), không chờ một cấu trúc import nào nữa.
+   nghĩa "bị import phần stage-local"** — `06`/`09` rồi `05` (cùng khối `build_resolved`)
+   đã dời tiếp ngay sau đó (2026-07-29, điểm 1 ở trên); chỉ còn `02` chờ một quyết định
+   lịch trình (§5.6), không chờ một cấu trúc import nào nữa.
 
 ✅ **Cái bẫy của lần dời `step07` đã tránh được, không phải của `core/llm`:** có **hai** hàm
 tên `node_text` và chúng **không** trùng nhau — `esg_kg.resolve.align_claims.node_text`
@@ -638,7 +695,12 @@ trích lại đã lên lịch ở DESIGN.md §5.4), và `05d` **ba** nhánh: abo
 thị nhỏ mới có ngân sách phủ hết ứng viên — trên file thật, lần chạy thứ hai chỉ đi tiếp trong
 hàng đợi 1 810 phần tử nên **không chứng minh được gì** về việc bỏ qua.
 
-### 3.1 Chuỗi vá `05 → 05b → 05c` là BẮT BUỘC nhưng KHÔNG có gì bảo vệ
+### 3.1 Chuỗi vá `05 → 05b → 05c` trong `src/` là BẮT BUỘC nhưng KHÔNG có gì bảo vệ
+
+⚠️ **Mục này mô tả `src/`, vẫn đúng nguyên vì `src/` không đổi (Model A).** Trong
+`esg_kg` vấn đề này đã hết — xem §3.2b: khối `build_resolved` xoá hẳn khái niệm "trạng
+thái đã vá ở giữa" thay vì canh gác nó, đúng phương án thứ tư mà đoạn cuối mục này từng
+dự đoán.
 
 Chỉ tồn tại **một** file `graph_output/resolved/resolved_graph.json`. `05b`/`05c`/`05d`
 đều ghi ngược lại đúng đường dẫn đó, còn `step05:655` ghi đè **toàn bộ** — không merge,
@@ -652,8 +714,9 @@ báo điều đó đã xảy ra:
 | `step07:703` | **không có** (chỉ kiểm file tồn tại) | index trục chỉ số rỗng ⇒ retrieval tier-1 đóng góp **0**, tụt về token overlap. Không lỗi, không cảnh báo; dấu vết duy nhất là `indicator_tier_pairs: 0` trong file stats |
 
 Thứ đang giữ chuỗi này chạy đúng chỉ là ba dòng log cuối stage (đều nói *"Next: step06
---clear"*) — **hợp đồng bằng trí nhớ**. Khi `step05` được dời, bản `esg_kg` **không được**
-mang khiếm khuyết này sang; ba phương án đang cân + ràng buộc: DESIGN.md §5.5.
+--clear"*) — **hợp đồng bằng trí nhớ**. Đây vẫn là sự thật của `src/` hôm nay; `esg_kg`
+không mang khiếm khuyết này sang (§3.2b). Ba phương án từng cân nhắc + ràng buộc, giữ lại
+để đối chiếu: DESIGN.md §5.5.
 
 ### 3.2 KHỐI: `03 → 03b → 03c` ghi artifact ĐÚNG MỘT LẦN (làm 2026-07-28)
 
@@ -714,8 +777,63 @@ Test: `test/test_esg_kg_validated_block.py` (9 nhóm).
 ⚠️ **Ngày nào một refactor làm mất tính chất "cùng nội dung, khác thời điểm ghi" thì DỪNG
 lại bàn** — lúc đó không còn oracle nào nữa, và đó là loại rủi ro khác hẳn.
 
-**Cụm 05 sẽ theo đúng luật này** — xem DESIGN.md §5.7 phần cuối: đó là **phương án thứ tư**
-cho bảng ở §5.5 và là mặc định mới, thay cho ba dòng trong bảng đó.
+### 3.2b KHỐI: `05 → 05b → 05c` ghi artifact ĐÚNG MỘT LẦN (làm 2026-07-29)
+
+Cùng luật §3.2, áp cho file thứ hai: `graph_output/resolved/resolved_graph.json`. Đây là
+câu trả lời thật (không còn là dự định) cho §3.1 — DESIGN.md §5.7 đã chốt từ 2026-07-28
+rằng cụm 05 sẽ theo đúng khuôn `build_validated`, và lượt dời `05` (2026-07-29) là lúc
+điều đó thành code: `esg_kg/resolve/build_resolved.py`.
+
+**`05d` KHÔNG nằm trong khối.** Đây là ràng buộc riêng của cụm này mà §5.7 đã ghi trước:
+`05d` (`align_claims`) tuỳ chọn (budgeted LLM, `--max-llm-pairs`) và đã tự vá
+`resolved_graph.json` sau `05c` từ trước tới giờ — không đổi gì. Khối phải ra một
+`resolved_graph.json` đúng và đầy đủ dù `05d` hoàn toàn vắng mặt, và điều đó được kiểm
+bằng chính arm oracle: `05d` không tham gia một bước nào của nó.
+
+**Cache pha trả tiền — chỉ Stage C, không phải Stage B.** Ranh giới "artifact trung
+gian" ≠ "cache kết quả đã trả tiền" của §3.2 áp lại y hệt, nhưng khoanh vùng hẹp hơn vì
+cụm 05 có HAI nhánh tốn tiền, không phải một:
+
+| Nhánh | Vai trò | Có cache? |
+|---|---|---|
+| Stage B (`gemini-embedding-001`, `embed_texts`) | tính cosine similarity để lọc ứng viên | **Không** — tốn tiền nhưng tất định theo phiên bản model, và theo CLAUDE.md pipeline hôm nay chạy `--no-llm` nên nhánh này **không hề chạy** trong pipeline sống |
+| Stage C (`gemini-2.5-flash`, `llm_same_entity`) | phán quyết same_entity trên từng cặp | **Có** — bản sao đúng nghĩa của pha 2 khối 03: LLM, không tất định, tốn tiền |
+
+`AdjudicationCache` (trong `build_resolved.py`, khoá theo nội dung cặp `(class,
+non_temporal_props(a), non_temporal_props(b))`, cùng hình dạng `RepairCache`) chỉ bọc
+quanh Stage C. Viết cache cho Stage B lúc này là việc đầu cơ cho một nhánh đang ngủ đông —
+để lại làm follow-up nếu Stage B quay lại dùng thường xuyên, thay vì xây trước cho một
+đường chạy hôm nay không ai đi.
+
+**Cách chạy:**
+
+```bash
+python src_module/run.py build_resolved --dry-run   # 05+05b+05c offline, không ghi gì
+python src_module/run.py build_resolved             # ghi resolved_graph.json MỘT lần
+```
+
+**Cái KHÔNG bị mất** — khối là **thêm** một entrypoint: `run.py entities`, `run.py
+provenance`, `run.py indicators` vẫn chạy lẻ được, và `resolved_graph_stats.json` /
+`provenance_patch_stats.json` / `indicator_axis_stats.json` vẫn được ghi (dữ liệu chẩn
+đoán, không phải artifact trung gian). Việc "vá đồ thị đang có" (tương đương
+`--renormalize` của khối 03) không cần cờ mới: `run.py provenance --dry-run` / `run.py
+indicators --dry-run` đã làm đúng việc đó — đọc và vá lại `resolved_graph.json` đang có,
+không đi qua khối.
+
+**Vì sao vẫn còn lưới an toàn dù `src/` không đổi.** Chạy chuỗi `src/`
+`step05(--no-llm) → step05b → step05c` trên bản copy, chạy khối, **kết quả cuối phải
+bằng nhau**. Arm đó so **10 425 node / 14 387 cạnh giống hệt tuyệt đối** trên corpus thật
+(14 677 triple đã validate), miễn phí — `no_llm=True` không phải một proxy yếu ở đây, nó
+là **chế độ vận hành thật hôm nay** (Gemini bị billing-block, CLAUDE.md). Kèm arm ngược:
+chuỗi `src/` ghi artifact **đúng 3 lần**, khối ghi **đúng 1 lần**. Nhánh trả tiền (Stage
+B/C) được kiểm bằng đúng kỹ thuật đã dùng cho `03`/`05d`/`07`/`01`: stub tiêm thẳng lên
+`google.genai.Client` (không có `_Provider` đứng trước Gemini, y hệt `01`), trả lời tất
+định theo CRC — hai cây thấy đúng cùng phán quyết trên một fixture VN/EN đồng nghĩa quen
+thuộc (`VN_NAME`/`EN_NAME`). Cache được kiểm bằng arm chạy khối 2 lần: lần hai gọi
+`generate_content` **0 lần**, artifact giống hệt lần một.
+Test: `test/test_esg_kg_entities.py` (7 nhóm, riêng cho lát cắt stage) +
+`test/test_esg_kg_resolve_block.py` (5 nhóm, riêng cho khối — gồm cả arm khói chạy `05d`
+trên chính output của khối để chắc nó vẫn nhận đúng hình dạng input).
 
 ---
 

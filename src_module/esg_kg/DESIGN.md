@@ -64,7 +64,7 @@ src_module/esg_kg/
   resolve/             entities.py(step05)  provenance.py(step05b)  indicators.py(step05c)  align_claims.py(step05d)
   load/                neo4j_load.py(step06)  neo4j_sync.py(step08)
   crosscheck/          claims_vs_conduct.py(step07)   # enrich_dossiers: KHONG dời, xem §4.1
-  report/              quality.py(step00)  claim_ledger.py(step09)  evaluate.py(step10)
+  report/              quality.py(step00)  claim_ledger.py(step09)  # evaluate.py(step10): KHÔNG CÒN — xem §4.3
 
   pipeline.py          # thứ tự chạy (thay cho tiền tố stepNN_)
 ```
@@ -156,7 +156,8 @@ Vì vậy ta **không rewire `src/`**. Thay vào đó:
      xếp theo stage cần, không theo số importer. **Điều này mở khoá `step05b`.**
    - ✅ `core/llm.py` — `RateLimiter` (<- step02:70), `_Provider`/`_OpenAIProvider`
      (<- step07:284), trích 2026-07-27. **Đòn bẩy lớn nhất**: nó chặn `step03`, `step05`,
-     `step07`, `step05d` cùng lúc (rồi kéo theo `step08`/`step10`) — bản đồ đầy đủ ở
+     `step07`, `step05d` cùng lúc (rồi kéo theo `step08`, và từng kéo theo `step10` cho tới
+     khi stage đó bị xoá hẳn khỏi dự án — §4.3) — bản đồ đầy đủ ở
      `PIPELINE.md` §2.1. KHÔNG có provider Gemini: dự án đứng sau `GEMINI_API_KEY` bị 403
      vĩnh viễn, nên `step07` chỉ còn cascade OpenAI, và `step01` (dùng Gemini trực tiếp)
      không hề đụng module này.
@@ -287,9 +288,10 @@ Vì vậy ta **không rewire `src/`**. Thay vào đó:
        dựng, nên thứ chứng minh tương đương là một **provider giả** tiêm vào cả hai cây.
      - **`step07` → `crosscheck/claims_vs_conduct.py`, stage thứ tám** — đòn bẩy lớn nhất
        cả đợt, vì nó là stage DUY NHẤT còn chặn ai đó (`08` chờ `node_text`, `10` chờ
-       `Adjudicator`); dời nó mở khoá cả hai cùng lúc. Cũng là lượt import NGƯỢC đầu
-       tiên: `_Provider`/`_OpenAIProvider` nay lấy từ `core.llm` — đúng hai lớp mà kernel
-       đó đã trích TỪ CHÍNH file này một ngày trước.
+       `Adjudicator`); dời nó mở khoá cả hai cùng lúc. (`10` đã bị xoá hẳn khỏi dự án
+       sau đó — §4.3 — nên phát biểu này giờ chỉ còn đúng cho `08`.) Cũng là lượt import
+       NGƯỢC đầu tiên: `_Provider`/`_OpenAIProvider` nay lấy từ `core.llm` — đúng hai lớp
+       mà kernel đó đã trích TỪ CHÍNH file này một ngày trước.
      - **`step04` → `registry/issuer.py`, stage thứ chín, cùng ngày với `07`.** Trông như
        hub (6 stage import nó) nhưng cả ba symbol chúng lấy (`normalize_name`,
        `name_tokens`, `merge_preserving_edits`) đã ở `core/naming.py` — hub đã tan, dời
@@ -304,8 +306,9 @@ Vì vậy ta **không rewire `src/`**. Thay vào đó:
      (2026-07-27)** — bốn dòng dưới đã lỗi thời sau các lượt dời ở trên, giữ lại để thấy
      dự đoán ban đầu sai ở đâu: ~~`step05d` (còn chặn ở `core/llm.py`)~~ → đã dời.
      ~~`step08` (chờ `core/text.py`)~~ / ~~`step10` (chờ `Adjudicator`)~~ → cả hai chờ
-     đúng `step07` dời, không chờ `core/` nào — và `step07` đã dời, nên cả hai giờ chỉ
-     còn chờ tới lượt chính chúng.
+     đúng `step07` dời, không chờ `core/` nào — và `step07` đã dời, nên lúc đó cả hai chỉ
+     còn chờ tới lượt chính chúng. (`step10` sau đó bị xoá hẳn khỏi dự án, §4.3 — dòng này
+     giữ nguyên vì là tường thuật đúng thời điểm 2026-07-28 lúc `step07` vừa dời.)
 
      ✅ **`step01` → `kpi/extract.py`, stage thứ mười (2026-07-28), một ngày sau `04`/`07`.**
      Nó không dùng `_Provider`/`_OpenAIProvider` — `core/llm.py` đã ghi rõ không có provider
@@ -433,6 +436,38 @@ theo định nghĩa. Hai cây cho kết quả giống hệt nhau trên đồ th�
 mỗi ngành một bộ quy định riêng) thì việc soạn registry bằng tay hết rẻ, và lúc đó một
 stage sinh registry mới có lý. Khi ấy **vẫn phải đổi input sang `all_validated_triples.json`
 (step03)** — nếu không, vòng lặp quay lại y nguyên.
+
+### 4.3 `step10` (P6 evaluation) BỊ XOÁ hẳn khỏi dự án — không phải hoãn migrate (quyết định 2026-07-28)
+
+Khác hẳn §4.1/§4.2: `step07b`/`step04b` là quyết định **phạm vi refactor** — cả hai vẫn
+sống nguyên trong `src/`, người dùng vẫn chạy tay được. `step10` là quyết định **phạm vi
+dự án**: người dùng chốt bỏ hẳn kiểu đo "coverage + case study + ablation không có nhãn
+gốc" (P6) khỏi danh sách sản phẩm giao, không phải vì có cơ chế nào khác thay thế nó —
+đơn giản là không cần đo kiểu này nữa.
+
+**Hệ quả cụ thể, khác `step07b`/`step04b` ở đúng điểm then chốt:**
+
+- ❌ **`src/step10_evaluate.py` bị XOÁ**, không giữ lại như công cụ chạy tay. Đây là điểm
+  khác biệt với §4.1/§4.2 (cả hai đều "không xoá file `src/`" vì nó còn ích lợi làm công
+  cụ độc lập) — `step10` không có lý do tương tự để giữ lại, vì quyết định là bỏ hẳn phép
+  đo, không phải bỏ mỗi việc port.
+- ❌ **`docs/EVALUATION.md` bị xoá.**
+- ❌ **`esg_kg/pipeline.py::STAGES` không còn dòng `"10"`** — khác `07b`/`04b` (giữ dòng với
+  `new_module=None` vì file `src/` gốc vẫn tồn tại), `step10` không có dòng nào cả: một dòng
+  `STAGES` phải trỏ tới một file `src/` có thật (`test_pipeline_table.py::
+  test_every_stage_points_at_a_real_src_file`), và file đó không còn tồn tại.
+- Test liên quan: không có `test_esg_kg_evaluate.py` (chưa từng viết, vì `step10` chưa
+  từng được dời) nên không có gì phải xoá ở phía test tương đương.
+- Các chỗ mô tả lịch sử "dời `step07` mở khoá `08` và `10`" (CLAUDE.md, PIPELINE.md,
+  bình luận trong `core/llm.py`/`crosscheck/claims_vs_conduct.py`) được sửa lại chỉ còn
+  `08` — sự kiện mở khoá `10` vẫn có thật lúc đó, nhưng nhắc lại hôm nay dễ khiến người đọc
+  tưởng nhầm còn một stage `10` đang chờ dời.
+
+**Điều kiện đảo ngược.** Nếu dự án sau này cần lại một phép đo kiểu P6 (coverage/case-study/
+ablation không có ground truth), đó là viết **mới** — tra `git log -- src/step10_evaluate.py
+docs/EVALUATION.md` trước ngày xoá để lấy lại thiết kế cũ làm tham khảo, không phải khôi phục
+nguyên trạng, vì các doc thiết kế phụ thuộc nó (`docs/CROSSCHECK_EXPANSION.md`,
+`docs/SOFTMAX_SCORING.md`) cũng đã được đánh dấu là đề xuất treo, không còn chỗ để cắm.
 
 ## 5. Sửa lỗi trong lúc refactor — nguyên tắc "vá ở stage sớm nhất"
 
@@ -587,7 +622,13 @@ nhưng là rào cản để bấm nút):
   ý làm mất hiệu lực dossier hiện có giữa chừng; việc đó xảy ra đúng một lần, có kế hoạch.
 - Cho tới lúc đó, `src/` vẫn là pipeline chạy thật và dossier hiện có vẫn là bản giao.
 
-### 5.5 `step05` khi được dời KHÔNG được ghi đè đồ thị đã vá (chốt 2026-07-27)
+### 5.5 `step05` khi được dời KHÔNG được ghi đè đồ thị đã vá (chốt 2026-07-27, ĐÃ LÀM 2026-07-29)
+
+✅ **Cập nhật 2026-07-29: đã dời `step05` (`esg_kg/resolve/entities.py`, stage thứ mười
+bốn) kèm khối `build_resolved` (§5.7 "Áp cho cụm 05", §3.2b của PIPELINE.md).** Toàn bộ
+mục này vẫn đúng làm bối cảnh (mô tả khiếm khuyết trong `src/`, vẫn còn nguyên vì `src/`
+không đổi — Model A), nhưng phần "quyết định" bên dưới nay đã thành code, không còn là
+kế hoạch. Đọc §5.7 để biết cơ chế thật đã chọn.
 
 Hôm nay đọc lại đường dữ liệu của cụm 05 thì lộ ra một khiếm khuyết thiết kế trong `src/`:
 **chuỗi vá là bắt buộc nhưng không có gì bảo vệ nó.** Bản `esg_kg` không được mang khiếm
@@ -788,14 +829,32 @@ vẫn làm **oracle** được, dù vĩnh viễn không được sửa:
 "cùng nội dung, khác thời điểm ghi" thì **dừng lại bàn** — lúc đó không còn oracle nào nữa,
 và đó là loại thay đổi khác hẳn về mức rủi ro.
 
-**Áp cho cụm 05 (trả lời phần bỏ ngỏ của §5.5).** Cùng luật ⇒ `05 → 05b → 05c (→ 05d)` cũng
-là **một khối**, ghi `resolved_graph.json` một lần ở cuối. Đây thực chất là **phương án thứ
-tư** cho bảng ở §5.5, và nó tốt hơn cả ba dòng trong đó: không tốn thêm 40 MB như hai phương
-án artifact bất biến, không cần `--force` mong manh như phương án thứ ba, và **xoá hẳn** khái
-niệm "vá tại chỗ" thay vì canh gác nó. Ràng buộc riêng của cụm 05 vẫn phải giữ: `05d` là
-**tuỳ chọn** nên khối phải chạy đúng khi thiếu nó, và phần LLM của `05`/`05d` rơi vào đúng
-luật cache ở trên. Quyết định cuối cùng vẫn thuộc lúc dời `step05`, nhưng mặc định bây giờ là
-phương án khối, không phải ba dòng kia.
+**Áp cho cụm 05 (trả lời phần bỏ ngỏ của §5.5) — ĐÃ LÀM 2026-07-29.** Cùng luật ⇒
+`05 → 05b → 05c` là **một khối** (`esg_kg/resolve/build_resolved.py`), ghi
+`resolved_graph.json` một lần ở cuối. Đây là **phương án thứ tư** cho bảng ở §5.5, và nó
+tốt hơn cả ba dòng trong đó: không tốn thêm 40 MB như hai phương án artifact bất biến,
+không cần `--force` mong manh như phương án thứ ba, và **xoá hẳn** khái niệm "vá tại chỗ"
+thay vì canh gác nó. Ràng buộc riêng của cụm 05 được giữ đúng như dự tính:
+
+- **`05d` KHÔNG nằm trong khối** — nó **tuỳ chọn** (budgeted LLM) và tự vá
+  `resolved_graph.json` SAU khối, y hệt trước giờ; khối phải ra một `resolved_graph.json`
+  đúng và đầy đủ dù `05d` vắng mặt, và arm oracle chứng minh đúng điều đó (05d không tham
+  gia bước nào của nó).
+- **Cache pha trả tiền được khoanh vùng hẹp hơn dự tính ban đầu — chỉ Stage C, không
+  phải "05/05d" nói chung.** Đọc lại lúc thực thi thì cụm 05 có HAI nhánh tốn tiền khác
+  nhau: Stage B (`gemini-embedding-001`, tính similarity) và Stage C
+  (`gemini-2.5-flash`, phán quyết `same_entity`). Chỉ Stage C là bản sao đúng nghĩa của
+  pha 2 khối 03 (LLM, không tất định) nên chỉ nó được cache
+  (`AdjudicationCache`, khoá theo nội dung cặp node). Stage B bị bỏ ngoài **có chủ ý**:
+  nó tất định theo phiên bản model, và theo CLAUDE.md pipeline hôm nay chạy `--no-llm`
+  nên Stage B/C không hề chạy trong pipeline sống — viết cache cho một nhánh đang ngủ
+  đông là việc đầu cơ, để lại làm follow-up nếu Stage B quay lại dùng thường xuyên.
+
+Kết quả kiểm: arm oracle (chạy `src/` `step05(--no-llm) → step05b → step05c` làm oracle
+trên corpus thật, so với khối) khớp **10 425 node / 14 387 cạnh giống hệt tuyệt đối**;
+arm cache (chạy khối 2 lần qua client giả) cho thấy lần hai gọi `generate_content` **0
+lần**. Test: `test/test_esg_kg_entities.py` + `test/test_esg_kg_resolve_block.py`. Chi
+tiết đầy đủ: PIPELINE.md §3.2b.
 
 **Cái KHÔNG được mất khi gộp khối:**
 
