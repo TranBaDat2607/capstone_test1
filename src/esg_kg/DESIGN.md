@@ -342,6 +342,13 @@ Vì vậy ta **không rewire `src/`**. Thay vào đó:
 
 ### 4.1 `step07b` KHÔNG được dời sang `esg_kg` (quyết định 2026-07-25)
 
+⚠️ **Cập nhật 2026-07-29 (§7):** phần dưới đây, kể cả các dòng "❌ KHÔNG xoá
+`src/step07b_enrich_dossiers.py`", mô tả quyết định TẠI THỜI ĐIỂM 2026-07-25, khi `src/`
+còn phải chạy được song song với `esg_kg`. Quyết định đó đã bị **thay bằng một quyết định
+mới** khi `src/` bị xoá hẳn 2026-07-29: file này (và `step04b`/`step10`) **đã bị xoá cùng
+`src/`**, không giữ lại làm công cụ standalone nữa — xem §7. Đọc phần dưới cho *lý do*
+step07b ngoài phạm vi migrate, không phải như một hướng dẫn "đừng xoá file" còn hiệu lực.
+
 Refactor là lúc rẻ nhất để **không** mang một thứ sang kiến trúc mới. `step07b`
 (softmax cân bằng bằng chứng, `docs/SOFTMAX_SCORING.md`) từng là stage kế tiếp trong
 danh sách trên — nay bị loại khỏi phạm vi migrate.
@@ -393,6 +400,11 @@ Bảng stage được canh bởi `test/test_pipeline_table.py`: một stage `Non
 phải có note nói rõ "not ported", và `--list` không được phép hiển thị nó như "chưa dời".
 
 ### 4.2 `step04b` KHÔNG được dời sang `esg_kg` — registry thành config tĩnh (quyết định 2026-07-26)
+
+⚠️ **Cập nhật 2026-07-29 (§7):** cùng caveat như §4.1 — dòng "❌ KHÔNG xoá
+`src/step04b_build_standards_registry.py`" mô tả quyết định 2026-07-26, khi `src/` còn
+chạy song song. File đó **đã bị xoá cùng `src/` ngày 2026-07-29**; rebuild registry từ đầu
+nay có nghĩa là sửa tay `config/standards_registry.json`, không còn script nào để chạy.
 
 Khác `step07b` (§4.1, loại vì không ai tiêu thụ output), `step04b` bị loại vì **bản thân
 nó không phải một stage**. Hai bằng chứng, đều đo được:

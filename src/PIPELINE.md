@@ -892,25 +892,27 @@ trên chính output của khối để chắc nó vẫn nhận đúng hình dạ
 
 ---
 
-## 4. Hai stage cố ý KHÔNG dời, một stage đã bị xoá hẳn
+## 4. Ba stage bị xoá hẳn khỏi dự án — không phải "chưa dời"
 
-Không phải "chưa làm" — là **quyết định**, nhưng có **hai loại quyết định khác nhau**,
-đừng gộp chung:
+**Cập nhật 2026-07-29:** khi `src/` (cây phẳng cũ) bị xoá, cả ba stage dưới đây bị xoá
+**cùng lúc** — không còn file nào của chúng tồn tại nữa, kể cả `04b`/`07b` vốn trước đó
+từng được **cố ý giữ lại** làm công cụ standalone (⛔, chạy tay được) trong khi refactor
+còn dở dang. Bảng hai-loại-quyết-định (⛔ vs 🗑️) ở lịch sử trước ngày đó không còn áp
+dụng cho ba stage này nữa — quyết định cuối cùng cho cả ba là 🗑️:
 
-| Loại | Nghĩa | File `src/` |
+| Loại | Nghĩa |
+|---|---|
+| 🗑️ **xoá khỏi dự án** | ngoài **phạm vi dự án**; không còn là sản phẩm giao nữa; không còn file `src/` nào để chạy tay |
+
+`run.py --list` không in dòng nào cho cả ba — không còn hàng nào trong `pipeline.py::STAGES`
+để mà in ra, và bị loại khỏi mẫu số "15/15" (nếu tính vào thì tiến độ migrate vĩnh viễn
+không thể đạt 100%).
+
+| Stage | Vì sao xoá | Chi tiết |
 |---|---|---|
-| ⛔ **cố ý không dời** | ngoài **phạm vi refactor**; stage vẫn là sản phẩm giao, vẫn chạy tay được | **còn giữ** |
-| 🗑️ **xoá khỏi dự án** | ngoài **phạm vi dự án**; không còn là sản phẩm giao nữa | **đã xoá** |
-
-`run.py --list` in `(not ported)` cho loại ⛔ và loại khỏi mẫu số; loại 🗑️ không còn dòng
-nào trong `pipeline.py::STAGES` để mà in ra — nếu tính cả hai loại vào mẫu số thì tiến độ
-migrate vĩnh viễn không thể đạt 100%.
-
-| Stage | Loại | Vì sao loại | Chi tiết |
-|---|---|---|---|
-| **04b** `build_standards_registry` | ⛔ | Nó đọc `resolved_graph.json` = **output của step05**, trong khi step05 đọc registry là output của nó → **vòng lặp**, bare clone không chạy được. Và lần quét đồ thị đóng góp **0**: cả 10 alias đều là seed hard-code. → registry thành **config tĩnh**, phần quét thành **audit trong step00**. | DESIGN.md §4.2 |
-| **07b** `enrich_dossiers` | ⛔ | Bề mặt giao (`frontend/` + `api/`) **không đọc** điểm softmax; cả step08 lẫn step09 đều chịu được khi thiếu. Muốn có điểm thì chạy tay. | DESIGN.md §4.1 |
-| **10** `evaluate` | 🗑️ | Quyết định 2026-07-28: bỏ hẳn kiểu đo P6 (coverage/case-study/ablation không có ground truth) khỏi danh sách sản phẩm giao — không phải vì bị thay thế bởi cơ chế khác, đơn giản là không cần đo kiểu này nữa. `src/step10_evaluate.py` và `docs/EVALUATION.md` đã bị xoá, khác `04b`/`07b` (giữ nguyên file). | DESIGN.md §4.3 |
+| **04b** `build_standards_registry` | Nó đọc `resolved_graph.json` = **output của step05**, trong khi step05 đọc registry là output của nó → **vòng lặp**, bare clone không chạy được. Và lần quét đồ thị đóng góp **0**: cả 10 alias đều là seed hard-code. → registry thành **config tĩnh** (`config/standards_registry.json`, hand-edited), phần quét thành **audit trong step00** (`standards_registry_audit`). Ban đầu (quyết định 2026-07-26) chỉ là "không dời, giữ làm công cụ standalone"; **xoá hẳn file cùng `src/` ngày 2026-07-29** — muốn dựng lại registry từ đầu nay là sửa tay JSON, không chạy script nào. | DESIGN.md §4.2 |
+| **07b** `enrich_dossiers` | Bề mặt giao (`frontend/` + `api/`) **không đọc** điểm softmax (`assessment_scores`/`score_components`); cả step08 lẫn step09 đều chịu được khi thiếu (step08 ghi null, step09 bỏ qua khối đó). Ban đầu (quyết định 2026-07-25) chỉ là "không dời, giữ làm công cụ standalone"; **xoá hẳn file cùng `src/` ngày 2026-07-29** thay vì dời sang `src/tools/` — chấp nhận mất công cụ standalone. | DESIGN.md §4.1 |
+| **10** `evaluate` | Quyết định 2026-07-28: bỏ hẳn kiểu đo P6 (coverage/case-study/ablation không có ground truth) khỏi danh sách sản phẩm giao — không phải vì bị thay thế bởi cơ chế khác, đơn giản là không cần đo kiểu này nữa. `src/step10_evaluate.py` và `docs/EVALUATION.md` bị xoá ngay hôm đó, sớm hơn `04b`/`07b` một ngày. | DESIGN.md §4.3 |
 
 ---
 
