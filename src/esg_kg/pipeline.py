@@ -27,6 +27,10 @@ STAGES = [
      "LLM adjudication (mandatory); migrating it unblocks 08 (node_text)"),
     ("08",  "step08_sync_crosscheck_to_neo4j",     "esg_kg.load.neo4j_sync",          "advisory layer -> Neo4j; first Neo4j-touching stage migrated"),
     ("09",  "step09_report_claim_ledger",          "esg_kg.report.claim_ledger",      "Neo4j-only; run after 08"),
+    ("11",  "step11_export_kgc_hub_decomposition", "esg_kg.export.export_kgc",
+     "offline; hub-cluster decomposition for an SSRL export view ONLY — never patches "
+     "resolved_graph.json/Neo4j (P6 boundary); this is only the hub-decomposition piece "
+     "of the future SSRL step11, not its full design; run after build_resolved"),
 ]
 
 # Three stages that were never ported and have NO row here — all REMOVED outright, not
