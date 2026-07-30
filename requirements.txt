@@ -30,8 +30,8 @@ protobuf>=3.20.0         # required by the SentencePiece tokenizer loader
 google-genai
 python-dotenv
 
-# Entity resolution (src_module/esg_kg/resolve/entities.py — Gemini embeddings + cosine blocking)
+# Entity resolution (src/esg_kg/resolve/entities.py — Gemini embeddings + cosine blocking)
 numpy>=1.26.0
 
-# Neo4j graph load (src_module/esg_kg/load/neo4j_load.py — step 5)
+# Neo4j graph load (src/esg_kg/load/neo4j_load.py — step 5)
 neo4j>=5.0

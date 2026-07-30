@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Real-LLM SYSTEM test: drives the actual `python src_module/run.py <stage> ...` CLI
+Real-LLM SYSTEM test: drives the actual `python src/run.py <stage> ...` CLI
 commands, subprocess by subprocess, in the documented run order — proving the command
 LINE entry points chain correctly, not just the underlying Python functions
 (test_esg_kg_integration_llm.py covers those directly and is complementary, not
@@ -35,14 +35,14 @@ import time
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
-RUN_PY = REPO / "src_module" / "run.py"
+RUN_PY = REPO / "src" / "run.py"
 
 if not os.environ.get("RUN_LLM_SYSTEM_TEST"):
     print("SKIPPED test_esg_kg_system_llm.py — set RUN_LLM_SYSTEM_TEST=1 to run "
           "(this makes real, billed LLM calls via subprocess).")
     sys.exit(0)
 
-sys.path.insert(0, str(REPO / "src_module"))
+sys.path.insert(0, str(REPO / "src"))
 from dotenv import load_dotenv  # noqa: E402
 load_dotenv(REPO / ".env", override=True)
 from esg_kg.core.llm import _OpenAIProvider  # noqa: E402

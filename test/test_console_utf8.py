@@ -4,9 +4,9 @@
 Why this file exists. Commit 03a1592 added a win32 ``sys.stdout.reconfigure(
 encoding="utf-8")`` block to ``src/step00_graph_quality_report.py``'s ``__main__``
 only. The migrated twin ``esg_kg/report/quality.py`` never got it and
-``src_module/run.py`` does not touch encoding either — so on a Windows console
+``src/run.py`` does not touch encoding either — so on a Windows console
 ``python src/step00_...`` printed its report fine while ``python
-src_module/run.py quality`` could still die with ``UnicodeEncodeError`` at
+src/run.py quality`` could still die with ``UnicodeEncodeError`` at
 ``print(render_markdown(report))``. The refactored tree was strictly worse than
 the one it replaces, at the one stage that exists to be run before AND after
 every change. Repointed at `esg_kg` only (2026-07-29) now that `src/` is gone;
@@ -34,7 +34,7 @@ Two things are asserted, because either alone would be a false green:
 
 The call site is the top of ``main()``, NOT ``__main__``, deliberately: that is
 the only place both documented invocations pass through — ``python
-src_module/run.py quality`` (which calls ``mod.main()``) and ``python -m
+src/run.py quality`` (which calls ``mod.main()``) and ``python -m
 esg_kg.report.quality`` — and it keeps ``run.py`` a pure ``sys.path`` fixer that
 "adds no behaviour", as its own docstring promises. It must NOT run at import
 time: reconfiguring the stream out from under every importer (this test
@@ -50,10 +50,10 @@ import sys
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO / "src_module"))
+sys.path.insert(0, str(REPO / "src"))
 
-NEW_FILE = REPO / "src_module" / "esg_kg" / "report" / "quality.py"
-CORE_FILE = REPO / "src_module" / "esg_kg" / "core" / "console.py"
+NEW_FILE = REPO / "src" / "esg_kg" / "report" / "quality.py"
+CORE_FILE = REPO / "src" / "esg_kg" / "core" / "console.py"
 
 HELPER = "ensure_utf8_stdout"
 

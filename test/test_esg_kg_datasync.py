@@ -3,7 +3,7 @@
 Behaviour tests for `esg_kg.core.datasync` — a utility, not a pipeline stage
 (`pipeline.py`'s own comment names this destination), so it carries no `STAGES`/
 `BLOCKS` row and is not runnable via `run.py`; it stays a standalone script, exactly
-like `src/data_sync.py` was (`python src_module/esg_kg/core/datasync.py push|pull|status`).
+like `src/data_sync.py` was (`python src/esg_kg/core/datasync.py push|pull|status`).
 
 Was driven through both `src/data_sync.py` and `esg_kg.core.datasync` while both trees
 existed, proving the verbatim port was byte-for-byte equivalent (DESIGN.md §5.3).
@@ -23,7 +23,7 @@ import sys
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO / "src_module"))
+sys.path.insert(0, str(REPO / "src"))
 
 from esg_kg.core import datasync as ds  # noqa: E402
 

@@ -46,7 +46,7 @@ import sys
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO / "src_module"))
+sys.path.insert(0, str(REPO / "src"))
 
 # --- the esg_kg package -----------------------------------------------------------
 from esg_kg.report import claim_ledger as new_step09  # noqa: E402

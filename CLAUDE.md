@@ -14,7 +14,7 @@ cross-checked against its *real-world* conduct.
 
 `EmeraldMind/` is an external reference implementation. **Never edit it and never
 treat its files as part of this codebase** (don't list, refactor, or count them as
-project files). You may read it to understand intent: `src_module/esg_kg` (originally
+project files). You may read it to understand intent: `src/esg_kg` (originally
 `src/`, since migrated and deleted — see "Refactor history" below) ports
 `EmeraldMind/src/EmeraldKG/` steps 1→2→3 closely, then 4 (entity resolution) as a
 **deliberate redesign** — all adapted to take **labeled JSONL** input (not PDFs) and a
@@ -28,7 +28,7 @@ repo and secrets, so it is never committed or pushed with this project.
 
 - **Windows / PowerShell** host. `.rar`/`.7z` extraction in `crawl_data/extract_archives.py`
   shells out to external **UnRAR.exe / 7z.exe** (install WinRAR + 7-Zip separately).
-- **Generated data is distributed via Hugging Face, not Git** (`src_module/esg_kg/core/datasync.py`,
+- **Generated data is distributed via Hugging Face, not Git** (`src/esg_kg/core/datasync.py`,
   not a pipeline step): `data/`, `graph_output/`, `kpi_output/` are git-ignored (~342 MB) and ship
   as an HF dataset repo. The pushed revision is **pinned in `data_version.json`, which IS
   tracked in Git** — so a checkout recovers the data that went with that code, which is what
@@ -51,7 +51,7 @@ repo and secrets, so it is never committed or pushed with this project.
   additive provider for the stages listed below). Every `esg_kg` LLM stage loads `.env`
   from the repo root regardless of cwd. `.env` is git-ignored — never commit it.
 - **Layout principle (enforced):** code lives only in the package folders
-  (`crawl_data/`, `data_processing/`, `esg_news_crawler/`, `src_module/`,
+  (`crawl_data/`, `data_processing/`, `esg_news_crawler/`, `src/`,
   `kpi_build/`, `gri/`, plus the UI pair `api/` + `frontend/`). Everything else is `config/`
   (schema + dictionaries), `neo4j/` (`init.cypher` constraints + `crosscheck_queries.cypher`
   analyst queries), or `data/` (`raw/` → `interim/` → `labeled/` → `outputs/`).
@@ -61,13 +61,22 @@ repo and secrets, so it is never committed or pushed with this project.
 - **Two execution styles — do not mix them:**
   - `data_processing/` and `esg_news_crawler/` are **packages**, run as modules:
     `python -m data_processing.extract_esg`.
-  - `src_module/esg_kg/` is a real package, run from the repo root via its dispatcher —
-    `python src_module/run.py quality --label baseline` (equivalently
-    `python -m esg_kg.report.quality` from inside `src_module/`). All 15/15 stages are
-    migrated (`python src_module/run.py --list` shows the table, reading it from the
-    import system rather than a hand-kept list). **`src/` is gone — deleted 2026-07-29,
-    refactor complete** (`src_module/esg_kg/DESIGN.md` §7, `src_module/PIPELINE.md` §7).
-    `esg_kg` is the only pipeline tree now.
+  - `src/esg_kg/` is a real package, run from the repo root via its dispatcher —
+    `python src/run.py quality --label baseline` (equivalently
+    `python -m esg_kg.report.quality` from inside `src/`). All 15/15 stages are
+    migrated (`python src/run.py --list` shows the table, reading it from the
+    import system rather than a hand-kept list). **The old flat layout — one
+    `src/stepNN_*.py` script per stage — is gone, deleted 2026-07-29, refactor
+    complete** (`src/esg_kg/DESIGN.md` §7, `src/PIPELINE.md` §7). `esg_kg` is the
+    only pipeline tree now.
+- **`src/` means the `esg_kg` package tree, and only that** (renamed from
+  `src_module/` on 2026-07-30, once the refactor was closed out and the name was free
+  again). The history prose below — and most of `docs/` — was written while `src/` was
+  the OLD flat `stepNN_*.py` tree, so a sentence there saying `src/` was "deleted", was
+  "the oracle", or held `step07_crosscheck_claims_vs_conduct.py` is talking about that
+  old layout, **not** about today's `src/`. Paths of the form `src/stepNN_*.py` are
+  historical labels — no such file exists now; the live commands are all
+  `python src/run.py <stage>`.
 - **Sentence-level traceability** (`source_pdf`, `page`, `sentence_index`) is preserved
   through every stage so each graph node traces back to its source — keep it intact.
 - **Torch is intentionally absent from `requirements.txt`.** The ViDeBERTa ESG classifier
@@ -113,17 +122,21 @@ Conventions (match `test/test_temporal_invariants.py`, the existing precedent):
 - Run from the repo root: `python test/<name>.py`.
 - Touching step03/03b/03c/05/05b/05c/08 still means re-running `test_temporal_invariants.py`.
 
-## Refactor history: `src/` → `src_module/esg_kg/` (COMPLETE — `src/` deleted 2026-07-29)
+## Refactor history: flat `src/stepNN_*.py` → `src/esg_kg/` (COMPLETE — old tree deleted 2026-07-29)
 
-**Status: done.** All 15/15 stages migrated, `src/` has been deleted outright, and
-`src_module/esg_kg/` is now the only pipeline tree — there is no second copy left to stay
-equivalent with. `python src_module/run.py --list` is the live source of truth for stage
-status. `src_module/esg_kg/DESIGN.md` §7 and `src_module/PIPELINE.md` §7 record the closeout.
+**Reading note (added 2026-07-30):** everywhere below, a bare `src/` means the **old flat
+layout** (one `stepNN_*.py` script per stage), which was deleted 2026-07-29. Today's `src/`
+is the package tree that used to be `src_module/`, renamed once the old name was free.
+
+**Status: done.** All 15/15 stages migrated, the old flat tree has been deleted outright,
+and `src/esg_kg/` is now the only pipeline tree — there is no second copy left to stay
+equivalent with. `python src/run.py --list` is the live source of truth for stage
+status. `src/esg_kg/DESIGN.md` §7 and `src/PIPELINE.md` §7 record the closeout.
 The section below is kept as a **historical log of how the migration happened** (design
 rules that governed it while both trees existed, and a per-stage record of what moved and
 what was learned) — read it for *why the codebase looks the way it does*, not as a
 description of a refactor still in progress. Design + old→new file mapping:
-`src_module/esg_kg/DESIGN.md`; canonical run order: `src_module/esg_kg/pipeline.py`.
+`src/esg_kg/DESIGN.md`; canonical run order: `src/esg_kg/pipeline.py`.
 
 Rules that governed the migration while it was in flight (historical — `src/` no longer
 exists, so these no longer apply, but they explain decisions baked into `esg_kg` today):
@@ -156,7 +169,7 @@ deletion.
 
 State: `core/` has `paths` (marker-based `REPO_ROOT`), `schema`, `naming`, `dates`, all
 covered by `test/test_esg_kg_equivalence.py`. **`step00` is the first migrated STAGE**
-(`esg_kg/report/quality.py`) — with it the run convention is settled: `src_module/run.py`
+(`esg_kg/report/quality.py`) — with it the run convention is settled: `src/run.py`
 is the only file that touches `sys.path`, and it reads the stage table from `pipeline.py`
 so `--list` reports migration status honestly. No `pip install` step.
 
@@ -197,7 +210,7 @@ so a re-run emits nothing and the arm compared two empty results while printing 
 is now a known law for every in-place-patch stage, with two confirmed cases — strip the
 stage's OWN past output to rebuild the pre-patch input (`strip_axis` for 05c,
 `strip_anchors` for 03b), stripping by provenance and never by edge label (the other 211
-`observedAtFacility` edges came from extraction and must stay). See `src_module/PIPELINE.md` §3.
+`observedAtFacility` edges came from extraction and must stay). See `src/PIPELINE.md` §3.
 `step05b` is the fifth migrated stage (`esg_kg/resolve/provenance.py`, 2026-07-27), diff
 18 added / 8 deleted — docstring and imports only, **no logic line changed**. It is the
 first stage to move **without extracting any new `core/` module**: the step03b slice had
@@ -443,7 +456,7 @@ the rest of `src/`**, a deliberate simplification (accept losing the standalone 
 than port or preserve it) rather than the earlier "not ported but kept runnable" stance.
 Dossiers never carry `assessment_scores`/`score_components` now.
 **`step02` moved on 2026-07-29 (the 15th and FINAL stage, `esg_kg/graph/extract_triples.py`)**,
-closing out the refactor — `python src_module/run.py --list` now reports 15/15. Two
+closing out the refactor — `python src/run.py --list` now reports 15/15. Two
 commits, in order, per the standing rule that a behaviour change lands in `src/` before
 a pure move (§5.3, the same order `046e572` used for `03`):
 - **Prompt fix first** (issue #6): `TEMPORAL_GRAPH_PROMPT_TEMPLATE` and
@@ -495,18 +508,18 @@ outright rather than ported — see below), so they don't count against the 15/1
 
 Known-debt note, since resolved: `src/step00_graph_quality_report.py` used to duplicate the
 T1/T2/T3 tier map that `test/test_schema_contract.py` imports — moot now that `src/` is gone
-(`src_module/esg_kg/DESIGN.md` §6.1 has the record).
+(`src/esg_kg/DESIGN.md` §6.1 has the record).
 
 **Three stages were removed from the project outright rather than ported, all now gone with
 `src/` (2026-07-29):**
 - **`step10`** (P6 evaluation) — removed 2026-07-28, a *project-scope* decision: this style
   of measurement (coverage/case-study/ablation with no ground truth) is no longer a
   deliverable, not superseded by anything. `src/step10_evaluate.py` and `docs/EVALUATION.md`
-  were deleted at that time. See `src_module/esg_kg/DESIGN.md` §4.3 and
-  `src_module/PIPELINE.md` §4.
+  were deleted at that time. See `src/esg_kg/DESIGN.md` §4.3 and
+  `src/PIPELINE.md` §4.
 - **`step04b`** (standards-registry reseed) and **`step07b`** (softmax evidence-balance
   scores) — originally kept as standalone `src/` tools (DESIGN.md §4.1/§4.2), but removed
-  outright when `src/` was deleted on 2026-07-29 rather than moved to `src_module/tools/` or
+  outright when `src/` was deleted on 2026-07-29 rather than moved to `src/tools/` or
   ported: an intentional simplification, accepting the loss of both standalone tools.
   `esg_kg/pipeline.py::STAGES` carries no rows for any of the three.
 
@@ -523,7 +536,7 @@ Corrections to DESIGN.md found by review, since resolved by the migrations thems
   `from step07… import Adjudicator` inside a `try` still fails *silently* if broken, but
   `step07` has now moved too (2026-07-28), so `step08` is unblocked and just awaits its own
   turn. (`step10` itself was removed from the project on 2026-07-28, after this was
-  written — see the "Known debt" note above and `src_module/esg_kg/DESIGN.md` §4.3; the
+  written — see the "Known debt" note above and `src/esg_kg/DESIGN.md` §4.3; the
   file path quoted above no longer exists.)
 
 ## Pipeline architecture (the big picture)
@@ -557,9 +570,9 @@ Both feed the same `esg_kg` graph-construction path and land in one temporal KG 
 `-m` package, not wired into pipeline B above) — treat it as a legacy/experimental tool, not
 the documented news-ingestion path. See `docs/NEWS_CRAWLER_OPTIMIZATION.md` for its design.
 
-**C. Labeled JSONL → temporal knowledge graph (`src_module/esg_kg`)**
+**C. Labeled JSONL → temporal knowledge graph (`src/esg_kg`)**
 
-Run via `python src_module/run.py <stage> [args]` from the repo root (`--list` shows every
+Run via `python src/run.py <stage> [args]` from the repo root (`--list` shows every
 stage). The `stepNN_` labels below are the historical run-order names each stage carries as
 its `old_step` field in `pipeline.py` — `src/`, the tree that filename prefix used to name a
 real file in, was deleted 2026-07-29 (refactor complete, DESIGN.md §7); they are kept only
@@ -759,9 +772,9 @@ See `docs/SCHEMA_EXPLAINED.md` for the rationale.
 pip install -r requirements.txt
 
 # 0. Land the data snapshot this commit was built against (instead of re-running the pipeline)
-python src_module/esg_kg/core/datasync.py status            # what is pinned vs what is local
-python src_module/esg_kg/core/datasync.py pull               # teammate: fetch the revision in data_version.json
-python src_module/esg_kg/core/datasync.py push                # after a rebuild: upload + re-pin (needs org `write`)
+python src/esg_kg/core/datasync.py status            # what is pinned vs what is local
+python src/esg_kg/core/datasync.py pull               # teammate: fetch the revision in data_version.json
+python src/esg_kg/core/datasync.py push                # after a rebuild: upload + re-pin (needs org `write`)
                                                             #   then: git add data_version.json && git commit
 
 # A. Annual report → labeled ESG sentences
@@ -774,29 +787,29 @@ python -m data_processing.extract_esg            # labeled JSONL → esg_extract
 python -m esg_news_crawler.run --ticker AAA --limit 1
 python -m data_processing.preprocess_news                             # P1: → data/interim/news_preprocessed/ (date-normalize + drop boilerplate)
 
-# C. Labeled JSONL → temporal KG (src_module/esg_kg — run from the repo root, in order)
-python src_module/run.py --list                                            # every stage + status
-python src_module/run.py quality --label baseline                         # Q1–Q8 snapshot (before/after any change; offline)
-python src_module/run.py extract -i <labeled.jsonl>                       # → kpi_output/
-python src_module/run.py extract_triples -i <report_labeled.jsonl>        # → graph_output/graphs/ (claim side; --source report default)
-python src_module/run.py extract_triples -i <news_preprocessed.jsonl> --source news   # conduct side (stamps source_type=news)
-python src_module/run.py build_validated --dry-run                        # BLOCK fix_triples -> anchor_kpi -> canonicalize, writes
+# C. Labeled JSONL → temporal KG (src/esg_kg — run from the repo root, in order)
+python src/run.py --list                                            # every stage + status
+python src/run.py quality --label baseline                         # Q1–Q8 snapshot (before/after any change; offline)
+python src/run.py extract -i <labeled.jsonl>                       # → kpi_output/
+python src/run.py extract_triples -i <report_labeled.jsonl>        # → graph_output/graphs/ (claim side; --source report default)
+python src/run.py extract_triples -i <news_preprocessed.jsonl> --source news   # conduct side (stamps source_type=news)
+python src/run.py build_validated --dry-run                        # BLOCK fix_triples -> anchor_kpi -> canonicalize, writes
                                                                            #   all_validated_triples.json ONCE (DESIGN.md §5.7); then without --dry-run
-python src_module/run.py fix_triples --renormalize                        #   P4-only pass on the existing validated file (no LLM; not part of the block)
-python src_module/run.py issuer                                           # → config/issuer_registry.json (run-once; then hand-confirm needs_review)
+python src/run.py fix_triples --renormalize                        #   P4-only pass on the existing validated file (no LLM; not part of the block)
+python src/run.py issuer                                           # → config/issuer_registry.json (run-once; then hand-confirm needs_review)
 #   (no step04b: config/standards_registry.json is static config, hand-edited; quality audits its coverage)
 python gri/build_gri_catalog.py                                              # → config/gri_catalog.json (run-once builder, not a stage; commit the result)
-python src_module/run.py build_resolved --dry-run                         # BLOCK entities -> provenance -> indicators, writes
+python src/run.py build_resolved --dry-run                         # BLOCK entities -> provenance -> indicators, writes
                                                                            #   resolved_graph.json ONCE (DESIGN.md §5.7); then without --dry-run
-python src_module/run.py align_claims --dry-run                           # OPTIONAL LLM: align remaining claims (then --max-llm-pairs N to run)
-python src_module/run.py neo4j_load --dry-run                             # preview planned counts, no DB
+python src/run.py align_claims --dry-run                           # OPTIONAL LLM: align remaining claims (then --max-llm-pairs N to run)
+python src/run.py neo4j_load --dry-run                             # preview planned counts, no DB
 docker compose up -d                                                 # start Neo4j on :8687 (then run neo4j/init.cypher once — see docs)
-python src_module/run.py neo4j_load --clear                               # → Neo4j (wipe + load; needs the instance running)
-python src_module/run.py claims_vs_conduct --dry-run                      # preview claim↔conduct pairs (runs LLM, writes nothing)
-python src_module/run.py claims_vs_conduct                                # → graph_output/crosscheck/ (advisory dossiers + linking edges)
-python src_module/run.py neo4j_sync                                       # push dossiers into Neo4j advisory layer (no LLM)
-python src_module/run.py claim_ledger                                     # render the AAA claim ledger FROM Neo4j (no LLM)
-python src_module/run.py claim_ledger --review-queue --markdown           #   contradiction-no-verification queue + Markdown file
+python src/run.py neo4j_load --clear                               # → Neo4j (wipe + load; needs the instance running)
+python src/run.py claims_vs_conduct --dry-run                      # preview claim↔conduct pairs (runs LLM, writes nothing)
+python src/run.py claims_vs_conduct                                # → graph_output/crosscheck/ (advisory dossiers + linking edges)
+python src/run.py neo4j_sync                                       # push dossiers into Neo4j advisory layer (no LLM)
+python src/run.py claim_ledger                                     # render the AAA claim ledger FROM Neo4j (no LLM)
+python src/run.py claim_ledger --review-queue --markdown           #   contradiction-no-verification queue + Markdown file
 # (step07b softmax scores and step10 P6 evaluation were both removed outright with src/ on
 #  2026-07-29 — see "Refactor history" above; there is no replacement command for either)
 
@@ -1230,8 +1243,8 @@ respective subsystems.
 
 Added with the GRI catalog (2026-07-26), describing stage C by its now-deleted `src/`
 filenames — the pipeline shape/diagrams are still accurate, but none of them mention
-`src_module/`/`esg_kg`'s stage names, so for the current view of stage C read
-`src_module/PIPELINE.md` and `esg_kg/pipeline.py` instead: `docs/PIPELINE_DIAGRAMS.md` (10 figures: architecture,
+`src/`/`esg_kg`'s stage names, so for the current view of stage C read
+`src/PIPELINE.md` and `esg_kg/pipeline.py` instead: `docs/PIPELINE_DIAGRAMS.md` (10 figures: architecture,
 collection, extraction, KPI, KG construction, entity resolution, cross-check, schema, data
 layout, end-to-end sequence), `docs/PIPELINE_UNIFIED.md`, `docs/PROJECT_OVERVIEW.md`,
 `docs/GRI_SCHEMA_DOCUMENTATION.md` (the shape of `gri/full_gri/json/*.json` and of

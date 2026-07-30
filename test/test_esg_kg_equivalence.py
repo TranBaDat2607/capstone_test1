@@ -3,7 +3,7 @@
 Regression checks for the `esg_kg.core` kernel modules (paths, schema, naming, dates,
 graph_patch) plus the report/quality (step00) and resolve/indicators (step05c) stages.
 
-Was the safety net for the `src/` -> `src_module/esg_kg/` refactor (Model A): it used to
+Was the safety net for the `src/` -> `src/esg_kg/` refactor (Model A): it used to
 import both trees, run them on the same real input, and assert the results equal. Now
 that every stage has moved and `src/` is deleted, this file is repointed at `esg_kg`
 alone (2026-07-29). Wherever a comparison had no independent claim of its own, it was
@@ -41,7 +41,7 @@ import tempfile
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO / "src_module"))
+sys.path.insert(0, str(REPO / "src"))
 
 # --- the esg_kg package ---------------------------------------------------------
 from esg_kg.core import dates as new_dates  # noqa: E402

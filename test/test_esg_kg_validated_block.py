@@ -46,7 +46,7 @@ import sys
 import tempfile
 
 REPO = pathlib.Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO / "src_module"))
+sys.path.insert(0, str(REPO / "src"))
 
 from esg_kg.graph import build_validated  # noqa: E402
 from esg_kg.graph import anchor_kpi as new_anchor  # noqa: E402

@@ -1,7 +1,7 @@
 {
   "_doc": [
     "Crosswalk: Vietnamese indicator (TT96 / SSC-IFC) -> GRI Standards code(s).",
-    "Consumed by src/step05c_link_standard_indicators.py to mint StandardIndicator(GRI) nodes",
+    "Consumed by src/esg_kg/resolve/indicators.py (run.py indicators) to mint StandardIndicator(GRI) nodes",
     "and TT96 --equivalentTo--> GRI edges.",
     "",
     "CURATED, HUMAN-REVIEWED DATA. It lives in config/ (NOT in kpi_definitions_construction.json,",

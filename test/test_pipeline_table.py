@@ -1,4 +1,4 @@
-"""Contract test for the refactor's stage table (src_module/esg_kg/pipeline.py + run.py).
+"""Contract test for the refactor's stage table (src/esg_kg/pipeline.py + run.py).
 
 `pipeline.py` is load-bearing, not documentation: `run.py` reads it instead of keeping
 its own copy, so `--list` reports migration progress by asking the import system. That
@@ -24,8 +24,8 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 
 
 def _load_run_py():
-    """Import src_module/run.py by path — it is a script, not part of the package."""
-    spec = importlib.util.spec_from_file_location("esg_kg_run", REPO_ROOT / "src_module" / "run.py")
+    """Import src/run.py by path — it is a script, not part of the package."""
+    spec = importlib.util.spec_from_file_location("esg_kg_run", REPO_ROOT / "src" / "run.py")
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod

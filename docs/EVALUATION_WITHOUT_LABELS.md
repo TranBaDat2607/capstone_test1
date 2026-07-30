@@ -319,7 +319,7 @@ khái niệm đo lường chuẩn, **không cần nhãn**.
 **0 cạnh `llm`**. Mở khoá bằng cách chạy step05d:
 
 ```bash
-python src_module/run.py align_claims --max-llm-pairs 200
+python src/run.py align_claims --max-llm-pairs 200
 ```
 
 Sau đó tính Cohen's κ trên tập claim mà **cả hai tầng** đều gán được:

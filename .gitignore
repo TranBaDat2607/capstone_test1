@@ -24,7 +24,7 @@ env/
 # tracked; only generated artifacts are ignored.
 #   raw -> interim -> labeled -> outputs all live under data/
 # These are distributed to the team via the Hugging Face dataset repo instead —
-# see README "Onboarding" and `python src/data_sync.py pull`. The pinned dataset
+# see README "Onboarding" and `python src/esg_kg/core/datasync.py pull`. The pinned dataset
 # revision lives in data_version.json, which IS tracked.
 data/
 graph_output/
@@ -32,7 +32,7 @@ kpi_output/
 esg_news_output/
 test_data/
 
-# Resume/progress metadata written by upload_large_folder in src/data_sync.py push.
+# Resume/progress metadata written by upload_large_folder in src/esg_kg/core/datasync.py push.
 .cache/
 
 # ---- IDE / OS ----

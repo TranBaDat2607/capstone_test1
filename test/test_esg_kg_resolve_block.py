@@ -51,7 +51,7 @@ import tempfile
 import zlib
 
 REPO = pathlib.Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO / "src_module"))
+sys.path.insert(0, str(REPO / "src"))
 
 # --- the block --------------------------------------------------------------------
 from esg_kg.resolve import build_resolved  # noqa: E402

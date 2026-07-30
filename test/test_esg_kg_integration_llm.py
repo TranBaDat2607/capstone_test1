@@ -42,7 +42,7 @@ import tempfile
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO / "src_module"))
+sys.path.insert(0, str(REPO / "src"))
 
 if not os.environ.get("RUN_LLM_INTEGRATION_TESTS"):
     print("SKIPPED test_esg_kg_integration_llm.py — set RUN_LLM_INTEGRATION_TESTS=1 to run "

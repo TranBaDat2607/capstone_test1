@@ -116,19 +116,19 @@ cp .env.example .env      # then fill in GEMINI_API_KEY (see CLAUDE.md)
 #    "does not exist"). Then make a token of type *Read* at hf.co/settings/tokens — a
 #    fine-grained token must additionally be scoped to the ORG, or it 404s the same way.
 hf auth login             # or put HF_TOKEN in .env (a read token is enough)
-python src_module/esg_kg/core/datasync.py pull
+python src/esg_kg/core/datasync.py pull
 
 # 4. Neo4j — rebuilt locally, NOT downloaded (a live DB volume cannot be copied safely)
 docker compose up -d
-python src_module/run.py neo4j_load --clear    # a few minutes, no LLM
+python src/run.py neo4j_load --clear    # a few minutes, no LLM
 ```
 
-Verify: `python src_module/run.py claim_ledger` should render the AAA claim ledger.
+Verify: `python src/run.py claim_ledger` should render the AAA claim ledger.
 
 **How data and code stay in sync.** `data_version.json` (tracked in Git) pins the dataset
-revision, so `git checkout <old-commit> && python src_module/esg_kg/core/datasync.py pull`
+revision, so `git checkout <old-commit> && python src/esg_kg/core/datasync.py pull`
 restores the data that commit was built against — that pin is what keeps the thesis baseline
-vs after-phase0 numbers reproducible. `python src_module/esg_kg/core/datasync.py status`
+vs after-phase0 numbers reproducible. `python src/esg_kg/core/datasync.py status`
 shows the pinned vs local state and warns when they have drifted apart.
 
 **Publishing a new snapshot.** Anyone with `write` in the org can push, so treat the two
@@ -136,8 +136,8 @@ commands below as one indivisible step:
 
 ```bash
 git pull                                   # so a pin conflict surfaces here, not on the Hub
-python src_module/esg_kg/core/datasync.py push --dry-run     # inspect what would go up
-python src_module/esg_kg/core/datasync.py push               # needs an HF *Write* token scoped to the org
+python src/esg_kg/core/datasync.py push --dry-run     # inspect what would go up
+python src/esg_kg/core/datasync.py push               # needs an HF *Write* token scoped to the org
 git add data_version.json && git commit -m "data: refresh snapshot" && git push
 ```
 

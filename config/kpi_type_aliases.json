@@ -1,7 +1,7 @@
 {
   "_doc": [
     "Curated alias dictionary: free-text KPIObservation (title, unit) -> canonical indicator id.",
-    "Consumed by src/step03c_canonicalize_kpis.py, which writes the result to the NEW property",
+    "Consumed by src/esg_kg/kpi/canonicalize.py (run.py canonicalize), which writes the result to the NEW property",
     "`kpi_id`. It never rewrites `kpi_type`, because kpi_type is part of",
     "KPIObservation.identity_keys and changing it would change node identity.",
     "",

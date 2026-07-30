@@ -47,7 +47,7 @@ import sys
 import tempfile
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO_ROOT / "src_module"))
+sys.path.insert(0, str(REPO_ROOT / "src"))
 
 from esg_kg.graph import fix_triples as step03  # noqa: E402
 from esg_kg.graph.fix_triples import (  # noqa: E402

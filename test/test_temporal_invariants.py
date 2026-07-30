@@ -11,7 +11,7 @@ is a plain assert script — run it from the repo root:
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src_module"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from esg_kg.core.dates import date_start_key, normalize_date_string  # noqa: E402
 from esg_kg.graph.fix_triples import enforce_temporal_invariants  # noqa: E402

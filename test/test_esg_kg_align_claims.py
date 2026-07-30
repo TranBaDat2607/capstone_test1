@@ -77,7 +77,7 @@ import zlib
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO / "src_module"))
+sys.path.insert(0, str(REPO / "src"))
 
 # --- esg_kg package --------------------------------------------------------
 from esg_kg.core import graph_patch as core_graph_patch  # noqa: E402
