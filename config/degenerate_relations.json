@@ -1,0 +1,9 @@
+{
+  "_doc": [
+    "Relations excluded from R1_trainable and any future training-query export",
+    "(GRAPH_IMPROVEMENT_PLAN.md A3): enumeration edges, not inference — a KPI observation",
+    "listed under its issuer is not a fact a walker should be scored on 'predicting'.",
+    "reportsKPI alone is 4,420 of the AAA graph's 9,511 hub edges (measured 2026-07-30)."
+  ],
+  "degenerate_relations": ["reportsKPI"]
+}

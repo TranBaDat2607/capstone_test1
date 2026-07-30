@@ -637,7 +637,9 @@ MINI_REPORT_GOLDEN = {
         'gate': 'keep 100%; extend to reasoning_path per-edge provenance (P7)'},
     'q7_traversability': {
         'a_median_degree': 1.0, 'b_leaf_nodes_pct': 50.0, 'isolated_nodes': 1,
-        'largest_hub': {'class': 'Organization', 'name': 'CTCP Nhựa An Phát Xanh', 'degree': 9},
+        'hubs': [{'ticker': '_unregistered', 'degree': 9, 'node_count': 1,
+                  'names': ['CTCP Nhựa An Phát Xanh']}],
+        'r5_max_hub_degree': 9,
         'e_t2_nodes_degree_ge_2_pct': 40.0,
         'e_t2_anchoring_per_class': {
             'Controversy': {'nodes': 1, 'degree_ge_2_pct': 0.0},
@@ -652,7 +654,13 @@ MINI_REPORT_GOLDEN = {
             'measuredUnder': 100.0, 'publishesReport': 0.0, 'reportedBy': 0.0,
             'subjectToPenalty': 0.0, 'contradictedBy': 0.0, 'notARealEdgeLabel': 0.0},
         'd_claims_structural_path_to_conduct_pct': 50.0, 'd_claims_total': 2, 'd_max_hops': 4,
-        'd_definition': "hub-free path <= max_hops with >=1 structural edge; excluded hub = node 0 ('CTCP Nhựa An Phát Xanh')"},
+        'd_definition': ("hub-free path <= max_hops with >=1 structural edge; "
+                         "excluded hub clusters = ['_unregistered']"),
+        'r1_reachability_pct': 47.8, 'r1_edges_total': 23,
+        'r1_prime_hub_free_pct': 0.0, 'r1_prime_edges_total': 11,
+        'r1_trainable_pct': 47.8, 'r1_trainable_edges_total': 23,
+        'r1_trainable_excluded_relations': [],
+        'r7_metapaths_hub_free': [], 'r7_min_support': 50},
     'q8_independence': {
         'conduct_nodes_by_source_type': {'news': 4},
         'media_report_publishers': {'VnExpress': 1},
@@ -675,11 +683,18 @@ def test_quality_mini_graph_is_not_vacuous():
     assert rep["q3_conciseness"]["total_surplus_duplicate_t1_nodes"] > 0
     assert rep["q4_completeness"]["controversy"] > 0 and rep["q4_completeness"]["penalty"] > 0
     assert rep["q7_traversability"]["isolated_nodes"] > 0
-    assert q7["largest_hub"]["class"] == "Organization", "the hub must not be a StandardIndicator"
+    assert q7["hubs"][0]["ticker"] == "_unregistered", "no registry passed -> single-node fallback"
+    assert q7["hubs"][0]["degree"] == q7["r5_max_hub_degree"] > 0
     # both BFS arms must land strictly between 0% and 100% — that is the only
     # proof the reachable AND unreachable branches are both walked
-    for key in ("c_masked_queries_answerable_pct", "d_claims_structural_path_to_conduct_pct"):
+    for key in ("c_masked_queries_answerable_pct", "d_claims_structural_path_to_conduct_pct",
+                "r1_reachability_pct", "r1_trainable_pct"):
         assert 0.0 < q7[key] < 100.0, f"q7.{key} = {q7[key]} exercises only one branch"
+    # R1' must actually differ from R1 (barring the hub changes the answer) —
+    # otherwise this fixture wouldn't prove the hub-exclusion code path fires.
+    assert q7["r1_prime_hub_free_pct"] != q7["r1_reachability_pct"]
+    assert q7["r1_prime_edges_total"] < q7["r1_edges_total"], (
+        "barring the hub must drop at least one edge from R1's denominator")
 
 
 def test_quality_metrics_on_mini_graph_match_the_golden_report():
@@ -732,7 +747,16 @@ def test_quality_render_markdown_matches_the_golden_markdown():
         "| Controversy | 1 | 0.0% |\n"
         "| KPIObservation | 2 | 50.0% |\n"
         "| MediaReport | 1 | 100.0% |\n"
-        "| Penalty | 1 | 0.0% |\n"
+        "| Penalty | 1 | 0.0% |\n\n"
+        "## Hub clusters (A1)\n\n"
+        "| ticker | nodes | degree |\n|---|---|---|\n"
+        "| _unregistered | 1 | 9 |\n\n"
+        "R5 (max hub-cluster degree): 9\n\n"
+        "## Reasoning readiness (R1 / R1' / R7)\n\n"
+        "- R1 (masked-edge re-derivable ≤ 3 hops): 47.8% (23 edges)\n"
+        "- R1' (R1, hub-free): 0.0% (11 edges)\n"
+        "- R1_trainable (R1, degenerate relations excluded): 47.8% (23 edges; excluded: [])\n"
+        "- R7 (hub-free length-3 metapaths, support ≥ 50): 0 metapath(s)\n"
     )
     schema = load_schema()
     got = new_quality.render_markdown(mini_report(new_quality, schema))
@@ -759,7 +783,12 @@ def test_quality_metrics_on_real_graph_are_well_formed():
     assert isinstance(new_quality.q5_timeliness(nodes, edges), dict)
     assert isinstance(new_quality.q6_provenance(nodes), dict)
     q7 = new_quality.q7_traversability(nodes, edges, 4, True)
-    assert isinstance(q7, dict) and "largest_hub" in q7
+    assert isinstance(q7, dict) and "hubs" in q7 and isinstance(q7["hubs"], list)
+    assert q7["r5_max_hub_degree"] > 0
+    for key in ("c_masked_queries_answerable_pct", "d_claims_structural_path_to_conduct_pct",
+                "r1_reachability_pct", "r1_prime_hub_free_pct", "r1_trainable_pct",
+                "r7_metapaths_hub_free"):
+        assert q7[key] is None, f"q7.{key} must be None under skip_slow=True, got {q7[key]!r}"
     assert isinstance(new_quality.q8_independence(nodes), dict)
     print(f"     ({len(nodes)} nodes / {len(edges)} edges compared, Q7 BFS skipped by design)")
 
