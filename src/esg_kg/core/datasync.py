@@ -87,7 +87,13 @@ ALLOW_PATTERNS = [f"{f}/**" for f in SYNCED_FOLDERS]
 
 # Belt-and-braces: ALLOW_PATTERNS already scopes the upload to the three folders, but an
 # explicit deny keeps a stray secret from ever riding along if that scope is widened.
-IGNORE_PATTERNS = [".env", ".env.*", "**/.env", "EmeraldMind/**", "neo4j_data/**", "**/__pycache__/**"]
+# data/outputs/news/_cache/ is esg_news_crawler's own on-disk HTTP cache (config.py's
+# DEFAULT_CACHE_DIR) — local resume/dedup state, not pipeline data; nothing downstream
+# reads it, and at ~1.9 GB of raw HTML it would otherwise dwarf the real snapshot.
+IGNORE_PATTERNS = [
+    ".env", ".env.*", "**/.env", "EmeraldMind/**", "neo4j_data/**", "**/__pycache__/**",
+    "data/outputs/news/_cache/**",
+]
 
 
 def _load_token() -> Optional[str]:

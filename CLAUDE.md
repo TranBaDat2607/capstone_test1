@@ -296,6 +296,19 @@ align_claims     (step05d) → patches resolved_graph.json in place (+ indicator
    (OPTIONAL, LLM, budgeted: alignsWithIndicator for the Claim/Goal/Initiative the keyword tier
     left unresolved. Topic classification only (alignment_method=llm), NOT a supports/contradicts
     judgement. Pipeline is complete without it. Run after build_resolved; --max-llm-pairs, --dry-run)
+export_kgc       (step11, partial) → graph_output/export_kgc/ (+ export_kgc_stats.json)
+   (GRAPH_IMPROVEMENT_PLAN.md B4, offline, NO LLM: reads resolved_graph.json READ-ONLY and
+    writes a wholly SEPARATE derived artifact for an SSRL/RL export view — never patches
+    resolved_graph.json or Neo4j (P6 boundary in docs/TEMPORAL_KG_DESIGN.md). Every
+    Organization cluster matching config/issuer_registry.json (reuses esg_kg/metric/hub.py,
+    the same multi-issuer machinery quality.py's R5/Q7(d) use) whose summed degree exceeds
+    --max-bucket-degree (default 500) is decomposed: its edges are grouped into synthetic
+    HubBucket nodes keyed by (year, predicate), cutting the hub's own degree to one edge per
+    bucket. Verified on the real AAA graph: max degree 9,511 → 542 (357 buckets; the single
+    largest bucket, 2022×reportsKPI-class, still exceeds 500 — v1 only buckets by
+    (year, predicate), reported honestly via threshold_met rather than escalated to a third
+    key). HubBucket is NOT added to config/schema.json — it is a dataset-construction
+    artifact, not a T1/T2/T3 entity. Run after build_resolved; --max-bucket-degree, --dry-run)
 neo4j_load       (step06) → Neo4j (bolt://localhost:8687, db `neo4j`)            (step 5)
    (load the resolved {nodes,edges} graph as a property graph — NO LLM. Nodes keyed by
     array index (entities already resolved; not re-deduped); edges keep temporal_metadata and
@@ -435,6 +448,8 @@ python gri/build_gri_catalog.py                                              # �
 python src/run.py build_resolved --dry-run                         # BLOCK entities -> provenance -> indicators, writes
                                                                            #   resolved_graph.json ONCE (DESIGN.md §5.7); then without --dry-run
 python src/run.py align_claims --dry-run                           # OPTIONAL LLM: align remaining claims (then --max-llm-pairs N to run)
+python src/run.py export_kgc --dry-run                             # B4: preview hub-decomposition stats for the SSRL export view (no writes)
+python src/run.py export_kgc                                       # → graph_output/export_kgc/ (never touches resolved_graph.json/Neo4j)
 python src/run.py neo4j_load --dry-run                             # preview planned counts, no DB
 docker compose up -d                                                 # start Neo4j on :8687 (then run neo4j/init.cypher once — see docs)
 python src/run.py neo4j_load --clear                               # → Neo4j (wipe + load; needs the instance running)
@@ -459,6 +474,7 @@ python api/main.py                                                         # 3-c
 #   provenance: --graphs-dir, --news-globs, --stats-out, --dry-run;
 #   indicators: --crosswalk, --no-gri, --no-align, --trust-draft-crosswalk, --dry-run;
 #   align_claims: --max-llm-pairs, --openai-model, --openai-base-url, --dry-run;
+#   export_kgc: --max-bucket-degree (default 500), --issuer-registry, --dry-run;
 #   entities: --no-llm (Stages A+B.1 only), --standards-registry, --similarity-threshold, --max-llm-pairs,
 #     --openai-embed-model;
 #   neo4j_load: --clear (wipe first), --no-versions (canonical only), --database, --strict (env: NEO4J_URI/USER/PASSWORD);
@@ -854,6 +870,26 @@ python test/test_esg_kg_extract_triples.py # same contract as the files above, f
                                            # --source report and --source news, and the paid path
                                            # driven by 4 deterministic response shapes. Run after
                                            # touching step02 or core/io_jsonl.
+python test/test_export_kgc.py             # esg_kg.export.export_kgc (GRAPH_IMPROVEMENT_PLAN.md
+                                           # B4): reuses metric/hub.py's multi-issuer cluster
+                                           # machinery rather than reimplementing hub detection.
+                                           # Synthetic 2-issuer fixture proves the property that
+                                           # matters for scaling — a bucketed ticker's nodes/edges
+                                           # never leak into an untouched ticker's — plus input-
+                                           # purity (never mutates nodes/edges in place),
+                                           # determinism (two runs, byte-identical output),
+                                           # is_synthetic flagging on every new node/edge (P7 —
+                                           # a bucket hop carries no source sentence, so it must
+                                           # be flagged, not presented as a citable reasoning
+                                           # step), and that "HubBucket" never appears in
+                                           # config/schema.json (it is a dataset-construction
+                                           # artifact, not a T1/T2/T3 entity). Real-corpus arm
+                                           # (skips gracefully without the HF snapshot) asserts
+                                           # an order-of-magnitude degree reduction AND that
+                                           # resolved_graph.json's bytes on disk are unchanged
+                                           # after the stage runs — the whole point of the
+                                           # export-only design. Run after touching export_kgc
+                                           # or metric/hub.py.
 ```
 
 The rest of `test/` and `notebooks/` are Jupyter notebooks for manual validation

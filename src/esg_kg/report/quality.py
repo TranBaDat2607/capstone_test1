@@ -64,6 +64,25 @@ from esg_kg.core.naming import normalize_name
 from esg_kg.core.paths import QUALITY_DIR, REPO_ROOT, RESOLVED_DIR, SCHEMA_PATH
 from esg_kg.core.schema import load_schema_sets
 
+# GRAPH_IMPROVEMENT_PLAN.md Group A: hub-cluster identification (A1) and
+# reasoning-readiness metrics (A2/A3) — new, not a stage, so importing them
+# does not reintroduce the step->step coupling the refactor removed (see the
+# module docstring above and esg_kg/metric/__init__.py).
+from esg_kg.metric.hub import (
+    compute_hub_clusters,
+    fallback_single_node_cluster,
+    hub_barred_indices,
+    load_issuer_alias_index,
+)
+from esg_kg.metric.reasoning_readiness import (
+    DEFAULT_DEGENERATE_RELATIONS,
+    R1_HOPS,
+    R7_MIN_SUPPORT,
+    load_degenerate_relations,
+    r1_reachability,
+    r7_metapaths,
+)
+
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
@@ -72,6 +91,7 @@ DEFAULT_SCHEMA = SCHEMA_PATH
 DEFAULT_OUT_DIR = QUALITY_DIR
 DEFAULT_MAX_HOPS = 4  # for Q7(d) claim→conduct search
 DEFAULT_STANDARDS_REGISTRY = REPO_ROOT / "config" / "standards_registry.json"
+DEFAULT_ISSUER_REGISTRY = REPO_ROOT / "config" / "issuer_registry.json"
 
 # --------------------------------------------------------------------------- #
 # The three node tiers (TEMPORAL_KG_DESIGN.md §2). T1 identity is timeless (P1);
@@ -457,7 +477,12 @@ def q6_provenance(nodes: List[Dict[str, Any]]) -> Dict[str, Any]:
 # Q7 — traversability (the reasoning-readiness attribute this thesis defines).
 # --------------------------------------------------------------------------- #
 def q7_traversability(nodes: List[Dict[str, Any]], edges: List[Dict[str, Any]],
-                      max_hops: int, skip_slow: bool) -> Dict[str, Any]:
+                      max_hops: int, skip_slow: bool,
+                      issuer_registry: Optional[Dict[str, Any]] = None,
+                      degenerate_relations: Optional[Set[str]] = None) -> Dict[str, Any]:
+    issuer_registry = issuer_registry or {}
+    degenerate_relations = degenerate_relations or set()
+
     n = len(nodes)
     adj: List[List[Tuple[int, str]]] = [[] for _ in range(n)]  # undirected, labeled
     pair_count: Counter = Counter()        # parallel edges per node pair (any label)
@@ -474,12 +499,24 @@ def q7_traversability(nodes: List[Dict[str, Any]], edges: List[Dict[str, Any]],
     leaves = sum(1 for d in degrees if d == 1)
     isolated = sum(1 for d in degrees if d == 0)
 
-    # The hub is the busiest *entity* — reference vocabulary nodes are excluded so the
-    # metric keeps measuring the extracted graph (see REFERENCE_CLASSES).
+    # The hub is a SET of issuer clusters (GRAPH_IMPROVEMENT_PLAN.md A1) — not a single
+    # node. Registry-matched Organization nodes are grouped by ticker; if the registry is
+    # empty or matches nothing in this graph, fall back to the OLD behaviour (the single
+    # globally highest-degree node, excluding reference vocabulary) so hub-dependent
+    # metrics still get a sane, non-empty exclusion set.
     hub_candidates = [i for i in range(n) if nodes[i].get("class") not in REFERENCE_CLASSES]
-    max_deg_idx = max(hub_candidates, key=lambda i: degrees[i]) if hub_candidates else 0
-    hub = {"class": nodes[max_deg_idx].get("class"), "name": node_name(nodes[max_deg_idx])[:60],
-           "degree": degrees[max_deg_idx]} if n else {}
+    alias_index = load_issuer_alias_index(issuer_registry)
+    hub_clusters = compute_hub_clusters(nodes, degrees, alias_index, node_name)
+    if not hub_clusters:
+        hub_clusters = fallback_single_node_cluster(nodes, degrees, hub_candidates, node_name)
+    hubs = [
+        {"ticker": ticker, "degree": c["degree"], "node_count": len(c["node_indices"]),
+         "names": c["names"]}
+        for ticker, c in sorted(hub_clusters.items(), key=lambda kv: -kv[1]["degree"])
+    ]
+    barred_hub = hub_barred_indices(hub_clusters)
+    r5_max_hub_degree = max((c["degree"] for c in hub_clusters.values()), default=0)
+    reference_idx = {i for i, nd in enumerate(nodes) if nd.get("class") in REFERENCE_CLASSES}
 
     # (e) % T2 nodes with degree >= 2, per class
     t2_anchoring: Dict[str, Any] = {}
@@ -499,7 +536,8 @@ def q7_traversability(nodes: List[Dict[str, Any]], edges: List[Dict[str, Any]],
         "a_median_degree": median_degree,
         "b_leaf_nodes_pct": pct(leaves, n),
         "isolated_nodes": isolated,
-        "largest_hub": hub,
+        "hubs": hubs,
+        "r5_max_hub_degree": r5_max_hub_degree,
         "e_t2_nodes_degree_ge_2_pct": t2_ge2_pct,
         "e_t2_anchoring_per_class": t2_anchoring,
         "gate": "Q7(e) >= 30% after P3 prompt fix; Q7(d) must rise clearly at 1->3 companies",
@@ -507,7 +545,16 @@ def q7_traversability(nodes: List[Dict[str, Any]], edges: List[Dict[str, Any]],
     if skip_slow:
         result["c_masked_queries_answerable_pct"] = None
         result["d_claims_structural_path_to_conduct_pct"] = None
-        result["note"] = "(c)/(d) skipped via --skip-slow"
+        result["r1_reachability_pct"] = None
+        result["r1_edges_total"] = None
+        result["r1_prime_hub_free_pct"] = None
+        result["r1_prime_edges_total"] = None
+        result["r1_trainable_pct"] = None
+        result["r1_trainable_edges_total"] = None
+        result["r1_trainable_excluded_relations"] = sorted(degenerate_relations)
+        result["r7_metapaths_hub_free"] = None
+        result["r7_min_support"] = R7_MIN_SUPPORT
+        result["note"] = "(c)/(d)/R1/R1'/R7 skipped via --skip-slow"
         return result
 
     # (c) % edges still answerable <= 3 hops after masking that FACT — masking
@@ -558,18 +605,21 @@ def q7_traversability(nodes: List[Dict[str, Any]], edges: List[Dict[str, Any]],
     }
 
     # (d) % claims that reach a conduct node via a path with >= 1 structural edge,
-    # EXCLUDING the issuer hub node. Rationale (SSRL doc §2.1, proposal P5): every
-    # node is 2 hops from every other node through the ~9.5k-degree issuer, so
-    # through-hub reachability is saturated and carries zero discriminating
-    # information — the walker can even bounce claim→hub→Facility→hub→conduct and
-    # launder a "structural" flag. Only hub-free structural paths measure real
-    # alternate routes; pure-keyword paths never count (hasKeyword is not structural).
-    # Reference vocabulary nodes are barred for the same reason as the issuer hub: every
-    # claim and every KPI of an indicator hangs off one StandardIndicator, so routing
-    # through it would flag "structural path" for pairs that share nothing but a topic.
-    # Barring them keeps Q7(d) comparable before/after the indicator axis is added.
-    barred = {max_deg_idx} | {i for i, nd in enumerate(nodes)
-                              if nd.get("class") in REFERENCE_CLASSES}
+    # EXCLUDING every node in every issuer's hub cluster (A1 — not just the single
+    # globally highest-degree node; see the module-level comment above `hubs`).
+    # Rationale (SSRL doc §2.1, proposal P5): every node is 2 hops from every other
+    # node through a ~9.5k-degree issuer, so through-hub reachability is saturated and
+    # carries zero discriminating information — the walker can even bounce
+    # claim→hub→Facility→hub→conduct and launder a "structural" flag. With more than
+    # one issuer, a path routed through a DIFFERENT company's hub is exactly as
+    # uninformative, which is why the whole hub SET is barred, not just the max.
+    # Only hub-free structural paths measure real alternate routes; pure-keyword
+    # paths never count (hasKeyword is not structural). Reference vocabulary nodes
+    # are barred for the same reason as the issuer hub: every claim and every KPI of
+    # an indicator hangs off one StandardIndicator, so routing through it would flag
+    # "structural path" for pairs that share nothing but a topic. Barring them keeps
+    # Q7(d) comparable before/after the indicator axis is added.
+    barred = barred_hub | reference_idx
     claim_idx = [i for i, nd in enumerate(nodes) if nd.get("class") == "SustainabilityClaim"]
     conduct_idx = {i for i, nd in enumerate(nodes) if is_conduct(nd)}
     reached = 0
@@ -604,7 +654,25 @@ def q7_traversability(nodes: List[Dict[str, Any]], edges: List[Dict[str, Any]],
     result["d_claims_total"] = len(claim_idx)
     result["d_max_hops"] = max_hops
     result["d_definition"] = ("hub-free path <= max_hops with >=1 structural edge; "
-                              f"excluded hub = node {max_deg_idx} ({hub.get('name', '')!r})")
+                              f"excluded hub clusters = {sorted(hub_clusters)}")
+
+    # R1 / R1' / R7 / R1_trainable (GRAPH_IMPROVEMENT_PLAN.md A2/A3) — reasoning-
+    # readiness measurements gating the later scaling/agent-layer groups. Same cost
+    # class as (c)/(d) above (bounded-depth traversal per edge/node), which is why
+    # they live in this skip_slow-gated tail rather than the cheap block above.
+    r1_pct, _r1_ok, r1_total = r1_reachability(edges, adj, hops=R1_HOPS)
+    r1p_pct, _r1p_ok, r1p_total = r1_reachability(edges, adj, hops=R1_HOPS, barred=barred)
+    r1t_pct, _r1t_ok, r1t_total = r1_reachability(
+        edges, adj, hops=R1_HOPS, excluded_relations=degenerate_relations)
+    result["r1_reachability_pct"] = r1_pct
+    result["r1_edges_total"] = r1_total
+    result["r1_prime_hub_free_pct"] = r1p_pct
+    result["r1_prime_edges_total"] = r1p_total
+    result["r1_trainable_pct"] = r1t_pct
+    result["r1_trainable_edges_total"] = r1t_total
+    result["r1_trainable_excluded_relations"] = sorted(degenerate_relations)
+    result["r7_metapaths_hub_free"] = r7_metapaths(adj, barred=barred, min_support=R7_MIN_SUPPORT)
+    result["r7_min_support"] = R7_MIN_SUPPORT
     return result
 
 
@@ -659,6 +727,25 @@ def render_markdown(report: Dict[str, Any]) -> str:
     ]
     for cls, row in q["q7_traversability"]["e_t2_anchoring_per_class"].items():
         lines.append(f"| {cls} | {row['nodes']} | {row['degree_ge_2_pct']}% |")
+
+    q7 = q["q7_traversability"]
+    lines += ["", "## Hub clusters (A1)", "",
+              "| ticker | nodes | degree |", "|---|---|---|"]
+    for h in q7["hubs"]:
+        lines.append(f"| {h['ticker']} | {h['node_count']} | {h['degree']} |")
+    lines += ["", f"R5 (max hub-cluster degree): {q7['r5_max_hub_degree']}"]
+
+    lines += ["", "## Reasoning readiness (R1 / R1' / R7)", "",
+              (f"- R1 (masked-edge re-derivable ≤ {R1_HOPS} hops): "
+               f"{q7.get('r1_reachability_pct')}% ({q7.get('r1_edges_total')} edges)"),
+              (f"- R1' (R1, hub-free): {q7.get('r1_prime_hub_free_pct')}% "
+               f"({q7.get('r1_prime_edges_total')} edges)"),
+              (f"- R1_trainable (R1, degenerate relations excluded): "
+               f"{q7.get('r1_trainable_pct')}% ({q7.get('r1_trainable_edges_total')} edges; "
+               f"excluded: {q7.get('r1_trainable_excluded_relations')})"),
+              (f"- R7 (hub-free length-3 metapaths, support ≥ {q7.get('r7_min_support')}): "
+               f"{len(q7['r7_metapaths_hub_free']) if q7.get('r7_metapaths_hub_free') else 0} metapath(s)")]
+
     if q["q2_consistency"]["t1_identity_keys_with_time_fields"]:
         lines += ["", "## P1 violations (time fields in T1 identity_keys)", ""]
         for v in q["q2_consistency"]["t1_identity_keys_with_time_fields"]:
@@ -697,6 +784,10 @@ def main() -> None:
                    help="Skip the BFS-heavy Q7(c)/(d) metrics")
     p.add_argument("--standards-registry", type=Path, default=DEFAULT_STANDARDS_REGISTRY,
                    help="Static registry of the five reference documents; audited, never written")
+    p.add_argument("--issuer-registry", type=Path, default=DEFAULT_ISSUER_REGISTRY,
+                   help="Issuer alias registry driving hub-cluster exclusion (A1)")
+    p.add_argument("--degenerate-relations", type=Path, default=DEFAULT_DEGENERATE_RELATIONS,
+                   help="Relations excluded from R1_trainable (A3)")
     args = p.parse_args()
 
     if not args.graph.exists():
@@ -723,7 +814,16 @@ def main() -> None:
     report["q5_timeliness"] = q5_timeliness(nodes, edges)
     report["q6_provenance"] = q6_provenance(nodes)
     logger.info("Computing Q7 traversability (BFS metrics)...")
-    report["q7_traversability"] = q7_traversability(nodes, edges, args.max_hops, args.skip_slow)
+    issuer_registry: Dict[str, Any] = {}
+    if args.issuer_registry.exists():
+        issuer_registry = json.loads(args.issuer_registry.read_text(encoding="utf-8"))
+    else:
+        logger.warning(f"No issuer registry at {args.issuer_registry}; hub falls back to "
+                       "the single highest-degree node.")
+    degenerate_relations = load_degenerate_relations(args.degenerate_relations)
+    report["q7_traversability"] = q7_traversability(
+        nodes, edges, args.max_hops, args.skip_slow,
+        issuer_registry=issuer_registry, degenerate_relations=degenerate_relations)
     report["q8_independence"] = q8_independence(nodes)
     if args.standards_registry.exists():
         registry = json.loads(args.standards_registry.read_text(encoding="utf-8"))
