@@ -57,6 +57,7 @@ to keep it that way.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import logging
 import os
@@ -507,6 +508,160 @@ def _validate_extraction_format(data: Any, schema: Dict[str, Any]) -> bool:
 
 
 # --------------------------------------------------------------------------- #
+# Deterministic claim_id (GRAPH_IMPROVEMENT_PLAN.md C1 / GitHub issue #2).
+#
+# SustainabilityClaim's identity_keys is exactly ["claim_id"] (config/schema.json), and
+# get_stable_entity_id hashes a node's identity straight off that property value. Left
+# to the LLM (the prompt only says to leave the ids' VALUE as-is, never how to build
+# one), claim_id is free text the model invents per call - re-running this stage over
+# the identical source sentence can mint a different id and silently re-partition every
+# already-paid crosscheck dossier (DESIGN.md Sec1.1: claim resolution in
+# load/neo4j_sync.py is 100% stable_id tier, no fallback). Deriving it instead from
+# (source_doc, page, normalized description) makes it a pure function of content +
+# provenance, so identical input always reproduces the identical id regardless of what
+# the LLM would have called it.
+def _normalize_claim_text(text: str) -> str:
+    """Case/whitespace-insensitive so trivial LLM formatting drift (extra spaces,
+    trailing whitespace, casing) never changes the derived claim_id."""
+    return re.sub(r"\s+", " ", (text or "").strip().lower())
+
+
+# --- Sentence-position anchoring (GRAPH_IMPROVEMENT_PLAN.md follow-up to C1) -------- #
+# `description` (used above) is still LLM output: a re-run that re-transcribes the same
+# source sentence slightly differently (truncation point, punctuation, mild paraphrase)
+# still changes the hash. This layer anchors to the page's real, LLM-independent JSONL
+# sentence row(s) instead, when a confident match can be found, falling back to the
+# description-text hash above otherwise. Verified on the real corpus (1,217 claims):
+# hashing on sentence_index alone (even with date) produced 40 real collisions - one
+# sentence enumerating several distinct facts for the same year - so the anchor is
+# (sentence_index, start_token_offset) pairs, not sentence_index alone; that gave 0
+# collisions. 360/1,217 real claims get a confident anchor; the rest (including all
+# historical pre-"issue #6" English-description claims, which can't token-match against
+# Vietnamese rows) fall back to the text hash - i.e. this is strictly additive.
+_CLAIM_MATCH_TOKEN_RE = re.compile(r"\w+", re.UNICODE)
+
+MIN_CLAIM_DESC_TOKENS_FOR_MATCH = 4   # below this: too generic/risky, go straight to fallback
+CLAIM_MATCH_OVERLAP_THRESHOLD = 0.7   # longest-common-run / min(|desc|,|row|) a row must clear
+MAX_CLAIM_MATCHED_ROWS = 3            # more distinct rows than this => ambiguous, distrust it
+
+
+def _claim_match_tokens(text: str) -> List[str]:
+    """`\\w+` on lowercased text - confirmed Vietnamese-diacritic-safe. Deliberately NOT
+    esg_kg.core.naming.normalize_name: that strips legal-form phrases and fixes
+    cross-document OCR artifacts, tuned for entity-NAME matching (anchor_kpi.py's job)
+    - it would corrupt full-sentence semantics here. Both `description` and the JSONL
+    `text` come from the same already-clean pipeline, so no OCR/legal-form
+    normalization is needed."""
+    return _CLAIM_MATCH_TOKEN_RE.findall((text or "").lower())
+
+
+def _longest_common_run(a: List[str], b: List[str]) -> Tuple[int, int]:
+    """Longest common CONTIGUOUS token run between `a` and `b` (longest-common-substring
+    DP over token sequences). Returns (run_length, start_index_in_b); (0, -1) if none.
+
+    Contiguity (not just shared vocabulary) is what separates "this description is a
+    copy/truncation of that sentence" from "this description happens to share common
+    Vietnamese words with an unrelated sentence" - confirmed on the real corpus: a
+    same-page, different-fact sentence pair scored 0.5-0.6 under plain set-overlap
+    purely from shared function/business words, which is why the threshold below is
+    0.7, not lower; contiguity removes that ambiguity at negligible extra cost (rows
+    are a few dozen tokens)."""
+    n, m = len(a), len(b)
+    if n == 0 or m == 0:
+        return 0, -1
+    prev = [0] * (m + 1)
+    best_len, best_end = 0, -1
+    for i in range(1, n + 1):
+        cur = [0] * (m + 1)
+        ai = a[i - 1]
+        for j in range(1, m + 1):
+            if ai == b[j - 1]:
+                cur[j] = prev[j - 1] + 1
+                if cur[j] > best_len:
+                    best_len, best_end = cur[j], j
+        prev = cur
+    return (best_len, best_end - best_len) if best_len else (0, -1)
+
+
+def match_claim_sentence_anchors(description: str, page_rows: List[Tuple[int, str, bool]]
+                                 ) -> List[Tuple[int, int]]:
+    """Match a claim's LLM-produced `description` back to the page's real JSONL
+    sentence row(s) it was drawn from. Returns sorted, deduped (sentence_index,
+    start_token_offset) pairs, or [] if there is no confident match (caller must fall
+    back to hashing the raw description text - the original C1 behaviour).
+
+    (sentence_index, start_offset) rather than sentence_index alone is deliberate: an
+    enumeration sentence can name several distinct facts for the same year (e.g. an
+    awards list) - the start offset of each claim's matched span is what stays stable
+    across truncation-depth drift while still distinguishing those facts from
+    each other, since each starts at a different point in the row."""
+    desc_tokens = _claim_match_tokens(description)
+    if len(desc_tokens) < MIN_CLAIM_DESC_TOKENS_FOR_MATCH:
+        return []
+    anchors: List[Tuple[int, int]] = []
+    for sentence_index, text, _esg in page_rows:
+        row_tokens = _claim_match_tokens(text)
+        if not row_tokens:
+            continue
+        run_len, start = _longest_common_run(desc_tokens, row_tokens)
+        if run_len == 0:
+            continue
+        if run_len / min(len(desc_tokens), len(row_tokens)) >= CLAIM_MATCH_OVERLAP_THRESHOLD:
+            anchors.append((sentence_index, start))
+    anchors = sorted(set(anchors))
+    if not anchors or len(anchors) > MAX_CLAIM_MATCHED_ROWS:
+        return []
+    return anchors
+
+
+def make_deterministic_claim_id(source_doc: str, page: int, description: str, date: str = "",
+                                sentence_anchors: Optional[List[Tuple[int, int]]] = None) -> str:
+    """`date` is real extracted content (e.g. an award's year, a meeting's exact day),
+    not an LLM-invented id - it disambiguates the real corpus case where the same page
+    repeats identical claim text for several different years (e.g. an awards table:
+    'Sao vang dat Viet' in 2009/2010/2011, same description, same page, different
+    date) - without it those collapse into one node under (source_doc, page,
+    description) alone. Still a pure function of content + provenance.
+
+    `sentence_anchors`, when non-empty, is the output of `match_claim_sentence_anchors`
+    - hashing on that POSITION instead of the LLM's raw copied text is robust to
+    re-transcription drift (different truncation point, punctuation, mild paraphrase)
+    as long as the LLM is still anchored to the same underlying sentence. Falls back to
+    hashing the normalized description text (the original C1 behaviour) when no anchors
+    are supplied - keeps every existing caller's behaviour unchanged. The "pos:"/"text:"
+    prefixes give the two encoding shapes disjoint hash namespaces."""
+    if sentence_anchors:
+        content_key = "pos:" + ",".join(f"{s}:{o}" for s, o in sentence_anchors)
+    else:
+        content_key = "text:" + _normalize_claim_text(description)
+    basis = f"{source_doc}|{page}|{content_key}|{_normalize_claim_text(str(date))}"
+    digest = hashlib.sha1(basis.encode("utf-8")).hexdigest()[:16]
+    return f"claim_{digest}"
+
+
+def assign_deterministic_claim_ids(triples: List[Dict[str, Any]], source_doc: str, page: int,
+                                   page_rows: Optional[List[Tuple[int, str, bool]]] = None
+                                   ) -> List[Dict[str, Any]]:
+    """Overwrite claim_id on every SustainabilityClaim entity in `triples` in place,
+    discarding whatever the LLM invented. MUST run before triple_list_to_graph, which
+    computes node identity (and thus dedup within the page) from claim_id.
+
+    `page_rows` (optional): the page's raw JSONL rows, used to attempt sentence-position
+    anchoring per claim before falling back to the text hash. Omitting it (default None)
+    reproduces the original C1 behaviour exactly."""
+    for t in triples:
+        for k in ("subject", "object"):
+            ent = t.get(k)
+            if isinstance(ent, dict) and ent.get("class") == "SustainabilityClaim":
+                props = ent.setdefault("properties", {})
+                description = props.get("description", "")
+                anchors = match_claim_sentence_anchors(description, page_rows) if page_rows else None
+                props["claim_id"] = make_deterministic_claim_id(
+                    source_doc, page, description, props.get("date", ""), sentence_anchors=anchors)
+    return triples
+
+
+# --------------------------------------------------------------------------- #
 # Triple list -> graph (verbatim).
 # --------------------------------------------------------------------------- #
 OBSERVATION_CLASSES = {"KPIObservation", "Emission", "Waste"}
@@ -761,7 +916,8 @@ def process_page(page_info: Dict[str, Any], page_kpis: List[Dict[str, Any]],
                  pdf_stem: str, dbg_pdf_dir: Path, g_pdf_dir: Path,
                  company: str, year: int,
                  source: str = "report", article_meta: Optional[Dict[str, Any]] = None,
-                 provider: str = "gemini") -> Tuple[int, bool, bool]:
+                 provider: str = "gemini",
+                 page_rows: Optional[List[Tuple[int, str, bool]]] = None) -> Tuple[int, bool, bool]:
     p_no = page_info["page"]
     page_text = page_info["text"]
     has_esg = page_info["has_esg"]
@@ -837,6 +993,8 @@ def process_page(page_info: Dict[str, Any], page_kpis: List[Dict[str, Any]],
                         encoding="utf-8",
                     )
 
+                if valid_triples:
+                    assign_deterministic_claim_ids(valid_triples, pdf_stem, p_no, page_rows=page_rows)
                 graph = (triple_list_to_graph(valid_triples, schema)
                          if valid_triples else {"nodes": [], "edges": []})
                 stamp_source_type(graph, source)
@@ -908,6 +1066,7 @@ def process_document(source_pdf: str, jsonl_pages: Dict[int, List[Tuple[int, str
                 client, 0, rate_limiter, schema, model, esg_only,
                 pdf_stem, dbg_pdf_dir, g_pdf_dir, company, year,
                 source, article_meta, provider,
+                jsonl_pages.get(pg["page"], []),
             ): pg["page"]
             for pg in pages
         }
