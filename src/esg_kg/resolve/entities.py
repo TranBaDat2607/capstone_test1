@@ -640,6 +640,29 @@ def resolve_graph(triples: List[Dict[str, Any]], idkeys: Dict[str, List[str]], *
     after_b1 = dsu.n_components(entity_idx)
     logger.info(f"Stage B.1 normalized-name merge: entities -> {after_b1} clusters")
 
+    # ---- Stage B.1b: subsumption merge (partial identity keys) ----
+    # Stage B.1 above only merges nodes whose FULL normalized identity_keys tuple is
+    # equal, so a mention missing an optional key (e.g. Location "Hải Dương" with no
+    # `country`) never joins a mention of the same place that has it filled in
+    # (GRAPH_IMPROVEMENT_PLAN.md B1). Two normalized-signature groups merge here when
+    # they share the same anchor (first identity key, e.g. `name`) and no OTHER key
+    # holds two different non-empty values — i.e. one node's non-empty keys are a
+    # subset of the other's. A real conflict (two different non-empty values for the
+    # same key, e.g. two different provinces) still blocks the merge.
+    anchor_groups: Dict[Tuple[str, str], List[Tuple]] = defaultdict(list)
+    for sig in norm_groups:
+        cls, vals = sig
+        if vals and vals[0]:
+            anchor_groups[(cls, vals[0])].append(sig)
+    for sigs in anchor_groups.values():
+        for i in range(len(sigs)):
+            for j in range(i + 1, len(sigs)):
+                va, vb = sigs[i][1], sigs[j][1]
+                if all(not x or not y or x == y for x, y in zip(va, vb)):
+                    dsu.union(dsu.find(norm_groups[sigs[i]][0]), dsu.find(norm_groups[sigs[j]][0]))
+    after_b1b = dsu.n_components(entity_idx)
+    logger.info(f"Stage B.1b subsumption merge: entities -> {after_b1b} clusters")
+
     # ---- Stage B.2 + C: embedding blocking + LLM adjudication (entities, non-issuer) ----
     llm_comparisons = llm_matches = 0
     if not no_llm and client is not None:
