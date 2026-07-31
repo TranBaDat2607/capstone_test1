@@ -606,6 +606,18 @@
       "temporal_properties": ["valid_from", "valid_to", "recorded_at"]
     },
     {
+      "label": "mentionsFacility",
+      "source_class": "MediaReport",
+      "target_class": "Facility",
+      "temporal_properties": ["valid_from", "valid_to", "recorded_at"]
+    },
+    {
+      "label": "mentionsFacility",
+      "source_class": "MediaReport",
+      "target_class": "Location",
+      "temporal_properties": ["valid_from", "valid_to", "recorded_at"]
+    },
+    {
       "label": "involvedIn",
       "source_class": "Person",
       "target_class": "Product",
