@@ -940,5 +940,15 @@ generator, graph-routed evidence retrieval, and the D1 finding that `kpi_gap` /
 `BERT_NER_GRAPH_QUALITY.md` (Vietnamese — decision analysis: local CPU sentence-embeddings
 to replace the billing-blocked `gemini-embedding-001` in step05, underthesea NER for news
 anchoring; explicitly rejects fine-tuning a greenwashing classifier, since no labels exist).
+Two label-free evaluation designs, also proposals — no measurement code exists for either:
+`EVALUATION_WITHOUT_LABELS.md` (Vietnamese — how to evaluate ONE system with no ground truth:
+metamorphic relations, negative control + permutation p-value, Krippendorff α; its §8 lists
+metrics already tried and dead, read it before proposing any new one) and
+`AGENT_AB_EVALUATION.md` (Vietnamese — how to compare TWO systems before/after adding an
+agent: paired McNemar on metamorphic violations as the primary endpoint, always guarded by a
+negative-control specificity so a merely-more-lenient agent can't read as an improvement;
+covers all four candidate agent insertion points, and notes that paired stats at step02/step05
+need the `(source_pdf, page, sentence_index)` pairing key because `claim_id` is not yet
+deterministic across rebuilds — issue #2).
 `docs/SSRL_REASONING_LAYER.md` is referenced by `TEMPORAL_KG_DESIGN.md` but **is not in the
 repo** — the path-reasoning layer (steps 11–13) is unbuilt and its design doc is missing.
