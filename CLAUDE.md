@@ -199,6 +199,22 @@ data_processing.preprocess_news  → data/interim/news_preprocessed/  (P1: norma
 Reports are the **claim** side ("what they say"); news is the **conduct** side ("what they do").
 Both feed the same `esg_kg` graph-construction path and land in one temporal KG (see `docs/SYSTEM_DESIGN.md`).
 
+**Full-sector labeling landed 2026-08-02 — check the full-corpus file, not a per-company one.**
+The canonical, current classifier output is the whole sector, not just AAA:
+`data/labeled/classified/all_sentences_classified.jsonl` (197 companies, 873,756 sentences,
+303,723 `esg=true`) for reports, and `data/labeled/news_labeled/all_news_sentences_classified.jsonl`
+(115 tickers, 174,256 sentences, 77,229 `esg=true`) for news — same for their `extract_esg`
+outputs under `data/outputs/esg_extracted/classified/` and `.../news_labeled/`. An earlier
+AAA-only pilot batch (`data/labeled/annual_labeled/`, `data/outputs/esg_extracted/annual_labeled/`,
+plus `aaa_news_classified*`/`aaa_all_sentences*`/`aaa_sentences*`) predated the full run and
+silently duplicated AAA under a different filename convention (`AAA_2013.pdf` vs
+`AAA_Baocaothuongnien_2012.pdf` for identical content) — inflating AAA's share of
+`esg_all_records.jsonl` to ~2×. Removed from the HF dataset repo 2026-08-02 (commit `a7e73bd1`,
+pinned in `data_version.json`); if those paths still show up on disk from an older pull, they're
+stale leftovers to ignore/delete, not a second data source. **Before concluding "only AAA is
+labeled/extracted" or "the sector corpus is missing," check `data/labeled/classified/` and
+`data/outputs/esg_extracted/classified/` first** — that mistake has already happened once.
+
 `crawl_data/crawler_news.py` is a separate, FPT-specific standalone news crawler (not a
 `-m` package, not wired into pipeline B above) — treat it as a legacy/experimental tool, not
 the documented news-ingestion path. See `docs/NEWS_CRAWLER_OPTIMIZATION.md` for its design.

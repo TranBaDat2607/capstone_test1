@@ -125,6 +125,14 @@ data_processing.preprocess_news    → data/interim/news_preprocessed/  (date-no
 Reports are the **claim** side ("what they say"); news is the **conduct** side ("what they do").
 Both feed the same `esg_kg` graph-construction path and land in one temporal KG.
 
+> **Full-sector labeling is done — use the full-corpus files, not a per-company one.**
+> `data/labeled/classified/all_sentences_classified.jsonl` (197 companies) and
+> `data/labeled/news_labeled/all_news_sentences_classified.jsonl` (115 tickers) are the
+> current classifier output. `data/labeled/annual_labeled/` (AAA-only pilot) and the
+> `aaa_news_classified*`/`aaa_all_sentences*` files were superseded and removed from the
+> HF dataset 2026-08-02 — they duplicated AAA under a different filename convention. See
+> `CLAUDE.md` for the full story before assuming only AAA is labeled/extracted.
+
 ### C. Labeled JSONL → temporal knowledge graph (`src/esg_kg`, all 15/15 stages migrated)
 
 Run via `python src/run.py <stage>` from the repo root (`--list` shows every stage):
