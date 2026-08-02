@@ -1,13 +1,13 @@
 {
   "repo_id": "nammovuivui-capstone/capstone",
   "repo_type": "dataset",
-  "revision": "a7e73bd176505351f0474342edf3d129e89b591b",
+  "revision": "1595c60c85faf8ff386035718fe849f737144984",
   "folders": [
     "data",
     "graph_output",
     "kpi_output"
   ],
-  "pushed_at": "2026-08-02T16:06:06+00:00",
-  "code_commit": "05cad847289f9cb285f45ee32d14e3a604555704",
-  "size_mb": 18873.0
+  "pushed_at": "2026-08-02T17:41:36+00:00",
+  "code_commit": "3317d4a33718007036b04db8130a703ac58136e8",
+  "size_mb": 18873.9
 }
