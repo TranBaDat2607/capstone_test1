@@ -56,6 +56,12 @@ REQUIRED_DIRECTIVE_SNIPPETS = (
 def _build_extract_system_prompt() -> str:
     ex = KPIExtractor.__new__(KPIExtractor)
     ex.kpi_defs = [{"id": "TT96-1", "definition": "d1"}]
+    # set defensively for forward-compatibility with the Gemini context-caching feature
+    # (issue #11, feat/llm-context-caching): once merged, _build_prompt reads
+    # self.cache_name/self.defs_text instead of computing `defs` inline. Harmless no-op
+    # on this branch alone, where _build_prompt doesn't reference them yet.
+    ex.defs_text = "\n".join(f"{d['id']}: {d.get('definition', '')}" for d in ex.kpi_defs)
+    ex.cache_name = None
     system, _user = ex._build_prompt(
         "Cong ty da giam phat thai 20% trong nam 2023.", "AAA", SECTOR, 5, "AAA_2023.pdf")
     return system

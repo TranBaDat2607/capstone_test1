@@ -201,9 +201,9 @@ class KPIExtractor:
             "Write `title`, `snippet`, and any other free-text property VALUE in VIETNAMESE, with full "
             "diacritics, exactly matching the source text. Do NOT translate into English. Do NOT strip "
             "diacritics (khong duoc bo dau).\n"
-            "This rule does NOT apply to: kpi_type (a fixed code from KPI_DEFINITIONS), unit, value, "
-            "year/target_year/baseline_year, source_id, company/sector/doc_name (copied verbatim as given "
-            "above)."
+            "This rule does NOT apply to: kpi_type (a fixed code from the controlled KPI vocabulary), "
+            "unit, value, year/target_year/baseline_year, source_id, company/sector/doc_name (copied "
+            "verbatim as given above)."
         )
 
         user = (
