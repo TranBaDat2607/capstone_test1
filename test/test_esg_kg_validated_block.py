@@ -166,7 +166,7 @@ def test_block_writes_the_artifact_exactly_once():
 # 3. The paid-result cache — the thing the block must NOT swallow.
 # --------------------------------------------------------------------------- #
 def _tampering_llm_factory(counter):
-    def llm(batch, schema, client, rate_limiter, model):
+    def llm(batch, schema, client, rate_limiter, model, cached_content=None):
         counter.append(len(batch))
         out = []
         for t in batch:

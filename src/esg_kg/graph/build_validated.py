@@ -61,7 +61,7 @@ import logging
 import pathlib
 from typing import Any, Dict, List, Optional, Tuple
 
-from esg_kg.core.llm import build_gemini_client
+from esg_kg.core.llm import GeminiContextCache, build_gemini_client
 from esg_kg.core.llm_cache import ContentCache
 from esg_kg.core.paths import REPO_ROOT, SCHEMA_PATH
 from esg_kg.core.schema import load_schema_sets
@@ -141,6 +141,7 @@ def run_block(*, input_dir: pathlib.Path, out_dir: pathlib.Path, schema: Dict[st
               model: str = fix_triples.DEFAULT_MODEL,
               batch_size: int = fix_triples.DEFAULT_BATCH_SIZE,
               llm=None, cache_path: Optional[pathlib.Path] = None,
+              ctx_cache: Optional[GeminiContextCache] = None,
               dry_run: bool = False) -> Dict[str, Any]:
     """Run 03 -> 03b -> 03c in memory and write the artifact once.
 
@@ -154,7 +155,7 @@ def run_block(*, input_dir: pathlib.Path, out_dir: pathlib.Path, schema: Dict[st
     result = fix_triples.run_phases(
         input_dir, out_dir, schema, entity_classes, edge_labels, edge_directions,
         client, rate_limiter, model, batch_size, dry_run,
-        llm=llm, repairs=repairs)
+        llm=llm, repairs=repairs, ctx_cache=ctx_cache)
     if result is None:
         return {"fix": None, "anchor": None, "kpi": None, "goal": None}
     triples, unfixable, fix_stats = result
@@ -234,6 +235,9 @@ def main() -> None:
                    help="Phase-2 repair cache; a re-run reuses it instead of paying again")
     p.add_argument("--no-cache", action="store_true",
                    help="Ignore the repair cache (forces phase 2 to ask the model again)")
+    p.add_argument("--no-context-cache", action="store_true",
+                   help="Disable Gemini explicit context caching (issue #11) for phase-2 "
+                        "repair batches. On by default.")
     p.add_argument("--dry-run", action="store_true",
                    help="Phase 1 + 1.5 + 03b + 03c offline; call no LLM and write nothing")
     args = p.parse_args()
@@ -259,6 +263,9 @@ def main() -> None:
         else:
             logger.warning("GEMINI_API_KEY not set — phase 2 will run from the cache only")
 
+    ctx_cache = (None if (client is None or args.no_context_cache)
+                 else GeminiContextCache(client, model))
+
     run_block(
         input_dir=args.input_dir, out_dir=args.out_dir, schema=schema,
         sentences=args.sentences, max_per_facility=args.max_per_facility,
@@ -266,6 +273,7 @@ def main() -> None:
         client=client, rate_limiter=rate_limiter, model=model,
         batch_size=args.batch_size,
         cache_path=None if args.no_cache else args.cache,
+        ctx_cache=ctx_cache,
         dry_run=args.dry_run,
     )
 

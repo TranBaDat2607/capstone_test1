@@ -48,7 +48,7 @@ from dotenv import load_dotenv
 from google.genai import types
 
 from esg_kg.core.paths import REPO_ROOT
-from esg_kg.core.llm import build_gemini_client
+from esg_kg.core.llm import GeminiContextCache, build_gemini_client
 from esg_kg.core.io_jsonl import (
     build_page_text,
     load_pages_from_jsonl,
@@ -138,7 +138,8 @@ KPI_SCHEMA = {
 # Extractor
 # --------------------------------------------------------------------------- #
 class KPIExtractor:
-    def __init__(self, kpi_defs_path: Path, model: str = DEFAULT_MODEL, max_tokens: int = 8000):
+    def __init__(self, kpi_defs_path: Path, model: str = DEFAULT_MODEL, max_tokens: int = 8000,
+                use_context_cache: bool = True):
         # Load the project-global .env at the repo root regardless of cwd.
         load_dotenv(REPO_ROOT / ".env")
         self.max_tokens = max_tokens
@@ -154,16 +155,25 @@ class KPIExtractor:
 
         with open(kpi_defs_path, "r", encoding="utf-8") as f:
             self.kpi_defs = json.load(f)
+        self.defs_text = "\n".join(f"{d['id']}: {d.get('definition', '')}" for d in self.kpi_defs)
+
+        # issue #11: KPI_DEFINITIONS never changes across the whole run (loaded once,
+        # above), so this is the widest-scope cache of the three stages — one
+        # client.caches.create() here serves every page of every document this
+        # extractor processes, not just one document.
+        self.cache_name = None
+        if use_context_cache:
+            ctx_cache = GeminiContextCache(client, model)
+            self.cache_name = ctx_cache.get_or_create(f"KPI_DEFINITIONS (subset):\n{self.defs_text}")
 
         logger.info(
             f"KPIExtractor ready: model={self.model}, "
-            f"{len(self.kpi_defs)} KPI definitions, sector='{SECTOR}'"
+            f"{len(self.kpi_defs)} KPI definitions, sector='{SECTOR}', "
+            f"context_cache={'on' if self.cache_name else 'off'}"
         )
 
     def _build_prompt(self, page_text: str, company: str, sector: str,
                       page_num: int, doc_name: str) -> Tuple[str, str]:
-        defs = "\n".join(f"{d['id']}: {d.get('definition', '')}" for d in self.kpi_defs)
-
         system = (
             "You are ESG-KPI-EXTRACTOR-V2. Produce only JSON conforming exactly to the schema. "
             "If no KPI can be unambiguously extracted, return an empty list. The text is in Vietnamese.\n\n"
@@ -184,11 +194,16 @@ class KPIExtractor:
             "snippet must be <= 160 characters, quoting the source text."
         )
 
-        user = (
-            f"KPI_DEFINITIONS (subset):\n{defs}\n\n"
-            f"TEXT SOURCE (page {page_num} of {doc_name}):\n"
-            f"\"\"\"{page_text}\"\"\""
-        )
+        # issue #11: when self.cache_name is set, KPI_DEFINITIONS lives in the cache
+        # instead of being resent every page — only the page-specific TEXT SOURCE is sent.
+        if self.cache_name is not None:
+            user = f"TEXT SOURCE (page {page_num} of {doc_name}):\n\"\"\"{page_text}\"\"\""
+        else:
+            user = (
+                f"KPI_DEFINITIONS (subset):\n{self.defs_text}\n\n"
+                f"TEXT SOURCE (page {page_num} of {doc_name}):\n"
+                f"\"\"\"{page_text}\"\"\""
+            )
         return system, user
 
     def extract_page(self, page_text: str, company: str, sector: str,
@@ -204,6 +219,7 @@ class KPIExtractor:
                 response_schema=KPI_SCHEMA,
                 max_output_tokens=self.max_tokens,
                 temperature=0,
+                cached_content=self.cache_name,
             ),
         )
 
@@ -293,6 +309,10 @@ def main() -> None:
                         help="Run every non-empty page (default: only pages with >=1 ESG sentence)")
     parser.add_argument("--max-workers", type=int, default=4, help="Parallel page workers (default 4)")
     parser.add_argument("--model", type=str, default=DEFAULT_MODEL, help="Gemini model id")
+    parser.add_argument("--no-context-cache", action="store_true",
+                        help="Disable Gemini explicit context caching (issue #11) for "
+                             "KPI_DEFINITIONS. On by default: one cache for the whole run, "
+                             "reused across every page of every document.")
     args = parser.parse_args()
 
     if not args.input.exists():
@@ -307,7 +327,8 @@ def main() -> None:
     if not selected:
         return
 
-    extractor = KPIExtractor(args.kpi_defs, model=args.model)
+    extractor = KPIExtractor(args.kpi_defs, model=args.model,
+                             use_context_cache=not args.no_context_cache)
     esg_only = not args.all_pages
 
     grand_total = 0

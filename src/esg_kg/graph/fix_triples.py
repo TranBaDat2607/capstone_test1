@@ -60,7 +60,7 @@ from typing import Any, Dict, List, Optional, Set, Tuple
 from dotenv import load_dotenv
 
 from esg_kg.core.dates import date_start_key, normalize_date_string
-from esg_kg.core.llm import RateLimiter, build_gemini_client
+from esg_kg.core.llm import GeminiContextCache, RateLimiter, build_gemini_client
 from esg_kg.core.paths import REPO_ROOT
 from esg_kg.core.schema import load_schema_sets, validate_triple
 
@@ -379,22 +379,32 @@ def preserve_property_values(original: Any, repaired: Dict[str, Any]) -> Tuple[D
 
 
 def fix_batch_with_llm(batch: List[Dict[str, Any]], schema: Dict[str, Any],
-                       client: Any, rate_limiter: RateLimiter, model: str
+                       client: Any, rate_limiter: RateLimiter, model: str,
+                       cached_content: Optional[str] = None,
                        ) -> List[Optional[Dict[str, Any]]]:
-    """`client` is a `genai.Client`."""
+    """`client` is a `genai.Client`. When `cached_content` is set (a Gemini cache name
+    from `GeminiContextCache`, issue #11), `prompt` is just the batch JSON — the fixed
+    SCHEMA block of `BATCH_FIX_PROMPT` lives in the cache instead of being resent every
+    batch of one run (schema never changes mid-run, see `run_phases`)."""
     if not batch:
         return []
     clean_batch = [{k: v for k, v in t.items() if not k.startswith("_")} for t in batch]
-    prompt = BATCH_FIX_PROMPT.format(
-        schema_json=json.dumps(schema, indent=2, ensure_ascii=False)
-    ) + json.dumps(clean_batch, indent=2, ensure_ascii=False)
+    batch_json = json.dumps(clean_batch, indent=2, ensure_ascii=False)
+    config: Dict[str, Any] = {"temperature": 0, "response_mime_type": "application/json"}
+    if cached_content is not None:
+        prompt = batch_json
+        config["cached_content"] = cached_content
+    else:
+        prompt = BATCH_FIX_PROMPT.format(
+            schema_json=json.dumps(schema, indent=2, ensure_ascii=False)
+        ) + batch_json
 
     try:
         rate_limiter.wait_if_needed(0)
         response = client.models.generate_content(
             model=model,
             contents=prompt,
-            config={"temperature": 0, "response_mime_type": "application/json"},
+            config=config,
         )
         fixed = extract_json_from_response(response.text or "")
         if isinstance(fixed, list):
@@ -416,7 +426,8 @@ def run_phases(input_dir: pathlib.Path, out_dir: pathlib.Path, schema: Dict[str,
                edge_directions: Dict[str, List[Tuple[str, str]]],
                client: Optional[Any], rate_limiter: RateLimiter,
                model: str, batch_size: int, dry_run: bool,
-               *, llm=None, repairs=None):
+               *, llm=None, repairs=None,
+               ctx_cache: Optional[GeminiContextCache] = None):
     """Phases 1 -> 2 -> 1.5. Returns ``(all_valid, unfixable, summary)`` and WRITES NOTHING.
 
     Split out of ``process_all_files`` so the 03 block
@@ -434,6 +445,11 @@ def run_phases(input_dir: pathlib.Path, out_dir: pathlib.Path, schema: Dict[str,
         ``put(triple, value)``. Phase-2 output is looked up there BEFORE any model call,
         so a re-run is free and deterministic. Duck-typed on purpose: the cache lives in
         the block module, and a stage must not import a block.
+
+    ``ctx_cache`` (issue #11): an optional ``GeminiContextCache``. When given, the fixed
+    SCHEMA block of ``BATCH_FIX_PROMPT`` is uploaded once (schema never changes within a
+    run) and every phase-2 batch call reuses it via ``cached_content=``, instead of
+    resending the schema in every batch's prompt.
 
     Returns ``None`` when there is nothing to process.
     """
@@ -510,12 +526,17 @@ def run_phases(input_dir: pathlib.Path, out_dir: pathlib.Path, schema: Dict[str,
             logger.error("LLM phase requested but GEMINI_API_KEY is not set; skipping phase 2")
         elif todo:
             logger.info(f"\n=== Phase 2: LLM batch fixing ({len(todo)} triples) ===")
+            cache_name: Optional[str] = None
+            if ctx_cache is not None:
+                header = BATCH_FIX_PROMPT.format(
+                    schema_json=json.dumps(schema, indent=2, ensure_ascii=False))
+                cache_name = ctx_cache.get_or_create(header, rate_limiter)
             n_batches = (len(todo) - 1) // batch_size + 1
             for i in range(0, len(todo), batch_size):
                 chunk = todo[i:i + batch_size]
                 batch = [t for _, t in chunk]
                 logger.info(f"Batch {i // batch_size + 1}/{n_batches} ({len(batch)} triples)")
-                repaired = call_llm(batch, schema, client, rate_limiter, model)
+                repaired = call_llm(batch, schema, client, rate_limiter, model, cached_content=cache_name)
                 returned = sum(1 for r in repaired if r is not None)
                 for k, (idx, _original) in enumerate(chunk):
                     value = repaired[k] if k < len(repaired) else None
@@ -603,7 +624,8 @@ def process_all_files(input_dir: pathlib.Path, out_dir: pathlib.Path, schema: Di
                       entity_classes: Set[str], edge_labels: Set[str],
                       edge_directions: Dict[str, List[Tuple[str, str]]],
                       client: Optional[Any], rate_limiter: RateLimiter,
-                      model: str, batch_size: int, dry_run: bool) -> None:
+                      model: str, batch_size: int, dry_run: bool,
+                      ctx_cache: Optional[GeminiContextCache] = None) -> None:
     """Stage entry point: phases 1-1.5 (``run_phases``) then phase 3 (write).
 
     Kept as the standalone stage so `run.py fix_triples` still works and so a single
@@ -611,7 +633,8 @@ def process_all_files(input_dir: pathlib.Path, out_dir: pathlib.Path, schema: Di
     call this — it calls ``run_phases`` and passes the triples on in memory.
     """
     result = run_phases(input_dir, out_dir, schema, entity_classes, edge_labels,
-                        edge_directions, client, rate_limiter, model, batch_size, dry_run)
+                        edge_directions, client, rate_limiter, model, batch_size, dry_run,
+                        ctx_cache=ctx_cache)
     if result is None:
         return
     all_valid, unfixable, summary = result
@@ -688,6 +711,11 @@ def main() -> None:
     parser.add_argument("--renormalize", action="store_true",
                         help="Only re-apply the P4 temporal-invariant phase to the existing "
                              "all_validated_triples.json (offline, no LLM, keeps prior repairs)")
+    parser.add_argument("--no-context-cache", action="store_true",
+                        help="Disable Gemini explicit context caching (issue #11) for phase-2 "
+                             "repair batches. On by default: one cache per run (the fixed "
+                             "SCHEMA block of BATCH_FIX_PROMPT), reused across every batch — "
+                             "schema never changes mid-run.")
     args = parser.parse_args()
 
     if not args.input_dir.exists():
@@ -718,12 +746,14 @@ def main() -> None:
             return
 
     rate_limiter = RateLimiter(max_calls_per_minute=args.rate_limit)
+    ctx_cache = (None if (client is None or args.no_context_cache)
+                 else GeminiContextCache(client, args.model))
 
     process_all_files(
         args.input_dir, args.out_dir, schema,
         entity_classes, edge_labels, edge_directions,
         client, rate_limiter, args.model,
-        args.batch_size, args.dry_run,
+        args.batch_size, args.dry_run, ctx_cache=ctx_cache,
     )
 
 

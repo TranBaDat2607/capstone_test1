@@ -53,6 +53,7 @@ tree must keep running and cannot import from here). ``test/test_esg_kg_llm.py``
 copies equal; that arm retires when the ``src/`` twins are deleted (DESIGN.md §5.3).
 """
 
+import hashlib
 import logging
 import os
 import time
@@ -163,3 +164,59 @@ class _GeminiProvider(_Provider):
             ),
         )
         return (resp.text or "").strip()
+
+
+# --------------------------------------------------------------------------- #
+# Explicit context caching (GitHub issue #11). `extract_triples`, `fix_triples`
+# and `extract` (KPI) each embed a large static block (schema.json / kpi
+# definitions) at the front of every prompt, byte-identical across many calls
+# in one run — see each stage's own module docstring for its exact reuse scope.
+# --------------------------------------------------------------------------- #
+class GeminiContextCache:
+    """One `client.caches.create()` per unique static prefix, reused via
+    `cached_content=` across every `generate_content` call that shares it.
+
+    Memoized by `sha256(static_content)`, which is what lets one instance serve
+    both a whole-run scope (`fix_triples`/`extract`: the same hash for the
+    entire invocation) and a per-document scope (`extract_triples`: a new hash
+    each time company/year change) without either caller tracking cache
+    lifetime itself — it just calls `get_or_create()` with whatever the
+    current static content is and gets back the same handle when it repeats.
+
+    A `caches.create` failure (below the ~2048-token minimum, permission,
+    network) is caught and memoized as `None` so it is never retried on every
+    subsequent call for the same content — `get_or_create()` just returns
+    `None` and the caller falls back to sending the static content inline,
+    uncached. Caching must never break the pipeline.
+
+    Only ever caches `contents` — never `system_instruction` — so a caller
+    whose `system_instruction` varies per call (e.g. `extract`'s KPI stage,
+    where it embeds company/page/doc_name) can keep sending it fresh every
+    time with no question of whether a cached and a fresh `system_instruction`
+    can coexist in one request.
+    """
+
+    def __init__(self, client: "genai.Client", model: str, ttl: str = "3600s") -> None:
+        self.client = client
+        self.model = model
+        self.ttl = ttl
+        self._by_hash: Dict[str, Optional[str]] = {}
+
+    def get_or_create(self, static_content: str,
+                       rate_limiter: Optional[RateLimiter] = None) -> Optional[str]:
+        key = hashlib.sha256(static_content.encode("utf-8")).hexdigest()
+        if key in self._by_hash:
+            return self._by_hash[key]
+        if rate_limiter is not None:
+            rate_limiter.wait_if_needed(0)
+        try:
+            cache = self.client.caches.create(
+                model=self.model,
+                config=types.CreateCachedContentConfig(contents=[static_content], ttl=self.ttl),
+            )
+            name = cache.name
+        except Exception as exc:
+            logger.warning(f"[gemini cache] create failed, falling back uncached ({exc})")
+            name = None
+        self._by_hash[key] = name
+        return name
