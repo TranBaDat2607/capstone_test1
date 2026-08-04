@@ -25,6 +25,16 @@ only provider (the module docstring here used to say so); they now use ``_Gemini
 below instead. Do not re-add an OpenAI path without checking whether the project is
 billing-blocked again first.
 
+ONE CLIENT CONSTRUCTOR, NOT SIX
+``build_gemini_client()`` below is the single place that turns ``GEMINI_API_KEY`` into a
+working ``genai.Client`` (or ``None``). Every stage that used to branch on
+``--provider {gemini,openai}`` (``extract``, ``extract_triples``, ``fix_triples``,
+``entities``, and the ``build_validated``/``build_resolved`` blocks) now calls this
+instead of re-reading the env var and constructing the client inline — six copies of
+that five-line "getenv, check, construct" block is exactly the duplication this refactor
+was supposed to remove, not just rename. ``_GeminiProvider.__init__`` calls it too, so
+there is truly one implementation.
+
 CARE REQUIRED
 ``temperature=0`` and ``response_mime_type="application/json"`` in ``_GeminiProvider.call()``
 are behaviour, not style: callers (``Adjudicator`` in step07, the classifier in step05d)
@@ -89,6 +99,22 @@ class RateLimiter:
             calls.append(time.time())
 
 
+def build_gemini_client(api_key: Optional[str] = None) -> Optional[genai.Client]:
+    """Turn ``GEMINI_API_KEY`` (or an explicit override) into a ``genai.Client``, or
+    ``None`` if no key is available or the SDK rejects it. Never raises — every call
+    site bails out on ``None`` the same way, instead of six slightly different
+    getenv/construct blocks each deciding for itself how to fail.
+    """
+    api_key = api_key or os.getenv("GEMINI_API_KEY")
+    if not api_key:
+        return None
+    try:
+        return genai.Client(api_key=api_key)
+    except Exception as e:  # pragma: no cover
+        logger.warning(f"[gemini] client init failed ({e}).")
+        return None
+
+
 # --------------------------------------------------------------------------- #
 # LLM providers. The cascade that iterates over them (`Adjudicator`) stays in
 # the stage — see the module docstring.
@@ -118,15 +144,12 @@ class _GeminiProvider(_Provider):
     def __init__(self, model: str, rate_limit: int, api_key: Optional[str] = None) -> None:
         super().__init__()
         self.model = model
-        api_key = api_key or os.getenv("GEMINI_API_KEY")
-        if not api_key:
+        client = build_gemini_client(api_key)
+        if client is None:
             return
-        try:
-            self.client = genai.Client(api_key=api_key)
-            self.rl = RateLimiter(max_calls_per_minute=rate_limit)
-            self.enabled = True
-        except Exception as e:  # pragma: no cover
-            logger.warning(f"[gemini] client init failed ({e}); provider disabled.")
+        self.client = client
+        self.rl = RateLimiter(max_calls_per_minute=rate_limit)
+        self.enabled = True
 
     def call(self, system: str, user: str) -> str:
         self.rl.wait_if_needed(0)

@@ -52,17 +52,15 @@ import argparse
 import copy
 import json
 import logging
-import os
 import pathlib
 import re
 from collections import defaultdict
 from typing import Any, Dict, List, Optional, Set, Tuple
 
 from dotenv import load_dotenv
-from google import genai
 
 from esg_kg.core.dates import date_start_key, normalize_date_string
-from esg_kg.core.llm import RateLimiter
+from esg_kg.core.llm import RateLimiter, build_gemini_client
 from esg_kg.core.paths import REPO_ROOT
 from esg_kg.core.schema import load_schema_sets, validate_triple
 
@@ -714,11 +712,10 @@ def main() -> None:
     client: Optional[Any] = None
     if not args.dry_run:
         load_dotenv(REPO_ROOT / ".env")
-        api_key = os.getenv("GEMINI_API_KEY")
-        if not api_key:
+        client = build_gemini_client()
+        if client is None:
             logger.error(f"GEMINI_API_KEY not set in {REPO_ROOT / '.env'}; use --dry-run to skip phase 2")
             return
-        client = genai.Client(api_key=api_key)
 
     rate_limiter = RateLimiter(max_calls_per_minute=args.rate_limit)
 

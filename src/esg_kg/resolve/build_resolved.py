@@ -72,6 +72,7 @@ import logging
 import pathlib
 from typing import Any, Dict, List, Optional, Tuple
 
+from esg_kg.core.llm import build_gemini_client
 from esg_kg.core.paths import REPO_ROOT
 from esg_kg.core.schema import get_identity_keys, load_schema_sets
 from esg_kg.resolve import entities, indicators, provenance
@@ -170,7 +171,7 @@ def run_block(*, input_path: pathlib.Path, out_dir: pathlib.Path, schema: Dict[s
               embed_dim: int = entities.DEFAULT_EMBED_DIM,
               embed_batch: int = entities.DEFAULT_EMBED_BATCH,
               max_llm_pairs: int = entities.DEFAULT_MAX_LLM_PAIRS,
-              no_llm: bool = True, client: Any = None, embed_client: Any = None,
+              no_llm: bool = True, client: Any = None,
               rate_limiter: Any = None,
               cache_path: Optional[pathlib.Path] = None,
               dry_run: bool = False) -> Dict[str, Any]:
@@ -193,7 +194,7 @@ def run_block(*, input_path: pathlib.Path, out_dir: pathlib.Path, schema: Dict[s
         triples, idkeys, registry_path=registry_path, standards_registry_path=standards_registry_path,
         similarity_threshold=similarity_threshold, model=model, embed_model=embed_model,
         embed_dim=embed_dim, embed_batch=embed_batch, max_llm_pairs=max_llm_pairs,
-        no_llm=no_llm, client=client, embed_client=embed_client, rate_limiter=rate_limiter,
+        no_llm=no_llm, client=client, rate_limiter=rate_limiter,
         adjudication_cache=cache,
     )
     logger.info(f"  {len(resolved['nodes'])} nodes, {len(resolved['edges'])} edges")
@@ -293,19 +294,14 @@ def main() -> None:
 
     # Stage B/C is the only paid part; everything else in the block is offline.
     client = None
-    embed_client = None
     rate_limiter = None
     model = args.model
     embed_model = args.embed_model
     if not args.no_llm:
-        import os
-
         from esg_kg.core.paths import load_env
         load_env()
-        api_key = os.getenv("GEMINI_API_KEY")
-        if api_key:
-            from google import genai
-            client = genai.Client(api_key=api_key)
+        client = build_gemini_client()
+        if client is not None:
             rate_limiter = entities.RateLimiter(max_calls_per_minute=args.rate_limit)
         else:
             logger.warning("GEMINI_API_KEY not set — Stage B/C will be skipped")
@@ -321,7 +317,7 @@ def main() -> None:
         similarity_threshold=args.similarity_threshold, model=model,
         embed_model=embed_model, embed_dim=args.embed_dim, embed_batch=args.embed_batch,
         max_llm_pairs=args.max_llm_pairs, no_llm=args.no_llm,
-        client=client, embed_client=embed_client, rate_limiter=rate_limiter,
+        client=client, rate_limiter=rate_limiter,
         cache_path=None if args.no_cache else args.cache,
         dry_run=args.dry_run,
     )

@@ -45,10 +45,10 @@ from typing import Any, Dict, List, Tuple
 from logging import getLogger, basicConfig, INFO, WARNING
 
 from dotenv import load_dotenv
-from google import genai
 from google.genai import types
 
 from esg_kg.core.paths import REPO_ROOT
+from esg_kg.core.llm import build_gemini_client
 from esg_kg.core.io_jsonl import (
     build_page_text,
     load_pages_from_jsonl,
@@ -143,13 +143,13 @@ class KPIExtractor:
         load_dotenv(REPO_ROOT / ".env")
         self.max_tokens = max_tokens
 
-        api_key = os.getenv("GEMINI_API_KEY")
-        if not api_key:
+        client = build_gemini_client()
+        if client is None:
             raise RuntimeError(
                 f"GEMINI_API_KEY not set. Copy {REPO_ROOT / '.env.example'} to "
                 f"{REPO_ROOT / '.env'} and paste your key."
             )
-        self.client = genai.Client(api_key=api_key)
+        self.client = client
         self.model = model
 
         with open(kpi_defs_path, "r", encoding="utf-8") as f:

@@ -82,7 +82,7 @@ from esg_kg.core.io_jsonl import (
     parse_company_year_from_filename,
     select_documents,
 )
-from esg_kg.core.llm import DEFAULT_RATE_LIMIT, RateLimiter
+from esg_kg.core.llm import DEFAULT_RATE_LIMIT, RateLimiter, build_gemini_client
 from esg_kg.core.schema import get_identity_keys, load_schema_sets
 from esg_kg.core.identity import PROVENANCE_CLASSES, get_stable_entity_id
 
@@ -1148,11 +1148,10 @@ def main() -> None:
 
     load_dotenv(REPO_ROOT / ".env")
     rate_limiter = RateLimiter(max_calls_per_minute=args.rate_limit)
-    api_key = os.getenv("GEMINI_API_KEY")
-    if not api_key:
+    client = build_gemini_client()
+    if client is None:
         logger.error(f"GEMINI_API_KEY not set in {REPO_ROOT / '.env'}")
         return
-    client = genai.Client(api_key=api_key)
     model = args.model
 
     total_success = 0

@@ -18,21 +18,22 @@ lifts. They are pure (no network, no LLM), so the arm below for them is free and
 real corpus.
 
 WHY THIS SLICE NEEDED NO OTHER core/ MODULE
-step01 does not use `_Provider`/`_OpenAIProvider` at all — it talks to Gemini directly via
-`google.genai.Client`. `core/llm.py`'s own docstring records that the Gemini provider was
-never lifted (the project behind GEMINI_API_KEY is permanently 403). So `KPIExtractor`, its
-prompt, its JSON schema and `normalize_kpi_response` all stay stage-local; only the 5 IO
-helpers move.
+step01 does not use `_Provider`/`_GeminiProvider` at all — it talks to Gemini directly via
+`google.genai.Client`, though since 2026-08-04 it gets that client from
+`core.llm.build_gemini_client()` (the shared constructor `simplify` factored out of six
+near-identical getenv/construct blocks) rather than calling `genai.Client(...)` inline.
+`KPIExtractor`, its prompt, its JSON schema and `normalize_kpi_response` all stay
+stage-local; only the 5 IO helpers and the client constructor come from `core/`.
 
 HOW THE PAID BRANCH IS COVERED WITHOUT PAYING
 Same technique as step03 phase 2 / step05d / step07: inject a STUB over the client the stage
-constructs. Here that is `google.genai.Client` itself (there is no `_Provider` abstraction to
-stand in front of), answering deterministically from a CRC of the prompt text, walking
-multiple response shapes the parser must survive: clean JSON, a non-STOP `finish_reason`
-(must return `[]`), and empty text (must return `[]`).
+constructs — here that means monkeypatching `build_gemini_client` itself to return a fake
+client, answering deterministically from a CRC of the prompt text, walking multiple response
+shapes the parser must survive: clean JSON, a non-STOP `finish_reason` (must return `[]`),
+and empty text (must return `[]`).
 
 Offline: no real Gemini call, no network, no GEMINI_API_KEY required (the stub replaces
-`google.genai.Client` before any request is built; a dummy key is set only so
+`build_gemini_client` before any request is built; a dummy key is set only so
 `KPIExtractor.__init__`'s presence check does not abort first). `data/labeled/annual_labeled/`
 and `kpi_output/` are git-ignored (shipped via the HF snapshot) — arms needing them SKIP with
 a message on a bare clone.
@@ -199,12 +200,12 @@ class _FakeClient:
 
 def _make_extractor(mod, defs_path):
     os.environ.setdefault("GEMINI_API_KEY", "test-stub-key")
-    original_client = mod.genai.Client
-    mod.genai.Client = _FakeClient
+    original_builder = mod.build_gemini_client
+    mod.build_gemini_client = lambda api_key=None: _FakeClient()
     try:
         return mod.KPIExtractor(defs_path, model="gemini-2.5-flash")
     finally:
-        mod.genai.Client = original_client
+        mod.build_gemini_client = original_builder
 
 
 def _tiny_defs(tmp_dir: Path) -> Path:

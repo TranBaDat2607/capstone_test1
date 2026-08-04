@@ -158,8 +158,7 @@ def run(args: argparse.Namespace) -> None:
         logger.info("--dry-run: no LLM calls, nothing written.")
         return
 
-    provider = _GeminiProvider(args.model, args.rate_limit,
-                               api_key=getattr(args, "gemini_api_key", None))
+    provider = _GeminiProvider(args.model, args.rate_limit)
     if not provider.enabled:
         logger.error("No Gemini provider (need GEMINI_API_KEY in .env) — step05d requires an LLM.")
         return

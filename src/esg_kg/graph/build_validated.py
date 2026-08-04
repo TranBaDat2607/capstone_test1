@@ -62,6 +62,7 @@ import logging
 import pathlib
 from typing import Any, Dict, List, Optional, Tuple
 
+from esg_kg.core.llm import build_gemini_client
 from esg_kg.core.paths import REPO_ROOT, SCHEMA_PATH
 from esg_kg.core.schema import load_schema_sets
 from esg_kg.graph import anchor_kpi, fix_triples
@@ -262,14 +263,10 @@ def main() -> None:
     rate_limiter = None
     model = args.model
     if not args.dry_run:
-        import os
-
         from esg_kg.core.paths import load_env
         load_env()
-        api_key = os.getenv("GEMINI_API_KEY")
-        if api_key:
-            from google import genai
-            client = genai.Client(api_key=api_key)
+        client = build_gemini_client()
+        if client is not None:
             rate_limiter = fix_triples.RateLimiter(max_calls_per_minute=args.rate_limit)
         else:
             logger.warning("GEMINI_API_KEY not set — phase 2 will run from the cache only")

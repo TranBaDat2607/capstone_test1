@@ -67,7 +67,6 @@ from __future__ import annotations
 import argparse
 import json
 import logging
-import os
 import re
 import time
 from collections import defaultdict
@@ -75,11 +74,10 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Tuple
 
 import numpy as np
-from google import genai
 from google.genai import types
 
 from esg_kg.core.dates import date_start_key
-from esg_kg.core.llm import RateLimiter
+from esg_kg.core.llm import RateLimiter, build_gemini_client
 from esg_kg.core.naming import normalize_name
 from esg_kg.core.paths import REPO_ROOT, load_env
 
@@ -508,7 +506,6 @@ def resolve_graph(triples: List[Dict[str, Any]], idkeys: Dict[str, List[str]], *
                   max_llm_pairs: int = DEFAULT_MAX_LLM_PAIRS,
                   no_llm: bool = True,
                   client: Optional[Any] = None,
-                  embed_client: Optional[Any] = None,
                   rate_limiter: Optional[RateLimiter] = None,
                   adjudication_cache: Any = None) -> Tuple[Dict[str, Any], Dict[str, Any]]:
     """Stage A -> B -> C -> D. Returns (resolved_graph, stats); writes nothing.
@@ -520,13 +517,13 @@ def resolve_graph(triples: List[Dict[str, Any]], idkeys: Dict[str, List[str]], *
     ``fix_triples.run_phases``'s ``repairs`` parameter) so Stage C's paid, non-
     deterministic verdicts can be replayed for free on a rerun.
 
-    ``embed_client`` is Stage B's client; it defaults to ``client`` because a Gemini
-    ``genai.Client`` does both embeddings (``.models.embed_content``) and adjudication
-    (``.models.generate_content``) — one object, two endpoints. Kept as a separate
-    parameter for the caller's convenience even though this project now only ever
-    passes the same Gemini client for both.
+    ``client`` serves both Stage B (embeddings, ``.models.embed_content``) and Stage C
+    (adjudication, ``.models.generate_content``) — one Gemini ``genai.Client``, two
+    endpoints. There used to be a separate ``embed_client`` parameter for an
+    OpenAI-shaped provider that split those into two objects; removed with the OpenAI
+    path itself (2026-08-04) since nothing constructs two different clients any more.
     """
-    embed_client = embed_client if embed_client is not None else client
+    embed_client = client
     nodes, edges = build_graph(triples)
     n = len(nodes)
     entity_idx = [i for i, x in enumerate(nodes) if x["class"] not in OBSERVATION_CLASSES]
@@ -772,17 +769,15 @@ def main() -> None:
     logger.info(f"Loaded {len(triples)} validated triples")
 
     client = None
-    embed_client = None
     rate_limiter = None
     model = args.model
     embed_model = args.embed_model
     if not args.no_llm:
         load_env()
-        api_key = os.getenv("GEMINI_API_KEY")
-        if not api_key:
+        client = build_gemini_client()
+        if client is None:
             logger.error(f"GEMINI_API_KEY not set in {REPO_ROOT / '.env'}; rerun with --no-llm or --dry-run")
             return
-        client = genai.Client(api_key=api_key)
         rate_limiter = RateLimiter(max_calls_per_minute=args.rate_limit)
 
     resolved, stats = resolve_graph(
@@ -791,7 +786,7 @@ def main() -> None:
         similarity_threshold=args.similarity_threshold, model=model,
         embed_model=embed_model, embed_dim=args.embed_dim, embed_batch=args.embed_batch,
         max_llm_pairs=args.max_llm_pairs, no_llm=args.no_llm,
-        client=client, embed_client=embed_client, rate_limiter=rate_limiter, adjudication_cache=None,
+        client=client, rate_limiter=rate_limiter, adjudication_cache=None,
     )
 
     if args.dry_run:

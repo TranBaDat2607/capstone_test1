@@ -458,8 +458,7 @@ def run(args: argparse.Namespace) -> None:
 
     # LLM adjudication is mandatory — no deterministic fallback. Abort up front if no
     # provider is available so the run never silently degrades into a weaker mode.
-    adjud = Adjudicator(args.model, args.rate_limit, args.provider_order,
-                        api_key=getattr(args, "gemini_api_key", None))
+    adjud = Adjudicator(args.model, args.rate_limit, args.provider_order)
     if not adjud.enabled:
         logger.error("No LLM provider available (need GEMINI_API_KEY in .env) — "
                      "aborting: this pipeline requires LLM adjudication.")
