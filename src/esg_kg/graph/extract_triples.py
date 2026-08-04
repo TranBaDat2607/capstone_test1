@@ -82,7 +82,7 @@ from esg_kg.core.io_jsonl import (
     parse_company_year_from_filename,
     select_documents,
 )
-from esg_kg.core.llm import DEFAULT_RATE_LIMIT, RateLimiter, build_gemini_client
+from esg_kg.core.llm import DEFAULT_RATE_LIMIT, GeminiContextCache, RateLimiter, build_gemini_client
 from esg_kg.core.schema import get_identity_keys, load_schema_sets
 from esg_kg.core.identity import PROVENANCE_CLASSES, get_stable_entity_id
 
@@ -375,12 +375,16 @@ NEWS_GRAPH_PROMPT_TEMPLATE = (
 )
 
 
-def build_page_prompt(schema: Dict[str, Any], page_text: str, page_no: int,
-                      page_kpis: List[Dict[str, Any]], company: str, year: int,
-                      source: str = "report", article_meta: Optional[Dict[str, Any]] = None) -> str:
+def build_document_header(schema: Dict[str, Any], company: str, year: int,
+                          source: str = "report",
+                          article_meta: Optional[Dict[str, Any]] = None) -> str:
+    """The page-invariant part of the prompt: schema + extraction rules (+ company/year,
+    + article metadata for news). Byte-identical for every page of ONE document, which is
+    what makes it a cacheable prefix (issue #11) — `process_document` creates one
+    `GeminiContextCache` entry from this per document and reuses it across every page."""
     if source == "news":
         meta = article_meta or {}
-        header = NEWS_GRAPH_PROMPT_TEMPLATE.format(
+        return NEWS_GRAPH_PROMPT_TEMPLATE.format(
             schema_json=json.dumps(schema, ensure_ascii=False, indent=2),
             company=company,
             year=year,
@@ -389,18 +393,30 @@ def build_page_prompt(schema: Dict[str, Any], page_text: str, page_no: int,
             publish_date=meta.get("publish_date", ""),
             url=meta.get("url", ""),
         )
-    else:
-        header = TEMPORAL_GRAPH_PROMPT_TEMPLATE.format(
-            schema_json=json.dumps(schema, ensure_ascii=False, indent=2),
-            company=company,
-            year=year,
-        )
+    return TEMPORAL_GRAPH_PROMPT_TEMPLATE.format(
+        schema_json=json.dumps(schema, ensure_ascii=False, indent=2),
+        company=company,
+        year=year,
+    )
+
+
+def build_page_body(page_text: str, page_no: int, page_kpis: List[Dict[str, Any]]) -> str:
+    """The per-page part of the prompt: the page text + this page's KPI observations.
+    Never cached — only `build_document_header`'s output is."""
     kpi_section = (
         f"--- KPI OBSERVATIONS (page {page_no}) ---\n```json\n"
         f"{json.dumps(page_kpis, indent=2, ensure_ascii=False)}\n```\n\n"
         if page_kpis else ""
     )
-    return f"{header}\n\n--- DOC page {page_no} ---\n\n{page_text}\n\n{kpi_section}"
+    return f"--- DOC page {page_no} ---\n\n{page_text}\n\n{kpi_section}"
+
+
+def build_page_prompt(schema: Dict[str, Any], page_text: str, page_no: int,
+                      page_kpis: List[Dict[str, Any]], company: str, year: int,
+                      source: str = "report", article_meta: Optional[Dict[str, Any]] = None) -> str:
+    header = build_document_header(schema, company, year, source=source, article_meta=article_meta)
+    body = build_page_body(page_text, page_no, page_kpis)
+    return f"{header}\n\n{body}"
 
 
 # --------------------------------------------------------------------------- #
@@ -830,15 +846,24 @@ def load_news_doc_meta(path: Path) -> Dict[str, Dict[str, Any]]:
 # --------------------------------------------------------------------------- #
 def call_llm(prompt: str, client: Any, client_idx: int,
              rate_limiter: RateLimiter, schema: Dict[str, Any], model: str,
-             retries: int = 3) -> Tuple[Any, str, bool]:
-    """`client` is a `genai.Client`."""
+             retries: int = 3, cached_content: Optional[str] = None) -> Tuple[Any, str, bool]:
+    """`client` is a `genai.Client`. When `cached_content` is set (a Gemini cache name
+    from `GeminiContextCache`, issue #11), `prompt` is expected to be the page BODY only
+    (see `build_page_body`) — the document header lives in the cache instead of being
+    resent every call."""
     last_error: Optional[Exception] = None
     last_raw = ""
     rate_limit_failures = 0
+    cfg = CFG_JSON if cached_content is None else types.GenerateContentConfig(
+        temperature=0,
+        response_mime_type="application/json",
+        system_instruction="Return *only* valid JSON - no prose.",
+        cached_content=cached_content,
+    )
     for attempt in range(1, retries + 1):
         try:
             rate_limiter.wait_if_needed(client_idx)
-            resp = client.models.generate_content(model=model, contents=prompt, config=CFG_JSON)
+            resp = client.models.generate_content(model=model, contents=prompt, config=cfg)
             last_raw = _response_to_text(resp)
             parsed, ok = _parse_json_response(last_raw)
             if ok:
@@ -875,7 +900,8 @@ def process_page(page_info: Dict[str, Any], page_kpis: List[Dict[str, Any]],
                  pdf_stem: str, dbg_pdf_dir: Path, g_pdf_dir: Path,
                  company: str, year: int,
                  source: str = "report", article_meta: Optional[Dict[str, Any]] = None,
-                 page_rows: Optional[List[Tuple[int, str, bool]]] = None) -> Tuple[int, bool, bool]:
+                 page_rows: Optional[List[Tuple[int, str, bool]]] = None,
+                 cache_name: Optional[str] = None) -> Tuple[int, bool, bool]:
     p_no = page_info["page"]
     page_text = page_info["text"]
     has_esg = page_info["has_esg"]
@@ -899,13 +925,16 @@ def process_page(page_info: Dict[str, Any], page_kpis: List[Dict[str, Any]],
         return p_no, True, False
 
     logger.info(f"-> Processing page {p_no} with client {client_idx}")
-    prompt = build_page_prompt(schema, page_text, p_no, page_kpis, company=company, year=year,
-                               source=source, article_meta=article_meta)
+    if cache_name is not None:
+        prompt = build_page_body(page_text, p_no, page_kpis)
+    else:
+        prompt = build_page_prompt(schema, page_text, p_no, page_kpis, company=company, year=year,
+                                   source=source, article_meta=article_meta)
 
     max_retries = 2
     for retry in range(max_retries):
         parsed, raw, rate_limited = call_llm(prompt, client, client_idx, rate_limiter,
-                                             schema, model, retries=2)
+                                             schema, model, retries=2, cached_content=cache_name)
         if rate_limited:
             logger.warning(f"Page {p_no} skipped due to rate limiting on client {client_idx}")
             return p_no, False, True
@@ -984,7 +1013,8 @@ def process_document(source_pdf: str, jsonl_pages: Dict[int, List[Tuple[int, str
                      kpi_dir: Path, out_dir: Path, schema: Dict[str, Any], model: str,
                      client: Any, rate_limiter: RateLimiter,
                      esg_only: bool, max_workers: int,
-                     source: str = "report", doc_meta: Optional[Dict[str, Any]] = None
+                     source: str = "report", doc_meta: Optional[Dict[str, Any]] = None,
+                     ctx_cache: Optional[GeminiContextCache] = None
                      ) -> Tuple[int, int]:
     if source == "news":
         # news source_pdf is an id like "AAA__vietstock.vn__<hash>" (no .pdf); do NOT
@@ -1014,6 +1044,12 @@ def process_document(source_pdf: str, jsonl_pages: Dict[int, List[Tuple[int, str
     logger.info(f"=== Processing {source_pdf} [{source}] - {company} ({year}) - {len(pages)} pages ===")
 
     article_meta = doc_meta if source == "news" else None
+
+    cache_name: Optional[str] = None
+    if ctx_cache is not None and pages:
+        header = build_document_header(schema, company, year, source=source, article_meta=article_meta)
+        cache_name = ctx_cache.get_or_create(header, rate_limiter)
+
     success = 0
     failed = 0
     rate_limited = 0
@@ -1025,6 +1061,7 @@ def process_document(source_pdf: str, jsonl_pages: Dict[int, List[Tuple[int, str
                 pdf_stem, dbg_pdf_dir, g_pdf_dir, company, year,
                 source, article_meta,
                 jsonl_pages.get(pg["page"], []),
+                cache_name,
             ): pg["page"]
             for pg in pages
         }
@@ -1120,6 +1157,13 @@ def main() -> None:
     parser.add_argument("--dry-run", action="store_true",
                         help="Offline preview: list selected docs, ESG page counts and a prompt "
                              "sample. No Gemini calls, no API key needed, nothing written.")
+    parser.add_argument("--no-context-cache", action="store_true",
+                        help="Disable Gemini explicit context caching (issue #11). On by "
+                             "default: one cache per document (schema+rules+company/year), "
+                             "reused across every page of that document, cutting the input-"
+                             "token cost of the repeated header. A cache-creation failure "
+                             "always falls back to today's uncached behaviour on its own; "
+                             "this flag is for measuring/opting out entirely.")
     args = parser.parse_args()
 
     if not args.input.exists():
@@ -1153,6 +1197,7 @@ def main() -> None:
         logger.error(f"GEMINI_API_KEY not set in {REPO_ROOT / '.env'}")
         return
     model = args.model
+    ctx_cache = None if args.no_context_cache else GeminiContextCache(client, model)
 
     total_success = 0
     total_failed = 0
@@ -1161,7 +1206,7 @@ def main() -> None:
             src, docs[src],
             args.kpi_dir, args.out_dir, schema, model,
             client, rate_limiter, esg_only=esg_only, max_workers=args.max_workers,
-            source=args.source, doc_meta=news_meta.get(src),
+            source=args.source, doc_meta=news_meta.get(src), ctx_cache=ctx_cache,
         )
         total_success += s
         total_failed += f

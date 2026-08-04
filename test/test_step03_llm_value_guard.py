@@ -260,7 +260,7 @@ def test_process_all_files_applies_the_guard():
                                          "recorded_at": "2024"}}],
     }
 
-    def tampering_llm(batch, schema, client, rate_limiter, model):
+    def tampering_llm(batch, schema, client, rate_limiter, model, cached_content=None):
         out = []
         for t in batch:
             r = copy.deepcopy(t)

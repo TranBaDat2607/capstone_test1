@@ -133,6 +133,8 @@ def test_kpi_schema_has_the_shape_the_paid_request_depends_on():
 def test_build_prompt_is_deterministic_and_carries_the_kpi_defs():
     new_ex = new_extract.KPIExtractor.__new__(new_extract.KPIExtractor)
     new_ex.kpi_defs = [{"id": "TT96-1", "definition": "d1"}, {"id": "TT96-2", "definition": "d2"}]
+    new_ex.defs_text = "\n".join(f"{d['id']}: {d['definition']}" for d in new_ex.kpi_defs)
+    new_ex.cache_name = None  # __new__ bypasses __init__, which normally sets this
     system, user = new_ex._build_prompt(
         "Công ty đã giảm phát thải 20% trong năm 2023.", "AAA", new_extract.SECTOR, 5, "AAA_2023.pdf")
     assert "TT96-1" in user and "TT96-2" in user, "KPI definitions must reach the prompt"
@@ -163,6 +165,27 @@ class _FakeResponse:
         self.candidates = [_FakeCandidate(finish_name)] if finish_name else []
 
 
+class _FakeCachedContent:
+    def __init__(self, name):
+        self.name = name
+
+
+class _FakeCaches:
+    """Stub for `client.caches` (issue #11 / `GeminiContextCache`, core/llm.py)."""
+
+    def __init__(self, raise_always=False):
+        self.calls: list = []
+        self._raise_always = raise_always
+        self._next_id = 0
+
+    def create(self, *, model, config):
+        self.calls.append({"model": model, "contents": config.contents})
+        if self._raise_always:
+            raise RuntimeError("simulated caches.create failure")
+        self._next_id += 1
+        return _FakeCachedContent(name=f"cachedContents/stub-{self._next_id}")
+
+
 class _FakeModels:
     def __init__(self, calls_seen):
         self._calls_seen = calls_seen
@@ -176,6 +199,7 @@ class _FakeModels:
             "response_schema": config.response_schema,
             "temperature": config.temperature,
             "max_output_tokens": config.max_output_tokens,
+            "cached_content": config.cached_content,
         })
         crc = zlib.crc32(contents.encode("utf-8"))
         shape = crc % 4
@@ -193,17 +217,19 @@ class _FakeModels:
 
 
 class _FakeClient:
-    def __init__(self, api_key=None):
+    def __init__(self, api_key=None, raise_caches=False):
         self.calls_seen: list = []
         self.models = _FakeModels(self.calls_seen)
+        self.caches = _FakeCaches(raise_always=raise_caches)
 
 
-def _make_extractor(mod, defs_path):
+def _make_extractor(mod, defs_path, raise_caches=False, use_context_cache=True):
     os.environ.setdefault("GEMINI_API_KEY", "test-stub-key")
     original_builder = mod.build_gemini_client
-    mod.build_gemini_client = lambda api_key=None: _FakeClient()
+    mod.build_gemini_client = lambda api_key=None: _FakeClient(raise_caches=raise_caches)
     try:
-        return mod.KPIExtractor(defs_path, model="gemini-2.5-flash")
+        return mod.KPIExtractor(defs_path, model="gemini-2.5-flash",
+                                use_context_cache=use_context_cache)
     finally:
         mod.build_gemini_client = original_builder
 
@@ -278,7 +304,86 @@ def test_process_document_skips_non_esg_pages_and_is_idempotent():
         shutil.rmtree(tmp, ignore_errors=True)
 
 
-# 2026-08-04: Part D, the additive OpenAI path (`--provider openai`, added 2026-07-29:
+# --------------------------------------------------------------------------- #
+# Part D — Gemini explicit context caching for KPI_DEFINITIONS (issue #11): the
+# widest-scope cache of the three stages — ONE cache for the whole run (created in
+# __init__, before any document is processed), reused across every page of every
+# document this extractor handles.
+# --------------------------------------------------------------------------- #
+def test_cache_created_once_in_init_and_reused_across_documents_and_pages():
+    tmp = Path(tempfile.mkdtemp(prefix="esgkg_01_cache_"))
+    try:
+        defs_path = _tiny_defs(tmp)
+        new_ex = _make_extractor(new_extract, defs_path)
+
+        assert new_ex.cache_name is not None, "cache creation must succeed against the stub"
+        assert len(new_ex.client.caches.calls) == 1, (
+            f"expected exactly 1 caches.create() in __init__, got {len(new_ex.client.caches.calls)}"
+        )
+
+        pages_doc_a = {1: [(0, "Chung toi cam ket giam phat thai.", True)]}
+        pages_doc_b = {1: [(0, "Nha may dat muc tieu Net Zero.", True)]}
+        new_ex.process_document("AAA_2023.pdf", pages_doc_a, tmp / "out", esg_only=True, max_workers=1)
+        new_ex.process_document("BBB_2024.pdf", pages_doc_b, tmp / "out", esg_only=True, max_workers=1)
+
+        # still exactly 1 — no NEW cache was created for the second document/page.
+        assert len(new_ex.client.caches.calls) == 1, (
+            "a second document must reuse the SAME cache, not create a new one "
+            f"(got {len(new_ex.client.caches.calls)} caches.create() calls)"
+        )
+        assert len(new_ex.client.calls_seen) >= 2, "arm is vacuous: both pages must have reached the client"
+        cache_names = {c["cached_content"] for c in new_ex.client.calls_seen}
+        assert cache_names == {new_ex.cache_name}, f"every page must reuse the SAME cache: {cache_names}"
+        for c in new_ex.client.calls_seen:
+            assert "KPI_DEFINITIONS" not in c["contents"], (
+                "the cached KPI_DEFINITIONS block must NOT be resent inline once cached_content is set"
+            )
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
+def test_cache_creation_failure_falls_back_cleanly():
+    tmp = Path(tempfile.mkdtemp(prefix="esgkg_01_cache_fail_"))
+    try:
+        defs_path = _tiny_defs(tmp)
+        new_ex = _make_extractor(new_extract, defs_path, raise_caches=True)
+
+        assert new_ex.cache_name is None, "a failed cache creation must leave cache_name None"
+        pages = {1: [(0, "Chung toi cam ket giam phat thai.", True)]}
+        new_ex.process_document("AAA_2023.pdf", pages, tmp / "out", esg_only=True, max_workers=1)
+
+        assert len(new_ex.client.calls_seen) >= 1, "the page must still be attempted"
+        for c in new_ex.client.calls_seen:
+            assert c["cached_content"] is None, "a failed cache creation must leave every call uncached"
+            assert "KPI_DEFINITIONS" in c["contents"], (
+                "without a working cache, KPI_DEFINITIONS must still be sent inline"
+            )
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
+def test_use_context_cache_false_never_touches_caches_api():
+    tmp = Path(tempfile.mkdtemp(prefix="esgkg_01_cache_off_"))
+    try:
+        defs_path = _tiny_defs(tmp)
+        new_ex = _make_extractor(new_extract, defs_path, use_context_cache=False)
+
+        assert new_ex.cache_name is None
+        assert len(new_ex.client.caches.calls) == 0, "use_context_cache=False must never call caches.create"
+
+        pages = {1: [(0, "Chung toi cam ket giam phat thai.", True)]}
+        new_ex.process_document("AAA_2023.pdf", pages, tmp / "out", esg_only=True, max_workers=1)
+
+        assert len(new_ex.client.caches.calls) == 0
+        for c in new_ex.client.calls_seen:
+            assert c["cached_content"] is None
+            assert "KPI_DEFINITIONS" in c["contents"]
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
+# 2026-08-04: Part E (renumbered from the original "Part D" once issue #11 claimed
+# that letter above), the additive OpenAI path (`--provider openai`, added 2026-07-29:
 # `test_extract_page_openai_provider_parses_and_normalizes` /
 # `test_kpi_extractor_openai_accepts_explicit_key_and_base_url_override` /
 # `test_extract_page_gemini_default_unaffected_by_provider_arg`) was removed outright —

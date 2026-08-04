@@ -58,6 +58,7 @@ from esg_kg.graph import fix_triples as new_fix  # noqa: E402
 
 # --- the kernel the new tree must be REUSING, not re-copying -------------------
 from esg_kg.core import dates as core_dates  # noqa: E402
+from esg_kg.core import llm as core_llm  # noqa: E402
 from esg_kg.core import schema as core_schema  # noqa: E402
 
 SCHEMA_FILE = REPO / "config" / "schema.json"
@@ -418,7 +419,7 @@ def test_renormalize_existing_matches_src_and_is_idempotent():
 # --------------------------------------------------------------------------- #
 # 4. Phase 2 — the paid branch, driven with a stub in BOTH trees.
 # --------------------------------------------------------------------------- #
-def _tampering_llm(batch, schema, client, rate_limiter, model):
+def _tampering_llm(batch, schema, client, rate_limiter, model, cached_content=None):
     """An 'honest repair' plus the silent tampering issue #6 warns about."""
     out = []
     for t in batch:
@@ -482,6 +483,157 @@ def test_phase2_repair_path_matches_src_with_a_stubbed_llm():
         "the stage wrote the LLM's translated name — "
         "preserve_property_values is not wired into process_all_files")
     print("     (repair kept, tampering blocked)")
+
+
+# --------------------------------------------------------------------------- #
+# 5. Gemini explicit context caching for phase 2 (issue #11): one cache for the
+# whole run (the fixed SCHEMA block of BATCH_FIX_PROMPT), reused via
+# cached_content= across every batch.
+# --------------------------------------------------------------------------- #
+class _FakeCachedContent:
+    def __init__(self, name):
+        self.name = name
+
+
+class _FakeCaches:
+    def __init__(self, raise_always=False):
+        self.calls: list = []
+        self._raise_always = raise_always
+        self._next_id = 0
+
+    def create(self, *, model, config):
+        self.calls.append({"model": model, "contents": config.contents})
+        if self._raise_always:
+            raise RuntimeError("simulated caches.create failure")
+        self._next_id += 1
+        return _FakeCachedContent(name=f"cachedContents/stub-{self._next_id}")
+
+
+class _FakeGenResp:
+    def __init__(self, text):
+        self.text = text
+
+
+class _FakeModels:
+    def __init__(self, calls_seen):
+        self._calls_seen = calls_seen
+
+    def generate_content(self, model, contents, config):
+        self._calls_seen.append({
+            "model": model, "contents": contents,
+            "cached_content": config.get("cached_content"),
+        })
+        return _FakeGenResp("[]")  # no repairs; the cache plumbing is what's under test
+
+
+class _FakeClient:
+    def __init__(self, raise_caches=False):
+        self.calls_seen: list = []
+        self.models = _FakeModels(self.calls_seen)
+        self.caches = _FakeCaches(raise_always=raise_caches)
+
+
+def _two_invalid_pages(tmp: Path) -> Path:
+    """Two documents, each with ONE invalid triple (the same 'ownsFacilty' typo
+    _phase2_page() uses) — enough for run_phases to build a >1-batch phase 2 with
+    batch_size=1, so 'one cache, many batches' is non-vacuous."""
+    graphs = tmp / "graphs"
+    for doc in ("docA_2024", "docB_2024"):
+        d = graphs / doc
+        d.mkdir(parents=True)
+        (d / "page1.json").write_text(json.dumps(_phase2_page(), ensure_ascii=False), encoding="utf-8")
+    return graphs
+
+
+def test_run_phases_creates_one_context_cache_and_reuses_it_across_batches():
+    """issue #11: one client.caches.create() for the whole run, reused via
+    cached_content= across every phase-2 batch — not one per batch."""
+    entity_classes, edge_labels, edge_directions = schema_sets()
+    schema = load_schema()
+    with tempfile.TemporaryDirectory() as t1:
+        tmp = Path(t1)
+        graphs = _two_invalid_pages(tmp)
+        client = _FakeClient()
+        ctx_cache = core_llm.GeminiContextCache(client, "gemini-2.5-flash")
+        rl = new_fix.RateLimiter(max_calls_per_minute=1000)
+
+        new_fix.process_all_files(
+            input_dir=graphs, out_dir=tmp / "validated", schema=schema,
+            entity_classes=entity_classes, edge_labels=edge_labels,
+            edge_directions=edge_directions, client=client, rate_limiter=rl,
+            model="gemini-2.5-flash", batch_size=1, dry_run=False,
+            ctx_cache=ctx_cache,
+        )
+
+        assert len(client.caches.calls) == 1, (
+            f"expected exactly 1 caches.create() for the whole run, got {len(client.caches.calls)}"
+        )
+        assert len(client.calls_seen) >= 2, (
+            "arm is vacuous: expected >=2 batches (batch_size=1, 2 invalid triples)"
+        )
+        cache_names = {c["cached_content"] for c in client.calls_seen}
+        assert cache_names == {"cachedContents/stub-1"}, f"every batch must reuse the SAME cache: {cache_names}"
+        header = new_fix.BATCH_FIX_PROMPT.format(
+            schema_json=json.dumps(schema, indent=2, ensure_ascii=False))
+        for c in client.calls_seen:
+            assert header not in c["contents"], "the cached schema header must not be resent inline"
+    print("     (1 cache created, reused across every batch, header not duplicated)")
+
+
+def test_run_phases_falls_back_cleanly_when_cache_creation_fails():
+    """A caches.create() failure must not break phase 2: every batch still gets
+    sent, just without cached_content (today's uncached behaviour)."""
+    entity_classes, edge_labels, edge_directions = schema_sets()
+    schema = load_schema()
+    with tempfile.TemporaryDirectory() as t1:
+        tmp = Path(t1)
+        graphs = _two_invalid_pages(tmp)
+        client = _FakeClient(raise_caches=True)
+        ctx_cache = core_llm.GeminiContextCache(client, "gemini-2.5-flash")
+        rl = new_fix.RateLimiter(max_calls_per_minute=1000)
+
+        new_fix.process_all_files(
+            input_dir=graphs, out_dir=tmp / "validated", schema=schema,
+            entity_classes=entity_classes, edge_labels=edge_labels,
+            edge_directions=edge_directions, client=client, rate_limiter=rl,
+            model="gemini-2.5-flash", batch_size=1, dry_run=False,
+            ctx_cache=ctx_cache,
+        )
+
+        assert len(client.calls_seen) >= 2, "both batches must still be attempted"
+        assert all(c["cached_content"] is None for c in client.calls_seen), (
+            "a failed cache creation must leave every batch uncached, not crash"
+        )
+    print("     (cache-creation failure -> uncached fallback, no crash)")
+
+
+def test_run_phases_without_ctx_cache_never_touches_caches_api():
+    """No ctx_cache passed (the --no-context-cache escape hatch) -> caches.create is
+    never called, and every batch's contents include the full schema header (today's
+    unmodified behaviour)."""
+    entity_classes, edge_labels, edge_directions = schema_sets()
+    schema = load_schema()
+    with tempfile.TemporaryDirectory() as t1:
+        tmp = Path(t1)
+        graphs = _two_invalid_pages(tmp)
+        client = _FakeClient()
+        rl = new_fix.RateLimiter(max_calls_per_minute=1000)
+
+        new_fix.process_all_files(
+            input_dir=graphs, out_dir=tmp / "validated", schema=schema,
+            entity_classes=entity_classes, edge_labels=edge_labels,
+            edge_directions=edge_directions, client=client, rate_limiter=rl,
+            model="gemini-2.5-flash", batch_size=1, dry_run=False,
+            ctx_cache=None,
+        )
+
+        assert len(client.caches.calls) == 0, "ctx_cache=None must never call caches.create"
+        assert all(c["cached_content"] is None for c in client.calls_seen)
+        header = new_fix.BATCH_FIX_PROMPT.format(
+            schema_json=json.dumps(schema, indent=2, ensure_ascii=False))
+        for c in client.calls_seen:
+            assert header in c["contents"], "without caching, the schema header must still be sent inline"
+    print("     (no ctx_cache -> caches.create never called, header sent inline as before)")
 
 
 # --------------------------------------------------------------------------- #
