@@ -102,10 +102,12 @@ DEFAULT_MAX_WORKERS = 4
 # --------------------------------------------------------------------------- #
 # Gemini config + prompt template (verbatim; carries the issue-#6 language fix).
 # --------------------------------------------------------------------------- #
+JSON_ONLY_SYSTEM_INSTRUCTION = "Return *only* valid JSON - no prose."
+
 CFG_JSON = types.GenerateContentConfig(
     temperature=0,
     response_mime_type="application/json",
-    system_instruction="Return *only* valid JSON - no prose.",
+    system_instruction=JSON_ONLY_SYSTEM_INSTRUCTION,
 )
 
 
@@ -854,10 +856,15 @@ def call_llm(prompt: str, client: Any, client_idx: int,
     last_error: Optional[Exception] = None
     last_raw = ""
     rate_limit_failures = 0
+    # issue #11 follow-up (2026-08-05): the Gemini API rejects cached_content combined
+    # with system_instruction in the SAME call ("CachedContent can not be used with
+    # GenerateContent request setting system_instruction, tools or tool_config") — so
+    # once cached, JSON_ONLY_SYSTEM_INSTRUCTION must NOT be resent here; it is instead
+    # baked into the cache itself at creation (see process_document's get_or_create
+    # call, system_instruction=JSON_ONLY_SYSTEM_INSTRUCTION).
     cfg = CFG_JSON if cached_content is None else types.GenerateContentConfig(
         temperature=0,
         response_mime_type="application/json",
-        system_instruction="Return *only* valid JSON - no prose.",
         cached_content=cached_content,
     )
     for attempt in range(1, retries + 1):
@@ -1048,7 +1055,12 @@ def process_document(source_pdf: str, jsonl_pages: Dict[int, List[Tuple[int, str
     cache_name: Optional[str] = None
     if ctx_cache is not None and pages:
         header = build_document_header(schema, company, year, source=source, article_meta=article_meta)
-        cache_name = ctx_cache.get_or_create(header, rate_limiter)
+        # JSON_ONLY_SYSTEM_INSTRUCTION is constant across every call this stage makes,
+        # so it is baked into the cache itself (system_instruction=) rather than sent
+        # per-call — see call_llm's cfg for why it can no longer be sent per-call at all.
+        cache_name = ctx_cache.get_or_create(
+            header, rate_limiter, system_instruction=JSON_ONLY_SYSTEM_INSTRUCTION,
+        )
 
     success = 0
     failed = 0
