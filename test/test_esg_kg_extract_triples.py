@@ -214,7 +214,11 @@ class _FakeCaches:
         self._next_id = 0
 
     def create(self, *, model, config):
-        self.calls.append({"model": model, "contents": config.contents})
+        self.calls.append({
+            "model": model,
+            "contents": config.contents,
+            "system_instruction": config.system_instruction,
+        })
         if self._raise_always:
             raise RuntimeError("simulated caches.create failure")
         self._next_id += 1
@@ -317,6 +321,12 @@ def test_process_document_creates_one_cache_and_reuses_it_across_every_page():
         assert len(new_client.caches.calls) == 1, (
             f"expected exactly 1 caches.create() for one document, got {len(new_client.caches.calls)}"
         )
+        # the constant system instruction must be baked into the cache itself, not
+        # left off entirely -- see call_llm's cfg for why it can no longer be sent
+        # per-call once cached.
+        assert new_client.caches.calls[0]["system_instruction"] == new_mod.JSON_ONLY_SYSTEM_INSTRUCTION, (
+            "the cache must carry JSON_ONLY_SYSTEM_INSTRUCTION so it isn't silently dropped"
+        )
         # >= 3, not ==: a page whose CRC-selected fake response is malformed/empty
         # retries (call_llm's own retries=2, process_page's own retry loop), so one
         # document's 3 pages can produce more than 3 generate_content calls — the
@@ -331,6 +341,16 @@ def test_process_document_creates_one_cache_and_reuses_it_across_every_page():
         for c in new_client.calls_seen:
             assert header not in c["contents"], (
                 "the cached header must NOT be resent inline once cached_content is set"
+            )
+            # The real Gemini API rejects a generate_content call that sets BOTH
+            # cached_content and system_instruction ("CachedContent can not be used
+            # with GenerateContent request setting system_instruction, tools or
+            # tool_config") — verified live 2026-08-05, every page 400'd on this
+            # exact error before the fix. The stub client doesn't enforce it, so this
+            # assertion is what stands between a green suite and a broken paid call.
+            assert c["system_instruction"] is None, (
+                "cached_content and system_instruction must never both be set on one "
+                "generate_content call"
             )
     finally:
         shutil.rmtree(tmp, ignore_errors=True)

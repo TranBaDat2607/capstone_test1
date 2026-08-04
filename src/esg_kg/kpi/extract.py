@@ -210,17 +210,35 @@ class KPIExtractor:
                      page_num: int, doc_name: str) -> List[Dict[str, Any]]:
         system, user = self._build_prompt(page_text, company, sector, page_num, doc_name)
 
-        resp = self.client.models.generate_content(
-            model=self.model,
-            contents=user,
-            config=types.GenerateContentConfig(
-                system_instruction=system,
+        # issue #11 follow-up (2026-08-05): the Gemini API rejects cached_content
+        # combined with system_instruction in the SAME call ("CachedContent can not
+        # be used with GenerateContent request setting system_instruction, tools or
+        # tool_config"). Unlike extract_triples's constant system instruction, this
+        # one embeds per-page facts (company/page/doc_name) and can't be baked into
+        # the cache — so when cached, it travels as a regular content turn instead.
+        if self.cache_name is not None:
+            contents = f"{system}\n\n{user}"
+            config = types.GenerateContentConfig(
                 response_mime_type="application/json",
                 response_schema=KPI_SCHEMA,
                 max_output_tokens=self.max_tokens,
                 temperature=0,
                 cached_content=self.cache_name,
-            ),
+            )
+        else:
+            contents = user
+            config = types.GenerateContentConfig(
+                system_instruction=system,
+                response_mime_type="application/json",
+                response_schema=KPI_SCHEMA,
+                max_output_tokens=self.max_tokens,
+                temperature=0,
+            )
+
+        resp = self.client.models.generate_content(
+            model=self.model,
+            contents=contents,
+            config=config,
         )
 
         # Gemini surfaces safety blocks / non-STOP terminations via finish_reason.

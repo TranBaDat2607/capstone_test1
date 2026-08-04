@@ -261,7 +261,18 @@ def test_extract_page_survives_all_stub_response_shapes():
             assert call["temperature"] == 0
             assert call["response_mime_type"] == "application/json"
             assert call["response_schema"] == new_extract.KPI_SCHEMA
-            assert call["system_instruction"], "system_instruction must not be empty"
+            # cached_content and system_instruction can never both be set (Gemini's
+            # API rejects that combination outright) -- when cached, the instructions
+            # must travel via contents instead, never silently dropped.
+            if call["cached_content"] is not None:
+                assert call["system_instruction"] is None, (
+                    "cached_content and system_instruction must never both be set"
+                )
+                assert "ESG-KPI-EXTRACTOR-V2" in call["contents"], (
+                    "instructions must be folded into contents when cached"
+                )
+            else:
+                assert call["system_instruction"], "system_instruction must not be empty"
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
 
@@ -337,6 +348,24 @@ def test_cache_created_once_in_init_and_reused_across_documents_and_pages():
         for c in new_ex.client.calls_seen:
             assert "KPI_DEFINITIONS" not in c["contents"], (
                 "the cached KPI_DEFINITIONS block must NOT be resent inline once cached_content is set"
+            )
+            # The real Gemini API rejects a generate_content call that sets BOTH
+            # cached_content and system_instruction (400 INVALID_ARGUMENT:
+            # "CachedContent can not be used with GenerateContent request setting
+            # system_instruction, tools or tool_config") — the stub above does not
+            # enforce this, so this assertion is the only thing standing between a
+            # green test suite and every real page call failing. Verified live
+            # 2026-08-05: --limit-docs 2 against the real API returned this exact
+            # error on all 55/55 pages before the fix below.
+            assert c["system_instruction"] is None, (
+                "cached_content and system_instruction must never both be set on one "
+                "generate_content call -- Gemini's API rejects that combination outright"
+            )
+            # the page-specific instructions must still reach the model somehow once
+            # they can no longer travel via system_instruction.
+            assert "ESG-KPI-EXTRACTOR-V2" in c["contents"], (
+                "when cached, the extraction instructions must be folded into contents "
+                "instead of silently dropped"
             )
     finally:
         shutil.rmtree(tmp, ignore_errors=True)

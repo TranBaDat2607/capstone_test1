@@ -189,11 +189,19 @@ class GeminiContextCache:
     `None` and the caller falls back to sending the static content inline,
     uncached. Caching must never break the pipeline.
 
-    Only ever caches `contents` — never `system_instruction` — so a caller
-    whose `system_instruction` varies per call (e.g. `extract`'s KPI stage,
-    where it embeds company/page/doc_name) can keep sending it fresh every
-    time with no question of whether a cached and a fresh `system_instruction`
-    can coexist in one request.
+    IMPORTANT — the Gemini API rejects a `generate_content` call that sets both
+    `cached_content` and `system_instruction` (or `tools`/`tool_config`) at once:
+    "CachedContent can not be used with GenerateContent request setting
+    system_instruction, tools or tool_config." (verified live 2026-08-05: every
+    page of a --limit-docs 2 test run 400'd on this exact error before the fix).
+    So once `get_or_create()` returns a cache name, the caller's own
+    `generate_content` call must NOT also pass `system_instruction`. A caller whose
+    system instruction is CONSTANT (e.g. `extract_triples`'s "Return *only* valid
+    JSON - no prose.") should pass it here via `system_instruction=` so it is baked
+    into the cache itself instead. A caller whose system instruction VARIES per call
+    (e.g. `extract`'s KPI stage, where it embeds company/page/doc_name) cannot cache
+    it at all — it must fold that text into `contents` instead once cached_content
+    is set (see `extract.py`'s `extract_page`).
     """
 
     def __init__(self, client: "genai.Client", model: str, ttl: str = "3600s") -> None:
@@ -203,8 +211,11 @@ class GeminiContextCache:
         self._by_hash: Dict[str, Optional[str]] = {}
 
     def get_or_create(self, static_content: str,
-                       rate_limiter: Optional[RateLimiter] = None) -> Optional[str]:
-        key = hashlib.sha256(static_content.encode("utf-8")).hexdigest()
+                       rate_limiter: Optional[RateLimiter] = None,
+                       system_instruction: Optional[str] = None) -> Optional[str]:
+        key = hashlib.sha256(
+            f"{system_instruction or ''}\x00{static_content}".encode("utf-8")
+        ).hexdigest()
         if key in self._by_hash:
             return self._by_hash[key]
         if rate_limiter is not None:
@@ -212,7 +223,10 @@ class GeminiContextCache:
         try:
             cache = self.client.caches.create(
                 model=self.model,
-                config=types.CreateCachedContentConfig(contents=[static_content], ttl=self.ttl),
+                config=types.CreateCachedContentConfig(
+                    contents=[static_content], ttl=self.ttl,
+                    system_instruction=system_instruction,
+                ),
             )
             name = cache.name
         except Exception as exc:
