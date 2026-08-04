@@ -66,13 +66,13 @@ identical.
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import logging
 import pathlib
 from typing import Any, Dict, List, Optional, Tuple
 
 from esg_kg.core.llm import build_gemini_client
+from esg_kg.core.llm_cache import ContentCache
 from esg_kg.core.paths import REPO_ROOT
 from esg_kg.core.schema import get_identity_keys, load_schema_sets
 from esg_kg.resolve import entities, indicators, provenance
@@ -104,52 +104,42 @@ class AdjudicationCache:
     position — candidate order depends on embedding similarity ranking, which is not
     stable across code changes), storing the raw `{"same_entity": bool}` verdict so a
     replayed run reproduces the paid outcome exactly.
+
+    A thin wrapper over ``core.llm_cache.ContentCache`` (GitHub issue #9) — same
+    get/put/save contract and on-disk JSON shape as before that module existed; this
+    class exists to keep the `(class, non_temporal_props(a), non_temporal_props(b))`
+    business key (Stage C's own concern) at the call site.
     """
 
-    VERSION = 1
+    VERSION = ContentCache.VERSION
 
     def __init__(self, path: Optional[pathlib.Path] = None) -> None:
         self.path = path
-        self.entries: Dict[str, Any] = {}
-        self._dirty = False
-        if path and path.exists():
-            try:
-                raw = json.loads(path.read_text(encoding="utf-8"))
-                self.entries = raw.get("entries", {}) if isinstance(raw, dict) else {}
-                logger.info(f"Adjudication cache: {len(self.entries)} verdict(s) from {path}")
-            except Exception as exc:  # a corrupt cache must never stop the pipeline
-                logger.warning(f"Adjudication cache at {path} unreadable ({exc}); starting empty")
-                self.entries = {}
+        self._cache = ContentCache(path)
+
+    @property
+    def entries(self) -> Dict[str, Any]:
+        return self._cache.entries
 
     @staticmethod
-    def _key(a: Dict[str, Any], b: Dict[str, Any]) -> str:
-        blob = json.dumps(
-            {"class": a.get("class"),
-             "a": entities.non_temporal_props(a), "b": entities.non_temporal_props(b)},
-            sort_keys=True, ensure_ascii=False, default=str)
-        return hashlib.sha256(blob.encode("utf-8")).hexdigest()
+    def _key_dict(a: Dict[str, Any], b: Dict[str, Any]) -> Dict[str, Any]:
+        """The exact single-dict shape the hand-written `_key()` hashed before this
+        class wrapped `ContentCache` — kept as one dict (not spread as 3 positional
+        parts) so the hash, and therefore any cache file already on disk, is unchanged."""
+        return {"class": a.get("class"),
+                "a": entities.non_temporal_props(a), "b": entities.non_temporal_props(b)}
 
     def get(self, a: Dict[str, Any], b: Dict[str, Any]) -> Tuple[Any, bool]:
-        k = self._key(a, b)
-        if k in self.entries:
-            return self.entries[k], True
-        return None, False
+        return self._cache.get(self._key_dict(a, b))
 
     def put(self, a: Dict[str, Any], b: Dict[str, Any], value: Any) -> None:
-        self.entries[self._key(a, b)] = value
-        self._dirty = True
+        self._cache.put(self._key_dict(a, b), value=value)
 
     def save(self) -> bool:
-        """Write only when something changed — a free replay must not touch the disk."""
-        if not (self.path and self._dirty):
-            return False
-        self.path.parent.mkdir(parents=True, exist_ok=True)
-        self.path.write_text(
-            json.dumps({"version": self.VERSION, "entries": self.entries},
-                       indent=2, ensure_ascii=False),
-            encoding="utf-8")
-        logger.info(f"Adjudication cache: {len(self.entries)} verdict(s) -> {self.path}")
-        return True
+        ok = self._cache.save()
+        if ok:
+            logger.info(f"Adjudication cache: {len(self.entries)} verdict(s) -> {self.path}")
+        return ok
 
 
 # --------------------------------------------------------------------------- #

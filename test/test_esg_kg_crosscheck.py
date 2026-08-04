@@ -173,6 +173,7 @@ class Workspace:
             max_llm_pairs=40, model="gemini-2.5-flash",
             provider_order=["gemini"], max_workers=4, rate_limit=60,
             embed=False, dry_run=False, to_neo4j=False, database=None,
+            cache=None,  # issue #9: no cache unless a test overrides it
         )
         for k, v in overrides.items():
             setattr(args, k, v)
@@ -709,6 +710,78 @@ def test_provider_failures_abort_branch():
         assert s["linking_edges_written"] == 0
     finally:
         nw.close()
+
+
+def _duplicate_claim_graph():
+    """Two SustainabilityClaims with the IDENTICAL text, one MediaReport topically
+    overlapping both — the two (claim, evidence) adjudication calls this produces have
+    byte-identical (claim_text, evidence_text, evidence_meta), the exact shape issue #9's
+    cache must dedupe within a single run (e.g. a repeated disclaimer across two report
+    years, or a boilerplate sentence shared by two claims)."""
+    claim_text = "Chung toi cam ket giam phat thai khi nha kinh"
+    return {
+        "nodes": [
+            {"class": "Organization", "properties": {"ticker": "AAA", "name": "CTCP AAA"}},
+            {"class": "SustainabilityClaim", "properties": {"description": claim_text}},
+            {"class": "SustainabilityClaim", "properties": {"description": claim_text}},
+            {"class": "MediaReport",
+             "properties": {"text": "Cong ty cong bo giam phat thai khi nha kinh",
+                            "publisher": "vnexpress.net", "source_type": "news",
+                            "date": "2023-05-01"}},
+        ],
+        "edges": [
+            {"subject": 0, "predicate": "claims", "object": 1},
+            {"subject": 0, "predicate": "claims", "object": 2},
+        ],
+    }
+
+
+def test_identical_claim_evidence_pairs_hit_the_cache_once():
+    """Issue #9's headline acceptance criterion: two adjudication calls with identical
+    (claim_text, evidence_text, evidence_meta) in the SAME run must reach the provider
+    (the stub, standing in for the real LLM) exactly once — the second is a cache hit."""
+    graph = _duplicate_claim_graph()
+    with tempfile.TemporaryDirectory(prefix="esgkg_step07_cache_") as td:
+        cache_path = Path(td) / "adjudication_cache.json"
+        nw, stub, _ = run_new(graph, stub_mode="always_supports", max_llm_pairs=10,
+                               max_workers=1, cache=cache_path)
+        try:
+            assert len(stub.calls_seen) == 1, (
+                f"expected exactly 1 real call for 2 identical (claim, evidence) pairs, "
+                f"got {len(stub.calls_seen)}: {stub.calls_seen}")
+            d = nw.dossiers()
+            assert len(d) == 2
+            assert d[0]["assessment"] == "appears_supported"
+            assert d[1]["assessment"] == "appears_supported", \
+                "the cache-hit dossier must reproduce the same verdict as the cache-miss one"
+            assert cache_path.exists(), "a non-dry-run must persist the cache to disk"
+        finally:
+            nw.close()
+
+
+def test_adjudication_cache_survives_across_runs():
+    """Cross-run reuse (same shape as RepairCache/AdjudicationCache's block tests): a
+    second run against the SAME cache path must reproduce the verdict WITHOUT calling
+    the provider at all, even when that provider would otherwise fail every call."""
+    graph = _duplicate_claim_graph()
+    with tempfile.TemporaryDirectory(prefix="esgkg_step07_cache_") as td:
+        cache_path = Path(td) / "adjudication_cache.json"
+
+        nw1, _, _ = run_new(graph, stub_mode="always_supports", max_llm_pairs=10,
+                             max_workers=1, cache=cache_path)
+        nw1.close()
+        assert cache_path.exists()
+
+        nw2, stub2, _ = run_new(graph, stub_mode="always_raise", max_llm_pairs=10,
+                                 max_workers=1, cache=cache_path)
+        try:
+            assert stub2.calls_seen == [], \
+                f"a re-run against a populated cache must not call the provider: {stub2.calls_seen}"
+            d2 = nw2.dossiers()
+            assert d2[0]["assessment"] == "appears_supported", \
+                "a re-run must reproduce the cached verdict from a now-failing provider"
+        finally:
+            nw2.close()
 
 
 if __name__ == "__main__":
