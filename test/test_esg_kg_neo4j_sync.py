@@ -202,7 +202,7 @@ def _mini_dossiers():
             "score_disagrees_with_assessment": False,
             "supporting_evidence": [
                 {"class": "MediaReport", "text": "Bai bao doc lap X", "node_index": 999,
-                 "confidence": 0.9, "rationale": "r", "provider": "openai",
+                 "confidence": 0.9, "rationale": "r", "provider": "gemini",
                  "date_uncertain": True, "source_domain": "", "date": None, "year": 2024},
             ],
             "contradicting_evidence": [], "flagged_non_independent_support": [],

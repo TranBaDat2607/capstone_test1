@@ -40,6 +40,10 @@ Model A: the ``src/`` original keeps running untouched, and
 ``test/test_esg_kg_fix_triples.py`` holds the two trees equal on the real corpus —
 including phase 2, which is driven there by a stubbed LLM so the paid branch and its
 ``preserve_property_values`` guard are compared without spending anything.
+
+2026-08-04: the additive ``--provider openai`` path (added 2026-07-29 while the Gemini
+project behind GEMINI_API_KEY was billing-blocked) was removed outright — this project
+now pays only for Gemini, so phase 2 is gemini-only again, no fallback.
 """
 
 from __future__ import annotations
@@ -48,17 +52,15 @@ import argparse
 import copy
 import json
 import logging
-import os
 import pathlib
 import re
 from collections import defaultdict
 from typing import Any, Dict, List, Optional, Set, Tuple
 
 from dotenv import load_dotenv
-from google import genai
 
 from esg_kg.core.dates import date_start_key, normalize_date_string
-from esg_kg.core.llm import RateLimiter, _OpenAIProvider
+from esg_kg.core.llm import RateLimiter, build_gemini_client
 from esg_kg.core.paths import REPO_ROOT
 from esg_kg.core.schema import load_schema_sets, validate_triple
 
@@ -379,9 +381,7 @@ def preserve_property_values(original: Any, repaired: Dict[str, Any]) -> Tuple[D
 def fix_batch_with_llm(batch: List[Dict[str, Any]], schema: Dict[str, Any],
                        client: Any, rate_limiter: RateLimiter, model: str
                        ) -> List[Optional[Dict[str, Any]]]:
-    """`client` is a `genai.Client` (default) or an `_OpenAIProvider` — detected by
-    type rather than a separate parameter, so this signature (and every existing
-    ``mod.fix_batch_with_llm = stub`` test hook) stays exactly as it was; additive."""
+    """`client` is a `genai.Client`."""
     if not batch:
         return []
     clean_batch = [{k: v for k, v in t.items() if not k.startswith("_")} for t in batch]
@@ -390,15 +390,6 @@ def fix_batch_with_llm(batch: List[Dict[str, Any]], schema: Dict[str, Any],
     ) + json.dumps(clean_batch, indent=2, ensure_ascii=False)
 
     try:
-        if isinstance(client, _OpenAIProvider):
-            # _OpenAIProvider throttles itself (own internal RateLimiter) — same split
-            # as step02's call_llm; `rate_limiter` here is the Gemini path's only.
-            system = ("Return ONLY valid JSON - the array BATCH_FIX_PROMPT above asks "
-                      "for, no prose, no markdown fences.")
-            raw = client.call(system, prompt)
-            fixed = extract_json_from_response(raw)
-            return fixed if isinstance(fixed, list) else []
-
         rate_limiter.wait_if_needed(0)
         response = client.models.generate_content(
             model=model,
@@ -692,13 +683,6 @@ def main() -> None:
     parser.add_argument("--rate-limit", type=int, default=DEFAULT_RATE_LIMIT,
                         help="Max RPM for the LLM phase")
     parser.add_argument("--model", type=str, default=DEFAULT_MODEL, help="Gemini model id")
-    parser.add_argument("--provider", type=str, default="gemini", choices=["gemini", "openai"],
-                        help="LLM backend for phase 2 (default gemini; openai needs OPENAI_API_KEY)")
-    parser.add_argument("--openai-model", type=str, default="gpt-4o-mini",
-                        help="OpenAI model id, used only when --provider openai")
-    parser.add_argument("--openai-base-url", type=str, default=None,
-                        help="Override the OpenAI endpoint (e.g. an OpenAI-compatible "
-                             "third-party host); default is OpenAI's own API")
     parser.add_argument("--dry-run", action="store_true",
                         help="Stop after phase 1: report counts but don't call the LLM or write files")
     parser.add_argument("--renormalize", action="store_true",
@@ -728,24 +712,17 @@ def main() -> None:
     client: Optional[Any] = None
     if not args.dry_run:
         load_dotenv(REPO_ROOT / ".env")
-        if args.provider == "openai":
-            if not os.getenv("OPENAI_API_KEY"):
-                logger.error(f"OPENAI_API_KEY not set in {REPO_ROOT / '.env'}; use --dry-run to skip phase 2")
-                return
-            client = _OpenAIProvider(args.openai_model, args.rate_limit, base_url=args.openai_base_url)
-        else:
-            api_key = os.getenv("GEMINI_API_KEY")
-            if not api_key:
-                logger.error(f"GEMINI_API_KEY not set in {REPO_ROOT / '.env'}; use --dry-run to skip phase 2")
-                return
-            client = genai.Client(api_key=api_key)
+        client = build_gemini_client()
+        if client is None:
+            logger.error(f"GEMINI_API_KEY not set in {REPO_ROOT / '.env'}; use --dry-run to skip phase 2")
+            return
 
     rate_limiter = RateLimiter(max_calls_per_minute=args.rate_limit)
 
     process_all_files(
         args.input_dir, args.out_dir, schema,
         entity_classes, edge_labels, edge_directions,
-        client, rate_limiter, args.model if args.provider == "gemini" else args.openai_model,
+        client, rate_limiter, args.model,
         args.batch_size, args.dry_run,
     )
 

@@ -266,88 +266,14 @@ def test_adjudication_cache_is_reused_on_a_rerun():
           f"run 2 called it 0x)")
 
 
-# --------------------------------------------------------------------------- #
-# NEW (2026-07-29): the additive OpenAI path for Stage B/C. Gemini stays the
-# default; the provider is detected by TYPE (isinstance _OpenAIProvider /
-# _OpenAIEmbeddingProvider), so resolve_graph()'s signature is unchanged for the
-# Gemini caller. No src/ counterpart exists for this branch — single-tree only.
-# --------------------------------------------------------------------------- #
-def test_openai_paid_path_resolves_the_near_duplicate_org():
-    import os
-    from esg_kg.core.llm import _OpenAIEmbeddingProvider, _OpenAIProvider
-
-    saved = os.environ.get("OPENAI_API_KEY")
-    os.environ["OPENAI_API_KEY"] = "sk-test-not-a-real-key"
-    schema = load_schema()
-    idkeys = new_entities.load_identity_keys(schema)
-    triples = _near_duplicate_org_fixture()
-    missing_registry = REPO / "config" / "__no_such_registry__.json"
-
-    prev = _quiet()
-    try:
-        chat = _OpenAIProvider("gpt-4o-mini", 1000)
-        embed = _OpenAIEmbeddingProvider("text-embedding-3-small", 1000)
-        assert chat.enabled and embed.enabled
-
-        embed_calls = []
-
-        def fake_embed(texts, dimensions=None):
-            embed_calls.append((tuple(texts), dimensions))
-            # identical vectors -> cosine 1.0 -> both orgs become one Stage B.2 candidate
-            return [[1.0] + [0.0] * (dimensions - 1) for _ in texts]
-
-        chat_calls = []
-
-        def fake_call(system, user):
-            chat_calls.append((system, user))
-            return json.dumps({"same_entity": True})
-
-        embed.embed = fake_embed
-        chat.call = fake_call
-
-        resolved, stats = new_entities.resolve_graph(
-            triples, idkeys, registry_path=missing_registry, standards_registry_path=missing_registry,
-            no_llm=False, client=chat, embed_client=embed,
-            rate_limiter=new_entities.RateLimiter(max_calls_per_minute=1000),
-            adjudication_cache=None,
-        )
-    finally:
-        _unquiet(prev)
-        if saved is None:
-            os.environ.pop("OPENAI_API_KEY", None)
-        else:
-            os.environ["OPENAI_API_KEY"] = saved
-
-    assert len(embed_calls) >= 1, "Stage B never called the OpenAI embedding provider"
-    assert len(chat_calls) >= 1, "Stage C never called the OpenAI chat provider"
-    assert stats["stages"]["llm_comparisons"] >= 1
-    assert stats["stages"]["llm_matches"] >= 1
-    # the two orgs merged into one resolved entity
-    org_names = {n["properties"]["name"] for n in resolved["nodes"] if n["class"] == "Organization"}
-    assert len(org_names) == 1, f"expected the near-duplicate orgs to merge, got {org_names}"
-    print("     (Stage B embeds via OpenAI, Stage C adjudicates via OpenAI, orgs merged)")
-
-
-def test_openai_and_gemini_clients_are_not_confused():
-    """embed_client defaults to client when omitted (the Gemini shape); passing an
-    _OpenAIEmbeddingProvider as embed_client must not also make llm_same_entity take
-    the openai branch for a plain Gemini-shaped client, and vice versa."""
-    from esg_kg.core.llm import _OpenAIEmbeddingProvider, _OpenAIProvider
-
-    import os
-    saved = os.environ.get("OPENAI_API_KEY")
-    os.environ["OPENAI_API_KEY"] = "sk-test-not-a-real-key"
-    try:
-        chat = _OpenAIProvider("gpt-4o-mini", 10)
-        embed = _OpenAIEmbeddingProvider("text-embedding-3-small", 10)
-        assert not isinstance(chat, _OpenAIEmbeddingProvider)
-        assert not isinstance(embed, _OpenAIProvider)
-    finally:
-        if saved is None:
-            os.environ.pop("OPENAI_API_KEY", None)
-        else:
-            os.environ["OPENAI_API_KEY"] = saved
-    print("     (the two OpenAI provider classes are distinct types, no accidental overlap)")
+# 2026-08-04: the additive OpenAI path for Stage B/C (added 2026-07-29,
+# `test_openai_paid_path_resolves_the_near_duplicate_org` /
+# `test_openai_and_gemini_clients_are_not_confused`) was removed outright along with
+# `_OpenAIProvider`/`_OpenAIEmbeddingProvider` themselves — no OpenAI fallback anywhere
+# in this project any more. The Gemini paid path is already covered above by
+# `test_paid_path_matches_across_trees_on_a_synthetic_fixture` and
+# `test_adjudication_cache_is_reused_on_a_rerun` (Stage B/C driven by a stubbed
+# `google.genai.Client`).
 
 
 if __name__ == "__main__":

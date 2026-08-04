@@ -16,7 +16,7 @@ the graph, producing advisory evidence links — no ground truth, no accuracy cl
 Pipeline (mirrors §6):
   6a  retrieve conduct candidates per claim   — same issuer + VN topic overlap +
       temporal window (+ optional embedding rank behind --embed)
-  6b  adjudicate each (claim, candidate) pair  — REQUIRED. gpt-4o-mini structured
+  6b  adjudicate each (claim, candidate) pair  — REQUIRED. Gemini structured
       output (--provider-order); the run aborts up front if no provider is
       available — there is no deterministic fallback.
   6c  write schema-legal linking edges         — verifiedBy / contradictedBy /
@@ -29,9 +29,11 @@ Design decisions (docs/SYSTEM_DESIGN.md, plan glistening-hopping-galaxy):
   * LLM-only: adjudication is mandatory. Quota/billing limits are managed via
     --max-llm-pairs, not by falling back to a deterministic-only mode.
   * deterministic retrieval by default; embeddings (--embed) are optional.
-  * Gemini support was removed — the Gemini project backing GEMINI_API_KEY is
-    permanently 403 PERMISSION_DENIED (account-level block, not transient), so
-    every run wasted several seconds retrying it before falling back to OpenAI.
+  * 2026-08-04: OpenAI support was removed outright (no fallback). This project
+    now pays only for GEMINI_API_KEY, so Gemini is the sole adjudication
+    provider again — see core/llm.py's docstring for the history of why OpenAI
+    was ever here (the Gemini project was billing-blocked from 2026-07-27 to
+    2026-08-04).
 
 Run from the repo root:
   python src/step07_crosscheck_claims_vs_conduct.py --dry-run   (old tree, still runs)
@@ -50,9 +52,13 @@ exists and still runs). NO logic line changed. What differs:
     two classes FROM this very file, so this migration is the one that finally imports
     them back rather than re-defining them.
   * one DEAD import from the old file is not carried over: `RateLimiter` (from step02).
-    It was never referenced directly in step07 — only `_OpenAIProvider.__init__`
-    constructs one, and that class is now imported pre-built from core.llm. Same shape
+    It was never referenced directly in step07 — only the provider's own `__init__`
+    constructs one, and that class is imported pre-built from core.llm. Same shape
     the 05d slice found with its own dead `RateLimiter` import.
+  * 2026-08-04: `_OpenAIProvider` was removed outright from core.llm (no OpenAI
+    fallback anywhere in this project any more) and replaced here with
+    `_GeminiProvider` — same `call(system, user) -> str` contract, so nothing else
+    in this file's Adjudicator cascade needed to change shape.
 
 WHAT MUST NOT BE "TIDIED" HERE
 `node_text` below is NOT the same function as `esg_kg.resolve.align_claims.node_text`
@@ -104,7 +110,8 @@ from typing import Any, Dict, List, Optional, Set, Tuple
 
 from dotenv import load_dotenv
 
-from esg_kg.core.llm import _OpenAIProvider, _Provider
+from esg_kg.core.llm import _GeminiProvider, _Provider
+from esg_kg.core.llm_cache import ContentCache
 from esg_kg.core.naming import name_tokens, normalize_name
 from esg_kg.core.paths import REPO_ROOT
 from esg_kg.core.schema import load_schema_sets
@@ -115,13 +122,16 @@ logger = logging.getLogger(__name__)
 DEFAULT_INPUT = REPO_ROOT / "graph_output" / "resolved" / "resolved_graph.json"
 DEFAULT_SCHEMA = REPO_ROOT / "config" / "schema.json"
 DEFAULT_OUT_DIR = REPO_ROOT / "graph_output" / "crosscheck"
-DEFAULT_OPENAI_MODEL = "gpt-4o-mini"
-DEFAULT_PROVIDER_ORDER = "openai"
+DEFAULT_MODEL = "gemini-2.5-flash"
+DEFAULT_PROVIDER_ORDER = "gemini"
 DEFAULT_RATE_LIMIT = 10
 DEFAULT_MAX_LLM_PAIRS = 300
 DEFAULT_TOP_K = 8
 DEFAULT_WINDOW_BEFORE = 1     # conduct may predate the claim year by at most this
 DEFAULT_WINDOW_AFTER = 50     # ...and may follow it by "any" plausible number of years
+DEFAULT_CACHE = DEFAULT_OUT_DIR / "adjudication_cache.json"  # issue #9: per-issuer, keyed
+                                                               # by (claim_text, evidence_text,
+                                                               # evidence_meta) content
 
 # Conduct-side node classes (the "doing"). Claims are the "saying" (SustainabilityClaim).
 CONDUCT_CLASSES = {"Controversy", "Penalty", "MediaReport", "KPIObservation", "ThirdPartyVerification"}
@@ -289,7 +299,7 @@ def claim_keywords(g: Graph) -> Dict[int, Set[str]]:
 
 
 # --------------------------------------------------------------------------- #
-# LLM adjudication (single provider: OpenAI gpt-4o-mini).
+# LLM adjudication (single provider: Gemini).
 #
 # Does the SAME narrow, grounded 3-way task regardless of provider. A provider that
 # fails 3x with no success (e.g. a 403 billing block) is disabled, so the run still
@@ -326,18 +336,28 @@ class Adjudicator:
     """A cascade of LLM providers with per-provider graceful failure. `adjudicate` tries
     each enabled provider in preference order and returns the first parsed verdict, tagged
     with the provider that produced it. When one provider dies (e.g. a 403), the next takes
-    over automatically; if all die, the caller falls back to deterministic signals."""
+    over automatically; if all die, the caller falls back to deterministic signals.
 
-    def __init__(self, openai_model: str, rate_limit: int, order: List[str],
-                 openai_api_key: Optional[str] = None, openai_base_url: Optional[str] = None) -> None:
-        # override=True so the repo .env is authoritative — a stale shell OPENAI_API_KEY
+    `cache` (GitHub issue #9, `core.llm_cache.ContentCache`) is optional and keyed on the
+    content actually sent — `(claim_text, evidence_text, evidence_meta)` — not on the
+    (claim, candidate) node-index pair, so two DIFFERENT pairs that happen to carry the
+    IDENTICAL text (e.g. a boilerplate claim sentence repeated across two report years,
+    or two claims retrieved against the same conduct candidate) share one paid call,
+    within a single run as well as across re-runs. Only a DEFINITIVE outcome is cached —
+    a real verdict, or a confirmed-unparseable reply from a provider that actually
+    answered — never a pure provider failure/unavailability, so a transient 403 or a
+    not-yet-configured API key can't freeze "no verdict" into the cache forever."""
+
+    def __init__(self, model: str, rate_limit: int, order: List[str],
+                 api_key: Optional[str] = None,
+                 cache: Optional[ContentCache] = None) -> None:
+        # override=True so the repo .env is authoritative — a stale shell GEMINI_API_KEY
         # must not shadow the key the user edits in .env. Only applies when
-        # openai_api_key is not explicitly given (a one-off Novita-style override).
-        if openai_api_key is None:
+        # api_key is not explicitly given (a one-off override).
+        if api_key is None:
             load_dotenv(REPO_ROOT / ".env", override=True)
         registry = {
-            "openai": lambda: _OpenAIProvider(openai_model, rate_limit,
-                                              api_key=openai_api_key, base_url=openai_base_url),
+            "gemini": lambda: _GeminiProvider(model, rate_limit, api_key=api_key),
         }
         self.providers: List[_Provider] = []
         for name in order:
@@ -351,6 +371,7 @@ class Adjudicator:
             else:
                 logger.info(f"[{name}] not available (no key / SDK) — skipped.")
         self.enabled = bool(self.providers)
+        self.cache = cache
         if self.enabled:
             logger.info(f"Adjudicator ready: providers = {[p.name for p in self.providers]}")
         else:
@@ -359,18 +380,24 @@ class Adjudicator:
     def adjudicate(self, claim_text: str, evidence_text: str, evidence_meta: str) -> Optional[Dict[str, Any]]:
         if not self.enabled:
             return None
+        if self.cache is not None:
+            cached, hit = self.cache.get(claim_text, evidence_text, evidence_meta)
+            if hit:
+                return cached
         user = (
             f"CLAIM (company report): \"{claim_text}\"\n\n"
             f"EVIDENCE ({evidence_meta}): \"{evidence_text}\"\n\n"
             "Return only JSON: verdict (supports|contradicts|irrelevant), confidence (0-1), rationale."
         )
         result: Optional[Dict[str, Any]] = None
+        answered = False  # a provider returned WITHOUT raising, i.e. gave a real reply
         for p in self.providers:
             if not p.enabled:
                 continue
             try:
                 raw = p.call(ADJUDICATE_SYSTEM, user)
                 p.calls += 1
+                answered = True
                 out = _parse_verdict(raw)
                 if out is not None:
                     out["provider"] = p.name
@@ -385,6 +412,8 @@ class Adjudicator:
                 continue  # try the next provider for this same pair
         if not any(p.enabled for p in self.providers):
             self.enabled = False
+        if self.cache is not None and answered:
+            self.cache.put(claim_text, evidence_text, evidence_meta, value=result)
         return result
 
     def summary(self) -> Dict[str, Any]:
@@ -453,11 +482,11 @@ def run(args: argparse.Namespace) -> None:
 
     # LLM adjudication is mandatory — no deterministic fallback. Abort up front if no
     # provider is available so the run never silently degrades into a weaker mode.
-    adjud = Adjudicator(args.openai_model, args.rate_limit, args.provider_order,
-                        openai_api_key=getattr(args, "openai_api_key", None),
-                        openai_base_url=getattr(args, "openai_base_url", None))
+    cache_path = getattr(args, "cache", None)
+    cache = ContentCache(cache_path) if cache_path else None
+    adjud = Adjudicator(args.model, args.rate_limit, args.provider_order, cache=cache)
     if not adjud.enabled:
-        logger.error("No LLM provider available (need OPENAI_API_KEY in .env) — "
+        logger.error("No LLM provider available (need GEMINI_API_KEY in .env) — "
                      "aborting: this pipeline requires LLM adjudication.")
         return
 
@@ -652,6 +681,8 @@ def run(args: argparse.Namespace) -> None:
     (args.out_dir / "crosscheck_edges.json").write_text(
         json.dumps(new_edges, indent=2, ensure_ascii=False), encoding="utf-8")
     logger.info(f"Wrote {len(dossiers)} dossiers + {len(new_edges)} linking edges to {args.out_dir}")
+    if cache is not None:
+        cache.save()
 
     if args.to_neo4j and new_edges:
         _write_back_neo4j(new_edges, args)
@@ -706,12 +737,9 @@ def main() -> None:
     p.add_argument("--window-before", type=int, default=DEFAULT_WINDOW_BEFORE)
     p.add_argument("--window-after", type=int, default=DEFAULT_WINDOW_AFTER)
     p.add_argument("--max-llm-pairs", type=int, default=DEFAULT_MAX_LLM_PAIRS)
-    p.add_argument("--openai-model", type=str, default=DEFAULT_OPENAI_MODEL, help="OpenAI model id.")
-    p.add_argument("--openai-base-url", type=str, default=None,
-                   help="Override the OpenAI endpoint (e.g. an OpenAI-compatible "
-                        "third-party host); default is OpenAI's own API")
+    p.add_argument("--model", type=str, default=DEFAULT_MODEL, help="Gemini model id.")
     p.add_argument("--provider-order", type=str, default=DEFAULT_PROVIDER_ORDER,
-                   help="Comma-separated adjudication preference (currently only 'openai' is supported).")
+                   help="Comma-separated adjudication preference (currently only 'gemini' is supported).")
     p.add_argument("--max-workers", type=int, default=8, help="Concurrent adjudication workers.")
     p.add_argument("--rate-limit", type=int, default=DEFAULT_RATE_LIMIT)
     p.add_argument("--embed", action="store_true",
@@ -720,8 +748,14 @@ def main() -> None:
                    help="Still runs LLM adjudication and prints stats, but writes nothing.")
     p.add_argument("--to-neo4j", action="store_true", help="Also MERGE advisory edges into Neo4j.")
     p.add_argument("--database", default=None, help="Neo4j database for --to-neo4j (default: user home db).")
+    p.add_argument("--cache", type=Path, default=DEFAULT_CACHE,
+                   help="Adjudication cache (issue #9); a re-run reuses it instead of paying again.")
+    p.add_argument("--no-cache", action="store_true",
+                   help="Ignore the adjudication cache (forces every pair to ask the model again).")
     args = p.parse_args()
 
+    if args.no_cache:
+        args.cache = None
     args.provider_order = [s.strip().lower() for s in args.provider_order.split(",") if s.strip()]
     if not args.input.exists():
         logger.error(f"Input not found: {args.input} (run step05_resolve_entities.py first)")

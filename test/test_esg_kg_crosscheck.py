@@ -16,10 +16,12 @@ WHY THIS SLICE NEEDED NO NEW core/ MODULE
 Every symbol step07 imports from a sibling stage was already lifted before this slice:
 `REPO_ROOT` (-> core.paths, since step01's move), `load_schema_sets` (-> core.schema,
 since step03), `normalize_name`/`name_tokens` (-> core.naming, since step04 was found to
-be a dissolved hub), and `_Provider`/`_OpenAIProvider` (-> core.llm, 2026-07-27 — that
-slice was EXTRACTED FROM step07 itself). `RateLimiter` was imported from step02 in the
-old file but never referenced directly (only `_OpenAIProvider.__init__` used it) — same
-dead-import shape the 05d slice found, so it is dropped here too.
+be a dissolved hub), and `_Provider`/`_GeminiProvider` (-> core.llm; `_GeminiProvider`
+replaced `_OpenAIProvider` outright on 2026-08-04, no fallback kept, once the project
+went back to paying only for Gemini — see core/llm.py's docstring for the timeline).
+`RateLimiter` was imported from step02 in the old file but never referenced directly
+(only the provider's own `__init__` uses it) — same dead-import shape the 05d slice
+found, so it is dropped here too.
 
 `Adjudicator` stays in the stage, same as `core/llm.py`'s docstring always said it would:
 it is prompt text + verdict parsing + provider cascade, i.e. stage logic, not kernel.
@@ -33,7 +35,7 @@ from the step07 side (align_claims' own test already pins it from the other side
 
 HOW THE PAID PATH IS COVERED WITHOUT PAYING
 Same technique as the step03 phase-2 arm and the step05d headline arm: a STUB is injected
-over `_OpenAIProvider`, answering deterministically from a CRC of the adjudication prompt,
+over `_GeminiProvider`, answering deterministically from a CRC of the adjudication prompt,
 so the paid branch is exercised for free. `--dry-run` does NOT return before the provider
 is built (it only skips the final file-writes) — so the dry-run arm also drives the full
 stub adjudication path, not just a "nothing happens" check.
@@ -60,9 +62,9 @@ shapes the code already handled safely; `test_parse_verdict_rejects_non_object_j
 is the red-first test for the fix itself (name kept from when it drove both trees — it now
 pins the fixed behaviour directly against `esg_kg`).
 
-Offline: no LLM, no Neo4j, no network — the stub replaces `_OpenAIProvider` before it can
-look for `OPENAI_API_KEY` (which happens to be set in this environment; the stub still
-wins because the code re-reads the module-global name at call time). `config/schema.json`
+Offline: no LLM, no Neo4j, no network — the stub replaces `_GeminiProvider` before it can
+look for `GEMINI_API_KEY` (the stub wins regardless because the code re-reads the
+module-global name at call time). `config/schema.json`
 is tracked in git so the synthetic arms always run; arms needing `graph_output/resolved/
 resolved_graph.json` (git-ignored, shipped via the HF snapshot) SKIP with a message on a
 bare clone.
@@ -110,7 +112,7 @@ def _skip(name: str, why: str) -> None:
 # see the same replies for the same (claim, evidence) pair.
 # --------------------------------------------------------------------------- #
 def make_stub(mode: str = "mixed"):
-    """Return a class with `_OpenAIProvider(model, rate_limit)`'s interface.
+    """Return a class with `_GeminiProvider(model, rate_limit)`'s interface.
 
     `mode="mixed"` walks 5 reply shapes the parser must survive today (clean supports/
     contradicts/irrelevant, JSON wrapped in prose, and unparseable prose -> None).
@@ -121,9 +123,9 @@ def make_stub(mode: str = "mixed"):
     calls_seen: list = []
 
     class _Stub:
-        name = "openai"
+        name = "gemini"
 
-        def __init__(self, model, rate_limit, api_key=None, base_url=None):
+        def __init__(self, model, rate_limit, api_key=None):
             self.model = model
             self.rate_limit = rate_limit
             self.enabled = True
@@ -168,9 +170,10 @@ class Workspace:
         args = argparse.Namespace(
             input=self.graph_path, schema=SCHEMA_FILE, out_dir=self.out_dir,
             ticker="AAA", top_k=8, window_before=1, window_after=50,
-            max_llm_pairs=40, openai_model="gpt-4o-mini",
-            provider_order=["openai"], max_workers=4, rate_limit=60,
+            max_llm_pairs=40, model="gemini-2.5-flash",
+            provider_order=["gemini"], max_workers=4, rate_limit=60,
             embed=False, dry_run=False, to_neo4j=False, database=None,
+            cache=None,  # issue #9: no cache unless a test overrides it
         )
         for k, v in overrides.items():
             setattr(args, k, v)
@@ -211,19 +214,19 @@ class _LogCatcher(logging.Handler):
 
 
 def run_new(graph: dict, stub_mode: str = "mixed", **overrides):
-    """Run the stage against a stubbed `_OpenAIProvider`; return (Workspace, stub_class,
+    """Run the stage against a stubbed `_GeminiProvider`; return (Workspace, stub_class,
     masked_log_lines)."""
     mod = new_step07
     ws = Workspace(copy.deepcopy(graph))
     stub = make_stub(stub_mode)
-    original = mod._OpenAIProvider
+    original = mod._GeminiProvider
     handler = _LogCatcher()
     mod.logger.addHandler(handler)
     try:
-        mod._OpenAIProvider = stub
+        mod._GeminiProvider = stub
         mod.run(ws.args(**overrides))
     finally:
-        mod._OpenAIProvider = original
+        mod._GeminiProvider = original
         mod.logger.removeHandler(handler)
     return ws, stub, [m.replace(str(ws.dir), "<WS>") for m in handler.messages]
 
@@ -261,8 +264,8 @@ def test_constants_match():
     assert new_step07.DEFAULT_INPUT == REPO / "graph_output" / "resolved" / "resolved_graph.json"
     assert new_step07.DEFAULT_SCHEMA == SCHEMA_FILE
     assert new_step07.DEFAULT_OUT_DIR == REPO / "graph_output" / "crosscheck"
-    assert new_step07.DEFAULT_OPENAI_MODEL == "gpt-4o-mini"
-    assert new_step07.DEFAULT_PROVIDER_ORDER == "openai"
+    assert new_step07.DEFAULT_MODEL == "gemini-2.5-flash"
+    assert new_step07.DEFAULT_PROVIDER_ORDER == "gemini"
     assert new_step07.DEFAULT_RATE_LIMIT == 10
     assert new_step07.DEFAULT_MAX_LLM_PAIRS == 300
     assert new_step07.DEFAULT_TOP_K == 8
@@ -295,7 +298,7 @@ def test_constants_match():
 
 def test_new_tree_imports_the_kernel_rather_than_recopying():
     """A migrated stage must USE core/, not carry its own copy — otherwise the two drift."""
-    assert new_step07._OpenAIProvider is core_llm._OpenAIProvider, "_OpenAIProvider was re-copied"
+    assert new_step07._GeminiProvider is core_llm._GeminiProvider, "_GeminiProvider was re-copied"
     assert new_step07._Provider is core_llm._Provider, "_Provider was re-copied"
     assert new_step07.load_schema_sets is core_schema.load_schema_sets, "load_schema_sets re-copied"
     assert new_step07.normalize_name is core_naming.normalize_name, "normalize_name re-copied"
@@ -305,8 +308,8 @@ def test_new_tree_imports_the_kernel_rather_than_recopying():
 
 def test_new_tree_has_no_dead_ratelimiter_import():
     """The old file imports RateLimiter from step02 but never references it directly (only
-    _OpenAIProvider.__init__ does, and that class now comes pre-built from core.llm) — the
-    same dead-import shape the 05d slice found. The new module should not re-introduce it."""
+    the provider's own __init__ does, and that class now comes pre-built from core.llm) —
+    the same dead-import shape the 05d slice found. The new module should not re-introduce it."""
     assert not hasattr(new_step07, "RateLimiter"), \
         "RateLimiter should not be imported directly into the migrated stage"
 
@@ -429,13 +432,13 @@ def test_is_company_domain_matches():
 
 
 def test_mk_edge_matches():
-    a = new_step07._mk_edge(0, "verifiedBy", 1, "supports", 0.9, "why", "news", "openai", True)
+    a = new_step07._mk_edge(0, "verifiedBy", 1, "supports", 0.9, "why", "news", "gemini", True)
     recorded_at = a["properties"].pop("recorded_at")
     assert a == {
         "subject": 0, "predicate": "verifiedBy", "object": 1,
         "properties": {
             "llm_verdict": "supports", "confidence": 0.9, "rationale": "why",
-            "evidence_source_type": "news", "llm_provider": "openai",
+            "evidence_source_type": "news", "llm_provider": "gemini",
             "llm_suggested": True, "independent": True,
         },
     }
@@ -707,6 +710,78 @@ def test_provider_failures_abort_branch():
         assert s["linking_edges_written"] == 0
     finally:
         nw.close()
+
+
+def _duplicate_claim_graph():
+    """Two SustainabilityClaims with the IDENTICAL text, one MediaReport topically
+    overlapping both — the two (claim, evidence) adjudication calls this produces have
+    byte-identical (claim_text, evidence_text, evidence_meta), the exact shape issue #9's
+    cache must dedupe within a single run (e.g. a repeated disclaimer across two report
+    years, or a boilerplate sentence shared by two claims)."""
+    claim_text = "Chung toi cam ket giam phat thai khi nha kinh"
+    return {
+        "nodes": [
+            {"class": "Organization", "properties": {"ticker": "AAA", "name": "CTCP AAA"}},
+            {"class": "SustainabilityClaim", "properties": {"description": claim_text}},
+            {"class": "SustainabilityClaim", "properties": {"description": claim_text}},
+            {"class": "MediaReport",
+             "properties": {"text": "Cong ty cong bo giam phat thai khi nha kinh",
+                            "publisher": "vnexpress.net", "source_type": "news",
+                            "date": "2023-05-01"}},
+        ],
+        "edges": [
+            {"subject": 0, "predicate": "claims", "object": 1},
+            {"subject": 0, "predicate": "claims", "object": 2},
+        ],
+    }
+
+
+def test_identical_claim_evidence_pairs_hit_the_cache_once():
+    """Issue #9's headline acceptance criterion: two adjudication calls with identical
+    (claim_text, evidence_text, evidence_meta) in the SAME run must reach the provider
+    (the stub, standing in for the real LLM) exactly once — the second is a cache hit."""
+    graph = _duplicate_claim_graph()
+    with tempfile.TemporaryDirectory(prefix="esgkg_step07_cache_") as td:
+        cache_path = Path(td) / "adjudication_cache.json"
+        nw, stub, _ = run_new(graph, stub_mode="always_supports", max_llm_pairs=10,
+                               max_workers=1, cache=cache_path)
+        try:
+            assert len(stub.calls_seen) == 1, (
+                f"expected exactly 1 real call for 2 identical (claim, evidence) pairs, "
+                f"got {len(stub.calls_seen)}: {stub.calls_seen}")
+            d = nw.dossiers()
+            assert len(d) == 2
+            assert d[0]["assessment"] == "appears_supported"
+            assert d[1]["assessment"] == "appears_supported", \
+                "the cache-hit dossier must reproduce the same verdict as the cache-miss one"
+            assert cache_path.exists(), "a non-dry-run must persist the cache to disk"
+        finally:
+            nw.close()
+
+
+def test_adjudication_cache_survives_across_runs():
+    """Cross-run reuse (same shape as RepairCache/AdjudicationCache's block tests): a
+    second run against the SAME cache path must reproduce the verdict WITHOUT calling
+    the provider at all, even when that provider would otherwise fail every call."""
+    graph = _duplicate_claim_graph()
+    with tempfile.TemporaryDirectory(prefix="esgkg_step07_cache_") as td:
+        cache_path = Path(td) / "adjudication_cache.json"
+
+        nw1, _, _ = run_new(graph, stub_mode="always_supports", max_llm_pairs=10,
+                             max_workers=1, cache=cache_path)
+        nw1.close()
+        assert cache_path.exists()
+
+        nw2, stub2, _ = run_new(graph, stub_mode="always_raise", max_llm_pairs=10,
+                                 max_workers=1, cache=cache_path)
+        try:
+            assert stub2.calls_seen == [], \
+                f"a re-run against a populated cache must not call the provider: {stub2.calls_seen}"
+            d2 = nw2.dossiers()
+            assert d2[0]["assessment"] == "appears_supported", \
+                "a re-run must reproduce the cached verdict from a now-failing provider"
+        finally:
+            nw2.close()
 
 
 if __name__ == "__main__":

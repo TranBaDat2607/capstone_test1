@@ -84,20 +84,21 @@ repo and secrets, so it is never committed or pushed with this project.
   test `data_processing/esg_classifier.py` on CPU.
 - **Other deps are deliberately unlisted and imported lazily** — each degrades gracefully
   so a bare clone still runs: `huggingface_hub` (`datasync.py`), `rapidfuzz` (the
-  KPI-canonicalization stage's fuzzy tier; disabled with a warning if absent), `openai`
-  (the crosscheck stage, and now also the extract/extract_triples/fix_triples/entities
-  stages when `--provider openai` is passed). Install them on demand rather than adding
-  them to `requirements.txt`.
-- **Gemini is currently billing-blocked**, so the code has drifted to OpenAI where a
-  choice exists: the crosscheck stage's `DEFAULT_PROVIDER_ORDER` is `"openai"` and entity
-  resolution is normally run with `--no-llm` (Stages A + B.1 only — no embedding blocking,
-  no adjudication). Don't "fix" these back to Gemini without checking whether the key
-  works. **`extract` (KPI), `extract_triples`, `fix_triples`, and `entities` now also
-  accept `--provider {gemini,openai}`** (default stays `gemini`, so existing invocations
-  are unchanged) — added so integration/system testing could run end-to-end on
-  `gpt-4o-mini` (or an OpenAI-compatible third-party endpoint via `--openai-base-url`)
-  while Gemini stays billing-blocked. Real-LLM tests for this path live in
-  `test/test_esg_kg_integration_llm.py` / `test/test_esg_kg_system_llm.py`, gated behind
+  KPI-canonicalization stage's fuzzy tier; disabled with a warning if absent).
+- **Gemini is the only paid LLM provider in this project — there is no OpenAI fallback.**
+  2026-07-27 through 2026-08-04 the code ran on OpenAI instead (`--provider openai` on
+  `extract`/`extract_triples`/`fix_triples`/`entities`, and OpenAI as the sole provider
+  for `claims_vs_conduct`/`align_claims`) because the Gemini project behind
+  `GEMINI_API_KEY` was billing-blocked. On 2026-08-04 that OpenAI path — `_OpenAIProvider`
+  / `_OpenAIEmbeddingProvider` / `openai_json_call` in `core/llm.py`, every stage's
+  `--provider openai` / `--openai-model` / `--openai-base-url` flag, and the `openai`
+  dependency itself — was **removed outright, no fallback kept**, once the project went
+  back to paying only for Gemini. `claims_vs_conduct` and `align_claims` (the two stages
+  that mandate an LLM) now run on a `_GeminiProvider` in `core/llm.py`. Entity resolution
+  is still normally run with `--no-llm` (Stages A + B.1 only — no embedding blocking, no
+  adjudication) because Stage B/C is dormant, not because of a billing block; don't assume
+  it's safe to flip that default without checking. Real-LLM tests for the Gemini path live
+  in `test/test_esg_kg_integration_llm.py` / `test/test_esg_kg_system_llm.py`, gated behind
   `RUN_LLM_INTEGRATION_TESTS=1` / `RUN_LLM_SYSTEM_TEST=1` — they cost money and are
   deliberately NOT part of the free/offline suite.
 
@@ -148,7 +149,7 @@ just the cross-cutting lessons worth carrying into future work on this codebase:
   codebase has two `node_text` functions (one takes a properties dict, one takes a full
   node and class-dispatches); merging them would silently change a paid LLM prompt.
 - **Testing a paid/networked stage for free: stub UNDER the abstraction layer**, not around
-  the whole function. If the stage goes through `_OpenAIProvider`/`google.genai.Client`/a
+  the whole function. If the stage goes through `_GeminiProvider`/`google.genai.Client`/a
   DB driver class, replace that attribute with a deterministic stub (e.g. keyed by a CRC of
   the prompt) so real logic still runs, just against fake I/O.
 - **The block pattern (DESIGN.md §5.7):** when several stages only exist because they each
@@ -237,19 +238,19 @@ quality        (step00) → graph_output/quality/quality_report_<label>.{json,md
 extract         (step01) → kpi_output/<pdf_stem>_kpis/page_NNN_kpis.json
    (per page: Gemini 2.5 Flash w/ structured output → typed KPIObservation records,
     only pages with ≥1 esg=true sentence are sent; uses kpi_definitions_construction.json.
-    --provider {gemini,openai} (default gemini) — openai path added for testing/scaling
-    when Gemini billing is blocked, see Environment & conventions above)
+    Gemini-only, no provider flag — the 2026-07-29..2026-08-04 --provider openai path
+    was removed outright once Gemini billing was unblocked)
 extract_triples  (step02) → graph_output/graphs/<pdf_stem>/page{N}.json  (+ _bugged.json, _malformed.txt)
    (per page: page text + page KPIs + config/schema.json → temporal triples → node/edge graph.
     --source report (default) = claim-side prompt; --source news = conduct-side prompt (Controversy/
     MediaReport/Penalty/observed KPIObservation); every node/edge stamped source_type=report|news.
-    --provider {gemini,openai}, default gemini)
+    Gemini-only, no provider flag — same removal as extract above)
 fix_triples      (step03) → graph_output/validated/all_validated_triples.json (+ unfixable_triples.json)
    (Phase 1 offline: swap reversed edge directions + schema-validate;
     Phase 1.5 offline (P4): canonicalize dates to ISO YYYY[-MM[-DD]], warn valid_from>valid_to,
     default missing date_uncertain on news T2 nodes; --renormalize applies only this phase to
     the existing aggregated file (no LLM, keeps prior repairs);
-    Phase 2 LLM: batch-repair invalid triples (--provider {gemini,openai}, default gemini);
+    Phase 2 LLM: batch-repair invalid triples, Gemini-only, no provider flag;
     Phase 3: aggregate)
 anchor_kpi       (step03b) → appends to all_validated_triples.json (+ anchor_patch_stats.json)
    (P3 offline patch, NO LLM: gazetteer of Facility names already in the graph matched against
@@ -282,9 +283,9 @@ entities         (step05) → graph_output/resolved/resolved_graph.json (+ _stat
    (step 4: collapse duplicate entity nodes into canonical entities, keeping temporal history.
     Stage A deterministic identity_keys merge + FROZEN issuer anchor (issuer_registry.json) +
     FROZEN standards anchor (Stage A.3, standards_registry.json — Standard/Regulation mentions);
-    Stage B VN-aware blocking (normalized signature + gemini-embedding-001 cosine, or an
-    OpenAI embedding model via --provider openai); Stage C adjudication on ambiguous pairs
-    (budgeted; gemini-2.5-flash or gpt-4o-mini); Stage D consolidate. --no-llm skips B+C)
+    Stage B VN-aware blocking (normalized signature + gemini-embedding-001 cosine);
+    Stage C adjudication on ambiguous pairs (budgeted; gemini-2.5-flash). Gemini-only,
+    no provider flag. Stage D consolidate. --no-llm skips B+C)
 provenance       (step05b) → patches resolved_graph.json in place (+ provenance_patch_stats.json)
    (offline provenance patch, NO LLM: matches claim/evidence nodes (PROVENANCE_CLASSES, never
     T1 entities) back to the per-page graph_output/graphs/<doc>/page{N}.json files via a 4-tier
@@ -334,10 +335,12 @@ claims_vs_conduct (step07) → graph_output/crosscheck/<ticker>_claim_assessment
    (the analytical core: for each SustainabilityClaim, retrieve conduct-side candidates →
     LLM-adjudicate supports/contradicts/irrelevant → write verifiedBy / contradictedBy* edges.
     LLM adjudication is MANDATORY (no deterministic fallback) — provider cascade
-    (--provider-order, default `openai` = gpt-4o-mini); aborts up front if no provider is
-    available. **OpenAI is the ONLY provider left**: Gemini support was removed outright
-    because the project behind GEMINI_API_KEY is permanently 403, so passing `gemini` logs
-    "Unknown adjudication provider — ignored". Do not plan a Gemini fallback here.
+    (--provider-order, default `gemini` = gemini-2.5-flash); aborts up front if no
+    provider is available. **Gemini is the ONLY provider**: OpenAI was used here from
+    2026-07-27 (when the Gemini project was 403-blocked) until 2026-08-04, when it was
+    removed outright — `_GeminiProvider` (core/llm.py) is the sole adjudication backend
+    now, so passing `openai` logs "Unknown adjudication provider — ignored". Do not
+    re-add an OpenAI fallback without checking whether Gemini is billing-blocked again.
     Self-verification guard drops company-own-domain "verify" edges.
     Emits advisory dossiers — NO greenwashing score/label. --dry-run / --to-neo4j)
 neo4j_sync       (step08) → Neo4j advisory layer                                        (step 6b)
@@ -359,7 +362,7 @@ ablation) was **removed from the project on 2026-07-28** — see "Refactor histo
 The claim ledger (`step09`) is the last stage in the pipeline now.
 
 Stages share helpers through `esg_kg/core/`: `paths` (`REPO_ROOT`), `io_jsonl`
-(`build_page_text`, `load_pages_from_jsonl`, ...), `llm` (`RateLimiter`, `_OpenAIProvider`,
+(`build_page_text`, `load_pages_from_jsonl`, ...), `llm` (`RateLimiter`, `_GeminiProvider`,
 ...), `schema` (`load_schema_sets`, ...), `naming` (`normalize_name`, ...), `dates`,
 `identity`, `graph_patch`. No stage imports another stage's internals any more — that
 sibling-importing shape belonged to the old `src/` scripts and was untied module by module
@@ -482,20 +485,19 @@ python api/main.py                                                         # 3-c
 
 # Useful flags: --doc <substr>, --limit-docs N, --all (scope);
 #   --all-pages (don't restrict to ESG pages); --dry-run (fix/resolve/load stages: offline only, no LLM/DB/writes);
-#   --provider {gemini,openai} on extract/extract_triples/fix_triples/entities (default gemini;
-#     --openai-model, --openai-base-url for a third-party OpenAI-compatible endpoint);
+#   extract/extract_triples/fix_triples/entities are Gemini-only — no --provider flag any more
+#     (the 2026-07-29..2026-08-04 --provider openai path was removed outright);
 #   quality: --label <name>, --skip-slow (skip the BFS-heavy Q7(c)/(d)), --max-hops, --standards-registry;
 #   fix_triples: --renormalize (P4 pass only); anchor_kpi: --max-per-facility, --dry-run;
 #   canonicalize: --aliases, --fuzzy-threshold, --no-goals, --dry-run;
 #   provenance: --graphs-dir, --news-globs, --stats-out, --dry-run;
 #   indicators: --crosswalk, --no-gri, --no-align, --trust-draft-crosswalk, --dry-run;
-#   align_claims: --max-llm-pairs, --openai-model, --openai-base-url, --dry-run;
+#   align_claims: --max-llm-pairs, --model (gemini, mandatory LLM), --dry-run;
 #   export_kgc: --max-bucket-degree (default 500), --issuer-registry, --dry-run;
-#   entities: --no-llm (Stages A+B.1 only), --standards-registry, --similarity-threshold, --max-llm-pairs,
-#     --openai-embed-model;
+#   entities: --no-llm (Stages A+B.1 only), --standards-registry, --similarity-threshold, --max-llm-pairs;
 #   neo4j_load: --clear (wipe first), --no-versions (canonical only), --database, --strict (env: NEO4J_URI/USER/PASSWORD);
-#   claims_vs_conduct: LLM adjudication is mandatory (no --no-llm); --max-llm-pairs, --provider-order (default openai),
-#     --openai-base-url, --to-neo4j;
+#   claims_vs_conduct: LLM adjudication is mandatory (no --no-llm); --max-llm-pairs, --provider-order (default gemini),
+#     --model, --to-neo4j;
 #   neo4j_sync: --clear-advisory, --dry-run;
 #   claim_ledger (Neo4j-only): --review-queue, --assessment, --claim-id, --limit, --markdown;
 ```

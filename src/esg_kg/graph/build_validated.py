@@ -56,12 +56,13 @@ because this change alters WHEN the file is written, never WHAT ends up in it.
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import logging
 import pathlib
 from typing import Any, Dict, List, Optional, Tuple
 
+from esg_kg.core.llm import build_gemini_client
+from esg_kg.core.llm_cache import ContentCache
 from esg_kg.core.paths import REPO_ROOT, SCHEMA_PATH
 from esg_kg.core.schema import load_schema_sets
 from esg_kg.graph import anchor_kpi, fix_triples
@@ -89,53 +90,41 @@ class RepairCache:
     replayed run reproduces the paid outcome exactly, including the failures — asking
     again for something the model already declined is just spending money to be told no
     a second time.
-    """
 
-    VERSION = 1
+    A thin wrapper over ``core.llm_cache.ContentCache`` (GitHub issue #9) — same
+    get/put/save contract and on-disk JSON shape as before that module existed;
+    only the storage/load/save mechanics moved, so this class exists purely to keep
+    ``RepairCache.key()``'s ``_``-key-stripping behaviour (phase 2's own concern, not
+    the shared cache's) at the call site.
+    """
 
     def __init__(self, path: Optional[pathlib.Path] = None) -> None:
         self.path = path
-        self.entries: Dict[str, Any] = {}
-        self._dirty = False
-        if path and path.exists():
-            try:
-                raw = json.loads(path.read_text(encoding="utf-8"))
-                self.entries = raw.get("entries", {}) if isinstance(raw, dict) else {}
-                logger.info(f"Phase-2 cache: {len(self.entries)} repair(s) from {path}")
-            except Exception as exc:  # a corrupt cache must never stop the pipeline
-                logger.warning(f"Phase-2 cache at {path} unreadable ({exc}); starting empty")
-                self.entries = {}
+        self._cache = ContentCache(path)
 
     @staticmethod
-    def key(triple: Any) -> str:
-        """Content hash of the triple as phase 2 sees it (internal `_` keys stripped,
-        exactly like `fix_batch_with_llm` does before building the prompt)."""
-        clean = ({k: v for k, v in triple.items() if not k.startswith("_")}
-                 if isinstance(triple, dict) else triple)
-        blob = json.dumps(clean, sort_keys=True, ensure_ascii=False, default=str)
-        return hashlib.sha256(blob.encode("utf-8")).hexdigest()
+    def _clean(triple: Any) -> Any:
+        """The triple as phase 2 sees it (internal `_` keys stripped, exactly like
+        `fix_batch_with_llm` does before building the prompt)."""
+        return ({k: v for k, v in triple.items() if not k.startswith("_")}
+                if isinstance(triple, dict) else triple)
+
+    @classmethod
+    def key(cls, triple: Any) -> str:
+        """Content hash of the triple as phase 2 sees it."""
+        return ContentCache.key(cls._clean(triple))
 
     def get(self, triple: Any) -> Tuple[Any, bool]:
-        k = self.key(triple)
-        if k in self.entries:
-            return self.entries[k], True
-        return None, False
+        return self._cache.get(self._clean(triple))
 
     def put(self, triple: Any, value: Any) -> None:
-        self.entries[self.key(triple)] = value
-        self._dirty = True
+        self._cache.put(self._clean(triple), value=value)
 
     def save(self) -> bool:
-        """Write only when something changed — a free replay must not touch the disk."""
-        if not (self.path and self._dirty):
-            return False
-        self.path.parent.mkdir(parents=True, exist_ok=True)
-        self.path.write_text(
-            json.dumps({"version": self.VERSION, "entries": self.entries},
-                       indent=2, ensure_ascii=False),
-            encoding="utf-8")
-        logger.info(f"Phase-2 cache: {len(self.entries)} repair(s) -> {self.path}")
-        return True
+        ok = self._cache.save()
+        if ok:
+            logger.info(f"Phase-2 cache: {len(self._cache.entries)} repair(s) -> {self.path}")
+        return ok
 
 
 # --------------------------------------------------------------------------- #
@@ -241,14 +230,6 @@ def main() -> None:
     p.add_argument("--batch-size", type=int, default=fix_triples.DEFAULT_BATCH_SIZE)
     p.add_argument("--rate-limit", type=int, default=fix_triples.DEFAULT_RATE_LIMIT)
     p.add_argument("--model", type=str, default=fix_triples.DEFAULT_MODEL)
-    p.add_argument("--provider", type=str, default="gemini", choices=["gemini", "openai"],
-                   help="LLM backend for the phase-2 repair (default gemini; "
-                        "openai needs OPENAI_API_KEY)")
-    p.add_argument("--openai-model", type=str, default="gpt-4o-mini",
-                   help="OpenAI model id, used only when --provider openai")
-    p.add_argument("--openai-base-url", type=str, default=None,
-                   help="Override the OpenAI endpoint (e.g. an OpenAI-compatible "
-                        "third-party host); default is OpenAI's own API")
     p.add_argument("--cache", type=pathlib.Path, default=DEFAULT_CACHE,
                    help="Phase-2 repair cache; a re-run reuses it instead of paying again")
     p.add_argument("--no-cache", action="store_true",
@@ -270,26 +251,13 @@ def main() -> None:
     rate_limiter = None
     model = args.model
     if not args.dry_run:
-        import os
-
         from esg_kg.core.paths import load_env
         load_env()
-        if args.provider == "openai":
-            if os.getenv("OPENAI_API_KEY"):
-                client = fix_triples._OpenAIProvider(args.openai_model, args.rate_limit,
-                                                     base_url=args.openai_base_url)
-                rate_limiter = fix_triples.RateLimiter(max_calls_per_minute=args.rate_limit)
-                model = args.openai_model
-            else:
-                logger.warning("OPENAI_API_KEY not set — phase 2 will run from the cache only")
+        client = build_gemini_client()
+        if client is not None:
+            rate_limiter = fix_triples.RateLimiter(max_calls_per_minute=args.rate_limit)
         else:
-            api_key = os.getenv("GEMINI_API_KEY")
-            if api_key:
-                from google import genai
-                client = genai.Client(api_key=api_key)
-                rate_limiter = fix_triples.RateLimiter(max_calls_per_minute=args.rate_limit)
-            else:
-                logger.warning("GEMINI_API_KEY not set — phase 2 will run from the cache only")
+            logger.warning("GEMINI_API_KEY not set — phase 2 will run from the cache only")
 
     run_block(
         input_dir=args.input_dir, out_dir=args.out_dir, schema=schema,

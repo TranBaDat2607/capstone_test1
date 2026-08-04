@@ -125,8 +125,11 @@ next takes over automatically; if all providers die — or `--no-llm`/`--dry-run
 no key is present — the run finishes on the deterministic signals alone. Each written edge
 records which model produced it (`llm_provider`) so results stay auditable across
 mixed-provider runs. **Key precedence:** the adjudicator loads `.env` with `override=True`,
-so the repo `.env` is authoritative even if a stale `OPENAI_API_KEY` / `GEMINI_API_KEY` sits
-in the shell environment (a real gotcha we hit — the shell var silently shadowed `.env`).
+so the repo `.env` is authoritative even if a stale `GEMINI_API_KEY` sits in the shell
+environment (a real gotcha we hit — the shell var silently shadowed `.env`).
+2026-08-04: Gemini is the only adjudication provider — the OpenAI path this section used
+to describe (2026-07-27..2026-08-04, while the Gemini project was billing-blocked) was
+removed outright, no fallback kept.
 
 ### 6c — write the linking edges
 A verdict becomes a **schema-legal** edge, checked against `edge_directions` before it is
@@ -253,7 +256,7 @@ written edge keeps advisory links separable from extracted facts.
 
 ```bash
 # 0. Prereqs: steps 1–5 done, so graph_output/resolved/resolved_graph.json exists.
-#    .env needs a working key for the chosen provider(s) (GEMINI_API_KEY and/or OPENAI_API_KEY).
+#    .env needs a working GEMINI_API_KEY (the only adjudication provider).
 
 # 1. Offline preview — no API, no writes (recommended first)
 python src/step07_crosscheck_claims_vs_conduct.py --dry-run

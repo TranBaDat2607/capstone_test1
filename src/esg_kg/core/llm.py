@@ -1,36 +1,47 @@
-"""llm — the shared LLM backend kernel: RPM throttling and the OpenAI provider.
+"""llm — the shared LLM backend kernel: RPM throttling and the Gemini provider.
 
 Extracted verbatim: ``DEFAULT_RATE_LIMIT`` + ``RateLimiter``
-<- ``src/step02_extract_triplet_from_jsonl.py:62,70``; ``_Provider`` + ``_OpenAIProvider``
-<- ``src/step07_crosscheck_claims_vs_conduct.py:271,284``.
+<- ``src/step02_extract_triplet_from_jsonl.py:62,70``.
 
-WHY THESE FOUR TRAVEL TOGETHER
-They cannot be split across two commits: ``_OpenAIProvider.__init__`` CONSTRUCTS a
-``RateLimiter``. Today that means ``src/step07`` reaches UP into ``src/step02`` for a
-utility — a stage file doubling as a library, the knot DESIGN.md §1 says ``core/`` exists
-to untie, and the same shape ``core/graph_patch.py`` and ``core/identity.py`` already
-fixed. Four stages import ``RateLimiter`` from step02 (``03``, ``05``, ``07``) and
-``_OpenAIProvider`` from step07 (``05d``), so this one module is the refactor's biggest
-single unlock (PIPELINE.md §2.1).
+WHY RateLimiter LIVES HERE
+Four stages import it (``03``, ``05``, ``07``) — today that means several stage files
+reach UP into ``src/step02`` for a utility, a stage file doubling as a library, the knot
+DESIGN.md §1 says ``core/`` exists to untie, and the same shape ``core/graph_patch.py``
+and ``core/identity.py`` already fixed.
 
 WHAT IS DELIBERATELY NOT HERE
-``Adjudicator`` (``step07:311``) stays with its stage. It is prompt text, verdict parsing
-and the provider cascade — analysis, not kernel. Consequence worth remembering (now
-historical): ``step10`` was NOT unblocked by this module, because its lazy ``from step07...
-import Adjudicator`` sat inside a ``try`` and failed *silently*; it would only have moved
-after step07. ``step10`` itself was removed from the project outright on 2026-07-28
-(DESIGN.md §4.3), so this no longer matters in practice.
+``Adjudicator`` (``step07``) stays with its stage. It is prompt text, verdict parsing
+and the provider cascade — analysis, not kernel.
 
-There is no Gemini provider to lift. ``step07:34`` records that it was removed outright —
-the project behind ``GEMINI_API_KEY`` is permanently 403, and every run wasted seconds
-retrying it before falling back to OpenAI.
+2026-08-04: THE OPENAI PROVIDER WAS REMOVED OUTRIGHT (no fallback kept). This project
+now pays only for ``GEMINI_API_KEY``; ``_OpenAIProvider``/``_OpenAIEmbeddingProvider``/
+``openai_json_call`` (added 2026-07-27 through 2026-07-29 while the Gemini project
+behind ``GEMINI_API_KEY`` was permanently 403-blocked) are gone, along with every
+``--provider openai`` / ``--openai-model`` / ``--openai-base-url`` CLI flag across the
+stages that had one (``extract``, ``extract_triples``, ``fix_triples``, ``entities``).
+``claims_vs_conduct`` (step07) and ``align_claims`` (step05d) — the two stages that
+*require* an LLM and had no deterministic fallback — previously ran on OpenAI as their
+only provider (the module docstring here used to say so); they now use ``_GeminiProvider``
+below instead. Do not re-add an OpenAI path without checking whether the project is
+billing-blocked again first.
+
+ONE CLIENT CONSTRUCTOR, NOT SIX
+``build_gemini_client()`` below is the single place that turns ``GEMINI_API_KEY`` into a
+working ``genai.Client`` (or ``None``). Every stage that used to branch on
+``--provider {gemini,openai}`` (``extract``, ``extract_triples``, ``fix_triples``,
+``entities``, and the ``build_validated``/``build_resolved`` blocks) now calls this
+instead of re-reading the env var and constructing the client inline — six copies of
+that five-line "getenv, check, construct" block is exactly the duplication this refactor
+was supposed to remove, not just rename. ``_GeminiProvider.__init__`` calls it too, so
+there is truly one implementation.
 
 CARE REQUIRED
-``temperature=0`` and ``response_format={"type": "json_object"}`` in ``call()`` are
-behaviour, not style: the adjudicator parses the reply as JSON and the pipeline assumes
-determinism. Dropping either still "works" at runtime while quietly changing every paid
-verdict. ``test/test_esg_kg_llm.py`` pins the whole request shape with a stub client, so
-that regression is caught without spending anything.
+``temperature=0`` and ``response_mime_type="application/json"`` in ``_GeminiProvider.call()``
+are behaviour, not style: callers (``Adjudicator`` in step07, the classifier in step05d)
+parse the reply as JSON and the pipeline assumes determinism. Dropping either still
+"works" at runtime while quietly changing every paid verdict.
+``test/test_esg_kg_llm.py`` pins the request shape with a stub client, so that
+regression is caught without spending anything.
 
 Equally load-bearing in ``RateLimiter``: the window is keyed per ``client_idx`` (its own
 deque AND its own ``Lock``), the eviction boundary is ``>= 60``, and the queue is re-swept
@@ -42,13 +53,15 @@ tree must keep running and cannot import from here). ``test/test_esg_kg_llm.py``
 copies equal; that arm retires when the ``src/`` twins are deleted (DESIGN.md §5.3).
 """
 
-import json
 import logging
 import os
 import time
 from collections import deque
 from threading import Lock
-from typing import Dict, List, Optional
+from typing import Dict, Optional
+
+from google import genai
+from google.genai import types
 
 logger = logging.getLogger(__name__)
 
@@ -86,9 +99,25 @@ class RateLimiter:
             calls.append(time.time())
 
 
+def build_gemini_client(api_key: Optional[str] = None) -> Optional[genai.Client]:
+    """Turn ``GEMINI_API_KEY`` (or an explicit override) into a ``genai.Client``, or
+    ``None`` if no key is available or the SDK rejects it. Never raises — every call
+    site bails out on ``None`` the same way, instead of six slightly different
+    getenv/construct blocks each deciding for itself how to fail.
+    """
+    api_key = api_key or os.getenv("GEMINI_API_KEY")
+    if not api_key:
+        return None
+    try:
+        return genai.Client(api_key=api_key)
+    except Exception as e:  # pragma: no cover
+        logger.warning(f"[gemini] client init failed ({e}).")
+        return None
+
+
 # --------------------------------------------------------------------------- #
-# LLM providers (verbatim from step07). The cascade that iterates over them
-# (`Adjudicator`) stays in the stage — see the module docstring.
+# LLM providers. The cascade that iterates over them (`Adjudicator`) stays in
+# the stage — see the module docstring.
 # --------------------------------------------------------------------------- #
 class _Provider:
     """One LLM backend. `call(system, user)` returns the raw text reply or raises."""
@@ -103,106 +132,34 @@ class _Provider:
         raise NotImplementedError
 
 
-class _OpenAIProvider(_Provider):
-    name = "openai"
+class _GeminiProvider(_Provider):
+    """Google Gemini backend (`google.genai.Client`), the single paid provider.
 
-    def __init__(self, model: str, rate_limit: int,
-                 api_key: Optional[str] = None, base_url: Optional[str] = None) -> None:
-        """`api_key`/`base_url` default to OPENAI_API_KEY / OpenAI's own endpoint (every
-        existing call site) — passing them explicitly is how a one-off run points this
-        same OpenAI-shaped provider at an OpenAI-compatible third-party endpoint (e.g.
-        Novita) instead, without touching any stage's default."""
+    Same `call(system, user) -> str` contract the old `_OpenAIProvider` had, so
+    step07's `Adjudicator` cascade and step05d's classifier need no shape change to
+    use this instead — only the registry/construction call site does.
+    """
+    name = "gemini"
+
+    def __init__(self, model: str, rate_limit: int, api_key: Optional[str] = None) -> None:
         super().__init__()
         self.model = model
-        api_key = api_key or os.getenv("OPENAI_API_KEY")
-        if not api_key:
+        client = build_gemini_client(api_key)
+        if client is None:
             return
-        try:
-            from openai import OpenAI
-            self.client = OpenAI(api_key=api_key, base_url=base_url)
-            self.rl = RateLimiter(max_calls_per_minute=rate_limit)
-            self.enabled = True
-        except Exception as e:  # pragma: no cover
-            logger.warning(f"[openai] client init failed ({e}); provider disabled.")
+        self.client = client
+        self.rl = RateLimiter(max_calls_per_minute=rate_limit)
+        self.enabled = True
 
     def call(self, system: str, user: str) -> str:
         self.rl.wait_if_needed(0)
-        resp = self.client.chat.completions.create(
-            model=self.model, temperature=0,
-            response_format={"type": "json_object"},
-            messages=[{"role": "system", "content": system},
-                      {"role": "user", "content": user}],
+        resp = self.client.models.generate_content(
+            model=self.model,
+            contents=user,
+            config=types.GenerateContentConfig(
+                system_instruction=system,
+                response_mime_type="application/json",
+                temperature=0,
+            ),
         )
-        return (resp.choices[0].message.content or "").strip()
-
-
-# --------------------------------------------------------------------------- #
-# NEW (2026-07-29): an OpenAI path for the stages that were Gemini-only until now
-# (01 kpi.extract, 02 graph.extract_triples, 03 graph.fix_triples phase 2, 05
-# resolve.entities Stage B/C). Additive — Gemini stays each stage's default, this
-# only gives `--provider openai` somewhere real to call. Unlike everything above,
-# there is no `src/` twin to keep equal: these two pieces never existed there.
-# --------------------------------------------------------------------------- #
-class _OpenAIEmbeddingProvider(_Provider):
-    """OpenAI's analogue of step05 Stage B's `gemini-embedding-001` call.
-
-    Same shape as `_OpenAIProvider` (lazy client, RateLimiter, `enabled` flag) but the
-    request is `embeddings.create`, not `chat.completions.create` — a different OpenAI
-    endpoint, not a `call()` override, so it stays a sibling of `_OpenAIProvider` rather
-    than a subclass override.
-    """
-    name = "openai-embedding"
-
-    def __init__(self, model: str, rate_limit: int,
-                 api_key: Optional[str] = None, base_url: Optional[str] = None) -> None:
-        """Same override shape as `_OpenAIProvider` — see its docstring."""
-        super().__init__()
-        self.model = model
-        api_key = api_key or os.getenv("OPENAI_API_KEY")
-        if not api_key:
-            return
-        try:
-            from openai import OpenAI
-            self.client = OpenAI(api_key=api_key, base_url=base_url)
-            self.rl = RateLimiter(max_calls_per_minute=rate_limit)
-            self.enabled = True
-        except Exception as e:  # pragma: no cover
-            logger.warning(f"[openai-embedding] client init failed ({e}); provider disabled.")
-
-    def embed(self, texts: List[str], dimensions: Optional[int] = None) -> List[List[float]]:
-        """`dimensions` mirrors Gemini Stage B's `output_dimensionality=dim` (both
-        `text-embedding-3-small/large` support truncating via this OpenAI kwarg) —
-        omitted by default so the request shape test above stays unchanged."""
-        self.rl.wait_if_needed(0)
-        kwargs = {"model": self.model, "input": texts}
-        if dimensions is not None:
-            kwargs["dimensions"] = dimensions
-        resp = self.client.embeddings.create(**kwargs)
-        return [d.embedding for d in resp.data]
-
-
-def openai_json_call(provider: "_OpenAIProvider", system: str, user: str, schema_hint: dict) -> dict:
-    """Call an OpenAI-shaped provider and parse a JSON-mode reply.
-
-    Gemini's `response_schema` (steps 01/02) constrains the model's output structurally;
-    OpenAI's `response_format={"type": "json_object"}` (all `_OpenAIProvider.call` uses)
-    only guarantees *valid* JSON, not conformance to any particular shape — so the schema
-    has to travel as a prompt instruction instead. One retry with a sharper nudge covers
-    the "model added prose around the JSON" failure mode; a second failure raises rather
-    than silently returning an empty/wrong result, matching this project's rule against
-    a stage papering over an unusable LLM reply (see step05d/step07's `.get()` fixes).
-    """
-    schema_text = json.dumps(schema_hint, ensure_ascii=False)
-    system_with_schema = (
-        f"{system}\n\nRespond with a single JSON object that conforms exactly to this JSON "
-        f"Schema (no extra keys, no markdown fences, no prose):\n{schema_text}"
-    )
-    last_err: Exception = ValueError("openai_json_call: no attempt was made")
-    for attempt in range(2):
-        raw = provider.call(system_with_schema, user)
-        try:
-            return json.loads(raw)
-        except (json.JSONDecodeError, TypeError) as e:
-            last_err = e
-            user = user + "\n\n(Your previous reply was not valid JSON. Reply with ONLY the JSON object.)"
-    raise ValueError(f"openai_json_call: reply was not valid JSON after retry: {last_err}")
+        return (resp.text or "").strip()

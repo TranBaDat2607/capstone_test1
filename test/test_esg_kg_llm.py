@@ -1,43 +1,38 @@
 #!/usr/bin/env python3
 """
-Old-vs-new equivalence for ONE migration slice: the LLM kernel.
+Coverage for the LLM kernel: `esg_kg/core/llm.py`.
 
     src/step02_extract_triplet_from_jsonl.py : DEFAULT_RATE_LIMIT, RateLimiter
-    src/step07_crosscheck_claims_vs_conduct.py : _Provider, _OpenAIProvider
                                               -> esg_kg.core.llm
 
-WHY THIS SLICE, AND WHY THE FOUR SYMBOLS TRAVEL TOGETHER
+WHY THIS SLICE
 `core/llm.py` is the biggest single unlock of the refactor: it frees `step03`, `step05`,
 `step07` and `step05d` at once, and then `step08`/`step10` behind them (PIPELINE.md §2.1).
-The four symbols cannot be split across two commits because `_OpenAIProvider.__init__`
-CONSTRUCTS a `RateLimiter` — the provider and the throttle are one unit even though they
-are defined in two different stage files today. That cross-file dependency (step07
-reaching UP into step02 for a utility) is exactly the knot DESIGN.md §1 says `core/`
-exists to untie.
 
 WHAT STAYS BEHIND, DELIBERATELY
-`Adjudicator` (step07:311) is NOT part of this slice. It is stage logic — prompt text,
-verdict parsing, the provider cascade — not kernel. That is also why `step10` stayed
-blocked after this lands: its lazy `from step07... import Adjudicator` sat inside a `try`
-and failed SILENTLY, so it could only move once step07 itself moved. (`step10` was removed
-from the project outright on 2026-07-28 — DESIGN.md §4.3 — so this is now historical.)
+`Adjudicator` (step07) is NOT part of this slice. It is stage logic — prompt text,
+verdict parsing, the provider cascade — not kernel.
 
-WHY THIS HAS A STRONG OFFLINE ARM WHEN THE STAGES IT UNBLOCKS DO NOT
-Every stage still eligible to move (01/04/06/09) has a weak equivalence arm — Neo4j, or a
-paid LLM call. This slice does not: the throttle is pure arithmetic over a clock, and the
-provider's request SHAPE can be pinned with a stub client. So the test below never sleeps,
-never resolves a hostname and never spends a cent, yet it locks the exact JSON request
-step07 pays for. `test_openai_provider_request_shape` is the one that matters — if a future
-edit drops `temperature=0` or `response_format`, the paid adjudication silently changes
+2026-08-04: `_OpenAIProvider`/`_OpenAIEmbeddingProvider`/`openai_json_call` (added
+2026-07-27 through 2026-07-29 while the Gemini project behind GEMINI_API_KEY was
+billing-blocked) were removed outright, no fallback kept — this project now pays only
+for Gemini. `_GeminiProvider` replaces them as the sole `_Provider` subclass, used by
+step07's `Adjudicator` cascade and step05d's classifier. Every test below that used to
+drive `_OpenAIProvider` (env key handling, disabled-without-key, the paid request shape,
+a None-content reply) now drives `_GeminiProvider` instead — same discipline, different
+SDK shape (`google.genai.Client.models.generate_content`, not
+`openai.OpenAI.chat.completions.create`).
+
+WHY THIS HAS A STRONG OFFLINE ARM
+The throttle is pure arithmetic over a clock, and the provider's request SHAPE can be
+pinned with a stub client. So the tests below never sleep, never resolve a hostname and
+never spend a cent, yet they lock the exact JSON request step07 pays for.
+`test_gemini_provider_request_shape` is the one that matters — if a future edit drops
+`temperature=0` or `response_mime_type`, the paid adjudication silently changes
 behaviour and only this arm notices.
 
 Offline: no LLM, no Neo4j, no network. Needs no artifacts from `graph_output/`, so unlike
 its sibling files every arm here runs on a bare clone.
-
-Was driven through both `src/` and `esg_kg` while both trees existed (DESIGN.md §5.3);
-repointed at `esg_kg` only (2026-07-29) now that `src/` is gone. Cross-tree comparisons
-with no independent claim about correct behaviour were deleted rather than rewritten
-against a guessed value; see the deletion notes in the PR/commit that made this change.
 
 Run from the repo root:
 
@@ -141,80 +136,63 @@ def test_provider_base_contract():
         pass
     else:
         raise AssertionError(f"{new_llm._Provider}: base call() must raise NotImplementedError")
-    assert issubclass(new_llm._OpenAIProvider, new_llm._Provider)
-    print("     (base contract holds; _OpenAIProvider subclasses it)")
+    assert issubclass(new_llm._GeminiProvider, new_llm._Provider)
+    print("     (base contract holds; _GeminiProvider subclasses it)")
 
 
-def _without_openai_key():
+def _without_gemini_key():
     """Context-manager-ish helper: remove the key, return a restore callable."""
-    saved = os.environ.pop("OPENAI_API_KEY", None)
+    saved = os.environ.pop("GEMINI_API_KEY", None)
 
     def restore():
         if saved is not None:
-            os.environ["OPENAI_API_KEY"] = saved
+            os.environ["GEMINI_API_KEY"] = saved
     return restore
 
 
-def test_openai_provider_accepts_an_explicit_key_and_base_url_override():
-    """NEW (2026-07-29): a caller may pass api_key=/base_url= explicitly — e.g. to point
-    the same OpenAI-shaped provider at an OpenAI-compatible third-party endpoint (Novita)
-    for a one-off test run — WITHOUT needing OPENAI_API_KEY set in the environment at all.
-    Default behaviour (env-only, no override) must be completely unaffected."""
-    restore = _without_openai_key()
+def test_gemini_provider_accepts_an_explicit_key():
+    """A caller may pass api_key= explicitly (e.g. a one-off test run) WITHOUT needing
+    GEMINI_API_KEY set in the environment at all. Default behaviour (env-only, no
+    override) must be completely unaffected."""
+    restore = _without_gemini_key()
     try:
-        p = new_llm._OpenAIProvider("some-model", 10, api_key="explicit-key", base_url="https://example.invalid/v1")
+        p = new_llm._GeminiProvider("gemini-2.5-flash", 10, api_key="explicit-key")
         assert p.enabled is True, "an explicit api_key must enable the provider even with no env var"
-        assert p.client.api_key == "explicit-key"
-        assert str(p.client.base_url).rstrip("/") == "https://example.invalid/v1"
     finally:
         restore()
-    print("     (explicit api_key/base_url override works with no OPENAI_API_KEY in env)")
+    print("     (explicit api_key override works with no GEMINI_API_KEY in env)")
 
 
-def test_openai_embedding_provider_accepts_an_explicit_key_and_base_url_override():
-    restore = _without_openai_key()
-    try:
-        p = new_llm._OpenAIEmbeddingProvider("some-embed-model", 10, api_key="explicit-key",
-                                             base_url="https://example.invalid/v1")
-        assert p.enabled is True
-        assert p.client.api_key == "explicit-key"
-        assert str(p.client.base_url).rstrip("/") == "https://example.invalid/v1"
-    finally:
-        restore()
-    print("     (embedding provider accepts the same override)")
-
-
-def test_openai_provider_disabled_without_key():
+def test_gemini_provider_disabled_without_key():
     """No key -> disabled, and NOT an exception: the cascade must be able to skip it."""
-    restore = _without_openai_key()
+    restore = _without_gemini_key()
     try:
-        p = new_llm._OpenAIProvider("gpt-4o-mini", 10)
-        assert p.enabled is False, f"{new_llm._OpenAIProvider} claimed to be enabled with no API key"
-        assert p.name == "openai", p.name
+        p = new_llm._GeminiProvider("gemini-2.5-flash", 10)
+        assert p.enabled is False, f"{new_llm._GeminiProvider} claimed to be enabled with no API key"
+        assert p.name == "gemini", p.name
         assert not hasattr(p, "client"), "a disabled provider must not hold a client"
     finally:
         restore()
     print("     (disables cleanly, no raise, no client)")
 
 
-class _StubResponse:
-    def __init__(self, content):
-        msg = _pytypes.SimpleNamespace(content=content)
-        self.choices = [_pytypes.SimpleNamespace(message=msg)]
+class _StubGenerateContentResponse:
+    def __init__(self, text):
+        self.text = text
 
 
-class _StubCompletions:
+class _StubModels:
     """Captures the request instead of sending it. Records call order into `log`."""
 
-    def __init__(self, log, content=' {"verdict": "supports"} '):
+    def __init__(self, log, text=' {"verdict": "supports"} '):
         self.log = log
-        self.content = content
+        self.text = text
         self.captured = None
 
-    def create(self, **kwargs):
+    def generate_content(self, **kwargs):
         self.log.append("create")
         self.captured = kwargs
-        return _StubResponse(self.content)
+        return _StubGenerateContentResponse(self.text)
 
 
 class _SpyLimiter:
@@ -227,43 +205,42 @@ class _SpyLimiter:
 
 def _call_with_stub(cls):
     """Build a real provider, then swap its client+throttle for stubs and call it."""
-    os.environ["OPENAI_API_KEY"] = "sk-test-not-a-real-key"
-    p = cls("gpt-4o-mini", 10)
-    assert p.enabled is True, f"{cls} did not enable with a key present (openai SDK missing?)"
+    os.environ["GEMINI_API_KEY"] = "not-a-real-key"
+    p = cls("gemini-2.5-flash", 10)
+    assert p.enabled is True, f"{cls} did not enable with a key present (genai SDK missing?)"
 
     log: list = []
-    completions = _StubCompletions(log)
-    p.client = _pytypes.SimpleNamespace(chat=_pytypes.SimpleNamespace(completions=completions))
+    models = _StubModels(log)
+    p.client = _pytypes.SimpleNamespace(models=models)
     p.rl = _SpyLimiter(log)
 
     out = p.call("SYSTEM PROMPT", "USER PROMPT")
-    return out, completions.captured, log
+    return out, models.captured, log
 
 
-def test_openai_provider_request_shape():
+def test_gemini_provider_request_shape():
     """Pin the exact paid request. This is the arm that protects step07's LLM contract.
 
-    `temperature=0` and `response_format={'type':'json_object'}` are not style: the
+    `temperature=0` and `response_mime_type='application/json'` are not style: the
     adjudicator parses the reply as JSON and the whole pipeline assumes determinism.
     Dropping either would still 'work' at runtime and quietly change every verdict.
     """
-    saved = os.environ.get("OPENAI_API_KEY")
+    saved = os.environ.get("GEMINI_API_KEY")
     try:
-        new_out, new_req, new_log = _call_with_stub(new_llm._OpenAIProvider)
+        new_out, new_req, new_log = _call_with_stub(new_llm._GeminiProvider)
     finally:
         if saved is None:
-            os.environ.pop("OPENAI_API_KEY", None)
+            os.environ.pop("GEMINI_API_KEY", None)
         else:
-            os.environ["OPENAI_API_KEY"] = saved
+            os.environ["GEMINI_API_KEY"] = saved
 
     # The shape itself, spelled out so a regression names the field it broke.
-    assert new_req["model"] == "gpt-4o-mini", new_req["model"]
-    assert new_req["temperature"] == 0, "temperature must stay 0 (determinism)"
-    assert new_req["response_format"] == {"type": "json_object"}, new_req.get("response_format")
-    assert new_req["messages"] == [
-        {"role": "system", "content": "SYSTEM PROMPT"},
-        {"role": "user", "content": "USER PROMPT"},
-    ], new_req["messages"]
+    assert new_req["model"] == "gemini-2.5-flash", new_req["model"]
+    assert new_req["contents"] == "USER PROMPT", new_req["contents"]
+    cfg = new_req["config"]
+    assert cfg.system_instruction == "SYSTEM PROMPT", cfg.system_instruction
+    assert cfg.response_mime_type == "application/json", cfg.response_mime_type
+    assert cfg.temperature == 0, "temperature must stay 0 (determinism)"
 
     # The reply is stripped, and the throttle is consulted BEFORE the request goes out.
     assert new_out == '{"verdict": "supports"}', repr(new_out)
@@ -271,148 +248,25 @@ def test_openai_provider_request_shape():
     print("     (request shape, strip, and wait->create ordering pinned)")
 
 
-def test_openai_provider_survives_a_none_reply():
-    """OpenAI can return `content=None`; the provider must yield '' rather than crash."""
-    saved = os.environ.get("OPENAI_API_KEY")
+def test_gemini_provider_survives_a_none_reply():
+    """Gemini can return `text=None`; the provider must yield '' rather than crash."""
+    saved = os.environ.get("GEMINI_API_KEY")
     try:
-        os.environ["OPENAI_API_KEY"] = "sk-test-not-a-real-key"
-        p = new_llm._OpenAIProvider("gpt-4o-mini", 10)
+        os.environ["GEMINI_API_KEY"] = "not-a-real-key"
+        p = new_llm._GeminiProvider("gemini-2.5-flash", 10)
         log: list = []
-        completions = _StubCompletions(log, content=None)
-        p.client = _pytypes.SimpleNamespace(
-            chat=_pytypes.SimpleNamespace(completions=completions))
+        models = _StubModels(log, text=None)
+        p.client = _pytypes.SimpleNamespace(models=models)
         p.rl = _SpyLimiter(log)
         out = p.call("s", "u")
     finally:
         if saved is None:
-            os.environ.pop("OPENAI_API_KEY", None)
+            os.environ.pop("GEMINI_API_KEY", None)
         else:
-            os.environ["OPENAI_API_KEY"] = saved
+            os.environ["GEMINI_API_KEY"] = saved
 
     assert out == "", f"None-reply handling diverged: {out!r}"
-    print("     (content=None -> '')")
-
-
-# --------------------------------------------------------------------------- #
-# NEW kernel surface (2026-07-29): _OpenAIEmbeddingProvider + openai_json_call.
-#
-# These have NO src/ counterpart — they exist to give steps 01/02/03/05 (Gemini-only
-# today) an additive OpenAI fallback for real-LLM testing. So unlike every arm above,
-# these are single-tree tests: there is nothing in `src/` to compare against. They
-# still follow the same "pin the exact paid request shape with a stub" discipline as
-# test_openai_provider_request_shape above, because that is what catches a silent
-# behaviour change (dropped schema hint, wrong embedding model) without spending
-# anything.
-# --------------------------------------------------------------------------- #
-
-def test_openai_embedding_provider_disabled_without_key():
-    restore = _without_openai_key()
-    try:
-        p = new_llm._OpenAIEmbeddingProvider("text-embedding-3-small", 10)
-        assert p.enabled is False
-        assert p.name == "openai-embedding", p.name
-        assert not hasattr(p, "client")
-    finally:
-        restore()
-    print("     (disables cleanly, no raise, no client)")
-
-
-class _StubEmbeddingData:
-    def __init__(self, vec):
-        self.embedding = vec
-
-
-class _StubEmbeddingResponse:
-    def __init__(self, vecs):
-        self.data = [_StubEmbeddingData(v) for v in vecs]
-
-
-class _StubEmbeddings:
-    def __init__(self, log, vecs):
-        self.log = log
-        self.vecs = vecs
-        self.captured = None
-
-    def create(self, **kwargs):
-        self.log.append("create")
-        self.captured = kwargs
-        return _StubEmbeddingResponse(self.vecs)
-
-
-def test_openai_embedding_provider_request_shape_and_order():
-    """Pin the embeddings.create request shape and wait->create ordering, same discipline
-    as test_openai_provider_request_shape for the chat-completions provider."""
-    saved = os.environ.get("OPENAI_API_KEY")
-    try:
-        os.environ["OPENAI_API_KEY"] = "sk-test-not-a-real-key"
-        p = new_llm._OpenAIEmbeddingProvider("text-embedding-3-small", 10)
-        assert p.enabled is True
-
-        log: list = []
-        vecs = [[0.1, 0.2, 0.3], [0.4, 0.5, 0.6]]
-        p.client = _pytypes.SimpleNamespace(embeddings=_StubEmbeddings(log, vecs))
-        p.rl = _SpyLimiter(log)
-
-        out = p.embed(["hello", "world"])
-    finally:
-        if saved is None:
-            os.environ.pop("OPENAI_API_KEY", None)
-        else:
-            os.environ["OPENAI_API_KEY"] = saved
-
-    assert out == vecs, out
-    assert p.client.embeddings.captured == {
-        "model": "text-embedding-3-small", "input": ["hello", "world"],
-    }, p.client.embeddings.captured
-    assert log == [("wait", 0), "create"], f"throttle must precede the request: {log}"
-    print("     (embeddings.create request shape + wait->create ordering pinned)")
-
-
-def test_openai_json_call_parses_valid_json():
-    log: list = []
-    p = _pytypes.SimpleNamespace(
-        call=lambda system, user: (log.append((system, user)) or '{"kpis": []}')
-    )
-    out = new_llm.openai_json_call(p, "SYS", "USER", {"type": "object"})
-    assert out == {"kpis": []}, out
-    # the schema must actually be folded into what the provider receives
-    called_system = log[0][0]
-    assert "SYS" in called_system, called_system
-    assert '"type": "object"' in called_system, called_system
-    print("     (valid JSON on the first attempt parses; schema folded into system prompt)")
-
-
-def test_openai_json_call_retries_once_then_raises():
-    calls = []
-
-    def flaky_call(system, user):
-        calls.append(user)
-        return "not json"
-
-    p = _pytypes.SimpleNamespace(call=flaky_call)
-    try:
-        new_llm.openai_json_call(p, "SYS", "USER", {"type": "object"})
-    except Exception:
-        pass
-    else:
-        raise AssertionError("expected a parse failure to raise after the retry")
-    assert len(calls) == 2, f"expected exactly one retry (2 total calls), got {len(calls)}"
-    assert calls[0] != calls[1], "the retry must nudge the user prompt, not repeat it verbatim"
-    print("     (bad JSON retried once with a nudge, then raises — no silent empty result)")
-
-
-def test_openai_json_call_recovers_on_the_retry():
-    calls = []
-
-    def recovers_second_time(system, user):
-        calls.append(user)
-        return "not json" if len(calls) == 1 else '{"ok": true}'
-
-    p = _pytypes.SimpleNamespace(call=recovers_second_time)
-    out = new_llm.openai_json_call(p, "SYS", "USER", {"type": "object"})
-    assert out == {"ok": True}, out
-    assert len(calls) == 2
-    print("     (a retry that succeeds is not treated as a failure)")
+    print("     (text=None -> '')")
 
 
 if __name__ == "__main__":
