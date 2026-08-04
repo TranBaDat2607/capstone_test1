@@ -247,77 +247,13 @@ def main():
             print(f"  - {s}")
 
 
-# --------------------------------------------------------------------------- #
-# NEW (2026-07-29): the additive OpenAI path (`--provider openai`). Gemini stays the
-# default; no src/ counterpart exists for this branch, so it is single-tree only —
-# same discipline as test_esg_kg_extract.py's equivalent Part D.
-# --------------------------------------------------------------------------- #
-_VALID_TRIPLE = {
-    "subject": {"class": "Organization", "properties": {"name": "Test Co"}},
-    "predicate": "reportsKPI",
-    "object": {"class": "KPIObservation", "properties": {"kpi_type": "x", "title": "t"}},
-    "temporal_metadata": {"valid_from": "2023-01-01", "valid_to": None, "recorded_at": "2023-01-01"},
-}
-
-
-class _StubOpenAIProvider:
-    def __init__(self, reply):
-        self.reply = reply
-        self.calls: list = []
-
-    def call(self, system, user):
-        self.calls.append((system, user))
-        return self.reply
-
-
-def test_call_llm_openai_provider_unwraps_triples_object():
-    provider = _StubOpenAIProvider(json.dumps({"triples": [_VALID_TRIPLE]}))
-    rl = new_mod.RateLimiter(max_calls_per_minute=1000)
-    parsed, raw, rate_limited = new_mod.call_llm(
-        "prompt text", provider, 0, rl, SCHEMA, "gpt-4o-mini", retries=1, provider="openai")
-    assert rate_limited is False
-    assert parsed == [_VALID_TRIPLE], parsed
-    assert raw == provider.reply
-    assert len(provider.calls) == 1
-    system, user = provider.calls[0]
-    assert user == "prompt text", "the full templated prompt must reach the model verbatim"
-    assert "json" in system.lower(), "OpenAI json_object mode requires 'json' in the messages"
-    print("     (openai reply unwrapped from {'triples': [...]} and validated)")
-
-
-def test_call_llm_openai_provider_accepts_bare_array_too():
-    """Belt-and-braces: if the model ignores the wrapper instruction and returns a bare
-    array, that must still parse rather than being treated as a format error."""
-    provider = _StubOpenAIProvider(json.dumps([_VALID_TRIPLE]))
-    rl = new_mod.RateLimiter(max_calls_per_minute=1000)
-    parsed, _, rate_limited = new_mod.call_llm(
-        "prompt text", provider, 0, rl, SCHEMA, "gpt-4o-mini", retries=1, provider="openai")
-    assert rate_limited is False
-    assert parsed == [_VALID_TRIPLE], parsed
-    print("     (a bare JSON array reply is also accepted)")
-
-
-def test_call_llm_openai_provider_bad_json_does_not_crash():
-    provider = _StubOpenAIProvider("not json at all")
-    rl = new_mod.RateLimiter(max_calls_per_minute=1000)
-    parsed, raw, rate_limited = new_mod.call_llm(
-        "prompt text", provider, 0, rl, SCHEMA, "gpt-4o-mini", retries=1, provider="openai")
-    assert rate_limited is False
-    assert parsed == [], parsed
-    assert raw == "not json at all"
-    print("     (unparseable reply -> [] rather than raising)")
-
-
-def test_call_llm_gemini_default_unaffected_by_provider_arg():
-    """provider='gemini' (the default) must behave exactly as before this change."""
-    client = _FakeClient()
-    rl = new_mod.RateLimiter(max_calls_per_minute=1000)
-    a = new_mod.call_llm("prompt A - legal triple shape", client, 0, rl, SCHEMA,
-                         "gemini-2.5-flash", retries=1)
-    b = new_mod.call_llm("prompt A - legal triple shape", client, 0, rl, SCHEMA,
-                         "gemini-2.5-flash", retries=1, provider="gemini")
-    assert a == b, "omitting provider= must match provider='gemini' explicitly"
-    print("     (default call_llm() still takes the gemini path, untouched)")
+# 2026-08-04: the additive OpenAI path (`--provider openai`, added 2026-07-29:
+# test_call_llm_openai_provider_unwraps_triples_object /
+# test_call_llm_openai_provider_accepts_bare_array_too /
+# test_call_llm_openai_provider_bad_json_does_not_crash /
+# test_call_llm_gemini_default_unaffected_by_provider_arg) was removed outright —
+# `call_llm` no longer takes a `provider=` argument at all, it is gemini-only again,
+# no fallback. The Gemini path is already covered by the arms above.
 
 
 if __name__ == "__main__":

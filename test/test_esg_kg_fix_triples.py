@@ -485,46 +485,13 @@ def test_phase2_repair_path_matches_src_with_a_stubbed_llm():
 
 
 # --------------------------------------------------------------------------- #
-# NEW (2026-07-29): the additive OpenAI path for phase 2. Gemini stays the
-# default; the provider is detected from `client`'s TYPE (isinstance check), not
-# a separate string parameter — so `fix_batch_with_llm`'s signature, and every
-# `mod.fix_batch_with_llm = stub` test hook above, is untouched. No src/
-# counterpart exists for this branch — single-tree only.
+# 2026-08-04: the additive OpenAI path for phase 2 (added 2026-07-29) was removed
+# outright — no OpenAI fallback anywhere in this project any more. `fix_batch_with_llm`
+# only ever takes a `genai.Client`-shaped object now.
 # --------------------------------------------------------------------------- #
-def test_fix_batch_with_llm_openai_provider_wraps_and_unwraps():
-    from esg_kg.core.llm import _OpenAIProvider
-
-    import os
-    saved = os.environ.get("OPENAI_API_KEY")
-    os.environ["OPENAI_API_KEY"] = "sk-test-not-a-real-key"
-    try:
-        provider = _OpenAIProvider("gpt-4o-mini", 10)
-        assert provider.enabled is True
-        calls = []
-
-        def fake_call(system, user):
-            calls.append((system, user))
-            return json.dumps([{"predicate": "ownsFacility"}])
-
-        provider.call = fake_call
-        schema = load_schema()
-        out = new_fix.fix_batch_with_llm(
-            [{"subject": {}, "predicate": "ownsFacilty", "object": {}}],
-            schema, provider, rate_limiter=None, model="gpt-4o-mini")
-    finally:
-        if saved is None:
-            os.environ.pop("OPENAI_API_KEY", None)
-        else:
-            os.environ["OPENAI_API_KEY"] = saved
-
-    assert out == [{"predicate": "ownsFacility"}], out
-    assert len(calls) == 1
-    print("     (an _OpenAIProvider client takes the openai branch, gemini client untouched)")
-
-
-def test_fix_batch_with_llm_gemini_client_still_takes_the_gemini_branch():
-    """A plain object() (stands in for a genai.Client in these tests) must NOT be
-    mistaken for the openai path — isinstance detection must not over-match."""
+def test_fix_batch_with_llm_gemini_client_takes_the_gemini_branch():
+    """A plain object() (stands in for a genai.Client in these tests) drives the
+    (now sole) gemini branch and throttles through rate_limiter."""
     class _FakeGeminiResp:
         text = json.dumps([{"predicate": "ownsFacility"}])
 
@@ -550,7 +517,7 @@ def test_fix_batch_with_llm_gemini_client_still_takes_the_gemini_branch():
         schema, _FakeGeminiClient(), rl, "gemini-2.5-flash")
     assert out == [{"predicate": "ownsFacility"}], out
     assert rl.waited is True, "the gemini branch must still throttle through rate_limiter"
-    print("     (a non-_OpenAIProvider client still takes the gemini branch, throttled)")
+    print("     (the gemini branch runs and throttles through rate_limiter)")
 
 
 if __name__ == "__main__":

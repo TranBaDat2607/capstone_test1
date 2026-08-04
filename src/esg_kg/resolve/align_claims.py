@@ -39,9 +39,13 @@ exists and still runs). NO logic line changed. What differs:
   * two DEAD symbols in the old file are not carried over: `TODAY` (defined, never read —
     the `recorded_at` an edge actually gets comes from `temporal_md`, i.e. from
     core.graph_patch.TODAY) and the `RateLimiter` import (never referenced;
-    `_OpenAIProvider` constructs its own). Dropping unreachable names is not a behaviour
+    the provider constructs its own). Dropping unreachable names is not a behaviour
     change, and `test_run_is_append_only_and_preserves_node_order` pins the real
     `recorded_at` so the removal cannot mask a drift.
+  * 2026-08-04: `_OpenAIProvider` was removed outright from core.llm (no OpenAI
+    fallback anywhere in this project any more) and replaced here with
+    `_GeminiProvider` — same `call(system, user) -> str` contract, no other logic
+    line changed.
 
 WHAT MUST NOT BE "TIDIED" HERE
 `node_text` below is NOT the same function as `step07:133`'s despite the shared name: this
@@ -69,13 +73,14 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from esg_kg.core.graph_patch import GraphPatch, temporal_md
-from esg_kg.core.llm import _OpenAIProvider
+from esg_kg.core.llm import _GeminiProvider
 from esg_kg.core.paths import REPO_ROOT
 from esg_kg.core.schema import load_schema_sets
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
+DEFAULT_MODEL = "gemini-2.5-flash"
 DEFAULT_RESOLVED = REPO_ROOT / "graph_output" / "resolved" / "resolved_graph.json"
 DEFAULT_DEFS = REPO_ROOT / "kpi_definitions_construction.json"
 DEFAULT_SCHEMA = REPO_ROOT / "config" / "schema.json"
@@ -153,11 +158,10 @@ def run(args: argparse.Namespace) -> None:
         logger.info("--dry-run: no LLM calls, nothing written.")
         return
 
-    provider = _OpenAIProvider(args.openai_model, args.rate_limit,
-                               api_key=getattr(args, "openai_api_key", None),
-                               base_url=getattr(args, "openai_base_url", None))
+    provider = _GeminiProvider(args.model, args.rate_limit,
+                               api_key=getattr(args, "gemini_api_key", None))
     if not provider.enabled:
-        logger.error("No OpenAI provider (need OPENAI_API_KEY in .env) — step05d requires an LLM.")
+        logger.error("No Gemini provider (need GEMINI_API_KEY in .env) — step05d requires an LLM.")
         return
 
     stats: Counter = Counter()
@@ -205,10 +209,7 @@ def main() -> None:
     p.add_argument("--defs", type=Path, default=DEFAULT_DEFS)
     p.add_argument("--schema", type=Path, default=DEFAULT_SCHEMA)
     p.add_argument("--max-llm-pairs", type=int, default=200, help="Max LLM classifications this run.")
-    p.add_argument("--openai-model", default="gpt-4o-mini")
-    p.add_argument("--openai-base-url", type=str, default=None,
-                   help="Override the OpenAI endpoint (e.g. an OpenAI-compatible "
-                        "third-party host); default is OpenAI's own API")
+    p.add_argument("--model", default=DEFAULT_MODEL, help="Gemini model id.")
     p.add_argument("--rate-limit", type=int, default=60)
     p.add_argument("--stats-out", type=Path, default=DEFAULT_STATS_OUT)
     p.add_argument("--dry-run", action="store_true", help="Count candidates; no LLM, no write.")

@@ -10,11 +10,17 @@ only exercised by actually invoking `run.py` as a user would).
     extract -> extract_triples (report) -> extract_triples (news) -> build_validated
     -> issuer -> build_resolved -> align_claims -> claims_vs_conduct
 
-against the synthetic BBB fixture, using the same provider selection (OpenAI gpt-4o-mini
-if OPENAI_API_KEY authenticates, else Novita's OpenAI-compatible endpoint) as the
-integration test. Steps 06/08/09 (Neo4j-dependent) are SKIP-GATED on a live connection
-probe, not faked — this is a system test, so it should exercise the real thing when
-available rather than paper over it with a stub.
+against the synthetic BBB fixture, using Gemini (GEMINI_API_KEY) — the only LLM
+provider this project pays for. Steps 06/08/09 (Neo4j-dependent) are SKIP-GATED on a
+live connection probe, not faked — this is a system test, so it should exercise the
+real thing when available rather than paper over it with a stub.
+
+2026-08-04: the OpenAI/Novita provider selection this file used to drive (added
+2026-07-29 while Gemini was billing-blocked) was removed outright along with
+`_OpenAIProvider` itself — no OpenAI fallback anywhere in this project any more, and
+every stage's `--provider openai` / `--openai-model` / `--openai-base-url` flags are
+gone too. This file now always drives the stages' Gemini default (no `--provider`
+flag needed at all).
 
 OFF by default — makes real, billed LLM calls:
 
@@ -31,7 +37,6 @@ import socket
 import subprocess
 import sys
 import tempfile
-import time
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
@@ -45,32 +50,26 @@ if not os.environ.get("RUN_LLM_SYSTEM_TEST"):
 sys.path.insert(0, str(REPO / "src"))
 from dotenv import load_dotenv  # noqa: E402
 load_dotenv(REPO / ".env", override=True)
-from esg_kg.core.llm import _OpenAIProvider  # noqa: E402
-
-NOVITA_BASE_URL = "https://api.novita.ai/v3/openai"
-NOVITA_MODEL = "meta-llama/llama-3.1-8b-instruct"
+from esg_kg.core.llm import _GeminiProvider  # noqa: E402
 
 
-def _select_provider():
-    openai_key = os.getenv("OPENAI_API_KEY")
-    if openai_key:
-        probe = _OpenAIProvider("gpt-4o-mini", 60, api_key=openai_key)
-        try:
-            probe.client.models.list()
-            return {"label": "openai", "model": "gpt-4o-mini", "api_key": openai_key, "base_url": None}
-        except Exception as e:
-            print(f"OPENAI_API_KEY present but did not authenticate ({e}); trying Novita.")
-    novita_key = os.getenv("NOVITA_API_KEY")
-    if novita_key:
-        return {"label": "novita", "model": NOVITA_MODEL, "api_key": novita_key, "base_url": NOVITA_BASE_URL}
-    return None
+def _gemini_available() -> bool:
+    api_key = os.getenv("GEMINI_API_KEY")
+    if not api_key:
+        return False
+    probe = _GeminiProvider("gemini-2.5-flash", 60, api_key=api_key)
+    try:
+        next(iter(probe.client.models.list()), None)
+        return True
+    except Exception as e:
+        print(f"GEMINI_API_KEY present but did not authenticate ({e}).")
+        return False
 
 
-PROVIDER = _select_provider()
-if PROVIDER is None:
-    print("SKIPPED test_esg_kg_system_llm.py — neither OPENAI_API_KEY nor NOVITA_API_KEY authenticated.")
+if not _gemini_available():
+    print("SKIPPED test_esg_kg_system_llm.py — GEMINI_API_KEY not set or did not authenticate.")
     sys.exit(0)
-print(f"System test using provider={PROVIDER['label']!r} model={PROVIDER['model']!r}")
+print("System test using provider='gemini' model='gemini-2.5-flash'")
 
 REPORT_INPUT = REPO / "data" / "labeled" / "annual_labeled" / "labeled_annual_report_company_bbb.jsonl"
 NEWS_INPUT = REPO / "data" / "interim" / "news_preprocessed" / "bbb_news_classified_preprocessed.jsonl"
@@ -115,18 +114,7 @@ def _assert_ok(proc: subprocess.CompletedProcess, label: str) -> None:
 def test_full_llm_chain_via_run_py_cli():
     tmp = Path(tempfile.mkdtemp(prefix="esgkg_system_"))
     try:
-        model, api_key, base_url = PROVIDER["model"], PROVIDER["api_key"], PROVIDER["base_url"]
-        label = PROVIDER["label"]
-
         env = os.environ.copy()
-        env["OPENAI_API_KEY"] = api_key
-        openai_flags = ["--provider", "openai", "--openai-model", model]
-        # align_claims/claims_vs_conduct are OpenAI-only stages (no gemini path to
-        # choose between), so they have no --provider flag at all.
-        openai_only_flags = ["--openai-model", model]
-        if base_url:
-            openai_flags += ["--openai-base-url", base_url]
-            openai_only_flags += ["--openai-base-url", base_url]
 
         kpi_out = tmp / "kpi_output"
         graphs_out = tmp / "graph_output"
@@ -134,55 +122,38 @@ def test_full_llm_chain_via_run_py_cli():
         issuer_out = tmp / "issuer_registry.json"
         resolved_out = tmp / "resolved"
 
-        # --- step01: extract (real LLM via CLI) -----------------------------------
+        # --- step01: extract (real LLM via CLI, gemini default) ------------------
         proc = _run(["extract", "--doc", "BBB_Baocaothuongnien_2024",
-                    "-i", str(REPORT_INPUT), "-o", str(kpi_out)] + openai_flags, env)
+                    "-i", str(REPORT_INPUT), "-o", str(kpi_out)], env)
         _assert_ok(proc, "extract")
         kpi_files = list((kpi_out / "BBB_Baocaothuongnien_2024_kpis").glob("page_*_kpis.json"))
         assert len(kpi_files) == 4, f"expected 4 page file(s), got {len(kpi_files)}"
-        print(f"PASS extract ({label}) via CLI: {len(kpi_files)} page file(s) written")
+        print(f"PASS extract (gemini) via CLI: {len(kpi_files)} page file(s) written")
 
         # --- step02: extract_triples (report + news, real LLM via CLI) -----------
         proc = _run(["extract_triples", "--doc", "BBB_Baocaothuongnien_2024",
                     "-i", str(REPORT_INPUT), "--kpi-dir", str(kpi_out),
-                    "-o", str(graphs_out), "--source", "report"] + openai_flags, env)
+                    "-o", str(graphs_out), "--source", "report"], env)
         _assert_ok(proc, "extract_triples (report)")
 
-        # A single news page occasionally 401s on Novita's gateway right after a burst
-        # of report-page calls (reproduced directly outside this test too — the SAME
-        # key/base_url succeeds in isolation seconds later, so this is a third-party
-        # rate-limit/cooldown artifact of the free testing host, not a pipeline bug).
-        # process_document is idempotent per page (skips a page whose output file
-        # already exists), so a bare re-invocation after a pause is a safe, honest
-        # retry — it either fills in the missing page or is a no-op.
-        news_dir_name = "BBB__baodautu.vn__b1a2c3d4e5"
-        for attempt in range(2):
-            proc = _run(["extract_triples", "-i", str(NEWS_INPUT), "--kpi-dir", str(kpi_out),
-                        "-o", str(graphs_out), "--source", "news"] + openai_flags, env)
-            _assert_ok(proc, "extract_triples (news)")
-            news_files = list((graphs_out / "graphs" / news_dir_name).glob("page*.json")) \
-                if (graphs_out / "graphs" / news_dir_name).exists() else []
-            if news_files:
-                break
-            if attempt == 0:
-                print("News page produced no output (likely a Novita rate-limit blip); "
-                      "waiting 15s and retrying once.")
-                time.sleep(15)
+        proc = _run(["extract_triples", "-i", str(NEWS_INPUT), "--kpi-dir", str(kpi_out),
+                    "-o", str(graphs_out), "--source", "news"], env)
+        _assert_ok(proc, "extract_triples (news)")
 
         graph_files = [f for f in (graphs_out / "graphs").rglob("page*.json")
                        if "_bugged" not in f.stem and "_malformed" not in f.name]
         assert len(graph_files) == 5, f"expected 5 page graph file(s) (4 report + 1 news), got {len(graph_files)}"
-        print(f"PASS extract_triples ({label}) via CLI: {len(graph_files)} page graph file(s) (report + news)")
+        print(f"PASS extract_triples (gemini) via CLI: {len(graph_files)} page graph file(s) (report + news)")
 
         # --- build_validated block (03 -> 03b -> 03c), real LLM phase-2 via CLI ---
         proc = _run(["build_validated", "-i", str(graphs_out / "graphs"), "-o", str(validated_out),
-                    "--cache", str(validated_out / "phase2_repairs.json")] + openai_flags, env)
+                    "--cache", str(validated_out / "phase2_repairs.json")], env)
         _assert_ok(proc, "build_validated")
         validated_file = validated_out / "all_validated_triples.json"
         assert validated_file.exists()
         triples = json.loads(validated_file.read_text(encoding="utf-8"))
         assert len(triples) > 0, "build_validated produced zero triples"
-        print(f"PASS build_validated ({label}) via CLI: {len(triples)} triple(s)")
+        print(f"PASS build_validated (gemini) via CLI: {len(triples)} triple(s)")
 
         # --- step04: issuer registry draft (offline; scratch xlsx) ---------------
         companies_xlsx = _make_companies_xlsx(tmp)
@@ -194,36 +165,33 @@ def test_full_llm_chain_via_run_py_cli():
         print(f"PASS issuer via CLI: drafted {sorted(registry)}")
 
         # --- build_resolved block (05 -> 05b -> 05c) ------------------------------
-        # no_llm under Novita (no embedding models there) — same reasoning as the
-        # integration test; matches step05's actual production default today.
-        resolve_flags = list(openai_flags)
-        if base_url:
-            resolve_flags = ["--no-llm"]
+        # --no-llm matches step05's actual production default today (embeddings
+        # dormant per CLAUDE.md) — this system test does not exercise Stage B/C.
         proc = _run(["build_resolved", "-i", str(validated_file), "-o", str(resolved_out),
-                    "--graphs-dir", str(graphs_out / "graphs"), "--registry", str(issuer_out)]
-                    + resolve_flags, env)
+                    "--graphs-dir", str(graphs_out / "graphs"), "--registry", str(issuer_out),
+                    "--no-llm"], env)
         _assert_ok(proc, "build_resolved")
         resolved_file = resolved_out / "resolved_graph.json"
         assert resolved_file.exists()
         resolved = json.loads(resolved_file.read_text(encoding="utf-8"))
         assert len(resolved["nodes"]) > 0
-        print(f"PASS build_resolved ({label}) via CLI: {len(resolved['nodes'])} node(s) / "
+        print(f"PASS build_resolved (gemini) via CLI: {len(resolved['nodes'])} node(s) / "
               f"{len(resolved['edges'])} edge(s)")
 
         # --- step05d: align_claims (real LLM via CLI) -----------------------------
         align_stats_out = tmp / "indicator_align_llm_stats.json"
         proc = _run(["align_claims", "-i", str(resolved_file), "--max-llm-pairs", "5",
-                    "--stats-out", str(align_stats_out)] + openai_only_flags, env)
+                    "--stats-out", str(align_stats_out)], env)
         _assert_ok(proc, "align_claims")
-        print(f"PASS align_claims ({label}) via CLI: {align_stats_out.exists()}")
+        print(f"PASS align_claims (gemini) via CLI: {align_stats_out.exists()}")
 
         # --- step07: claims_vs_conduct (real LLM, mandatory, via CLI) ------------
         dossier_dir = tmp / "crosscheck"
         proc = _run(["claims_vs_conduct", "-i", str(resolved_file), "-o", str(dossier_dir),
-                    "--ticker", "BBB", "--max-llm-pairs", "5"] + openai_only_flags, env)
+                    "--ticker", "BBB", "--max-llm-pairs", "5"], env)
         _assert_ok(proc, "claims_vs_conduct")
         dossier_files = list(dossier_dir.glob("*_claim_assessments.json"))
-        print(f"PASS claims_vs_conduct ({label}) via CLI: wrote {[f.name for f in dossier_files]}")
+        print(f"PASS claims_vs_conduct (gemini) via CLI: wrote {[f.name for f in dossier_files]}")
 
         # --- steps 06/08/09: Neo4j-dependent, skip-gated on a live connection ----
         if not _neo4j_reachable():

@@ -79,8 +79,7 @@ Thực hiện chuẩn hóa theo phản hồi thiết kế (`feedback-gri-catalog
 | Model / Provider | Vai trò trong Pipeline | Ghi chú |
 |---|---|---|
 | **nguyen599/ViDeBERTa-v3-ESG-base** | Phân loại ESG đa nhãn (Môi trường, Xã hội, Quản trị, Trung tính) | Chạy offline GPU trên Kaggle |
-| **google-genai / Gemini 2.0 Flash** | Trích xuất bộ ba, trích xuất KPI, phân giải thực thể | Khóa cấu hình tại `GEMINI_API_KEY` trong `.env` |
-| **OpenAI gpt-4o-mini** | Fallback provider cho bướcđối soát chéo Step 7 & Đánh giá Step 10 | Khóa cấu hình tại `OPENAI_API_KEY` trong `.env` |
+| **google-genai / Gemini 2.5 Flash** | Trích xuất bộ ba, trích xuất KPI, phân giải thực thể, đối soát chéo Step 7 | Khóa cấu hình tại `GEMINI_API_KEY` trong `.env` (provider LLM duy nhất — không còn fallback OpenAI, gỡ bỏ hoàn toàn 2026-08-04) |
 
 ---
 

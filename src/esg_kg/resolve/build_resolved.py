@@ -271,15 +271,6 @@ def main() -> None:
     p.add_argument("--embed-dim", type=int, default=entities.DEFAULT_EMBED_DIM)
     p.add_argument("--embed-batch", type=int, default=entities.DEFAULT_EMBED_BATCH)
     p.add_argument("--max-llm-pairs", type=int, default=entities.DEFAULT_MAX_LLM_PAIRS)
-    p.add_argument("--provider", type=str, default="gemini", choices=["gemini", "openai"],
-                   help="LLM backend for Stage B/C (default gemini; openai needs OPENAI_API_KEY)")
-    p.add_argument("--openai-model", type=str, default="gpt-4o-mini",
-                   help="OpenAI chat model for Stage C, used only when --provider openai")
-    p.add_argument("--openai-embed-model", type=str, default="text-embedding-3-small",
-                   help="OpenAI embedding model for Stage B, used only when --provider openai")
-    p.add_argument("--openai-base-url", type=str, default=None,
-                   help="Override the OpenAI endpoint (e.g. an OpenAI-compatible "
-                        "third-party host); default is OpenAI's own API")
     p.add_argument("--no-llm", action="store_true", help="Stage A + B.1 only (no embeddings/LLM)")
     p.add_argument("--cache", type=pathlib.Path, default=DEFAULT_CACHE,
                    help="Stage C adjudication cache; a re-run reuses it instead of paying again")
@@ -311,27 +302,14 @@ def main() -> None:
 
         from esg_kg.core.paths import load_env
         load_env()
-        if args.provider == "openai":
-            if os.getenv("OPENAI_API_KEY"):
-                client = entities._OpenAIProvider(args.openai_model, args.rate_limit,
-                                                  base_url=args.openai_base_url)
-                embed_client = entities._OpenAIEmbeddingProvider(args.openai_embed_model, args.rate_limit,
-                                                                 base_url=args.openai_base_url)
-                rate_limiter = entities.RateLimiter(max_calls_per_minute=args.rate_limit)
-                model = args.openai_model
-                embed_model = args.openai_embed_model
-            else:
-                logger.warning("OPENAI_API_KEY not set — Stage B/C will be skipped")
-                args.no_llm = True
+        api_key = os.getenv("GEMINI_API_KEY")
+        if api_key:
+            from google import genai
+            client = genai.Client(api_key=api_key)
+            rate_limiter = entities.RateLimiter(max_calls_per_minute=args.rate_limit)
         else:
-            api_key = os.getenv("GEMINI_API_KEY")
-            if api_key:
-                from google import genai
-                client = genai.Client(api_key=api_key)
-                rate_limiter = entities.RateLimiter(max_calls_per_minute=args.rate_limit)
-            else:
-                logger.warning("GEMINI_API_KEY not set — Stage B/C will be skipped")
-                args.no_llm = True
+            logger.warning("GEMINI_API_KEY not set — Stage B/C will be skipped")
+            args.no_llm = True
 
     run_block(
         input_path=args.input, out_dir=args.out_dir, schema=schema,

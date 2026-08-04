@@ -277,86 +277,12 @@ def test_process_document_skips_non_esg_pages_and_is_idempotent():
         shutil.rmtree(tmp, ignore_errors=True)
 
 
-# --------------------------------------------------------------------------- #
-# Part D — the additive OpenAI path (`--provider openai`).
-# Gemini stays the default; this only proves the alternate path is real and wired
-# correctly, using the same stub-over-the-provider technique as core/llm.py's own
-# arms. Single-tree only (this path has no counterpart in the old pipeline at all).
-# --------------------------------------------------------------------------- #
-def test_extract_page_openai_provider_parses_and_normalizes():
-    tmp = Path(tempfile.mkdtemp(prefix="esgkg_01_openai_"))
-    try:
-        defs_path = _tiny_defs(tmp)
-        saved = os.environ.get("OPENAI_API_KEY")
-        os.environ["OPENAI_API_KEY"] = "sk-test-not-a-real-key"
-        try:
-            ex = new_extract.KPIExtractor(defs_path, provider="openai")
-            assert ex.model == new_extract.DEFAULT_OPENAI_MODEL
-            calls = []
-
-            def fake_call(system, user):
-                calls.append((system, user))
-                return json.dumps({"kpis": [{
-                    "kpi_type": "energy", "title": "t",
-                    "observations": [{"value": "20%", "year": "2023", "unit": None,
-                                       "kind": "achieved", "direction": "reduction",
-                                       "target_year": None, "baseline_year": None,
-                                       "source_id": "s1", "snippet": "..."}],
-                    "page": 1, "doc_name": "doc.pdf", "company": "AAA", "sector": "s",
-                }]})
-
-            ex._openai.call = fake_call
-            out = ex.extract_page("Chúng tôi đã giảm phát thải 20%.", "AAA", "sector", 1, "doc.pdf")
-            assert len(out) == 1 and out[0]["kpi_type"] == "energy", out
-            # normalize_kpi_response must still run on the OpenAI path (value -> float, % stripped)
-            assert out[0]["observations"][0]["value"] == 20.0, out[0]["observations"][0]
-            assert out[0]["observations"][0]["unit"] == "%", out[0]["observations"][0]
-            assert out[0]["observations"][0]["year"] == 2023, out[0]["observations"][0]
-            # the KPI schema must have been folded into what the provider received
-            assert "kpi_type" in calls[0][0], "schema hint missing from system prompt"
-        finally:
-            if saved is None:
-                os.environ.pop("OPENAI_API_KEY", None)
-            else:
-                os.environ["OPENAI_API_KEY"] = saved
-    finally:
-        shutil.rmtree(tmp, ignore_errors=True)
-    print("     (openai provider path parses + normalizes correctly)")
-
-
-def test_kpi_extractor_openai_accepts_explicit_key_and_base_url_override():
-    """Lets a caller point the openai path at an OpenAI-compatible third-party endpoint
-    (e.g. Novita, for a one-off real-LLM test run) without OPENAI_API_KEY set."""
-    tmp = Path(tempfile.mkdtemp(prefix="esgkg_01_openai_override_"))
-    try:
-        defs_path = _tiny_defs(tmp)
-        saved = os.environ.pop("OPENAI_API_KEY", None)
-        try:
-            ex = new_extract.KPIExtractor(
-                defs_path, provider="openai", openai_model="some-model",
-                openai_api_key="explicit-key", openai_base_url="https://example.invalid/v1")
-            assert ex._openai.enabled is True
-            assert ex._openai.client.api_key == "explicit-key"
-            assert str(ex._openai.client.base_url).rstrip("/") == "https://example.invalid/v1"
-        finally:
-            if saved is not None:
-                os.environ["OPENAI_API_KEY"] = saved
-    finally:
-        shutil.rmtree(tmp, ignore_errors=True)
-    print("     (openai_api_key/openai_base_url override works with no OPENAI_API_KEY in env)")
-
-
-def test_extract_page_gemini_default_unaffected_by_provider_arg():
-    """--provider is additive: omitting it must behave exactly as before."""
-    tmp = Path(tempfile.mkdtemp(prefix="esgkg_01_default_"))
-    try:
-        defs_path = _tiny_defs(tmp)
-        ex = _make_extractor(new_extract, defs_path)
-        assert ex.provider == "gemini"
-        assert not hasattr(ex, "_openai")
-    finally:
-        shutil.rmtree(tmp, ignore_errors=True)
-    print("     (default KPIExtractor() still builds the gemini path, untouched)")
+# 2026-08-04: Part D, the additive OpenAI path (`--provider openai`, added 2026-07-29:
+# `test_extract_page_openai_provider_parses_and_normalizes` /
+# `test_kpi_extractor_openai_accepts_explicit_key_and_base_url_override` /
+# `test_extract_page_gemini_default_unaffected_by_provider_arg`) was removed outright —
+# `KPIExtractor` no longer takes a `provider=`/`openai_*` argument at all, it is
+# gemini-only again, no fallback. The Gemini path is already covered by the arms above.
 
 
 if __name__ == "__main__":

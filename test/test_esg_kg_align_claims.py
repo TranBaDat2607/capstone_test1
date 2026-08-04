@@ -22,12 +22,13 @@ WHY THIS SLICE NEEDED NO NEW core/ MODULE
 It is the third stage (after 05b and 03) to move with the kernel untouched. step05d imports
 five symbols from the old tree and every one was already lifted: `REPO_ROOT`
 (-> `core/paths`), `load_schema_sets` (-> `core/schema`), `GraphPatch` + `temporal_md`
-(-> `core/graph_patch`, lifted by the 05c slice), `_OpenAIProvider` (-> `core/llm`).
+(-> `core/graph_patch`, lifted by the 05c slice), `_GeminiProvider` (-> `core/llm`;
+replaced `_OpenAIProvider` outright on 2026-08-04, no fallback kept).
 
 HOW THE PAID BRANCH IS COVERED WITHOUT PAYING
 This is a mandatory-LLM stage: `--dry-run` returns before the provider is even built, so a
 dry-run-only arm would prove almost nothing. The stage is therefore driven by a STUB
-provider injected over `_OpenAIProvider`, exactly as the step03 slice drives phase 2. The
+provider injected over `_GeminiProvider`, exactly as the step03 slice drives phase 2. The
 stub answers deterministically from a CRC of the prompt, and it deliberately returns all
 five reply shapes the parser must survive: clean JSON, "none", JSON embedded in prose,
 junk, and a well-formed id that is not in the vocabulary.
@@ -56,7 +57,7 @@ There are TWO functions named `node_text` and they are NOT duplicates: this one 
 PROPERTIES DICT, `step07:133` takes a NODE and dispatches on its class. Merging them would
 silently rewrite step07's paid prompt. `test_node_text_is_not_step07s` pins the difference.
 
-Offline: no LLM, no Neo4j, no network, no OPENAI_API_KEY (the stub replaces the provider
+Offline: no LLM, no Neo4j, no network, no GEMINI_API_KEY (the stub replaces the provider
 before it can look for one). `config/schema.json` and `kpi_definitions_construction.json`
 are tracked in git so the synthetic arms always run; arms needing `graph_output/`
 (git-ignored, shipped via the HF snapshot) SKIP with a message on a bare clone.
@@ -107,7 +108,7 @@ def load_defs() -> list:
 # replies for the same nodes — that is what makes the comparison meaningful.
 # --------------------------------------------------------------------------- #
 def make_stub(valid_ids: list, mode: str = "mixed"):
-    """Return a class with `_OpenAIProvider(model, rate_limit)`'s interface.
+    """Return a class with `_GeminiProvider(model, rate_limit)`'s interface.
 
     `mode="mixed"` walks all five reply shapes the parser must survive.
     `mode="always_raise"` drives the 3-failures-0-successes abort branch.
@@ -116,9 +117,9 @@ def make_stub(valid_ids: list, mode: str = "mixed"):
     calls_seen: list = []
 
     class _Stub:
-        name = "openai"
+        name = "gemini"
 
-        def __init__(self, model, rate_limit, api_key=None, base_url=None):
+        def __init__(self, model, rate_limit, api_key=None):
             self.model = model
             self.rate_limit = rate_limit
             self.enabled = True
@@ -164,7 +165,7 @@ class Workspace:
     def args(self, **overrides) -> argparse.Namespace:
         args = argparse.Namespace(
             input=self.graph_path, defs=self.defs_path, schema=SCHEMA_FILE,
-            max_llm_pairs=200, openai_model="gpt-4o-mini", rate_limit=60,
+            max_llm_pairs=200, model="gemini-2.5-flash", rate_limit=60,
             stats_out=self.stats_path, dry_run=False,
         )
         for k, v in overrides.items():
@@ -190,14 +191,14 @@ def run_new(graph: dict, defs: list = None, stub_mode: str = "mixed", **override
     valid_ids = [d["id"] for d in (defs if defs is not None else load_defs())]
     ws = Workspace(copy.deepcopy(graph), defs)
     stub = make_stub(valid_ids, stub_mode)
-    original = new_05d._OpenAIProvider
+    original = new_05d._GeminiProvider
     handler = _LogCatcher()
     new_05d.logger.addHandler(handler)
     try:
-        new_05d._OpenAIProvider = stub
+        new_05d._GeminiProvider = stub
         new_05d.run(ws.args(**overrides))
     finally:
-        new_05d._OpenAIProvider = original
+        new_05d._GeminiProvider = original
         new_05d.logger.removeHandler(handler)
     # The final log line echoes the workspace's mkdtemp path — mask it so a rerun's
     # comparison against fixed strings (e.g. "unaligned") is not sensitive to it.
@@ -262,7 +263,7 @@ def test_new_tree_imports_the_kernel_rather_than_recopying():
     """A migrated stage must USE core/, not carry its own copy — otherwise the two drift."""
     assert new_05d.GraphPatch is core_graph_patch.GraphPatch, "GraphPatch was re-copied"
     assert new_05d.temporal_md is core_graph_patch.temporal_md, "temporal_md was re-copied"
-    assert new_05d._OpenAIProvider is core_llm._OpenAIProvider, "_OpenAIProvider was re-copied"
+    assert new_05d._GeminiProvider is core_llm._GeminiProvider, "_GeminiProvider was re-copied"
     assert new_05d.load_schema_sets is core_schema.load_schema_sets, "load_schema_sets re-copied"
 
 
