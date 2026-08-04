@@ -191,7 +191,15 @@ class KPIExtractor:
             "If a metric does not fully match any KPI definition, set kpi_type to \"other\" and use a "
             "descriptive title.\n"
             "Set source_id to \"{doc}_{page}_{index}\" using the doc name, page number, and an ascending index.\n"
-            "snippet must be <= 160 characters, quoting the source text."
+            "snippet must be <= 160 characters, quoting the source text.\n\n"
+            "## OUTPUT LANGUAGE (title / snippet / other free text)\n"
+            "------------------\n"
+            "Write `title`, `snippet`, and any other free-text property VALUE in VIETNAMESE, with full "
+            "diacritics, exactly matching the source text. Do NOT translate into English. Do NOT strip "
+            "diacritics (khong duoc bo dau).\n"
+            "This rule does NOT apply to: kpi_type (a fixed code from the controlled KPI vocabulary), "
+            "unit, value, year/target_year/baseline_year, source_id, company/sector/doc_name (copied "
+            "verbatim as given above)."
         )
 
         # issue #11: when self.cache_name is set, KPI_DEFINITIONS lives in the cache

@@ -177,7 +177,12 @@ ADJUDICATE_SYSTEM = (
     "verification, certification, or an observed metric consistent with the claim).\n"
     "- Prefer 'irrelevant' when the evidence is about an unrelated topic or is neutral "
     "financial/market coverage. Do not guess.\n"
-    "- The texts are Vietnamese. confidence is 0.0-1.0. Ground the rationale in the evidence text."
+    "- The texts are Vietnamese. confidence is 0.0-1.0. Ground the rationale in the evidence text.\n"
+    "## OUTPUT LANGUAGE\n"
+    "Write `rationale` in VIETNAMESE, with full diacritics, matching the language of the claim/evidence "
+    "texts. Do NOT translate into English. Do NOT strip diacritics (khong duoc bo dau). This rule does "
+    "NOT apply to `verdict` (a fixed English label: supports/contradicts/irrelevant) or `confidence` "
+    "(a number)."
 )
 
 
