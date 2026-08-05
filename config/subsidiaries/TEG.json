@@ -1,0 +1,99 @@
+{
+  "ticker": "TEG",
+  "source_doc": "2023_TEG_Baocaothuongnien_2022.pdf",
+  "source_pages": [
+    40,
+    41,
+    42
+  ],
+  "as_of": 2022,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "relationship": "subsidiary",
+      "pages": [
+        40
+      ],
+      "n_rows": 4,
+      "n_high_confidence": 4
+    },
+    {
+      "relationship": "associate",
+      "pages": [
+        41,
+        42
+      ],
+      "n_rows": 1,
+      "n_high_confidence": 1
+    }
+  ],
+  "companies": [
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Đầu tư và Xây dựng 108 Trường Thành",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "80,0",
+      "ownership_pct": 92.0,
+      "voting_pct": null,
+      "address": null,
+      "sector": "Xây dựng và kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Đầu tư và Xây dựng Việt Mỹ",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "100,0",
+      "ownership_pct": 51.0,
+      "voting_pct": null,
+      "address": null,
+      "sector": "Sản xuất bê tông và các sản phẩm từ bê tông, xi măng và thạch cao",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Năng lượng Trường Thành",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "450,0",
+      "ownership_pct": 90.14,
+      "voting_pct": null,
+      "address": null,
+      "sector": "Đầu tư các dự án năng lượng và đầu tư tài chính",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty TNHH Onsen Hội Vân",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "150",
+      "ownership_pct": 60.0,
+      "voting_pct": null,
+      "address": null,
+      "sector": "Kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Hướng Hóa Holding",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "201,250",
+      "ownership_pct": 19.99,
+      "voting_pct": null,
+      "address": null,
+      "sector": "Tư vấn quản lý",
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2841
+}

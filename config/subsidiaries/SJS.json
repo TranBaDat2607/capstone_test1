@@ -1,0 +1,77 @@
+{
+  "ticker": "SJS",
+  "source_doc": "2025_SJS_Baocaothuongnien_2024.pdf",
+  "source_pages": [
+    6,
+    7,
+    32
+  ],
+  "as_of": 2024,
+  "extraction_method": "gemini_vision_font_broken",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "note": "font_diacritic_ratio=0.000 < 0.15 (font substitution/scan suspected); text-based locate skipped, table page(s) found via vision page-classification instead. Rows from this path are ALWAYS needs_review -- no independent native text exists to validate names against."
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        6,
+        7
+      ],
+      "n_rows": 1,
+      "n_high_confidence": 0
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        32
+      ],
+      "n_rows": 3,
+      "n_high_confidence": 0
+    }
+  ],
+  "companies": [
+    {
+      "stt": 1,
+      "name": "Công ty TNHH MTV SJ Tiến Xuân",
+      "alias": "SJ Tien Xuan One Member Co., Ltd.",
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "350.000.000.000",
+      "ownership_pct": 100.0,
+      "voting_pct": null,
+      "address": "Khu đất DV1, KDC Bắc Trần Hưng Đạo, thành phố Hòa Bình, tỉnh Hòa Bình\nLand plot DV1,",
+      "sector": "Đầu tư, XDKD nhà ở, KĐT và KCN\nInvestment, Construction and Business of Housing,",
+      "confidence": "needs_review"
+    },
+    {
+      "stt": 2,
+      "name": "Công ty TNHH SUDICO Thăng Long (*)",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "needs_review"
+    },
+    {
+      "stt": 3,
+      "name": "CTCP SJ Dịch vụ",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "needs_review"
+    }
+  ],
+  "font_diacritic_ratio": 0.0,
+  "duplicate_rows_removed": 1
+}

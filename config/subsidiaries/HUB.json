@@ -1,0 +1,345 @@
+{
+  "ticker": "HUB",
+  "source_doc": "2024_HUB_Baocaothuongnien_2023.pdf",
+  "source_pages": [
+    27,
+    28,
+    29,
+    40,
+    41,
+    45,
+    64
+  ],
+  "as_of": 2023,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "note": "heading regex found nothing; located via content-scoring fallback (no explicit heading matched -- table page(s) identified by company-name/percent density instead)"
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        27,
+        28,
+        29
+      ],
+      "n_rows": 11,
+      "n_high_confidence": 11
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        40,
+        41
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        45
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        64
+      ],
+      "n_rows": 11,
+      "n_high_confidence": 11
+    }
+  ],
+  "companies": [
+    {
+      "stt": 1,
+      "name": "Công ty TNHH một thành viên Đầu tư và Phát triển hạ tầng Khu công nghiệp",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "45.000,00",
+      "ownership_pct": 100.0,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 2,
+      "name": "Công ty cổ phần Gạch Tuynen số 1",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "15.283,44",
+      "ownership_pct": 79.3,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 3,
+      "name": "Công ty cổ phần Gạch Tuynen Huế",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "10.625,55",
+      "ownership_pct": 51.42,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 4,
+      "name": "Công ty cổ phần Vật liệu xây dựng Lộc Điền",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "7.700,00",
+      "ownership_pct": 78.98,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 5,
+      "name": "Công ty cổ phần chế biến Gỗ Thừa Thiên Huế",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "15.000,00",
+      "ownership_pct": 94.67,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 6,
+      "name": "Công ty cổ phần Khai thác đá và Xây dựng Hương Bằng",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "6.000,00",
+      "ownership_pct": 53.0,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 7,
+      "name": "Công ty TNHH Gạch Tuynen số 2 (Sở hữu gián tiếp qua Công ty CP Gạch Tuynen1)",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "indirect",
+      "capital": "25.000,00",
+      "ownership_pct": 55.5,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 1,
+      "name": "Công ty cổ phần Kinh doanh nhà Thừa Thiên Huế (*)",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "23.100",
+      "ownership_pct": 48.7,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 2,
+      "name": "Công ty cổ phần Xây dựng và Đầu tư phát triển hạ tầng Thừa Thiên Huế",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "5.500",
+      "ownership_pct": 30.0,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 3,
+      "name": "Công ty cổ phần Frit Huế",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "180.000",
+      "ownership_pct": 29.14,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 4,
+      "name": "Công ty cổ phần Bê tông và Xây dựng Thừa Thiên Huế",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "18.000",
+      "ownership_pct": 48.0,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 1,
+      "name": "C.ty CP Gạch Tuynen số 1 Thừa Thiên Huế",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 2,
+      "name": "Công ty TNHH Gạch Tuyen số 2",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 3,
+      "name": "Công ty CP Gạch Tuynen Huế",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 4,
+      "name": "C.ty CP Khai thác Đá & Xây dựng Hương Bằng",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 5,
+      "name": "Công ty CP VLXD Lộc Điền",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 6,
+      "name": "C.ty TNHH Đầu tư & Phát triển Hạ tầng KCN",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 7,
+      "name": "Công ty CP Chế biến gỗ TT. Huế",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 8,
+      "name": "C.ty CP Bê tông & Xây dựng Thừa Thiên Huế",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 9,
+      "name": "Công ty CP Kinh doanh Nhà",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 10,
+      "name": "Công ty CP XD & ĐTPT Hạ tầng TT. Huế",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 11,
+      "name": "Công ty CP Frit Huế",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2781
+}

@@ -1,0 +1,142 @@
+{
+  "ticker": "DC4",
+  "source_doc": "2026_DC4_Baocaothuongnien_2025.pdf",
+  "source_pages": [
+    5,
+    11,
+    12,
+    58,
+    59,
+    60
+  ],
+  "as_of": 2025,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "note": "heading regex found nothing; located via content-scoring fallback (no explicit heading matched -- table page(s) identified by company-name/percent density instead)"
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        5
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        11,
+        12
+      ],
+      "n_rows": 5,
+      "n_high_confidence": 5
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        58,
+        59,
+        60
+      ],
+      "n_rows": 4,
+      "n_high_confidence": 4
+    }
+  ],
+  "companies": [
+    {
+      "stt": 1,
+      "name": "Công ty Cổ phần Vật liệu Xây dựng DIC",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 96.6,
+      "voting_pct": null,
+      "address": "Ấp Tân Trung, Xã Châu Pha, Thành phố Hồ Chí Minh",
+      "sector": "Khai thác đá xây dựng, đất sét; Kinh doanh thương mại, dịch vụ;",
+      "confidence": "high"
+    },
+    {
+      "stt": 2,
+      "name": "Công ty TNHH MTV Vinawindow",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 100.0,
+      "voting_pct": null,
+      "address": "Đường số 12, KCN Đông Xuyên, Phường Rạch Dừa, Thành phố Hồ Chí Minh",
+      "sector": "Sản xuất cửa nhôm kính, cửa nhựa lõi thép.",
+      "confidence": "high"
+    },
+    {
+      "stt": 3,
+      "name": "Công ty TNHH DICERA Homes",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 100.0,
+      "voting_pct": null,
+      "address": "Số 12 đường 3/2 Phường Tam Thắng – TP.HCM",
+      "sector": "Bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": 4,
+      "name": "Công ty Cổ phần Đầu tư BĐS Trí Holdings",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 99.68,
+      "voting_pct": null,
+      "address": "Hòa Lân, Phường Thuận Giao, TP.HCM",
+      "sector": "Bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": 5,
+      "name": "Công ty Cổ phần DICERA Construction",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 51.0,
+      "voting_pct": null,
+      "address": "Tầng 8, Tháp B, Tòa nhà Sông Đà, đường Phạm Hùng, TP. Hà Nội",
+      "sector": "Xây dựng",
+      "confidence": "high"
+    },
+    {
+      "stt": 5,
+      "name": "Công ty TNHH DV Tài chính Kế toán Thuế Rồng Việt",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": "12 Đội Cấn, Phường Tam Thắng, Thành phố Hồ Chí Minh",
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 6,
+      "name": "Công ty Cổ phần Đào Tạo Rồng Việt",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": "12 Đội Cấn, Phường Tam Thắng, Thành phố Hồ Chí Minh",
+      "sector": null,
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2738,
+  "duplicate_rows_removed": 2
+}

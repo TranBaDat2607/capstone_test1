@@ -1,0 +1,36 @@
+{
+  "ticker": "LGC",
+  "source_doc": "Unknown_LGC_Baocaothuongnien_2022.pdf",
+  "source_pages": [
+    3
+  ],
+  "as_of": 2022,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "relationship": "associate",
+      "pages": [
+        3
+      ],
+      "n_rows": 1,
+      "n_high_confidence": 0
+    }
+  ],
+  "companies": [
+    {
+      "stt": null,
+      "name": "CTY CP BOT TRUNG LƯƠNG – MỸ THUẬN",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "needs_review"
+    }
+  ],
+  "font_diacritic_ratio": 0.277
+}

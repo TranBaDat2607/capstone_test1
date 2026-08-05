@@ -1,0 +1,271 @@
+{
+  "ticker": "FIT",
+  "source_doc": "2026_FIT_Baocaothuongnien_2025.pdf",
+  "source_pages": [
+    67,
+    68,
+    69,
+    70
+  ],
+  "as_of": 2025,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "relationship": "subsidiary",
+      "pages": [
+        67,
+        68
+      ],
+      "n_rows": 16,
+      "n_high_confidence": 16
+    },
+    {
+      "relationship": "associate",
+      "pages": [
+        68,
+        69,
+        70
+      ],
+      "n_rows": 2,
+      "n_high_confidence": 2
+    }
+  ],
+  "companies": [
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Vật tư Kỹ thuật Nông nghiệp Cần Thơ (T",
+      "alias": "TSC",
+      "relationship": "subsidiary",
+      "subtype": "direct",
+      "capital": null,
+      "ownership_pct": 41.07,
+      "voting_pct": 41.07,
+      "address": "1D, Phạm Ngũ Lão, Phường Ninh Kiều, Thành phố Cần Thơ, Việt Nam",
+      "sector": "Kinh doanh các sản phẩm từ nông nghiệp",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Dược phẩm Cửu Long",
+      "alias": "DCL",
+      "relationship": "subsidiary",
+      "subtype": "direct",
+      "capital": null,
+      "ownership_pct": 58.05,
+      "voting_pct": 58.05,
+      "address": "Số 150 đường 14 tháng 9, Phường Thanh Đức, Tỉnh Vĩnh Long, Việt Nam",
+      "sector": "Kinh doanh dược phẩm, thiết bị y tế",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty TNHH Xuất nhập khẩu và Thương mại F.I.T Việt Nam",
+      "alias": "FXK",
+      "relationship": "subsidiary",
+      "subtype": "direct",
+      "capital": null,
+      "ownership_pct": 100.0,
+      "voting_pct": 100.0,
+      "address": "Tầng 5 - Tòa Times Tower, số 35 đường Lê Văn Lương, Phường Thanh Xuân, Thành phố Hà Nội, Việt Nam",
+      "sector": "Xuất nhập khẩu các mặt hàng nông sản",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Đầu tư Bất động sản F.I.T",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "direct",
+      "capital": null,
+      "ownership_pct": 99.9,
+      "voting_pct": 99.9,
+      "address": "Tầng 5 - Tòa Times Tower, số 35 đường Lê Văn Lương, Phường Thanh Xuân, Thành phố Hà Nội, Việt Nam",
+      "sector": "Kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Chế biến Thực phẩm Xuất khẩu miền Tây",
+      "alias": "WFC",
+      "relationship": "subsidiary",
+      "subtype": "indirect",
+      "capital": null,
+      "ownership_pct": 18.53,
+      "voting_pct": 45.11,
+      "address": "Khu công nghiệp Cái Sơn Bàng, đường Hoàng Quốc Việt, KV4, phường An Bình, thành phố Cần Thơ, Việt Nam",
+      "sector": "Chế biến, nhập xuất khẩu nông sản",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Hạt giống TSC",
+      "alias": "TSS",
+      "relationship": "subsidiary",
+      "subtype": "indirect",
+      "capital": null,
+      "ownership_pct": 23.67,
+      "voting_pct": 57.63,
+      "address": "1D Phạm Ngũ Lão, phường Ninh Kiều, thành phố Cần Thơ, Việt Nam",
+      "sector": "Kinh doanh hạt giống",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần FIT Consumer",
+      "alias": "FC",
+      "relationship": "subsidiary",
+      "subtype": "indirect",
+      "capital": null,
+      "ownership_pct": 46.35,
+      "voting_pct": 100.0,
+      "address": "1D Phạm Ngũ Lão, phường Ninh Kiều, thành phố Cần Thơ, Việt Nam",
+      "sector": "Kinh doanh hàng tiêu dùng",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Giống Cây trồng Nông Tín",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "indirect",
+      "capital": null,
+      "ownership_pct": 31.9,
+      "voting_pct": 77.67,
+      "address": "Tầng 1, tòa nhà HSC, số 162b Điện Biên Phủ, phường Xuân Hòa, thành phố Hồ Chí Minh, Việt Nam",
+      "sector": "Sản xuất, kinh doanh hạt giống",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Liên doanh sản xuất kinh doanh, XNK Dược phẩm và Trang thiết bị y tế",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "indirect",
+      "capital": null,
+      "ownership_pct": 29.61,
+      "voting_pct": 51.0,
+      "address": "Số 11, đường Lanexang, bản Hatsady, quận Chanthabory, Lào",
+      "sector": "Giới thiệu thuốc",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty TNHH MTV Dược phẩm VPC-Sài Gòn",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "indirect",
+      "capital": null,
+      "ownership_pct": 58.05,
+      "voting_pct": 100.0,
+      "address": "Số 150, đường 14 tháng 9, Phường Thanh Đức, Tỉnh Vĩnh Long, Việt Nam",
+      "sector": "Kinh doanh dược phẩm, dụng cụ y tế",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Dược phẩm Benovas",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "indirect",
+      "capital": null,
+      "ownership_pct": 58.04,
+      "voting_pct": 99.98,
+      "address": "Số 276 Nguyễn Đình Chiểu, Phường Xuân Hòa, Thành phố Hồ Chí Minh, Việt Nam",
+      "sector": "Kinh doanh dược phẩm, capsule các loại",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Thiết bị Y tế Benovas",
+      "alias": "TBYT Benovas",
+      "relationship": "subsidiary",
+      "subtype": "indirect",
+      "capital": null,
+      "ownership_pct": 58.05,
+      "voting_pct": 100.0,
+      "address": "Số 68D Tổ 05, Ấp Thanh Mỹ 1, Phường Thanh Đức, Tỉnh Vĩnh Long, Việt Nam",
+      "sector": "Sản xuất và kinh doanh dụng cụ, trang thiết bị y tế",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Thuốc ung thư Benovas",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "indirect",
+      "capital": null,
+      "ownership_pct": 48.76,
+      "voting_pct": 84.0,
+      "address": "Tầng 5, tòa nhà HACC1 Complex tại lô 2.6, No đường Lê Văn Lương, phường Thanh Xuân, thành phố Hà Nội, Việt Nam",
+      "sector": "Sản xuất thuốc, hóa liệu và dược liệu",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Đầu tư và Phát triển Bất động sản Charlotte",
+      "alias": "Charlotte",
+      "relationship": "subsidiary",
+      "subtype": "indirect",
+      "capital": null,
+      "ownership_pct": 98.61,
+      "voting_pct": 98.71,
+      "address": "Tầng 5, tòa nhà HACC1 Complex tại lô 2.6, đường Lê Văn Lương, phường Thanh Xuân, thành phố Hà Nội, Việt Nam",
+      "sector": "Kinh doanh bất động sản, quyền sử dụng đất thuộc chủ sở hữu, chủ sử dụng hoặc đi thuê",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Westfood Hậu Giang",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "indirect",
+      "capital": null,
+      "ownership_pct": 18.43,
+      "voting_pct": 99.5,
+      "address": "Khu công nghiệp Sông Hậu - Giai đoạn 1, Xã Châu Thành, Thành phố Cần Thơ, Việt Nam",
+      "sector": "Chế biến nông sản",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Nước khoáng Khánh Hòa",
+      "alias": "Vikoda",
+      "relationship": "subsidiary",
+      "subtype": "indirect",
+      "capital": null,
+      "ownership_pct": 44.27,
+      "voting_pct": 95.53,
+      "address": "Thôn Cây Sung, Xã Diên Thọ, Tỉnh Khánh Hòa, Việt Nam",
+      "sector": "Sản xuất nước khoáng và các sản phẩm từ nước khoáng, kinh doanh dịch vụ",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần FIT Cosmetics",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 22.71,
+      "voting_pct": 49.0,
+      "address": "Tầng 2, số 81 Cách Mạng Tháng Tám, phường Bến Thành, thành phố Hồ Chí Minh",
+      "sector": "Phân phối hàng tiêu dùng",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Đầu tư Tây Đô Cửu Long",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 36.55,
+      "voting_pct": 48.18,
+      "address": "Khu công nghiệp Cái Sơn Hàng Bàng, đường Hoàng Quốc Việt, KV4, phường An Bình, thành phố Cần Thơ",
+      "sector": "Đầu tư tài chính",
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2822
+}

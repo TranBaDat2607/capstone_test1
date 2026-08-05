@@ -1,0 +1,36 @@
+{
+  "ticker": "TCO",
+  "source_doc": "2023_TCO_Baocaothuongnien_2022.pdf",
+  "source_pages": [
+    19
+  ],
+  "as_of": 2022,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "relationship": "subsidiary",
+      "pages": [
+        19
+      ],
+      "n_rows": 1,
+      "n_high_confidence": 1
+    }
+  ],
+  "companies": [
+    {
+      "stt": null,
+      "name": "CÔNG TY CỔ PHẦN LOGISTICS TASA DUYÊN HẢI",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "50.000.000.000 đồng",
+      "ownership_pct": 99,
+      "voting_pct": null,
+      "address": "Số 189 đường đi Đình Vũ, Phường Đông Hải 2, Quận Hải An, Thành phố Hải Phòng, Việt Nam",
+      "sector": "Dịch vụ Logistics, Vận tải, Kho bãi và lưu giữ hàng hoá",
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2732
+}

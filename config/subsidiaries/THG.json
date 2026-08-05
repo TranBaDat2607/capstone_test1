@@ -1,0 +1,190 @@
+{
+  "ticker": "THG",
+  "source_doc": "2026_THG_Baocaothuongnien_2025.pdf",
+  "source_pages": [
+    12,
+    13,
+    14,
+    67,
+    70,
+    80,
+    81
+  ],
+  "as_of": 2025,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "note": "heading regex found nothing; located via content-scoring fallback (no explicit heading matched -- table page(s) identified by company-name/percent density instead)"
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        12,
+        13,
+        14
+      ],
+      "n_rows": 9,
+      "n_high_confidence": 9
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        67
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        70
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        80,
+        81
+      ],
+      "n_rows": 4,
+      "n_high_confidence": 4
+    }
+  ],
+  "companies": [
+    {
+      "stt": 1,
+      "name": "Công ty TNHH MTV Bê tông TICCO",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "direct",
+      "capital": "68.000.000.000 VNĐ",
+      "ownership_pct": 100.0,
+      "voting_pct": null,
+      "address": "Lô 1-6 Khu công nghiệp Mỹ Tho, Phường Trung An, Tỉnh Đồng Tháp",
+      "sector": "Sản xuất, kinh doanh bê tông",
+      "confidence": "high"
+    },
+    {
+      "stt": 2,
+      "name": "Công ty Cổ phần Xây dựng TICCO",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "direct",
+      "capital": "16.500.000.000 VNĐ",
+      "ownership_pct": 66.67,
+      "voting_pct": null,
+      "address": "Số 490 Đinh Bộ Lĩnh, Phường Mỹ Phong, Tỉnh Đồng Tháp",
+      "sector": "Thi công công trình xây dựng thuỷ lợi",
+      "confidence": "high"
+    },
+    {
+      "stt": 3,
+      "name": "Công ty TNHH MTV Xây dựng Thuỷ lợi TICCO",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "direct",
+      "capital": "20.000.000.000 VNĐ",
+      "ownership_pct": 100.0,
+      "voting_pct": null,
+      "address": "490 Đinh Bộ Lĩnh, Phường Mỹ Phong, Tỉnh Đồng Tháp",
+      "sector": "Thi công công trình xây dựng thuỷ lợi",
+      "confidence": "high"
+    },
+    {
+      "stt": 4,
+      "name": "Công ty TNHH MTV Bê tông TICCO Tân Phước",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "direct",
+      "capital": "79.000.000.000 VNĐ",
+      "ownership_pct": 100.0,
+      "voting_pct": null,
+      "address": "Ấp 4, Xã Tân Phước 3, Tỉnh Đồng Tháp",
+      "sector": "Sản xuất, kinh doanh bê tông",
+      "confidence": "high"
+    },
+    {
+      "stt": 5,
+      "name": "Công ty TNHH MTV TICCO Gò Công",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "direct",
+      "capital": "35.000.000.000 VNĐ",
+      "ownership_pct": 100.0,
+      "voting_pct": null,
+      "address": "Lô C9, C10 cụm công nghiệp Gia Thuận 2, Xã Gia Thuận, Tỉnh Đồng Tháp",
+      "sector": "Sản xuất, kinh doanh bê tông",
+      "confidence": "high"
+    },
+    {
+      "stt": 1,
+      "name": "Công ty TNHH MTV Vật liệu xây dựng TICCO",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "indirect",
+      "capital": "3.500.000.000 VNĐ",
+      "ownership_pct": 100.0,
+      "voting_pct": null,
+      "address": "Số 490, Đinh Bộ Lĩnh, Phường Mỹ Phong, Tỉnh Đồng Tháp",
+      "sector": "Kinh doanh vật liệu xây dựng, thiết bị lắp đặt khác trong xây dựng",
+      "confidence": "high"
+    },
+    {
+      "stt": 2,
+      "name": "Công ty TNHH MTV Cọc TICCO",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "indirect",
+      "capital": "4.000.000.000 VNĐ",
+      "ownership_pct": 100.0,
+      "voting_pct": null,
+      "address": "Lô 1-6 Khu công nghiệp Mỹ Tho, Phường Trung An, Tỉnh Đồng Tháp",
+      "sector": "Đóng, ép cọc bê tông cốt thép các loại bằng máy thủy lực",
+      "confidence": "high"
+    },
+    {
+      "stt": 3,
+      "name": "Công ty TNHH MTV Cơ khí Công trình TICCO",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "indirect",
+      "capital": "3.500.000.000 VNĐ",
+      "ownership_pct": 100.0,
+      "voting_pct": null,
+      "address": "Ấp 4, Xã Tân Phước 3, Tỉnh Đồng Tháp",
+      "sector": "Thi công cơ khí, xử lý và tráng phủ kim loại",
+      "confidence": "high"
+    },
+    {
+      "stt": 1,
+      "name": "Công ty Cổ phần Testco",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "1.300.000.000 VNĐ",
+      "ownership_pct": 20.0,
+      "voting_pct": null,
+      "address": "Lô 1, 2, 3 Khu Công nghiệp Mỹ Tho, Phường Trung An, Tỉnh Đồng Tháp",
+      "sector": "Thiết kế, giám sát, kiểm định thử nghiệm chất lượng công trình",
+      "confidence": "high"
+    },
+    {
+      "stt": 8,
+      "name": "Công ty TNHH MTV VLXD TICCO",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "indirect",
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": "Số 490 Đinh Bộ Lĩnh, Phường Mỹ Phong, Đồng Tháp",
+      "sector": null,
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2787,
+  "duplicate_rows_removed": 3
+}

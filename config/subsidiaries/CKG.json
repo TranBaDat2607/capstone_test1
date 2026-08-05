@@ -1,0 +1,218 @@
+{
+  "ticker": "CKG",
+  "source_doc": "2026_CKG_Baocaothuongnien_2025.pdf",
+  "source_pages": [
+    11,
+    32
+  ],
+  "as_of": 2025,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "note": "heading regex found nothing; located via content-scoring fallback (no explicit heading matched -- table page(s) identified by company-name/percent density instead)"
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        11
+      ],
+      "n_rows": 11,
+      "n_high_confidence": 11
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        32
+      ],
+      "n_rows": 11,
+      "n_high_confidence": 11
+    }
+  ],
+  "companies": [
+    {
+      "stt": null,
+      "name": "CTCP Vật Liệu Xây dựng CIC Thắng Anh",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "41.384.210.000",
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": "Lô A4 căn 1, 2, 3 Khu đô thị mới lấn biển Tây Bắc, đường Lý Thường Kiệt nối dài, phường Rạch Giá, tỉnh An Giang",
+      "sector": "Vật liệu xây dựng, vật liệu phụ trợ",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "CTCP Tư vấn Xây dựng CIC Kiên Giang",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "5.000.000.000",
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": "Lô C9, 27-28, đường số 5, Khu đô thị mới lấn biển Tây Bắc, phường Rạch Giá, tỉnh An Giang",
+      "sector": "Hoạt động kiến trúc và tư vấn kỹ thuật có liên quan",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "CTCP Tư vấn Xây dựng CIC Nam Việt",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "3.075.000.000",
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": "D15, căn 25-26 đường số 5, KĐT Tây Bắc, phường Rạch Giá, tỉnh An Giang",
+      "sector": "Hoạt động kiến trúc và tư vấn kỹ thuật có liên quan",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "CTCP Đầu tư Phát triển Hạ tầng Phú Quốc",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "21.040.000.000",
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": "Số 60 Đường 30/4, Khu phố 1 Dương Đông, Đặc khu Phú Quốc, tỉnh An Giang",
+      "sector": "Đầu tư dự án, cơ sở hạ tầng",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty TNHH Đầu Tư Xây dựng CIC Phú Quốc",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "232.000.000.000",
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": "L7-01 Khu biệt thự Cao cấp Bà Kèo, Đường Trần Hưng Đạo, Đặc khu Phú Quốc, An Giang",
+      "sector": "Đầu tư dự án",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty TNHH CIC EDUCATION",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "30.000.000.000",
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": "Lô E7 KĐTMLB Tây Bắc, đường số 13, Rạch Giá, An Giang",
+      "sector": "Giáo dục",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty TNHH Thương mại Dịch vụ CIC Kiên Giang",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "12.500.000.000",
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": "Lô A1 căn 9C, Trung tâm Thương mại Rạch Sỏi, đường Nguyễn Chí Thanh, Rạch Giá, An Giang",
+      "sector": "Kinh doanh thương mại dịch vụ",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "CTCP Xây dựng CIC Kiên Giang",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "27.000.000.000",
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": "Lô D10, 40-41, đường số 5, Khu Đô thị mới Lấn biển Tây Bắc, phường Rạch Giá, tỉnh An Giang",
+      "sector": "Thi công xây dựng",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "CTCP Địa ốc CIC REAL",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "3.940.000.000",
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": "Số 75 Đường Trần Hưng Đạo. Khu phố 7, Đặc khu Phú Quốc, tỉnh An Giang",
+      "sector": "Kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty TNHH Dịch vụ Hoa viên Vĩnh hằng",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "268.203.183.000",
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": "Tổ 9, Khu phố Hưng Giang, Phường Vĩnh Thông, tỉnh An Giang",
+      "sector": "Dịch vụ Hoa Viên",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "CTCP Phát triển Đô thị Kiên Giang",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "35.063.640.000",
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": "08 Mậu Thân, Phường Rạch Giá, An Giang",
+      "sector": "Dịch vụ đô thị, cây xanh",
+      "confidence": "high"
+    },
+    {
+      "stt": 1,
+      "name": "CTCP VLXD CIC Thắng Anh",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 4,
+      "name": "CTCP Đầu tư PT Hạ tầng Phú Quốc",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 7,
+      "name": "Công ty TNHH TM DV CIC Kiên Giang",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2827,
+  "duplicate_rows_removed": 8
+}

@@ -1,0 +1,52 @@
+{
+  "ticker": "DHA",
+  "source_doc": "2026_DHA_Baocaothuongnien_2025.pdf",
+  "source_pages": [
+    4
+  ],
+  "as_of": 2025,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "note": "heading regex found nothing; located via content-scoring fallback (no explicit heading matched -- table page(s) identified by company-name/percent density instead)"
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        4
+      ],
+      "n_rows": 2,
+      "n_high_confidence": 2
+    }
+  ],
+  "companies": [
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Khai thác và Sản xuất đá Xây dựng Ánh Dương",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "67,219 tỷ đồng",
+      "ownership_pct": 99.997,
+      "voting_pct": null,
+      "address": "thôn Ba hồ, xã Công Hải, tỉnh Khánh Hòa",
+      "sector": "Khai thác đá, cát, sỏi, đất sét",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Cơ khí Xây dựng Tân Định",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "8,46 tỷ đồng",
+      "ownership_pct": 28.13,
+      "voting_pct": null,
+      "address": "Lô E, đường số 2B, Khu CN Đồng An, P. Bình Hòa, TP. Hồ Chí Minh",
+      "sector": null,
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2743
+}

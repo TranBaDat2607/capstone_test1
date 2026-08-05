@@ -1,0 +1,229 @@
+{
+  "ticker": "OGC",
+  "source_doc": "2026_OGC_Baocaothuongnien_2025.pdf",
+  "source_pages": [
+    10,
+    19,
+    20,
+    36
+  ],
+  "as_of": 2025,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "note": "heading regex found nothing; located via content-scoring fallback (no explicit heading matched -- table page(s) identified by company-name/percent density instead)"
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        10
+      ],
+      "n_rows": 5,
+      "n_high_confidence": 5
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        19,
+        20
+      ],
+      "n_rows": 5,
+      "n_high_confidence": 5
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        36
+      ],
+      "n_rows": 5,
+      "n_high_confidence": 5
+    }
+  ],
+  "companies": [
+    {
+      "stt": null,
+      "name": "CTY CP ĐT BOT HÀ NỘI - BẮC GIANG",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 21,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "CTY CP ONE CAPITAL HOSPITALITY",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 55.6,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "CTY CP SỞ GIAO DỊCH HÀNG HÓA INFO",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 100,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "CTY TNHH KD BĐS TKD VIỆT NAM",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 100,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "CTY CP PT TÀI NGUYÊN THIÊN NHIÊN ĐẠI DƯƠNG",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 75.1,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 1,
+      "name": "Công ty CP One Capital Hospitality",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "2.000.000.000.000 VND",
+      "ownership_pct": 55.6,
+      "voting_pct": null,
+      "address": "Tòa nhà Leadvisor, 643 Phạm Văn Đồng, Nghĩa Đô, Hà Nội",
+      "sector": "Dịch vụ lưu trú ngắn ngày, chi tiết: khách sạn; Sản xuất và chế biến thực phẩm;...",
+      "confidence": "high"
+    },
+    {
+      "stt": 2,
+      "name": "Công ty CP Phát triển Tài nguyên Thiên nhiên Đại Dương (ONRC)",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "60.000.000.000 VND",
+      "ownership_pct": 69.0,
+      "voting_pct": null,
+      "address": "Số 4 Láng Hạ, Giảng Võ, Hà Nội",
+      "sector": "Trồng và chăm sóc rừng; Khai thác, chế biến gỗ;...",
+      "confidence": "high"
+    },
+    {
+      "stt": 3,
+      "name": "Công ty CP Sở giao dịch hàng hóa INFO (Infocomex)",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "150.000.000.000 VND",
+      "ownership_pct": 85.0,
+      "voting_pct": null,
+      "address": "Số 4 Láng Hạ, Giảng Võ, Hà Nội",
+      "sector": "Tổ chức môi giới giao dịch các loại hàng hóa như: cà phê, thép, cao su;...",
+      "confidence": "high"
+    },
+    {
+      "stt": 4,
+      "name": "Công ty TNHH KD BĐS TKD Việt Nam",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "115.000.000.000 VND",
+      "ownership_pct": 98.0,
+      "voting_pct": null,
+      "address": "Số 25 Trần Khánh Dư, Cửa Nam, Hà Nội",
+      "sector": "Kinh doanh bất động sản, quyền sử dụng đất thuộc chủ sở hữu, chủ sử dụng;...",
+      "confidence": "high"
+    },
+    {
+      "stt": 1,
+      "name": "Công ty CP Đầu tư BOT Hà Nội - Bắc Giang (BOT)",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "496.322.400.000",
+      "ownership_pct": 21.0,
+      "voting_pct": null,
+      "address": "Số 14, Lô B1, Khu Đô thị mới Nam Từ Sơn, Từ Sơn, Tỉnh Bắc Ninh",
+      "sector": "Xây dựng công đường bộ;...",
+      "confidence": "high"
+    },
+    {
+      "stt": 2,
+      "name": "Công ty Cổ phần Bánh Givral",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "indirect",
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 3,
+      "name": "Công ty Cổ phần Đầu tư BOT Hà Nội - Bắc Giang",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 5,
+      "name": "Công ty Cổ phần Fafilm Thành phố Hồ Chí Minh",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 6,
+      "name": "Công ty Cổ phần One Capital Hospitality",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2836,
+  "duplicate_rows_removed": 1
+}

@@ -49,7 +49,7 @@ from dotenv import load_dotenv
 from google.genai import types
 
 from esg_kg.core.paths import REPO_ROOT
-from esg_kg.core.llm import GeminiContextCache, build_gemini_client
+from esg_kg.core.llm import DEFAULT_MODEL, GeminiContextCache, build_gemini_client
 from esg_kg.core.io_jsonl import (
     build_page_text,
     load_pages_from_jsonl,
@@ -64,7 +64,9 @@ getLogger("google_genai.models").setLevel(WARNING)
 DEFAULT_INPUT = REPO_ROOT / "data" / "labeled" / "annual_labeled" / "labeled_annual_report_company_aaa.jsonl"
 DEFAULT_KPI_DEFS = REPO_ROOT / "kpi_definitions_construction.json"
 DEFAULT_OUT_DIR = REPO_ROOT / "kpi_output"
-DEFAULT_MODEL = "gemini-2.5-flash"
+# DEFAULT_MODEL comes from esg_kg.core.llm (GEMINI_MODEL env var, default
+# gemini-2.5-flash-lite) — see that module's docstring. Re-exported here so
+# `extract.DEFAULT_MODEL` keeps working for existing call sites.
 
 # The construction KPI file is single-sector; sector detection is unnecessary.
 SECTOR = "Xây dựng - Vật liệu xây dựng - Bất động sản"

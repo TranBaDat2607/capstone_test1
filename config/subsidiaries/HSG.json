@@ -1,0 +1,46 @@
+{
+  "ticker": "HSG",
+  "source_doc": "2026_HSG_Baocaothuongnien_2025.pdf",
+  "source_pages": [
+    35,
+    36,
+    37,
+    38,
+    39,
+    40
+  ],
+  "as_of": 2025,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "relationship": "subsidiary",
+      "pages": [
+        35,
+        36,
+        37,
+        38,
+        39,
+        40
+      ],
+      "n_rows": 1,
+      "n_high_confidence": 1
+    }
+  ],
+  "companies": [
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Tập đoàn Hoa Sen",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 99.0,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2043
+}

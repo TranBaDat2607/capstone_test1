@@ -142,7 +142,9 @@ def test_fix_triples_module_constants_match_src():
     assert new_fix.DEFAULT_INPUT_DIR == GRAPHS_DIR
     assert new_fix.DEFAULT_SCHEMA == SCHEMA_FILE
     assert new_fix.DEFAULT_OUT_DIR == REPO / "graph_output" / "validated"
-    assert new_fix.DEFAULT_MODEL == "gemini-2.5-flash"
+    # DEFAULT_MODEL is re-exported from core.llm (env-driven, GEMINI_MODEL); pin its
+    # value there instead of duplicating the fallback string here.
+    assert new_fix.DEFAULT_MODEL == core_llm.DEFAULT_MODEL
     assert new_fix.DEFAULT_BATCH_SIZE == 25
     assert new_fix.DEFAULT_RATE_LIMIT == 10
     assert new_fix.NEWS_DATE_UNCERTAIN_CLASSES == {

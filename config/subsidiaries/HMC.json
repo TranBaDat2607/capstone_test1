@@ -1,0 +1,34 @@
+{
+  "ticker": "HMC",
+  "source_doc": "2025_HMC_Baocaothuongnien_2024.pdf",
+  "source_pages": [
+    17,
+    36
+  ],
+  "as_of": 2024,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "note": "heading regex found nothing; located via content-scoring fallback (no explicit heading matched -- table page(s) identified by company-name/percent density instead)"
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        17
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        36
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    }
+  ],
+  "companies": [],
+  "font_diacritic_ratio": 0.268
+}

@@ -1,0 +1,39 @@
+{
+  "ticker": "DTT",
+  "source_doc": "2025_DTT_Baocaothuongnien_2024.pdf",
+  "source_pages": [
+    7
+  ],
+  "as_of": 2024,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "note": "heading regex found nothing; located via content-scoring fallback (no explicit heading matched -- table page(s) identified by company-name/percent density instead)"
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        7
+      ],
+      "n_rows": 1,
+      "n_high_confidence": 1
+    }
+  ],
+  "companies": [
+    {
+      "stt": null,
+      "name": "CÔNG TY CỔ PHẦN NHỰA ĐẠI THÀNH LONG",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "8.500.000.000",
+      "ownership_pct": 17.65,
+      "voting_pct": null,
+      "address": "Quốc lộ 15, Thôn Phương Độ, xã Hưng Thịnh, huyện Bình Giang, tỉnh Hải Dương",
+      "sector": "Sản xuất và mua bán các sản phẩm nhựa. Mua bán ô tô, xe gắn máy, phụ tùng phụ trợ của ô tô. Mua bán máy móc, thiết bị, vật liệu điện. Trồng rừng, khai thác gỗ rừng trồng, chế biến gỗ",
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2874
+}

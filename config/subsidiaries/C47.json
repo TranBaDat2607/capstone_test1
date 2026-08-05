@@ -1,0 +1,98 @@
+{
+  "ticker": "C47",
+  "source_doc": "2019_C47_Baocaothuongnien_2018.pdf",
+  "source_pages": [
+    9,
+    10
+  ],
+  "as_of": 2018,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "relationship": "subsidiary",
+      "pages": [
+        9,
+        10
+      ],
+      "n_rows": 5,
+      "n_high_confidence": 5
+    },
+    {
+      "relationship": "associate",
+      "pages": [
+        10
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    }
+  ],
+  "companies": [
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Du lịch Hầm Hô",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "10.000.000.000 đồng",
+      "ownership_pct": 76.35,
+      "voting_pct": null,
+      "address": "Thôn Phú Mỹ, xã Tây Phú, huyện Tây Sơn, tỉnh Bình Định",
+      "sector": "Du lịch",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Thủy điện Văn Phong",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "112.000.000.000 đồng",
+      "ownership_pct": 67.7,
+      "voting_pct": null,
+      "address": "Số 08 đường Biên Cương, thành phố Quy Nhơn, tỉnh Bình Định",
+      "sector": "sản xuất điện",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty TNHH Nông nghiệp xanh Măng Đen",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "3.000.000.000 đồng",
+      "ownership_pct": 100.0,
+      "voting_pct": null,
+      "address": "Km2 tỉnh lộ 676, Xã Đắk Long, huyện Kon Plông, tỉnh Kon Tum",
+      "sector": "trồng rau củ quả",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty TNHH MTV Cung ứng và Xuất khẩu lao động Bình Định",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "5.000.000.000 đồng",
+      "ownership_pct": 100.0,
+      "voting_pct": null,
+      "address": "Số 08 đường Biên Cương, thành phố Quy Nhơn, tỉnh Bình Định",
+      "sector": "tư vấn và xuất khẩu lao động",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Du lịch Hải Âu",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "1.000.000.000 đồng",
+      "ownership_pct": 100.0,
+      "voting_pct": null,
+      "address": "Số 489 An Dương Vương, thành phố Quy Nhơn, tỉnh Bình Định",
+      "sector": "nhà hàng, khách sạn và du lịch",
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2701
+}

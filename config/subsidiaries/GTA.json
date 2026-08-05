@@ -1,0 +1,34 @@
+{
+  "ticker": "GTA",
+  "source_doc": "2026_GTA_Baocaothuongnien_2025.pdf",
+  "source_pages": [
+    81,
+    154
+  ],
+  "as_of": 2025,
+  "extraction_method": "gemini_vision_font_broken",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "note": "font_diacritic_ratio=0.131 < 0.15 (font substitution/scan suspected); text-based locate skipped, table page(s) found via vision page-classification instead. Rows from this path are ALWAYS needs_review -- no independent native text exists to validate names against."
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        81
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        154
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    }
+  ],
+  "companies": [],
+  "font_diacritic_ratio": 0.1314
+}

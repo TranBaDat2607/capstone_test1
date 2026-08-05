@@ -1,0 +1,111 @@
+{
+  "ticker": "KSB",
+  "source_doc": "2020_KSB_Baocaothuongnien_2019.pdf",
+  "source_pages": [
+    55,
+    56
+  ],
+  "as_of": 2019,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "relationship": "subsidiary",
+      "pages": [
+        55,
+        56
+      ],
+      "n_rows": 5,
+      "n_high_confidence": 5
+    },
+    {
+      "relationship": "associate",
+      "pages": [
+        56
+      ],
+      "n_rows": 1,
+      "n_high_confidence": 1
+    }
+  ],
+  "companies": [
+    {
+      "stt": null,
+      "name": "Công ty TNHH Phát triển Công nghiệp KSB",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 100.0,
+      "voting_pct": 100.0,
+      "address": "Tỉnh Bình Dương, Việt Nam",
+      "sector": "Phát triển khu công nghiệp",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty TNHH Huệ Minh",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 100.0,
+      "voting_pct": 100.0,
+      "address": "Tỉnh Nghệ An, Việt Nam",
+      "sector": "Khai thác khoáng sản",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Hợp tác xã Dịch vụ Vận tải Khai khoáng Thăng Long",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 100.0,
+      "voting_pct": 100.0,
+      "address": "Tỉnh Đồng Nai, Việt Nam",
+      "sector": "Khai thác khoáng sản",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty TNHH Cao lanh Minh Long KSB",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 100.0,
+      "voting_pct": 100.0,
+      "address": "Tỉnh Bình Phước, Việt Nam",
+      "sector": "Khai thác khoáng sản",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty TNHH Đầu tư KSB",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 100.0,
+      "voting_pct": 100.0,
+      "address": "Tỉnh Bình Dương, Việt Nam",
+      "sector": "Hoạt động đầu tư, dịch vụ tài chính",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Phú Nam Sơn",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 50.0,
+      "voting_pct": 50.0,
+      "address": "Tỉnh Thanh Hóa, Việt Nam",
+      "sector": "Cung cấp vật liệu xây dựng",
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2761
+}

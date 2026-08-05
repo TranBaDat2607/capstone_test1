@@ -1,0 +1,63 @@
+{
+  "ticker": "CCI",
+  "source_doc": "2024_CCI_Baocaothuongnien_2023.pdf",
+  "source_pages": [
+    7,
+    8,
+    16
+  ],
+  "as_of": 2023,
+  "extraction_method": "gemini_vision_font_broken",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "note": "font_diacritic_ratio=0.000 < 0.15 (font substitution/scan suspected); text-based locate skipped, table page(s) found via vision page-classification instead. Rows from this path are ALWAYS needs_review -- no independent native text exists to validate names against."
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        7,
+        8
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        16
+      ],
+      "n_rows": 2,
+      "n_high_confidence": 0
+    }
+  ],
+  "companies": [
+    {
+      "stt": null,
+      "name": "Công Ty Cổ Phần Xây Dựng Phát Triển Tây Bắc",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "13.300.000.000",
+      "ownership_pct": 18.42,
+      "voting_pct": null,
+      "address": null,
+      "sector": "Kinh doanh bất động sản",
+      "confidence": "needs_review"
+    },
+    {
+      "stt": null,
+      "name": "Công Ty Cổ Phần Chế Biến Thực Phẩm Hóc Môn",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "150.000.000.000",
+      "ownership_pct": 20.0,
+      "voting_pct": null,
+      "address": null,
+      "sector": "Chế biến bảo quản thịt và các sản phẩm từ thịt",
+      "confidence": "needs_review"
+    }
+  ],
+  "font_diacritic_ratio": 0.0
+}

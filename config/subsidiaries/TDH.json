@@ -1,0 +1,62 @@
+{
+  "ticker": "TDH",
+  "source_doc": "2024_TDH_Baocaothuongnien_2023.pdf",
+  "source_pages": [
+    12
+  ],
+  "as_of": 2023,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "relationship": "subsidiary",
+      "pages": [
+        12
+      ],
+      "n_rows": 3,
+      "n_high_confidence": 3
+    }
+  ],
+  "companies": [
+    {
+      "stt": 1,
+      "name": "Công ty TNHH Phát Triển Thương Mại Dịch Vụ Thủ Đức",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "24.889.158.681 VND",
+      "ownership_pct": 99.6,
+      "voting_pct": null,
+      "address": "4 Đường số 4, Khu phố 5, P.Tam Bình, Thành phố Thủ Đức, TP.Hồ Chí Minh",
+      "sector": "Sản xuất, mua bán nước đá tinh khiết.",
+      "confidence": "high"
+    },
+    {
+      "stt": 2,
+      "name": "Công ty TNHH Khai Thác Dịch Vụ ThuDuc House",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "20.000.000.000 VND",
+      "ownership_pct": 100.0,
+      "voting_pct": null,
+      "address": "Tầng 8 Tòa nhà Cantavil Premier, số 1 Song Hành - Xa Lộ Hà Nội, Phường An Phú, Thành phố Thủ Đức, TP.Hồ Chí Minh",
+      "sector": "kinh doanh bất động sản, kinh doanh khai thác và quản lý chợ",
+      "confidence": "high"
+    },
+    {
+      "stt": 3,
+      "name": "Công ty TNHH Thương mại Dịch vụ Lộc Phúc An",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "10.431.000.000 VND",
+      "ownership_pct": 100.0,
+      "voting_pct": null,
+      "address": "82 - 84 Calmette, Phường Nguyễn Thái Bình, Quận 1, TP.Hồ Chí Minh",
+      "sector": "bán buôn vật liệu và thiết bị lắp đặt khác trong xây dựng",
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2627
+}

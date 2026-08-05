@@ -1,0 +1,100 @@
+{
+  "ticker": "NKG",
+  "source_doc": "2026_NKG_Baocaothuongnien_2025.pdf",
+  "source_pages": [
+    48,
+    56
+  ],
+  "as_of": 2025,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "note": "heading regex found nothing; located via content-scoring fallback (no explicit heading matched -- table page(s) identified by company-name/percent density instead)"
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        48
+      ],
+      "n_rows": 5,
+      "n_high_confidence": 5
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        56
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    }
+  ],
+  "companies": [
+    {
+      "stt": null,
+      "name": "Công ty TNHH MTV Ống Thép Nam Kim",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "79.000.000.000 đồng (Tại ngày 31/12/2025)",
+      "ownership_pct": 100,
+      "voting_pct": null,
+      "address": "Lô C2-16 đến Lô C2-20, Đường VI, Khu công nghiệp Vĩnh Lộc 2, Xã Mỹ Yên, Tỉnh Tây Ninh.",
+      "sector": "Sản xuất các loại tôn thép: tôn mạ màu, tôn mạ kẽm; kinh doanh sắt thép các loại.",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty TNHH MTV Ống Thép Nam Kim Chu Lai",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "37.550.000.000 đồng (Tại ngày 31/12/2025)",
+      "ownership_pct": 100,
+      "voting_pct": null,
+      "address": "Đường số 01, Khu công nghiệp hậu cần cảng Tam Hiệp, Xã Núi Thành, Thành phố Đà Nẵng.",
+      "sector": "Sản xuất các loại tôn thép: tôn mạ màu, tôn mạ kẽm; kinh doanh sắt thép các loại.",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty TNHH Dae Myung Paper Việt Nam",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "138.420.000.000 đồng (Tại ngày 31/12/2025)",
+      "ownership_pct": 100,
+      "voting_pct": null,
+      "address": "Lô A-5F-CN, Khu công nghiệp Mỹ Phước 3, Phường Chánh Phú Hòa, Thành phố Hồ Chí Minh.",
+      "sector": "Sản xuất các loại tôn thép: tôn mạ kẽm; tôn mạ hợp kim nhôm kẽm (tôn lạnh), tôn mạ hợp kim nhôm kẽm phủ sơn, tôn mạ kẽm phủ sơn.",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty TNHH Tôn Nam Kim Phú Mỹ",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "2.700.000.000.000 đồng (Tại ngày 31/12/2025)",
+      "ownership_pct": 100,
+      "voting_pct": null,
+      "address": "Đường số 1, Khu công nghiệp Mỹ Xuân B1 - Đại Dương, Phường Phú Mỹ, Thành phố Hồ Chí Minh.",
+      "sector": "Sản xuất các loại tôn thép: tôn mạ màu, tôn mạ kẽm; kinh doanh sắt thép các loại.",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Thương mại Dịch vụ Vận tải Nam Thành Phát",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "45.000.000.000 đồng (Tại ngày 31/12/2025)",
+      "ownership_pct": 75,
+      "voting_pct": null,
+      "address": "Đường số 1, Khu công nghiệp Mỹ Xuân B1 - Đại Dương, Phường Phú Mỹ, Thành phố Hồ Chí Minh.",
+      "sector": "Vận tải hàng hóa bằng đường bộ.",
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2459
+}

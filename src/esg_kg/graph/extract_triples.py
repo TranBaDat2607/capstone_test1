@@ -82,7 +82,7 @@ from esg_kg.core.io_jsonl import (
     parse_company_year_from_filename,
     select_documents,
 )
-from esg_kg.core.llm import DEFAULT_RATE_LIMIT, GeminiContextCache, RateLimiter, build_gemini_client
+from esg_kg.core.llm import DEFAULT_MODEL, DEFAULT_RATE_LIMIT, GeminiContextCache, RateLimiter, build_gemini_client
 from esg_kg.core.schema import get_identity_keys, load_schema_sets
 from esg_kg.core.identity import PROVENANCE_CLASSES, get_stable_entity_id
 
@@ -95,7 +95,8 @@ DEFAULT_INPUT = REPO_ROOT / "data" / "labeled" / "annual_labeled" / "labeled_ann
 DEFAULT_SCHEMA = REPO_ROOT / "config" / "schema.json"
 DEFAULT_KPI_DIR = REPO_ROOT / "kpi_output"
 DEFAULT_OUT_DIR = REPO_ROOT / "graph_output"
-DEFAULT_MODEL = "gemini-2.5-flash"
+# DEFAULT_MODEL comes from esg_kg.core.llm (GEMINI_MODEL env var, default
+# gemini-2.5-flash-lite) — see that module's docstring.
 DEFAULT_MAX_WORKERS = 4
 
 

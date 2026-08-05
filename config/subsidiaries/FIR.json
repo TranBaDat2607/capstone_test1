@@ -1,0 +1,38 @@
+{
+  "ticker": "FIR",
+  "source_doc": "2024_FIR_Baocaothuongnien_2023.pdf",
+  "source_pages": [
+    41,
+    42
+  ],
+  "as_of": 2023,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "relationship": "subsidiary",
+      "pages": [
+        41,
+        42
+      ],
+      "n_rows": 1,
+      "n_high_confidence": 1
+    }
+  ],
+  "companies": [
+    {
+      "stt": 1,
+      "name": "Công ty Cổ phần Đầu tư Bất động sản Primo",
+      "alias": "Công ty Primo",
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 99.9,
+      "voting_pct": 99.9,
+      "address": "320 Đường 2 tháng 9, Phường Hòa Cường Bắc, Quận Hải Châu, Thành phố Đà Nẵng, Việt Nam",
+      "sector": "Kinh doanh bất động sản",
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2877
+}

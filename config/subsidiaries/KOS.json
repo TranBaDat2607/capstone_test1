@@ -1,0 +1,34 @@
+{
+  "ticker": "KOS",
+  "source_doc": "2026_KOS_Baocaothuongnien_2025.pdf",
+  "source_pages": [
+    43,
+    44
+  ],
+  "as_of": 2025,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "relationship": "subsidiary",
+      "pages": [
+        43,
+        44
+      ],
+      "n_rows": 1,
+      "n_high_confidence": 1
+    }
+  ],
+  "companies": [
+    {
+      "name": "Công ty cổ phần Tư vấn Đầu tư Xây dựng Thủy điện",
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "350.000.000.000 đồng",
+      "address": "Tổ 3 phường Quyết Tiến, thành phố Lai Châu, tỉnh Lai Châu",
+      "sector": "Sản xuất điện, phân phối điện",
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2854
+}

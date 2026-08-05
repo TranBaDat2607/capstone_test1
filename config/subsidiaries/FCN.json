@@ -1,0 +1,49 @@
+{
+  "ticker": "FCN",
+  "source_doc": "2014_FCN_Baocaothuongnien_2013.pdf",
+  "source_pages": [
+    71
+  ],
+  "as_of": 2013,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "relationship": "associate",
+      "pages": [
+        71
+      ],
+      "n_rows": 2,
+      "n_high_confidence": 2
+    }
+  ],
+  "companies": [
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Khoáng sản FECON",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "268.000",
+      "ownership_pct": 36.52,
+      "voting_pct": null,
+      "address": "Hà Nam",
+      "sector": "Sản xuất Cọc, bê tông",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Fecon Nghi Sơn",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "100.000",
+      "ownership_pct": 30.0,
+      "voting_pct": null,
+      "address": "Thanh Hóa",
+      "sector": "Sản xuất Cọc, bê tông",
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2679
+}

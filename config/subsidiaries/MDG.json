@@ -1,0 +1,44 @@
+{
+  "ticker": "MDG",
+  "source_doc": "2019_MDG_Baocaothuongnien_2018.pdf",
+  "source_pages": [
+    7
+  ],
+  "as_of": 2018,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "note": "heading regex found nothing; located via content-scoring fallback (no explicit heading matched -- table page(s) identified by company-name/percent density instead)"
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        7
+      ],
+      "n_rows": 3,
+      "n_high_confidence": 0
+    }
+  ],
+  "companies": [
+    {
+      "name": "Công ty Cổ phần Miền Đông - Đầu tư Hạ tầng",
+      "relationship": "associate",
+      "address": "KP3, P.Long Bình Tân, Tp.Biên Hòa, Đồng Nai",
+      "confidence": "needs_review"
+    },
+    {
+      "name": "Công ty TNHH Đầu tư - Xây dựng Miền Đông 1",
+      "relationship": "associate",
+      "address": "N3/4, KP 1, P.Long Bình Tân, TP. Biên Hòa, Đồng Nai",
+      "confidence": "needs_review"
+    },
+    {
+      "name": "Công ty TNHH Đầu tư - Xây dựng Miền Đông 3",
+      "relationship": "associate",
+      "address": "Đường số 1, KCN Biên Hòa 1, P.An Bình, TP. Biên Hòa, Đồng Nai",
+      "confidence": "needs_review"
+    }
+  ],
+  "font_diacritic_ratio": 0.3228
+}

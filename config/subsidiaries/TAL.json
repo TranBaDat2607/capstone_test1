@@ -1,0 +1,347 @@
+{
+  "ticker": "TAL",
+  "source_doc": "2026_TAL_Baocaothuongnien_2025.pdf",
+  "source_pages": [
+    17,
+    33,
+    34,
+    86,
+    87,
+    116,
+    122,
+    123,
+    124,
+    134,
+    135,
+    143,
+    149
+  ],
+  "as_of": 2025,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "note": "heading regex found nothing; located via content-scoring fallback (no explicit heading matched -- table page(s) identified by company-name/percent density instead)"
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        17
+      ],
+      "n_rows": 18,
+      "n_high_confidence": 18
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        33,
+        34
+      ],
+      "n_rows": 17,
+      "n_high_confidence": 17
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        86,
+        87
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        116
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        122,
+        123,
+        124
+      ],
+      "n_rows": 15,
+      "n_high_confidence": 15
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        134,
+        135
+      ],
+      "n_rows": 2,
+      "n_high_confidence": 2
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        143
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        149
+      ],
+      "n_rows": 1,
+      "n_high_confidence": 1
+    }
+  ],
+  "companies": [
+    {
+      "stt": 1,
+      "name": "Công ty Cổ phần Đầu tư và Xây dựng số 4",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "direct",
+      "capital": "1.020,0",
+      "ownership_pct": 68.68,
+      "voting_pct": null,
+      "address": "Số 243A Đê La Thành, phường Láng, TP. Hà Nội",
+      "sector": "Đầu tư và kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": 2,
+      "name": "Công ty Cổ phần Taseco Invest",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "direct",
+      "capital": "1.200,0",
+      "ownership_pct": 99.9,
+      "voting_pct": null,
+      "address": "Tầng 1, tòa NO2-T1, Khu Đoàn Ngoại Giao, đường Xuân Tảo, phường Xuân Đình, TP. Hà Nội",
+      "sector": "Đầu tư và kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": 3,
+      "name": "Công ty Cổ phần Đầu tư Du lịch Sinh thái Quốc tế",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "direct",
+      "capital": "152,5",
+      "ownership_pct": 86.56,
+      "voting_pct": null,
+      "address": "Biệt thự BT-3.1, Khu đô thị mới thuộc Dự án số 4 Khu đô thị mới trung tâm thành phố Thanh Hóa, phường Hạc Thành, tỉnh Thanh Hóa",
+      "sector": "Đầu tư và kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": 4,
+      "name": "Công ty Cổ phần Đầu tư Bất động sản Phú Mỹ",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "direct",
+      "capital": "120,0",
+      "ownership_pct": 99.0,
+      "voting_pct": null,
+      "address": "Tầng 1, tòa nhà NO2-T1, Khu Đoàn Ngoại Giao, đường Xuân Tảo, phường Xuân Đình, TP. Hà Nội",
+      "sector": "Đầu tư và kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": 5,
+      "name": "Công ty Cổ phần Quản lý Bất động sản Quốc tế",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "direct",
+      "capital": "155,0",
+      "ownership_pct": 99.9,
+      "voting_pct": null,
+      "address": "Tầng 1, tòa NO2-T1, Khu Đoàn Ngoại Giao, đường Xuân Tảo, phường Xuân Đình, TP. Hà Nội",
+      "sector": "Quản lý và khai thác toà nhà, kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": 6,
+      "name": "Công ty Cổ phần Alacarte Hạ Long",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "direct",
+      "capital": "300,0",
+      "ownership_pct": 99.0,
+      "voting_pct": null,
+      "address": "Lô đất H30-H33, Bán đảo số 2, khu đô thị dịch vụ Hùng Thắng, phường Bãi Cháy, tỉnh Quảng Ninh",
+      "sector": "Quản lý khách sạn. Quản lý và khai thác toà nhà",
+      "confidence": "high"
+    },
+    {
+      "stt": 7,
+      "name": "Công ty Cổ phần Đầu tư và Dịch vụ Yên Bình",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "direct",
+      "capital": "10,0",
+      "ownership_pct": 84.0,
+      "voting_pct": null,
+      "address": "Số 748 đường Cù Chính Lan, Tổ 1, phường Hòa Bình, tỉnh Phú Thọ",
+      "sector": "Đầu tư và kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": 8,
+      "name": "Công ty Cổ phần Đầu tư Bất động sản nghỉ dưỡng Taseco Đà Nẵng",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "direct",
+      "capital": "289,00",
+      "ownership_pct": 60.0,
+      "voting_pct": null,
+      "address": "Số 29 đường Trường Sa, phường Ngũ Hành Sơn, TP. Đà Nẵng",
+      "sector": "Đầu tư và kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": 9,
+      "name": "Công ty Cổ phần Taseco Hải Phòng",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "direct",
+      "capital": "1.025",
+      "ownership_pct": 97.56,
+      "voting_pct": null,
+      "address": "Thửa số 5, lô SH.4-S2-R4, Khu đô thị, công nghiệp và dịch vụ VSIP Hải Phòng, phường Thuỷ Nguyên, TP. Hải Phòng",
+      "sector": "Đầu tư và kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": 10,
+      "name": "Công ty Cổ phần Khu công nghiệp Taseco Hải Phòng",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "direct",
+      "capital": "600,0",
+      "ownership_pct": 75.0,
+      "voting_pct": null,
+      "address": "Thửa số 5, lô SH.4-S2-R4, Khu đô thị, công nghiệp và dịch vụ VSIP Hải Phòng, phường Thuỷ Nguyên, TP. Hải Phòng",
+      "sector": "Đầu tư và kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": 11,
+      "name": "Công ty TNHH Đầu tư Taseco Hà Nam",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "direct",
+      "capital": "720,0",
+      "ownership_pct": 80.0,
+      "voting_pct": null,
+      "address": "Số nhà SH 3.2, TTTM Vạn Hải Lý, đường Lê Chân, Phường Châu Sơn, tỉnh Ninh Bình",
+      "sector": "Đầu tư và kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": 12,
+      "name": "Công ty Cổ phần Bất động sản Taseco Miền Nam",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "direct",
+      "capital": "100,0",
+      "ownership_pct": 80.0,
+      "voting_pct": null,
+      "address": "34 Phan Đình Giót, phường Tân Sơn Hòa, TP. Hồ Chí Minh",
+      "sector": "Đầu tư và kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": 1,
+      "name": "Công ty Cổ phần Bao bì Việt Nam",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "indirect",
+      "capital": "176,5",
+      "ownership_pct": 45.52,
+      "voting_pct": null,
+      "address": "Số 1283 đường Giải Phóng, phường Hoàng Mai, TP. Hà Nội",
+      "sector": "Đầu tư và kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": 2,
+      "name": "Công ty Cổ phần Xây dựng IKCONS",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "indirect",
+      "capital": "100,0",
+      "ownership_pct": 35.03,
+      "voting_pct": null,
+      "address": "Tầng 7, tòa nhà ICON4 Tower, số 243A Đê La Thành, phường Láng, TP. Hà Nội",
+      "sector": "Xây dựng nhà để ở",
+      "confidence": "high"
+    },
+    {
+      "stt": 3,
+      "name": "Công ty TNHH Quản lý tòa nhà ALC Hạ Long",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "indirect",
+      "capital": "5,0",
+      "ownership_pct": 99.0,
+      "voting_pct": null,
+      "address": "Lô đất H30-H33, Bán đảo số 2, khu đô thị dịch vụ Hùng Thắng, phường Bãi Cháy, tỉnh Quảng Ninh",
+      "sector": "Quản lý và khai thác toà nhà",
+      "confidence": "high"
+    },
+    {
+      "stt": 4,
+      "name": "Công ty Cổ phần Nước sạch Duy Tiên",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "indirect",
+      "capital": "150,0",
+      "ownership_pct": 51.44,
+      "voting_pct": null,
+      "address": "Số nhà SH 3.2, TTTM Vạn Hải Lý, đường Lê Chân, Phường Châu Sơn, tỉnh Ninh Bình",
+      "sector": "Khai thác, xử lý và cung cấp nước",
+      "confidence": "high"
+    },
+    {
+      "stt": 1,
+      "name": "Công ty Cổ phần Đầu tư và Xây dựng số 4.2",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "6,0",
+      "ownership_pct": 20.6,
+      "voting_pct": null,
+      "address": "Tầng 7, Tòa nhà ICON4, Số 243A Đê La Thành, Phường Láng, TP. Hà Nội",
+      "sector": "Đầu tư và kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": 2,
+      "name": "Công ty Cổ phần Bất động sản Tràng An",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "12,0",
+      "ownership_pct": 24.98,
+      "voting_pct": null,
+      "address": "Tầng 12, Tòa nhà Sudico, KĐT Mỹ Đình - Mễ Trì, Phường Từ Liêm, TP. Hà Nội",
+      "sector": "Cho thuê, điều hành, quản lý nhà và đất không để ở",
+      "confidence": "high"
+    },
+    {
+      "stt": 6,
+      "name": "Công ty Cổ phần ALC Hạ Long",
+      "alias": "Công ty ALC Hạ Long",
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 99.0,
+      "voting_pct": 99.0,
+      "address": "Lô đất H30-H33 bán đảo số 2, khu đô thị dịch vụ Hùng Thắng, phường Bãi Cháy, tỉnh Quảng Ninh, Việt Nam",
+      "sector": "Hoạt động tư vấn quản lý (Quản lý khách sạn).",
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2806,
+  "duplicate_rows_removed": 34
+}

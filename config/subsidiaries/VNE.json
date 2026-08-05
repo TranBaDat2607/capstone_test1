@@ -1,0 +1,62 @@
+{
+  "ticker": "VNE",
+  "source_doc": "2016_VNE_Baocaothuongnien_2015.pdf",
+  "source_pages": [
+    55
+  ],
+  "as_of": 2015,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "relationship": "associate",
+      "pages": [
+        55
+      ],
+      "n_rows": 3,
+      "n_high_confidence": 3
+    }
+  ],
+  "companies": [
+    {
+      "stt": 1,
+      "name": "Công ty CP Xây dựng điện VNECO 2",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 36.49,
+      "voting_pct": null,
+      "address": "Nghệ An",
+      "sector": "Xây lắp các công trình lưới điện; Kinh doanh các thiết bị điện;...",
+      "confidence": "high"
+    },
+    {
+      "stt": 4,
+      "name": "Công ty CP Xây dựng điện VNECO 7",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 31.16,
+      "voting_pct": null,
+      "address": "Gia Lai",
+      "sector": "Xây lắp các công trình lưới điện; Kinh doanh các thiết bị điện;...",
+      "confidence": "high"
+    },
+    {
+      "stt": 5,
+      "name": "Công ty CP Xây dựng điện VNECO 10",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 30.05,
+      "voting_pct": null,
+      "address": "Bình Định",
+      "sector": "Xây lắp các công trình lưới điện; Kinh doanh các thiết bị điện;...",
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2752
+}

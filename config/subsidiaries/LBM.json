@@ -1,0 +1,49 @@
+{
+  "ticker": "LBM",
+  "source_doc": "2014_LBM_Baocaothuongnien_2013.pdf",
+  "source_pages": [
+    39
+  ],
+  "as_of": 2013,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "relationship": "subsidiary",
+      "pages": [
+        39
+      ],
+      "n_rows": 2,
+      "n_high_confidence": 2
+    }
+  ],
+  "companies": [
+    {
+      "stt": 1,
+      "name": "Công ty TNHH MTV Hiệp Thịnh Phát",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 100.0,
+      "voting_pct": 100.0,
+      "address": "17B Phù Đổng Thiên Vương, P.8, TP Đà Lạt",
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 2,
+      "name": "Công ty CP Hiệp Thành",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 58.48,
+      "voting_pct": 58.48,
+      "address": "Tam Bố, Di Linh, Lâm Đồng",
+      "sector": null,
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2861
+}

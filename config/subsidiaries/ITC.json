@@ -1,0 +1,87 @@
+{
+  "ticker": "ITC",
+  "source_doc": "2023_ITC_Baocaothuongnien_2022.pdf",
+  "source_pages": [
+    19,
+    26
+  ],
+  "as_of": 2022,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "note": "heading regex found nothing; located via content-scoring fallback (no explicit heading matched -- table page(s) identified by company-name/percent density instead)"
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        19
+      ],
+      "n_rows": 4,
+      "n_high_confidence": 4
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        26
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    }
+  ],
+  "companies": [
+    {
+      "stt": 1,
+      "name": "Cty CP xây dựng Intresco",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "40.000.000.000",
+      "ownership_pct": 80.0,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 2,
+      "name": "Cty CP Dịch vụ du lịch nhà hàng khách sạn Royal",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "200.000.000.000",
+      "ownership_pct": 75.0,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 3,
+      "name": "Cty CP Đầu tư Sài Gòn – Bình Dương",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "300.000.000.000",
+      "ownership_pct": 64.32,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 1,
+      "name": "Cty CP SX-TM-XD Long Bình",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "55.000.000.000",
+      "ownership_pct": 36.36,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2799
+}

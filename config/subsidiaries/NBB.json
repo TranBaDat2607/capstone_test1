@@ -1,0 +1,42 @@
+{
+  "ticker": "NBB",
+  "source_doc": "2023_NBB_Baocaothuongnien_2022.pdf",
+  "source_pages": [
+    48,
+    49,
+    50,
+    51
+  ],
+  "as_of": 2022,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "relationship": "associate",
+      "pages": [
+        48,
+        49,
+        50,
+        51
+      ],
+      "n_rows": 1,
+      "n_high_confidence": 1
+    }
+  ],
+  "companies": [
+    {
+      "stt": 1,
+      "name": "Công ty TNHH Đầu tư và Xây dựng Tam Phú",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 49.0,
+      "voting_pct": 49.0,
+      "address": "Tỉnh Quảng Nam",
+      "sector": "Kinh doanh bất động sản",
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2864
+}

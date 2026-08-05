@@ -1,0 +1,49 @@
+{
+  "ticker": "TPC",
+  "source_doc": "2026_TPC_Baocaothuongnien_2025.pdf",
+  "source_pages": [
+    7,
+    14
+  ],
+  "as_of": 2025,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "note": "heading regex found nothing; located via content-scoring fallback (no explicit heading matched -- table page(s) identified by company-name/percent density instead)"
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        7
+      ],
+      "n_rows": 1,
+      "n_high_confidence": 1
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        14
+      ],
+      "n_rows": 1,
+      "n_high_confidence": 1
+    }
+  ],
+  "companies": [
+    {
+      "stt": null,
+      "name": "Công ty TNHH TĐH",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "45 tỷ đồng",
+      "ownership_pct": 100.0,
+      "voting_pct": null,
+      "address": "Lô C11-C15 Cụm Công Nghiệp Nhựa Đức Hòa, Long An",
+      "sector": null,
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2764,
+  "duplicate_rows_removed": 1
+}

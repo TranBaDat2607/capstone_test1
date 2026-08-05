@@ -1,0 +1,34 @@
+{
+  "ticker": "COM",
+  "source_doc": "2013_COM_Baocaothuongnien_2012.pdf",
+  "source_pages": [
+    7,
+    65
+  ],
+  "as_of": 2012,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "note": "heading regex found nothing; located via content-scoring fallback (no explicit heading matched -- table page(s) identified by company-name/percent density instead)"
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        7
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        65
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    }
+  ],
+  "companies": [],
+  "font_diacritic_ratio": 0.272
+}

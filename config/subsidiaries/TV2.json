@@ -1,0 +1,62 @@
+{
+  "ticker": "TV2",
+  "source_doc": "2022_TV2_Baocaothuongnien_2021.pdf",
+  "source_pages": [
+    42
+  ],
+  "as_of": 2021,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "relationship": "associate",
+      "pages": [
+        42
+      ],
+      "n_rows": 3,
+      "n_high_confidence": 3
+    }
+  ],
+  "companies": [
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Năng lượng Tái tạo Sơn Mỹ",
+      "alias": "SSC",
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 25.0,
+      "voting_pct": null,
+      "address": "Bình Thuận",
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Năng lượng Tái tạo Cà Mau",
+      "alias": "CMC",
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 25.0,
+      "voting_pct": null,
+      "address": "Cà Mau",
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Đầu tư Thuỷ điện Thác Bà 2",
+      "alias": "TBC2",
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 45.0,
+      "voting_pct": null,
+      "address": "Yên Bái",
+      "sector": null,
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2834
+}

@@ -77,7 +77,7 @@ import numpy as np
 from google.genai import types
 
 from esg_kg.core.dates import date_start_key
-from esg_kg.core.llm import RateLimiter, build_gemini_client
+from esg_kg.core.llm import DEFAULT_MODEL, RateLimiter, build_gemini_client
 from esg_kg.core.naming import normalize_name
 from esg_kg.core.paths import REPO_ROOT, load_env
 
@@ -90,7 +90,8 @@ DEFAULT_SCHEMA = REPO_ROOT / "config" / "schema.json"
 DEFAULT_OUT_DIR = REPO_ROOT / "graph_output" / "resolved"
 DEFAULT_REGISTRY = REPO_ROOT / "config" / "issuer_registry.json"
 DEFAULT_STANDARDS_REGISTRY = REPO_ROOT / "config" / "standards_registry.json"
-DEFAULT_MODEL = "gemini-2.5-flash"
+# DEFAULT_MODEL (Stage C adjudication) comes from esg_kg.core.llm (GEMINI_MODEL env
+# var, default gemini-2.5-flash-lite) — see that module's docstring.
 DEFAULT_EMBED_MODEL = "gemini-embedding-001"
 DEFAULT_EMBED_DIM = 768
 DEFAULT_SIM = 0.92

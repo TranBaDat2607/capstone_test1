@@ -1,0 +1,54 @@
+{
+  "ticker": "BCE",
+  "source_doc": "2025_BCE_Baocaothuongnien_2024.pdf",
+  "source_pages": [
+    9,
+    34,
+    35,
+    36,
+    37
+  ],
+  "as_of": 2024,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "note": "heading regex found nothing; located via content-scoring fallback (no explicit heading matched -- table page(s) identified by company-name/percent density instead)"
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        9
+      ],
+      "n_rows": 1,
+      "n_high_confidence": 1
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        34,
+        35,
+        36,
+        37
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    }
+  ],
+  "companies": [
+    {
+      "stt": null,
+      "name": "Công ty TNHH MTV Sản xuất thương mại nhựa Bình Dương",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "50.000.000.000",
+      "ownership_pct": 100.0,
+      "voting_pct": null,
+      "address": "Lô c-5B & C-6B-CN, đường NA4, KCN Mỹ Phước 2, thị xã Bến Cát, tỉnh Bình Dương.",
+      "sector": null,
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2801
+}

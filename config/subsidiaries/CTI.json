@@ -1,0 +1,190 @@
+{
+  "ticker": "CTI",
+  "source_doc": "2026_CTI_Baocaothuongnien_2025.pdf",
+  "source_pages": [
+    8,
+    23,
+    41,
+    42
+  ],
+  "as_of": 2025,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "note": "heading regex found nothing; located via content-scoring fallback (no explicit heading matched -- table page(s) identified by company-name/percent density instead)"
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        8
+      ],
+      "n_rows": 6,
+      "n_high_confidence": 6
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        23
+      ],
+      "n_rows": 5,
+      "n_high_confidence": 5
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        41,
+        42
+      ],
+      "n_rows": 12,
+      "n_high_confidence": 12
+    }
+  ],
+  "companies": [
+    {
+      "stt": 1,
+      "name": "Công ty Cổ phần Đầu tư Đồng Thuận",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 83.1,
+      "voting_pct": null,
+      "address": "Số 315, đường Võ Nguyên Giáp, Phường Phước Tân, Tỉnh Đồng Nai, Việt Nam",
+      "sector": "Đầu tư xây dựng khai thác kinh doanh hạ tầng kỹ thuật đô thị theo phương thức hợp đồng xây dựng - kinh doanh - chuyển giao (BOT); Kinh doanh BĐS, quyền sử dụng đất thuộc chủ sở hữu, chủ sử dụng hoặc đi thuê.",
+      "confidence": "high"
+    },
+    {
+      "stt": 2,
+      "name": "Công ty Cổ phần Đầu tư Quốc lộ 91 Cần Thơ - An Giang",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 59.57,
+      "voting_pct": null,
+      "address": "Số 315, đường Võ Nguyên Giáp, Phường Phước Tân, Tỉnh Đồng Nai, Việt Nam",
+      "sector": "Xây dựng công trình giao thông. Đầu tư xây dựng công trình giao thông (theo phương thức hợp đồng Xây dựng - Kinh doanh - Chuyển giao (BOT); Xây dựng nhà các loại, công trình kỹ thuật dân dụng khác; Dịch vụ thu phí giao thông.",
+      "confidence": "high"
+    },
+    {
+      "stt": 3,
+      "name": "Công ty Cổ phần Đầu tư BOT An Thuận Phát",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 95.25,
+      "voting_pct": null,
+      "address": "Số 315, đường Võ Nguyên Giáp, Phường Phước Tân, Tỉnh Đồng Nai, Việt Nam",
+      "sector": "Xây dựng công trình giao thông (theo phương thức hợp đồng Xây dựng - Kinh doanh - Chuyển giao (BOT); Xây dựng công trình công ích; nhà các loại, công trình kỹ thuật dân dụng khác; Dịch vụ thu phí giao thông.",
+      "confidence": "high"
+    },
+    {
+      "stt": 4,
+      "name": "Công ty Cổ phần Đăng Kiểm Cơ Giới Cường Thuận CTI",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 93.67,
+      "voting_pct": null,
+      "address": "Số 370/2A, đường Võ Nguyên Giáp, Phường Phước Tân, Tỉnh Đồng Nai, Việt Nam",
+      "sector": "Buôn bán ô tô và xe có động cơ khác. Bảo dưỡng, sửa chữa xe ô tô và xe có động cơ khác. Kiểm tra và phân tích kỹ thuật; Chi tiết: Đăng kiểm xe cơ giới.",
+      "confidence": "high"
+    },
+    {
+      "stt": 5,
+      "name": "Công ty Cổ phần BOT 319 Cường Thuận CTI",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 67.53,
+      "voting_pct": null,
+      "address": "Số 315, đường Võ Nguyên Giáp, Phường Phước Tân, Tỉnh Đồng Nai, Việt Nam",
+      "sector": "Xây dựng công trình giao thông (theo phương thức hợp đồng Xây dựng - Kinh doanh - Chuyển giao (BOT); Xây dựng công trình công ích; nhà các loại, công trình kỹ thuật dân dụng khác; Dịch vụ thu phí giao thông.",
+      "confidence": "high"
+    },
+    {
+      "stt": 6,
+      "name": "Công ty Cổ phần Du lịch Cường Thuận CTI",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 100.0,
+      "voting_pct": null,
+      "address": "01B, đường Tôn Đức Thắng, tổ 3B, khu phố 8, Xã Trị An, Tỉnh Đồng Nai, Việt Nam",
+      "sector": "Kinh doanh khách sạn, nhà nghỉ, kinh doanh nhà hàng ăn uống, điều hành tua du lịch, vận tải hành khách đường thuỷ nội địa...",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "CTCP Đầu tư Đông Thuận",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "CTCP Đầu tư BOT An Thuận Phát",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "CTCP Đầu tư quốc lộ 91 Cần Thơ - An Giang",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "CTCP Đăng Kiểm Cơ Giới Cường Thuận CTI",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "CTCP BOT 319 Cường Thuận CTI",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2761,
+  "duplicate_rows_removed": 12
+}

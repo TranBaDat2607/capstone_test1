@@ -1,0 +1,108 @@
+{
+  "ticker": "PDR",
+  "source_doc": "2026_PDR_Baocaothuongnien_2025.pdf",
+  "source_pages": [
+    62,
+    63,
+    64,
+    65,
+    66
+  ],
+  "as_of": 2025,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "relationship": "subsidiary",
+      "pages": [
+        62,
+        63,
+        64,
+        65,
+        66
+      ],
+      "n_rows": 7,
+      "n_high_confidence": 7
+    }
+  ],
+  "companies": [
+    {
+      "name": "Công ty CP Đầu tư Bắc Cường",
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "name": "Công ty CP Đầu tư BĐS Ngô Mây",
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "name": "Công ty CP Đầu tư và Phát triển Cao Ốc Bình Dương",
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "name": "Công ty Thiên Long",
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "name": "Công ty Hòa Phú",
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "name": "Công ty TNHH Đầu tư Xây dựng Hạ tầng kỹ thuật Coinin",
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "name": "Công ty CP Đầu tư Serenity",
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.272
+}

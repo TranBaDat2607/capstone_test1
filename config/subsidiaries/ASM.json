@@ -1,0 +1,184 @@
+{
+  "ticker": "ASM",
+  "source_doc": "2026_ASM_Baocaothuongnien_2025_1.pdf",
+  "source_pages": [
+    12,
+    13
+  ],
+  "as_of": 2025,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "note": "heading regex found nothing; located via content-scoring fallback (no explicit heading matched -- table page(s) identified by company-name/percent density instead)"
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        12,
+        13
+      ],
+      "n_rows": 12,
+      "n_high_confidence": 12
+    }
+  ],
+  "companies": [
+    {
+      "stt": 1,
+      "name": "Công ty cổ phần Dũng Thịnh Phát Sài Gòn",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "33.000.000.000",
+      "ownership_pct": 66.0,
+      "voting_pct": 66.0,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 2,
+      "name": "Công ty CP Du lịch Đồng Tháp",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "68.391.109.800",
+      "ownership_pct": 86.76,
+      "voting_pct": 86.76,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 3,
+      "name": "Công ty CP Du lịch An Giang",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "159.230.701.599",
+      "ownership_pct": 71.82,
+      "voting_pct": 71.82,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 4,
+      "name": "Công ty CP Nhựt Hồng",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "167.991.740.000",
+      "ownership_pct": 60.0,
+      "voting_pct": 60.0,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 5,
+      "name": "Công ty TNHH Sao Mai Super Feed",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "400.000.000.000",
+      "ownership_pct": 100.0,
+      "voting_pct": 100.0,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 6,
+      "name": "Công ty TNHH TM Sao Mai Solar",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "20.000.000.000",
+      "ownership_pct": 100.0,
+      "voting_pct": 100.0,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 7,
+      "name": "Công ty CP Đầu tư và phát triển Đa Quốc Gia IDI",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "997.398.163.912",
+      "ownership_pct": 51.23,
+      "voting_pct": 51.23,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 8,
+      "name": "Công ty TNHH Sinh học Maiki Japan",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "8.670.000.000",
+      "ownership_pct": 51.0,
+      "voting_pct": 51.0,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 9,
+      "name": "Cty CP Điện Mặt Trời EUROPLAST Long An",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "402.500.000.000",
+      "ownership_pct": 86.4,
+      "voting_pct": 95.67,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 10,
+      "name": "Công ty CP Đầu tư Du lịch và Phát triển Thuỷ sản",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "indirect",
+      "capital": "Sở hữu gián tiếp",
+      "ownership_pct": 43.95,
+      "voting_pct": 82.67,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 11,
+      "name": "Công ty CP Đầu tư Vĩnh An Đắk Nông (công ty con của IDI)",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "indirect",
+      "capital": "Sở hữu gián tiếp",
+      "ownership_pct": 49.94,
+      "voting_pct": 97.5,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 12,
+      "name": "Công ty Cổ phần Điện Gió Sao Mai",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "7.500.000.000",
+      "ownership_pct": 75.0,
+      "voting_pct": 75.0,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2683
+}

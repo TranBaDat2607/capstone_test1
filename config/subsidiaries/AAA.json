@@ -1,0 +1,243 @@
+{
+  "ticker": "AAA",
+  "source_doc": "2026_AAA_Baocaothuongnien_2025.pdf",
+  "source_pages": [
+    14,
+    15,
+    16
+  ],
+  "as_of": 2025,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "relationship": "subsidiary",
+      "pages": [
+        14,
+        15
+      ],
+      "n_rows": 13,
+      "n_high_confidence": 13
+    },
+    {
+      "relationship": "associate",
+      "pages": [
+        15,
+        16
+      ],
+      "n_rows": 3,
+      "n_high_confidence": 3
+    }
+  ],
+  "companies": [
+    {
+      "stt": 1,
+      "name": "Công ty CP KCN kỹ thuật cao An Phát",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "1008,219",
+      "ownership_pct": 96.92,
+      "voting_pct": 96.92,
+      "address": "Khu công nghiệp kỹ thuật cao An Phát, km 47, quốc lộ 5, Phường Việt Hòa, TP Hải Phòng, Việt Nam",
+      "sector": "Phát triển hạ tầng khu công nghiệp",
+      "confidence": "high"
+    },
+    {
+      "stt": 2,
+      "name": "Công ty CP KCN kỹ thuật cao An Phát 1",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "375",
+      "ownership_pct": 97.66,
+      "voting_pct": 100.0,
+      "address": "Khu công nghiệp An Phát 1, Km 72, Quốc lộ 37, Xã An Phú, TP Hải Phòng, Việt Nam",
+      "sector": "Phát triển và kinh doanh hạ tầng Khu công nghiệp",
+      "confidence": "high"
+    },
+    {
+      "stt": 3,
+      "name": "Công ty Cổ phần Khu công nghiệp Lương Điền Ngọc Liên",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "525",
+      "ownership_pct": 97.66,
+      "voting_pct": 100.0,
+      "address": "KCN Lương Điền Ngọc Liên, Km 28 + 125, Quốc lộ 38, Xã Cẩm Giang, TP Hải Phòng, Việt Nam",
+      "sector": "Phát triển và kinh doanh hạ tầng Khu công nghiệp",
+      "confidence": "high"
+    },
+    {
+      "stt": 4,
+      "name": "Công ty CP Nhựa bao bì An Vinh",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "430",
+      "ownership_pct": 99.95,
+      "voting_pct": 99.95,
+      "address": "Khu công nghiệp kỹ thuật cao An Phát, km 47, quốc lộ 5, Phường Việt Hòa, TP Hải Phòng, Việt Nam",
+      "sector": "Sản xuất sản phẩm bao bì công nghiệp: bao jumbo, bao sling, bao PP",
+      "confidence": "high"
+    },
+    {
+      "stt": 5,
+      "name": "Công ty CP Nhựa Hà Nội",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "1.129",
+      "ownership_pct": 68.6,
+      "voting_pct": 68.6,
+      "address": "Tổ 12, Phường Phúc Lợi, TP. Hà Nội, Việt Nam",
+      "sector": "Sản xuất hạt nhựa, các sản phẩm nhựa",
+      "confidence": "high"
+    },
+    {
+      "stt": 6,
+      "name": "Công ty TNHH An Trung Industries",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "921",
+      "ownership_pct": 68.6,
+      "voting_pct": 100.0,
+      "address": "Khu công nghiệp kỹ thuật cao An Phát, km 47, quốc lộ 5, Phường Việt Hòa, TP Hải Phòng, Việt Nam",
+      "sector": "Sản xuất sản phẩm từ plastic",
+      "confidence": "high"
+    },
+    {
+      "stt": 7,
+      "name": "Công ty TNHH Phát triển Xuất nhập khẩu và Đầu tư – VIEXIM",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "20,7",
+      "ownership_pct": 68.49,
+      "voting_pct": 100.0,
+      "address": "Thôn Hảo, Xã Nguyễn Văn Linh, Tỉnh Hưng Yên, Việt Nam",
+      "sector": "Sản xuất sản phẩm từ plastic",
+      "confidence": "high"
+    },
+    {
+      "stt": 8,
+      "name": "Công ty TNHH MTV Cơ khí chính xác và Chế tạo khuôn mẫu Việt Nam (Công ty con đến ngày 26/05/2025)",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "100",
+      "ownership_pct": 68.6,
+      "voting_pct": 100.0,
+      "address": "Khu công nghiệp kỹ thuật cao An Phát, km 47, quốc lộ 5, Phường Việt Hòa, TP Hải Phòng, Việt Nam",
+      "sector": "Sản xuất sản phẩm từ plastic",
+      "confidence": "high"
+    },
+    {
+      "stt": 9,
+      "name": "Công ty CP VLXD công nghệ cao An Cường",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "426",
+      "ownership_pct": 68.6,
+      "voting_pct": 99.84,
+      "address": "Khu công nghiệp kỹ thuật cao An Phát, km 47, quốc lộ 5, Phường Việt Hòa, TP Hải Phòng, Việt Nam",
+      "sector": "Sản xuất vật liệu xây dựng, vật liệu trang trí nội thất",
+      "confidence": "high"
+    },
+    {
+      "stt": 10,
+      "name": "Công ty CP Sản xuất PBAT An Phát",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "196",
+      "ownership_pct": 47.92,
+      "voting_pct": 60.17,
+      "address": "Lô CN5-04 Khu Phi thuế quan và Khu Công nghiệp Nam Đình Vũ t, Phường Hải An, TP Hải Phòng, Việt Nam",
+      "sector": "Sản xuất sản phẩm từ plastic và cao su tổng hợp dạng nguyên sinh",
+      "confidence": "high"
+    },
+    {
+      "stt": 11,
+      "name": "An Phat International INC",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "19.850.200 USD",
+      "ownership_pct": 100.0,
+      "voting_pct": 100.0,
+      "address": "Houston, USA",
+      "sector": "Đầu tư, kinh doanh các sản phẩm màng mỏng và các sản phẩm nhựa khác",
+      "confidence": "high"
+    },
+    {
+      "stt": 12,
+      "name": "AFC EcoPlastics LLC",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "1.200.000 USD",
+      "ownership_pct": 87.5,
+      "voting_pct": 87.5,
+      "address": "USA",
+      "sector": "Kinh doanh hạt nhựa",
+      "confidence": "high"
+    },
+    {
+      "stt": 13,
+      "name": "Ankor Bioplastics Co.Ltd",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "1.836.730.000 Won",
+      "ownership_pct": 24.44,
+      "voting_pct": 51.0,
+      "address": "216, Munmakgongdan-gil, Munmak-eup, Wonju-si, Gangwon-do, Korea",
+      "sector": "Sản xuất sản phẩm từ nhựa plastic, nhựa phân hủy",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty CP Nhựa Bao Bì Vinh",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "74,999 tỷ đồng",
+      "ownership_pct": 34.84,
+      "voting_pct": 34.84,
+      "address": "Số 18, đường Phong Định Cảng, Phường Trường Vinh, Tỉnh Nghệ An, Việt Nam",
+      "sector": "Sản xuất, mua bán bao bì xi măng, bao bì PP, PE và các sản phẩm bằng nhựa, in bao bì",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty CP Giải pháp và Dịch vụ phần mềm Nam Việt",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "30 tỷ đồng",
+      "ownership_pct": 49.55,
+      "voting_pct": 50,
+      "address": "BT4 lô E9 Vimexco, đường Phạm Hùng, Phường Yên Hòa, TP Hà Nội, Việt Nam",
+      "sector": "Xuất bản phần mềm",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty CP An Tiến Industries",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "736,63 tỷ đồng",
+      "ownership_pct": 45.1,
+      "voting_pct": 45.1,
+      "address": "Khu công nghiệp phía Nam, Phường Văn Phú, Tỉnh Lào Cai, Việt Nam",
+      "sector": "Sản xuất sản phẩm từ nhựa nhựa, sản xuất phụ gia và bột đá",
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2489
+}

@@ -1,0 +1,193 @@
+{
+  "ticker": "AGG",
+  "source_doc": "2026_AGG_Baocaothuongnien_2025.pdf",
+  "source_pages": [
+    16,
+    36,
+    56,
+    57,
+    58,
+    59
+  ],
+  "as_of": 2025,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "note": "heading regex found nothing; located via content-scoring fallback (no explicit heading matched -- table page(s) identified by company-name/percent density instead)"
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        16
+      ],
+      "n_rows": 11,
+      "n_high_confidence": 11
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        36
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        56,
+        57,
+        58,
+        59
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    }
+  ],
+  "companies": [
+    {
+      "stt": 1,
+      "name": "CTCP Đầu tư Xây dựng Du lịch Phước Lộc",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "direct",
+      "capital": "20.000.000.000",
+      "ownership_pct": 99.96,
+      "voting_pct": null,
+      "address": "Số 28 Thi Sách, Phường Thắng Tam, Thành phố Vũng Tàu, Tỉnh Bà Rịa - Vũng Tàu",
+      "sector": "Kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": 2,
+      "name": "CTCP Xây dựng Lan Minh",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "direct",
+      "capital": "280.056.000.000",
+      "ownership_pct": 99.96,
+      "voting_pct": null,
+      "address": "28 Thi Sách, Phường Vũng Tàu, TP Hồ Chí Minh",
+      "sector": "Kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": 3,
+      "name": "CTCP Đầu tư Bất động sản Lê Gia",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "direct",
+      "capital": "225.004.500.000",
+      "ownership_pct": 99.99,
+      "voting_pct": null,
+      "address": "Thửa đất số 1165, tờ bản đồ số 09, khu phố Khánh Hội, Phường Tân Khánh, TP Hồ Chí Minh",
+      "sector": "Kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": 4,
+      "name": "Công ty TNHH Đầu tư Bất động sản An Gia Phú Thuận",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "direct",
+      "capital": "20.000.000.000",
+      "ownership_pct": 100.0,
+      "voting_pct": null,
+      "address": "60 Nguyễn Đình Chiểu, Phường Tân Định, TP Hồ Chí Minh",
+      "sector": "Kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": 5,
+      "name": "Công ty TNHH Western City",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "direct",
+      "capital": "718.633.561.500",
+      "ownership_pct": 99.99,
+      "voting_pct": null,
+      "address": "60 Nguyễn Đình Chiểu, Phường Tân Định, TP Hồ Chí Minh",
+      "sector": "Kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": 6,
+      "name": "CTCP Tư vấn AGI & HSR",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "direct",
+      "capital": "201.800.000.000",
+      "ownership_pct": 50.09,
+      "voting_pct": null,
+      "address": "60 Nguyễn Đình Chiểu, Phường Tân Định, TP Hồ Chí Minh",
+      "sector": "Tư vấn quản lý và đầu tư",
+      "confidence": "high"
+    },
+    {
+      "stt": 1,
+      "name": "CTCP An Gia Phú Thịnh",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "indirect",
+      "capital": "350.000.000.000",
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": "60 Nguyễn Đình Chiểu, Phường Tân Định, TP Hồ Chí Minh",
+      "sector": "Kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": 1,
+      "name": "Công ty Cổ phần Tư vấn AGI & GLC",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "132.249.550.000",
+      "ownership_pct": 21.01,
+      "voting_pct": null,
+      "address": "60 Nguyễn Đình Chiểu, Phường Tân Định, TP Hồ Chí Minh",
+      "sector": "Kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": 2,
+      "name": "CTCP Bất động sản Gia Linh",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "997.000.000.000",
+      "ownership_pct": 21.01,
+      "voting_pct": null,
+      "address": "60 Nguyễn Đình Chiểu, Phường Tân Định, TP Hồ Chí Minh",
+      "sector": "Kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": 3,
+      "name": "CTCP Quản lý và Phát triển Lộc Phát",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "180.080.000.000",
+      "ownership_pct": 40.0,
+      "voting_pct": null,
+      "address": "60 Nguyễn Đình Chiểu, Phường Tân Định, TP Hồ Chí Minh",
+      "sector": "Kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": 4,
+      "name": "Công ty TNHH Xây dựng Kinh doanh Dịch vụ Thương mại Đông Nam",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "1.135.000.000.000",
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": "60 Nguyễn Đình Chiểu, Phường Tân Định, TP Hồ Chí Minh",
+      "sector": "Kinh doanh bất động sản",
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2691
+}

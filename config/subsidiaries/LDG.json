@@ -1,0 +1,62 @@
+{
+  "ticker": "LDG",
+  "source_doc": "2022_LDG_Baocaothuongnien_2021.pdf",
+  "source_pages": [
+    6,
+    16
+  ],
+  "as_of": 2021,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "note": "heading regex found nothing; located via content-scoring fallback (no explicit heading matched -- table page(s) identified by company-name/percent density instead)"
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        6
+      ],
+      "n_rows": 2,
+      "n_high_confidence": 2
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        16
+      ],
+      "n_rows": 2,
+      "n_high_confidence": 2
+    }
+  ],
+  "companies": [
+    {
+      "stt": 1,
+      "name": "CÔNG TY CỔ PHẦN ĐẦU TƯ VÀ PHÁT TRIỂN ĐỊA ỐC NAM SÀI GÒN",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "180.000.000",
+      "ownership_pct": 99.99,
+      "voting_pct": null,
+      "address": "Tầng 2, tòa nhà 194 Golden Buidíng, 473 Điện Biên Phủ, P. 25, Q. Bình Thạnh, TP.HCM",
+      "sector": "Kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": 2,
+      "name": "CÔNG TY CỔ PHẦN THỦY SẢN BÌNH MINH",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "54.000.000",
+      "ownership_pct": 99.9,
+      "voting_pct": null,
+      "address": "Tổ 1, Ấp Hồ Tràm, Xã Phước Thuận, Huyện Xuyên Mộc, Tỉnh Bà Rịa - Vũng Tàu",
+      "sector": "Kinh danh cơ sở lưu trú du lịch, Khách Sạn",
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2703,
+  "duplicate_rows_removed": 2
+}

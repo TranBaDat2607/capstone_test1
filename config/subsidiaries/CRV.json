@@ -1,0 +1,49 @@
+{
+  "ticker": "CRV",
+  "source_doc": "2025_CRV_Baocaothuongnien_2024.pdf",
+  "source_pages": [
+    13
+  ],
+  "as_of": 2024,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "relationship": "subsidiary",
+      "pages": [
+        13
+      ],
+      "n_rows": 2,
+      "n_high_confidence": 2
+    }
+  ],
+  "companies": [
+    {
+      "stt": 1,
+      "name": "Công ty Cổ phần Xây dựng Đại Thịnh Vượng",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "159.720.000.000",
+      "ownership_pct": 99.99,
+      "voting_pct": null,
+      "address": "Tầng 8, tòa nhà Hoàng Huy, số 116 Nguyễn Đức Cảnh, Phường Lê Chân, Thành phố Hải Phòng",
+      "sector": "Kinh doanh bất động sản, quyền sử dụng đất thuộc chủ sở hữu, chủ sử dụng hoặc đi thuê",
+      "confidence": "high"
+    },
+    {
+      "stt": 2,
+      "name": "Công ty Cổ phần Phát triển Nhà Đại Lộc",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "1.820.100.000.000",
+      "ownership_pct": 99.99,
+      "voting_pct": null,
+      "address": "Số 116 Nguyễn Đức Cảnh, Phường Lê Chân, Thành phố Hải Phòng",
+      "sector": "Kinh doanh bất động sản, quyền sử dụng đất thuộc chủ sở hữu, chủ sử dụng hoặc đi thuê",
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2862
+}

@@ -1,0 +1,51 @@
+{
+  "ticker": "KHG",
+  "source_doc": "2024_KHG_Baocaothuongnien_2023.pdf",
+  "source_pages": [
+    70,
+    71
+  ],
+  "as_of": 2023,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "relationship": "subsidiary",
+      "pages": [
+        70,
+        71
+      ],
+      "n_rows": 2,
+      "n_high_confidence": 2
+    }
+  ],
+  "companies": [
+    {
+      "stt": null,
+      "name": "Công ty TNHH Đầu tư Phát triển Địa ốc An Pha",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 100.0,
+      "voting_pct": 100.0,
+      "address": null,
+      "sector": "Kinh doanh - môi giới BĐS",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty TNHH Đầu tư Kinh doanh Địa ốc An Thịnh Phát",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 100.0,
+      "voting_pct": 100.0,
+      "address": null,
+      "sector": "Kinh doanh - môi giới BĐS",
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2749
+}

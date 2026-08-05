@@ -1,0 +1,92 @@
+{
+  "ticker": "PC1",
+  "source_doc": "2026_PC1_Baocaothuongnien_2025.pdf",
+  "source_pages": [
+    22,
+    23,
+    24
+  ],
+  "as_of": 2025,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "relationship": "associate",
+      "pages": [
+        22,
+        23,
+        24
+      ],
+      "n_rows": 5,
+      "n_high_confidence": 5
+    }
+  ],
+  "companies": [
+    {
+      "stt": 1,
+      "name": "Công ty Cổ phần Gang thép Cao Bằng",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "430.063.660.000",
+      "ownership_pct": 25.09,
+      "voting_pct": null,
+      "address": "Số 52, phố Kim Đồng, phường Thục Phán, tỉnh Cao Bằng",
+      "sector": "Khai thác, chế biến và kinh doanh các loại khoáng sản.",
+      "confidence": "high"
+    },
+    {
+      "stt": 2,
+      "name": "Công ty Cổ phần Đầu tư Bất động sản CT2 (*)",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "612.245.000.000",
+      "ownership_pct": 49.0,
+      "voting_pct": null,
+      "address": "Tầng 21, Tòa nhà Capital Tower, 109 Trần Hưng Đạo, Phường Hoàn Kiếm, TP. Hà Nội",
+      "sector": "Đầu tư kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": 3,
+      "name": "Công ty Cổ phần Western Pacific",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "915.000.000.000",
+      "ownership_pct": 30.08,
+      "voting_pct": null,
+      "address": "Số 13, đường số 12, Phường An Khánh, TP. Hồ Chí Minh",
+      "sector": "Đầu tư Bất động sản khu công nghiệp",
+      "confidence": "high"
+    },
+    {
+      "stt": 4,
+      "name": "Công ty Cổ phần KCN Quốc tế Vũng Tàu (trước đây là Công ty Cổ phần Kho bãi Phú Bình)",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "50.000.000.000",
+      "ownership_pct": 36.0,
+      "voting_pct": null,
+      "address": "B04, Khu Đô Thị Barya Citi, Phường Bà Rịa, TP. Hồ Chí Minh",
+      "sector": "Cho thuê kho, nhà xưởng, lưu giữ hàng",
+      "confidence": "high"
+    },
+    {
+      "stt": 5,
+      "name": "Công ty Cổ phần Tân Thanh",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "30.000.000.000",
+      "ownership_pct": 40.0,
+      "voting_pct": null,
+      "address": "Thôn Tân Hưng, xã Thanh Lâm, tỉnh Ninh Bình",
+      "sector": "Khai thác đá, cát, sỏi, đất; chế biến đá các loại",
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2734
+}

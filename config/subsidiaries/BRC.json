@@ -1,0 +1,51 @@
+{
+  "ticker": "BRC",
+  "source_doc": "2013_BRC_Baocaothuongnien_2012.pdf",
+  "source_pages": [
+    31,
+    32
+  ],
+  "as_of": 2012,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "relationship": "subsidiary",
+      "pages": [
+        31,
+        32
+      ],
+      "n_rows": 2,
+      "n_high_confidence": 2
+    }
+  ],
+  "companies": [
+    {
+      "stt": null,
+      "name": "Nông trường cao su Phước Minh",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "260,25 triệu đồng",
+      "ownership_pct": 50,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty làm chỉ sợi Cao su",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "1.200 triệu đồng",
+      "ownership_pct": 10,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2661
+}

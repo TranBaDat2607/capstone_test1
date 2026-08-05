@@ -1,0 +1,53 @@
+{
+  "ticker": "HQC",
+  "source_doc": "2026_HQC_Baocaothuongnien_2025.pdf",
+  "source_pages": [
+    74,
+    75,
+    76
+  ],
+  "as_of": 2025,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "relationship": "associate",
+      "pages": [
+        74,
+        75,
+        76
+      ],
+      "n_rows": 2,
+      "n_high_confidence": 2
+    }
+  ],
+  "companies": [
+    {
+      "stt": null,
+      "name": "Công ty TNHH Tư vấn – Thương mại – Dịch vụ Địa ốc Hoàng Quân Nha Trang",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 40.0,
+      "voting_pct": 40.0,
+      "address": "46 Ngoại Ngọc Hầu, Phường Bắc Nha Trang, Tỉnh Khánh Hòa, Việt Nam",
+      "sector": "Kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Đầu tư Địa ốc Hoàng Quân Cần Thơ",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 39.0,
+      "voting_pct": 39.0,
+      "address": "27 – 28 Võ Nguyên Giáp, Phường Hưng Phú, Thành phố Cần Thơ, Việt Nam",
+      "sector": "Kinh doanh bất động sản",
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2832
+}

@@ -1,0 +1,52 @@
+{
+  "ticker": "PLP",
+  "source_doc": "2026_PLP_Baocaothuongnien_2025.pdf",
+  "source_pages": [
+    9
+  ],
+  "as_of": 2025,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "note": "heading regex found nothing; located via content-scoring fallback (no explicit heading matched -- table page(s) identified by company-name/percent density instead)"
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        9
+      ],
+      "n_rows": 2,
+      "n_high_confidence": 2
+    }
+  ],
+  "companies": [
+    {
+      "stt": null,
+      "name": "Công ty cổ phần sản xuất kinh doanh Neo Global",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 70.0,
+      "voting_pct": null,
+      "address": "Xóm Hợp Tiến, Xã Đông Lộc, Tỉnh Nghệ An.",
+      "sector": "Sản xuất sản phẩm từ nhựa",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty cổ phần Thương mại và Du lịch Tân Việt An",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 49.5,
+      "voting_pct": null,
+      "address": "Số 84, đường Hậu Cần, Phường Bãi Cháy, Thành phố Hạ Long, Tỉnh Quảng Ninh.",
+      "sector": "Kinh doanh bất động sản",
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2728
+}

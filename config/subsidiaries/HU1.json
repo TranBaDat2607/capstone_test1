@@ -1,0 +1,36 @@
+{
+  "ticker": "HU1",
+  "source_doc": "2023_HU1_Baocaothuongnien_2022.pdf",
+  "source_pages": [
+    13
+  ],
+  "as_of": 2022,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "relationship": "associate",
+      "pages": [
+        13
+      ],
+      "n_rows": 1,
+      "n_high_confidence": 1
+    }
+  ],
+  "companies": [
+    {
+      "stt": null,
+      "name": "Công ty CP kiến trúc và xây dựng CIC-DERCOR",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "5 tỷ đồng",
+      "ownership_pct": 20.0,
+      "voting_pct": null,
+      "address": "Tầng 1, CT4 - Mỹ Đình II - Từ Liêm - Hà Nội",
+      "sector": "Thiết kế, kinh doanh nội thất",
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2839
+}

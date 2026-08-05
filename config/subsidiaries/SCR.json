@@ -1,0 +1,230 @@
+{
+  "ticker": "SCR",
+  "source_doc": "2023_SCR_Baocaothuongnien_2022.pdf",
+  "source_pages": [
+    68,
+    69,
+    70
+  ],
+  "as_of": 2022,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "relationship": "subsidiary",
+      "pages": [
+        68,
+        69
+      ],
+      "n_rows": 11,
+      "n_high_confidence": 11
+    },
+    {
+      "relationship": "associate",
+      "pages": [
+        69,
+        70
+      ],
+      "n_rows": 4,
+      "n_high_confidence": 4
+    }
+  ],
+  "companies": [
+    {
+      "stt": 1,
+      "name": "Công ty TNHH MTV kinh doanh Dịch vụ Địa ốc Sài Gòn Thương Tín",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 100.0,
+      "voting_pct": 100.0,
+      "address": "253 Hoàng Văn Thụ, Phường 2, Quận Tân Bình, Tp.HCM",
+      "sector": "Dịch vụ",
+      "confidence": "high"
+    },
+    {
+      "stt": 2,
+      "name": "Công ty Cổ phần Đầu tư Phát triển Bất động sản Đông Sài Gòn",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 100.0,
+      "voting_pct": 100.0,
+      "address": "253 Hoàng Văn Thụ, Phường 2, Quận Tân Bình, Tp.HCM",
+      "sector": "Phát triển và kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": 3,
+      "name": "Công ty Cổ phần Thương Tín Tàu Cuốc",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 99.9,
+      "voting_pct": 99.9,
+      "address": "16/9 Bùi Văn Ba, P. Tân Thuận Đông, Quận 7, Tp.HCM",
+      "sector": "Phát triển và kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": 4,
+      "name": "Công ty TNHH Dịch vụ Quản lý Bất động sản Sài Gòn Thương Tín",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 50.0,
+      "voting_pct": 50.0,
+      "address": "253 Hoàng Văn Thụ, phường 2, Quận Tân Bình, Tp.HCM",
+      "sector": "Dịch vụ",
+      "confidence": "high"
+    },
+    {
+      "stt": 5,
+      "name": "Công ty Cổ phần Mai Lan",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 90.17,
+      "voting_pct": 90.17,
+      "address": "129 Âu Cơ, phường 14, Quận Tân Bình, Tp.HCM",
+      "sector": "Dịch vụ",
+      "confidence": "high"
+    },
+    {
+      "stt": 6,
+      "name": "Công ty TNHH Thương Tín – CJ Cầu Tre",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 74.0,
+      "voting_pct": 74.0,
+      "address": "253 Hoàng Văn Thụ, phường 2, Quận Tân Bình, Tp.HCM",
+      "sector": "Phát triển và kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": 7,
+      "name": "Công ty TNHH Đầu tư Phát triển Bất động sản Hùng Anh Năm",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 99.99,
+      "voting_pct": 100.0,
+      "address": "253 Hoàng Văn Thụ, phường 2, Quận Tân Bình, Tp.HCM",
+      "sector": "Phát triển và kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": 8,
+      "name": "Công ty Cổ phần Thương Mại Nguyễn Kim Đà Nẵng",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 99.84,
+      "voting_pct": 99.85,
+      "address": "46 Điện Biên Phủ, Phường Chính Gián, Quận Thanh Khê, TP. Đà Nẵng",
+      "sector": "Sản xuất, kinh doanh, dịch vụ",
+      "confidence": "high"
+    },
+    {
+      "stt": 9,
+      "name": "Công ty TNHH Một thành viên TTC Land Retail Management",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 100.0,
+      "voting_pct": 100.0,
+      "address": "253 Hoàng Văn Thụ, phường 2, Quận Tân Bình, Tp.HCM",
+      "sector": "Dịch vụ",
+      "confidence": "high"
+    },
+    {
+      "stt": 10,
+      "name": "Công ty TNHH MTV Đầu tư Bất động sản TTC Land Phú Quốc",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 100.0,
+      "voting_pct": 100.0,
+      "address": "Tổ 11, ấp Suối Lớn, Xã Dương Tơ, Huyện Phú Quốc, Tỉnh Kiên Giang",
+      "sector": "Phát triển và kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": 11,
+      "name": "Công ty Cổ phần Đầu tư Bất động sản TTC Land Hưng Điền",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 61.0,
+      "voting_pct": 61.0,
+      "address": "253 Hoàng Văn Thụ, Phường 2, Quận Tân Bình, Tp.HCM",
+      "sector": "Phát triển và kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": 1,
+      "name": "Công ty Cổ phần Đầu tư Địa ốc Kim Thành",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": "62 Trần Huy Liệu, phường 12, quận Phú Nhuận, TPHCM",
+      "sector": "Phát triển và kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": 2,
+      "name": "Công ty Cổ phần Đầu tư SVG",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 50.0,
+      "voting_pct": null,
+      "address": "253 Hoàng Văn Thụ, Phường 2, Quận Tân Bình, TPHCM",
+      "sector": "Sản xuất và xây dựng",
+      "confidence": "high"
+    },
+    {
+      "stt": 3,
+      "name": "Công ty Cổ phần May Tiến Phát",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 22.51,
+      "voting_pct": 22.51,
+      "address": "01 Trần Văn Danh, Phường 13, Quận Tân Bình, TPHCM",
+      "sector": "Phát triển và kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": 4,
+      "name": "Công ty Cổ phần đầu tư xây dựng Long An - Idico",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 23.98,
+      "voting_pct": 24.0,
+      "address": "Đường số 01, KDC Trung tâm phường 06, Phường 06, TP. Tân An, Long An",
+      "sector": "Phát triển và kinh doanh bất động sản",
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2789
+}

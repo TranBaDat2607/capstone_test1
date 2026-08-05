@@ -1,0 +1,52 @@
+{
+  "ticker": "HII",
+  "source_doc": "2025_HII_Baocaothuongnien_2024.pdf",
+  "source_pages": [
+    8
+  ],
+  "as_of": 2024,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "note": "heading regex found nothing; located via content-scoring fallback (no explicit heading matched -- table page(s) identified by company-name/percent density instead)"
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        8
+      ],
+      "n_rows": 2,
+      "n_high_confidence": 2
+    }
+  ],
+  "companies": [
+    {
+      "stt": 1,
+      "name": "An Thanh Bicsol Singapore PTE LTD",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "677,675 USD",
+      "ownership_pct": 100,
+      "voting_pct": 100,
+      "address": "Số 8, Temasek Boulevard # 44-00 Suntec Tower Three, Singapore",
+      "sector": "Kinh doanh hạt nhựa",
+      "confidence": "high"
+    },
+    {
+      "stt": 2,
+      "name": "CTCP Liên Vận An Tín",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "100",
+      "ownership_pct": 99,
+      "voting_pct": 99,
+      "address": "Lô CN11+CN12, cụm CN An Đồng, Thị trấn Nam Sách, huyện Nam Sách, Tỉnh Hải Dương",
+      "sector": "Vận tải hàng hóa bằng đường bộ và cung ứng dịch vụ Logistics",
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2754
+}

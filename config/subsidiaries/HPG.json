@@ -1,0 +1,529 @@
+{
+  "ticker": "HPG",
+  "source_doc": "2024_HPG_Baocaothuongnien_2023.pdf",
+  "source_pages": [
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+  ],
+  "as_of": 2023,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "relationship": "subsidiary",
+      "pages": [
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    },
+    {
+      "relationship": "subsidiary",
+      "pages": [
+        10,
+        11,
+        12,
+        13
+      ],
+      "n_rows": 19,
+      "n_high_confidence": 19
+    },
+    {
+      "relationship": "subsidiary",
+      "pages": [
+        14
+      ],
+      "n_rows": 9,
+      "n_high_confidence": 9
+    },
+    {
+      "relationship": "subsidiary",
+      "pages": [
+        14
+      ],
+      "n_rows": 9,
+      "n_high_confidence": 0
+    },
+    {
+      "relationship": "subsidiary",
+      "pages": [
+        15
+      ],
+      "n_rows": 7,
+      "n_high_confidence": 7
+    },
+    {
+      "relationship": "subsidiary",
+      "pages": [
+        15
+      ],
+      "n_rows": 7,
+      "n_high_confidence": 0
+    },
+    {
+      "relationship": "subsidiary",
+      "pages": [
+        16
+      ],
+      "n_rows": 8,
+      "n_high_confidence": 8
+    },
+    {
+      "relationship": "subsidiary",
+      "pages": [
+        16
+      ],
+      "n_rows": 8,
+      "n_high_confidence": 0
+    }
+  ],
+  "companies": [
+    {
+      "name": "Công ty TNHH Thép Hòa Phát Hưng Yên",
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "name": "Công ty CP Thép Hòa Phát Hải Dương",
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "name": "Công ty CP Thép Hòa Phát Dung Quất",
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "name": "Công ty CP Đầu tư Khoáng sản An Thông",
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "name": "Công ty CP Vận tải Biển Hòa Phát",
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "name": "Công ty TNHH Ống thép Hòa Phát",
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "name": "Công ty TNHH Tôn Hòa Phát",
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "name": "Công ty TNHH Chế tạo kim loại Hòa Phát",
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "name": "Công ty CP Sản xuất Container Hòa Phát",
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "name": "Công ty TNHH Thức ăn chăn nuôi Hòa Phát Hưng Yên",
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "name": "Công ty CP Phát triển Chăn nuôi Hòa Phát",
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "name": "Công ty TNHH Thương mại Hòa Phát",
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "name": "Công ty TNHH Gia cầm Hòa Phát",
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "name": "Công ty CP Xây dựng & Phát triển Đô thị Hòa Phát",
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "name": "Công ty CP Bất động sản Hòa Phát Hà Nội",
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "name": "Công ty CP Bất động sản Hòa Phát Sài Gòn",
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "name": "Công ty TNHH Điện lạnh Hòa Phát",
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "name": "Công ty CP Điện máy gia dụng Hòa Phát Hà Nam",
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "name": "Công ty CP Điện lạnh Hòa Phát Phú Mỹ",
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 1,
+      "name": "Công ty Cổ phần Gang Thép Hòa Phát",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "54.000",
+      "ownership_pct": 99.9986,
+      "voting_pct": null,
+      "address": "Số 66 Nguyễn Du, Phường Nguyễn Du, Quận Hai Bà Trưng, Thành phố Hà Nội, Việt Nam",
+      "sector": "Đầu tư, sản xuất, kinh doanh thép xây dựng và các hoạt động phụ trợ.",
+      "confidence": "high"
+    },
+    {
+      "stt": 2,
+      "name": "Công ty Cổ phần Đầu tư Khoáng sản An Thông",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "500",
+      "ownership_pct": 99.9586,
+      "voting_pct": null,
+      "address": "Số 415, đường Trần Phú, Phường Trần Phú, Thành phố Hà Giang, Tỉnh Hà Giang, Việt Nam",
+      "sector": "Thăm dò, khai thác, tuyển luyện, chế biến, xuất nhập khẩu khoáng sản nói chung trong đó chủ yếu là quặng sắt.",
+      "confidence": "high"
+    },
+    {
+      "stt": 3,
+      "name": "Công ty Cổ phần Thép Hòa Phát Hải Dương",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "7.000",
+      "ownership_pct": 99.9968,
+      "voting_pct": null,
+      "address": "Khu dân cư Hiệp Thượng, Phường Hiệp Sơn, Thị xã Kinh Môn, Tỉnh Hải Dương, Việt Nam",
+      "sector": "Sản xuất thép, gang, khai thác quặng sắt, khai thác và thu gom than non; bán buôn kim loại và quặng kim loại; và sản xuất, mua bán than cốc.",
+      "confidence": "high"
+    },
+    {
+      "stt": 4,
+      "name": "Công ty Cổ phần Thép Hòa Phát Dung Quất",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "46.000",
+      "ownership_pct": 99.9986,
+      "voting_pct": null,
+      "address": "Khu kinh tế Dung Quất, Xã Bình Đông, Huyện Bình Sơn, Tỉnh Quảng Ngãi, Việt Nam",
+      "sector": "Sản xuất sắt, thép, gang; sản xuất truyền tải và phân phối điện; bán buôn nhiên liệu rắn, lỏng, khí và các sản phẩm liên quan; vận tải hàng hóa ven biển và viễn dương, vận tải hàng hóa đường thủy nội địa...",
+      "confidence": "high"
+    },
+    {
+      "stt": 6,
+      "name": "Công ty Cổ phần Vận tải biển Hòa Phát",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "500",
+      "ownership_pct": 99.5186,
+      "voting_pct": null,
+      "address": "Khu dân cư Hiệp Thượng, Phường Hiệp Sơn, Thị xã Kinh Môn, Tỉnh Hải Dương, Việt Nam",
+      "sector": "Vận tải hàng hóa ven biển, đường thủy nội địa và viễn dương.",
+      "confidence": "high"
+    },
+    {
+      "stt": 7,
+      "name": "Công ty Cổ phần Sản phẩm thép Hòa Phát",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "5.500",
+      "ownership_pct": 99.9936,
+      "voting_pct": null,
+      "address": "Số 39 Nguyễn Đình Chiểu, Phường Lê Đại Hành, Quận Hai Bà Trưng, Thành phố Hà Nội, Việt Nam",
+      "sector": "Đầu tư, sản xuất, kinh doanh ống thép, tôn mạ màu và các hoạt động phụ trợ.",
+      "confidence": "high"
+    },
+    {
+      "stt": 11,
+      "name": "Công ty Cổ phần Sản xuất Container Hòa Phát",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "3.000",
+      "ownership_pct": 99.7936,
+      "voting_pct": null,
+      "address": "Lô B5, đường khu công nghiệp Phú Mỹ II (mở rộng), Phường Tân Phước, Thị xã Phú Mỹ, Tỉnh Bà Rịa - Vũng Tàu, Việt Nam",
+      "sector": "Sản xuất thùng, bể chứa và dụng cụ chứa đựng bằng kim loại.",
+      "confidence": "high"
+    },
+    {
+      "stt": 12,
+      "name": "Công ty Cổ phần Phát triển Nông nghiệp Hòa Phát",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "3.100",
+      "ownership_pct": 99.9992,
+      "voting_pct": null,
+      "address": "Khu công nghiệp Phố Nối A, Xã Giai Phạm, Huyện Yên Mỹ, Tỉnh Hưng Yên, Việt Nam",
+      "sector": "Sản xuất phân bón và hợp chất nito. Chăn nuôi lợn, chăn nuôi gia cầm, và hoạt động dịch vụ chăn nuôi. Chế biến, bảo quản thịt và các sản phẩm từ thịt. Sản xuất thức ăn gia súc, gia cầm và thủy sản.",
+      "confidence": "high"
+    },
+    {
+      "stt": 14,
+      "name": "Công ty Cổ phần Phát triển Chăn nuôi Hòa Phát",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "1.200",
+      "ownership_pct": 99.9742,
+      "voting_pct": null,
+      "address": "Khu Công nghiệp Phố Nối A, Xã Giai Phạm, Huyện Yên Mỹ, Tỉnh Hưng Yên, Việt Nam",
+      "sector": "Chăn nuôi, cung cấp heo giống, heo thịt",
+      "confidence": "high"
+    },
+    {
+      "stt": 17,
+      "name": "Công ty Cổ phần Phát triển Bất động sản Hòa Phát",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "6.000",
+      "ownership_pct": 99.9667,
+      "voting_pct": null,
+      "address": "Số 66 Nguyễn Du, Phường Nguyễn Du, Quận Hai Bà Trưng, Thành phố Hà Nội, Việt Nam",
+      "sector": "Đầu tư, xây dựng, kinh doanh bất động sản và các hoạt động phụ trợ.",
+      "confidence": "high"
+    },
+    {
+      "stt": 18,
+      "name": "Công ty Cổ phần Xây dựng và Phát triển Đô thị Hòa Phát",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "4.800",
+      "ownership_pct": 99.9359,
+      "voting_pct": null,
+      "address": "Số 39 Nguyễn Đình Chiểu, Phường Lê Đại Hành, Quận Hai Bà Trưng, Thành phố Hà Nội, Việt Nam",
+      "sector": "Xây dựng dân dụng; xây dựng công nghiệp, kinh doanh bất động sản; đầu tư và xây dựng đồng bộ hạ tầng kỹ thuật.",
+      "confidence": "high"
+    },
+    {
+      "stt": 19,
+      "name": "Công ty Cổ phần Phát triển Bất động sản Hòa Phát Sài Gòn",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "500",
+      "ownership_pct": 99.8667,
+      "voting_pct": null,
+      "address": "Số 22 Võ Văn Kiệt, Phường Nguyễn Thái Bình, Quận 1, Thành phố Hồ Chí Minh, Việt Nam",
+      "sector": "Kinh doanh bất động sản, quyền sử dụng đất thuộc chủ sở hữu, chủ sử dụng hoặc đi thuê.",
+      "confidence": "high"
+    },
+    {
+      "stt": 20,
+      "name": "Công ty Cổ phần Phát triển Bất động sản Hòa Phát Hà Nội",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "550",
+      "ownership_pct": 99.9303,
+      "voting_pct": null,
+      "address": "Số 66 Nguyễn Du, Phường Nguyễn Du, Quận Hai Bà Trưng, Thành phố Hà Nội, Việt Nam",
+      "sector": "Kinh doanh bất động sản, quyền sử dụng đất thuộc chủ sở hữu, chủ sử dụng hoặc đi thuê.",
+      "confidence": "high"
+    },
+    {
+      "stt": 21,
+      "name": "Công ty TNHH Đầu tư Phát triển Thành phố mới",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "175",
+      "ownership_pct": 99.9667,
+      "voting_pct": null,
+      "address": "Số 22 Võ Văn Kiệt, Phường Nguyễn Thái Bình, Quận 1, Thành phố Hồ Chí Minh, Việt Nam",
+      "sector": "Kinh doanh bất động sản, quyền sử dụng đất thuộc chủ sở hữu, chủ sử dụng hoặc đi thuê.",
+      "confidence": "high"
+    },
+    {
+      "stt": 22,
+      "name": "Công ty Cổ phần Điện máy gia dụng Hòa Phát",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "1.000",
+      "ownership_pct": 99.9,
+      "voting_pct": null,
+      "address": "Số 39 Nguyễn Đình Chiểu, Phường Lê Đại Hành, Quận Hai Bà Trưng, Thành phố Hà Nội, Việt Nam",
+      "sector": "Đầu tư, sản xuất, kinh doanh các sản phẩm điện máy, gia dụng.",
+      "confidence": "high"
+    },
+    {
+      "stt": 23,
+      "name": "Công ty Cổ phần Điện máy gia dụng Hòa Phát Hà Nam",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "400",
+      "ownership_pct": 99.8001,
+      "voting_pct": null,
+      "address": "Khu công nghiệp Hoà Mạc, Phường Hòa Mạc, Thị xã Duy Tiên, Tỉnh Hà Nam, Việt Nam",
+      "sector": "Sản xuất và kinh doanh thương mại sản phẩm điện lạnh.",
+      "confidence": "high"
+    },
+    {
+      "stt": 24,
+      "name": "Công ty Cổ phần Điện lạnh Hòa Phát Phú Mỹ",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "300",
+      "ownership_pct": 99.8001,
+      "voting_pct": null,
+      "address": "Lô B3, đường D9, khu công nghiệp Phú Mỹ II mở rộng, Phường Tân Phước, Thị xã Phú Mỹ, Tỉnh Bà Rịa - Vũng Tàu, Việt Nam",
+      "sector": "Sản xuất và kinh doanh thương mại sản phẩm điện lạnh.",
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2791,
+  "duplicate_rows_removed": 31
+}

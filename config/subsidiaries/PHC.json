@@ -1,0 +1,144 @@
+{
+  "ticker": "PHC",
+  "source_doc": "2024_PHC_Baocaothuongnien_2023.pdf",
+  "source_pages": [
+    7,
+    10,
+    16,
+    58
+  ],
+  "as_of": 2023,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "note": "heading regex found nothing; located via content-scoring fallback (no explicit heading matched -- table page(s) identified by company-name/percent density instead)"
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        7
+      ],
+      "n_rows": 7,
+      "n_high_confidence": 7
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        10
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        16
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        58
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    }
+  ],
+  "companies": [
+    {
+      "stt": null,
+      "name": "CÔNG TY TNHH MTV QUẢN LÝ TBXD PHỤC HƯNG",
+      "alias": "PHC Econs",
+      "relationship": "subsidiary",
+      "subtype": "direct",
+      "capital": "20 tỷ",
+      "ownership_pct": 100.0,
+      "voting_pct": null,
+      "address": null,
+      "sector": "quản lý và khai thác thiết bị xây dựng",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "CÔNG TY TNHH ĐẦU TƯ PHK",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "direct",
+      "capital": "25 tỷ",
+      "ownership_pct": 100.0,
+      "voting_pct": null,
+      "address": null,
+      "sector": "Sản xuất vật liệu xây dựng",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "CÔNG TY CP CƠ ĐIỆN PHỤC HƯNG",
+      "alias": "PHC ME",
+      "relationship": "subsidiary",
+      "subtype": "direct",
+      "capital": "5 tỷ",
+      "ownership_pct": 70.0,
+      "voting_pct": null,
+      "address": null,
+      "sector": "Quản lý và thi công cơ điện",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "CÔNG TY CP PHÚ LÂM",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "direct",
+      "capital": "88 tỷ",
+      "ownership_pct": 80.0,
+      "voting_pct": null,
+      "address": null,
+      "sector": "đầu tư thủy điện, năng lượng tái tạo",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "CÔNG TY CP ĐẦU TƯ KINH DOANH AN PHÚ HƯNG",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": "direct",
+      "capital": "180 tỷ",
+      "ownership_pct": 46.0,
+      "voting_pct": null,
+      "address": null,
+      "sector": "đầu tư kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "CÔNG TY ĐỊA ỐC AN THỊNH PHÁT",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": "direct",
+      "capital": "255 tỷ",
+      "ownership_pct": 32.0,
+      "voting_pct": null,
+      "address": null,
+      "sector": "đầu tư kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "CÔNG TY CỔ PHẦN MACHINO AN PHÚ",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": "direct",
+      "capital": "129 tỷ",
+      "ownership_pct": 30.0,
+      "voting_pct": null,
+      "address": null,
+      "sector": "đầu tư kinh doanh bất động sản",
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2813
+}

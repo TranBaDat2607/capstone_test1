@@ -1,0 +1,113 @@
+{
+  "ticker": "VPH",
+  "source_doc": "2020_VPH_Baocaothuongnien_2019.pdf",
+  "source_pages": [
+    70,
+    71,
+    72
+  ],
+  "as_of": 2019,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "relationship": "subsidiary",
+      "pages": [
+        70,
+        71
+      ],
+      "n_rows": 4,
+      "n_high_confidence": 4
+    },
+    {
+      "relationship": "associate",
+      "pages": [
+        71,
+        72
+      ],
+      "n_rows": 2,
+      "n_high_confidence": 2
+    }
+  ],
+  "companies": [
+    {
+      "stt": null,
+      "name": "Công ty Cổ Phần Dịch vụ Môi trường Đô thị Hòa Bình",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 99.0,
+      "voting_pct": 99.0,
+      "address": "Ấp 1, xã Đa Phước, huyện Bình Chánh, Tp. Hồ Chí Minh",
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Thương mại Dịch vụ Du lịch C.T.C",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 99.8,
+      "voting_pct": 99.8,
+      "address": "Số 89 Hoàng Quốc Việt, phường Phú Thuận, quận 7, Tp Hồ Chí Minh",
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Đầu tư TM DV An Hưng",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 99.0,
+      "voting_pct": 99.0,
+      "address": "15 Hoàng Quốc Việt, phường Phú Thuận, quận 7, Thành phố Hồ Chí Minh",
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Bất động sản Nhà Bè",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 98.25,
+      "voting_pct": 98.25,
+      "address": "Khu Phố 3, Đường Bến Nghé, Phường Tân Thuận Đông, Quận 7, Thành phố Hồ Chí Minh",
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Xây dựng Thuận Hưng",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 40.0,
+      "voting_pct": 40.0,
+      "address": "Số 89 Hoàng Quốc Việt, phường Phú Thuận, quận 7, Tp Hồ Chí Minh",
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Quản lý Việt Hưng",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 40.0,
+      "voting_pct": 40.0,
+      "address": "Số 89 Hoàng Quốc Việt, phường Phú Thuận, quận 7, Tp Hồ Chí Minh",
+      "sector": null,
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2838
+}

@@ -1,0 +1,89 @@
+{
+  "ticker": "PTL",
+  "source_doc": "2026_PTL_Baocaothuongnien_2025.pdf",
+  "source_pages": [
+    4,
+    5,
+    13
+  ],
+  "as_of": 2025,
+  "extraction_method": "gemini_vision_font_broken",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "note": "font_diacritic_ratio=0.055 < 0.15 (font substitution/scan suspected); text-based locate skipped, table page(s) found via vision page-classification instead. Rows from this path are ALWAYS needs_review -- no independent native text exists to validate names against."
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        4,
+        5
+      ],
+      "n_rows": 4,
+      "n_high_confidence": 0
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        13
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    }
+  ],
+  "companies": [
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Mỹ Phú Invest / My Phu Invest Joint Stock Company",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "direct",
+      "capital": null,
+      "ownership_pct": 90.16,
+      "voting_pct": null,
+      "address": "Tầng 3 Chung cư Cao tầng Mỹ Phú, số 60/68 Lâm Văn Bền, P. Tân Hưng, Tp. Hồ Chí Minh / 3rd Floor, My Phu Apartments, 60/68 Lam Van Ben St., Tan Hung Ward, Ho Chi Minh City, Vietnam.",
+      "sector": "Xây dựng và kinh doanh bất động sản / Construction and Real Estate Business",
+      "confidence": "needs_review"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Victory Consulting / Victory Consulting Joint Stock Company",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "direct",
+      "capital": null,
+      "ownership_pct": 99.99,
+      "voting_pct": null,
+      "address": "Số 12 Đường Tân Trào, P. Tân Mỹ, Tp. HCM / Floor 12, 12 Tan Trao, Tan My Ward, Ho Chi Minh City",
+      "sector": "Kinh doanh bất động sản / Real Estate Business",
+      "confidence": "needs_review"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Victory Homes / Victory Homes Joint Stock Company",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "direct",
+      "capital": null,
+      "ownership_pct": 99.99,
+      "voting_pct": null,
+      "address": "Số 12 Đường Tân Trào, P. Tân Mỹ, Tp. HCM / Floor 12, 12 Tan Trao, Tan My Ward, Ho Chi Minh City",
+      "sector": "Kinh doanh bất động sản / Real Estate Business",
+      "confidence": "needs_review"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Victory Asset / Victory Asset Joint Stock Company",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "direct",
+      "capital": null,
+      "ownership_pct": 99.99,
+      "voting_pct": null,
+      "address": "Số 12 Đường Tân Trào, P. Tân Mỹ, Tp. HCM / Floor 12, 12 Tan Trao, Tan My Ward, Ho Chi Minh City",
+      "sector": "Kinh doanh bất động sản / Real Estate Business",
+      "confidence": "needs_review"
+    }
+  ],
+  "font_diacritic_ratio": 0.055
+}

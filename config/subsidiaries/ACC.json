@@ -1,0 +1,53 @@
+{
+  "ticker": "ACC",
+  "source_doc": "2016_ACC_Baocaothuongnien_2015.pdf",
+  "source_pages": [
+    64,
+    65,
+    66
+  ],
+  "as_of": 2015,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "relationship": "subsidiary",
+      "pages": [
+        64,
+        65,
+        66
+      ],
+      "n_rows": 2,
+      "n_high_confidence": 2
+    }
+  ],
+  "companies": [
+    {
+      "stt": 1,
+      "name": "Công ty cổ phần khoáng sản Becamex",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 74.66,
+      "voting_pct": 74.66,
+      "address": "xã An Bình, huyện Phú Giáo, tỉnh Bình Dương",
+      "sector": "Khai thác khoáng sản",
+      "confidence": "high"
+    },
+    {
+      "stt": 2,
+      "name": "Công ty cổ phần đá ốp lát An Bình",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 60.0,
+      "voting_pct": 60.0,
+      "address": "Ấp Tân Thành, xã An Bình, huyện Phú Giáo, tỉnh Bình Dương",
+      "sector": "Cắt tạo dáng và hoàn thiện đá",
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2729
+}

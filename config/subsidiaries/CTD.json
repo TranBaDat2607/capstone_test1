@@ -1,0 +1,116 @@
+{
+  "ticker": "CTD",
+  "source_doc": "2023_CTD_Baocaothuongnien_2023.pdf",
+  "source_pages": [
+    33,
+    34
+  ],
+  "as_of": 2023,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "relationship": "subsidiary",
+      "pages": [
+        33,
+        34
+      ],
+      "n_rows": 7,
+      "n_high_confidence": 7
+    }
+  ],
+  "companies": [
+    {
+      "stt": 1,
+      "name": "Công ty TNHH Đầu tư Xây dựng Unicons",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "direct",
+      "capital": "94,5",
+      "ownership_pct": 100.0,
+      "voting_pct": null,
+      "address": "236/6 Điện Biên Phủ, P.17, Q.Bình Thạnh, TP.HCM",
+      "sector": "Cung cấp dịch vụ xây dựng và dịch vụ lắp đặt thiết bị",
+      "confidence": "high"
+    },
+    {
+      "stt": 2,
+      "name": "Công ty TNHH Covestcons",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "direct",
+      "capital": "1.872",
+      "ownership_pct": 100.0,
+      "voting_pct": null,
+      "address": "236/6 Điện Biên Phủ, P.17, Q.Bình Thạnh, TP.HCM",
+      "sector": "Dịch vụ môi giới và kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": 3,
+      "name": "Công ty CP CTD FutureImpact",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "indirect",
+      "capital": "15,1",
+      "ownership_pct": 96.62,
+      "voting_pct": null,
+      "address": "236/6 Điện Biên Phủ, P.17, Q.Bình Thạnh, TP.HC",
+      "sector": "Sửa chữa, lắp đặt, cho thuê và bán máy móc thiết bị và phụ tùng máy",
+      "confidence": "high"
+    },
+    {
+      "stt": 4,
+      "name": "Công ty TNHH Solaresco-1",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "indirect",
+      "capital": "15",
+      "ownership_pct": 96.62,
+      "voting_pct": null,
+      "address": "47 Lê Văn Thịnh, KP5, P.Bình Trưng Đông, TP.Thủ Đức, TP.HCM",
+      "sector": "Cho thuê máy móc, thiết bị đun nước nóng dùng năng lượng mặt trời máy móc thiết bị tiết kiệm năng lượng",
+      "confidence": "high"
+    },
+    {
+      "stt": 5,
+      "name": "Công ty TNHH HED1",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "indirect",
+      "capital": "2",
+      "ownership_pct": 100.0,
+      "voting_pct": null,
+      "address": "Tầng 9, 236/6 Điện Biên Phủ, P.17, Q.Bình Thạnh, TP.HCM",
+      "sector": "Dịch vụ spa và các dịch vụ tăng cường sức khoẻ tương tự (trừ hoạt động thể thao)",
+      "confidence": "high"
+    },
+    {
+      "stt": 6,
+      "name": "Công ty TNHH Coteccons Nest",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "indirect",
+      "capital": "1",
+      "ownership_pct": 100.0,
+      "voting_pct": null,
+      "address": "Tầng 9, 236/6 Điện Biên Phủ, P.17, Q.Bình Thạnh, TP.HCM",
+      "sector": "Kinh doanh bất động sản, quyền sử dụng đất thuộc chủ sở hữu, chủ sử dụng hoặc đi thuê",
+      "confidence": "high"
+    },
+    {
+      "stt": 7,
+      "name": "Công ty TNHH Sân Chơi Mới",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "indirect",
+      "capital": "2",
+      "ownership_pct": 100.0,
+      "voting_pct": null,
+      "address": "Tầng 9, 236/6 Điện Biên Phủ, P.17, Q.Bình Thạnh, TP.HCM",
+      "sector": "Hoạt động của các công viên vui chơi và công viên theo chủ đề",
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2674
+}

@@ -1,0 +1,40 @@
+{
+  "ticker": "CCL",
+  "source_doc": "2022_CCL_Baocaothuongnien_2021.pdf",
+  "source_pages": [
+    69,
+    70,
+    71
+  ],
+  "as_of": 2021,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "relationship": "subsidiary",
+      "pages": [
+        69,
+        70,
+        71
+      ],
+      "n_rows": 1,
+      "n_high_confidence": 1
+    }
+  ],
+  "companies": [
+    {
+      "stt": null,
+      "name": "Công ty TNHH Bán buôn Thủy sản Đại Phú Xuân",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 95.0,
+      "voting_pct": 95.0,
+      "address": "Số 56 934, đường, Ấp Hà Bô, Xã Tài Văn, Huyện Trần Đề, Tỉnh Sóc Trăng",
+      "sector": null,
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2817
+}

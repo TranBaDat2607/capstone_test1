@@ -1,0 +1,323 @@
+{
+  "ticker": "BTP",
+  "source_doc": "2026_BTP_Baocaothuongnien_2025.pdf",
+  "source_pages": [
+    10,
+    21,
+    31,
+    44,
+    49
+  ],
+  "as_of": 2025,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "note": "heading regex found nothing; located via content-scoring fallback (no explicit heading matched -- table page(s) identified by company-name/percent density instead)"
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        10
+      ],
+      "n_rows": 5,
+      "n_high_confidence": 5
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        21
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        31
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        44
+      ],
+      "n_rows": 17,
+      "n_high_confidence": 17
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        49
+      ],
+      "n_rows": 4,
+      "n_high_confidence": 4
+    }
+  ],
+  "companies": [
+    {
+      "stt": null,
+      "name": "Công ty cổ phần Thủy điện Buôn Đôn",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 25.0,
+      "voting_pct": null,
+      "address": "Tỉnh Đắk Lắk, Việt Nam",
+      "sector": "Đầu tư xây dựng các dự án nguồn điện, sản xuất và kinh doanh điện năng; quản lý vận hành, bảo dưỡng sửa chữa, cải tạo các thiết bị điện, các công trình thủy công, kiến trúc của nhà máy thủy điện",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty cổ phần Simacai",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 36.0,
+      "voting_pct": null,
+      "address": "Tỉnh Lào Cai, Việt Nam",
+      "sector": "Sản xuất điện",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty cổ phần Nhiệt điện Hải Phòng",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 2.0,
+      "voting_pct": null,
+      "address": "Thành phố Hải Phòng, Việt Nam",
+      "sector": "Sản xuất và kinh doanh điện năng",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty cổ phần Nhiệt điện Quảng Ninh",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 2.3,
+      "voting_pct": null,
+      "address": "Tỉnh Quảng Ninh, Việt Nam",
+      "sector": "Sản xuất và kinh doanh điện năng",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty cổ phần Phú Thạnh Mỹ",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 8.1,
+      "voting_pct": null,
+      "address": "Thành phố Đà Nẵng, Việt Nam",
+      "sector": "Sản xuất và kinh doanh điện năng",
+      "confidence": "high"
+    },
+    {
+      "stt": 1,
+      "name": "Tập đoàn Điện lực Việt Nam (\"EVN\")",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 2,
+      "name": "Tổng Công ty Phát điện 3 - Công ty cổ phần",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 3,
+      "name": "Công ty Mua bán điện EVN",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 4,
+      "name": "Công ty Viễn thông Điện lực và Công nghệ Thông tin",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 5,
+      "name": "Công ty cổ phần Nhiệt điện Hải Phòng",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 6,
+      "name": "Công ty cổ phần Nhiệt điện Quảng Ninh",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 7,
+      "name": "Công ty Dịch vụ Sửa chữa các Nhà máy điện",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 10,
+      "name": "Công ty cổ phần Thủy điện Vĩnh Sơn - Sông Hinh",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 11,
+      "name": "Công ty cổ phần Nhiệt điện Phả Lại",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 12,
+      "name": "Công ty CP Tư Vấn Xây dựng Điện 3",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 13,
+      "name": "Trường Cao Đẳng Điện Lực Tp.HCM",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 14,
+      "name": "Công ty Điện Lực Bà Rịa Vũng Tàu",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 15,
+      "name": "Chi Nhánh Tổng Công Ty Điện Lực Miền Nam TNHH - Công Ty Thí Nghiệm Điện Miền Nam",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 16,
+      "name": "Công ty TNHH MTV Nhiệt điện Thủ Đức",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 17,
+      "name": "Các ông/bà thành viên Hội đồng Quản trị, Ban Kiểm soát, Ban Tổng Giám đốc và Kế toán trưởng",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2856,
+  "duplicate_rows_removed": 6
+}

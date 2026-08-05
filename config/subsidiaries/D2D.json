@@ -1,0 +1,84 @@
+{
+  "ticker": "D2D",
+  "source_doc": "2017_D2D_Baocaothuongnien_2016.pdf",
+  "source_pages": [
+    5,
+    6,
+    7,
+    13,
+    25,
+    29
+  ],
+  "as_of": 2016,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "note": "heading regex found nothing; located via content-scoring fallback (no explicit heading matched -- table page(s) identified by company-name/percent density instead)"
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        5,
+        6,
+        7
+      ],
+      "n_rows": 2,
+      "n_high_confidence": 2
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        13
+      ],
+      "n_rows": 1,
+      "n_high_confidence": 1
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        25
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        29
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    }
+  ],
+  "companies": [
+    {
+      "stt": 1,
+      "name": "Công ty CP Xây dựng Số 2 Đồng Nai",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "7.448",
+      "ownership_pct": 51.0,
+      "voting_pct": null,
+      "address": "Xa lộ Hà Nội, Phường Long Bình, TP.Biên Hòa, Tỉnh Đồng Nai.",
+      "sector": "Xây dựng công trình dân dụng, công trình công ích, xây dựng nhà các loại, kinh doanh bất động sản.",
+      "confidence": "high"
+    },
+    {
+      "stt": 1,
+      "name": "Công ty TNHH Berjaya-D2D",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "83.677",
+      "ownership_pct": 25.0,
+      "voting_pct": null,
+      "address": "Tầng 6, Tòa nhà Bảo Việt, 233 Đường Đồng Khởi, Phường Bến Nghé, Quận 1, TP.HCM .",
+      "sector": "Đầu tư xây dựng cao ốc chung cư, cao ốc văn phòng, khu thương mại dịch vụ cao cấp để bán và cho thuê.",
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2828,
+  "duplicate_rows_removed": 1
+}

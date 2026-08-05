@@ -1,0 +1,52 @@
+{
+  "ticker": "CTR",
+  "source_doc": "2026_CTR_Baocaothuongnien_2025.pdf",
+  "source_pages": [
+    27
+  ],
+  "as_of": 2025,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "note": "heading regex found nothing; located via content-scoring fallback (no explicit heading matched -- table page(s) identified by company-name/percent density instead)"
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        27
+      ],
+      "n_rows": 2,
+      "n_high_confidence": 2
+    }
+  ],
+  "companies": [
+    {
+      "stt": 1,
+      "name": "Viettel Construction Cambodia",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "10",
+      "ownership_pct": 100.0,
+      "voting_pct": null,
+      "address": null,
+      "sector": "Xây lắp viễn thông và vận hành hạ tầng viễn thông tại thị trường Cambodia",
+      "confidence": "high"
+    },
+    {
+      "stt": 2,
+      "name": "Viettel Construction Myanmar",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "150",
+      "ownership_pct": 100.0,
+      "voting_pct": null,
+      "address": null,
+      "sector": "Xây lắp viễn thông và vận hành hạ tầng viễn thông tại thị trường Myanmar",
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2679
+}

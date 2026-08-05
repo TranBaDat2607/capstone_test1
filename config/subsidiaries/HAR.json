@@ -1,0 +1,49 @@
+{
+  "ticker": "HAR",
+  "source_doc": "2021_HAR_Baocaothuongnien_2020.pdf",
+  "source_pages": [
+    8
+  ],
+  "as_of": 2020,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "relationship": "subsidiary",
+      "pages": [
+        8
+      ],
+      "n_rows": 2,
+      "n_high_confidence": 2
+    }
+  ],
+  "companies": [
+    {
+      "stt": 1,
+      "name": "Công ty Cổ phần Khu Du lịch Đảo San Hô",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "144.013.720.000 đồng",
+      "ownership_pct": 99.0,
+      "voting_pct": null,
+      "address": "Thôn Tây, Xã Ninh Vân, Thị xã Ninh Hòa, tỉnh Khánh Hòa.",
+      "sector": "Resort, dịch vụ du lịch, ăn uống, giải trí.",
+      "confidence": "high"
+    },
+    {
+      "stt": 2,
+      "name": "Công ty TNHH MTV Đầu tư G Invest",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "42.000.000.000 đồng",
+      "ownership_pct": 100.0,
+      "voting_pct": null,
+      "address": "P1901 (tầng 19) Mê Linh Point tower, Số 2 Ngô Đức Kế, Phường Bến Nghé, Quận, 1, TPHCM.",
+      "sector": "Kinh doanh, cho thuê bất động sản.",
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2882
+}

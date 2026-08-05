@@ -73,14 +73,13 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from esg_kg.core.graph_patch import GraphPatch, temporal_md
-from esg_kg.core.llm import _GeminiProvider
+from esg_kg.core.llm import DEFAULT_MODEL, _GeminiProvider
 from esg_kg.core.paths import REPO_ROOT
 from esg_kg.core.schema import load_schema_sets
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
-DEFAULT_MODEL = "gemini-2.5-flash"
 DEFAULT_RESOLVED = REPO_ROOT / "graph_output" / "resolved" / "resolved_graph.json"
 DEFAULT_DEFS = REPO_ROOT / "kpi_definitions_construction.json"
 DEFAULT_SCHEMA = REPO_ROOT / "config" / "schema.json"

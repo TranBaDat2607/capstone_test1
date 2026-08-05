@@ -1,0 +1,158 @@
+{
+  "ticker": "SRF",
+  "source_doc": "2022_SRF_Baocaothuongnien_2021.pdf",
+  "source_pages": [
+    14,
+    22,
+    23,
+    24,
+    54,
+    60,
+    64,
+    65,
+    66,
+    67,
+    68
+  ],
+  "as_of": 2021,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "note": "heading regex found nothing; located via content-scoring fallback (no explicit heading matched -- table page(s) identified by company-name/percent density instead)"
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        14
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        22,
+        23,
+        24
+      ],
+      "n_rows": 7,
+      "n_high_confidence": 7
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        54
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        60
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        64,
+        65,
+        66,
+        67,
+        68
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    }
+  ],
+  "companies": [
+    {
+      "name": "CÔNG TY CỔ PHẦN KỸ THUẬT VÀ XÂY DỰNG SEAREFICO",
+      "alias": "SEAREFICO E&C",
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "150.000.000.000 đồng",
+      "ownership_pct": 99.31,
+      "voting_pct": null,
+      "address": "72 – 74 Nguyễn Thị Minh Khai, Phường Võ Thị Sáu, Quận 3, Thành phố Hồ Chí Minh",
+      "sector": "Thiết kế, cung cấp, thi công và bảo hành bảo trì các hạng mục cơ điện lạnh, xây dựng, các dây chuyền tự động hóa, nhà kho thông minh, hệ thống công nghệ; thực hiện các công trình dân dụng, công nghiệp và cung cấp các sản phẩm dịch vụ khác trong vai trò tổng thầu (Turnkey, EPC, D&B) cho các dự án công nghiệp và dân dụng.",
+      "confidence": "high"
+    },
+    {
+      "name": "CÔNG TY CỔ PHẦN BẤT ĐỘNG SẢN SEAREAL",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "100.000.000.000 đồng",
+      "ownership_pct": 98.4,
+      "voting_pct": null,
+      "address": "72-74 Nguyễn Thị Minh Khai, Phường Võ Thị Sáu, Quận 3, Thành phố Hồ Chí Minh",
+      "sector": "Quản lý, khai thác các bất động sản; hợp tác với Chủ đầu tư phát triển các dự án bất động sản; M&A các dự án bất động sản, đặc biệt là Khu công nghiệp.",
+      "confidence": "high"
+    },
+    {
+      "name": "CÔNG TY CỔ PHẦN KỸ NGHỆ LẠNH Á CHÂU (ARICO)",
+      "alias": "ARICO",
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "120.000.000.000 đồng",
+      "ownership_pct": 84.0,
+      "voting_pct": null,
+      "address": "25 – 27 Đường Trung Tâm, Khu Công Nghiệp Tân Tạo, Phường Tân Tạo A, Quận Bình Tân, Thành phố Hồ Chí Minh",
+      "sector": "Lắp đặt các công trình lạnh công nghiệp trong và ngoài nước; sản xuất, gia công chế tạo máy móc thiết bị và phụ kiện ngành cơ điện lạnh; tư vấn, thiết kế, cung cấp và lắp đặt thiết bị thi công, bảo trì sửa chữa các hệ thống, thiết bị cơ – nhiệt – điện, lạnh công nghiệp và lạnh dân dụng trong và ngoài nước.",
+      "confidence": "high"
+    },
+    {
+      "name": "CÔNG TY CỔ PHẦN CƠ ĐIỆN LẠNH SEAREE",
+      "alias": "SEAREE",
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "50.000.000.000 đồng",
+      "ownership_pct": 73.19,
+      "voting_pct": null,
+      "address": "Đường số 10, Khu Công nghiệp Hòa Khánh, Quận Liên Chiểu, Thành phố Đà Nẵng",
+      "sector": "Thiết kế, thi công, lắp đặt trọn gói các hạng mục cơ điện cho các công trình cao cấp (lạnh công nghiệp, hệ thống điều hoà không khí, hệ thống điện, hệ thống báo cháy, chống cháy và chữa cháy, thang máy, cấp thoát nước, xây dựng, trang trí nội ngoại thất, các công trình dân dụng và công nghiệp trong và ngoài nước).",
+      "confidence": "high"
+    },
+    {
+      "name": "CÔNG TY CỔ PHẦN GREENPAN",
+      "alias": "GREENPAN",
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "100.000.000.000 đồng",
+      "ownership_pct": 48.64,
+      "voting_pct": null,
+      "address": "25 – 27 Đường Trung Tâm, Khu Công Nghiệp Tân Tạo, Phường Tân Tạo A, Quận Bình Tân, Thành phố Hồ Chí Minh",
+      "sector": "Sản xuất vật liệu nhẹ, không nung; tấm Panel, tấm cách nhiệt, cửa cách nhiệt và vật liệu cách nhiệt dùng trong công nghiệp, xây dựng dân dụng, kho lạnh; tư vấn, thiết kế, cung cấp và lắp đặt thiết bị thi công, bảo trì sửa chữa các hệ thống, thiết bị cơ – nhiệt – điện, lạnh công nghiệp và lạnh dân dụng trong và ngoài nước.",
+      "confidence": "high"
+    },
+    {
+      "name": "CÔNG TY CỔ PHẦN XÂY LẮP THỪA THIÊN HUẾ",
+      "alias": "HUB",
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "190.573.160.000 đồng",
+      "ownership_pct": 36.0,
+      "voting_pct": null,
+      "address": "Lô 9 Phạm Văn Đồng, Thành phố Huế, Tỉnh Thừa Thiên Huế",
+      "sector": "Tư vấn, khảo sát, thiết kế và xây dựng các công trình dân dụng, công nghiệp, giao thông và thủy lợi, lắp đặt điện nước, trang trí nội thất, xử lý nền móng công trình, sản xuất và kinh doanh vật liệu xây dựng, đầu tư kinh doanh hạ tầng khu công nghiệp, các khu đô thị mới hoạt động, kinh doanh bất động sản, xuất nhập khẩu...",
+      "confidence": "high"
+    },
+    {
+      "name": "CÔNG TY CỔ PHẦN PHOENIX ENERGY & AUTOMATION",
+      "alias": "PHOENIX",
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "5.000.000.000 đồng",
+      "ownership_pct": 37.8,
+      "voting_pct": null,
+      "address": "72-74 Nguyễn Thị Minh Khai, Phường Võ Thị Sáu, Quận 3, Thành phố Hồ Chí Minh",
+      "sector": "Tư vấn, khảo sát, thiết kế và lắp đặt các dự án năng lượng mặt trời áp mái cho các khu công nghiệp và nhà dân; xây dựng các giải pháp tự động hóa cho các lĩnh vực gồm thủy sản, nông nghiệp, kho lạnh tự động thông minh.",
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2615
+}

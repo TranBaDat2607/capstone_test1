@@ -269,7 +269,9 @@ def test_constants_match():
     assert new_step07.DEFAULT_INPUT == REPO / "graph_output" / "resolved" / "resolved_graph.json"
     assert new_step07.DEFAULT_SCHEMA == SCHEMA_FILE
     assert new_step07.DEFAULT_OUT_DIR == REPO / "graph_output" / "crosscheck"
-    assert new_step07.DEFAULT_MODEL == "gemini-2.5-flash"
+    # DEFAULT_MODEL is re-exported from core.llm (env-driven, GEMINI_MODEL); pin its
+    # value there instead of duplicating the fallback string here.
+    assert new_step07.DEFAULT_MODEL == core_llm.DEFAULT_MODEL
     assert new_step07.DEFAULT_PROVIDER_ORDER == "gemini"
     assert new_step07.DEFAULT_RATE_LIMIT == 10
     assert new_step07.DEFAULT_MAX_LLM_PAIRS == 300

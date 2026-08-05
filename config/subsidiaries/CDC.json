@@ -1,0 +1,377 @@
+{
+  "ticker": "CDC",
+  "source_doc": "2026_CDC_Baocaothuongnien_2025.pdf",
+  "source_pages": [
+    32,
+    33,
+    34,
+    35,
+    56,
+    111,
+    112,
+    113,
+    130,
+    131,
+    132,
+    142,
+    170,
+    173,
+    233,
+    288,
+    289,
+    290
+  ],
+  "as_of": 2025,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "note": "heading regex found nothing; located via content-scoring fallback (no explicit heading matched -- table page(s) identified by company-name/percent density instead)"
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        32,
+        33,
+        34,
+        35
+      ],
+      "n_rows": 9,
+      "n_high_confidence": 9
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        56
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        111,
+        112,
+        113
+      ],
+      "n_rows": 4,
+      "n_high_confidence": 4
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        130,
+        131,
+        132
+      ],
+      "n_rows": 9,
+      "n_high_confidence": 9
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        142
+      ],
+      "n_rows": 5,
+      "n_high_confidence": 5
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        170
+      ],
+      "n_rows": 4,
+      "n_high_confidence": 4
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        173
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        233
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        288,
+        289,
+        290
+      ],
+      "n_rows": 4,
+      "n_high_confidence": 4
+    }
+  ],
+  "companies": [
+    {
+      "stt": null,
+      "name": "Công ty TNHH Kết cấu thép Chương Dương",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "13.218.000.000 đồng",
+      "ownership_pct": 100.0,
+      "voting_pct": 100.0,
+      "address": "328 Võ Văn Kiệt, phường Cầu Ông Lãnh, TP.HCM",
+      "sector": "Gia công chế tạo các sản phẩm kết cấu thép tiêu chuẩn và phi tiêu chuẩn",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty TNHH Quản lý Nhà Chương Dương - Serland",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "10.000.000.000 đồng",
+      "ownership_pct": 100.0,
+      "voting_pct": 100.0,
+      "address": "Tầng 3 (Khối đế), Lô B, Số 328-330 Võ Văn Kiệt, P. Cầu Ông Lãnh, TP.HCM",
+      "sector": "Cung cấp các dịch vụ quản lý tòa nhà",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty TNHH Xây dựng Chương Dương số 1 (i)",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "1.300.000.000 đồng",
+      "ownership_pct": 66.67,
+      "voting_pct": 66.67,
+      "address": "76/50 Lê Văn Phan, P.Phú Thọ Hòa, TP.HCM",
+      "sector": "Xây dựng dân dụng",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty TNHH Xây dựng Chương Dương Sài Gòn (i)",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "2.000.000.000 đồng",
+      "ownership_pct": 39.93,
+      "voting_pct": 90.0,
+      "address": "328 Võ Văn Kiệt, phường Cầu Ông Lãnh, TP.HCM",
+      "sector": "Xây dựng dân dụng và cung cấp dịch vụ trang trí nội thất",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Chương Dương Homeland",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "455.000.000.000 đồng",
+      "ownership_pct": 50.84,
+      "voting_pct": 50.84,
+      "address": "C5, KDC Quang Vinh, KP Cây Chàm, phường Trấn Biên, tỉnh Đồng Nai",
+      "sector": "Kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty CP Xây dựng Công trình 525",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "68.834.680.000 đồng",
+      "ownership_pct": 33.55,
+      "voting_pct": 33.55,
+      "address": "673 Trường Chinh, phường An Khê, Tp. Đà Nẵng",
+      "sector": "Xây dựng công trình hạ tầng giao thông cầu cảng",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty CP Thương mại Chương Dương",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "20.000.000.000 đồng",
+      "ownership_pct": 21.0,
+      "voting_pct": 21.0,
+      "address": "Lầu 9, tòa nhà VP Central Garden, 328 Võ Văn Kiệt, P. Cầu Ông Lãnh, TP.HCM",
+      "sector": "Kinh doanh thương mại vật liệu xây dựng",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Thép Nam Việt",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "5.000.000.000 đồng",
+      "ownership_pct": 26.0,
+      "voting_pct": 26.0,
+      "address": "S0302b, Tầng 3 Khu DVTM Central Garden - 328 Võ Văn Kiệt, P. Cầu Ông Lãnh, TP.HCM",
+      "sector": "Xây dựng dân dụng",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty CP Chương Dương Homeland - Đà Nẵng",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "213.500.000.000 đồng",
+      "ownership_pct": 31.5,
+      "voting_pct": 31.5,
+      "address": "673 Trường Chinh, phường An Khê, Tp. Đà Nẵng",
+      "sector": "Kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Xây dựng Công trình 525",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": "673 Trường Chinh, Phường An Khê, TP.Đà Nẵng",
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công Ty TNHH MTV KCT Chương Dương",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": "328 Võ Văn Kiệt, Phường Cầu Ông Lãnh, Thành phố Hồ Chí Minh",
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Cty CP Thương mại Chương Dương",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": "Lầu 9, tòa nhà văn phòng Central Garden, 328 Võ Văn Kiệt, Phường Cầu Ông Lãnh, Thành phố Hồ Chí Minh",
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 1,
+      "name": "Công ty Cổ phần Chương Dương Homeland (i)",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 50.84,
+      "voting_pct": 50.84,
+      "address": "C5, KDC Quang Vinh, khu phố 3, phường Trấn Biên, tỉnh Đồng Nai",
+      "sector": "Kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": 3,
+      "name": "Công ty TNHH Dịch vụ Quản lý nhà Chương Dương - Serland",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 100.0,
+      "voting_pct": 100.0,
+      "address": "Tầng 3 (Khối đế), Lô B, Số 328-330 Võ Văn Kiệt, phường Cầu Ông Lãnh, thành phố Hồ Chí Minh",
+      "sector": "Dịch vụ quản lý tòa nhà",
+      "confidence": "high"
+    },
+    {
+      "stt": 4,
+      "name": "Công ty TNHH Xây dựng Chương Dương Số Một (ii)",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 66.67,
+      "voting_pct": 66.67,
+      "address": "76/50 Lê Văn Phan, phường Phú Thọ Hòa, thành phố Hồ Chí Minh",
+      "sector": "Thi công xây dựng",
+      "confidence": "high"
+    },
+    {
+      "stt": 5,
+      "name": "Công ty TNHH Xây dựng Chương Dương Sài Gòn (ii)",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 39.93,
+      "voting_pct": 90.0,
+      "address": "A1003 Lầu 10, Lô A - Tòa nhà Central Garden, 225 Bến Chương Dương, phường Cầu Ông Lãnh, thành phố Hồ Chí Minh",
+      "sector": "Thi công xây dựng",
+      "confidence": "high"
+    },
+    {
+      "stt": 2,
+      "name": "Công ty Cổ phần Thương mại Chương Dương",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 21.0,
+      "voting_pct": 21.0,
+      "address": "Lầu 9, tòa nhà văn phòng Central Garden, 328 Võ Văn Kiệt, phường Cầu Ông Lãnh, thành phố Hồ Chí Minh",
+      "sector": "Kinh doanh thương mại vật liệu xây dựng",
+      "confidence": "high"
+    },
+    {
+      "stt": 3,
+      "name": "Công ty Cổ phần Tháp Nam Việt",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 26.0,
+      "voting_pct": 26.0,
+      "address": "SO302b, Tầng 3, Khu dịch vụ - thương mại, Cao ốc Central Garden, Số 328 Võ Văn Kiệt, phường Cầu Ông Lãnh, thành phố Hồ Chí Minh",
+      "sector": "Tư vấn, thi công xây dựng",
+      "confidence": "high"
+    },
+    {
+      "stt": 4,
+      "name": "Công ty Cổ phần Chương Dương Homeland - Đà Nẵng",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 31.5,
+      "voting_pct": 31.5,
+      "address": "328 Võ Văn Kiệt, phường Cầu Ông Lãnh, thành phố Hồ Chí Minh",
+      "sector": "Kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty TNHH Tư vấn Đầu tư Xây dựng FV-CONS",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 18.0,
+      "voting_pct": 18.0,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2795,
+  "duplicate_rows_removed": 15
+}

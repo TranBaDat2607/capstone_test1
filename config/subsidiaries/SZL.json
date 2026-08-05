@@ -1,0 +1,65 @@
+{
+  "ticker": "SZL",
+  "source_doc": "2025_SZL_Baocaothuongnien_2024.pdf",
+  "source_pages": [
+    74,
+    112,
+    113,
+    114
+  ],
+  "as_of": 2024,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "note": "heading regex found nothing; located via content-scoring fallback (no explicit heading matched -- table page(s) identified by company-name/percent density instead)"
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        74
+      ],
+      "n_rows": 2,
+      "n_high_confidence": 2
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        112,
+        113,
+        114
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    }
+  ],
+  "companies": [
+    {
+      "stt": 1,
+      "name": "Công ty CP Sonadezi An Bình",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "24.500.000.000 đồng",
+      "ownership_pct": 22.49,
+      "voting_pct": null,
+      "address": "Số 113-116 Lô C2, Đường 9, Khu dân cư An Bình, Thành phố Biên Hoà, Tỉnh Đồng Nai",
+      "sector": "Kinh doanh dịch vụ hạ tầng KCN và KDC - Hoạt động trên các lĩnh vực thiết kế và thi công xây dựng các công trình công nghiệp và dân dụng, hệ thống cơ-điện-lạnh, đầu tư và kinh doanh bất động sản, vật liệu xây dựng, cho thuê tài sản cố định, thiết bị thi công.",
+      "confidence": "high"
+    },
+    {
+      "stt": 2,
+      "name": "Công ty CP Sonadezi Bình Thuận",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "80.000.000.000 đồng",
+      "ownership_pct": 20.0,
+      "voting_pct": null,
+      "address": "443 khu phố 1, TT. Tân Minh, Hàm Tân, Bình Thuận",
+      "sector": "Kinh doanh dịch vụ hạ tầng KCN và KDC.",
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2621
+}

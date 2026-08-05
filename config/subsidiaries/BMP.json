@@ -1,0 +1,74 @@
+{
+  "ticker": "BMP",
+  "source_doc": "2017_BMP_Baocaothuongnien_2016.pdf",
+  "source_pages": [
+    161,
+    162,
+    163
+  ],
+  "as_of": 2016,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "relationship": "subsidiary",
+      "pages": [
+        161,
+        162
+      ],
+      "n_rows": 1,
+      "n_high_confidence": 1
+    },
+    {
+      "relationship": "associate",
+      "pages": [
+        162,
+        163
+      ],
+      "n_rows": 2,
+      "n_high_confidence": 2
+    }
+  ],
+  "companies": [
+    {
+      "stt": null,
+      "name": "Công ty TNHH một thành viên Nhựa Bình Minh Miền Bắc",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 100,
+      "voting_pct": null,
+      "address": null,
+      "sector": "Các sản phẩm dân dụng và công nghiệp từ chất dẻo và cao su",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Nhựa Đà Nẵng",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 29.05,
+      "voting_pct": null,
+      "address": "371 Trần Cao Vân, Q. Thanh Khê, TP. Đà Nẵng",
+      "sector": "Sản xuất kinh doanh xuất nhập khẩu các sản phẩm, nguyên liệu, thiết bị ngành nhựa",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần ĐT KD BĐS Bình Minh Việt",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 25.26,
+      "voting_pct": null,
+      "address": "240 Hậu Giang, Phường 9, Quận 6, TP. Hồ Chí Minh",
+      "sector": "Kinh doanh bất động sản. Buôn bán vật liệu, thiết bị lắp đặt khác trong xây dựng",
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2669
+}

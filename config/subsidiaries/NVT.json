@@ -1,0 +1,92 @@
+{
+  "ticker": "NVT",
+  "source_doc": "2026_NVT_Baocaothuongnien_2025.pdf",
+  "source_pages": [
+    5,
+    6,
+    20,
+    21
+  ],
+  "as_of": 2025,
+  "extraction_method": "gemini_vision_font_broken",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "note": "font_diacritic_ratio=0.139 < 0.15 (font substitution/scan suspected); text-based locate skipped, table page(s) found via vision page-classification instead. Rows from this path are ALWAYS needs_review -- no independent native text exists to validate names against."
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        5,
+        6
+      ],
+      "n_rows": 2,
+      "n_high_confidence": 0
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        20,
+        21
+      ],
+      "n_rows": 4,
+      "n_high_confidence": 0
+    }
+  ],
+  "companies": [
+    {
+      "stt": 1,
+      "name": "Công ty Cổ phần Du lịch Hồng Hải",
+      "alias": "Hong Hai Tourism Joint Stock Company",
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "90 tỷ đồng",
+      "ownership_pct": 51.0,
+      "voting_pct": null,
+      "address": "Thôn Văn Đăng, phường Bắc Nha Trang, Khánh Hòa",
+      "sector": "Kinh doanh khu du lịch sinh thái, dịch vụ ăn uống và lữ hành",
+      "confidence": "needs_review"
+    },
+    {
+      "stt": 2,
+      "name": "Công ty TNHH Đầu tư Du lịch Dã Hương",
+      "alias": "Da Huong Tourism Investment Company Limited",
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "439,6 tỷ đồng",
+      "ownership_pct": 99.51,
+      "voting_pct": null,
+      "address": "Tầng 6, tòa nhà Tasco, Lô HH 2-2, đường Phạm Hùng, phường Yên Hòa",
+      "sector": "Kinh doanh dịch vụ lưu trú ngắn ngày",
+      "confidence": "needs_review"
+    },
+    {
+      "stt": 3,
+      "name": "Công ty Cổ phần Khách sạn & Du lịch Bảo Việt",
+      "alias": "Bao Viet Hotel & Tourism Joint Stock Company",
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 62.1,
+      "voting_pct": 62.41,
+      "address": "Đường 706B, đồi cát bay, KP5, Mũi Né, tỉnh Lâm Đồng\n706B Sand Dune Road, Group 5, Mui Ne Ward, Lam Dong Province",
+      "sector": "Kinh doanh khu du lịch sinh thái, dịch vụ ăn uống và lữ hành.\nEcotourism business, food and beverage services, and travel services",
+      "confidence": "needs_review"
+    },
+    {
+      "stt": 4,
+      "name": "Công ty Cổ phần Phát triển Du lịch Tân An",
+      "alias": "Tan An Tourism Development Joint Stock Company",
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 56.47,
+      "voting_pct": 56.75,
+      "address": "Số 10 đường Lê Lai, phường 5, thành phố Đà Lạt, tỉnh Lâm Đồng.\nNo. 10 Le Lai Street, Ward 5, Da Lat City, Lam Dong Province, Vietnam",
+      "sector": "Kinh doanh khu du lịch sinh thái, dịch vụ ăn uống và lữ hành.\nEcotourism business, food and beverage services, and travel services",
+      "confidence": "needs_review"
+    }
+  ],
+  "font_diacritic_ratio": 0.1391,
+  "duplicate_rows_removed": 2
+}

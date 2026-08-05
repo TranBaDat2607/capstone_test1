@@ -51,6 +51,20 @@ single API key, but the multi-key shape is kept as-is under the extract-verbatim
 The bodies are duplicated in ``src/`` while the refactor is in flight (Model A — the old
 tree must keep running and cannot import from here). ``test/test_esg_kg_llm.py`` holds the
 copies equal; that arm retires when the ``src/`` twins are deleted (DESIGN.md §5.3).
+
+ONE MODEL NAME, NOT SIX (2026-08-05: gemini-2.5-flash -> gemini-2.5-flash-lite)
+``DEFAULT_MODEL`` below is the single source of truth for which Gemini chat model every
+LLM stage (``extract``, ``extract_triples``, ``fix_triples``, ``entities``, ``align_claims``,
+``claims_vs_conduct``) defaults to. Each of those stage files used to hardcode its own
+``DEFAULT_MODEL = "gemini-2.5-flash"`` — six copies to edit by hand for a model swap, which
+is exactly how this got missed the first time. They now import this constant instead. It
+reads ``GEMINI_MODEL`` from the environment so **the model can be changed by editing
+``.env`` alone**, no code edit required: set ``GEMINI_MODEL=gemini-2.5-flash`` (or any other
+Gemini model id) in ``.env`` to override the ``gemini-2.5-flash-lite`` default. ``load_env()``
+is called right below, before this constant is computed, so a plain ``import
+esg_kg.core.llm`` — even before a stage's own ``main()`` calls ``load_dotenv`` again — is
+enough to pick up ``.env``. Every stage's ``--model`` CLI flag still overrides this at
+runtime.
 """
 
 import hashlib
@@ -64,9 +78,14 @@ from typing import Dict, Optional
 from google import genai
 from google.genai import types
 
+from esg_kg.core.paths import load_env
+
 logger = logging.getLogger(__name__)
 
+load_env()  # so GEMINI_MODEL below sees .env even if no stage has loaded it yet
+
 DEFAULT_RATE_LIMIT = 10  # RPM
+DEFAULT_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash-lite")
 
 
 # --------------------------------------------------------------------------- #

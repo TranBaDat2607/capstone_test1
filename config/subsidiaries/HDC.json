@@ -1,0 +1,132 @@
+{
+  "ticker": "HDC",
+  "source_doc": "2025_HDC_Baocaothuongnien_2024.pdf",
+  "source_pages": [
+    57,
+    58,
+    59,
+    60,
+    61,
+    62
+  ],
+  "as_of": 2024,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "relationship": "subsidiary",
+      "pages": [
+        57,
+        58
+      ],
+      "n_rows": 3,
+      "n_high_confidence": 2
+    },
+    {
+      "relationship": "subsidiary",
+      "pages": [
+        58,
+        59,
+        60,
+        61,
+        62
+      ],
+      "n_rows": 4,
+      "n_high_confidence": 4
+    }
+  ],
+  "companies": [
+    {
+      "stt": null,
+      "name": "CÔNG TY CP BÊ TÔNG VÀ XÂY LẮP HODECO",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "30 tỷ đồng",
+      "ownership_pct": 60.0,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "needs_review"
+    },
+    {
+      "stt": null,
+      "name": "CÔNG TY CP XÂY DỰNG - BẤT ĐỘNG SẢN HODECO",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "15 tỷ đồng",
+      "ownership_pct": 51.0,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "CÔNG TY TNHH MTV QUẢN LÝ BẤT ĐỘNG SẢN VÀ DỊCH VỤ HODECO",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "10 tỷ đồng",
+      "ownership_pct": 100.0,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 1,
+      "name": "Công ty CP Đầu tư và XD Hodeco",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "16 tỷ đồng",
+      "ownership_pct": 35.0,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 2,
+      "name": "Công ty CP Đầu tư Xây dựng Giải trí Đại Dương Vũng Tàu",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "645 tỷ đồng",
+      "ownership_pct": 47.27,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 3,
+      "name": "Công ty CP TM&DV Bất động sản nghỉ dưỡng Ý Ngọc Bình Thuận",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "330 tỷ đồng",
+      "ownership_pct": 34.85,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 4,
+      "name": "Công ty CP Xây lắp Thừa Thiên Huế",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "262,98 tỷ đồng",
+      "ownership_pct": 37.19,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2783
+}

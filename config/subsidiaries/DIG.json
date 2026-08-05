@@ -1,0 +1,170 @@
+{
+  "ticker": "DIG",
+  "source_doc": "2022_DIG_Baocaothuongnien_2021.pdf",
+  "source_pages": [
+    71,
+    72,
+    73
+  ],
+  "as_of": 2021,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "relationship": "subsidiary",
+      "pages": [
+        71,
+        72,
+        73
+      ],
+      "n_rows": 11,
+      "n_high_confidence": 11
+    }
+  ],
+  "companies": [
+    {
+      "stt": null,
+      "name": "Công ty TNHH Du lịch DIC",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "direct",
+      "capital": null,
+      "ownership_pct": 78.3,
+      "voting_pct": 78.3,
+      "address": "Số 169 Thùy Vân, Phường 8, Thành phố Vũng Tàu, Tỉnh Bà Rịa - Vũng Tàu",
+      "sector": "Kinh doanh dịch vụ và thương mại",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty CP Thủy Cung DIC",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "direct",
+      "capital": null,
+      "ownership_pct": 96.57,
+      "voting_pct": 97.0,
+      "address": "Số 265, Đường Lê Hồng Phong, Phường 8, Thành phố Vũng Tàu, Tỉnh Bà Rịa - Vũng Tàu",
+      "sector": "Xây lắp, kinh doanh khách sạn, du lịch, dịch vụ ăn uống, vui chơi giải trí, thể thao",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty TNHH Đầu tư Phát triển Xây dựng Hà Nam",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "direct",
+      "capital": null,
+      "ownership_pct": 100.0,
+      "voting_pct": 100.0,
+      "address": "Số 12B, Đường Đinh Công Tráng, Phường Châu Sơn, Thành phố Phủ Lý, Tỉnh Hà Nam",
+      "sector": "Đầu tư kinh doanh phát triển các khu đô thị, khu công nghiệp, nhà và hạ tầng kỹ thuật",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty CP Gạch men Anh Em DIC",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "direct",
+      "capital": null,
+      "ownership_pct": 89.03,
+      "voting_pct": 89.03,
+      "address": "KCN Bắc Chu Lai, Xã Tam Hiệp, Huyện Núi Thành, Tỉnh Quảng Nam",
+      "sector": "Sản xuất sản phẩm gốm sứ, bán buôn vật liệu, khai thác khoáng sản",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty CP Đầu tư Phát triển Xây dựng Số 1",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "direct",
+      "capital": null,
+      "ownership_pct": 51.67,
+      "voting_pct": 51.67,
+      "address": "Số 265, Đường Lê Hồng Phong, Phường 8, Thành phố Vũng Tàu, Tỉnh Bà Rịa - Vũng Tàu",
+      "sector": "Đầu tư kinh doanh phát triển các khu đô thị và khu công nghiệp, đầu tư kinh doanh phát triển nhà và hạ tầng kỹ thuật đô thị",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty CP Đầu tư Phát triển - Xây dựng (DIC) Số 2",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "direct",
+      "capital": null,
+      "ownership_pct": 52.46,
+      "voting_pct": 52.46,
+      "address": "Số 5, Đường số 6, Khu đô thị Chí Linh, Phường Thắng Nhất, Thành phố Vũng Tàu, Tỉnh Bà Rịa - Vũng Tàu",
+      "sector": "Sản xuất và kinh doanh vật liệu xây dựng, xây dựng công trình nhà ở, công trình giao thông, thủy lợi; kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty CP Đầu tư Phát triển Tầm nhìn DIC",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "direct",
+      "capital": null,
+      "ownership_pct": 98.67,
+      "voting_pct": 98.67,
+      "address": "Số 265, Đường Lê Hồng Phong, Phường 8, Thành phố Vũng Tàu, Tỉnh Bà Rịa - Vũng Tàu",
+      "sector": "Kinh doanh bất động sản; hoạt động tư vấn quản lý; giáo dục, đào tạo; hoạt động chăm sóc, điều dưỡng",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty CP Đầu tư Phát triển Thương mại DIC",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "direct",
+      "capital": null,
+      "ownership_pct": 98.67,
+      "voting_pct": 98.67,
+      "address": "Số 265, Đường Lê Hồng Phong, Phường 8, Thành phố Vũng Tàu, Tỉnh Bà Rịa - Vũng Tàu",
+      "sector": "Kinh doanh bất động sản; môi giới bất động sản; tư vấn đầu tư, quản lý dự án",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty CP Đầu tư Phát triển Du lịch Thể thao Vũng Tàu",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "indirect",
+      "capital": null,
+      "ownership_pct": 64.39,
+      "voting_pct": 82.24,
+      "address": "B12 Khu trung tâm đô thị Chí Linh, Phường Nguyễn An Ninh, Thành phố Vũng Tàu, Tỉnh Bà Rịa - Vũng Tàu",
+      "sector": "Kinh doanh sân golf và các dịch vụ liên quan",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty CP Sport TOTO Việt Nam",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "indirect",
+      "capital": null,
+      "ownership_pct": 42.31,
+      "voting_pct": 65.7,
+      "address": "B12 Khu trung tâm đô thị Chí Linh, Phường Nguyễn An Ninh, Thành phố Vũng Tàu, Tỉnh Bà Rịa - Vũng Tàu",
+      "sector": "Hoạt động tư vấn quản lý",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty CP Phát triển E&S",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": "indirect",
+      "capital": null,
+      "ownership_pct": 63.11,
+      "voting_pct": 98.0,
+      "address": "B12 Khu trung tâm đô thị Chí Linh, Phường Nguyễn An Ninh, Thành phố Vũng Tàu, Tỉnh Bà Rịa - Vũng Tàu",
+      "sector": "Xây dựng công trình kỹ thuật dân dụng khác",
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2767
+}

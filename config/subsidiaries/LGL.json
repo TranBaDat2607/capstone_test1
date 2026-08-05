@@ -1,0 +1,69 @@
+{
+  "ticker": "LGL",
+  "source_doc": "2024_LGL_Baocaothuongnien_2023.pdf",
+  "source_pages": [
+    97,
+    98
+  ],
+  "as_of": 2023,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "relationship": "subsidiary",
+      "pages": [
+        97,
+        98
+      ],
+      "n_rows": 4,
+      "n_high_confidence": 4
+    }
+  ],
+  "companies": [
+    {
+      "name": "Công ty Cổ phần Thương mại Dịch vụ Nghĩa Đô",
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 52.46,
+      "voting_pct": 52.46,
+      "address": "Số 1 phố Nghĩa Tân, phường Nghĩa Tân, quận Cầu Giấy, Hà Nội",
+      "sector": "Kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "name": "Công ty Cổ phần Đầu tư Rivera",
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 48.0,
+      "voting_pct": 48.0,
+      "address": "Tầng 1, Tòa Nhà Packsimex, 52 Đông Du, phường Bến Nghé, quận 1, TP Hồ Chí Minh",
+      "sector": "Kinh doanh bất động sản và xây dựng chuyên dụng",
+      "confidence": "high"
+    },
+    {
+      "name": "Công ty Cổ phần Quản lý và Khai thác Bất động sản Rivera Homes",
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 49.0,
+      "voting_pct": 49.0,
+      "address": "Tầng 3, Lô A và Lô B Tòa nhà Rivera Park Sài Gòn, 7/28 Thành Thái, phường 14, quận 10, TP Hồ Chí Minh",
+      "sector": "Dịch vụ quản lý tòa nhà",
+      "confidence": "high"
+    },
+    {
+      "name": "Công ty Cổ phần Xây dựng Hạ Long",
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 40.0,
+      "voting_pct": 40.0,
+      "address": "Chung cư và dịch vụ sau đường bao biển Lán bè - Cột 8 - đường Điện Biên Phủ, phường Hồng Hải, TP Hạ Long, tỉnh Quảng Ninh",
+      "sector": "Kinh doanh bất động sản",
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2722
+}

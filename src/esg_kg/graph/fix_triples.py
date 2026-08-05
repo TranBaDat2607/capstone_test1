@@ -60,7 +60,7 @@ from typing import Any, Dict, List, Optional, Set, Tuple
 from dotenv import load_dotenv
 
 from esg_kg.core.dates import date_start_key, normalize_date_string
-from esg_kg.core.llm import GeminiContextCache, RateLimiter, build_gemini_client
+from esg_kg.core.llm import DEFAULT_MODEL, GeminiContextCache, RateLimiter, build_gemini_client
 from esg_kg.core.paths import REPO_ROOT
 from esg_kg.core.schema import load_schema_sets, validate_triple
 
@@ -71,7 +71,8 @@ logging.getLogger("google_genai.models").setLevel(logging.WARNING)
 DEFAULT_INPUT_DIR = REPO_ROOT / "graph_output" / "graphs"
 DEFAULT_SCHEMA = REPO_ROOT / "config" / "schema.json"
 DEFAULT_OUT_DIR = REPO_ROOT / "graph_output" / "validated"
-DEFAULT_MODEL = "gemini-2.5-flash"
+# DEFAULT_MODEL comes from esg_kg.core.llm (GEMINI_MODEL env var, default
+# gemini-2.5-flash-lite) — see that module's docstring.
 DEFAULT_BATCH_SIZE = 25
 DEFAULT_RATE_LIMIT = 10
 

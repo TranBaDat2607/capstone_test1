@@ -1,0 +1,125 @@
+{
+  "ticker": "HPX",
+  "source_doc": "2026_HPX_Baocaothuongnien_2025.pdf",
+  "source_pages": [
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "as_of": 2025,
+  "extraction_method": "gemini_vision_font_broken",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "note": "font_diacritic_ratio=0.000 < 0.15 (font substitution/scan suspected); text-based locate skipped, table page(s) found via vision page-classification instead. Rows from this path are ALWAYS needs_review -- no independent native text exists to validate names against."
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "n_rows": 7,
+      "n_high_confidence": 0
+    }
+  ],
+  "companies": [
+    {
+      "stt": 1,
+      "name": "Công ty TNHH MTV Hải Phát - Bình Thuận",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "750.000.000.000",
+      "ownership_pct": 100.0,
+      "voting_pct": null,
+      "address": "Khu nhà ở Phú Hải, đường Võ Nguyên Giáp, thuộc chủ sở hữu, chủ sử dụng hoặc đi thuê tại phường Phú Hải, thành phố Phan Thiết, tỉnh Bình Thuận, Việt Nam",
+      "sector": "Kinh doanh bất động sản, quyền sử dụng đất thuộc chủ sở hữu, chủ sử dụng hoặc đi thuê",
+      "confidence": "needs_review"
+    },
+    {
+      "stt": 2,
+      "name": "Công ty TNHH MTV Đầu tư và Phát triển Địa ốc Ruby",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "1.000.500.000.000",
+      "ownership_pct": 100.0,
+      "voting_pct": null,
+      "address": "Tầng 5, tòa CT3, The Pride, Khu ĐTM An Hưng, Phường Hà Đông, Thành phố Hà Nội, Hà Nội, Việt Nam",
+      "sector": "Kinh doanh bất động sản, quyền sử dụng đất thuộc chủ sở hữu, chủ sử dụng hoặc đi thuê",
+      "confidence": "needs_review"
+    },
+    {
+      "stt": 3,
+      "name": "Công ty TNHH Một thành viên Địa ốc Heritage Việt Nam",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "250.000.000.000",
+      "ownership_pct": 100.0,
+      "voting_pct": null,
+      "address": "Số 9 Lý Thường Kiệt, Phường Phú Nhuận, Thành phố Huế, Tỉnh Thừa Thiên Huế.",
+      "sector": "Kinh doanh bất động sản, quyền sử dụng đất thuộc chủ sở hữu, chủ sử dụng hoặc đi thuê",
+      "confidence": "needs_review"
+    },
+    {
+      "stt": 4,
+      "name": "Công ty TNHH Một thành viên Đầu tư và Phát triển Topaz PM Việt Nam",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "5.000.000.000",
+      "ownership_pct": 100.0,
+      "voting_pct": null,
+      "address": "Tầng 5, Tòa CT3, The Pride, Khu ĐTM An Hưng, Phường Hà Đông, Thành phố Hà Nội, Việt Nam",
+      "sector": "Hoạt động kiến trúc và tư vấn kỹ thuật có liên quan, tư vấn đầu tư",
+      "confidence": "needs_review"
+    },
+    {
+      "stt": 5,
+      "name": "Công ty TNHH Một thành viên Diamond IC",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "5.000.000.000",
+      "ownership_pct": 100.0,
+      "voting_pct": null,
+      "address": "Tầng 5, Tòa CT3, The Pride, Khu ĐTM An Hưng, Phường Hà Đông, Thành phố Hà Nội, Việt Nam",
+      "sector": "Hoạt động kiến trúc và tư vấn kỹ thuật có liên quan, tư vấn đầu tư",
+      "confidence": "needs_review"
+    },
+    {
+      "stt": 6,
+      "name": "Công ty TNHH Mai Pha Peninsula",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "198.108.200.000",
+      "ownership_pct": 70.0,
+      "voting_pct": null,
+      "address": "Số 310, đường Hùng Vương, thôn Rọ Phải, xã Mai Pha, thành phố Lạng Sơn, tỉnh Lạng Sơn, Việt Nam",
+      "sector": "Kinh doanh bất động sản, quyền sử dụng đất thuộc chủ sở hữu, chủ sử dụng hoặc đi thuê",
+      "confidence": "needs_review"
+    },
+    {
+      "stt": 7,
+      "name": "Công ty TNHH",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "795.000.000.000",
+      "ownership_pct": 100.0,
+      "voting_pct": null,
+      "address": "Tầng 5, tòa B2, Roman",
+      "sector": "Hoạt động hỗ trợ dịch vụ tài chính",
+      "confidence": "needs_review"
+    }
+  ],
+  "font_diacritic_ratio": 0.0005
+}

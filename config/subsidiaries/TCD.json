@@ -1,0 +1,92 @@
+{
+  "ticker": "TCD",
+  "source_doc": "2024_TCD_Baocaothuongnien_2023.pdf",
+  "source_pages": [
+    107,
+    108,
+    109
+  ],
+  "as_of": 2023,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "relationship": "subsidiary",
+      "pages": [
+        107,
+        108,
+        109
+      ],
+      "n_rows": 5,
+      "n_high_confidence": 5
+    }
+  ],
+  "companies": [
+    {
+      "stt": null,
+      "name": "Công ty TNHH Liên Doanh Khai Thác Chế Biến Vật Liệu Xây Dựng An Giang",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 51.0,
+      "voting_pct": 50.0,
+      "address": "Ấp Rò Leng, Xã Châu Lăng, Huyện Tri Tôn, Tỉnh An Giang.",
+      "sector": "Khai thác đá, cát, sỏi, đất sét",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Nước Sạch Life Purity (*)",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 51.0,
+      "voting_pct": 51.0,
+      "address": "27C Quốc Hương, Phường Thảo Điền, Tp. Thủ Đức, Tp. Hồ Chí Minh.",
+      "sector": "Khai thác, xử lý và cung cấp nước",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần TCD Plus",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 80.0,
+      "voting_pct": 80.0,
+      "address": "89 Cách Mạng Tháng Tám, Phường Bến Thành, Quận 1, Tp. Hồ Chí Minh.",
+      "sector": "Hoạt động dịch vụ hỗ trợ trực tiếp cho vận tải đường bộ",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty TNHH Tracodi E&C",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 99.8,
+      "voting_pct": 99.8,
+      "address": "89 Cách Mạng Tháng Tám, Phường Bến Thành, Quận 1, Tp. Hồ Chí Minh.",
+      "sector": "Xây dựng công trình đường bộ",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Taxi Việt Nam",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 51.0,
+      "voting_pct": 51.0,
+      "address": "Lô IV - 15B, Đường số 4, KCN Tân Bình, Phường Tây Thạnh, Quận Tân Phú, Tp. Hồ Chí Minh.",
+      "sector": "Vận tải hành khách đường bộ trong nội thành, ngoại thành",
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2607
+}

@@ -1,0 +1,214 @@
+{
+  "ticker": "EVG",
+  "source_doc": "2024_EVG_Baocaothuongnien_2023.pdf",
+  "source_pages": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+  ],
+  "as_of": 2023,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "relationship": "subsidiary",
+      "pages": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    },
+    {
+      "relationship": "subsidiary",
+      "pages": [
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "n_rows": 8,
+      "n_high_confidence": 8
+    },
+    {
+      "relationship": "subsidiary",
+      "pages": [
+        12
+      ],
+      "n_rows": 4,
+      "n_high_confidence": 1
+    }
+  ],
+  "companies": [
+    {
+      "stt": 1,
+      "name": "CÔNG TY CP EVERLAND VÂN ĐỒN",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 2,
+      "name": "CÔNG TY CP EVERLAND PHÚ YÊN",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 3,
+      "name": "CÔNG TY CP ĐẦU TƯ XUÂN ĐÀI BAY",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 4,
+      "name": "CÔNG TY META TOUR",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 5,
+      "name": "CÔNG TY CP EVERLAND AN GIANG",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 6,
+      "name": "CÔNG TY CP ĐẦU TƯ VÀ DỊCH VỤ QUỐC TẾ CRH",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 7,
+      "name": "CÔNG TY CP EVERLAND ĐÔNG SƠN",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 8,
+      "name": "CÔNG TY CP EVERLAND VĨNH PHÚC",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "CÔNG TY CỔ PHẦN EVERLAND VÂN ĐỒN",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "750 tỷ đồng",
+      "ownership_pct": 60.0,
+      "voting_pct": null,
+      "address": "Tòa nhà Mai Quyền Paradise, thôn 1, xã Hạ Long, huyện Vân Đồn, tỉnh Quảng Ninh.",
+      "sector": "Kinh doanh bất động sản; Xây dựng nhà các loại; Xây dựng công trình kỹ thuật dân dụng khác; Dịch vụ lưu trú; Đầu tư, quản lý và khai thác các sản phẩm bất động sản.",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "CÔNG TY CỔ PHẦN EVERLAND PHÚ YÊN",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "400 tỷ đồng",
+      "ownership_pct": 91.25,
+      "voting_pct": null,
+      "address": "Tầng 3 Tòa nhà 97-99 Láng Hạ, phường Láng hạ, quận Đống Đa, thành phố Hà Nội, Việt Nam.",
+      "sector": "Kinh doanh bất động sản; Xây dựng nhà các loại; Xây dựng công trình kỹ thuật dân dụng khác; Dịch vụ lưu trú, đầu tư, quản lý và khai thác các sản phẩm bất động sản.",
+      "confidence": "needs_review"
+    },
+    {
+      "stt": null,
+      "name": "CÔNG TY CỔ PHẦN ĐẦU TƯ XUÂN ĐÀI BAY",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "250 tỷ đồng",
+      "ownership_pct": 90.0,
+      "voting_pct": null,
+      "address": "Tầng 3 Tòa nhà 97 - 99 Láng Hạ, phường Láng hạ, quận Đống Đa, thành phố Hà Nội.",
+      "sector": "Kinh doanh bất động sản, Xây dựng nhà các loại; Lắp đặt hệ thống điện; Hoàn thiện công trình xây dựng, Dịch vụ lưu trú.",
+      "confidence": "needs_review"
+    },
+    {
+      "stt": null,
+      "name": "CÔNG TY CỔ PHẦN META TOUR",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "10 tỷ đồng",
+      "ownership_pct": 90.0,
+      "voting_pct": null,
+      "address": "Tầng 3 Tòa nhà 97 - 99 Láng Hạ, phường Láng hạ, quận Đống Đa, thành phố Hà Nội.",
+      "sector": "Lữ hành nội địa, lữ hành quốc tế, dịch vụ lưu trú.",
+      "confidence": "needs_review"
+    }
+  ],
+  "font_diacritic_ratio": 0.2778
+}

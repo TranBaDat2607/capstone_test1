@@ -1,0 +1,55 @@
+{
+  "ticker": "TTF",
+  "source_doc": "2015_TTF_Baocaothuongnien_2014.pdf",
+  "source_pages": [
+    103,
+    104,
+    105,
+    106
+  ],
+  "as_of": 2014,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "relationship": "associate",
+      "pages": [
+        103,
+        104,
+        105,
+        106
+      ],
+      "n_rows": 2,
+      "n_high_confidence": 2
+    }
+  ],
+  "companies": [
+    {
+      "stt": 1,
+      "name": "Công ty CP Bao bì Trường Thành",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "6,500,000,000",
+      "ownership_pct": 44,
+      "voting_pct": 23,
+      "address": "19 đường số 11, KP 01, phường Linh Tây, quận Thủ Đức, Tp. HCM",
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 2,
+      "name": "Công ty TNHH Trồng Rừng Trường Thành OJI",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "7,018,000.00 USD",
+      "ownership_pct": 51,
+      "voting_pct": 51,
+      "address": "81 Nguyễn Tất Thành, phường 02, Tp. Tuy Hòa, tỉnh Phú Yên",
+      "sector": null,
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2837
+}

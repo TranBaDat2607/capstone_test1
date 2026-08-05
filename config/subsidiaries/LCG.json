@@ -1,0 +1,22 @@
+{
+  "ticker": "LCG",
+  "source_doc": "2018_LCG_Baocaothuongnien_2017.pdf",
+  "source_pages": [
+    43
+  ],
+  "as_of": 2017,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "relationship": "subsidiary",
+      "pages": [
+        43
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    }
+  ],
+  "companies": [],
+  "font_diacritic_ratio": 0.2609
+}

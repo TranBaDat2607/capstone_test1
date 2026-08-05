@@ -1,0 +1,101 @@
+{
+  "ticker": "IJC",
+  "source_doc": "2026_IJC_Baocaothuongnien_2025.pdf",
+  "source_pages": [
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22
+  ],
+  "as_of": 2025,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "relationship": "associate",
+      "pages": [
+        11,
+        12
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    },
+    {
+      "relationship": "associate",
+      "pages": [
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21
+      ],
+      "n_rows": 3,
+      "n_high_confidence": 3
+    },
+    {
+      "relationship": "associate",
+      "pages": [
+        21,
+        22
+      ],
+      "n_rows": 3,
+      "n_high_confidence": 3
+    }
+  ],
+  "companies": [
+    {
+      "stt": 1,
+      "name": "Công ty Cổ phần Phát triển Hạ tầng Kỹ thuật Becamex Bình Phước",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "2.698.375.000.000",
+      "ownership_pct": 40.33,
+      "voting_pct": null,
+      "address": "Quốc lộ 14, tổ 8, khu phố 3, P. Chơn Thành, tỉnh Đồng Nai",
+      "sector": "Đầu tư, kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": 2,
+      "name": "Công ty Cổ phần Đường cao tốc Thành phố Hồ Chí Minh - Thủ Dầu Một - Chơn Thành",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "100.000.000.000",
+      "ownership_pct": 20.0,
+      "voting_pct": null,
+      "address": "Tòa nhà WTC Tower, số 01, đường Hùng Vương, Phường Bình Dương, TP. Hồ Chí Minh",
+      "sector": "Xây dựng công trình đường bộ",
+      "confidence": "high"
+    },
+    {
+      "stt": 3,
+      "name": "Công ty Cổ phần Đường Vành đai 4 Thành phố Hồ Chí Minh",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "100.000.000.000",
+      "ownership_pct": 36.0,
+      "voting_pct": null,
+      "address": "Tòa nhà WTC Tower, số 01, đường Hùng Vương, Phường Bình Dương, TP. Hồ Chí Minh",
+      "sector": "Xây dựng, khai thác, kinh doanh hạ tầng kỹ thuật",
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2695,
+  "duplicate_rows_removed": 3
+}

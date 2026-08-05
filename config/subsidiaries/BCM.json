@@ -1,0 +1,110 @@
+{
+  "ticker": "BCM",
+  "source_doc": "2026_BCM_Baocaothuongnien_2025.pdf",
+  "source_pages": [
+    23,
+    24,
+    25,
+    26
+  ],
+  "as_of": 2025,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "relationship": "subsidiary",
+      "pages": [
+        23
+      ],
+      "n_rows": 5,
+      "n_high_confidence": 0
+    },
+    {
+      "relationship": "associate",
+      "pages": [
+        23,
+        24
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    },
+    {
+      "relationship": "subsidiary",
+      "pages": [
+        24,
+        25,
+        26
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    }
+  ],
+  "companies": [
+    {
+      "stt": 1,
+      "name": "Công ty Cổ phần Phát triển Đô thị",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "165",
+      "ownership_pct": 51,
+      "voting_pct": null,
+      "address": "C1-2-3, Đường DT6, Khu Liên hợp Công nghiệp - Dịch vụ và Đô thị Bình Dương, Phường Bình Dương, TP. HCM, Việt Nam",
+      "sector": "Sản xuất bê tông trộn sẵn. Đầu tư xây dựng, kinh doanh cơ sở hạ tầng kỹ thuật khu công nghiệp, khu dân cư, khu đô thị, kinh doanh bất động sản.",
+      "confidence": "needs_review"
+    },
+    {
+      "stt": 2,
+      "name": "Công ty Cổ phần Bệnh viện Mỹ Phước",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "200",
+      "ownership_pct": 65.47,
+      "voting_pct": null,
+      "address": "Đường TC3, Tổ 6, Khu phố 3, phường Bến Cát, TP. Hồ Chí Minh, Việt Nam",
+      "sector": "Khám chữa bệnh",
+      "confidence": "needs_review"
+    },
+    {
+      "stt": 3,
+      "name": "Trường Đại học Quốc tế Miền Đông",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "60",
+      "ownership_pct": 51,
+      "voting_pct": null,
+      "address": "Số 81, đường Nam Kỳ Khởi Nghĩa, phường Bình Dương, TP. Hồ Chí Minh, Việt Nam",
+      "sector": "Giáo dục",
+      "confidence": "needs_review"
+    },
+    {
+      "stt": 4,
+      "name": "Công ty Cổ phần Bệnh viện Đa khoa Quốc tế Becamex",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "200",
+      "ownership_pct": 90,
+      "voting_pct": null,
+      "address": "Đại lộ Bình Dương, Khu Gò Cát, phường Lái Thiêu, TP. Hồ Chí Minh, Việt Nam",
+      "sector": "Khám và chữa bệnh",
+      "confidence": "needs_review"
+    },
+    {
+      "stt": 5,
+      "name": "Công ty TNHH MTV Hỗ trợ Khởi nghiệp Becamex- Block 71",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "2",
+      "ownership_pct": 100,
+      "voting_pct": null,
+      "address": "Tầng trệt, Tháp B2, Khu chung cư phức hợp Lô M2 – số 72 đường Nguyễn Cơ Thạch, phường An Khánh, TP. Hồ Chí Minh, Việt Nam",
+      "sector": "Dịch vụ tư vấn",
+      "confidence": "needs_review"
+    }
+  ],
+  "font_diacritic_ratio": 0.2651
+}

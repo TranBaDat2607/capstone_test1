@@ -110,7 +110,7 @@ from typing import Any, Dict, List, Optional, Set, Tuple
 
 from dotenv import load_dotenv
 
-from esg_kg.core.llm import _GeminiProvider, _Provider
+from esg_kg.core.llm import DEFAULT_MODEL, _GeminiProvider, _Provider
 from esg_kg.core.llm_cache import ContentCache
 from esg_kg.core.naming import name_tokens, normalize_name
 from esg_kg.core.paths import REPO_ROOT
@@ -122,7 +122,8 @@ logger = logging.getLogger(__name__)
 DEFAULT_INPUT = REPO_ROOT / "graph_output" / "resolved" / "resolved_graph.json"
 DEFAULT_SCHEMA = REPO_ROOT / "config" / "schema.json"
 DEFAULT_OUT_DIR = REPO_ROOT / "graph_output" / "crosscheck"
-DEFAULT_MODEL = "gemini-2.5-flash"
+# DEFAULT_MODEL comes from esg_kg.core.llm (GEMINI_MODEL env var, default
+# gemini-2.5-flash-lite) — see that module's docstring.
 DEFAULT_PROVIDER_ORDER = "gemini"
 DEFAULT_RATE_LIMIT = 10
 DEFAULT_MAX_LLM_PAIRS = 300

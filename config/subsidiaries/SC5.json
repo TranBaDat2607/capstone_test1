@@ -1,0 +1,55 @@
+{
+  "ticker": "SC5",
+  "source_doc": "2017_SC5_Baocaothuongnien_2016.pdf",
+  "source_pages": [
+    7,
+    34,
+    61
+  ],
+  "as_of": 2016,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "note": "heading regex found nothing; located via content-scoring fallback (no explicit heading matched -- table page(s) identified by company-name/percent density instead)"
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        7
+      ],
+      "n_rows": 1,
+      "n_high_confidence": 1
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        34
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        61
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    }
+  ],
+  "companies": [
+    {
+      "name": "Công ty Cổ phần BĐS Tân Phước",
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "46.228,2 triệu đồng",
+      "ownership_pct": 47.17,
+      "voting_pct": null,
+      "address": "Lầu 12 -137 Lê Quang Định, Phường 14, Quận Bình Thạnh, TP. Hồ Chí Minh.",
+      "sector": "Kinh doanh bất động sản",
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.257
+}

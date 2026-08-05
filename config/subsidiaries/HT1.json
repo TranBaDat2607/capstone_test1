@@ -1,0 +1,25 @@
+{
+  "ticker": "HT1",
+  "source_doc": "2022_HT1_Baocaothuongnien_2021.pdf",
+  "source_pages": [
+    27
+  ],
+  "as_of": 2021,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "note": "heading regex found nothing; located via content-scoring fallback (no explicit heading matched -- table page(s) identified by company-name/percent density instead)"
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        27
+      ],
+      "n_rows": 0,
+      "n_high_confidence": 0
+    }
+  ],
+  "companies": [],
+  "font_diacritic_ratio": 0.2706
+}

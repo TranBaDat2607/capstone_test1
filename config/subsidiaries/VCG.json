@@ -1,0 +1,59 @@
+{
+  "ticker": "VCG",
+  "source_doc": "2026_VCG_Baocaothuongnien_2025.pdf",
+  "source_pages": [
+    143,
+    144
+  ],
+  "as_of": 2025,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "relationship": "subsidiary",
+      "pages": [
+        143,
+        144
+      ],
+      "n_rows": 1,
+      "n_high_confidence": 1
+    },
+    {
+      "relationship": "subsidiary",
+      "pages": [
+        144
+      ],
+      "n_rows": 1,
+      "n_high_confidence": 0
+    }
+  ],
+  "companies": [
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Đầu tư và Môi trường Việt Nam",
+      "alias": "Công ty Vivaseen",
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 98.16,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Đầu tư Xây dựng Cấp thoát nước Suối Dầu",
+      "alias": "Công ty Suối Dầu",
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 50.0,
+      "voting_pct": 50.0,
+      "address": null,
+      "sector": null,
+      "confidence": "needs_review"
+    }
+  ],
+  "font_diacritic_ratio": 0.2767
+}

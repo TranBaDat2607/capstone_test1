@@ -1,0 +1,142 @@
+{
+  "ticker": "QCG",
+  "source_doc": "2023_QCG_Baocaothuongnien_2022.pdf",
+  "source_pages": [
+    6,
+    7,
+    19
+  ],
+  "as_of": 2022,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "note": "heading regex found nothing; located via content-scoring fallback (no explicit heading matched -- table page(s) identified by company-name/percent density instead)"
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        6,
+        7
+      ],
+      "n_rows": 6,
+      "n_high_confidence": 6
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        19
+      ],
+      "n_rows": 6,
+      "n_high_confidence": 6
+    }
+  ],
+  "companies": [
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Giai Việt",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 57.3,
+      "voting_pct": null,
+      "address": null,
+      "sector": "Kinh doanh Bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty CP Đầu tư xây dựng Thủy Điện Quốc Cường",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 90.0,
+      "voting_pct": null,
+      "address": null,
+      "sector": "Sản xuất, truyền tải và phân phối điện; Xây dựng công trình kỹ thuật dân dụng khác Chi tiết: Xây dựng công trình thủy điện",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Cổ Phần Bến du thuyền Đà Nẵng",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 65.0,
+      "voting_pct": null,
+      "address": null,
+      "sector": "Kinh doanh bất động sản, quyền sử dụng đất thuộc chủ sở hữu, chủ sử dụng hoặc đi thuê...",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty TNHH Xây dựng và Kinh doanh Nhà Phạm Gia",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 43.81,
+      "voting_pct": null,
+      "address": null,
+      "sector": "Thi công công trình dân dụng và công nghiệp; Sản xuất vật liệu xây dựng; Kinh doanh nhà và dịch vụ môi giới nhà đất.",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty CP Quốc Cường Liên Á",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 31.39,
+      "voting_pct": null,
+      "address": null,
+      "sector": "Xây dựng nhà các loại. Xây dựng công trình công ích; Kinh doanh bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": null,
+      "name": "Công ty Cổ phần Bất động sản Hiệp Phúc",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": 34.0,
+      "voting_pct": null,
+      "address": null,
+      "sector": "Kinh doanh Bất động sản",
+      "confidence": "high"
+    },
+    {
+      "stt": 4,
+      "name": "Công ty CP Giai Việt",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    },
+    {
+      "stt": 2,
+      "name": "Công ty Cổ phần Quốc Cường Liên Á",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": null,
+      "ownership_pct": null,
+      "voting_pct": null,
+      "address": null,
+      "sector": null,
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2792,
+  "duplicate_rows_removed": 4
+}

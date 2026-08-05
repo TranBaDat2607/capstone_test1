@@ -1,0 +1,49 @@
+{
+  "ticker": "CSM",
+  "source_doc": "2013_CSM_Baocaothuongnien_2012.pdf",
+  "source_pages": [
+    50
+  ],
+  "as_of": 2012,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "relationship": "associate",
+      "pages": [
+        50
+      ],
+      "n_rows": 2,
+      "n_high_confidence": 1
+    }
+  ],
+  "companies": [
+    {
+      "stt": null,
+      "name": "Phillips Carbon Black Ltd.",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "65.000.000 USD",
+      "ownership_pct": 80,
+      "voting_pct": null,
+      "address": "Cảng Cái mép - Bà rịa Vũng Tàu",
+      "sector": "sản xuất than đen",
+      "confidence": "needs_review"
+    },
+    {
+      "stt": null,
+      "name": "Công ty CP TM Địa Óc Tân Thuận Việt",
+      "alias": null,
+      "relationship": "associate",
+      "subtype": null,
+      "capital": "20.000.000.000 đồng",
+      "ownership_pct": 40,
+      "voting_pct": null,
+      "address": null,
+      "sector": "Chủ đầu tư dự án số 9 Nguyễn Khoái Q4 và 504 Nguyễn Tất Thành",
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2573
+}

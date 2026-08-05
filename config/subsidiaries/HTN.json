@@ -1,0 +1,39 @@
+{
+  "ticker": "HTN",
+  "source_doc": "2026_HTN_Baocaothuongnien_2025.pdf",
+  "source_pages": [
+    12
+  ],
+  "as_of": 2025,
+  "extraction_method": "gemini_vision",
+  "reviewed": false,
+  "segment_stats": [
+    {
+      "note": "heading regex found nothing; located via content-scoring fallback (no explicit heading matched -- table page(s) identified by company-name/percent density instead)"
+    },
+    {
+      "relationship": "mixed",
+      "pages": [
+        12
+      ],
+      "n_rows": 1,
+      "n_high_confidence": 1
+    }
+  ],
+  "companies": [
+    {
+      "stt": null,
+      "name": "CTCP CƠ KHÍ VÀ XÂY DỰNG BÌNH TRIỆU",
+      "alias": null,
+      "relationship": "subsidiary",
+      "subtype": null,
+      "capital": "300.000.000.000 Đồng",
+      "ownership_pct": 95.24,
+      "voting_pct": null,
+      "address": "207C Nguyễn Xí, Phường Bình Thạnh, TP Hồ Chí Minh",
+      "sector": "Kinh doanh bất động sản, quyền sử dụng đất thuộc sở hữu, chủ sử dụng hoặc đi thuê",
+      "confidence": "high"
+    }
+  ],
+  "font_diacritic_ratio": 0.2769
+}
