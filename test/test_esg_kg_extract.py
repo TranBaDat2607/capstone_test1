@@ -65,6 +65,7 @@ REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO / "src"))
 
 from esg_kg.core import io_jsonl as core_io_jsonl  # noqa: E402
+from esg_kg.core import llm as core_llm  # noqa: E402
 from esg_kg.kpi import extract as new_extract  # noqa: E402
 
 DEFAULT_INPUT = REPO / "data" / "labeled" / "annual_labeled" / "labeled_annual_report_company_aaa.jsonl"
@@ -409,6 +410,139 @@ def test_use_context_cache_false_never_touches_caches_api():
             assert "KPI_DEFINITIONS" in c["contents"]
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
+
+
+# --------------------------------------------------------------------------- #
+# Part D.1 — self-healing when the KPI_DEFINITIONS cache expires mid-run (found
+# during a 2026-08-05 audit: the cache's TTL, core/llm.py, default 3600s, is fixed
+# for the process's lifetime, but this is the widest-scope cache of the three
+# issue-#11 stages -- one cache for the WHOLE run -- and a full-sector --all
+# extraction over the current corpus can easily outlive an hour. Before this fix,
+# extract_page had no try/except of its own: an expired cache made generate_content
+# raise, the page was marked failed by the caller and its output never written --
+# silently losing every remaining page for the rest of the run, recoverable only by
+# killing and restarting the whole command.
+# --------------------------------------------------------------------------- #
+class _FlakyCacheModels(_FakeModels):
+    """Fails the FIRST call that carries `cached_content` with a Gemini-style
+    'CachedContent not found' error (simulating TTL expiry mid-run); every call
+    after that -- including `extract_page`'s own retry -- succeeds normally."""
+
+    def __init__(self, calls_seen):
+        super().__init__(calls_seen)
+        self._raised_once = False
+
+    def generate_content(self, model, contents, config):
+        if config.cached_content is not None and not self._raised_once:
+            self._raised_once = True
+            raise RuntimeError(
+                "400 INVALID_ARGUMENT: CachedContent 'cachedContents/stub-1' not found."
+            )
+        return super().generate_content(model, contents, config)
+
+
+class _FlakyCacheClient(_FakeClient):
+    def __init__(self, *a, **kw):
+        super().__init__(*a, **kw)
+        self.models = _FlakyCacheModels(self.calls_seen)
+
+
+def _make_extractor_with_client(mod, defs_path, client_factory):
+    os.environ.setdefault("GEMINI_API_KEY", "test-stub-key")
+    original_builder = mod.build_gemini_client
+    mod.build_gemini_client = lambda api_key=None: client_factory()
+    try:
+        return mod.KPIExtractor(defs_path, model="gemini-2.5-flash")
+    finally:
+        mod.build_gemini_client = original_builder
+
+
+def test_extract_page_self_heals_once_when_cached_content_expires_midrun():
+    tmp = Path(tempfile.mkdtemp(prefix="esgkg_01_cache_expire_"))
+    try:
+        defs_path = _tiny_defs(tmp)
+        new_ex = _make_extractor_with_client(new_extract, defs_path, _FlakyCacheClient)
+
+        assert new_ex.cache_name is not None
+        first_cache_name = new_ex.cache_name
+
+        out = new_ex.extract_page(
+            "Chúng tôi đã giảm phát thải 20% trong năm 2023.", "AAA", new_extract.SECTOR, 1, "doc.pdf"
+        )
+        assert isinstance(out, list), "the page must still succeed, not raise or get lost"
+
+        # Exactly 2 caches.create() calls: the one at __init__ time, plus ONE
+        # self-heal recreation -- not 1 (would mean the failure was swallowed with
+        # no real recovery, i.e. the stale name was reused and would fail again on
+        # every subsequent page) and not more (would mean recreation happens on
+        # every call instead of once, defeating the whole point of caching).
+        assert len(new_ex.client.caches.calls) == 2, (
+            f"expected exactly 2 caches.create() calls (init + 1 self-heal), "
+            f"got {len(new_ex.client.caches.calls)}"
+        )
+        assert new_ex.cache_name != first_cache_name, "cache_name must be replaced by the self-heal"
+
+        # the failed call is a raised exception, never recorded in calls_seen; only
+        # the successful retry is -- and it must carry the NEW cache name, not the
+        # stale one that just failed.
+        cached_calls = [c for c in new_ex.client.calls_seen if c["cached_content"] is not None]
+        assert len(cached_calls) == 1
+        assert cached_calls[0]["cached_content"] == new_ex.cache_name
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
+def test_extract_page_reraises_non_cache_errors_without_recreating_cache():
+    """A failure unrelated to the cache (network blip, model error, ...) must
+    propagate unchanged -- self-healing is scoped to cache-expiry symptoms only.
+    Retrying on every kind of failure would reintroduce the doubled-paid-call bug
+    this fix is meant to close, just from a different angle."""
+    tmp = Path(tempfile.mkdtemp(prefix="esgkg_01_cache_othererr_"))
+    try:
+        defs_path = _tiny_defs(tmp)
+
+        class _AlwaysFailsModels(_FakeModels):
+            def generate_content(self, model, contents, config):
+                raise RuntimeError("503 Service Unavailable")
+
+        class _AlwaysFailsClient(_FakeClient):
+            def __init__(self, *a, **kw):
+                super().__init__(*a, **kw)
+                self.models = _AlwaysFailsModels(self.calls_seen)
+
+        new_ex = _make_extractor_with_client(new_extract, defs_path, _AlwaysFailsClient)
+
+        raised = False
+        try:
+            new_ex.extract_page("text", "AAA", new_extract.SECTOR, 1, "doc.pdf")
+        except RuntimeError as e:
+            raised = True
+            assert "503" in str(e)
+        assert raised, "a non-cache error must propagate, not be swallowed by the self-heal path"
+        assert len(new_ex.client.caches.calls) == 1, "no self-heal recreation for a non-cache error"
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
+def test_context_cache_invalidate_forces_a_fresh_create_on_next_get_or_create():
+    """core/llm.py: GeminiContextCache.get_or_create() memoizes forever by content
+    hash -- without invalidate(), a caller that suspects its cache expired would get
+    the identical stale name back. This is the primitive extract.py's self-heal
+    above is built on."""
+    calls_seen: list = []
+    fake_client = _FakeClient()
+    ctx_cache = core_llm.GeminiContextCache(fake_client, "gemini-2.5-flash")
+
+    name1 = ctx_cache.get_or_create("static content")
+    assert len(fake_client.caches.calls) == 1
+    name2 = ctx_cache.get_or_create("static content")
+    assert name2 == name1, "same content, no invalidate -- must be memoized, not recreated"
+    assert len(fake_client.caches.calls) == 1
+
+    ctx_cache.invalidate("static content")
+    name3 = ctx_cache.get_or_create("static content")
+    assert len(fake_client.caches.calls) == 2, "after invalidate, get_or_create must create a NEW cache"
+    assert name3 != name1, "the stub hands out a fresh cachedContents/stub-N each create() call"
 
 
 # 2026-08-04: Part E (renumbered from the original "Part D" once issue #11 claimed

@@ -938,78 +938,79 @@ def process_page(page_info: Dict[str, Any], page_kpis: List[Dict[str, Any]],
         prompt = build_page_prompt(schema, page_text, p_no, page_kpis, company=company, year=year,
                                    source=source, article_meta=article_meta)
 
-    max_retries = 2
-    for retry in range(max_retries):
-        parsed, raw, rate_limited = call_llm(prompt, client, client_idx, rate_limiter,
-                                             schema, model, retries=2, cached_content=cache_name)
-        if rate_limited:
-            logger.warning(f"Page {p_no} skipped due to rate limiting on client {client_idx}")
-            return p_no, False, True
+    # call_llm already retries internally on both exceptions AND unparseable JSON
+    # (its own `retries` param, with backoff) — a second retry loop used to live here,
+    # re-invoking call_llm from scratch on the identical prompt whenever it came back
+    # empty/malformed. That doubled the paid calls on a persistently-failing page
+    # (2 outer attempts x 2 inner attempts = up to 4 real generate_content calls for
+    # one page). One call_llm invocation now owns the whole retry budget.
+    parsed, raw, rate_limited = call_llm(prompt, client, client_idx, rate_limiter,
+                                         schema, model, retries=3, cached_content=cache_name)
+    if rate_limited:
+        logger.warning(f"Page {p_no} skipped due to rate limiting on client {client_idx}")
+        return p_no, False, True
 
-        dbg_path = dbg_pdf_dir / f"{pdf_stem}_p{p_no}.txt"
-        dbg_path.write_text(
-            f"==== PROMPT ====\n{prompt[:2000]}...\n\n==== RESPONSE ====\n{raw or '[NO RESPONSE]'}",
-            encoding="utf-8",
-        )
+    dbg_path = dbg_pdf_dir / f"{pdf_stem}_p{p_no}.txt"
+    dbg_path.write_text(
+        f"==== PROMPT ====\n{prompt[:2000]}...\n\n==== RESPONSE ====\n{raw or '[NO RESPONSE]'}",
+        encoding="utf-8",
+    )
 
-        if raw:
-            if isinstance(parsed, list) and parsed:
-                entities, edge_labels, _ = load_schema_sets(schema)
-                valid_triples: List[Dict[str, Any]] = []
-                invalid_triples: List[Dict[str, Any]] = []
-                for triple in parsed:
-                    if not isinstance(triple, dict):
-                        invalid_triples.append(triple)
-                        continue
-                    if not {"subject", "predicate", "object"}.issubset(triple.keys()):
-                        invalid_triples.append(triple)
-                        continue
-                    valid = True
-                    for k in ("subject", "object"):
-                        ent = triple.get(k, {})
-                        if not isinstance(ent, dict):
-                            valid = False
-                            break
-                        if "class" not in ent or "properties" not in ent:
-                            valid = False
-                            break
-                        if ent["class"] not in entities:
-                            valid = False
-                            break
-                    if triple.get("predicate") not in edge_labels:
+    if raw:
+        if isinstance(parsed, list) and parsed:
+            entities, edge_labels, _ = load_schema_sets(schema)
+            valid_triples: List[Dict[str, Any]] = []
+            invalid_triples: List[Dict[str, Any]] = []
+            for triple in parsed:
+                if not isinstance(triple, dict):
+                    invalid_triples.append(triple)
+                    continue
+                if not {"subject", "predicate", "object"}.issubset(triple.keys()):
+                    invalid_triples.append(triple)
+                    continue
+                valid = True
+                for k in ("subject", "object"):
+                    ent = triple.get(k, {})
+                    if not isinstance(ent, dict):
                         valid = False
-                    (valid_triples if valid else invalid_triples).append(triple)
+                        break
+                    if "class" not in ent or "properties" not in ent:
+                        valid = False
+                        break
+                    if ent["class"] not in entities:
+                        valid = False
+                        break
+                if triple.get("predicate") not in edge_labels:
+                    valid = False
+                (valid_triples if valid else invalid_triples).append(triple)
 
-                if invalid_triples:
-                    logger.warning(f"Page {p_no}: {len(invalid_triples)} invalid triples -> bugged file")
-                    bugged_file.write_text(
-                        json.dumps(invalid_triples, indent=2, ensure_ascii=False),
-                        encoding="utf-8",
-                    )
-
-                if valid_triples:
-                    assign_deterministic_claim_ids(valid_triples, pdf_stem, p_no, page_rows=page_rows)
-                graph = (triple_list_to_graph(valid_triples, schema)
-                         if valid_triples else {"nodes": [], "edges": []})
-                stamp_source_type(graph, source)
-                stamp_provenance(graph, pdf_stem, p_no, source, article_meta)
-                out_file.write_text(json.dumps(graph, indent=2, ensure_ascii=False),
-                                    encoding="utf-8")
-                logger.info(f"Page {p_no}: {len(graph['nodes'])} nodes, {len(graph['edges'])} edges")
-                return p_no, True, False
-            else:
-                malformed = g_pdf_dir / f"page{p_no}_malformed.txt"
-                malformed.write_text(
-                    f"Company: {company}\nYear: {year}\nPage: {p_no}\n\n"
-                    f"==== MALFORMED RESPONSE ====\n{raw}\n\n==== END MALFORMED RESPONSE ====\n",
+            if invalid_triples:
+                logger.warning(f"Page {p_no}: {len(invalid_triples)} invalid triples -> bugged file")
+                bugged_file.write_text(
+                    json.dumps(invalid_triples, indent=2, ensure_ascii=False),
                     encoding="utf-8",
                 )
-                logger.warning(f"Page {p_no}: malformed JSON -> {malformed.name}")
 
-        logger.warning(f"Page {p_no} LLM call failed, retry {retry + 1}/{max_retries}")
-        time.sleep(2)
+            if valid_triples:
+                assign_deterministic_claim_ids(valid_triples, pdf_stem, p_no, page_rows=page_rows)
+            graph = (triple_list_to_graph(valid_triples, schema)
+                     if valid_triples else {"nodes": [], "edges": []})
+            stamp_source_type(graph, source)
+            stamp_provenance(graph, pdf_stem, p_no, source, article_meta)
+            out_file.write_text(json.dumps(graph, indent=2, ensure_ascii=False),
+                                encoding="utf-8")
+            logger.info(f"Page {p_no}: {len(graph['nodes'])} nodes, {len(graph['edges'])} edges")
+            return p_no, True, False
+        else:
+            malformed = g_pdf_dir / f"page{p_no}_malformed.txt"
+            malformed.write_text(
+                f"Company: {company}\nYear: {year}\nPage: {p_no}\n\n"
+                f"==== MALFORMED RESPONSE ====\n{raw}\n\n==== END MALFORMED RESPONSE ====\n",
+                encoding="utf-8",
+            )
+            logger.warning(f"Page {p_no}: malformed JSON -> {malformed.name}")
 
-    logger.error(f"Page {p_no} failed after {max_retries} retries")
+    logger.error(f"Page {p_no} failed after retries")
     return p_no, False, False
 
 

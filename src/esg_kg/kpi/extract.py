@@ -40,8 +40,9 @@ import json
 import argparse
 import collections
 import concurrent.futures
+import threading
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 from logging import getLogger, basicConfig, INFO, WARNING
 
 from dotenv import load_dotenv
@@ -161,10 +162,24 @@ class KPIExtractor:
         # above), so this is the widest-scope cache of the three stages — one
         # client.caches.create() here serves every page of every document this
         # extractor processes, not just one document.
+        #
+        # That width is also the risk: the cache's TTL (core/llm.py, default 3600s)
+        # is fixed for the process's lifetime, but a full-sector --all run over the
+        # current corpus (873k sentences across ~197 companies) can easily run past
+        # an hour. Without self-healing, every page after expiry would 400 on
+        # cached_content and be silently lost (extract_page has no try/except of its
+        # own; the caller marks the page failed and moves on, so a second full
+        # invocation would be needed to pick the rest up). `self._ctx_cache` /
+        # `self._cache_static_content` are kept so `_recreate_cache` can force a
+        # fresh `caches.create()` — see there and `extract_page`.
         self.cache_name = None
+        self._ctx_cache: Optional[GeminiContextCache] = None
+        self._cache_static_content: Optional[str] = None
+        self._cache_lock = threading.Lock()
         if use_context_cache:
-            ctx_cache = GeminiContextCache(client, model)
-            self.cache_name = ctx_cache.get_or_create(f"KPI_DEFINITIONS (subset):\n{self.defs_text}")
+            self._ctx_cache = GeminiContextCache(client, model)
+            self._cache_static_content = f"KPI_DEFINITIONS (subset):\n{self.defs_text}"
+            self.cache_name = self._ctx_cache.get_or_create(self._cache_static_content)
 
         logger.info(
             f"KPIExtractor ready: model={self.model}, "
@@ -214,10 +229,22 @@ class KPIExtractor:
             )
         return system, user
 
-    def extract_page(self, page_text: str, company: str, sector: str,
-                     page_num: int, doc_name: str) -> List[Dict[str, Any]]:
-        system, user = self._build_prompt(page_text, company, sector, page_num, doc_name)
+    def _recreate_cache(self) -> Optional[str]:
+        """Force a fresh `client.caches.create()` for the KPI_DEFINITIONS block,
+        bypassing `GeminiContextCache`'s in-process memoization (which would
+        otherwise keep handing back the same now-expired name forever). Called from
+        `extract_page` when a cached generate_content call fails in a way that looks
+        like an expired/unknown cache. If recreation itself fails, `get_or_create`
+        already falls back to `None` — the next call then goes uncached rather than
+        losing the page, same as a cache that failed to create in the first place."""
+        if self._ctx_cache is None or self._cache_static_content is None:
+            return self.cache_name
+        with self._cache_lock:
+            self._ctx_cache.invalidate(self._cache_static_content)
+            self.cache_name = self._ctx_cache.get_or_create(self._cache_static_content)
+        return self.cache_name
 
+    def _build_call(self, system: str, user: str) -> Tuple[Any, "types.GenerateContentConfig"]:
         # issue #11 follow-up (2026-08-05): the Gemini API rejects cached_content
         # combined with system_instruction in the SAME call ("CachedContent can not
         # be used with GenerateContent request setting system_instruction, tools or
@@ -242,12 +269,43 @@ class KPIExtractor:
                 max_output_tokens=self.max_tokens,
                 temperature=0,
             )
+        return contents, config
 
-        resp = self.client.models.generate_content(
-            model=self.model,
-            contents=contents,
-            config=config,
-        )
+    def extract_page(self, page_text: str, company: str, sector: str,
+                     page_num: int, doc_name: str) -> List[Dict[str, Any]]:
+        system, user = self._build_prompt(page_text, company, sector, page_num, doc_name)
+        contents, config = self._build_call(system, user)
+
+        try:
+            resp = self.client.models.generate_content(
+                model=self.model,
+                contents=contents,
+                config=config,
+            )
+        except Exception as e:
+            # A cached run's TTL (core/llm.py, default 3600s) can lapse mid-run on a
+            # long --all extraction — the symptom is generate_content rejecting the
+            # cached_content we sent. Recreate the cache once and retry this same
+            # page instead of losing it (the caller has no retry of its own — see
+            # __init__'s comment). Any other failure re-raises unchanged so it's
+            # handled the same way it always was.
+            msg = str(e).lower()
+            cache_related = self.cache_name is not None and (
+                "cachedcontent" in msg or "cached_content" in msg or "cached content" in msg
+            )
+            if not cache_related:
+                raise
+            logger.warning(
+                f"[gemini cache] cached_content rejected on page {page_num} of {doc_name} "
+                f"(likely expired past its TTL mid-run) — recreating once and retrying: {e}"
+            )
+            self._recreate_cache()
+            contents, config = self._build_call(system, user)
+            resp = self.client.models.generate_content(
+                model=self.model,
+                contents=contents,
+                config=config,
+            )
 
         # Gemini surfaces safety blocks / non-STOP terminations via finish_reason.
         candidates = getattr(resp, "candidates", None) or []

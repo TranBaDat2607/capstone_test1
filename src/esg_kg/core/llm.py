@@ -234,3 +234,16 @@ class GeminiContextCache:
             name = None
         self._by_hash[key] = name
         return name
+
+    def invalidate(self, static_content: str, system_instruction: Optional[str] = None) -> None:
+        """Drop the memoized handle for this static content so the next `get_or_create()`
+        call issues a fresh `caches.create()` instead of silently handing back a name
+        that may have expired server-side (past `ttl` above) mid-run. `get_or_create()`
+        never rechecks Gemini itself — once a hash is memoized it is returned forever —
+        so a caller that suspects its cache has expired (a `generate_content` call
+        rejecting `cached_content`) must call this before retrying, or it gets the same
+        stale name back. See `kpi/extract.py`'s `_recreate_cache` for the call site."""
+        key = hashlib.sha256(
+            f"{system_instruction or ''}\x00{static_content}".encode("utf-8")
+        ).hexdigest()
+        self._by_hash.pop(key, None)
