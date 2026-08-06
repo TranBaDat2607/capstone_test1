@@ -2,7 +2,7 @@
   "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
   "standard_id": "GRI 401",
   "title_en": "Employment 2016",
-  "title_vi": "Employment 2016",
+  "title_vi": "GRI 401: Việc làm 2016",
   "pillar": "S — Social",
   "series": "Social (400 Series)",
   "category": "Topic-Social",
@@ -23,11 +23,11 @@
   "provenance": {
     "relative_pdf_path": "Full set of GRI Standards - English\\GRI 401_ Employment 2016.pdf",
     "file_size_bytes": 860990,
-    "page_count": 16,
+    "page_count": 25,
     "sha256": "a907f88ec011435a4d244fe61719cac4addb13756d36ac0aa607b2ad223d9965",
-    "indexed_at": "2026-07-25T14:35:58.958301"
+    "indexed_at": "2026-08-01T20:30:14.401102"
   },
-  "disclosures_count": 5,
+  "disclosures_count": 3,
   "disclosures": [
     {
       "disclosure_id": "401-1",
@@ -39,41 +39,124 @@
         {
           "requirement_id": "401-1:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 401-1 (New employee hires and employee turnover)",
-          "description_vi": null,
+          "description_en": "The reporting organization shall report information specified in Disclosure 401-1: New employee hires and employee turnover.",
+          "description_vi": "Tổ chức báo cáo phải công bố đầy đủ thông tin theo yêu cầu của Chỉ số 401-1: New employee hires and employee turnover.",
           "requirement_type": "Qualitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "unit_of_measure": [
+            "number of employees",
+            "hours",
+            "percentage %",
+            "injury rate per 200,000 hours"
+          ],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 401-1.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 401-1.",
+      "sdg_mapping": [
+        "SDG 12: Responsible Consumption and Production"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "401-2",
-      "title_en": "Benefits provided to full-time employees that are not provided to",
-      "title_vi": "Benefits provided to full-time employees that are not provided to",
+      "title_en": "Benefits provided to full-time employees that are not provided to temporary or part-time employees",
+      "title_vi": "Benefits provided to full-time employees that are not provided to temporary or part-time employees",
       "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
           "requirement_id": "401-2:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 401-2 (Benefits provided to full-time employees that are not provided to)",
-          "description_vi": null,
+          "description_en": "Clause a: Benefits which are standard for full-time employees of the organization but are not provided to temporary or part-time employees, by significant locations of operation. These include, as a minimum:",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Benefits which are standard for full-time employees of the organization but are not provided to temporary or part-time employees, by significant locations of operation. These include, as a minimum:",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
+        },
+        {
+          "requirement_id": "401-2:i",
+          "item_code": "i",
+          "description_en": "Clause i: life insurance;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ;",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
+        },
+        {
+          "requirement_id": "401-2:v",
+          "item_code": "v",
+          "description_en": "Clause v: retirement provision;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ;",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
+        },
+        {
+          "requirement_id": "401-2:b",
+          "item_code": "b",
+          "description_en": "Clause b: The definition used for 'significant locations of operation'.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: The definition used for 'significant locations of operation'.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
+        },
+        {
+          "requirement_id": "401-2:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 3 When compiling the information specified in Disclosure 401-2, the reporting organization shall exclude in-kind benefits such as provision of sports or child day care facilities, free meals during working time, and similar general employee welfare programs.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: When compiling the information specified in Disclosure 401-2, the reporting organization shall exclude in-kind benefits such as provision of sports or child day care facilities, free meals during working time, and similar general employee welfare programs.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 401-2.\n\nGuidance Summary:\n#### Background\n\nData reported under this disclosure provide a measure of an organization's investment in human resources and the minimum benefits it offers its full-time employees. The quality of benefits for full-time employees is a key factor in retaining employees....",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 401-2.",
+      "sdg_mapping": [
+        "SDG 12: Responsible Consumption and Production"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "401-3",
@@ -85,64 +168,129 @@
         {
           "requirement_id": "401-3:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 401-3 (Parental leave)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "2-7",
-      "title_en": "and Disclosure 2-8 in GRI 2: General Disclosures 2021 require information on employees",
-      "title_vi": "and Disclosure 2-8 in GRI 2: General Disclosures 2021 require information on employees",
-      "disclosure_type": "Topic-Specific",
-      "mandatory": true,
-      "requirements": [
+          "description_en": "Clause a: Total number of **employees** that were entitled to **parental leave**, by gender.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Total number of **employees** that were entitled to **parental leave**, by gender.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "number of employees",
+            "hours",
+            "percentage %",
+            "injury rate per 200,000 hours"
+          ],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
+        },
         {
-          "requirement_id": "2-7:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 2-7 (and Disclosure 2-8 in GRI 2: General Disclosures 2021 require information on employees)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "3-3",
-      "title_en": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "title_vi": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "disclosure_type": "Topic-Specific",
-      "mandatory": true,
-      "requirements": [
+          "requirement_id": "401-3:b",
+          "item_code": "b",
+          "description_en": "Clause b: Total number of employees that took parental leave, by gender.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Total number of employees that took parental leave, by gender.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "number of employees",
+            "hours",
+            "percentage %",
+            "injury rate per 200,000 hours"
+          ],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
+        },
         {
-          "requirement_id": "3-3:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "requirement_id": "401-3:c",
+          "item_code": "c",
+          "description_en": "Clause c: Total number of employees that returned to work in the reporting period after parental leave ended, by gender.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Total number of employees that returned to work in the reporting period after parental leave ended, by gender.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "number of employees",
+            "hours",
+            "percentage %",
+            "injury rate per 200,000 hours"
+          ],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
+        },
+        {
+          "requirement_id": "401-3:d",
+          "item_code": "d",
+          "description_en": "Clause d: Total number of employees that returned to work after parental leave ended that were still employed 12 months after their return to work, by gender.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Total number of employees that returned to work after parental leave ended that were still employed 12 months after their return to work, by gender.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "number of employees",
+            "hours",
+            "percentage %",
+            "injury rate per 200,000 hours"
+          ],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
+        },
+        {
+          "requirement_id": "401-3:e",
+          "item_code": "e",
+          "description_en": "Clause e: Return to work and retention rates of employees that took parental leave, by gender.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Return to work and retention rates of employees that took parental leave, by gender.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "number of employees",
+            "hours",
+            "percentage %",
+            "injury rate per 200,000 hours"
+          ],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
+        },
+        {
+          "requirement_id": "401-3:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 4 When compiling the information specified in Disclosure 401-3, the reporting organization should use the following formulas to calculate the return to work and retention rates:",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: When compiling the information specified in Disclosure 401-3, the reporting organization should use the following formulas to calculate the return to work and retention rates:",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "number of employees",
+            "hours",
+            "percentage %",
+            "injury rate per 200,000 hours"
+          ],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "- 2.4 When compiling the information specified in Disclosure 401-3, the reporting organization should use the following formulas to calculate the return to work and retention rates:\n\n$$\\text{Return to work rate} = \\frac{\\text{Total number of employees that did return to work after parental leave}}{\\text{Total number of employees due to return to work after taking parental leave}} \\times 100$$\n\n$$\\text{Retention rate} = \\frac{\\text{Total number of employees retained 12 months after returning to work following a period of parental leave}}{\\text{Total number of employees returning from parental leave in the prior reporting period(s)}} \\times 100$$\n\nGuidance Summary:\n#### Guidance for Disclosure 401-3\n\nEmployees entitled to parental leave means those employees that are covered by organizational policies, agreements or contracts that contain parental leave entitlements.\n\nTo determine who returned to work after parental leave ended and were still employed 12 months later, an organization can consult records from the prior reporting periods.\n\n#### Background\n\nMany countries have introduced legislation to provide parental leave. The aim of the legislation is to allow employees to take leave and return to work in the same or a comparable position.\n\nThe application of legislation varies according to interpretation by government, employers and employees. Many women are discouraged from taking leave and returning to work by employer practices that affect their...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 401-3.",
+      "sdg_mapping": [
+        "SDG 12: Responsible Consumption and Production"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     }
   ]
 }

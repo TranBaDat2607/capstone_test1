@@ -2,7 +2,7 @@
   "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
   "standard_id": "GRI 306",
   "title_en": "Effluents and Waste 2016",
-  "title_vi": "Effluents and Waste 2016",
+  "title_vi": "GRI 306: Chất thải 2020",
   "pillar": "E — Environmental",
   "series": "Environmental (300 Series / Revisions)",
   "category": "Topic-Environmental",
@@ -23,149 +23,77 @@
   "provenance": {
     "relative_pdf_path": "Full set of GRI Standards - English\\GRI 306_ Effluents and Waste 2016.pdf",
     "file_size_bytes": 687563,
-    "page_count": 13,
+    "page_count": 25,
     "sha256": "c27a2119e7c41b4f6fee270a9f65b07d0643ed7838cfcd752e86f9b7b1045e8c",
-    "indexed_at": "2026-07-25T14:35:58.750770"
+    "indexed_at": "2026-08-01T20:30:14.384270"
   },
-  "disclosures_count": 6,
+  "disclosures_count": 1,
   "disclosures": [
     {
       "disclosure_id": "306-3",
-      "title_en": "in GRI 306: Effluents and Waste 2016 remains in effect and will be revised as part of the",
-      "title_vi": "in GRI 306: Effluents and Waste 2016 remains in effect and will be revised as part of the",
+      "title_en": "Significant spills",
+      "title_vi": "Significant spills",
       "disclosure_type": "General Disclosures",
       "mandatory": true,
       "requirements": [
         {
           "requirement_id": "306-3:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 306-3 (in GRI 306: Effluents and Waste 2016 remains in effect and will be revised as part of the)",
-          "description_vi": null,
+          "description_en": "Clause a: Total number and total volume of recorded significant spills.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Total number and total volume of recorded significant spills.",
           "requirement_type": "Quantitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "306-1",
-      "title_en": "Water discharge by quality and destination",
-      "title_vi": "Water discharge by quality and destination",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
+          "unit_of_measure": [
+            "metric tons (t)",
+            "kilograms (kg)"
+          ],
+          "breakdown_dimensions": [
+            "by waste composition",
+            "by hazardous/non-hazardous",
+            "by recovery/disposal operation (onsite/offsite)"
+          ]
+        },
         {
-          "requirement_id": "306-1:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 306-1 (Water discharge by quality and destination)",
-          "description_vi": null,
+          "requirement_id": "306-3:b",
+          "item_code": "b",
+          "description_en": "Clause b: The following additional information for each spill that was reported in the organization's financial statements: - i. Location of spill; - ii. Volume of spill; - iii. Material of spill, categorized by: oil spills (soil or water surfaces), fuel spills (soil or water surfaces), spills of wastes (soil or water surfaces), spills of chemicals (mostly soil or water surfaces), and other (to be specified by the organization).",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: The following additional information for each spill that was reported in the organization's financial statements: - i. Location of spill; - ii. Volume of spill; - iii. Material of spill, categorized by: oil spills (soil or water surfaces), fuel spills (soil or water surfaces), spills of wastes (soil or water surfaces), spills of chemicals (mostly soil or water surfaces), and other (to be specified by the organization).",
           "requirement_type": "Quantitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "306-2",
-      "title_en": "Waste by type and disposal method",
-      "title_vi": "Waste by type and disposal method",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
+          "unit_of_measure": [
+            "metric tons (t)",
+            "kilograms (kg)"
+          ],
+          "breakdown_dimensions": [
+            "by waste composition",
+            "by hazardous/non-hazardous",
+            "by recovery/disposal operation (onsite/offsite)"
+          ]
+        },
         {
-          "requirement_id": "306-2:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 306-2 (Waste by type and disposal method)",
-          "description_vi": null,
-          "requirement_type": "Quantitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "306-4",
-      "title_en": "Transport of hazardous waste",
-      "title_vi": "Transport of hazardous waste",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
-        {
-          "requirement_id": "306-4:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 306-4 (Transport of hazardous waste)",
-          "description_vi": null,
-          "requirement_type": "Quantitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "306-5",
-      "title_en": "Water bodies affected by water discharges and/or runoff",
-      "title_vi": "Water bodies affected by water discharges and/or runoff",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
-        {
-          "requirement_id": "306-5:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 306-5 (Water bodies affected by water discharges and/or runoff)",
-          "description_vi": null,
-          "requirement_type": "Quantitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "303-1",
-      "title_en": "of GRI",
-      "title_vi": "of GRI",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
-        {
-          "requirement_id": "303-1:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 303-1 (of GRI)",
-          "description_vi": null,
+          "requirement_id": "306-3:c",
+          "item_code": "c",
+          "description_en": "Clause c: Impacts of significant spills.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Impacts of significant spills.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by waste composition",
+            "by hazardous/non-hazardous",
+            "by recovery/disposal operation (onsite/offsite)"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 306-3.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 306-3.",
+      "sdg_mapping": [
+        "SDG 12: Responsible Consumption and Production",
+        "SDG 14: Life Below Water"
+      ],
+      "esrs_mapping": [
+        "ESRS E5 Resource Use and Circular Economy (E5-5 Waste)"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     }
   ]
 }

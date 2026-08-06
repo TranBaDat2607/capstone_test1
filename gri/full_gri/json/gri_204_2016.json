@@ -2,7 +2,7 @@
   "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
   "standard_id": "GRI 204",
   "title_en": "Procurement Practices 2016",
-  "title_vi": "Procurement Practices 2016",
+  "title_vi": "GRI 204: Thực hành mua sắm 2016",
   "pillar": "G — Governance",
   "series": "Economic (200 Series)",
   "category": "Topic-Economic",
@@ -23,11 +23,11 @@
   "provenance": {
     "relative_pdf_path": "Full set of GRI Standards - English\\GRI 204_ Procurement Practices 2016.pdf",
     "file_size_bytes": 822291,
-    "page_count": 11,
+    "page_count": 25,
     "sha256": "7c009a073b48b78473cad2443ebcdf481ae71ef79fc9f0b0e485d1a71ebe2f23",
-    "indexed_at": "2026-07-25T14:35:58.366848"
+    "indexed_at": "2026-08-01T20:30:14.342656"
   },
-  "disclosures_count": 2,
+  "disclosures_count": 1,
   "disclosures": [
     {
       "disclosure_id": "204-1",
@@ -39,41 +39,34 @@
         {
           "requirement_id": "204-1:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 204-1 (Proportion of spending on local suppliers)",
-          "description_vi": null,
+          "description_en": "The reporting organization shall report information specified in Disclosure 204-1: Proportion of spending on local suppliers.",
+          "description_vi": "Tổ chức báo cáo phải công bố đầy đủ thông tin theo yêu cầu của Chỉ số 204-1: Proportion of spending on local suppliers.",
           "requirement_type": "Qualitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "unit_of_measure": [
+            "VND",
+            "USD",
+            "EUR",
+            "local currency"
+          ],
+          "breakdown_dimensions": [
+            "by country/region",
+            "by business segment",
+            "by tax jurisdiction"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "3-3",
-      "title_en": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "title_vi": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
-        {
-          "requirement_id": "3-3:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 204-1.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 204-1.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     }
   ]
 }

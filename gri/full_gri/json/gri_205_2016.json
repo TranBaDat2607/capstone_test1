@@ -2,7 +2,7 @@
   "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
   "standard_id": "GRI 205",
   "title_en": "Anti-corruption 2016",
-  "title_vi": "Anti-corruption 2016",
+  "title_vi": "GRI 205: Chống tham nhũng 2016",
   "pillar": "G — Governance",
   "series": "Economic (200 Series)",
   "category": "Topic-Economic",
@@ -23,11 +23,11 @@
   "provenance": {
     "relative_pdf_path": "Full set of GRI Standards - English\\GRI 205_ Anti-corruption 2016.pdf",
     "file_size_bytes": 856483,
-    "page_count": 16,
+    "page_count": 25,
     "sha256": "dc4ce16811bfe3306ae633e9b0a3ae738520ee8523ade8d87def81f64b688236",
-    "indexed_at": "2026-07-25T14:35:58.400237"
+    "indexed_at": "2026-08-01T20:30:14.342656"
   },
-  "disclosures_count": 5,
+  "disclosures_count": 3,
   "disclosures": [
     {
       "disclosure_id": "205-1",
@@ -39,41 +39,141 @@
         {
           "requirement_id": "205-1:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 205-1 (Operations assessed for risks related to corruption)",
-          "description_vi": null,
+          "description_en": "Clause a: Total number and percentage of operations assessed for risks related to corruption.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Total number and percentage of operations assessed for risks related to corruption.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "205-1:b",
+          "item_code": "b",
+          "description_en": "Clause b: Significant risks related to corruption identified through the risk assessment.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Significant risks related to corruption identified through the risk assessment.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 205-1.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 205-1.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "205-2",
-      "title_en": "Communication and training about anti-corruption policies and",
-      "title_vi": "Communication and training about anti-corruption policies and",
+      "title_en": "Communication and training about anti-corruption policies and procedures",
+      "title_vi": "Communication and training about anti-corruption policies and procedures",
       "disclosure_type": "General Disclosures",
       "mandatory": true,
       "requirements": [
         {
           "requirement_id": "205-2:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 205-2 (Communication and training about anti-corruption policies and)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
+          "description_en": "Clause a: Total number and percentage of governance body members that the organization's anti-corruption policies and procedures have been communicated to, broken down by region.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Total number and percentage of governance body members that the organization's anti-corruption policies and procedures have been communicated to, broken down by region.",
+          "requirement_type": "Quantitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "205-2:b",
+          "item_code": "b",
+          "description_en": "Clause b: Total number and percentage of employees that the organization's anti-corruption policies and procedures have been communicated to, broken down by employee category and region.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Total number and percentage of employees that the organization's anti-corruption policies and procedures have been communicated to, broken down by employee category and region.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "205-2:c",
+          "item_code": "c",
+          "description_en": "Clause c: Total number and percentage of business partners that the organization's anti-corruption policies and procedures have been communicated to, broken down by type of business partner and region. Describe if the organization's anti-corruption policies and procedures have been communicated to any other persons or organizations.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Total number and percentage of business partners that the organization's anti-corruption policies and procedures have been communicated to, broken down by type of business partner and region. Describe if the organization's anti-corruption policies and procedures have been communicated to any other persons or organizations.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "205-2:d",
+          "item_code": "d",
+          "description_en": "Clause d: Total number and percentage of governance body members that have received training on anti-corruption, broken down by region.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Total number and percentage of governance body members that have received training on anti-corruption, broken down by region.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "205-2:e",
+          "item_code": "e",
+          "description_en": "Clause e: Total number and percentage of employees that have received training on anti-corruption, broken down by employee category and region.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Total number and percentage of employees that have received training on anti-corruption, broken down by employee category and region.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "205-2:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 1 When compiling the information specified in Disclosure 205-2, the reporting organization should: - 2.1.1 draw from the information used for [Disclosure 405-1 in GRI 405: Diversity and Equal Opportunity 2016](#) to identify: - 2.1.1.1 the governance bodies that exist within the organization, such as the board of directors, management committee, or similar body for non-corporate organizations; - 2.1.1.2 the total number of individuals and/or employees who comprise these governance bodies; - 2.1.1.3 the total number of employees in each employee category, excluding governance body members; - 2.1.2 estimate the total number of business partners.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: When compiling the information specified in Disclosure 205-2, the reporting organization should: - 2.1.1 draw from the information used for [Disclosure 405-1 in GRI 405: Diversity and Equal Opportunity 2016](#) to identify: - 2.1.1.1 the governance bodies that exist within the organization, such as the board of directors, management committee, or similar body for non-corporate organizations; - 2.1.1.2 the total number of individuals and/or employees who comprise these governance bodies; - 2.1.1.3 the total number of employees in each employee category, excluding governance body members; - 2.1.2 estimate the total number of business partners.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "- 2.1 When compiling the information specified in Disclosure 205-2, the reporting organization should:\n  - 2.1.1 draw from the information used for [Disclosure 405-1 in GRI 405: Diversity and Equal Opportunity 2016](#) to identify:\n    - 2.1.1.1 the governance bodies that exist within the organization, such as the board of directors, management committee, or similar body for non-corporate organizations;\n    - 2.1.1.2 the total number of individuals and/or employees who comprise these governance bodies;\n    - 2.1.1.3 the total number of employees in each employee category, excluding governance body members;\n  - 2.1.2 estimate the total number of business partners.\n\nGuidance Summary:\n### Guidance for Disclosure 205-2\n\nIn the context of this GRI Standard, the term 'business partners' includes, among others, suppliers, agents, lobbyists and other intermediaries, joint venture and consortia partners, governments, customers, and clients.\n\n#### Background\n\nCommunication and training build the internal and external awareness and the necessary capacity to combat corruption....",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 205-2.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "205-3",
@@ -85,64 +185,68 @@
         {
           "requirement_id": "205-3:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 205-3 (Confirmed incidents of corruption and actions taken)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
+          "description_en": "Clause a: Total number and nature of confirmed incidents of corruption.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Total number and nature of confirmed incidents of corruption.",
+          "requirement_type": "Quantitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "3-3",
-      "title_en": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "title_vi": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
         {
-          "requirement_id": "3-3:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
+          "requirement_id": "205-3:b",
+          "item_code": "b",
+          "description_en": "Clause b: Total number of confirmed incidents in which employees were dismissed or disciplined for corruption.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Total number of confirmed incidents in which employees were dismissed or disciplined for corruption.",
+          "requirement_type": "Quantitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "405-1",
-      "title_en": "in GRI 405: Diversity and",
-      "title_vi": "in GRI 405: Diversity and",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
         {
-          "requirement_id": "405-1:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 405-1 (in GRI 405: Diversity and)",
-          "description_vi": null,
+          "requirement_id": "205-3:c",
+          "item_code": "c",
+          "description_en": "Clause c: Total number of confirmed incidents when contracts with business partners were terminated or not renewed due to violations related to corruption.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Total number of confirmed incidents when contracts with business partners were terminated or not renewed due to violations related to corruption.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "205-3:d",
+          "item_code": "d",
+          "description_en": "Clause d: Public legal cases regarding corruption brought against the organization or its employees during the reporting period and the outcomes of such cases.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Public legal cases regarding corruption brought against the organization or its employees during the reporting period and the outcomes of such cases.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 205-3.\n\nGuidance Summary:\nfor Disclosure 205-3\n\nFor stakeholders, there is an interest in both the occurrence of incidents and an organization's response to the incidents. Public legal cases regarding corruption can include current public investigations, prosecutions, or closed cases.\n\n#### Guidance for Disclosure 205-3-c\n\nIn the context of this GRI Standard, the term 'business partners' includes, among others, suppliers, agents, lobbyists and other intermediaries, joint venture and consortia partners, governments, customers, and clients.\n\n# Glossary\n\nThis glossary provides definitions for terms used in this Standard. The organization is required to apply these definitions when using the GRI Standards.\n\nThe definitions included in this glossary may contain terms that are further defined in the complete [GRI Standar...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 205-3.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     }
   ]
 }

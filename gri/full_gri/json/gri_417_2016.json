@@ -2,7 +2,7 @@
   "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
   "standard_id": "GRI 417",
   "title_en": "Marketing and Labeling 2016",
-  "title_vi": "Marketing and Labeling 2016",
+  "title_vi": "GRI 417: Tiếp thị và Ghi nhãn 2016",
   "pillar": "S — Social",
   "series": "Social (400 Series)",
   "category": "Topic-Social",
@@ -23,11 +23,11 @@
   "provenance": {
     "relative_pdf_path": "Full set of GRI Standards - English\\GRI 417_ Marketing and Labeling 2016.pdf",
     "file_size_bytes": 837158,
-    "page_count": 14,
+    "page_count": 25,
     "sha256": "d0b95f61170636a8bfb0929309b7923da6d1062f80199789e842369aa02a19ae",
-    "indexed_at": "2026-07-25T14:35:59.403477"
+    "indexed_at": "2026-08-01T20:30:14.434339"
   },
-  "disclosures_count": 4,
+  "disclosures_count": 3,
   "disclosures": [
     {
       "disclosure_id": "417-1",
@@ -39,87 +39,172 @@
         {
           "requirement_id": "417-1:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 417-1 (Requirements for product and service information and labeling)",
-          "description_vi": null,
+          "description_en": "The reporting organization shall report information specified in Disclosure 417-1: Requirements for product and service information and labeling.",
+          "description_vi": "Tổ chức báo cáo phải công bố đầy đủ thông tin theo yêu cầu của Chỉ số 417-1: Requirements for product and service information and labeling.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 417-1.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 417-1.",
+      "sdg_mapping": [
+        "SDG 12: Responsible Consumption and Production"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "417-2",
-      "title_en": "Incidents of non-compliance concerning product and service",
-      "title_vi": "Incidents of non-compliance concerning product and service",
+      "title_en": "Incidents of non-compliance concerning product and service information and labeling",
+      "title_vi": "Incidents of non-compliance concerning product and service information and labeling",
       "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
           "requirement_id": "417-2:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 417-2 (Incidents of non-compliance concerning product and service)",
-          "description_vi": null,
+          "description_en": "Clause a: Total number of incidents of non-compliance with regulations and/or voluntary codes concerning product and service information and labeling, by: - i. incidents of non-compliance with regulations resulting in a fine or penalty; - ii. incidents of non-compliance with regulations resulting in a warning; - iii. incidents of non-compliance with voluntary codes.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Total number of incidents of non-compliance with regulations and/or voluntary codes concerning product and service information and labeling, by: - i. incidents of non-compliance with regulations resulting in a fine or penalty; - ii. incidents of non-compliance with regulations resulting in a warning; - iii. incidents of non-compliance with voluntary codes.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "417-2:b",
+          "item_code": "b",
+          "description_en": "Clause b: If the organization has not identified any non-compliance with regulations and/or voluntary codes, a brief statement of this fact is sufficient.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: If the organization has not identified any non-compliance with regulations and/or voluntary codes, a brief statement of this fact is sufficient.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "417-2:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 1 When compiling the information specified in Disclosure 417-2, the reporting organization shall: - 2.1.1 exclude incidents of non-compliance in which the organization was determined not to be at fault; - 2.1.2 if applicable, identify any incidents of non-compliance that relate to events in periods prior to the reporting period.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: When compiling the information specified in Disclosure 417-2, the reporting organization shall: - 2.1.1 exclude incidents of non-compliance in which the organization was determined not to be at fault; - 2.1.2 if applicable, identify any incidents of non-compliance that relate to events in periods prior to the reporting period.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 417-2.\n\nGuidance Summary:\n### Guidance for Disclosure 417-2\n\nThe incidents of non-compliance that occur within the reporting period can relate to incidents formally resolved during the reporting period, whether they occurred in periods prior to the reporting period or not.\n\n#### Background\n\nProviding appropriate information and labeling with respect to economic, environmental, and social impacts can be linked to compliance with certain types of regulations, laws, and codes. It is, for example, linked to compliance with regulations, national laws, and the Organisation for Economic Co-operation and Development (OECD) *OECD Guidelines for Multinational Enterprises*. It is also potentially linked to compliance with strategies for brand and market differentiation.\n\nThe display and provision of information and labeling f...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 417-2.",
+      "sdg_mapping": [
+        "SDG 12: Responsible Consumption and Production"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "417-3",
-      "title_en": "Incidents of non-compliance concerning marketing",
-      "title_vi": "Incidents of non-compliance concerning marketing",
+      "title_en": "Incidents of non-compliance concerning marketing communications",
+      "title_vi": "Incidents of non-compliance concerning marketing communications",
       "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
           "requirement_id": "417-3:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 417-3 (Incidents of non-compliance concerning marketing)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
+          "description_en": "Clause a: Total number of incidents of non-compliance with regulations and/or voluntary codes concerning marketing communications, including advertising, promotion, and sponsorship, by: - i. incidents of non-compliance with regulations resulting in a fine or penalty; - ii. incidents of non-compliance with regulations resulting in a warning; - iii. incidents of non-compliance with voluntary codes.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Total number of incidents of non-compliance with regulations and/or voluntary codes concerning marketing communications, including advertising, promotion, and sponsorship, by: - i. incidents of non-compliance with regulations resulting in a fine or penalty; - ii. incidents of non-compliance with regulations resulting in a warning; - iii. incidents of non-compliance with voluntary codes.",
+          "requirement_type": "Quantitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "3-3",
-      "title_en": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "title_vi": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "disclosure_type": "Topic-Specific",
-      "mandatory": true,
-      "requirements": [
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
         {
-          "requirement_id": "3-3:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);)",
-          "description_vi": null,
+          "requirement_id": "417-3:b",
+          "item_code": "b",
+          "description_en": "Clause b: If the organization has not identified any non-compliance with regulations and/or voluntary codes, a brief statement of this fact is sufficient.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: If the organization has not identified any non-compliance with regulations and/or voluntary codes, a brief statement of this fact is sufficient.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "417-3:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 2 When compiling the information specified in Disclosure 417-3, the reporting organization shall: - 2.2.1 exclude incidents of non-compliance in which the organization was determined not to be at fault; - 2.2.2 if applicable, identify any incidents of non-compliance that relate to events in periods prior to the reporting period.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: When compiling the information specified in Disclosure 417-3, the reporting organization shall: - 2.2.1 exclude incidents of non-compliance in which the organization was determined not to be at fault; - 2.2.2 if applicable, identify any incidents of non-compliance that relate to events in periods prior to the reporting period.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "417-3:1",
+          "item_code": "1",
+          "description_en": "Clause 1: Organisation for Economic Co-operation and Development (OECD), *OECD Guidelines for Multinational Enterprises*, 2011.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Organisation for Economic Co-operation and Development (OECD), *OECD Guidelines for Multinational Enterprises*, 2011.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "417-3:2",
+          "item_code": "2",
+          "description_en": "Clause 2: International Chamber of Commerce (ICC), *Consolidated Code of Advertising and Marketing Communication Practice*, 2011.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: International Chamber of Commerce (ICC), *Consolidated Code of Advertising and Marketing Communication Practice*, 2011.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 417-3.\n\nGuidance Summary:\n#### Guidance for Disclosure 417-3\n\nThe incidents of non-compliance that occur within the reporting period can relate to incidents formally resolved during the reporting period, whether they occurred in periods prior to the reporting period or not.\n\n#### Background\n\nMarketing is an important method of communication between organizations and customers, and is subject to many regulations, laws, and voluntary codes, such as the International Chamber of Commerce (ICC)'s *Consolidated Code of Advertising and Marketing Communication Practice*.\n\nAn organization is expected to use fair and responsible practices in its business and dealings with customers. Fair and responsible marketing requires the organization to communicate transparently about the economic, environmental, and social impacts of i...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 417-3.",
+      "sdg_mapping": [
+        "SDG 12: Responsible Consumption and Production"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     }
   ]
 }

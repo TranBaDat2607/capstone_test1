@@ -2,7 +2,7 @@
   "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
   "standard_id": "GRI 308",
   "title_en": "Supplier Environmental Assessment 2016",
-  "title_vi": "Supplier Environmental Assessment 2016",
+  "title_vi": "GRI 308: Đánh giá môi trường nhà cung cấp 2016",
   "pillar": "E — Environmental",
   "series": "Environmental (300 Series / Revisions)",
   "category": "Topic-Environmental",
@@ -23,11 +23,11 @@
   "provenance": {
     "relative_pdf_path": "Full set of GRI Standards - English\\GRI 308_ Supplier Environmental Assessment 2016.pdf",
     "file_size_bytes": 851486,
-    "page_count": 14,
+    "page_count": 25,
     "sha256": "51cd0d91694b9e91dca986b83d21ba499beaf7711cc20a7109c956e3b5e56ad8",
-    "indexed_at": "2026-07-25T14:35:58.849836"
+    "indexed_at": "2026-08-01T20:30:14.392649"
   },
-  "disclosures_count": 4,
+  "disclosures_count": 2,
   "disclosures": [
     {
       "disclosure_id": "308-1",
@@ -39,87 +39,141 @@
         {
           "requirement_id": "308-1:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 308-1 (New suppliers that were screened using environmental criteria)",
-          "description_vi": null,
+          "description_en": "The reporting organization shall report information specified in Disclosure 308-1: New suppliers that were screened using environmental criteria.",
+          "description_vi": "Tổ chức báo cáo phải công bố đầy đủ thông tin theo yêu cầu của Chỉ số 308-1: New suppliers that were screened using environmental criteria.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 308-1.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 308-1.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "308-2",
-      "title_en": "Negative environmental impacts in the supply chain and actions",
-      "title_vi": "Negative environmental impacts in the supply chain and actions",
+      "title_en": "Negative environmental impacts in the supply chain and actions taken",
+      "title_vi": "Negative environmental impacts in the supply chain and actions taken",
       "disclosure_type": "General Disclosures",
       "mandatory": true,
       "requirements": [
         {
           "requirement_id": "308-2:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 308-2 (Negative environmental impacts in the supply chain and actions)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
+          "description_en": "Clause a: Number of suppliers assessed for environmental impacts.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Number of suppliers assessed for environmental impacts.",
+          "requirement_type": "Quantitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "3-3",
-      "title_en": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "title_vi": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
         {
-          "requirement_id": "3-3:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
+          "requirement_id": "308-2:b",
+          "item_code": "b",
+          "description_en": "Clause b: Number of suppliers identified as having significant actual and potential negative environmental impacts.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Number of suppliers identified as having significant actual and potential negative environmental impacts.",
+          "requirement_type": "Quantitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "2-25",
-      "title_en": "in GRI 2: General Disclosures 2021 for more",
-      "title_vi": "in GRI 2: General Disclosures 2021 for more",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
         {
-          "requirement_id": "2-25:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 2-25 (in GRI 2: General Disclosures 2021 for more)",
-          "description_vi": null,
+          "requirement_id": "308-2:c",
+          "item_code": "c",
+          "description_en": "Clause c: Significant actual and potential negative environmental impacts identified in the supply chain.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Significant actual and potential negative environmental impacts identified in the supply chain.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "308-2:d",
+          "item_code": "d",
+          "description_en": "Clause d: Percentage of suppliers identified as having significant actual and potential negative environmental impacts with which improvements were agreed upon as a result of assessment.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Percentage of suppliers identified as having significant actual and potential negative environmental impacts with which improvements were agreed upon as a result of assessment.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "308-2:e",
+          "item_code": "e",
+          "description_en": "Clause e: Percentage of suppliers identified as having significant actual and potential negative environmental impacts with which relationships were terminated as a result of assessment, and why.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Percentage of suppliers identified as having significant actual and potential negative environmental impacts with which relationships were terminated as a result of assessment, and why.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "308-2:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 1 When compiling the information specified in Disclosure 308-2, the reporting organization should, where it provides appropriate context on significant impacts, provide a breakdown of the information by: - 2.1.1 the location of the supplier; - 2.1.2 the significant actual and potential negative environmental impact.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: When compiling the information specified in Disclosure 308-2, the reporting organization should, where it provides appropriate context on significant impacts, provide a breakdown of the information by: - 2.1.1 the location of the supplier; - 2.1.2 the significant actual and potential negative environmental impact.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "308-2:1",
+          "item_code": "1",
+          "description_en": "Clause 1: United Nations (UN), 'Guiding Principles on Business and Human Rights, Implementing the United Nations \"Protect, Respect and Remedy\" Framework', 2011.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: United Nations (UN), 'Guiding Principles on Business and Human Rights, Implementing the United Nations \"Protect, Respect and Remedy\" Framework', 2011.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "- 2.1 When compiling the information specified in Disclosure 308-2, the reporting organization should, where it provides appropriate context on significant impacts, provide a breakdown of the information by:\n  - 2.1.1 the location of the supplier;\n  - 2.1.2 the significant actual and potential negative environmental impact.\n\nGuidance Summary:\n### Guidance for Disclosure 308-2\n\nNegative impacts include those that are either caused or contributed to by an organization, or that are directly linked to its operations, products, or services by its relationship with a supplier.\n\nAssessments for environmental impacts can include the topics covered in other GRI Topic Standards (e.g., *GRI 302: Energy 2016*, *GRI 303: Water and Effluents 2018*, *GRI 305: Emissions 2016*).\n\nAssessments can be made against agreed performance expectations that are set and communicated to the suppliers prior to the assessment.\n\nAssessments can be informed by audits, contractual reviews, two-way engagement, and complaint and [grievance mechanisms](#).\n\nImprovements can include changing an organization's procurement practices, the adjustment of performance exp...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 308-2.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     }
   ]
 }

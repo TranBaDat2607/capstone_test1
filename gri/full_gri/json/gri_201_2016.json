@@ -2,7 +2,7 @@
   "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
   "standard_id": "GRI 201",
   "title_en": "Economic Performance 2016",
-  "title_vi": "Economic Performance 2016",
+  "title_vi": "GRI 201: Hiệu quả kinh tế 2016",
   "pillar": "G — Governance",
   "series": "Economic (200 Series)",
   "category": "Topic-Economic",
@@ -23,35 +23,12 @@
   "provenance": {
     "relative_pdf_path": "Full set of GRI Standards - English\\GRI 201_  Economic Performance 2016.pdf",
     "file_size_bytes": 906276,
-    "page_count": 19,
+    "page_count": 25,
     "sha256": "1ff3bc503b410aaf6ace049876f7228cc2772432a642829b252708f7d21435ea",
-    "indexed_at": "2026-07-25T14:35:58.294593"
+    "indexed_at": "2026-08-01T20:30:14.334333"
   },
-  "disclosures_count": 5,
+  "disclosures_count": 4,
   "disclosures": [
-    {
-      "disclosure_id": "201-2",
-      "title_en": "in GRI 201: Economic Performance 2016 has been revised and will be",
-      "title_vi": "in GRI 201: Economic Performance 2016 has been revised and will be",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
-        {
-          "requirement_id": "201-2:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 201-2 (in GRI 201: Economic Performance 2016 has been revised and will be)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
     {
       "disclosure_id": "201-1",
       "title_en": "Direct economic value generated and distributed",
@@ -62,18 +39,130 @@
         {
           "requirement_id": "201-1:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 201-1 (Direct economic value generated and distributed)",
-          "description_vi": null,
+          "description_en": "Clause a: **Direct economic value generated and distributed (EVG&D) on an accruals basis, including the basic components for the organization's global operations as listed below. If data are presented on a cash basis, report the justification for this decision in addition to reporting the following basic components:** - i. **Direct economic value generated: revenues;** - ii. **Economic value distributed: operating costs, [employee](#) wages and benefits, payments to providers of capital, payments to government by country, and community investments;** - iii. **Economic value retained: 'direct economic value generated' less 'economic value distributed'.**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **Direct economic value generated and distributed (EVG&D) on an accruals basis, including the basic components for the organization's global operations as listed below. If data are presented on a cash basis, report the justification for this decision in addition to reporting the following basic components:** - i. **Direct economic value generated: revenues;** - ii. **Economic value distributed: operating costs, [employee](#) wages and benefits, payments to providers of capital, payments to government by country, and community investments;** - iii. **Economic value retained: 'direct economic value generated' less 'economic value distributed'.**",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "VND",
+            "USD",
+            "EUR",
+            "local currency"
+          ],
+          "breakdown_dimensions": [
+            "by country/region",
+            "by business segment",
+            "by tax jurisdiction"
+          ]
+        },
+        {
+          "requirement_id": "201-1:b",
+          "item_code": "b",
+          "description_en": "Clause b: **Where significant, report EVG&D separately at country, regional, or market levels, and the criteria used for defining significance.**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **Where significant, report EVG&D separately at country, regional, or market levels, and the criteria used for defining significance.**",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "VND",
+            "USD",
+            "EUR",
+            "local currency"
+          ],
+          "breakdown_dimensions": [
+            "by country/region",
+            "by business segment",
+            "by tax jurisdiction"
+          ]
+        },
+        {
+          "requirement_id": "201-1:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 1 **When compiling the information specified in Disclosure 201-1, the reporting organization shall, if applicable, compile the EVG&D from data in the organization's audited financial or profit and loss (P&L) statement, or its internally audited management accounts.**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **When compiling the information specified in Disclosure 201-1, the reporting organization shall, if applicable, compile the EVG&D from data in the organization's audited financial or profit and loss (P&L) statement, or its internally audited management accounts.**",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by country/region",
+            "by business segment",
+            "by tax jurisdiction"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 201-1.\n\nGuidance Summary:\n#### Background\n\nInformation on the creation and distribution of economic value provides a basic indication of how an organization has created wealth for stakeholders. Several components of the economic value generated and distributed (EVG&D) also provide an economic profile of an organization, which can be useful for normalizing other performance figures.\n\nIf presented in country-level detail, EVG&D can provide a useful picture of the direct monetary value added to local economies.\n\n#### Guidance for Disclosure 201-1\n\n##### *Revenues*\n\nAn organization can calculate revenues as net sales plus revenues from financial investments and sales of assets.\n\nNet sales can be calculated as gross sales from products and services minus returns, discounts, and allowances.\n\nRevenues from financial inves...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 201-1.",
+      "sdg_mapping": [
+        "SDG 8: Decent Work and Economic Growth",
+        "SDG 9: Industry, Innovation & Infrastructure"
+      ],
+      "esrs_mapping": [
+        "ESRS G1 Business Conduct"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
+    },
+    {
+      "disclosure_id": "201-2",
+      "title_en": "Financial implications and other risks and opportunities due to climate change",
+      "title_vi": "Financial implications and other risks and opportunities due to climate change",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "201-2:a",
+          "item_code": "a",
+          "description_en": "Clause a: **Risks and opportunities posed by climate change that have the potential to generate substantive changes in operations, revenue, or expenditure, including:** - i. a description of the risk or opportunity and its classification as either physical, regulatory, or other; - ii. a description of the impact associated with the risk or opportunity; - iii. the financial implications of the risk or opportunity before action is taken; - iv. the methods used to manage the risk or opportunity; - v. the costs of actions taken to manage the risk or opportunity.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **Risks and opportunities posed by climate change that have the potential to generate substantive changes in operations, revenue, or expenditure, including:** - i. a description of the risk or opportunity and its classification as either physical, regulatory, or other; - ii. a description of the impact associated with the risk or opportunity; - iii. the financial implications of the risk or opportunity before action is taken; - iv. the methods used to manage the risk or opportunity; - v. the costs of actions taken to manage the risk or opportunity.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "VND",
+            "USD",
+            "EUR",
+            "local currency"
+          ],
+          "breakdown_dimensions": [
+            "by country/region",
+            "by business segment",
+            "by tax jurisdiction"
+          ]
+        },
+        {
+          "requirement_id": "201-2:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 2 **When compiling the information specified in Disclosure 201-2, if the reporting organization does not have a system in place to calculate the financial implications or costs, or to make revenue projections, it shall report its plans and timeline to develop the necessary systems.**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **When compiling the information specified in Disclosure 201-2, if the reporting organization does not have a system in place to calculate the financial implications or costs, or to make revenue projections, it shall report its plans and timeline to develop the necessary systems.**",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by country/region",
+            "by business segment",
+            "by tax jurisdiction"
+          ]
+        },
+        {
+          "requirement_id": "201-2:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 3 When compiling the information specified in Disclosure 201-2, the reporting organization should report the following additional characteristics for the identified risks and opportunities: - 2.3.1 A description of the risk or opportunity driver, such as a particular piece of legislation, or a physical driver, such as water scarcity; - 2.3.2 The projected time frame in which the risk or opportunity is expected to have substantive financial implications; - 2.3.3 Direct and indirect impacts (whether the impact directly affects the organization, or indirectly affects the organization via its supply chain or entities downstream from it); - 2.3.4 The potential impacts generally, including increased or decreased: - 2.3.4.1 capital and operational costs; - 2.3.4.2 demand for products and services; - 2.3.4.3 capital availability and investment opportunities; - 2.3.5 Likelihood (the probability of the impact on the organization); - 2.3.6 Magnitude of impact (if occurring, the extent to which the impact affects the organization financially).",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: When compiling the information specified in Disclosure 201-2, the reporting organization should report the following additional characteristics for the identified risks and opportunities: - 2.3.1 A description of the risk or opportunity driver, such as a particular piece of legislation, or a physical driver, such as water scarcity; - 2.3.2 The projected time frame in which the risk or opportunity is expected to have substantive financial implications; - 2.3.3 Direct and indirect impacts (whether the impact directly affects the organization, or indirectly affects the organization via its supply chain or entities downstream from it); - 2.3.4 The potential impacts generally, including increased or decreased: - 2.3.4.1 capital and operational costs; - 2.3.4.2 demand for products and services; - 2.3.4.3 capital availability and investment opportunities; - 2.3.5 Likelihood (the probability of the impact on the organization); - 2.3.6 Magnitude of impact (if occurring, the extent to which the impact affects the organization financially).",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by country/region",
+            "by business segment",
+            "by tax jurisdiction"
+          ]
+        }
+      ],
+      "recommendations_en": "- 2.3 When compiling the information specified in Disclosure 201-2, the reporting organization should report the following additional characteristics for the identified risks and opportunities:\n  - 2.3.1 A description of the risk or opportunity driver, such as a particular piece of legislation, or a physical driver, such as water scarcity;\n  - 2.3.2 The projected time frame in which the risk or opportunity is expected to have substantive financial implications;\n  - 2.3.3 Direct and indirect impacts (whether the impact directly affects the organization, or indirectly affects the organization via its supply chain or entities downstream from it);\n  - 2.3.4 The potential impacts generally, including increased or decreased:\n    - 2.3.4.1 capital and operational costs;\n    - 2.3.4.2 demand for products and services;\n    - 2.3.4.3 capital availability and investment opportunities;\n  - 2.3.5 Likelihood (the probability of the impact on the organization);\n  - 2.3.6 Magnitude of impact (if occurring, the extent to which the impact affects the organization financially).\n\nGuidance Summary:\n#### Guidance for Disclosure 201-2\n\nRisk and opportunities due to climate change can be classified as:\n\n- physical\n- regulatory\n- other\n\nPhysical risks and opportunities can include:\n\n- the impact of more frequent and intense storms;\n- changes in sea level, ambient temperature, and water availability;\n- impacts on workers – such as health effects, including heat-related illness or disease, and the need to relocate operations.\n\nOther risks and opportunities can include the availability of new technologies, products, or services to address challenges related to climate change, as well as changes in customer behavior.\n\nMethods used to manage the risk or opportunity can include:\n\n- carbon capture and storage;\n- fuel switching;\n- use of renewable and lower carbon footprint energy;\n\n- improving ...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 201-2.",
+      "sdg_mapping": [
+        "SDG 8: Decent Work and Economic Growth",
+        "SDG 9: Industry, Innovation & Infrastructure"
+      ],
+      "esrs_mapping": [
+        "ESRS G1 Business Conduct"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "201-3",
@@ -85,18 +174,109 @@
         {
           "requirement_id": "201-3:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 201-3 (Defined benefit plan obligations and other retirement plans)",
-          "description_vi": null,
+          "description_en": "Clause a: If the plan's liabilities are met by the organization's general resources, the estimated value of those liabilities.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: If the plan's liabilities are met by the organization's general resources, the estimated value of those liabilities.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by country/region",
+            "by business segment",
+            "by tax jurisdiction"
+          ]
+        },
+        {
+          "requirement_id": "201-3:b",
+          "item_code": "b",
+          "description_en": "Clause b: If a separate fund exists to pay the plan's pension liabilities: - i. the extent to which the scheme's liabilities are estimated to be covered by the assets that have been set aside to meet them; - ii. the basis on which that estimate has been arrived at; - iii. when that estimate was made.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: If a separate fund exists to pay the plan's pension liabilities: - i. the extent to which the scheme's liabilities are estimated to be covered by the assets that have been set aside to meet them; - ii. the basis on which that estimate has been arrived at; - iii. when that estimate was made.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "VND",
+            "USD",
+            "EUR",
+            "local currency"
+          ],
+          "breakdown_dimensions": [
+            "by country/region",
+            "by business segment",
+            "by tax jurisdiction"
+          ]
+        },
+        {
+          "requirement_id": "201-3:c",
+          "item_code": "c",
+          "description_en": "Clause c: If a fund set up to pay the plan's pension liabilities is not fully covered, explain the strategy, if any, adopted by the employer to work towards full coverage, and the timescale, if any, by which the employer hopes to achieve full coverage.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: If a fund set up to pay the plan's pension liabilities is not fully covered, explain the strategy, if any, adopted by the employer to work towards full coverage, and the timescale, if any, by which the employer hopes to achieve full coverage.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "VND",
+            "USD",
+            "EUR",
+            "local currency"
+          ],
+          "breakdown_dimensions": [
+            "by country/region",
+            "by business segment",
+            "by tax jurisdiction"
+          ]
+        },
+        {
+          "requirement_id": "201-3:d",
+          "item_code": "d",
+          "description_en": "Clause d: Percentage of salary contributed by employee or employer.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Percentage of salary contributed by employee or employer.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "VND",
+            "USD",
+            "EUR",
+            "local currency"
+          ],
+          "breakdown_dimensions": [
+            "by country/region",
+            "by business segment",
+            "by tax jurisdiction"
+          ]
+        },
+        {
+          "requirement_id": "201-3:e",
+          "item_code": "e",
+          "description_en": "Clause e: Level of participation in retirement plans, such as participation in mandatory or voluntary schemes, regional, or country-based schemes, or those with financial impact.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Level of participation in retirement plans, such as participation in mandatory or voluntary schemes, regional, or country-based schemes, or those with financial impact.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by country/region",
+            "by business segment",
+            "by tax jurisdiction"
+          ]
+        },
+        {
+          "requirement_id": "201-3:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 4 When compiling the information specified in Disclosure 201-3, the reporting organization should: - 2.4.1 calculate the information in accordance with the regulations and methods for relevant jurisdictions, and report aggregated totals; - 2.4.2 use the same consolidation techniques as those applied in preparing the financial accounts of the organization.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: When compiling the information specified in Disclosure 201-3, the reporting organization should: - 2.4.1 calculate the information in accordance with the regulations and methods for relevant jurisdictions, and report aggregated totals; - 2.4.2 use the same consolidation techniques as those applied in preparing the financial accounts of the organization.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by country/region",
+            "by business segment",
+            "by tax jurisdiction"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "- 2.4 When compiling the information specified in Disclosure 201-3, the reporting organization should:\n  - 2.4.1 calculate the information in accordance with the regulations and methods for relevant jurisdictions, and report aggregated totals;\n  - 2.4.2 use the same consolidation techniques as those applied in preparing the financial accounts of the organization.\n\nGuidance Summary:\n#### Guidance for Disclosure 201-3\n\nThe structure of retirement plans offered to employees can be based on:\n\n- defined benefit plans;\n- defined contribution plans;\n- other types of retirement benefits.\n\nDifferent jurisdictions, such as countries, have varying interpretations and guidance regarding calculations used to determine plan coverage.\n\nNote that benefit pension plans are part of the International Accounting Standards Board (IASB) *IAS 19 Employee Benefits*, however IAS 19 covers additional topics.\n\nSee reference [7] in the [Bibliography](#).\n\n#### Background\n\nWhen an organization provides a retirement plan for its employees, these benefits can become a commitment that members of the schemes plan on for their long-term economic well-being.\n\nDefined benefit plans have potential impli...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 201-3.",
+      "sdg_mapping": [
+        "SDG 8: Decent Work and Economic Growth",
+        "SDG 9: Industry, Innovation & Infrastructure"
+      ],
+      "esrs_mapping": [
+        "ESRS G1 Business Conduct"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "201-4",
@@ -108,41 +288,78 @@
         {
           "requirement_id": "201-4:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 201-4 (Financial assistance received from government)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "3-3",
-      "title_en": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "title_vi": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
+          "description_en": "Clause a: Total monetary value of **financial assistance** received by the organization from any government during the reporting period, including: - i. tax relief and tax credits; - ii. subsidies; - iii. investment grants, research and development grants, and other relevant types of grant; - iv. awards; - v. royalty holidays; - vi. financial assistance from Export Credit Agencies (ECAs); - vii. financial incentives; - viii. other financial benefits received or receivable from any government for any operation.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Total monetary value of **financial assistance** received by the organization from any government during the reporting period, including: - i. tax relief and tax credits; - ii. subsidies; - iii. investment grants, research and development grants, and other relevant types of grant; - iv. awards; - v. royalty holidays; - vi. financial assistance from Export Credit Agencies (ECAs); - vii. financial incentives; - viii. other financial benefits received or receivable from any government for any operation.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "VND",
+            "USD",
+            "EUR",
+            "local currency"
+          ],
+          "breakdown_dimensions": [
+            "by country/region",
+            "by business segment",
+            "by tax jurisdiction"
+          ]
+        },
         {
-          "requirement_id": "3-3:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);)",
-          "description_vi": null,
+          "requirement_id": "201-4:b",
+          "item_code": "b",
+          "description_en": "Clause b: The information in 201-4-a by country.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: The information in 201-4-a by country.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by country/region",
+            "by business segment",
+            "by tax jurisdiction"
+          ]
+        },
+        {
+          "requirement_id": "201-4:c",
+          "item_code": "c",
+          "description_en": "Clause c: Whether, and the extent to which, any government is present in the shareholding structure.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Whether, and the extent to which, any government is present in the shareholding structure.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by country/region",
+            "by business segment",
+            "by tax jurisdiction"
+          ]
+        },
+        {
+          "requirement_id": "201-4:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 5 When compiling the information specified in Disclosure 201-4, the reporting organization shall identify the monetary value of financial assistance received from government through consistent application of generally accepted accounting principles.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: When compiling the information specified in Disclosure 201-4, the reporting organization shall identify the monetary value of financial assistance received from government through consistent application of generally accepted accounting principles.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "VND",
+            "USD",
+            "EUR",
+            "local currency"
+          ],
+          "breakdown_dimensions": [
+            "by country/region",
+            "by business segment",
+            "by tax jurisdiction"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 201-4.\n\nGuidance Summary:\n#### Background\n\nThis disclosure provides a measure of governments' contributions to an organization.\n\nThe significant financial assistance received from a government, in comparison with taxes paid, can be useful for developing a balanced picture of the transactions between the organization and government.\n\nSee reference [8] in the [Bibliography](#).\n\n## Glossary\n\nThis glossary provides definitions for terms used in this Standard. The organization is required to apply these definitions when using the GRI Standards.\n\nThe definitions included in this glossary may contain terms that are further defined in the complete [GRI Standards Glossary](#). All defined terms are underlined. If a term is not defined in this glossary or in the complete [GRI Standards Glossary](#), definitions that are com...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 201-4.",
+      "sdg_mapping": [
+        "SDG 8: Decent Work and Economic Growth",
+        "SDG 9: Industry, Innovation & Infrastructure"
+      ],
+      "esrs_mapping": [
+        "ESRS G1 Business Conduct"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     }
   ]
 }

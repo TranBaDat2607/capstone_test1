@@ -1,8 +1,8 @@
 {
   "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
   "standard_id": "GRI 402",
-  "title_en": "Labor and Management Relations 2016",
-  "title_vi": "Labor and Management Relations 2016",
+  "title_en": "Labor/Management Relations 2016",
+  "title_vi": "GRI 402: Quan hệ lao động / Ban quản lý 2016",
   "pillar": "S — Social",
   "series": "Social (400 Series)",
   "category": "Topic-Social",
@@ -23,80 +23,58 @@
   "provenance": {
     "relative_pdf_path": "Full set of GRI Standards - English\\GRI 402_ Labor and Management Relations 2016.pdf",
     "file_size_bytes": 856239,
-    "page_count": 13,
+    "page_count": 25,
     "sha256": "4223292b5990088036db5e3d443d4343ceffe1f9542abad1b6924f7e069dd53b",
-    "indexed_at": "2026-07-25T14:35:58.985028"
+    "indexed_at": "2026-08-01T20:30:14.401102"
   },
-  "disclosures_count": 3,
+  "disclosures_count": 1,
   "disclosures": [
     {
       "disclosure_id": "402-1",
       "title_en": "Minimum notice periods regarding operational changes",
       "title_vi": "Minimum notice periods regarding operational changes",
-      "disclosure_type": "General Disclosures",
+      "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
           "requirement_id": "402-1:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 402-1 (Minimum notice periods regarding operational changes)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
+          "description_en": "Clause a: Minimum number of weeks' notice typically provided to employees and their representatives prior to the implementation of significant operational changes that could substantially affect them.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Minimum number of weeks' notice typically provided to employees and their representatives prior to the implementation of significant operational changes that could substantially affect them.",
+          "requirement_type": "Quantitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "2-30",
-      "title_en": "in GRI 2: General Disclosures 2021 requires reporting on the",
-      "title_vi": "in GRI 2: General Disclosures 2021 requires reporting on the",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
         {
-          "requirement_id": "2-30:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 2-30 (in GRI 2: General Disclosures 2021 requires reporting on the)",
-          "description_vi": null,
+          "requirement_id": "402-1:b",
+          "item_code": "b",
+          "description_en": "Clause b: For organizations with collective bargaining agreements, report whether the notice period and provisions for consultation and negotiation are specified in collective agreements.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: For organizations with collective bargaining agreements, report whether the notice period and provisions for consultation and negotiation are specified in collective agreements.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "3-3",
-      "title_en": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "title_vi": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
-        {
-          "requirement_id": "3-3:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 402-1.\n\nGuidance Summary:\n## Guidance for Disclosure 402-1\n\nMinimum notice periods can be found in corporate policies and standard employment contracts. Different policy statements can exist at a regional level.\n\nAn organization can identify the collective bargaining agreements referred to in [Disclosure 2-30 of GRI 2: General Disclosures 2021](#), and review the notice period clauses within these documents.\n\n## Background\n\nOrganizations are expected to provide reasonable notice of significant operational changes to employees and their representatives, as well as to appropriate government authorities. Minimum notice periods are a measure of an organization's ability to maintain employee satisfaction and motivation while implementing significant changes to operations.\n\nThis disclosure provides insight into an organi...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 402-1.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     }
   ]
 }

@@ -2,7 +2,7 @@
   "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
   "standard_id": "GRI 413",
   "title_en": "Local Communities 2016",
-  "title_vi": "Local Communities 2016",
+  "title_vi": "GRI 413: Cộng đồng địa phương 2016",
   "pillar": "S — Social",
   "series": "Social (400 Series)",
   "category": "Topic-Social",
@@ -23,103 +23,92 @@
   "provenance": {
     "relative_pdf_path": "Full set of GRI Standards - English\\GRI 413_ Local Communities 2016.pdf",
     "file_size_bytes": 887374,
-    "page_count": 16,
+    "page_count": 25,
     "sha256": "3eed81a73a1f3735ea208a91f6818322df591293b7aad238ece3e56a5e11c8e2",
-    "indexed_at": "2026-07-25T14:35:59.300024"
+    "indexed_at": "2026-08-01T20:30:14.434339"
   },
-  "disclosures_count": 4,
+  "disclosures_count": 2,
   "disclosures": [
     {
       "disclosure_id": "413-1",
-      "title_en": "Operations with local community engagement, impact",
-      "title_vi": "Operations with local community engagement, impact",
-      "disclosure_type": "General Disclosures",
+      "title_en": "Operations with local community engagement, impact assessments, and development programs",
+      "title_vi": "Operations with local community engagement, impact assessments, and development programs",
+      "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
           "requirement_id": "413-1:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 413-1 (Operations with local community engagement, impact)",
-          "description_vi": null,
+          "description_en": "The reporting organization shall report information specified in Disclosure 413-1: Operations with local community engagement, impact assessments, and development programs.",
+          "description_vi": "Tổ chức báo cáo phải công bố đầy đủ thông tin theo yêu cầu của Chỉ số 413-1: Operations with local community engagement, impact assessments, and development programs.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 413-1.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 413-1.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "413-2",
-      "title_en": "Operations with significant actual and potential negative impacts",
-      "title_vi": "Operations with significant actual and potential negative impacts",
-      "disclosure_type": "General Disclosures",
+      "title_en": "Operations with significant actual and potential negative impacts on local communities",
+      "title_vi": "Operations with significant actual and potential negative impacts on local communities",
+      "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
           "requirement_id": "413-2:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 413-2 (Operations with significant actual and potential negative impacts)",
-          "description_vi": null,
+          "description_en": "Clause a: Operations with significant actual and potential negative impacts on local communities, including: - i. the location of the operations; - ii. the significant actual and potential negative impacts of operations.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Operations with significant actual and potential negative impacts on local communities, including: - i. the location of the operations; - ii. the significant actual and potential negative impacts of operations.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "3-3",
-      "title_en": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "title_vi": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
         {
-          "requirement_id": "3-3:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
+          "requirement_id": "413-2:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 2 When compiling the information specified in Disclosure 413-2, the reporting organization should: - 2.2.1 report the vulnerability and risk to local communities from potential negative impacts due to factors including: - 2.2.1.1 the degree of physical or economic isolation of the local community; - 2.2.1.2 the level of socioeconomic development, including the degree of gender equality within the community; - 2.2.1.3 the state of socioeconomic infrastructure, including health and education infrastructure; - 2.2.1.4 the proximity to operations; - 2.2.1.5 the level of social organization; - 2.2.1.6 the strength and quality of the governance of local and national institutions around local communities; - 2.2.2 report the exposure of the local community to its operations due to higher than average use of shared resources or impact on shared resources, including: - 2.2.2.1 the use of hazardous substances that have an impact on the environment and human health in general, and specifically have an impact on reproductive health; - 2.2.2.2 the volume and type of pollution released; - 2.2.2.3 the status as major employer in the local community; - 2.2.2.4 land conversion and resettlement; - 2.2.2.5 natural resource consumption; - 2.2.3 for each of the significant actual and potential negative economic, social, cultural, and/or environmental impacts on local communities and their rights, describe: - 2.2.3.1 the intensity or severity of the impact; - 2.2.3.2 the likely duration of the impact; - 2.2.3.3 the reversibility of the impact; - 2.2.3.4 the scale of the impact.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: When compiling the information specified in Disclosure 413-2, the reporting organization should: - 2.2.1 report the vulnerability and risk to local communities from potential negative impacts due to factors including: - 2.2.1.1 the degree of physical or economic isolation of the local community; - 2.2.1.2 the level of socioeconomic development, including the degree of gender equality within the community; - 2.2.1.3 the state of socioeconomic infrastructure, including health and education infrastructure; - 2.2.1.4 the proximity to operations; - 2.2.1.5 the level of social organization; - 2.2.1.6 the strength and quality of the governance of local and national institutions around local communities; - 2.2.2 report the exposure of the local community to its operations due to higher than average use of shared resources or impact on shared resources, including: - 2.2.2.1 the use of hazardous substances that have an impact on the environment and human health in general, and specifically have an impact on reproductive health; - 2.2.2.2 the volume and type of pollution released; - 2.2.2.3 the status as major employer in the local community; - 2.2.2.4 land conversion and resettlement; - 2.2.2.5 natural resource consumption; - 2.2.3 for each of the significant actual and potential negative economic, social, cultural, and/or environmental impacts on local communities and their rights, describe: - 2.2.3.1 the intensity or severity of the impact; - 2.2.3.2 the likely duration of the impact; - 2.2.3.3 the reversibility of the impact; - 2.2.3.4 the scale of the impact.",
+          "requirement_type": "Quantitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "2-6",
-      "title_en": "in GRI 2: General Disclosures 2021 to identify",
-      "title_vi": "in GRI 2: General Disclosures 2021 to identify",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
-        {
-          "requirement_id": "2-6:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 2-6 (in GRI 2: General Disclosures 2021 to identify)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
+      "recommendations_en": "- 2.2 When compiling the information specified in Disclosure 413-2, the reporting organization should:\n  - 2.2.1 report the vulnerability and risk to local communities from potential negative impacts due to factors including:\n    - 2.2.1.1 the degree of physical or economic isolation of the local community;\n    - 2.2.1.2 the level of socioeconomic development, including the degree of gender equality within the community;\n    - 2.2.1.3 the state of socioeconomic infrastructure, including health and education infrastructure;\n    - 2.2.1.4 the proximity to operations;\n    - 2.2.1.5 the level of social organization;\n    - 2.2.1.6 the strength and quality of the governance of local and national institutions around local communities;\n  - 2.2.2 report the exposure of the local community to its operations due to higher than average use of shared resources or impact on shared resources, including:\n    - 2.2.2.1 the use of hazardous substances that have an impact on the environment and human health in general, and specifically have an impact on reproductive health;\n    - 2.2.2.2 the volume and type of pollution released;\n    - 2.2.2.3 the status as major employer in the local community;\n    - 2.2.2.4 land conversion and resettlement;\n    - 2.2.2.5 natural resource consumption;\n  - 2.2.3 for each of the significant actual and potential negative economic, social, cultural, and/or environmental impacts on local communities and their rights, describe:\n    - 2.2.3.1 the intensity or severity of the impact;\n    - 2.2.3.2 the likely duration of the impact;\n    - 2.2.3.3 the reversibility of the impact;\n    - 2.2.3.4 the scale of the impact.\n\nGuidance Summary:\n### Guidance for Disclosure 413-2\n\nInternal sources of information about actual and potential negative impacts of operations on local communities can include:\n\n- actual performance data;\n- internal investment plans and associated risk assessments;\n- all data collected with topic disclosures as they relate to individual communities. For example:\n  - [GRI 101: Biodiversity 2024](#);\n  - [GRI 203: Indirect Economic Impacts 2016](#);\n  - [GRI 301: Materials 2016](#);\n  - [GRI 302: Energy 2016](#);\n  - [GRI 303: Water and Effluents 2018](#);\n  - [GRI 305: Emissions 2016](#);\n  - [GRI 306: Waste 2020](#);\n  - [GRI 403: Occupational Health and Safety 2018](#);\n  - [GRI 408: Child Labor 2016](#);\n  - [GRI 409: Forced or Compulsory Labor 2016](#);\n  - [GRI 410: Security Practices 2016](#);\n\n- [GRI ...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 413-2.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     }
   ]
 }

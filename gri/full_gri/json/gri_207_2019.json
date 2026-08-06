@@ -2,7 +2,7 @@
   "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
   "standard_id": "GRI 207",
   "title_en": "Tax 2019",
-  "title_vi": "Tax 2019",
+  "title_vi": "GRI 207: Thuế 2019",
   "pillar": "G — Governance",
   "series": "Economic (200 Series)",
   "category": "Topic-Economic",
@@ -23,11 +23,11 @@
   "provenance": {
     "relative_pdf_path": "Full set of GRI Standards - English\\GRI 207_ Tax 2019.pdf",
     "file_size_bytes": 947779,
-    "page_count": 21,
+    "page_count": 25,
     "sha256": "acfad9084e7f731f71e0f6431e4a1653b5898e102f152e6cad0d31d7090b122a",
-    "indexed_at": "2026-07-25T14:35:58.466920"
+    "indexed_at": "2026-08-01T20:30:14.342656"
   },
-  "disclosures_count": 7,
+  "disclosures_count": 4,
   "disclosures": [
     {
       "disclosure_id": "207-1",
@@ -39,18 +39,34 @@
         {
           "requirement_id": "207-1:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 207-1 (Approach to tax)",
-          "description_vi": null,
+          "description_en": "Clause a: A description of the approach to tax, including: - i. whether the organization has a tax strategy and, if so, a link to this strategy if publicly available; - ii. the governance body or executive-level position within the organization that formally reviews and approves the tax strategy, and the frequency of this review; - iii. the approach to regulatory compliance; - iv. how the approach to tax is linked to the business and sustainable development strategies of the organization.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: A description of the approach to tax, including: - i. whether the organization has a tax strategy and, if so, a link to this strategy if publicly available; - ii. the governance body or executive-level position within the organization that formally reviews and approves the tax strategy, and the frequency of this review; - iii. the approach to regulatory compliance; - iv. how the approach to tax is linked to the business and sustainable development strategies of the organization.",
           "requirement_type": "Quantitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "unit_of_measure": [
+            "VND",
+            "USD",
+            "EUR",
+            "local currency"
+          ],
+          "breakdown_dimensions": [
+            "by country/region",
+            "by business segment",
+            "by tax jurisdiction"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 207-1.\n\nGuidance Summary:\n#### Background\n\nAn organization's approach to tax defines how the organization balances tax compliance with business activities and ethical, societal, and sustainable development-related expectations. It can include the organization's tax principles, its attitude to tax planning, the degree of risk the organization is willing to accept, and the organization's approach to engaging with tax authorities.\n\nAn organization's approach to tax is often described in a tax strategy, but it could also be described in equivalent documents, such as policies, standards, principles, or codes of conduct.\n\n#### Guidance for Disclosure 207-1-a\n\nThe reporting organization can illustrate its approach to tax by providing examples drawn from its tax practices. For example, the organization can provide an overv...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 207-1.",
+      "sdg_mapping": [
+        "SDG 8: Decent Work and Economic Growth",
+        "SDG 9: Industry, Innovation & Infrastructure"
+      ],
+      "esrs_mapping": [
+        "ESRS G1 Business Conduct"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "207-2",
@@ -62,41 +78,109 @@
         {
           "requirement_id": "207-2:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 207-2 (Tax governance, control, and risk management)",
-          "description_vi": null,
+          "description_en": "Clause a: A description of the tax governance and control framework, including: - i. the governance body or executive-level position within the organization accountable for compliance with the tax strategy; - ii. how the approach to tax is embedded within the organization; - iii. the approach to tax risks, including how risks are identified, managed, and monitored; - iv. how compliance with the tax governance and control framework is evaluated.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: A description of the tax governance and control framework, including: - i. the governance body or executive-level position within the organization accountable for compliance with the tax strategy; - ii. how the approach to tax is embedded within the organization; - iii. the approach to tax risks, including how risks are identified, managed, and monitored; - iv. how compliance with the tax governance and control framework is evaluated.",
           "requirement_type": "Quantitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "unit_of_measure": [
+            "VND",
+            "USD",
+            "EUR",
+            "local currency"
+          ],
+          "breakdown_dimensions": [
+            "by country/region",
+            "by business segment",
+            "by tax jurisdiction"
+          ]
+        },
+        {
+          "requirement_id": "207-2:b",
+          "item_code": "b",
+          "description_en": "Clause b: A description of the mechanisms to raise concerns about the organization's business conduct and the organization's integrity in relation to tax.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: A description of the mechanisms to raise concerns about the organization's business conduct and the organization's integrity in relation to tax.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "VND",
+            "USD",
+            "EUR",
+            "local currency"
+          ],
+          "breakdown_dimensions": [
+            "by country/region",
+            "by business segment",
+            "by tax jurisdiction"
+          ]
+        },
+        {
+          "requirement_id": "207-2:c",
+          "item_code": "c",
+          "description_en": "Clause c: A description of the assurance process for disclosures on tax including, if applicable, a link or reference to the external assurance report(s) or assurance statement(s).",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: A description of the assurance process for disclosures on tax including, if applicable, a link or reference to the external assurance report(s) or assurance statement(s).",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "VND",
+            "USD",
+            "EUR",
+            "local currency"
+          ],
+          "breakdown_dimensions": [
+            "by country/region",
+            "by business segment",
+            "by tax jurisdiction"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 207-2.\n\nGuidance Summary:\n#### Background\n\nHaving robust governance, control, and risk management systems in place for tax can be an indication that the reported approach to tax and tax strategy are well embedded in an organization and that the organization is effectively monitoring its compliance obligations. Reporting this information reassures stakeholders that the organization's practices reflect the statements it has made about its approach to tax in its tax strategy or equivalent documents.\n\n#### Guidance for Disclosure 207-2-a\n\nWhen describing the tax governance and control framework, the reporting organization can provide examples of effective implementation of its tax governance, control, and risk management systems.\n\n##### Guidance for Disclosure 207-2-a-i\n\nIf the highest governance body in an organizatio...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 207-2.",
+      "sdg_mapping": [
+        "SDG 8: Decent Work and Economic Growth",
+        "SDG 9: Industry, Innovation & Infrastructure"
+      ],
+      "esrs_mapping": [
+        "ESRS G1 Business Conduct"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "207-3",
-      "title_en": "Stakeholder engagement and management of concerns related",
-      "title_vi": "Stakeholder engagement and management of concerns related",
+      "title_en": "Stakeholder engagement and management of concerns related to tax",
+      "title_vi": "Stakeholder engagement and management of concerns related to tax",
       "disclosure_type": "General Disclosures",
       "mandatory": true,
       "requirements": [
         {
           "requirement_id": "207-3:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 207-3 (Stakeholder engagement and management of concerns related)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "description_en": "Clause a: **A description of the approach to stakeholder engagement and management of stakeholder concerns related to tax, including:** - i. **the approach to engagement with tax authorities;** - ii. **the approach to public policy advocacy on tax;** - iii. **the processes for collecting and considering the views and concerns of stakeholders, including external stakeholders.**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **A description of the approach to stakeholder engagement and management of stakeholder concerns related to tax, including:** - i. **the approach to engagement with tax authorities;** - ii. **the approach to public policy advocacy on tax;** - iii. **the processes for collecting and considering the views and concerns of stakeholders, including external stakeholders.**",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "VND",
+            "USD",
+            "EUR",
+            "local currency"
+          ],
+          "breakdown_dimensions": [
+            "by country/region",
+            "by business segment",
+            "by tax jurisdiction"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 207-3.\n\nGuidance Summary:\n##### Background\n\nOrganizations' tax practices are of interest to various stakeholders. The approach an organization takes to engaging with stakeholders has the potential to influence its reputation and position of trust. This includes how the organization engages with tax authorities in the development of tax systems, legislation, and administration.\n\nStakeholder engagement can enable the organization to understand evolving expectations related to tax. It can give the organization insight into potential future regulatory changes and enable the organization to better manage its risks and impacts.\n\n##### Guidance for Disclosure 207-3-a-i\n\nThe approach to engagement with tax authorities can include participating in cooperative compliance agreements, seeking active real-time audit, seeking cl...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 207-3.",
+      "sdg_mapping": [
+        "SDG 8: Decent Work and Economic Growth",
+        "SDG 9: Industry, Innovation & Infrastructure"
+      ],
+      "esrs_mapping": [
+        "ESRS G1 Business Conduct"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "207-4",
@@ -106,89 +190,67 @@
       "mandatory": true,
       "requirements": [
         {
-          "requirement_id": "207-4:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 207-4 (Country-by-country reporting)",
-          "description_vi": null,
+          "requirement_id": "207-4:4",
+          "item_code": "4",
+          "description_en": "Clause 4: </li> </ol> |",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: </li> </ol> |",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "3-3",
-      "title_en": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "title_vi": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
+          "breakdown_dimensions": [
+            "by country/region",
+            "by business segment",
+            "by tax jurisdiction"
+          ]
+        },
         {
-          "requirement_id": "3-3:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "2-26",
-      "title_en": "in GRI 2: General Disclosures 2021. If the",
-      "title_vi": "in GRI 2: General Disclosures 2021. If the",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
+          "requirement_id": "207-4:c",
+          "item_code": "c",
+          "description_en": "Clause c: Where the data reported does not reconcile with the audited consolidated financial statements, or the financial information filed on public record, the organization shall provide an explanation for this difference;</li> <li>2.2.2 for Disclosure 207-4-b-ix, include corporate income tax accrued in the time period reported in Disclosure 207-4-c and exclude deferred corporate income tax and provisions for uncertain tax positions;</li> <li>2.2.3 in cases where an entity is deemed not to be resident in any tax jurisdiction, provide the information for this stateless entity separately.</li> </ol> </li> </ol> |",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Where the data reported does not reconcile with the audited consolidated financial statements, or the financial information filed on public record, the organization shall provide an explanation for this difference;</li> <li>2.2.2 for Disclosure 207-4-b-ix, include corporate income tax accrued in the time period reported in Disclosure 207-4-c and exclude deferred corporate income tax and provisions for uncertain tax positions;</li> <li>2.2.3 in cases where an entity is deemed not to be resident in any tax jurisdiction, provide the information for this stateless entity separately.</li> </ol> </li> </ol> |",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "VND",
+            "USD",
+            "EUR",
+            "local currency"
+          ],
+          "breakdown_dimensions": [
+            "by country/region",
+            "by business segment",
+            "by tax jurisdiction"
+          ]
+        },
         {
-          "requirement_id": "2-26:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 2-26 (in GRI 2: General Disclosures 2021. If the)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "requirement_id": "207-4:c",
+          "item_code": "c",
+          "description_en": "Clause c: The description can include the nature of the disagreement and the reasons for any change in tax positions that occurred during the time period, where relevant.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: The description can include the nature of the disagreement and the reasons for any change in tax positions that occurred during the time period, where relevant.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "VND",
+            "USD",
+            "EUR",
+            "local currency"
+          ],
+          "breakdown_dimensions": [
+            "by country/region",
+            "by business segment",
+            "by tax jurisdiction"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "2-5",
-      "title_en": "in GRI 2: General Disclosures 2021. If the",
-      "title_vi": "in GRI 2: General Disclosures 2021. If the",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
-        {
-          "requirement_id": "2-5:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 2-5 (in GRI 2: General Disclosures 2021. If the)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 207-4.\n\nGuidance Summary:\n#### **Background**\n\nCountry-by-country reporting is the reporting of financial, economic, and tax-related information for each jurisdiction in which the organization operates.\n\n#### **Guidance for Disclosure 207-4-a**\n\nIn the context of this Standard, tax jurisdictions are identified according to where the entities included in the organization's audited consolidated financial statements, or in the financial information filed on public record, are resident for tax purposes. These entities include permanent establishments and dormant entities.\n\n##### **Guidance for Disclosure 207-4-b**\n\nUnless otherwise stated, country-by-country information is to be reported at the level of tax jurisdictions and not at the level of individual entities.\n\nNumber of employees, revenues, profit/loss before tax...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 207-4.",
+      "sdg_mapping": [
+        "SDG 8: Decent Work and Economic Growth",
+        "SDG 9: Industry, Innovation & Infrastructure"
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "esrs_mapping": [
+        "ESRS G1 Business Conduct"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     }
   ]
 }

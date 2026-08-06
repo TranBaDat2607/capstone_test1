@@ -2,7 +2,7 @@
   "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
   "standard_id": "GRI 414",
   "title_en": "Supplier Social Assessment 2016",
-  "title_vi": "Supplier Social Assessment 2016",
+  "title_vi": "GRI 414: Đánh giá xã hội nhà cung cấp 2016",
   "pillar": "S — Social",
   "series": "Social (400 Series)",
   "category": "Topic-Social",
@@ -23,11 +23,11 @@
   "provenance": {
     "relative_pdf_path": "Full set of GRI Standards - English\\GRI 414_ Supplier Social Assessment 2016.pdf",
     "file_size_bytes": 854076,
-    "page_count": 14,
+    "page_count": 25,
     "sha256": "b2f52706c73f064425dc91a30dd9005502f0f141d77cc4c5453bfca1131edda2",
-    "indexed_at": "2026-07-25T14:35:59.328838"
+    "indexed_at": "2026-08-01T20:30:14.434339"
   },
-  "disclosures_count": 4,
+  "disclosures_count": 2,
   "disclosures": [
     {
       "disclosure_id": "414-1",
@@ -39,18 +39,28 @@
         {
           "requirement_id": "414-1:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 414-1 (New suppliers that were screened using social criteria)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
+          "description_en": "Clause a: Percentage of new suppliers that were screened using social criteria.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Percentage of new suppliers that were screened using social criteria.",
+          "requirement_type": "Quantitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 414-1.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 414-1.",
+      "sdg_mapping": [
+        "SDG 12: Responsible Consumption and Production"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "414-2",
@@ -62,64 +72,93 @@
         {
           "requirement_id": "414-2:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 414-2 (Negative social impacts in the supply chain and actions taken)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
+          "description_en": "Clause a: Number of suppliers assessed for social impacts.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Number of suppliers assessed for social impacts.",
+          "requirement_type": "Quantitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "3-3",
-      "title_en": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "title_vi": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "disclosure_type": "Topic-Specific",
-      "mandatory": true,
-      "requirements": [
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
         {
-          "requirement_id": "3-3:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
+          "requirement_id": "414-2:b",
+          "item_code": "b",
+          "description_en": "Clause b: Number of suppliers identified as having significant actual and potential negative social impacts.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Number of suppliers identified as having significant actual and potential negative social impacts.",
+          "requirement_type": "Quantitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "2-25",
-      "title_en": "in GRI 2: General Disclosures 2021 for more",
-      "title_vi": "in GRI 2: General Disclosures 2021 for more",
-      "disclosure_type": "Topic-Specific",
-      "mandatory": true,
-      "requirements": [
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
         {
-          "requirement_id": "2-25:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 2-25 (in GRI 2: General Disclosures 2021 for more)",
-          "description_vi": null,
+          "requirement_id": "414-2:c",
+          "item_code": "c",
+          "description_en": "Clause c: Significant actual and potential negative social impacts identified in the supply chain.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Significant actual and potential negative social impacts identified in the supply chain.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "414-2:d",
+          "item_code": "d",
+          "description_en": "Clause d: Percentage of suppliers identified as having significant actual and potential negative social impacts with which improvements were agreed upon as a result of assessment.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Percentage of suppliers identified as having significant actual and potential negative social impacts with which improvements were agreed upon as a result of assessment.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "414-2:e",
+          "item_code": "e",
+          "description_en": "Clause e: Percentage of suppliers identified as having significant actual and potential negative social impacts with which relationships were terminated as a result of assessment, and why.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Percentage of suppliers identified as having significant actual and potential negative social impacts with which relationships were terminated as a result of assessment, and why.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "414-2:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 1 When compiling the information specified in Disclosure 414-2, the reporting organization should, where it provides appropriate context on significant impacts, provide a breakdown of the information by: - 2.1.1 the location of the supplier; - 2.1.2 the significant actual and potential negative social impact.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: When compiling the information specified in Disclosure 414-2, the reporting organization should, where it provides appropriate context on significant impacts, provide a breakdown of the information by: - 2.1.1 the location of the supplier; - 2.1.2 the significant actual and potential negative social impact.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "- 2.1 When compiling the information specified in Disclosure 414-2, the reporting organization should, where it provides appropriate context on significant impacts, provide a breakdown of the information by:\n  - 2.1.1 the location of the supplier;\n  - 2.1.2 the significant actual and potential negative social impact.\n\nGuidance Summary:\n#### Guidance for Disclosure 414-2\n\nNegative impacts include those that are either caused or contributed to by an organization, or that are directly linked to its operations, products, or services by its relationship with a supplier.\n\nAssessments for social impacts can include the topics covered in other GRI Topic Standards (e.g., *GRI 401: Employment 2016*, *GRI 403: Occupational Health and Safety 2018*, *GRI 408: Child Labor 2016*, *GRI 409: Forced or Compulsory Labor 2016*).\n\nAssessments can be made against agreed performance expectations that are set and communicated to the suppliers prior to the assessment.\n\nAssessments can be informed by audits, contractual reviews, two-way engagement, and complaint and grievance mechanisms.\n\nImprovements can include changing an organization's procur...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 414-2.",
+      "sdg_mapping": [
+        "SDG 12: Responsible Consumption and Production"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     }
   ]
 }

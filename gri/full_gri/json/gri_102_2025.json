@@ -2,7 +2,7 @@
   "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
   "standard_id": "GRI 102",
   "title_en": "Climate Change 2025",
-  "title_vi": "Climate Change 2025",
+  "title_vi": "GRI 102: Biến đổi khí hậu 2025",
   "pillar": "E — Environmental",
   "series": "Environmental (300 Series / Revisions)",
   "category": "Topic-Environmental",
@@ -23,425 +23,1091 @@
   "provenance": {
     "relative_pdf_path": "Full set of GRI Standards - English\\GRI 102_ Climate Change 2025.pdf",
     "file_size_bytes": 1470243,
-    "page_count": 60,
+    "page_count": 25,
     "sha256": "b082ea90a6f240a7d9fad443bdea3358381ba6fe85d4515f5c79c3a8420703ec",
-    "indexed_at": "2026-07-25T14:35:57.200053"
+    "indexed_at": "2026-08-01T20:30:14.159498"
   },
-  "disclosures_count": 18,
+  "disclosures_count": 10,
   "disclosures": [
     {
       "disclosure_id": "102-1",
       "title_en": "Transition plan for climate change mitigation",
       "title_vi": "Transition plan for climate change mitigation",
-      "disclosure_type": "General Disclosures",
+      "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
           "requirement_id": "102-1:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 102-1 (Transition plan for climate change mitigation)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "description_en": "Clause a: describe its transition plan, including policies and actions to mitigate climate change; - b. describe how the transition plan aligns with the latest scientific evidence on the global effort needed to limit global warming to 1.5°C, including the source of the climate change-related scenarios used, and the methodologies and assumptions used to develop the transition plan; - c. report the total expenditure incurred by the implementation of the transition plan as monetary value and percentage of the total expenditure incurred in the reporting period; - d. report the governance bodies or individual roles responsible for overseeing and implementing the transition plan and their responsibilities; - e. describe how the transition plan is embedded in its business strategy; - f. report the targets to achieve the transition plan and progress toward them, including: - i. GHG emissions reduction targets reported under Disclosure 102-4; - ii. targets to phase out fossil fuels, the base year, and standards, methodologies, and assumptions used to set the targets; - iii. other climate change mitigation targets, how these were set, what is covered, the base year, and their role within the transition plan; - g. describe how the transition plan aligns with just transition principles and how engagement with stakeholders informs its development and implementation; - h. describe the impacts on people and the environment from implementing the transition plan and the actions taken to manage them, including: - i. workers, local communities, and Indigenous Peoples; - ii. biodiversity; - i. describe how its public policy activities, including lobbying activities, are consistent with the transition plan; - j. explain, in the absence of a transition plan, why it does not exist, and describe the steps being taken to develop it and the expected time frame.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , including policies and actions to mitigate climate change; - b. describe how the transition plan aligns with the latest scientific evidence on the global effort needed to limit global warming to 1.5°C, including the source of the climate change-related scenarios used, and the methodologies and assumptions used to develop the transition plan; - c. report the total expenditure incurred by the implementation of the transition plan as monetary value and percentage of the total expenditure incurred in the reporting period; - d. report the governance bodies or individual roles responsible for overseeing and implementing the transition plan and their responsibilities; - e. describe how the transition plan is embedded in its business strategy; - f. report the targets to achieve the transition plan and progress toward them, including: - i. GHG emissions reduction targets reported under Disclosure 102-4; - ii. targets to phase out fossil fuels, the base year, and standards, methodologies, and assumptions used to set the targets; - iii. other climate change mitigation targets, how these were set, what is covered, the base year, and their role within the transition plan; - g. describe how the transition plan aligns with just transition principles and how engagement with stakeholders informs its development and implementation; - h. describe the impacts on people and the environment from implementing the transition plan and the actions taken to manage them, including: - i. workers, local communities, and Indigenous Peoples; - ii. biodiversity; - i. describe how its public policy activities, including lobbying activities, are consistent with the transition plan; - j. explain, in the absence of a transition plan, why it does not exist, and describe the steps being taken to develop it and the expected time frame.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 102-1.\n\nGuidance Summary:\nto 102-1-d\n\nThe organization should report whether:\n\n- the highest governance body is responsible for overseeing the transition plan and what this includes, for example, approving, reviewing, and monitoring the plan, ensuring that it aligns with just transition principles (see [Guidance to 102-1-g](#) for more information), and overseeing processes to manage the impacts that result from it; or\n- the senior executives are responsible for implementing the transition plan and what this includes.\n\n[Disclosures 2-12 and 2-13 in GRI 2: General Disclosures 2021](#) require information on the highest governance body's role in overseeing the management of the organization's impacts and how it delegates responsibility for this. If the organization has described the roles and responsibilities of the ...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 102-1.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "102-2",
       "title_en": "Climate change adaptation plan",
       "title_vi": "Climate change adaptation plan",
-      "disclosure_type": "General Disclosures",
+      "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
           "requirement_id": "102-2:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 102-2 (Climate change adaptation plan)",
-          "description_vi": null,
+          "description_en": "Clause a: describe the impacts on people and the environment associated with its climate change-related risks and opportunities and how they were considered in the development of the adaptation plan;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ;",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "102-2:b",
+          "item_code": "b",
+          "description_en": "Clause b: describe its adaptation plan, including: - i. policies and actions to adapt to climate change; - ii. the source of the climate change-related scenarios used, the temperature projection included in the scenarios, and the methodologies and assumptions used to develop the adaptation plan; - iii. the total expenditure incurred by the implementation of the adaptation plan as monetary value and percentage of the total expenditure incurred in the reporting period; - iv. the governance bodies or individual roles responsible for overseeing and implementing the adaptation plan and their responsibilities; - v. the targets to achieve the adaptation plan and progress toward them; - vi. how the adaptation plan aligns with just transition principles and how engagement with stakeholders informs its development and implementation;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , including: - i. policies and actions to adapt to climate change; - ii. the source of the climate change-related scenarios used, the temperature projection included in the scenarios, and the methodologies and assumptions used to develop the adaptation plan; - iii. the total expenditure incurred by the implementation of the adaptation plan as monetary value and percentage of the total expenditure incurred in the reporting period; - iv. the governance bodies or individual roles responsible for overseeing and implementing the adaptation plan and their responsibilities; - v. the targets to achieve the adaptation plan and progress toward them; - vi. how the adaptation plan aligns with just transition principles and how engagement with stakeholders informs its development and implementation;",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "102-2:c",
+          "item_code": "c",
+          "description_en": "Clause c: describe the impacts on people and the environment from implementing the adaptation plan and the actions taken to manage them, including for: - i. workers, local communities, and Indigenous Peoples; - ii. biodiversity;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , including for: - i. workers, local communities, and Indigenous Peoples; - ii. biodiversity;",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "102-2:d",
+          "item_code": "d",
+          "description_en": "Clause d: explain, in the absence of an adaptation plan, why it does not exist, and describe the steps being taken to develop it and the expected time frame.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , in the absence of an adaptation plan, why it does not exist, and describe the steps being taken to develop it and the expected time frame.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 102-2.\n\nGuidance Summary:\nto 102-2-b-vi\n\nSee [Guidance to 102-1-g](#) for more information on just transition principles.\n\nThe organization should report:\n\n- how it identifies stakeholders, including whether it has performed a social impact assessment, whose human rights, health, socio-economic well-being, or other interests are or could be affected as a result of implementing the adaptation plan, including at-risk or vulnerable groups;\n- how it engages with identified stakeholders or their legitimate representatives to understand their concerns and interests;\n- how the insights from stakeholder engagement, including from workers, trade unions, worker representatives, suppliers, Indigenous Peoples, local communities, and governments, have informed actions to prevent or mitigate negative impacts and maximize positiv...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 102-2.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "102-3",
       "title_en": "Just transition",
       "title_vi": "Just transition",
-      "disclosure_type": "General Disclosures",
+      "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
           "requirement_id": "102-3:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 102-3 (Just transition)",
-          "description_vi": null,
+          "description_en": "Clause a: report the total number of new employees recruited and a breakdown of this total by: - i. gender; - ii. employee type;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: : - i. gender; - ii. employee type;",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "102-3:b",
+          "item_code": "b",
+          "description_en": "Clause b: report the total number of employees whose work was terminated and a breakdown of this total by: - i. gender; - ii. employee type;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: : - i. gender; - ii. employee type;",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "102-3:c",
+          "item_code": "c",
+          "description_en": "Clause c: report the total number of redeployed employees and a breakdown of this total by: - i. gender; - ii. employee type;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: : - i. gender; - ii. employee type;",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "102-3:d",
+          "item_code": "d",
+          "description_en": "Clause d: report the total number of employees who received training for up- and re-skilling, and a breakdown of this total by: - i. gender; - ii. employee type;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , and a breakdown of this total by: - i. gender; - ii. employee type;",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "102-3:e",
+          "item_code": "e",
+          "description_en": "Clause e: report the total number of new workers who are not employees recruited and a breakdown of this total by gender;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ;",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "102-3:f",
+          "item_code": "f",
+          "description_en": "Clause f: report the total number of workers who are not employees whose work was terminated and a breakdown of this total by gender;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ;",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "102-3:g",
+          "item_code": "g",
+          "description_en": "Clause g: report the total number and percentage of new employees recruited whose basic pay is at or above the cost-of-living estimate, and describe actions taken or commitments made to address any gaps between basic pay and the cost-of-living estimate for workers reported under 102-3-a and 102-3-e;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , and describe actions taken or commitments made to address any gaps between basic pay and the cost-of-living estimate for workers reported under 102-3-a and 102-3-e;",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "102-3:h",
+          "item_code": "h",
+          "description_en": "Clause h: list the locations of operation where the organization has impacts on local communities and Indigenous Peoples;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Indigenous Peoples;",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "102-3:i",
+          "item_code": "i",
+          "description_en": "Clause i: report the percentage of locations of operation listed under 102-3-h in which an agreement has been reached with affected or potentially affected local communities or Indigenous Peoples to safeguard their interests;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Indigenous Peoples to safeguard their interests;",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "102-3:j",
+          "item_code": "j",
+          "description_en": "Clause j: report contextual information necessary to understand the data reported under 102-3 and describe the methodologies and assumptions used to compile the data, including whether the numbers are reported: - i. in head count, full-time equivalent (FTE), or using another methodology; - ii. at the end of the reporting period, as an average across the reporting period, or using another methodology.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , including whether the numbers are reported: - i. in head count, full-time equivalent (FTE), or using another methodology; - ii. at the end of the reporting period, as an average across the reporting period, or using another methodology.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "102-3:e",
+          "item_code": "e",
+          "description_en": "Clause e: ##### **Guidance to 102-3-h**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ##### **Guidance to 102-3-h**",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "102-3:h",
+          "item_code": "h",
+          "description_en": "Clause h: For each location of operation with agreements in place, the organization should report whether these agreements were made with all affected and potentially affected local communities or Indigenous Peoples, or only some.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: For each location of operation with agreements in place, the organization should report whether these agreements were made with all affected and potentially affected local communities or Indigenous Peoples, or only some.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 102-3.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 102-3.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "102-4",
       "title_en": "GHG emissions reduction targets and progress",
       "title_vi": "GHG emissions reduction targets and progress",
-      "disclosure_type": "General Disclosures",
+      "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
           "requirement_id": "102-4:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 102-4 (GHG emissions reduction targets and progress)",
-          "description_vi": null,
+          "description_en": "Clause a: report short-, medium-, and long-term gross Scope 1, Scope 2, and Scope 3 GHG emissions reduction targets in metric tons of CO<sub>2</sub> equivalent and as a percentage of base year emissions, where: - i. gross Scope 1, Scope 2, and Scope 3 GHG emissions reduction targets are reported separately or where Scope 1 and Scope 2 GHG emissions are combined; - ii. gross Scope 1 and Scope 2 GHG emissions reduction targets cover the total Scope 1 and Scope 2 GHG emissions reported under Disclosures 102-5 and 102-6; - iii. GHG removals, GHG trades, and avoided GHG emissions are excluded;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , medium-, and long-term gross Scope 1, Scope 2, and Scope 3 GHG emissions reduction targets in metric tons of CO<sub>2</sub> equivalent and as a percentage of base year emissions, where: - i. gross Scope 1, Scope 2, and Scope 3 GHG emissions reduction targets are reported separately or where Scope 1 and Scope 2 GHG emissions are combined; - ii. gross Scope 1 and Scope 2 GHG emissions reduction targets cover the total Scope 1 and Scope 2 GHG emissions reported under Disclosures 102-5 and 102-6; - iii. GHG removals, GHG trades, and avoided GHG emissions are excluded;",
           "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "102-4:b",
+          "item_code": "b",
+          "description_en": "Clause b: for each gross GHG emissions reduction target, report whether biogenic CO<sub>2</sub> emissions are included in the target;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: GHG emissions reduction target, report whether biogenic CO<sub>2</sub> emissions are included in the target;",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "102-4:c",
+          "item_code": "c",
+          "description_en": "Clause c: for each gross Scope 2 GHG emissions reduction target, report whether the targets use the location-based or market-based method;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Scope 2 GHG emissions reduction target, report whether the targets use the location-based or market-based method;",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "102-4:d",
+          "item_code": "d",
+          "description_en": "Clause d: for each gross Scope 3 GHG emissions reduction target, list the Scope 3 categories covered by the targets;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Scope 3 GHG emissions reduction target, list the Scope 3 categories covered by the targets;",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "102-4:e",
+          "item_code": "e",
+          "description_en": "Clause e: for each gross GHG emissions reduction target, report the gases covered by the target;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: GHG emissions reduction target, report the gases covered by the target;",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "102-4:f",
+          "item_code": "f",
+          "description_en": "Clause f: explain how the gross GHG emissions reduction targets align with the latest scientific evidence on the effort needed to limit global warming to 1.5°C;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: GHG emissions reduction targets align with the latest scientific evidence on the effort needed to limit global warming to 1.5°C;",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "102-4:g",
+          "item_code": "g",
+          "description_en": "Clause g: describe its gross GHG emissions reduction target revision policy;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: GHG emissions reduction target revision policy;",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "102-4:h",
+          "item_code": "h",
+          "description_en": "Clause h: for each gross GHG emissions reduction target, report the base year, including: - i. the rationale for choosing it; - ii. base year emissions in metric tons of CO<sub>2</sub> equivalent; - iii. the context for any significant changes in emissions that triggered recalculations of base year emissions; - iv. the previously reported base year emissions, if base year emissions are recalculated;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: GHG emissions reduction target, report the base year, including: - i. the rationale for choosing it; - ii. base year emissions in metric tons of CO<sub>2</sub> equivalent; - iii. the context for any significant changes in emissions that triggered recalculations of base year emissions; - iv. the previously reported base year emissions, if base year emissions are recalculated;",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "102-4:i",
+          "item_code": "i",
+          "description_en": "Clause i: report the progress toward each gross GHG emissions reduction target using the inventory method, in metric tons of CO<sub>2</sub> equivalent, and as a percentage of a base year emissions;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: GHG emissions reduction target using the inventory method, in metric tons of CO<sub>2</sub> equivalent, and as a percentage of a base year emissions;",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "102-4:j",
+          "item_code": "j",
+          "description_en": "Clause j: for each gross GHG emissions reduction target, explain how the progress toward the target was achieved and whether it is due to: - i. reductions as a result of the organization's initiatives; or - ii. other factors;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: GHG emissions reduction target, explain how the progress toward the target was achieved and whether it is due to: - i. reductions as a result of the organization's initiatives; or - ii. other factors;",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "102-4:k",
+          "item_code": "k",
+          "description_en": "Clause k: report standards, methodologies, assumptions, and calculation tools used.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , methodologies, assumptions, and calculation tools used.",
+          "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "102-4:a",
+          "item_code": "a",
+          "description_en": "Clause a: See [Guidance to 102-9-c](#) and [102-10-d](#) for more information on the use of GHG removals and carbon credits.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: See [Guidance to 102-9-c](#) and [102-10-d](#) for more information on the use of GHG removals and carbon credits.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 102-4.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 102-4.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "102-5",
       "title_en": "Scope 1 GHG emissions",
       "title_vi": "Scope 1 GHG emissions",
-      "disclosure_type": "General Disclosures",
+      "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
           "requirement_id": "102-5:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 102-5 (Scope 1 GHG emissions)",
-          "description_vi": null,
+          "description_en": "Clause a: report gross Scope 1 GHG emissions in metric tons of CO<sub>2</sub> equivalent, and in the calculation - i. include emissions of CO<sub>2</sub>, CH<sub>4</sub>, N<sub>2</sub>O, HFCs, PFCs, SF<sub>6</sub>, and NF<sub>3</sub>; - ii. include biogenic non-CO<sub>2</sub> GHG emissions produced by combustion or biodegradation of biomass from owned or controlled sources; - iii. exclude GHG removals, GHG trades, and avoided emissions; - iv. use the global warming potential (GWP) values based on a 100-year timeframe from the latest IPCC assessment report; - b. provide a breakdown of gross Scope 1 GHG emissions by CO<sub>2</sub>, CH<sub>4</sub>, N<sub>2</sub>O, HFCs, PFCs, SF<sub>6</sub>, and NF<sub>3</sub>, in metric tons and metric tons of CO<sub>2</sub> equivalent; - c. report biogenic CO<sub>2</sub> emissions from the combustion or biodegradation of biomass from owned or controlled sources in metric tons, separately from gross Scope 1 GHG emissions; - d. report the base year for the calculation, including: - i. the rationale for choosing it; - ii. base year emissions in metric tons of CO<sub>2</sub> equivalent separately for gross Scope 1 GHG emissions and biogenic CO<sub>2</sub> emissions; - iii. the context for any significant changes in emissions that triggered recalculations of base year emissions; - iv. the previously reported base year emissions, if base year emissions are recalculated; - e. report the consolidation approach for Scope 1 GHG emissions that is consistently applied across Scope 1, Scope 2, and Scope 3 GHG emissions, whether equity share, financial control, or operational control; - f. report standards, methodologies, assumptions, and calculation tools used, including the source of the emission factors used.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Scope 1 GHG emissions in metric tons of CO<sub>2</sub> equivalent, and in the calculation - i. include emissions of CO<sub>2</sub>, CH<sub>4</sub>, N<sub>2</sub>O, HFCs, PFCs, SF<sub>6</sub>, and NF<sub>3</sub>; - ii. include biogenic non-CO<sub>2</sub> GHG emissions produced by combustion or biodegradation of biomass from owned or controlled sources; - iii. exclude GHG removals, GHG trades, and avoided emissions; - iv. use the global warming potential (GWP) values based on a 100-year timeframe from the latest IPCC assessment report; - b. provide a breakdown of gross Scope 1 GHG emissions by CO<sub>2</sub>, CH<sub>4</sub>, N<sub>2</sub>O, HFCs, PFCs, SF<sub>6</sub>, and NF<sub>3</sub>, in metric tons and metric tons of CO<sub>2</sub> equivalent; - c. report biogenic CO<sub>2</sub> emissions from the combustion or biodegradation of biomass from owned or controlled sources in metric tons, separately from gross Scope 1 GHG emissions; - d. report the base year for the calculation, including: - i. the rationale for choosing it; - ii. base year emissions in metric tons of CO<sub>2</sub> equivalent separately for gross Scope 1 GHG emissions and biogenic CO<sub>2</sub> emissions; - iii. the context for any significant changes in emissions that triggered recalculations of base year emissions; - iv. the previously reported base year emissions, if base year emissions are recalculated; - e. report the consolidation approach for Scope 1 GHG emissions that is consistently applied across Scope 1, Scope 2, and Scope 3 GHG emissions, whether equity share, financial control, or operational control; - f. report standards, methodologies, assumptions, and calculation tools used, including the source of the emission factors used.",
           "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "102-5:a",
+          "item_code": "a",
+          "description_en": "Clause a: #### **Guidance to 102-5-a-iv**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: #### **Guidance to 102-5-a-iv**",
+          "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "102-5:a",
+          "item_code": "a",
+          "description_en": "Clause a: Biogenic non-CO<sub>2</sub> GHG emissions, such as methane (CH<sub>4</sub>) and nitrous oxide (N<sub>2</sub>O), from the combustion or biodegradation of biomass from owned or controlled sources, are reported as part of gross Scope 1 GHG emissions.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Biogenic non-CO<sub>2</sub> GHG emissions, such as methane (CH<sub>4</sub>) and nitrous oxide (N<sub>2</sub>O), from the combustion or biodegradation of biomass from owned or controlled sources, are reported as part of gross Scope 1 GHG emissions.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 102-5.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 102-5.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "102-6",
       "title_en": "Scope 2 GHG emissions",
       "title_vi": "Scope 2 GHG emissions",
-      "disclosure_type": "General Disclosures",
+      "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
           "requirement_id": "102-6:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 102-6 (Scope 2 GHG emissions)",
-          "description_vi": null,
+          "description_en": "Clause a: report gross location-based and, if applicable, market-based Scope 2 GHG emissions in metric tons of CO<sub>2</sub> equivalent, and in the calculation: - i. include emissions of CO<sub>2</sub>, CH<sub>4</sub>, and N<sub>2</sub>O; - ii. include biogenic non-CO<sub>2</sub> GHG emissions from electricity use; - iii. exclude GHG removals, GHG trades, and avoided emissions; - iv. use the global warming potential (GWP) values based on a 100-year timeframe from the latest IPCC assessment report; - b. provide a breakdown of gross location-based Scope 2 GHG emissions by CO<sub>2</sub>, CH<sub>4</sub>, and N<sub>2</sub>O in metric tons and metric tons of CO<sub>2</sub> equivalent; - c. report location-based and, if applicable, market-based biogenic CO<sub>2</sub> emissions from electricity use in metric tons, separately from gross Scope 2 GHG emissions; - d. report the base year for the calculation, including: - i. the rationale for choosing it; - ii. base year emissions in metric tons of CO<sub>2</sub> equivalent separately for gross Scope 2 GHG emissions and biogenic CO<sub>2</sub> emissions; - iii. the context for any significant changes in emissions that triggered recalculations of base year emissions; - iv. the previously reported base year emissions, if base year emissions are recalculated; - e. report the consolidation approach for Scope 2 GHG emissions that is consistently applied across Scope 1, Scope 2, and Scope 3 GHG emissions, whether equity share, financial control, or operational control; - f. report standards, methodologies, assumptions, and calculation tools used, including the source of the emission factors used.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , if applicable, market-based Scope 2 GHG emissions in metric tons of CO<sub>2</sub> equivalent, and in the calculation: - i. include emissions of CO<sub>2</sub>, CH<sub>4</sub>, and N<sub>2</sub>O; - ii. include biogenic non-CO<sub>2</sub> GHG emissions from electricity use; - iii. exclude GHG removals, GHG trades, and avoided emissions; - iv. use the global warming potential (GWP) values based on a 100-year timeframe from the latest IPCC assessment report; - b. provide a breakdown of gross location-based Scope 2 GHG emissions by CO<sub>2</sub>, CH<sub>4</sub>, and N<sub>2</sub>O in metric tons and metric tons of CO<sub>2</sub> equivalent; - c. report location-based and, if applicable, market-based biogenic CO<sub>2</sub> emissions from electricity use in metric tons, separately from gross Scope 2 GHG emissions; - d. report the base year for the calculation, including: - i. the rationale for choosing it; - ii. base year emissions in metric tons of CO<sub>2</sub> equivalent separately for gross Scope 2 GHG emissions and biogenic CO<sub>2</sub> emissions; - iii. the context for any significant changes in emissions that triggered recalculations of base year emissions; - iv. the previously reported base year emissions, if base year emissions are recalculated; - e. report the consolidation approach for Scope 2 GHG emissions that is consistently applied across Scope 1, Scope 2, and Scope 3 GHG emissions, whether equity share, financial control, or operational control; - f. report standards, methodologies, assumptions, and calculation tools used, including the source of the emission factors used.",
           "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "102-6:a",
+          "item_code": "a",
+          "description_en": "Clause a: #### **Guidance to 102-6-d**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: #### **Guidance to 102-6-d**",
+          "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 102-6.\n\nGuidance Summary:\nto 102-6-a\n\nThere are two methods to calculate gross Scope 2 GHG emissions:\n\n- A location-based method, which reflects the average GHG emissions intensity of grids on which energy consumption occurs, using grid-average or national production mix emission factor data.\n- A market-based method, which reflects GHG emissions from electricity that an organization has purposefully chosen (or its lack of choice). It derives emission factors from contractual instruments, including any contract between two parties for the sale and purchase of energy bundled with attributes about the energy generation or for unbundled attribute claims.\n\nThe market-based method applies to organizations with operations in markets that provide product- or supplier-specific data in the form of contractual instruments.\n\nT...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 102-6.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "102-7",
       "title_en": "Scope 3 GHG emissions",
       "title_vi": "Scope 3 GHG emissions",
-      "disclosure_type": "General Disclosures",
+      "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
           "requirement_id": "102-7:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 102-7 (Scope 3 GHG emissions)",
-          "description_vi": null,
+          "description_en": "Clause a: report gross Scope 3 GHG emissions in metric tons of CO<sub>2</sub> equivalent, and in the calculation: - i. include GHG emissions for each Scope 3 category; - ii. include emissions of CO<sub>2</sub>, CH<sub>4</sub>, N<sub>2</sub>O, HFCs, PFCs, SF<sub>6</sub>, and NF<sub>3</sub>; - iii. include biogenic non-CO<sub>2</sub> GHG emissions from the combustion or biodegradation of biomass in the upstream and downstream value chain; - iv. exclude GHG removals, GHG trades, and avoided emissions; - v. use the global warming potential (GWP) values based on a 100-year timeframe from the latest IPCC assessment report; - b. provide a breakdown of gross Scope 3 GHG emissions by each of the 15 Scope 3 categories in metric tons of CO<sub>2</sub> equivalent; - c. report biogenic CO<sub>2</sub> emissions from the combustion or biodegradation of biomass in the upstream and downstream value chain in metric tons, separately from gross Scope 3 GHG emissions, and a breakdown of this total by each of the 15 Scope 3 categories; - d. report the base year for the calculation, including: - i. the rationale for choosing it; - ii. base year emissions in metric tons of CO<sub>2</sub> equivalent separately for gross Scope 3 GHG emissions and biogenic CO<sub>2</sub> emissions; - iii. the context for any significant changes in emissions that triggered recalculations of base year emissions; - iv. the previously reported base year emissions, if base year emissions are recalculated; - e. report the consolidation approach for Scope 3 GHG emissions that is consistently applied across Scope 1, Scope 2, and Scope 3 GHG emissions, whether equity share, financial control, or operational control; - f. report standards, methodologies, assumptions, and calculation tools used, including the sources of the emission factors used.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Scope 3 GHG emissions in metric tons of CO<sub>2</sub> equivalent, and in the calculation: - i. include GHG emissions for each Scope 3 category; - ii. include emissions of CO<sub>2</sub>, CH<sub>4</sub>, N<sub>2</sub>O, HFCs, PFCs, SF<sub>6</sub>, and NF<sub>3</sub>; - iii. include biogenic non-CO<sub>2</sub> GHG emissions from the combustion or biodegradation of biomass in the upstream and downstream value chain; - iv. exclude GHG removals, GHG trades, and avoided emissions; - v. use the global warming potential (GWP) values based on a 100-year timeframe from the latest IPCC assessment report; - b. provide a breakdown of gross Scope 3 GHG emissions by each of the 15 Scope 3 categories in metric tons of CO<sub>2</sub> equivalent; - c. report biogenic CO<sub>2</sub> emissions from the combustion or biodegradation of biomass in the upstream and downstream value chain in metric tons, separately from gross Scope 3 GHG emissions, and a breakdown of this total by each of the 15 Scope 3 categories; - d. report the base year for the calculation, including: - i. the rationale for choosing it; - ii. base year emissions in metric tons of CO<sub>2</sub> equivalent separately for gross Scope 3 GHG emissions and biogenic CO<sub>2</sub> emissions; - iii. the context for any significant changes in emissions that triggered recalculations of base year emissions; - iv. the previously reported base year emissions, if base year emissions are recalculated; - e. report the consolidation approach for Scope 3 GHG emissions that is consistently applied across Scope 1, Scope 2, and Scope 3 GHG emissions, whether equity share, financial control, or operational control; - f. report standards, methodologies, assumptions, and calculation tools used, including the sources of the emission factors used.",
           "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "102-7:1",
+          "item_code": "1",
+          "description_en": "Clause 1: Purchased goods and services",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Purchased goods and services",
+          "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "102-7:9",
+          "item_code": "9",
+          "description_en": "Clause 9: Downstream transportation and distribution",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Downstream transportation and distribution",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "102-7:a",
+          "item_code": "a",
+          "description_en": "Clause a: The organization should ensure that the Scope 3 inventory appropriately reflects its GHG emissions and not exclude any Scope 3 category that would compromise the relevance of the reported inventory. More guidance on how to set the Scope 3 boundary can be found in the *GHG Protocol Corporate Value Chain (Scope 3) Accounting and Reporting Standard* [15].",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: The organization should ensure that the Scope 3 inventory appropriately reflects its GHG emissions and not exclude any Scope 3 category that would compromise the relevance of the reported inventory. More guidance on how to set the Scope 3 boundary can be found in the *GHG Protocol Corporate Value Chain (Scope 3) Accounting and Reporting Standard* [15].",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "102-7:a",
+          "item_code": "a",
+          "description_en": "Clause a: #### **Guidance to 102-7-d**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: #### **Guidance to 102-7-d**",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 102-7.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 102-7.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "102-8",
       "title_en": "GHG emissions intensity",
       "title_vi": "GHG emissions intensity",
-      "disclosure_type": "General Disclosures",
+      "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
           "requirement_id": "102-8:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 102-8 (GHG emissions intensity)",
-          "description_vi": null,
+          "description_en": "Clause a: **report ~~GHG~~ emissions intensity ratio(s), including the gross GHG emissions in metric tons of CO<sub>2</sub> equivalent (the numerator) and the organization-specific metric (the denominator) chosen to calculate the ratio(s);**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **report ~~GHG~~ emissions intensity ratio(s), including the gross GHG emissions in metric tons of CO<sub>2</sub> equivalent (the numerator) and the organization-specific metric (the denominator) chosen to calculate the ratio(s);**",
           "requirement_type": "Quantitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "102-8:b",
+          "item_code": "b",
+          "description_en": "Clause b: **report the scope(s) of GHG emissions included in the intensity ratio(s), whether Scope 1, Scope 2, or Scope 3.**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **report the scope(s) of GHG emissions included in the intensity ratio(s), whether Scope 1, Scope 2, or Scope 3.**",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 102-8.\n\nGuidance Summary:\nGHG emissions intensity ratios are obtained by dividing the organization's gross GHG emissions (the numerator) by an organization-specific metric (the denominator). Many organizations track environmental performance with intensity ratio(s).\n\nGHG emissions intensity ratios express the amount of GHG emissions per unit of activity, output, or other organization-specific metric. In combination with an organization's gross GHG emissions, reported under [Disclosures 102-5, 102-6](#), and [102-7](#), GHG emissions intensity ratios help to contextualize an organization's efficiency, including in relation to other organizations.\n\nThe organization should select a consistent organizational boundary for both the numerator and denominator in the GHG emissions intensity ratio.\n\nFor an example of how to ...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 102-8.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "102-9",
       "title_en": "GHG removals in the value chain",
       "title_vi": "GHG removals in the value chain",
-      "disclosure_type": "General Disclosures",
+      "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
           "requirement_id": "102-9:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 102-9 (GHG removals in the value chain)",
-          "description_vi": null,
+          "description_en": "Clause a: report the total Scope 1 GHG removals in metric tons of CO<sub>2</sub> equivalent, excluding any GHG trades, and a breakdown of this total by each storage pool;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Scope 1 GHG removals in metric tons of CO<sub>2</sub> equivalent, excluding any GHG trades, and a breakdown of this total by each storage pool;",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "102-9:b",
+          "item_code": "b",
+          "description_en": "Clause b: for each type of storage pool, describe how quality criteria are monitored to manage the risk of non-permanence;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , describe how quality criteria are monitored to manage the risk of non-permanence;",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "102-9:c",
+          "item_code": "c",
+          "description_en": "Clause c: report the intended use of GHG removals;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: GHG removals;",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "102-9:d",
+          "item_code": "d",
+          "description_en": "Clause d: describe the impacts on people and the environment from its Scope 1 GHG removals and the actions taken to manage them, including for: - i. workers, local communities, and Indigenous Peoples; - ii. biodiversity;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Scope 1 GHG removals and the actions taken to manage them, including for: - i. workers, local communities, and Indigenous Peoples; - ii. biodiversity;",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "102-9:e",
+          "item_code": "e",
+          "description_en": "Clause e: report standards, methodologies, assumptions, and calculation tools used.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , methodologies, assumptions, and calculation tools used.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 102-9.\n\nGuidance Summary:\nThis disclosure aims to increase transparency regarding the organization's GHG removals.\n\nThis disclosure covers information on GHG removals in the organization's value chain. GHG removals beyond the organization's value chain purchased through carbon credits are reported under [Disclosure 102-10](#).\n\nGHG removals are the transfer of a greenhouse gas from the atmosphere to storage within a non-atmospheric pool. Storage refers to the process of maintaining CO<sub>2</sub> or other GHGs in pools. A storage pool is a physical reservoir or medium where the removed CO<sub>2</sub> or other GHGs are stored.\n\nTwo types of storage pools are considered for reporting under this disclosure:\n\n- Land-based pools store carbon in terrestrial biomass, dead organic matter, or soil carbon pools.\n- Geologic p...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 102-9.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "102-10",
       "title_en": "Carbon credits",
       "title_vi": "Carbon credits",
-      "disclosure_type": "General Disclosures",
+      "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
           "requirement_id": "102-10:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 102-10 (Carbon credits)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "3-3",
-      "title_en": "in GRI 3: Material Topics 2021.",
-      "title_vi": "in GRI 3: Material Topics 2021.",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
+          "description_en": "Clause a: report the total amount of carbon credits canceled in metric tons of CO<sub>2</sub> equivalent and a breakdown of this total by removal or reduction projects;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: CO<sub>2</sub> equivalent and a breakdown of this total by removal or reduction projects;",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
         {
-          "requirement_id": "3-3:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021.)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "2-23",
-      "title_en": "in GRI 2: General Disclosures 2021 or 3-3-c in GRI 3: Material Topics 2021, it can provide a",
-      "title_vi": "in GRI 2: General Disclosures 2021 or 3-3-c in GRI 3: Material Topics 2021, it can provide a",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
+          "requirement_id": "102-10:b",
+          "item_code": "b",
+          "description_en": "Clause b: for each project where carbon credits have been canceled, report: - i. project name and ID; - ii. project type; - iii. cancellation serial number, cancellation date, and vintage; - iv. host country and issuing registry;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , report: - i. project name and ID; - ii. project type; - iii. cancellation serial number, cancellation date, and vintage; - iv. host country and issuing registry;",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
         {
-          "requirement_id": "2-23:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 2-23 (in GRI 2: General Disclosures 2021 or 3-3-c in GRI 3: Material Topics 2021, it can provide a)",
-          "description_vi": null,
+          "requirement_id": "102-10:c",
+          "item_code": "c",
+          "description_en": "Clause c: for each carbon credit project reported under 102-10-b, describe how the project adheres to each of the following quality criteria: - i. additionality; - ii. credible baselines; - iii. permanence; - iv. leakage avoidance; - v. unique issuance and claiming; - vi. regular monitoring; - vii. independent validation and verification; - viii. GHG program governance;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , describe how the project adheres to each of the following quality criteria: - i. additionality; - ii. credible baselines; - iii. permanence; - iv. leakage avoidance; - v. unique issuance and claiming; - vi. regular monitoring; - vii. independent validation and verification; - viii. GHG program governance;",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "2-19",
-      "title_en": "in GRI 2: General Disclosures 2021 requires information on the",
-      "title_vi": "in GRI 2: General Disclosures 2021 requires information on the",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
         {
-          "requirement_id": "2-19:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 2-19 (in GRI 2: General Disclosures 2021 requires information on the)",
-          "description_vi": null,
+          "requirement_id": "102-10:d",
+          "item_code": "d",
+          "description_en": "Clause d: report the purpose of carbon credit cancellation;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ;",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "2-29",
-      "title_en": "in GRI 2: General Disclosures 2021 covers the organization’s approach to",
-      "title_vi": "in GRI 2: General Disclosures 2021 covers the organization’s approach to",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
         {
-          "requirement_id": "2-29:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 2-29 (in GRI 2: General Disclosures 2021 covers the organization’s approach to)",
-          "description_vi": null,
+          "requirement_id": "102-10:e",
+          "item_code": "e",
+          "description_en": "Clause e: describe the impacts on people and the environment from projects where carbon credits are purchased and how the organization continuously monitors and evaluates them, including: - i. the categories of stakeholders consulted in project implementation; - ii. how human rights are respected; - iii. how socio-economic benefits are provided to local communities and Indigenous Peoples; - iv. how biodiversity is conserved; - v. how trade-offs are assessed.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , including: - i. the categories of stakeholders consulted in project implementation; - ii. how human rights are respected; - iii. how socio-economic benefits are provided to local communities and Indigenous Peoples; - iv. how biodiversity is conserved; - v. how trade-offs are assessed.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "101-2",
-      "title_en": "in GRI 101: Biodiversity 2024 requires describing how the organization",
-      "title_vi": "in GRI 101: Biodiversity 2024 requires describing how the organization",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
         {
-          "requirement_id": "101-2:a",
+          "requirement_id": "102-10:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 101-2 (in GRI 101: Biodiversity 2024 requires describing how the organization)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "2-4",
-      "title_en": "in GRI 2:",
-      "title_vi": "in GRI 2:",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
+          "description_en": "Clause a: Permanence ensures mechanisms are in place to monitor the continued storage of reported removals and captured GHGs, account for reversals, and report emissions from associated carbon pools [17].",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Permanence ensures mechanisms are in place to monitor the continued storage of reported removals and captured GHGs, account for reversals, and report emissions from associated carbon pools [17].",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
         {
-          "requirement_id": "2-4:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 2-4 (in GRI 2:)",
-          "description_vi": null,
+          "requirement_id": "102-10:e",
+          "item_code": "e",
+          "description_en": "Clause e: The organization should report the timeframe of the monitoring period for the impacts associated with purchased carbon credits.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: The organization should report the timeframe of the monitoring period for the impacts associated with purchased carbon credits.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "2-2",
-      "title_en": "in GRI 2: General Disclosures 2021. See also section 5.1 in GRI 1: Foundation",
-      "title_vi": "in GRI 2: General Disclosures 2021. See also section 5.1 in GRI 1: Foundation",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
-        {
-          "requirement_id": "2-2:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 2-2 (in GRI 2: General Disclosures 2021. See also section 5.1 in GRI 1: Foundation)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 102-10.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 102-10.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "2-25",
-      "title_en": "in GRI 2: General Disclosures 2021 for more",
-      "title_vi": "in GRI 2: General Disclosures 2021 for more",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
-        {
-          "requirement_id": "2-25:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 2-25 (in GRI 2: General Disclosures 2021 for more)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     }
   ]
 }

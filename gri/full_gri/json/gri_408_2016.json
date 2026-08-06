@@ -2,7 +2,7 @@
   "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
   "standard_id": "GRI 408",
   "title_en": "Child Labor 2016",
-  "title_vi": "Child Labor 2016",
+  "title_vi": "GRI 408: Lao động trẻ em 2016",
   "pillar": "S — Social",
   "series": "Social (400 Series)",
   "category": "Topic-Social",
@@ -23,57 +23,70 @@
   "provenance": {
     "relative_pdf_path": "Full set of GRI Standards - English\\GRI 408_ Child Labor 2016.pdf",
     "file_size_bytes": 868950,
-    "page_count": 14,
+    "page_count": 25,
     "sha256": "3d56b9ba19765d1f5c6a58cc462b45a75cc3acaddf5f9a1e0ba3dc79eb053045",
-    "indexed_at": "2026-07-25T14:35:59.183415"
+    "indexed_at": "2026-08-01T20:30:14.417770"
   },
-  "disclosures_count": 2,
+  "disclosures_count": 1,
   "disclosures": [
     {
       "disclosure_id": "408-1",
-      "title_en": "Operations and suppliers at significant risk for incidents of child",
-      "title_vi": "Operations and suppliers at significant risk for incidents of child",
+      "title_en": "Operations and suppliers at significant risk for incidents of child labor",
+      "title_vi": "Operations and suppliers at significant risk for incidents of child labor",
       "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
           "requirement_id": "408-1:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 408-1 (Operations and suppliers at significant risk for incidents of child)",
-          "description_vi": null,
+          "description_en": "Clause a: Operations and suppliers considered to have significant risk for incidents of: - i. child labor; - ii. young workers exposed to hazardous work.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Operations and suppliers considered to have significant risk for incidents of: - i. child labor; - ii. young workers exposed to hazardous work.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "3-3",
-      "title_en": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "title_vi": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "disclosure_type": "Topic-Specific",
-      "mandatory": true,
-      "requirements": [
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
         {
-          "requirement_id": "3-3:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);)",
-          "description_vi": null,
+          "requirement_id": "408-1:b",
+          "item_code": "b",
+          "description_en": "Clause b: Operations and suppliers considered to have significant risk for incidents of child labor either in terms of: - i. type of operation (such as manufacturing plant) and supplier; - ii. countries or geographic areas with operations and suppliers considered at risk.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Operations and suppliers considered to have significant risk for incidents of child labor either in terms of: - i. type of operation (such as manufacturing plant) and supplier; - ii. countries or geographic areas with operations and suppliers considered at risk.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "408-1:c",
+          "item_code": "c",
+          "description_en": "Clause c: Measures taken by the organization in the reporting period intended to contribute to the effective abolition of child labor.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Measures taken by the organization in the reporting period intended to contribute to the effective abolition of child labor.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 408-1.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 408-1.",
+      "sdg_mapping": [
+        "SDG 12: Responsible Consumption and Production"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     }
   ]
 }

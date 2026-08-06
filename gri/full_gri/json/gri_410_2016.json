@@ -2,7 +2,7 @@
   "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
   "standard_id": "GRI 410",
   "title_en": "Security Practices 2016",
-  "title_vi": "Security Practices 2016",
+  "title_vi": "GRI 410: Thực hành an ninh 2016",
   "pillar": "S — Social",
   "series": "Social (400 Series)",
   "category": "Topic-Social",
@@ -23,11 +23,11 @@
   "provenance": {
     "relative_pdf_path": "Full set of GRI Standards - English\\GRI 410_ Security Practices 2016.pdf",
     "file_size_bytes": 841542,
-    "page_count": 11,
+    "page_count": 25,
     "sha256": "7128a7c0a4925e481ebc88801baa5cfdd6119b938241c69048987c4c03882508",
-    "indexed_at": "2026-07-25T14:35:59.241706"
+    "indexed_at": "2026-08-01T20:30:14.425963"
   },
-  "disclosures_count": 2,
+  "disclosures_count": 1,
   "disclosures": [
     {
       "disclosure_id": "410-1",
@@ -37,43 +37,30 @@
       "mandatory": true,
       "requirements": [
         {
-          "requirement_id": "410-1:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 410-1 (Security personnel trained in human rights policies or procedures)",
-          "description_vi": null,
+          "requirement_id": "410-1:1",
+          "item_code": "1",
+          "description_en": "Clause 1: International Code of Conduct for Private Security Service Providers, 2010.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: International Code of Conduct for Private Security Service Providers, 2010.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "3-3",
-      "title_en": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "title_vi": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "disclosure_type": "Topic-Specific",
-      "mandatory": true,
-      "requirements": [
-        {
-          "requirement_id": "3-3:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 410-1.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 410-1.",
+      "sdg_mapping": [
+        "SDG 12: Responsible Consumption and Production"
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     }
   ]
 }

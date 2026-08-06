@@ -2,7 +2,7 @@
   "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
   "standard_id": "GRI 409",
   "title_en": "Forced or Compulsory Labor 2016",
-  "title_vi": "Forced or Compulsory Labor 2016",
+  "title_vi": "GRI 409: Lao động cưỡng bức hoặc bắt buộc 2016",
   "pillar": "S — Social",
   "series": "Social (400 Series)",
   "category": "Topic-Social",
@@ -23,57 +23,44 @@
   "provenance": {
     "relative_pdf_path": "Full set of GRI Standards - English\\GRI 409_ Forced or Compulsory Labor 2016.pdf",
     "file_size_bytes": 913519,
-    "page_count": 13,
+    "page_count": 25,
     "sha256": "0a3f40c3e20f1060955942f59e01fc1eb81930511f28ae34fe8e8c1b9f9bf729",
-    "indexed_at": "2026-07-25T14:35:59.216841"
+    "indexed_at": "2026-08-01T20:30:14.425963"
   },
-  "disclosures_count": 2,
+  "disclosures_count": 1,
   "disclosures": [
     {
       "disclosure_id": "409-1",
-      "title_en": "Operations and suppliers at significant risk for incidents of forced",
-      "title_vi": "Operations and suppliers at significant risk for incidents of forced",
+      "title_en": "Operations and suppliers at significant risk for incidents of forced or compulsory labor",
+      "title_vi": "Operations and suppliers at significant risk for incidents of forced or compulsory labor",
       "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
           "requirement_id": "409-1:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 409-1 (Operations and suppliers at significant risk for incidents of forced)",
-          "description_vi": null,
+          "description_en": "The reporting organization shall report information specified in Disclosure 409-1: Operations and suppliers at significant risk for incidents of forced or compulsory labor.",
+          "description_vi": "Tổ chức báo cáo phải công bố đầy đủ thông tin theo yêu cầu của Chỉ số 409-1: Operations and suppliers at significant risk for incidents of forced or compulsory labor.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "3-3",
-      "title_en": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "title_vi": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "disclosure_type": "Topic-Specific",
-      "mandatory": true,
-      "requirements": [
-        {
-          "requirement_id": "3-3:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 409-1.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 409-1.",
+      "sdg_mapping": [
+        "SDG 12: Responsible Consumption and Production"
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     }
   ]
 }

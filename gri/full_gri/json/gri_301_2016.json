@@ -2,7 +2,7 @@
   "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
   "standard_id": "GRI 301",
   "title_en": "Materials 2016",
-  "title_vi": "Materials 2016",
+  "title_vi": "GRI 301: Nguyên vật liệu 2016",
   "pillar": "E — Environmental",
   "series": "Environmental (300 Series / Revisions)",
   "category": "Topic-Environmental",
@@ -23,11 +23,11 @@
   "provenance": {
     "relative_pdf_path": "Full set of GRI Standards - English\\GRI 301_ Materials 2016.pdf",
     "file_size_bytes": 831620,
-    "page_count": 13,
+    "page_count": 25,
     "sha256": "8341ae1ff5b0b7c03ff9f6b2f07cbaf66204a3a61fd693025174568ed85857d4",
-    "indexed_at": "2026-07-25T14:35:58.575485"
+    "indexed_at": "2026-08-01T20:30:14.367652"
   },
-  "disclosures_count": 4,
+  "disclosures_count": 3,
   "disclosures": [
     {
       "disclosure_id": "301-1",
@@ -39,18 +39,29 @@
         {
           "requirement_id": "301-1:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 301-1 (Materials used by weight or volume)",
-          "description_vi": null,
+          "description_en": "The reporting organization shall report information specified in Disclosure 301-1: Materials used by weight or volume.",
+          "description_vi": "Tổ chức báo cáo phải công bố đầy đủ thông tin theo yêu cầu của Chỉ số 301-1: Materials used by weight or volume.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 301-1.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 301-1.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "301-2",
@@ -62,18 +73,81 @@
         {
           "requirement_id": "301-2:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 301-2 (Recycled input materials used)",
-          "description_vi": null,
+          "description_en": "Clause a: Percentage of recycled input materials used to manufacture the organization's primary products and services.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Percentage of recycled input materials used to manufacture the organization's primary products and services.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "301-2:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 2 When compiling the information specified in Disclosure 301-2, the reporting organization shall:",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: When compiling the information specified in Disclosure 301-2, the reporting organization shall:",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "301-2:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 2.1 use the total weight or volume of materials used as specified in Disclosure 301-1;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Disclosure 301-1;",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "301-2:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 2.2 calculate the percentage of recycled input materials used by applying the following formula:",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: :",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "301-2:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 3 When compiling the information specified in Disclosure 301-2, the reporting organization should, if estimation is required, report the methods used.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: When compiling the information specified in Disclosure 301-2, the reporting organization should, if estimation is required, report the methods used.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "- 2.3 When compiling the information specified in Disclosure 301-2, the reporting organization should, if estimation is required, report the methods used.\n\nGuidance Summary:\n#### Guidance for Disclosure 301-2\n\nIf material weight and volume measurements are stated as different units, the organization can convert measurements to standardized units....",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 301-2.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "301-3",
@@ -85,41 +159,81 @@
         {
           "requirement_id": "301-3:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 301-3 (Reclaimed products and their packaging materials)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
+          "description_en": "Clause a: Percentage of reclaimed products and their packaging materials for each product category.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Percentage of reclaimed products and their packaging materials for each product category.",
+          "requirement_type": "Quantitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "3-3",
-      "title_en": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "title_vi": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
         {
-          "requirement_id": "3-3:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);)",
-          "description_vi": null,
+          "requirement_id": "301-3:b",
+          "item_code": "b",
+          "description_en": "Clause b: How the data for this disclosure have been collected.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: How the data for this disclosure have been collected.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "301-3:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 4 When compiling the information specified in Disclosure 301-3, the reporting organization shall:",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: When compiling the information specified in Disclosure 301-3, the reporting organization shall:",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "301-3:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 4.1 exclude rejects and recalls of products;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ;",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "301-3:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 4.2 calculate the percentage of reclaimed products and their packaging materials for each product category using the following formula:",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: :",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 301-3.\n\nGuidance Summary:\n#### Guidance for Disclosure 301-3\n\nThe reporting organization can also report recycling or reuse of packaging separately.\n\n## Glossary\n\nThis glossary provides definitions for terms used in this Standard. The organization is required to apply these definitions when using the GRI Standards.\n\nThe definitions included in this glossary may contain terms that are further defined in the complete [GRI Standards Glossary](#). All defined terms are underlined. If a term is not defined in this glossary or in the complete [GRI Standards Glossary](#), definitions that are commonly used and understood apply.\n\n|          |                                                                                                                                                                                        ...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 301-3.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     }
   ]
 }

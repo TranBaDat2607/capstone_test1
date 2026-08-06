@@ -2,7 +2,7 @@
   "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
   "standard_id": "GRI 206",
   "title_en": "Anti-competitive Behavior 2016",
-  "title_vi": "Anti-competitive Behavior 2016",
+  "title_vi": "GRI 206: Hành vi chống cạnh tranh 2016",
   "pillar": "G — Governance",
   "series": "Economic (200 Series)",
   "category": "Topic-Economic",
@@ -23,57 +23,45 @@
   "provenance": {
     "relative_pdf_path": "Full set of GRI Standards - English\\GRI 206_ Anti-competitive Behavior 2016.pdf",
     "file_size_bytes": 830721,
-    "page_count": 13,
+    "page_count": 25,
     "sha256": "8c6a6364e00a27359979618a9fe0d7bd58bfe96554a405f53b37824825ac8ea7",
-    "indexed_at": "2026-07-25T14:35:58.425343"
+    "indexed_at": "2026-08-01T20:30:14.342656"
   },
-  "disclosures_count": 2,
+  "disclosures_count": 1,
   "disclosures": [
     {
       "disclosure_id": "206-1",
-      "title_en": "Legal actions for anti-competitive behavior, anti-trust, and",
-      "title_vi": "Legal actions for anti-competitive behavior, anti-trust, and",
+      "title_en": "Legal actions for anti-competitive behavior, anti-trust, and monopoly practices",
+      "title_vi": "Legal actions for anti-competitive behavior, anti-trust, and monopoly practices",
       "disclosure_type": "General Disclosures",
       "mandatory": true,
       "requirements": [
         {
-          "requirement_id": "206-1:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 206-1 (Legal actions for anti-competitive behavior, anti-trust, and)",
-          "description_vi": null,
+          "requirement_id": "206-1:1",
+          "item_code": "1",
+          "description_en": "Clause 1: Organisation for Economic Co-operation and Development (OECD), *OECD Guidelines for Multinational Enterprises*, 2011.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Organisation for Economic Co-operation and Development (OECD), *OECD Guidelines for Multinational Enterprises*, 2011.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "3-3",
-      "title_en": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "title_vi": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
-        {
-          "requirement_id": "3-3:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 206-1.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 206-1.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     }
   ]
 }

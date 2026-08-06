@@ -1,0 +1,749 @@
+{
+  "generated_at": "2026-08-06T15:42:06+00:00",
+  "framework_reference": "evalu.pdf §1-§3 (metric table + Likert rubric)",
+  "scope": {
+    "resolved_graph": {
+      "path": "graph_output/resolved/resolved_graph.json",
+      "mtime_utc": "2026-08-01T15:03:38+00:00",
+      "nodes": 10425,
+      "edges": 14402
+    },
+    "dossiers": {
+      "path": "graph_output/crosscheck/aaa_claim_assessments.json",
+      "mtime_utc": "2026-08-01T15:00:34+00:00",
+      "claims": 1093
+    },
+    "issuers_in_corpus": [
+      "AAA"
+    ],
+    "corpus": {
+      "graph_doc_dirs": 43,
+      "report_dirs": 13,
+      "news_dirs": 30,
+      "report_years": [
+        "2011",
+        "2012",
+        "2013",
+        "2014",
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2025"
+      ],
+      "pilot_esg_true_sentences": 5927,
+      "sector_sweep_esg_true_sentences": 303723,
+      "news_nodes": 208,
+      "news_node_pct": 2.0
+    },
+    "data_snapshot": {
+      "repo_id": "nammovuivui-capstone/capstone",
+      "repo_type": "dataset",
+      "revision": "23d5a8901ceb926d8d9ab4ed5397bc426d17db46",
+      "folders": [
+        "data",
+        "graph_output",
+        "kpi_output"
+      ],
+      "pushed_at": "2026-08-01T15:38:01+00:00",
+      "code_commit": "d823001f38ea6c9b51b112a74854696dffc457c9",
+      "size_mb": 20218.5
+    }
+  },
+  "tier_1_pipeline_controls": {
+    "stage_1_ingestion": {
+      "esg_snr": {
+        "key": "esg_snr",
+        "metric": "ESG Signal-to-Noise Ratio (SNR)",
+        "measured": true,
+        "score": 0.0658,
+        "numerator": 390,
+        "denominator": 5927,
+        "source": "data/labeled/{annual_labeled,news_labeled}/*.jsonl",
+        "note": "Tín hiệu = câu esg=true có con số KÈM ĐƠN VỊ, hoặc có thuật ngữ thuộc bộ từ vựng kiểm soát (TT96/GRI). Nhiễu = văn cam kết chung chung không kèm phép đo nào. Phạm vi là 53 tài liệu của pilot AAA (13 báo cáo thường niên + 40 bài báo); corpus quét ngành báo cáo riêng.",
+        "per_file": {
+          "labeled_annual_report_company_aaa.jsonl": {
+            "scope": "in_graph",
+            "esg_true": 5575,
+            "grounded": 351,
+            "snr": 0.063
+          },
+          "all_sentences_classified.jsonl": {
+            "scope": "sector_sweep",
+            "esg_true": 303723,
+            "grounded": 29133,
+            "snr": 0.0959
+          },
+          "aaa_news_classified.jsonl": {
+            "scope": "in_graph",
+            "esg_true": 352,
+            "grounded": 39,
+            "snr": 0.1108
+          }
+        },
+        "lexicon_size": 322,
+        "signal_breakdown": {
+          "numeric_unit_only": 24633,
+          "lexicon_only": 4356,
+          "both": 534
+        },
+        "sensitivity_any_number": {
+          "grounded": 2112,
+          "esg_true": 5927,
+          "snr": 0.3563,
+          "definition": "any digit anywhere in the sentence (upper bound)"
+        },
+        "sector_sweep_scope": {
+          "esg_true": 303723,
+          "grounded": 29133,
+          "snr": 0.0959
+        }
+      },
+      "paragraph_provenance_rate": {
+        "key": "paragraph_provenance_rate",
+        "metric": "Paragraph Source Provenance Rate",
+        "measured": true,
+        "score": 0.9816,
+        "numerator": 6258,
+        "denominator": 6375,
+        "source": "esg_kg.report.quality.q6_provenance + provenance_patch_stats.json",
+        "note": "Tỷ lệ node mang dấu vết nguồn mà step05b truy ngược được về đúng tài liệu + số trang.",
+        "nodes_with_source_type_pct": 98.9,
+        "kpi_parseable_source_id_pct": 32.9,
+        "unmatched_by_class": {
+          "Certification": 92,
+          "Emission": 13,
+          "KPIObservation": 12
+        }
+      }
+    },
+    "stage_2_extraction": {
+      "temporal_metadata_completeness": {
+        "key": "temporal_metadata_completeness",
+        "metric": "Temporal Metadata Completeness (C_temporal)",
+        "measured": true,
+        "score": 0.969,
+        "numerator": 13956,
+        "denominator": 14402,
+        "source": "esg_kg.report.quality.q5_timeliness",
+        "note": "Số cạnh mang temporal_metadata.valid_from. Trong đồ thị ĐÃ RESOLVE, thời gian sống trên cạnh và node T2 (P2), nên thực thể T1 đúng ra phải phi thời gian và không nằm trong mẫu số.",
+        "t2_nodes_with_valid_from_pct": 87.7,
+        "news_t2_with_date_uncertain_pct": 100.0
+      },
+      "schema_compliance": {
+        "key": "schema_compliance",
+        "metric": "Schema Compliance Rate (C_schema)",
+        "measured": true,
+        "score": 1.0,
+        "numerator": 14402,
+        "denominator": 14402,
+        "source": "esg_kg.report.quality.q2_consistency",
+        "note": "Số cạnh có bộ ba (lớp chủ thể, vị từ, lớp đối tượng) hợp lệ theo schema.",
+        "violations_breakdown": {
+          "schema_illegal_edges": 0,
+          "non_canonical_date_values": 0,
+          "valid_from_after_valid_to": 1,
+          "version_chains_not_exactly_one_is_current": 0,
+          "news_t2_missing_date_uncertain": 0,
+          "total_violations": 1
+        }
+      },
+      "value_preservation_guard": {
+        "key": "value_preservation_guard",
+        "metric": "Value Preservation Guard",
+        "measured": false,
+        "score": null,
+        "numerator": null,
+        "denominator": null,
+        "source": "src/esg_kg/graph/fix_triples.py::preserve_property_values",
+        "note": "Cơ chế có thật và được test/test_step03_llm_value_guard.py bảo vệ (pass/fail), nhưng không tồn tại một tỷ lệ nào để báo cáo.",
+        "reason": "Bộ đếm số giá trị bị chặn chỉ được ghi ra log, không bao giờ lưu vào file stats. Muốn có tỷ lệ thì phải chạy lại bước sửa lỗi LLM step03 phase 2 (có tính phí). Đã kiểm chứng như một bất biến, không phải như một tỷ lệ.",
+        "verified_by_test": "test/test_step03_llm_value_guard.py"
+      }
+    },
+    "stage_3_entity_resolution": {
+      "timeless_identity_violation": {
+        "key": "timeless_identity_violation",
+        "metric": "Timeless Identity Violation Rate (V_identity)",
+        "measured": true,
+        "score": 0.0,
+        "numerator": 0,
+        "denominator": 14,
+        "source": "esg_kg.report.quality.q2_consistency (schema-level P1 lint)",
+        "note": "Số lớp thực thể T1 có trường thời gian nằm trong identity_keys. Mục tiêu là 0 — định danh T1 bắt buộc phi thời gian (P1).",
+        "offending_classes": []
+      },
+      "cluster_conciseness": {
+        "key": "cluster_conciseness",
+        "metric": "Cluster Conciseness (C_concise)",
+        "measured": true,
+        "score": 0.974,
+        "numerator": 2325,
+        "denominator": 2387,
+        "source": "esg_kg.report.quality.q3_conciseness",
+        "note": "CHỈ đo vỡ cụm (under-merging): các node T1 trùng tên sau chuẩn hoá qua Stage A/B/C/D. Gộp nhầm (over-merging) cần nhãn nên KHÔNG đo ở đây.",
+        "surplus_duplicate_nodes": 62,
+        "worst_classes": {
+          "Location": 52,
+          "Authority": 8,
+          "StandardIndicator": 2
+        }
+      }
+    },
+    "stage_4_indicator_axis": {
+      "indicator_alignment_coverage": {
+        "key": "indicator_alignment_coverage",
+        "metric": "Standard Indicator Alignment Coverage",
+        "measured": true,
+        "score": 0.2564,
+        "numerator": 624,
+        "denominator": 2434,
+        "source": "graph_output/resolved/resolved_graph.json",
+        "note": "Số node Claim/Goal/Initiative có cạnh alignsWithIndicator. Trục KPI (measuredUnder) báo cáo riêng — nó lấy từ kpi_id của bước canonicalize, không phải từ khớp cụm từ.",
+        "per_class": {
+          "Initiative": {
+            "aligned": 141,
+            "total": 495,
+            "pct": 28.5
+          },
+          "SustainabilityClaim": {
+            "aligned": 279,
+            "total": 1217,
+            "pct": 22.9
+          },
+          "Goal": {
+            "aligned": 204,
+            "total": 722,
+            "pct": 28.3
+          }
+        },
+        "method_mix": {
+          "keyword": 639
+        },
+        "kpi_measured_under": {
+          "aligned": 617,
+          "total": 4906,
+          "pct": 12.6
+        }
+      },
+      "zero_report_exclusion": {
+        "key": "zero_report_exclusion",
+        "metric": "Zero-Report Self-Praise Exclusion",
+        "measured": true,
+        "score": 1.0,
+        "numerator": 4,
+        "denominator": 4,
+        "source": "graph_output/resolved/resolved_graph.json + indicator_axis_stats.json",
+        "note": "BẤT BIẾN, không phải tỷ lệ — toàn đồ thị chỉ có 4 node Penalty với amount = 0. Báo cáo dưới dạng đếm.",
+        "indicator_edges_leaked_from_zero_penalty": 0,
+        "stats_file_count": 4,
+        "verified_by_test": "test/test_indicator_axis.py"
+      }
+    },
+    "stage_5_crosscheck": {
+      "evidence_asymmetry_abstention": {
+        "key": "evidence_asymmetry_abstention",
+        "metric": "Evidence Asymmetry & Abstention Rate",
+        "measured": true,
+        "score": 0.9158,
+        "numerator": 1001,
+        "denominator": 1093,
+        "source": "graph_output/crosscheck/aaa_claim_assessments.json",
+        "note": "Từ chối kết luận là hành vi được thiết kế khi thiếu bằng chứng độc lập. Chỉ số này đo độ mỏng của kho dữ liệu, không đo chất lượng model.",
+        "by_assessment": {
+          "unverified_insufficient_evidence": 1001,
+          "appears_supported": 70,
+          "appears_contradicted": 22
+        },
+        "claims_with_any_evidence": 106
+      },
+      "self_verification_exclusion": {
+        "key": "self_verification_exclusion",
+        "metric": "Self-Verification Exclusion Rate",
+        "measured": true,
+        "score": 0.0978,
+        "numerator": 18,
+        "denominator": 184,
+        "source": "graph_output/crosscheck/aaa_claim_assessments.json",
+        "note": "Tỷ lệ phán quyết 'supports' của LLM bị từ chối cấp cạnh verifiedBy vì domain của bằng chứng thuộc về chính doanh nghiệp.",
+        "independent_support_kept": 166,
+        "claims_affected": 18
+      }
+    }
+  },
+  "tier_1b_grounding": {
+    "key": "a_roundtrip_grounding",
+    "metric": "A — round-trip grounding của giá trị KPI",
+    "measured": true,
+    "score": 0.9778,
+    "numerator": 3912,
+    "denominator": 4001,
+    "mismatches": 89,
+    "skipped": {
+      "value_too_short_to_verify": 556,
+      "source_page_not_found": 280,
+      "no_value": 69
+    },
+    "mismatch_examples": [
+      {
+        "title": "Vốn góp thêm",
+        "value": 6000000000,
+        "unit": "VND",
+        "kpi_id": null,
+        "cited": "AAA_Baocaothuongnien_2012 p.2"
+      },
+      {
+        "title": "Tỷ lệ cán bộ, nhân viên có trình độ từ cao đẳng trở lên",
+        "value": 50,
+        "unit": "%",
+        "kpi_id": null,
+        "cited": "AAA_Baocaothuongnien_2014 p.17"
+      },
+      {
+        "title": "Tổng giá trị đầu tư, đóng góp và hỗ trợ tài chính cho cộng đồng địa phương trong kỳ",
+        "value": 1250000,
+        "unit": "VND",
+        "kpi_id": "TT96-6.7.2",
+        "cited": "AAA_Baocaothuongnien_2015 p.26"
+      },
+      {
+        "title": "Interest rate for normal business production sectors (medium/long-term)",
+        "value": 11,
+        "unit": "%/year",
+        "kpi_id": null,
+        "cited": "AAA_Baocaothuongnien_2016 p.14"
+      },
+      {
+        "title": "Total assets",
+        "value": 1954765,
+        "unit": "million VND",
+        "kpi_id": null,
+        "cited": "AAA_Baocaothuongnien_2016 p.24"
+      },
+      {
+        "title": "Net revenue",
+        "value": 2143770,
+        "unit": "million VND",
+        "kpi_id": null,
+        "cited": "AAA_Baocaothuongnien_2016 p.24"
+      },
+      {
+        "title": "Tỷ lệ phần trăm (%) và tổng lượng (m3) nước tái chế, tái sử dụng trên tổng lượng nước sử dụng.",
+        "value": 100,
+        "unit": "%",
+        "kpi_id": "TT96-6.4.2",
+        "cited": "AAA_Baocaothuongnien_2016 p.28"
+      },
+      {
+        "title": "Net Profit after corporate income tax",
+        "value": 39694444444.44,
+        "unit": "VND",
+        "kpi_id": null,
+        "cited": "AAA_Baocaothuongnien_2016 p.32"
+      },
+      {
+        "title": "Total assets",
+        "value": 1150600.0,
+        "unit": "triệu đồng",
+        "kpi_id": null,
+        "cited": "AAA_Baocaothuongnien_2016 p.33"
+      },
+      {
+        "title": "Total assets",
+        "value": 1421651.0,
+        "unit": "triệu đồng",
+        "kpi_id": null,
+        "cited": "AAA_Baocaothuongnien_2016 p.33"
+      }
+    ],
+    "worst_documents": [
+      {
+        "doc": "AAA_Baocaothuongnien_2020",
+        "ok": 308,
+        "miss": 24
+      },
+      {
+        "doc": "AAA_Baocaothuongnien_2016",
+        "ok": 215,
+        "miss": 18
+      },
+      {
+        "doc": "AAA_Baocaothuongnien_2021",
+        "ok": 291,
+        "miss": 12
+      },
+      {
+        "doc": "AAA_Baocaothuongnien_2023",
+        "ok": 166,
+        "miss": 12
+      },
+      {
+        "doc": "AAA_Baocaothuongnien_2022",
+        "ok": 207,
+        "miss": 9
+      }
+    ],
+    "kpi_nodes_total": 4906,
+    "note": "Tỷ lệ giá trị KPI thực sự xuất hiện trên đúng trang mà node đó trích dẫn. Văn bản gốc chính là ground truth, nên đây là ĐỘ ĐÚNG thật, không phải proxy — và không cần ai gán nhãn.",
+    "caveat": "Khớp chỉ chứng minh con số CÓ MẶT trên trang. Nó không chứng minh con số được gán đúng chỉ tiêu, đúng kỳ hay đúng đơn vị. Vì vậy đây là CẬN TRÊN của độ đúng trích xuất.",
+    "source": "resolved_graph.json + data/labeled/*/*.jsonl"
+  },
+  "tier_2_labelfree_crosscheck": {
+    "b2_permutation_test": {
+      "key": "b2_permutation_test",
+      "metric": "B2 — permutation test (contradiction count)",
+      "measured": true,
+      "observed": 22,
+      "n_contradicting_items": 25,
+      "null_mean": 24.7,
+      "null_min": 21,
+      "null_max": 25,
+      "n_permutations": 1000,
+      "p_value": 0.003,
+      "p_value_upper_tail": 0.999,
+      "seed": 20260806,
+      "note": "Đuôi DƯỚI mới là đuôi có ý nghĩa — xem docstring. p là tỷ lệ các lần rải ngẫu nhiên mà dồn mâu thuẫn vào ít claim đúng bằng mức hệ thống đã làm.",
+      "source": "graph_output/crosscheck/aaa_claim_assessments.json"
+    },
+    "b2b_pairing_coherence": {
+      "key": "b2b_pairing_coherence",
+      "metric": "B2b — pairing coherence vs random re-pairing",
+      "measured": true,
+      "n_pairs": 209,
+      "lexical_overlap": {
+        "observed": 0.1086,
+        "null_mean": 0.0154,
+        "p_value": 0.001
+      },
+      "year_distance": {
+        "observed_years": 6.172,
+        "null_mean_years": 5.822,
+        "p_value": 0.994,
+        "n_pairs": 209
+      },
+      "n_permutations": 1000,
+      "seed": 20260806,
+      "caveat": "Có phần luẩn quẩn: tầng retrieval vốn đã chọn theo chồng lấp từ vựng và cửa sổ năm. Vì vậy chỉ kết luận được rằng 'tập được giữ tách xa hơn nữa so với việc ghép lại ngẫu nhiên trong cùng bể đó'.",
+      "source": "graph_output/crosscheck/aaa_claim_assessments.json"
+    },
+    "b3_structural_negative_control": {
+      "key": "b3_structural_negative_control",
+      "metric": "B3 — structural negative control (cross-company)",
+      "measured": false,
+      "reason": "Corpus chỉ có MỘT doanh nghiệp: mọi tài liệu đã nạp đều thuộc về issuer duy nhất trong config/issuer_registry.json, nên trong đồ thị không tồn tại conduct của công ty khác để mà lọt sang. Số 0 ở đây do corpus bảo đảm, không phải do logic retrieval.",
+      "detail": {
+        "issuer_docs": 6238,
+        "non_issuer_doc_prefixes": 20,
+        "registered_tickers": [
+          "AAA"
+        ],
+        "top_prefixes": [
+          [
+            "AAA",
+            6238
+          ],
+          [
+            "PAGE",
+            18
+          ],
+          [
+            "ANPHATHOLDINGS",
+            1
+          ],
+          [
+            "THUVIENCHUNGKHOAN",
+            1
+          ]
+        ]
+      },
+      "becomes_measurable_when": "khi nạp thêm mã cổ phiếu thứ hai vào cùng một đồ thị",
+      "source": "graph_output/resolved/resolved_graph.json + config/issuer_registry.json"
+    },
+    "d_anachronism": {
+      "key": "d_anachronism",
+      "metric": "D — bằng chứng đi sau claim (kiểm P8)",
+      "measured": true,
+      "by_role": {
+        "supports": {
+          "violations": 129,
+          "comparable": 166,
+          "rate": 0.7771
+        },
+        "contradicts": {
+          "violations": 22,
+          "comparable": 25,
+          "rate": 0.88
+        }
+      },
+      "gap_distribution": {
+        "-14": 1,
+        "-13": 2,
+        "-11": 1,
+        "-10": 1,
+        "-9": 5,
+        "-8": 3,
+        "-7": 2,
+        "-6": 4,
+        "-5": 2,
+        "-4": 10,
+        "-3": 5,
+        "-1": 2,
+        "0": 2,
+        "1": 5,
+        "2": 3,
+        "3": 7,
+        "4": 18,
+        "5": 32,
+        "6": 21,
+        "7": 10,
+        "8": 12,
+        "9": 16,
+        "10": 14,
+        "11": 4,
+        "12": 1,
+        "13": 5,
+        "14": 3
+      },
+      "max_gap_years": 14,
+      "worst_contradictions": [
+        {
+          "gap_years": 13,
+          "claim_year": 2012,
+          "evidence_year": 2025,
+          "claim_text": "Actively sought investment sources to effectively use capital from shareholders and investors."
+        },
+        {
+          "gap_years": 13,
+          "claim_year": 2012,
+          "evidence_year": 2025,
+          "claim_text": "Uses recycled raw materials to ensure less waste."
+        },
+        {
+          "gap_years": 10,
+          "claim_year": 2015,
+          "evidence_year": 2025,
+          "claim_text": "Purchases raw materials and goods from domestic and international suppliers for production and business activi"
+        },
+        {
+          "gap_years": 10,
+          "claim_year": 2015,
+          "evidence_year": 2025,
+          "claim_text": "Manages liquidity to ensure a controllable surplus between maturing liabilities and assets within the period, "
+        },
+        {
+          "gap_years": 10,
+          "claim_year": 2016,
+          "evidence_year": 2026,
+          "claim_text": "Company boosted production and exports to key markets, ensuring quality, high revenue and profit exceeding pla"
+        }
+      ],
+      "note": "Với một MÂU THUẪN, bằng chứng có năm sau claim là vi phạm P8 trực tiếp. Với một SUPPORT thì nhẹ hơn — bài báo 2016 có thể tường thuật hợp lệ một sự kiện 2015 — nên hai tỷ lệ được tách riêng và không được cộng gộp.",
+      "caveat": "100% evidence mang date_uncertain=true, tức năm thường là ngày đăng bài dùng làm proxy. Vì vậy đây là CẬN TRÊN của tỷ lệ vi phạm, không phải con số chính xác.",
+      "source": "graph_output/crosscheck/aaa_claim_assessments.json"
+    },
+    "e_time_window_ablation": {
+      "key": "e_time_window_ablation",
+      "metric": "E — ablation cửa sổ thời gian",
+      "measured": true,
+      "live_window_after": 50,
+      "rows": [
+        {
+          "window_after": 0,
+          "kept_supports": 37,
+          "kept_contradicts": 3,
+          "kept_total": 40,
+          "claims_with_evidence": 25,
+          "is_live_setting": false
+        },
+        {
+          "window_after": 1,
+          "kept_supports": 41,
+          "kept_contradicts": 4,
+          "kept_total": 45,
+          "claims_with_evidence": 30,
+          "is_live_setting": false
+        },
+        {
+          "window_after": 2,
+          "kept_supports": 43,
+          "kept_contradicts": 5,
+          "kept_total": 48,
+          "claims_with_evidence": 33,
+          "is_live_setting": false
+        },
+        {
+          "window_after": 3,
+          "kept_supports": 50,
+          "kept_contradicts": 5,
+          "kept_total": 55,
+          "claims_with_evidence": 39,
+          "is_live_setting": false
+        },
+        {
+          "window_after": 5,
+          "kept_supports": 94,
+          "kept_contradicts": 11,
+          "kept_total": 105,
+          "claims_with_evidence": 62,
+          "is_live_setting": false
+        },
+        {
+          "window_after": 10,
+          "kept_supports": 155,
+          "kept_contradicts": 23,
+          "kept_total": 178,
+          "claims_with_evidence": 85,
+          "is_live_setting": false
+        },
+        {
+          "window_after": 50,
+          "kept_supports": 166,
+          "kept_contradicts": 25,
+          "kept_total": 191,
+          "claims_with_evidence": 92,
+          "is_live_setting": true
+        }
+      ],
+      "note": "Cửa sổ hiện tại cho phép bằng chứng đi sau claim tới 50 năm. Bảng này cho biết siết lại thì còn giữ được bao nhiêu bằng chứng.",
+      "caveat": "Chỉ phát lại được những mẩu bằng chứng ĐÃ được giữ, nên đây là cận trên: nó không cho biết cửa sổ hẹp hơn sẽ đẩy thêm cặp mới nào vào top-k.",
+      "source": "aaa_claim_assessments.json + aaa_crosscheck_stats.json"
+    },
+    "duplicate_claim_consistency": {
+      "key": "duplicate_claim_consistency",
+      "metric": "Verdict consistency on duplicate claims",
+      "measured": true,
+      "score": 0.9565,
+      "numerator": 22,
+      "denominator": 23,
+      "wilson_95ci": [
+        0.7901,
+        0.9923
+      ],
+      "inconsistent_examples": [
+        {
+          "claim_text": "largest plastic packaging exporter in vietnam",
+          "verdicts": [
+            "appears_supported",
+            "unverified_insufficient_evidence"
+          ],
+          "years": [
+            2020,
+            2023
+          ]
+        }
+      ],
+      "note": "Mẫu số là số NHÓM claim trùng lặp, không phải số claim. Mẫu nhỏ — báo cáo theo khoảng tin cậy, đừng báo cáo tỷ lệ trần.",
+      "source": "graph_output/crosscheck/aaa_claim_assessments.json"
+    },
+    "retrieval_yield": {
+      "key": "retrieval_yield",
+      "metric": "Retrieval yield (kept / candidate pairs)",
+      "measured": true,
+      "score": 0.0604,
+      "numerator": 209,
+      "denominator": 3461,
+      "by_bucket": {
+        "supporting_evidence": 166,
+        "contradicting_evidence": 25,
+        "flagged_non_independent_support": 18
+      },
+      "claims_with_any_evidence": 106,
+      "total_claims": 1093,
+      "caveat": "\"Liên quan\" ở đây chính là phán quyết của adjudicator, nên đây là lấy chính model đã phán xử để chấm điểm tầng truy hồi. Mang tính chẩn đoán, không phải kiểm định độc lập.",
+      "source": "aaa_claim_assessments.json + aaa_crosscheck_stats.json"
+    },
+    "internal_score_disagreement": {
+      "key": "internal_score_disagreement",
+      "metric": "Internal score/assessment disagreement",
+      "measured": true,
+      "score": 0.0604,
+      "numerator": 66,
+      "denominator": 1093,
+      "note": "Số hồ sơ mà điểm tính offline mâu thuẫn với phán quyết của LLM.",
+      "source": "graph_output/crosscheck/aaa_claim_assessments.json"
+    },
+    "confidence_spectrum": {
+      "key": "confidence_spectrum",
+      "metric": "LLM confidence spectrum",
+      "measured": true,
+      "score": null,
+      "distribution": {
+        "0.8": 109,
+        "0.9": 99,
+        "1.0": 1
+      },
+      "distinct_values": 3,
+      "minimum": 0.8,
+      "note": "Quá ít giá trị phân biệt để hiệu chuẩn — ghi nhận như một phát hiện, không phải một metric. Calibration đã chết ở đây (docs/EVALUATION_WITHOUT_LABELS.md §8).",
+      "source": "graph_output/crosscheck/aaa_claim_assessments.json"
+    },
+    "not_computable": {
+      "ragas_context_recall": {
+        "metric": "RAGAS Context Recall",
+        "measured": false,
+        "reason": "Cần tập ground-truth về những bằng chứng LẼ RA phải được truy hồi. Không có nhãn nào tồn tại — đó chính là tiền đề của đề tài. Đã ghi nhận là metric chết trong docs/EVALUATION_WITHOUT_LABELS.md §8.",
+        "cost_to_obtain": "gán nhãn thủ công tập bằng chứng vét cạn cho từng claim"
+      },
+      "ragas_faithfulness": {
+        "metric": "RAGAS Faithfulness",
+        "measured": false,
+        "reason": "Cần phán xử xem mỗi phần giải thích có được suy ra từ chính văn bản bằng chứng hay không — tốn một lệnh gọi LLM-judge cho mỗi hồ sơ, và sẽ là tự chấm điểm mình nếu dùng lại cùng một model. Không suy ra được từ artifact.",
+        "cost_to_obtain": "191 lệnh gọi judge (hoặc một model độc lập thứ hai)"
+      },
+      "mr1_negation_flip": {
+        "metric": "MR-1 Negation Flip",
+        "measured": false,
+        "reason": "Cần chạy lại adjudicator THẬT trên claim đã bị chèn phủ định. Chạy trên stub thì chỉ đo được chính cái stub.",
+        "cost_to_obtain": "~191 lệnh gọi LLM"
+      },
+      "mr2_numeric_flip": {
+        "metric": "MR-2 Numeric Flip",
+        "measured": false,
+        "reason": "Cần chạy lại adjudicator THẬT trên bằng chứng đã đảo dấu con số.",
+        "cost_to_obtain": "~191 lệnh gọi LLM"
+      },
+      "mr3_entity_change": {
+        "metric": "MR-3 Entity Change",
+        "measured": false,
+        "reason": "Cần chạy lại adjudicator THẬT với tên doanh nghiệp bị thay thế.",
+        "cost_to_obtain": "~191 lệnh gọi LLM"
+      },
+      "mr4_temporal_shift": {
+        "metric": "MR-4 Temporal Shift (P8)",
+        "measured": false,
+        "reason": "Cần chạy lại adjudicator THẬT với bằng chứng có ngày sau ngày của claim.",
+        "cost_to_obtain": "~191 lệnh gọi LLM"
+      },
+      "b1_negative_control_specificity": {
+        "metric": "B1 — Specificity trên cặp ngẫu nhiên",
+        "measured": false,
+        "reason": "Đây là kill-test của cả thiết kế: cặp (claim, conduct) ghép ngẫu nhiên có bị phán là irrelevant không? Cần adjudicator THẬT chấm trên những cặp mà retrieval KHÔNG chọn. Không thể giả — module cũ đã hardcode sẵn 99/100 cho chỉ số này.",
+        "cost_to_obtain": "191 lệnh gọi LLM (~5,5% một lần chạy step07)"
+      },
+      "retained_vs_discarded": {
+        "metric": "Độ chọn lọc của adjudicator (cặp giữ lại vs cặp bị loại)",
+        "measured": false,
+        "reason": "Sẽ khiến B2b hết vòng luẩn quẩn, nhưng step07 không lưu lại 3.270 cặp ứng viên bị loại — chỉ lưu 191 cặp được giữ. Cần tách phần retrieval trong run() thành một hàm gọi được, rồi chạy lại offline miễn phí.",
+        "cost_to_obtain": "0 lệnh gọi LLM, nhưng phải refactor nhẹ claims_vs_conduct.run()"
+      },
+      "inter_annotator_agreement": {
+        "metric": "IAA chuyên gia (Krippendorff α / Gwet AC2)",
+        "measured": false,
+        "reason": "Chưa có đánh giá của người thật. evalu/sample_expert_annotations.json chỉ chứa 4 dòng tổng hợp sẵn, không đủ để tính hệ số đồng thuận — báo cáo cũ đã in ra α=0,5143 từ chính 4 dòng này.",
+        "cost_to_obtain": ">=3 người chấm độc lập trên >=30 hồ sơ"
+      }
+    }
+  },
+  "tier_3_expert_ratings": {
+    "measured": false,
+    "reason": "Chỉ 0/4 dòng đánh giá ứng với một hồ sơ có thật trong corpus này. File đang có là bản mẫu dựng sẵn (claim của Vinamilk, dossier_id kiểu 'claim_vnm_2023_001') — không tồn tại trong bất kỳ hồ sơ nào ở đây. Hệ số đồng thuận tính trên đó không mô tả gì về hệ thống này.",
+    "annotations_found": 4,
+    "annotations_matching_corpus": 0,
+    "requirement": "≥ 3 người chấm độc lập trên ≥ 30 hồ sơ thật, chấm trực tiếp trên giao diện ESG Evidence View và không trao đổi trước với nhau",
+    "engine_ready": true
+  }
+}

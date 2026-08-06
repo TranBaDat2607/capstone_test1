@@ -2,7 +2,7 @@
   "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
   "standard_id": "GRI 2",
   "title_en": "General Disclosures 2021",
-  "title_vi": "General Disclosures 2021",
+  "title_vi": "GRI 2: Công bố thông tin chung 2021",
   "pillar": "Universal",
   "series": "Universal Standards",
   "category": "Universal",
@@ -23,11 +23,11 @@
   "provenance": {
     "relative_pdf_path": "Full set of GRI Standards - English\\GRI 2_ General Disclosures 2021.pdf",
     "file_size_bytes": 1159708,
-    "page_count": 58,
+    "page_count": 25,
     "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
-    "indexed_at": "2026-07-25T14:35:58.550400"
+    "indexed_at": "2026-08-01T20:30:14.359359"
   },
-  "disclosures_count": 31,
+  "disclosures_count": 29,
   "disclosures": [
     {
       "disclosure_id": "2-1",
@@ -39,41 +39,154 @@
         {
           "requirement_id": "2-1:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 2-1 (Organizational details)",
-          "description_vi": null,
+          "description_en": "Clause a: report its legal name;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ;",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2-1:b",
+          "item_code": "b",
+          "description_en": "Clause b: report its nature of ownership and legal form;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ;",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2-1:c",
+          "item_code": "c",
+          "description_en": "Clause c: report the location of its headquarters;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ;",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2-1:d",
+          "item_code": "d",
+          "description_en": "Clause d: report its countries of operation.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 2-1.\n\nGuidance Summary:\nto 2-1-b\n\nThe nature of ownership and the legal form of the organization refers to whether it is publicly or privately owned, and whether it is an incorporated entity, a partnership, a sole proprietorship, or another type of entity such as a nonprofit, an association, or a charity.\n\n##### Guidance to 2-1-c\n\nHeadquarters are an organization's global administrative center, the place from which it is controlled or directed.\n\n##### Guidance to 2-1-d\n\nIf the organization has reported its countries of operation elsewhere, such as in its audited consolidated financial statements or financial information filed on public record, the organization can provide a link or reference to this information. The organization can also report the regions or specific locations within countries (e.g., states, cit...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 2-1.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "2-2",
-      "title_en": "Entities included in the organization’s sustainability reporting",
-      "title_vi": "Entities included in the organization’s sustainability reporting",
+      "title_en": "Entities included in the organization's sustainability reporting",
+      "title_vi": "Entities included in the organization's sustainability reporting",
       "disclosure_type": "General Disclosures",
       "mandatory": true,
       "requirements": [
         {
           "requirement_id": "2-2:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 2-2 (Entities included in the organization’s sustainability reporting)",
-          "description_vi": null,
+          "description_en": "Clause a: list all its entities included in its sustainability reporting;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ;",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2-2:b",
+          "item_code": "b",
+          "description_en": "Clause b: if the organization has audited consolidated financial statements or financial information filed on public record, specify the differences between the list of entities included in its financial reporting and the list included in its sustainability reporting;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , specify the differences between the list of entities included in its financial reporting and the list included in its sustainability reporting;",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2-2:c",
+          "item_code": "c",
+          "description_en": "Clause c: if the organization consists of multiple entities, explain the approach used for consolidating the information, including: - i. whether the approach involves adjustments to information for minority interests; - ii. how the approach takes into account mergers, acquisitions, and disposal of entities or parts of entities; - iii. whether and how the approach differs across the disclosures in this Standard and across material topics.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , explain the approach used for consolidating the information, including: - i. whether the approach involves adjustments to information for minority interests; - ii. how the approach takes into account mergers, acquisitions, and disposal of entities or parts of entities; - iii. whether and how the approach differs across the disclosures in this Standard and across material topics.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2-2:a",
+          "item_code": "a",
+          "description_en": "Clause a: See [section 1 in GRI 3: Material Topics 2021](#) for more information.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: See [section 1 in GRI 3: Material Topics 2021](#) for more information.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2-2:b",
+          "item_code": "b",
+          "description_en": "Clause b: The organization should separately specify any additional entities included in the sustainability reporting that are not included in its financial reporting.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: The organization should separately specify any additional entities included in the sustainability reporting that are not included in its financial reporting.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 2-2.\n\nGuidance Summary:\n##### Guidance to 2-2-a\n\nThe entities reported under 2-2-a form the basis for reporting the disclosures in this Standard and for determining the organization's material topics.\n\nRequirement 2-2-a includes those entities that the organization controls or has an interest in and are included in its sustainability reporting, such as subsidiaries, joint ventures, and affiliates, including minority interests. The organization should report information for the same group of entities as covered in its financial reporting.\n\nWhen determining its material topics, the organization should consider the impacts of additional entities with which it has business relationships that are not included in the list reported under 2-2-a. See [section 1 in GRI 3: Material Topics 2021](#) for more information.\n\n###...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 2-2.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "2-3",
@@ -85,18 +198,68 @@
         {
           "requirement_id": "2-3:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 2-3 (Reporting period, frequency and contact point)",
-          "description_vi": null,
+          "description_en": "Clause a: specify the **reporting period** for, and the frequency of, its sustainability reporting;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **reporting period** for, and the frequency of, its sustainability reporting;",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2-3:b",
+          "item_code": "b",
+          "description_en": "Clause b: specify the reporting period for its financial reporting and, if it does not align with the period for its sustainability reporting, explain the reason for this;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , if it does not align with the period for its sustainability reporting, explain the reason for this;",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2-3:c",
+          "item_code": "c",
+          "description_en": "Clause c: report the publication date of the report or reported information;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ;",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2-3:d",
+          "item_code": "d",
+          "description_en": "Clause d: specify the contact point for questions about the report or reported information.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 2-3.\n\nGuidance Summary:\nto 2-3-a\n\nThe organization can specify the frequency of sustainability reporting as 'annual'. See the [Timeliness principle in GRI 1: Foundation 2021](#) for more information.\n\n##### Guidance to 2-3-a and 2-3-b\n\nThe reporting period refers to the time period covered by the reported information and should include the start and end dates (e.g., 1 January 2022 to 31 December 2022, 1 July 2022 through 30 June 2023).\n\nThe organization should report the information for the same reporting period as covered in its financial reporting. The organization should also publish the information at the same time as its financial reporting, where this is possible....",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 2-3.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "2-4",
@@ -108,18 +271,29 @@
         {
           "requirement_id": "2-4:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 2-4 (Restatements of information)",
-          "description_vi": null,
+          "description_en": "Clause a: report restatements of information made from previous reporting periods and explain: - i. the reasons for the restatements; - ii. the effect of the restatements.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: : - i. the reasons for the restatements; - ii. the effect of the restatements.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 2-4.\n\nGuidance Summary:\nThe organization should provide a restatement of information when it has learned that the previously reported information needs to be revised. Restatements of information from previous reporting periods can correct an error, or account for changes in measurement methodology or to the nature of the business. Restatements of information ensure consistency and enable comparability of information between reporting periods. See the [Comparability principle in GRI 1: Foundation 2021](#) for more information.\n\nThe organization should report the criteria used to determine when a change or error in previously reported information is considered significant enough to provide a restatement. A change or error could be significant when it influences information users' decision-making (e.g., it influence...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 2-4.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "2-5",
@@ -131,18 +305,42 @@
         {
           "requirement_id": "2-5:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 2-5 (External assurance)",
-          "description_vi": null,
+          "description_en": "Clause a: describe its policy and practice for seeking external assurance, including whether and how the **highest governance body** and **senior executives** are involved;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , including whether and how the **highest governance body** and **senior executives** are involved;",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2-5:b",
+          "item_code": "b",
+          "description_en": "Clause b: if the organization's sustainability reporting has been externally assured: - i. provide a link or reference to the external assurance report(s) or assurance statement(s); - ii. describe what has been assured and on what basis, including the assurance standards used, the level of assurance obtained, and any limitations of the assurance process; - iii. describe the relationship between the organization and the assurance provider.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: 's sustainability reporting has been externally assured: - i. provide a link or reference to the external assurance report(s) or assurance statement(s); - ii. describe what has been assured and on what basis, including the assurance standards used, the level of assurance obtained, and any limitations of the assurance process; - iii. describe the relationship between the organization and the assurance provider.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 2-5.\n\nGuidance Summary:\nSee [section 5.2 in GRI 1: Foundation 2021](#) for information on external assurance.\n\n##### Guidance to 2-5-b-ii\n\nIf this information is covered in the external assurance reports or statements that the organization has provided a link or a reference to under 2-5-b-i, then a brief statement of this fact is sufficient to comply with the requirement.\n\nThe organization can also describe, in accessible language:\n\n- the scope of information and processes covered;\n- the responsibilities of the organization relative to the assurance provider;\n- the opinion or conclusions formally signed off by the assurance provider;\n- a summary of the work performed;\n- information on the experience and qualifications of the assurance provider, e.g., profile and level of subject matter expertise of the individual...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 2-5.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "2-6",
@@ -152,20 +350,31 @@
       "mandatory": true,
       "requirements": [
         {
-          "requirement_id": "2-6:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 2-6 (Activities, value chain and other business relationships)",
-          "description_vi": null,
+          "requirement_id": "2-6:b",
+          "item_code": "b",
+          "description_en": "Clause b: These may include business partners (e.g., joint ventures) and other entities directly linked to the organization's operations, products, or services (for examples, see the note in the definition of 'business relationships').",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: These may include business partners (e.g., joint ventures) and other entities directly linked to the organization's operations, products, or services (for examples, see the note in the definition of 'business relationships').",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 2-6.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 2-6.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "2-7",
@@ -177,18 +386,107 @@
         {
           "requirement_id": "2-7:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 2-7 (Employees)",
-          "description_vi": null,
+          "description_en": "Clause a: report the total number of employees, and a breakdown of this total by gender and by region;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , and a breakdown of this total by gender and by region;",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2-7:b",
+          "item_code": "b",
+          "description_en": "Clause b: report the total number of: - i. permanent employees, and a breakdown by gender and by region; - ii. temporary employees, and a breakdown by gender and by region; - iii. non-guaranteed hours employees, and a breakdown by gender and by region; - iv. full-time employees, and a breakdown by gender and by region; - v. part-time employees, and a breakdown by gender and by region;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: : - i. permanent employees, and a breakdown by gender and by region; - ii. temporary employees, and a breakdown by gender and by region; - iii. non-guaranteed hours employees, and a breakdown by gender and by region; - iv. full-time employees, and a breakdown by gender and by region; - v. part-time employees, and a breakdown by gender and by region;",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2-7:c",
+          "item_code": "c",
+          "description_en": "Clause c: describe the methodologies and assumptions used to compile the data, including whether the numbers are reported: - i. in head count, full-time equivalent (FTE), or using another methodology; - ii. at the end of the reporting period, as an average across the reporting period, or using another methodology;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , including whether the numbers are reported: - i. in head count, full-time equivalent (FTE), or using another methodology; - ii. at the end of the reporting period, as an average across the reporting period, or using another methodology;",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2-7:d",
+          "item_code": "d",
+          "description_en": "Clause d: report contextual information necessary to understand the data reported under 2-7-a and 2-7-b;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ;",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2-7:e",
+          "item_code": "e",
+          "description_en": "Clause e: describe significant fluctuations in the number of employees during the reporting period and between reporting periods.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2-7:c",
+          "item_code": "c",
+          "description_en": "Clause c: See [Table 1](#) and [Table 2](#) of this Standard for examples of how to present this information.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: See [Table 1](#) and [Table 2](#) of this Standard for examples of how to present this information.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2-7:e",
+          "item_code": "e",
+          "description_en": "Clause e: The organization should report its threshold for determining significant fluctuations.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: The organization should report its threshold for determining significant fluctuations.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 2-7.\n\nGuidance Summary:\nTogether with [Disclosure 2-8](#), this disclosure gives insight into the organization's approach to employment, including the scope and nature of impacts arising from its employment practices. It also provides contextual information that aids an understanding of the information reported in other disclosures, and serves as the basis for calculation in other disclosures, such as [Disclosure 2-21 Annual total compensation ratio](#) and [Disclosure 2-30 Collective bargaining agreements](#) in this Standard.\n\nThis disclosure covers all employees who perform work for any of the organization's entities included in its sustainability reporting as reported under [Disclosure 2-2](#) in this Standard.\n\nSee references [7], [19], [22], [23], [24], [26] and [30] in the [Bibliography](#).\n\n##### Guidanc...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 2-7.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "2-8",
@@ -200,18 +498,81 @@
         {
           "requirement_id": "2-8:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 2-8 (Workers who are not employees)",
-          "description_vi": null,
+          "description_en": "Clause a: report the total number of workers who are not employees and whose work is controlled by the organization and describe: - i. the most common types of worker and their contractual relationship with the organization; - ii. the type of work they perform;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: : - i. the most common types of worker and their contractual relationship with the organization; - ii. the type of work they perform;",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2-8:b",
+          "item_code": "b",
+          "description_en": "Clause b: describe the methodologies and assumptions used to compile the data, including whether the number of workers who are not employees is reported: - i. in head count, full-time equivalent (FTE), or using another methodology; - ii. at the end of the reporting period, as an average across the reporting period, or using another methodology;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , including whether the number of workers who are not employees is reported: - i. in head count, full-time equivalent (FTE), or using another methodology; - ii. at the end of the reporting period, as an average across the reporting period, or using another methodology;",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2-8:c",
+          "item_code": "c",
+          "description_en": "Clause c: describe significant fluctuations in the number of workers who are not employees during the reporting period and between reporting periods.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2-8:b",
+          "item_code": "b",
+          "description_en": "Clause b: ##### **Guidance to 2-8-a-i and 2-8-a-ii**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ##### **Guidance to 2-8-a-i and 2-8-a-ii**",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2-8:c",
+          "item_code": "c",
+          "description_en": "Clause c: The organization should report its threshold for determining significant fluctuations.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: The organization should report its threshold for determining significant fluctuations.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 2-8.\n\nGuidance Summary:\nThis disclosure provides an understanding of how much the organization relies on workers who are not employees to perform its work, in comparison to employees. This information is important for understanding how many workers in total perform work for the organization, because workers who are not employees are not represented in employment figures reported under [Disclosure 2-7](#).\n\nDisclosure 2-8, together with Disclosure 2-7, gives insight into the organization's approach to employment, as well as the scope and nature of impacts arising from its employment practices. It also provides contextual information that aids an understanding of the information reported in other disclosures.\n\nThis disclosure covers all workers who are not employees and whose work is controlled by any of the organi...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 2-8.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "2-9",
@@ -223,18 +584,55 @@
         {
           "requirement_id": "2-9:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 2-9 (Governance structure and composition)",
-          "description_vi": null,
+          "description_en": "Clause a: describe its governance structure, including committees of the **highest governance body**;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , including committees of the **highest governance body**;",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2-9:b",
+          "item_code": "b",
+          "description_en": "Clause b: list the committees of the highest governance body that are responsible for decision-making on and overseeing the management of the organization's **impacts** on the economy, environment, and people;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: 's **impacts** on the economy, environment, and people;",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2-9:c",
+          "item_code": "c",
+          "description_en": "Clause c: describe the composition of the highest governance body and its committees by: - i. **executive and non-executive members**; - ii. **independence**; - iii. **tenure of members on the governance body**; - iv. **number of other significant positions and commitments held by each member, and the nature of the commitments**; - v. **gender**; - vi. **under-represented social groups**; - vii. **competencies relevant to the impacts of the organization**; - viii. **stakeholder representation**.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: : - i. **executive and non-executive members**; - ii. **independence**; - iii. **tenure of members on the governance body**; - iv. **number of other significant positions and commitments held by each member, and the nature of the commitments**; - v. **gender**; - vi. **under-represented social groups**; - vii. **competencies relevant to the impacts of the organization**; - viii. **stakeholder representation**.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 2-9.\n\nGuidance Summary:\n##### Guidance to 2-9-c\n\nThe organization can describe the composition of the highest governance body and its committees by additional indicators of diversity, such as age, ancestry and ethnic origin, citizenship, creed, disability, or any other indicators of diversity that are relevant for reporting.\n\n##### Guidance to 2-9-c-ii\n\n'Independence' refers to conditions that enable the members of the highest governance body to exercise independent judgment free from any external influence or **conflicts of interest**. See reference [20] in the [Bibliography](#) for more information on independence criteria for governance bodies.\n\n##### Guidance to 2-9-c-iv\n\nA position or commitment held by a highest governance body member is significant when the time and attention it demands compromises the mem...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 2-9.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "2-10",
@@ -246,18 +644,29 @@
         {
           "requirement_id": "2-10:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 2-10 (Nomination and selection of the highest governance body)",
-          "description_vi": null,
+          "description_en": "The reporting organization shall report information specified in Disclosure 2-10: Nomination and selection of the highest governance body.",
+          "description_vi": "Tổ chức báo cáo phải công bố đầy đủ thông tin theo yêu cầu của Chỉ số 2-10: Nomination and selection of the highest governance body.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 2-10.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 2-10.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "2-11",
@@ -269,41 +678,76 @@
         {
           "requirement_id": "2-11:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 2-11 (Chair of the highest governance body)",
-          "description_vi": null,
+          "description_en": "Clause a: report whether the chair of the highest governance body is also a senior executive in the organization;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ;",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2-11:b",
+          "item_code": "b",
+          "description_en": "Clause b: if the chair is also a senior executive, explain their function within the organization's management, the reasons for this arrangement, and how conflicts of interest are prevented and mitigated.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , explain their function within the organization's management, the reasons for this arrangement, and how conflicts of interest are prevented and mitigated.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 2-11.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 2-11.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "2-12",
-      "title_en": "Role of the highest governance body in overseeing the",
-      "title_vi": "Role of the highest governance body in overseeing the",
+      "title_en": "Role of the highest governance body in overseeing the management of impacts",
+      "title_vi": "Role of the highest governance body in overseeing the management of impacts",
       "disclosure_type": "General Disclosures",
       "mandatory": true,
       "requirements": [
         {
           "requirement_id": "2-12:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 2-12 (Role of the highest governance body in overseeing the)",
-          "description_vi": null,
+          "description_en": "The reporting organization shall report information specified in Disclosure 2-12: Role of the highest governance body in overseeing the management of impacts.",
+          "description_vi": "Tổ chức báo cáo phải công bố đầy đủ thông tin theo yêu cầu của Chỉ số 2-12: Role of the highest governance body in overseeing the management of impacts.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 2-12.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 2-12.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "2-13",
@@ -315,18 +759,42 @@
         {
           "requirement_id": "2-13:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 2-13 (Delegation of responsibility for managing impacts)",
-          "description_vi": null,
+          "description_en": "Clause a: describe how the highest governance body delegates responsibility for managing the organization's impacts on the economy, environment, and people, including: - i. whether it has appointed any senior executives with responsibility for the management of impacts; - ii. whether it has delegated responsibility for the management of impacts to other employees;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: 's impacts on the economy, environment, and people, including: - i. whether it has appointed any senior executives with responsibility for the management of impacts; - ii. whether it has delegated responsibility for the management of impacts to other employees;",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2-13:b",
+          "item_code": "b",
+          "description_en": "Clause b: describe the process and frequency for senior executives or other employees to report back to the highest governance body on the management of the organization's impacts on the economy, environment, and people.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: 's impacts on the economy, environment, and people.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 2-13.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 2-13.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "2-14",
@@ -338,18 +806,42 @@
         {
           "requirement_id": "2-14:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 2-14 (Role of the highest governance body in sustainability reporting)",
-          "description_vi": null,
+          "description_en": "Clause a: report whether the highest governance body is responsible for reviewing and approving the reported information, including the organization's material topics, and if so, describe the process for reviewing and approving the information;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , including the organization's material topics, and if so, describe the process for reviewing and approving the information;",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2-14:b",
+          "item_code": "b",
+          "description_en": "Clause b: if the highest governance body is not responsible for reviewing and approving the reported information, including the organization's material topics, explain the reason for this.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , including the organization's material topics, explain the reason for this.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 2-14.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 2-14.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "2-15",
@@ -361,18 +853,29 @@
         {
           "requirement_id": "2-15:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 2-15 (Conflicts of interest)",
-          "description_vi": null,
+          "description_en": "The reporting organization shall report information specified in Disclosure 2-15: Conflicts of interest.",
+          "description_vi": "Tổ chức báo cáo phải công bố đầy đủ thông tin theo yêu cầu của Chỉ số 2-15: Conflicts of interest.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 2-15.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 2-15.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "2-16",
@@ -384,41 +887,29 @@
         {
           "requirement_id": "2-16:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 2-16 (Communication of critical concerns)",
-          "description_vi": null,
+          "description_en": "Clause a: report measures taken to advance the collective knowledge, skills, and experience of the highest governance body on sustainable development.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , skills, and experience of the highest governance body on sustainable development.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "2-17",
-      "title_en": "Collective knowledge of the highest governance body",
-      "title_vi": "Collective knowledge of the highest governance body",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
-        {
-          "requirement_id": "2-17:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 2-17 (Collective knowledge of the highest governance body)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 2-16.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 2-16.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "2-18",
@@ -430,18 +921,55 @@
         {
           "requirement_id": "2-18:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 2-18 (Evaluation of the performance of the highest governance body)",
-          "description_vi": null,
+          "description_en": "Clause a: describe the processes for evaluating the performance of the highest governance body in overseeing the management of the organization's impacts on the economy, environment, and people;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: 's impacts on the economy, environment, and people;",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2-18:b",
+          "item_code": "b",
+          "description_en": "Clause b: report whether the evaluations are independent or not, and the frequency of the evaluations;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , and the frequency of the evaluations;",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2-18:c",
+          "item_code": "c",
+          "description_en": "Clause c: describe actions taken in response to the evaluations, including changes to the composition of the highest governance body and organizational practices.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , including changes to the composition of the highest governance body and organizational practices.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 2-18.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 2-18.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "2-19",
@@ -453,18 +981,29 @@
         {
           "requirement_id": "2-19:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 2-19 (Remuneration policies)",
-          "description_vi": null,
+          "description_en": "The reporting organization shall report information specified in Disclosure 2-19: Remuneration policies.",
+          "description_vi": "Tổ chức báo cáo phải công bố đầy đủ thông tin theo yêu cầu của Chỉ số 2-19: Remuneration policies.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 2-19.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 2-19.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "2-20",
@@ -476,18 +1015,29 @@
         {
           "requirement_id": "2-20:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 2-20 (Process to determine remuneration)",
-          "description_vi": null,
+          "description_en": "The reporting organization shall report information specified in Disclosure 2-20: Process to determine remuneration.",
+          "description_vi": "Tổ chức báo cáo phải công bố đầy đủ thông tin theo yêu cầu của Chỉ số 2-20: Process to determine remuneration.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 2-20.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 2-20.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "2-21",
@@ -499,18 +1049,29 @@
         {
           "requirement_id": "2-21:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 2-21 (Annual total compensation ratio)",
-          "description_vi": null,
+          "description_en": "The reporting organization shall report information specified in Disclosure 2-21: Annual total compensation ratio.",
+          "description_vi": "Tổ chức báo cáo phải công bố đầy đủ thông tin theo yêu cầu của Chỉ số 2-21: Annual total compensation ratio.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 2-21.\n\nGuidance Summary:\n##### Guidance to 2-21-a and 2-21-b\n\nThis disclosure covers all employees as reported under [Disclosure 2-7](#) in this Standard.\n\nAnnual total compensation includes salary, bonus, stock awards, option awards, non-equity incentive plan compensation, change in pension value, and nonqualified deferred compensation earnings provided over the course of a year. When calculating the ratio, the organization should, depending on the organization's remuneration policies and availability of data, consider all of the following:\n\n- Base salary, which is the sum of guaranteed, short-term, and non-variable cash compensation.\n- Total cash compensation, which is the sum of the base salary and cash allowances, bonuses, commissions, cash profit-sharing, and other forms of variable cash payments.\n- Direct co...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 2-21.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "2-22",
@@ -522,18 +1083,29 @@
         {
           "requirement_id": "2-22:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 2-22 (Statement on sustainable development strategy)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
+          "description_en": "Clause a: report a statement from the highest governance body or most senior executive of the organization about the relevance of sustainable development to the organization and its strategy for contributing to sustainable development.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ",
+          "requirement_type": "Quantitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 2-22.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 2-22.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "2-23",
@@ -545,18 +1117,94 @@
         {
           "requirement_id": "2-23:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 2-23 (Policy commitments)",
-          "description_vi": null,
+          "description_en": "Clause a: describe its policy commitments for responsible business conduct, including: - i. the authoritative intergovernmental instruments that the commitments reference; - ii. whether the commitments stipulate conducting due diligence; - iii. whether the commitments stipulate applying the precautionary principle; - iv. whether the commitments stipulate respecting human rights;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , including: - i. the authoritative intergovernmental instruments that the commitments reference; - ii. whether the commitments stipulate conducting due diligence; - iii. whether the commitments stipulate applying the precautionary principle; - iv. whether the commitments stipulate respecting human rights;",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2-23:b",
+          "item_code": "b",
+          "description_en": "Clause b: describe its specific policy commitment to respect human rights, including: - i. the internationally recognized human rights that the commitment covers; - ii. the categories of stakeholders, including at-risk or vulnerable groups, that the organization gives particular attention to in the commitment;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , including: - i. the internationally recognized human rights that the commitment covers; - ii. the categories of stakeholders, including at-risk or vulnerable groups, that the organization gives particular attention to in the commitment;",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2-23:c",
+          "item_code": "c",
+          "description_en": "Clause c: provide links to the policy commitments if publicly available, or, if the policy commitments are not publicly available, explain the reason for this;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , or, if the policy commitments are not publicly available, explain the reason for this;",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2-23:d",
+          "item_code": "d",
+          "description_en": "Clause d: report the level at which each of the policy commitments was approved within the organization, including whether this is the most senior level;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , including whether this is the most senior level;",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2-23:e",
+          "item_code": "e",
+          "description_en": "Clause e: report the extent to which the policy commitments apply to the organization's activities and to its business relationships;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: 's activities and to its business relationships;",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2-23:f",
+          "item_code": "f",
+          "description_en": "Clause f: describe how the policy commitments are communicated to workers, business partners, and other relevant parties.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , business partners, and other relevant parties.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 2-23.\n\nGuidance Summary:\nThis disclosure covers the organization's policy commitments for responsible business conduct, including the commitment to respect human rights. These commitments can be set out in a stand-alone policy document or be included within one or more other policy documents, such as codes of conduct.\n\nThe *Organisation for Economic Co-operation and Development (OECD) Guidelines for Multinational Enterprises* [12], the *OECD Due Diligence Guidance for Responsible Business Conduct* [11], and the *United Nations (UN) Guiding Principles on Business and Human Rights* [14] set out expectations for organizations in relation to these policy commitments.\n\n##### Guidance to 2-23-a\n\nThe organization should report the expectations, values, principles, and norms of behavior set out in the policy commitments.\n...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 2-23.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "2-24",
@@ -568,18 +1216,29 @@
         {
           "requirement_id": "2-24:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 2-24 (Embedding policy commitments)",
-          "description_vi": null,
+          "description_en": "The reporting organization shall report information specified in Disclosure 2-24: Embedding policy commitments.",
+          "description_vi": "Tổ chức báo cáo phải công bố đầy đủ thông tin theo yêu cầu của Chỉ số 2-24: Embedding policy commitments.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 2-24.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 2-24.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "2-25",
@@ -591,18 +1250,81 @@
         {
           "requirement_id": "2-25:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 2-25 (Processes to remediate negative impacts)",
-          "description_vi": null,
+          "description_en": "Clause a: describe its commitments to provide for or cooperate in the remediation of negative impacts that the organization identifies it has caused or contributed to;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ;",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2-25:b",
+          "item_code": "b",
+          "description_en": "Clause b: describe its approach to identify and address grievances, including the grievance mechanisms that the organization has established or participates in;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , including the grievance mechanisms that the organization has established or participates in;",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2-25:c",
+          "item_code": "c",
+          "description_en": "Clause c: describe other processes by which the organization provides for or cooperates in the remediation of negative impacts that it identifies it has caused or contributed to;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ;",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2-25:d",
+          "item_code": "d",
+          "description_en": "Clause d: describe how the stakeholders who are the intended users of the grievance mechanisms are involved in the design, review, operation, and improvement of these mechanisms;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , review, operation, and improvement of these mechanisms;",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2-25:e",
+          "item_code": "e",
+          "description_en": "Clause e: describe how the organization tracks the effectiveness of the grievance mechanisms and other remediation processes, and report examples of their effectiveness, including stakeholder feedback.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , and report examples of their effectiveness, including stakeholder feedback.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 2-25.\n\nGuidance Summary:\nThis disclosure covers grievance mechanisms that the organization has established or participates in. Grievance mechanisms enable stakeholders to raise concerns about, and seek remedy for, the organization's potential and actual negative impacts on them. This includes impacts on their human rights. This disclosure also covers other processes by which the organization provides for or cooperates in the remediation of negative impacts that it identifies it has caused or contributed to.\n\nThe *United Nations (UN) Guiding Principles on Business and Human Rights* [14] and the *Organisation for Economic Co-operation and Development (OECD) Guidelines for Multinational Enterprises* [12] set out expectations for organizations to provide for or cooperate in the remediation, through legitimate processe...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 2-25.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "2-26",
@@ -614,18 +1336,29 @@
         {
           "requirement_id": "2-26:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 2-26 (Mechanisms for seeking advice and raising concerns)",
-          "description_vi": null,
+          "description_en": "Clause a: describe the mechanisms for individuals to: - i. seek advice on implementing the organization's policies and practices for responsible business conduct; - ii. raise concerns about the organization's business conduct.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: : - i. seek advice on implementing the organization's policies and practices for responsible business conduct; - ii. raise concerns about the organization's business conduct.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 2-26.\n\nGuidance Summary:\nThis disclosure covers the organization's mechanisms for individuals to seek advice and raise concerns about responsible business conduct in the organization's operations and business relationships. Examples of these mechanisms include confidential interviews during site visits, escalation processes (to raise issues through management levels), hotlines, mechanisms to report non-compliance with laws and regulations, and whistleblowing mechanisms.\n\nThese mechanisms enable individuals to raise concerns about wrongdoing or breaches of the law in the organization's operations or business relationships, regardless of whether the individuals themselves are harmed or not. They are distinct from grievance mechanisms, which enable stakeholders to raise concerns about, and seek remedy / remediation f...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 2-26.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "2-27",
@@ -637,18 +1370,29 @@
         {
           "requirement_id": "2-27:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 2-27 (Compliance with laws and regulations)",
-          "description_vi": null,
+          "description_en": "The reporting organization shall report information specified in Disclosure 2-27: Compliance with laws and regulations.",
+          "description_vi": "Tổ chức báo cáo phải công bố đầy đủ thông tin theo yêu cầu của Chỉ số 2-27: Compliance with laws and regulations.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 2-27.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 2-27.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "2-28",
@@ -660,18 +1404,29 @@
         {
           "requirement_id": "2-28:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 2-28 (Membership associations)",
-          "description_vi": null,
+          "description_en": "Clause a: **report industry associations, other membership associations, and national or international advocacy organizations in which it participates in a significant role.**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **report industry associations, other membership associations, and national or international advocacy organizations in which it participates in a significant role.**",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 2-28.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 2-28.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "2-29",
@@ -683,18 +1438,29 @@
         {
           "requirement_id": "2-29:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 2-29 (Approach to stakeholder engagement)",
-          "description_vi": null,
+          "description_en": "The reporting organization shall report information specified in Disclosure 2-29: Approach to stakeholder engagement.",
+          "description_vi": "Tổ chức báo cáo phải công bố đầy đủ thông tin theo yêu cầu của Chỉ số 2-29: Approach to stakeholder engagement.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 2-29.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 2-29.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "2-30",
@@ -706,41 +1472,55 @@
         {
           "requirement_id": "2-30:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 2-30 (Collective bargaining agreements)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
+          "description_en": "Clause a: report the percentage of total employees covered by collective bargaining agreements;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ;",
+          "requirement_type": "Quantitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "3-3",
-      "title_en": "in GRI",
-      "title_vi": "in GRI",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
         {
-          "requirement_id": "3-3:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 3-3 (in GRI)",
-          "description_vi": null,
+          "requirement_id": "2-30:b",
+          "item_code": "b",
+          "description_en": "Clause b: for employees not covered by collective bargaining agreements, report whether the organization determines their working conditions and terms of employment based on collective bargaining agreements that cover its other employees or based on collective bargaining agreements from other organizations.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , report whether the organization determines their working conditions and terms of employment based on collective bargaining agreements that cover its other employees or based on collective bargaining agreements from other organizations.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2-30:b",
+          "item_code": "b",
+          "description_en": "Clause b: If this is not the case, and the working conditions and terms of employment of these employees are not influenced or determined based on other collective bargaining agreements, a brief statement of this fact is sufficient to comply with this requirement.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: If this is not the case, and the working conditions and terms of employment of these employees are not influenced or determined based on other collective bargaining agreements, a brief statement of this fact is sufficient to comply with this requirement.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 2-30.\n\nGuidance Summary:\nThis disclosure provides insights into how the organization engages in collective bargaining with its employees. Collective bargaining is a fundamental right at work covered in the *International Labour Organization (ILO) Right to Organise and Collective Bargaining Convention* [8].\n\nCollective bargaining refers to negotiations that take place between one or more employers or employers' organizations and one or more workers' organizations (e.g., trade unions). The objective of these negotiations is to reach a collective agreement on working conditions and terms of employment (e.g., wages, working time) and to regulate relations between employers and workers. [3] These negotiations are an important means through which employers' organizations and workers' organizations can improve working co...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 2-30.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     }
   ]
 }

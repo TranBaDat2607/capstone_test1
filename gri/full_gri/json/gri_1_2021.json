@@ -2,7 +2,7 @@
   "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
   "standard_id": "GRI 1",
   "title_en": "Foundation 2021",
-  "title_vi": "Foundation 2021",
+  "title_vi": "GRI 1: Nền tảng 2021",
   "pillar": "Universal",
   "series": "Universal Standards",
   "category": "Universal",
@@ -23,310 +23,666 @@
   "provenance": {
     "relative_pdf_path": "Full set of GRI Standards - English\\GRI 1_ Foundation 2021.pdf",
     "file_size_bytes": 1165198,
-    "page_count": 38,
+    "page_count": 25,
     "sha256": "c0333b1e7767abee07df7cf93ee5db3d8d46521f3f88ec963fb3a746a04058a5",
-    "indexed_at": "2026-07-25T14:35:58.261392"
+    "indexed_at": "2026-08-01T20:30:14.334333"
   },
-  "disclosures_count": 13,
+  "disclosures_count": 10,
   "disclosures": [
     {
-      "disclosure_id": "2-1",
-      "title_en": "Organizational details",
-      "title_vi": "Organizational details",
+      "disclosure_id": "1.1",
+      "title_en": "Purpose of the GRI Standards",
+      "title_vi": "Purpose of the GRI Standards",
       "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
-          "requirement_id": "2-1:a",
+          "requirement_id": "1.1:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 2-1 (Organizational details)",
-          "description_vi": null,
+          "description_en": "The reporting organization shall report information specified in Disclosure 1.1: Purpose of the GRI Standards.",
+          "description_vi": "Tổ chức báo cáo phải công bố đầy đủ thông tin theo yêu cầu của Chỉ số 1.1: Purpose of the GRI Standards.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 1.1.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 1.1.",
+      "sdg_mapping": [
+        "SDG 12: Responsible Consumption and Production"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
-      "disclosure_id": "2-2",
-      "title_en": "Entities included in the organization’s sustainability reporting",
-      "title_vi": "Entities included in the organization’s sustainability reporting",
+      "disclosure_id": "1.2",
+      "title_en": "Users",
+      "title_vi": "Users",
       "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
-          "requirement_id": "2-2:a",
+          "requirement_id": "1.2:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 2-2 (Entities included in the organization’s sustainability reporting)",
-          "description_vi": null,
+          "description_en": "The reporting organization shall report information specified in Disclosure 1.2: Users.",
+          "description_vi": "Tổ chức báo cáo phải công bố đầy đủ thông tin theo yêu cầu của Chỉ số 1.2: Users.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 1.2.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 1.2.",
+      "sdg_mapping": [
+        "SDG 12: Responsible Consumption and Production"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
-      "disclosure_id": "2-3",
-      "title_en": "Reporting period, frequency and contact point",
-      "title_vi": "Reporting period, frequency and contact point",
+      "disclosure_id": "1.3",
+      "title_en": "System of GRI Standards",
+      "title_vi": "System of GRI Standards",
       "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
-          "requirement_id": "2-3:a",
+          "requirement_id": "1.3:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 2-3 (Reporting period, frequency and contact point)",
-          "description_vi": null,
+          "description_en": "The reporting organization shall report information specified in Disclosure 1.3: System of GRI Standards.",
+          "description_vi": "Tổ chức báo cáo phải công bố đầy đủ thông tin theo yêu cầu của Chỉ số 1.3: System of GRI Standards.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 1.3.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 1.3.",
+      "sdg_mapping": [
+        "SDG 12: Responsible Consumption and Production"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
-      "disclosure_id": "2-4",
-      "title_en": "Restatements of information",
-      "title_vi": "Restatements of information",
+      "disclosure_id": "1.4",
+      "title_en": "Using the GRI Standards",
+      "title_vi": "Using the GRI Standards",
       "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
-          "requirement_id": "2-4:a",
+          "requirement_id": "1.4:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 2-4 (Restatements of information)",
-          "description_vi": null,
+          "description_en": "The reporting organization shall report information specified in Disclosure 1.4: Using the GRI Standards.",
+          "description_vi": "Tổ chức báo cáo phải công bố đầy đủ thông tin theo yêu cầu của Chỉ số 1.4: Using the GRI Standards.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 1.4.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 1.4.",
+      "sdg_mapping": [
+        "SDG 12: Responsible Consumption and Production"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
-      "disclosure_id": "2-5",
-      "title_en": "External assurance",
-      "title_vi": "External assurance",
+      "disclosure_id": "2.1",
+      "title_en": "Impact",
+      "title_vi": "Impact",
       "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
-          "requirement_id": "2-5:a",
+          "requirement_id": "2.1:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 2-5 (External assurance)",
-          "description_vi": null,
+          "description_en": "The reporting organization shall report information specified in Disclosure 2.1: Impact.",
+          "description_vi": "Tổ chức báo cáo phải công bố đầy đủ thông tin theo yêu cầu của Chỉ số 2.1: Impact.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 2.1.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 2.1.",
+      "sdg_mapping": [
+        "SDG 12: Responsible Consumption and Production"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
-      "disclosure_id": "3-3",
-      "title_en": "Management of material topics in GRI 3.",
-      "title_vi": "Management of material topics in GRI 3.",
+      "disclosure_id": "2.2",
+      "title_en": "Material topics",
+      "title_vi": "Material topics",
       "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
-          "requirement_id": "3-3:a",
+          "requirement_id": "2.2:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 3-3 (Management of material topics in GRI 3.)",
-          "description_vi": null,
+          "description_en": "The reporting organization shall report information specified in Disclosure 2.2: Material topics.",
+          "description_vi": "Tổ chức báo cáo phải công bố đầy đủ thông tin theo yêu cầu của Chỉ số 2.2: Material topics.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 2.2.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 2.2.",
+      "sdg_mapping": [
+        "SDG 12: Responsible Consumption and Production"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
-      "disclosure_id": "202-1",
-      "title_en": "Ratios of standard entry level wage by gender compared to local minimum wage in GRI",
-      "title_vi": "Ratios of standard entry level wage by gender compared to local minimum wage in GRI",
+      "disclosure_id": "2.3",
+      "title_en": "Due diligence",
+      "title_vi": "Due diligence",
       "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
-          "requirement_id": "202-1:a",
+          "requirement_id": "2.3:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 202-1 (Ratios of standard entry level wage by gender compared to local minimum wage in GRI)",
-          "description_vi": null,
+          "description_en": "The reporting organization shall report information specified in Disclosure 2.3: Due diligence.",
+          "description_vi": "Tổ chức báo cáo phải công bố đầy đủ thông tin theo yêu cầu của Chỉ số 2.3: Due diligence.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 2.3.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 2.3.",
+      "sdg_mapping": [
+        "SDG 12: Responsible Consumption and Production"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
-      "disclosure_id": "405-2",
-      "title_en": "Ratio of basic salary and remuneration of women to men in GRI",
-      "title_vi": "Ratio of basic salary and remuneration of women to men in GRI",
+      "disclosure_id": "2.4",
+      "title_en": "Stakeholder",
+      "title_vi": "Stakeholder",
       "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
-          "requirement_id": "405-2:a",
+          "requirement_id": "2.4:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 405-2 (Ratio of basic salary and remuneration of women to men in GRI)",
-          "description_vi": null,
+          "description_en": "Clause a: The organization shall apply all the reporting principles specified in [section 4 of GRI 1: Foundation 2021](#).",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: The organization shall apply all the reporting principles specified in [section 4 of GRI 1: Foundation 2021](#).",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2.4:a",
+          "item_code": "a",
+          "description_en": "Clause a: The organization shall report all disclosures in [GRI 2: General Disclosures 2021](#).",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: The organization shall report all disclosures in [GRI 2: General Disclosures 2021](#).",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2.4:a",
+          "item_code": "a",
+          "description_en": "Clause a: determine its material topics;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ;",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2.4:b",
+          "item_code": "b",
+          "description_en": "Clause b: review the GRI Sector Standard(s) that apply to its sector(s) and: - i. determine whether each topic in the applicable Sector Standard(s) is a material topic for the organization; - ii. list in the GRI content index any topics from the applicable Sector Standard(s) that the organization has determined as not material and explain why they are not material.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: GRI Sector Standard(s) that apply to its sector(s) and: - i. determine whether each topic in the applicable Sector Standard(s) is a material topic for the organization; - ii. list in the GRI content index any topics from the applicable Sector Standard(s) that the organization has determined as not material and explain why they are not material.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2.4:a",
+          "item_code": "a",
+          "description_en": "Clause a: report its process of determining material topics using [Disclosure 3-1](#);",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: [Disclosure 3-1](#);",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2.4:b",
+          "item_code": "b",
+          "description_en": "Clause b: report a list of its material topics using [Disclosure 3-2](#);",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: [Disclosure 3-2](#);",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2.4:c",
+          "item_code": "c",
+          "description_en": "Clause c: report how it manages each material topic using [Disclosure 3-3](#).",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: [Disclosure 3-3](#).",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2.4:a",
+          "item_code": "a",
+          "description_en": "Clause a: report disclosures from the GRI Topic Standards for each material topic;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: GRI Topic Standards for each material topic;",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2.4:b",
+          "item_code": "b",
+          "description_en": "Clause b: for each material topic covered in the applicable GRI Sector Standard(s), either: - i. report the disclosures from the GRI Topic Standards listed for that topic in the Sector Standard(s), or; - ii. provide the 'not applicable' reason for omission and the required explanation in the GRI content index.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: GRI Sector Standard(s), either: - i. report the disclosures from the GRI Topic Standards listed for that topic in the Sector Standard(s), or; - ii. provide the 'not applicable' reason for omission and the required explanation in the GRI content index.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2.4:a",
+          "item_code": "a",
+          "description_en": "Clause a: If the organization cannot comply with a disclosure or with a requirement in a disclosure for which reasons for omission are permitted, the organization shall in the GRI content index:",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: If the organization cannot comply with a disclosure or with a requirement in a disclosure for which reasons for omission are permitted, the organization shall in the GRI content index:",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2.4:a",
+          "item_code": "a",
+          "description_en": "Clause a: **publish a GRI content index that includes:** - i. **the title: GRI content index;** - ii. **the statement of use;** - iii. **the title of GRI 1 used;** - iv. **the title(s) of the GRI Sector Standard(s) that apply to the organization's sector(s);** - v. **a list of the organization's material topics;** - vi. **a list of the topics in the applicable GRI Sector Standard(s) determined as not material and an explanation for why they are not material;** - vii. **a list of the reported disclosures, including the disclosure titles;** - viii. **the titles of the GRI Standards and other sources that the reported disclosures come from;** - ix. **when the organization does not report GRI Topic Standard disclosures for a material topic from the applicable GRI Sector Standard(s), a list of the disclosures and the required reason for omission;** - x. **the GRI Sector Standard reference numbers for the disclosures from the applicable Sector Standard(s);** - xi. **the location where the information reported for each disclosure can be found;** - xii. **any reasons for omission used;**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **publish a GRI content index that includes:** - i. **the title: GRI content index;** - ii. **the statement of use;** - iii. **the title of GRI 1 used;** - iv. **the title(s) of the GRI Sector Standard(s) that apply to the organization's sector(s);** - v. **a list of the organization's material topics;** - vi. **a list of the topics in the applicable GRI Sector Standard(s) determined as not material and an explanation for why they are not material;** - vii. **a list of the reported disclosures, including the disclosure titles;** - viii. **the titles of the GRI Standards and other sources that the reported disclosures come from;** - ix. **when the organization does not report GRI Topic Standard disclosures for a material topic from the applicable GRI Sector Standard(s), a list of the disclosures and the required reason for omission;** - x. **the GRI Sector Standard reference numbers for the disclosures from the applicable Sector Standard(s);** - xi. **the location where the information reported for each disclosure can be found;** - xii. **any reasons for omission used;**",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2.4:b",
+          "item_code": "b",
+          "description_en": "Clause b: **if it publishes a standalone sustainability report and the GRI content index is not included in the report itself, provide a link or reference to the GRI content index in the report.**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **if it publishes a standalone sustainability report and the GRI content index is not included in the report itself, provide a link or reference to the GRI content index in the report.**",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2.4:a",
+          "item_code": "a",
+          "description_en": "Clause a: **The organization shall include the following statement in its GRI content index:**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **The organization shall include the following statement in its GRI content index:**",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2.4:a",
+          "item_code": "a",
+          "description_en": "Clause a: **The organization shall notify GRI of the use of the GRI Standards and the statement of use by sending an email to [reportregistration@globalreporting.org](mailto:reportregistration@globalreporting.org).**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **The organization shall notify GRI of the use of the GRI Standards and the statement of use by sending an email to [reportregistration@globalreporting.org](mailto:reportregistration@globalreporting.org).**",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2.4:a",
+          "item_code": "a",
+          "description_en": "Clause a: **publish a GRI content index that includes:** - i. **the title: GRI content index;** - ii. **the statement of use;** - iii. **the title of GRI 1 used;** - iv. **a list of the reported disclosures from the GRI Standards, including the disclosure titles;** - v. **the titles of the GRI Standards that the reported disclosures come from;** - vi. **the location where the information reported for each disclosure can be found;**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **publish a GRI content index that includes:** - i. **the title: GRI content index;** - ii. **the statement of use;** - iii. **the title of GRI 1 used;** - iv. **a list of the reported disclosures from the GRI Standards, including the disclosure titles;** - v. **the titles of the GRI Standards that the reported disclosures come from;** - vi. **the location where the information reported for each disclosure can be found;**",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2.4:b",
+          "item_code": "b",
+          "description_en": "Clause b: **if it publishes a standalone sustainability report and the GRI content index is not included in the report itself, provide a link or reference to the GRI content index in the report.**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **if it publishes a standalone sustainability report and the GRI content index is not included in the report itself, provide a link or reference to the GRI content index in the report.**",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2.4:a",
+          "item_code": "a",
+          "description_en": "Clause a: The organization shall include the following statement in its GRI content index:",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: The organization shall include the following statement in its GRI content index:",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2.4:a",
+          "item_code": "a",
+          "description_en": "Clause a: The organization shall notify GRI of the use of the GRI Standards and the statement of use by sending an email to [reportregistration@globalreporting.org](mailto:reportregistration@globalreporting.org).",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: The organization shall notify GRI of the use of the GRI Standards and the statement of use by sending an email to [reportregistration@globalreporting.org](mailto:reportregistration@globalreporting.org).",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2.4:a",
+          "item_code": "a",
+          "description_en": "Clause a: **The organization shall report information that is correct and sufficiently detailed to allow an assessment of the organization's [impacts](#).**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **The organization shall report information that is correct and sufficiently detailed to allow an assessment of the organization's [impacts](#).**",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2.4:a",
+          "item_code": "a",
+          "description_en": "Clause a: **The organization shall report information in an unbiased way and provide a fair representation of the organization's negative and positive impacts.**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **The organization shall report information in an unbiased way and provide a fair representation of the organization's negative and positive impacts.**",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2.4:a",
+          "item_code": "a",
+          "description_en": "Clause a: **The organization shall present information in a way that is accessible and understandable.**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **The organization shall present information in a way that is accessible and understandable.**",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2.4:a",
+          "item_code": "a",
+          "description_en": "Clause a: **The organization shall select, compile, and report information consistently to enable an analysis of changes in the organization's impacts over time and an analysis of these impacts relative to those of other organizations.**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **The organization shall select, compile, and report information consistently to enable an analysis of changes in the organization's impacts over time and an analysis of these impacts relative to those of other organizations.**",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2.4:a",
+          "item_code": "a",
+          "description_en": "Clause a: The organization shall provide sufficient information to enable an assessment of the organization's impacts during the reporting period.**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: The organization shall provide sufficient information to enable an assessment of the organization's impacts during the reporting period.**",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2.4:a",
+          "item_code": "a",
+          "description_en": "Clause a: The organization shall report information about its impacts in the wider context of sustainable development.**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: The organization shall report information about its impacts in the wider context of sustainable development.**",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2.4:a",
+          "item_code": "a",
+          "description_en": "Clause a: The organization shall report information on a regular schedule and make it available in time for information users to make decisions.**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: The organization shall report information on a regular schedule and make it available in time for information users to make decisions.**",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "2.4:a",
+          "item_code": "a",
+          "description_en": "Clause a: The organization shall gather, record, compile, and analyze information in such a way that the information can be examined to establish its quality.**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: The organization shall gather, record, compile, and analyze information in such a way that the information can be examined to establish its quality.**",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 2.4.\n\nGuidance Summary:\nSee [section 1 in GRI 3: Material Topics 2021](#) for guidance on how to determine material topics.\n\nThe organization is required to determine its material topics based on its specific circumstances.\n\nUsing the GRI Sector Standards supports the organization in this process. The Sector Standards provide information for organizations about their likely material topics.\n\nThe organization is required to use the applicable Sector Standards when determining its material topics.\n\n#### Guidance to 3-b\n\nThe organization is required to comply with Requirement 3-b only if GRI Sector Standards that apply to its sectors are available.\n\nThe organization is required to review each topic described in the applicable Sector Standards and determine whether it is a material topic for the organization. If the ...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 2.4.",
+      "sdg_mapping": [
+        "SDG 12: Responsible Consumption and Production"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
-      "disclosure_id": "202-2",
-      "title_en": "Proportion of senior management hired from the local community in GRI 202), as",
-      "title_vi": "Proportion of senior management hired from the local community in GRI 202), as",
+      "disclosure_id": "5.1",
+      "title_en": "Aligning sustainability reporting with other reporting",
+      "title_vi": "Aligning sustainability reporting with other reporting",
       "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
-          "requirement_id": "202-2:a",
+          "requirement_id": "5.1:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 202-2 (Proportion of senior management hired from the local community in GRI 202), as)",
-          "description_vi": null,
+          "description_en": "The reporting organization shall report information specified in Disclosure 5.1: Aligning sustainability reporting with other reporting.",
+          "description_vi": "Tổ chức báo cáo phải công bố đầy đủ thông tin theo yêu cầu của Chỉ số 5.1: Aligning sustainability reporting with other reporting.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 5.1.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 5.1.",
+      "sdg_mapping": [
+        "SDG 12: Responsible Consumption and Production"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
-      "disclosure_id": "3-1",
-      "title_en": "Process to determine material topics",
-      "title_vi": "Process to determine material topics",
+      "disclosure_id": "5.2",
+      "title_en": "Enhancing the credibility of sustainability reporting",
+      "title_vi": "Enhancing the credibility of sustainability reporting",
       "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
-          "requirement_id": "3-1:a",
+          "requirement_id": "5.2:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 3-1 (Process to determine material topics)",
-          "description_vi": null,
+          "description_en": "The reporting organization shall report information specified in Disclosure 5.2: Enhancing the credibility of sustainability reporting.",
+          "description_vi": "Tổ chức báo cáo phải công bố đầy đủ thông tin theo yêu cầu của Chỉ số 5.2: Enhancing the credibility of sustainability reporting.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "305-3",
-      "title_en": "in",
-      "title_vi": "in",
-      "disclosure_type": "Topic-Specific",
-      "mandatory": true,
-      "requirements": [
-        {
-          "requirement_id": "305-3:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 305-3 (in)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 5.2.\n\nGuidance Summary:\nThis Appendix provides guidance on how to prepare the GRI content index when reporting with reference to the GRI Standards. It includes an example that the organization can use to prepare the content index. The organization can use a different format for the content index than the one provided here, as long as it complies with the requirements for the content index specified in 'Reporting with reference to the GRI Standards' at the end of section 3 of this Standard. The organization can also use the content index specified for reporting in accordance with the GRI Standards in [Appendix 1](#), if suitable. In such a case, the statement of use in Appendix 1, which is for reporting in accordance with the GRI Standards, must be replaced by the statement of use for reporting with reference to t...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 5.2.",
+      "sdg_mapping": [
+        "SDG 12: Responsible Consumption and Production"
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "3-2",
-      "title_en": "List of material topics",
-      "title_vi": "List of material topics",
-      "disclosure_type": "Topic-Specific",
-      "mandatory": true,
-      "requirements": [
-        {
-          "requirement_id": "3-2:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 3-2 (List of material topics)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "2-14",
-      "title_en": "in GRI 2:",
-      "title_vi": "in GRI 2:",
-      "disclosure_type": "Topic-Specific",
-      "mandatory": true,
-      "requirements": [
-        {
-          "requirement_id": "2-14:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 2-14 (in GRI 2:)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     }
   ]
 }

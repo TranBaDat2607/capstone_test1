@@ -2,7 +2,7 @@
   "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
   "standard_id": "GRI 404",
   "title_en": "Training and Education 2016",
-  "title_vi": "Training and Education 2016",
+  "title_vi": "GRI 404: Đào tạo và Giáo dục 2016",
   "pillar": "S — Social",
   "series": "Social (400 Series)",
   "category": "Topic-Social",
@@ -23,11 +23,11 @@
   "provenance": {
     "relative_pdf_path": "Full set of GRI Standards - English\\GRI 404_ Training and Education 2016.pdf",
     "file_size_bytes": 837356,
-    "page_count": 15,
+    "page_count": 25,
     "sha256": "57036193c0a16f00a5278edee25c21770740952714eb00a32b3adb2523994ce5",
-    "indexed_at": "2026-07-25T14:35:59.075642"
+    "indexed_at": "2026-08-01T20:30:14.413995"
   },
-  "disclosures_count": 6,
+  "disclosures_count": 3,
   "disclosures": [
     {
       "disclosure_id": "404-1",
@@ -39,133 +39,121 @@
         {
           "requirement_id": "404-1:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 404-1 (Average hours of training per year per employee)",
-          "description_vi": null,
+          "description_en": "The reporting organization shall report information specified in Disclosure 404-1: Average hours of training per year per employee.",
+          "description_vi": "Tổ chức báo cáo phải công bố đầy đủ thông tin theo yêu cầu của Chỉ số 404-1: Average hours of training per year per employee.",
           "requirement_type": "Qualitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "unit_of_measure": [
+            "number of employees",
+            "hours",
+            "percentage %",
+            "injury rate per 200,000 hours"
+          ],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 404-1.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 404-1.",
+      "sdg_mapping": [
+        "SDG 12: Responsible Consumption and Production"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "404-2",
-      "title_en": "Programs for upgrading employee skills and transition assistance",
-      "title_vi": "Programs for upgrading employee skills and transition assistance",
+      "title_en": "Programs for upgrading employee skills and transition assistance programs",
+      "title_vi": "Programs for upgrading employee skills and transition assistance programs",
       "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
           "requirement_id": "404-2:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 404-2 (Programs for upgrading employee skills and transition assistance)",
-          "description_vi": null,
+          "description_en": "Clause a: **Type and scope of programs implemented and assistance provided to upgrade employee skills.**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **Type and scope of programs implemented and assistance provided to upgrade employee skills.**",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
+        },
+        {
+          "requirement_id": "404-2:b",
+          "item_code": "b",
+          "description_en": "Clause b: **Transition assistance programs provided to facilitate continued employability and the management of career endings resulting from retirement or termination of employment.**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **Transition assistance programs provided to facilitate continued employability and the management of career endings resulting from retirement or termination of employment.**",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 404-2.\n\nGuidance Summary:\n### Guidance for Disclosure 404-2\n\nEmployee training programs that aim to upgrade skills can include:\n\n- internal training courses;\n- funding support for external training or education;\n- the provision of sabbatical periods with guaranteed return to employment.\n\nTransition assistance programs provided to support employees who are retiring or who have been terminated can include:\n\n- pre-retirement planning for intended retirees;\n- retraining for those intending to continue working;\n- severance pay, which can take into account employee age and years of service;\n- job placement services;\n- assistance (such as training, counselling) on transitioning to a non-working life.\n\n#### Background\n\nPrograms for upgrading employee skills allow an organization to plan skills acquisition that equips emplo...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 404-2.",
+      "sdg_mapping": [
+        "SDG 12: Responsible Consumption and Production"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "404-3",
-      "title_en": "Percentage of employees receiving regular performance and",
-      "title_vi": "Percentage of employees receiving regular performance and",
+      "title_en": "Percentage of employees receiving regular performance and career development reviews",
+      "title_vi": "Percentage of employees receiving regular performance and career development reviews",
       "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
-          "requirement_id": "404-3:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 404-3 (Percentage of employees receiving regular performance and)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "requirement_id": "404-3:1",
+          "item_code": "1",
+          "description_en": "Clause 1: International Labour Organization (ILO) Convention 140, 'Paid Educational Leave Convention', 1974.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: International Labour Organization (ILO) Convention 140, 'Paid Educational Leave Convention', 1974.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "number of employees",
+            "hours",
+            "percentage %",
+            "injury rate per 200,000 hours"
+          ],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "3-3",
-      "title_en": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "title_vi": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "disclosure_type": "Topic-Specific",
-      "mandatory": true,
-      "requirements": [
-        {
-          "requirement_id": "3-3:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 404-3.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 404-3.",
+      "sdg_mapping": [
+        "SDG 12: Responsible Consumption and Production"
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "2-7",
-      "title_en": "in GRI 2: General Disclosures 2021 to identify the",
-      "title_vi": "in GRI 2: General Disclosures 2021 to identify the",
-      "disclosure_type": "Topic-Specific",
-      "mandatory": true,
-      "requirements": [
-        {
-          "requirement_id": "2-7:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 2-7 (in GRI 2: General Disclosures 2021 to identify the)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "405-1",
-      "title_en": "in GRI 405: Diversity and",
-      "title_vi": "in GRI 405: Diversity and",
-      "disclosure_type": "Topic-Specific",
-      "mandatory": true,
-      "requirements": [
-        {
-          "requirement_id": "405-1:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 405-1 (in GRI 405: Diversity and)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     }
   ]
 }

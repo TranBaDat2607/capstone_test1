@@ -2,7 +2,7 @@
   "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
   "standard_id": "GRI 103",
   "title_en": "Energy 2025",
-  "title_vi": "Energy 2025",
+  "title_vi": "GRI 103: Năng lượng 2025",
   "pillar": "E — Environmental",
   "series": "Environmental (300 Series / Revisions)",
   "category": "Topic-Environmental",
@@ -23,264 +23,502 @@
   "provenance": {
     "relative_pdf_path": "Full set of GRI Standards - English\\GRI 103_ Energy 2025.pdf",
     "file_size_bytes": 1015876,
-    "page_count": 29,
+    "page_count": 25,
     "sha256": "0de8c902906e4dc9f282d5600c2fed20e34b53ab4ee2df554cc0841110f34df0",
-    "indexed_at": "2026-07-25T14:35:57.266696"
+    "indexed_at": "2026-08-01T20:30:14.159498"
   },
-  "disclosures_count": 11,
+  "disclosures_count": 5,
   "disclosures": [
     {
       "disclosure_id": "103-1",
       "title_en": "Energy policies and commitments",
       "title_vi": "Energy policies and commitments",
-      "disclosure_type": "General Disclosures",
+      "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
           "requirement_id": "103-1:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 103-1 (Energy policies and commitments)",
-          "description_vi": null,
+          "description_en": "The reporting organization shall report information specified in Disclosure 103-1: Energy policies and commitments.",
+          "description_vi": "Tổ chức báo cáo phải công bố đầy đủ thông tin theo yêu cầu của Chỉ số 103-1: Energy policies and commitments.",
           "requirement_type": "Quantitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 103-1.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 103-1.",
+      "sdg_mapping": [
+        "SDG 7: Affordable and Clean Energy",
+        "SDG 13: Climate Action"
+      ],
+      "esrs_mapping": [
+        "ESRS E1 Climate Change (E1-5 Energy consumption & mix)"
+      ],
+      "issb_mapping": [
+        "IFRS S2 Climate-related Disclosures (Paragraph 21)"
+      ]
     },
     {
       "disclosure_id": "103-2",
       "title_en": "Energy consumption and self-generation within the organization",
       "title_vi": "Energy consumption and self-generation within the organization",
-      "disclosure_type": "General Disclosures",
+      "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
           "requirement_id": "103-2:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 103-2 (Energy consumption and self-generation within the organization)",
-          "description_vi": null,
+          "description_en": "Clause a: report total fuel consumption within the organization in joules, watt-hours, or multiples, and a breakdown of this total by: - i. renewable and non-renewable energy sources; - ii. each activity in which the fuel is consumed for each renewable and non-renewable energy source;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , watt-hours, or multiples, and a breakdown of this total by: - i. renewable and non-renewable energy sources; - ii. each activity in which the fuel is consumed for each renewable and non-renewable energy source;",
           "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "103-2:b",
+          "item_code": "b",
+          "description_en": "Clause b: report total purchased electricity, heating, cooling, and steam consumption within the organization in joules, watt-hours, or multiples, and a breakdown of this total by: - i. renewable and non-renewable energy sources; - ii. electricity, heating, cooling, and steam consumption for each renewable and non-renewable energy source;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , heating, cooling, and steam consumption within the organization in joules, watt-hours, or multiples, and a breakdown of this total by: - i. renewable and non-renewable energy sources; - ii. electricity, heating, cooling, and steam consumption for each renewable and non-renewable energy source;",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "103-2:c",
+          "item_code": "c",
+          "description_en": "Clause c: report total self-generated renewable electricity, heating, cooling, and steam consumption within the organization in joules, watt-hours, or multiples, and a breakdown of this total by electricity, heating, cooling, and steam consumption for each activity in which it is consumed for each renewable energy source;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , heating, cooling, and steam consumption within the organization in joules, watt-hours, or multiples, and a breakdown of this total by electricity, heating, cooling, and steam consumption for each activity in which it is consumed for each renewable energy source;",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "103-2:d",
+          "item_code": "d",
+          "description_en": "Clause d: report total self-generated electricity, heating, cooling, and steam sold in joules, watt-hours, or multiples, and a breakdown of this total by: - i. renewable and non-renewable energy sources; - ii. electricity, heating, cooling, and steam sold for each renewable and non-renewable energy source;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , heating, cooling, and steam sold in joules, watt-hours, or multiples, and a breakdown of this total by: - i. renewable and non-renewable energy sources; - ii. electricity, heating, cooling, and steam sold for each renewable and non-renewable energy source;",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "103-2:e",
+          "item_code": "e",
+          "description_en": "Clause e: report whether contractual instruments are used to disclose information on purchased electricity, heating, cooling, and steam consumption, and if so, describe how the contractual instruments adhere to quality criteria to ensure accuracy and consistency;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , heating, cooling, and steam consumption, and if so, describe how the contractual instruments adhere to quality criteria to ensure accuracy and consistency;",
+          "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "103-2:f",
+          "item_code": "f",
+          "description_en": "Clause f: report standards, methodologies, assumptions, and calculation tools used, including the source of the conversion factors used.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , methodologies, assumptions, and calculation tools used, including the source of the conversion factors used.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "103-2:c",
+          "item_code": "c",
+          "description_en": "Clause c: The organization can also report the total net energy consumption by subtracting the electricity sold (103-2-d) from the total energy consumption within the organization (103-2-a + 103-2-b + 103-2-c).",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: The organization can also report the total net energy consumption by subtracting the electricity sold (103-2-d) from the total energy consumption within the organization (103-2-a + 103-2-b + 103-2-c).",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "103-2:c",
+          "item_code": "c",
+          "description_en": "Clause c: If the organization sells electricity from energy carriers or storage systems, this is reported under 103-2-d. When the organization consumes or sells energy from energy carriers or storage systems, it reports the information required in this disclosure as per their primary energy source. For example, if a carrier's primary energy source is natural gas and the carrier is consumed as fuel, energy consumption from the carrier will be reported as fuel consumption from non-renewable sources. The organization should report any contextual information on the energy carriers' primary energy source, for example, governmental programs (e.g., subsidies for hydrogen production) that supported its production or associated contractual instruments.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: If the organization sells electricity from energy carriers or storage systems, this is reported under 103-2-d. When the organization consumes or sells energy from energy carriers or storage systems, it reports the information required in this disclosure as per their primary energy source. For example, if a carrier's primary energy source is natural gas and the carrier is consumed as fuel, energy consumption from the carrier will be reported as fuel consumption from non-renewable sources. The organization should report any contextual information on the energy carriers' primary energy source, for example, governmental programs (e.g., subsidies for hydrogen production) that supported its production or associated contractual instruments.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "103-2:i",
+          "item_code": "i",
+          "description_en": "Clause i: Examples of contractual instruments include energy attribute certificates (EACs), renewable electricity certificates (RECs), power purchase agreements, and green electricity products. This can be helpful when variations in accounting methods across countries make it difficult to report this breakdown consistently.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Examples of contractual instruments include energy attribute certificates (EACs), renewable electricity certificates (RECs), power purchase agreements, and green electricity products. This can be helpful when variations in accounting methods across countries make it difficult to report this breakdown consistently.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "103-2:a",
+          "item_code": "a",
+          "description_en": "Clause a: Self-generated renewable electricity consumption does not include electricity whose contractual instruments have been sold off.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Self-generated renewable electricity consumption does not include electricity whose contractual instruments have been sold off.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 103-2.\n\nGuidance Summary:\nThroughout this guidance, electricity, heating, cooling, and steam are collectively referred to as 'electricity' in alignment with the *GHG Protocol Scope 2 Guidance* [5]. In other frameworks, 'electricity' can be referred to as 'non-fuel'.\n\nAn organization can consume energy in the form of fuel (103-2-a) or electricity, whereby an organization separately reports energy consumption from electricity purchased (103-2-b) and electricity self-generated from renewable sources (103-2-c).\n\nEnergy can be purchased from third parties or produced by the organization (self-generated). Energy can come from renewable or non-renewable sources.\n\nFor an example of how to present information on requirements in Disclosure 103-2, see [Table 1](#) and [Table 2](#).\n\nThe organization can report the total energ...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 103-2.",
+      "sdg_mapping": [
+        "SDG 7: Affordable and Clean Energy",
+        "SDG 13: Climate Action"
+      ],
+      "esrs_mapping": [
+        "ESRS E1 Climate Change (E1-5 Energy consumption & mix)"
+      ],
+      "issb_mapping": [
+        "IFRS S2 Climate-related Disclosures (Paragraph 21)"
+      ]
     },
     {
       "disclosure_id": "103-3",
       "title_en": "Upstream and downstream energy consumption",
       "title_vi": "Upstream and downstream energy consumption",
-      "disclosure_type": "General Disclosures",
+      "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
           "requirement_id": "103-3:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 103-3 (Upstream and downstream energy consumption)",
-          "description_vi": null,
+          "description_en": "Clause a: report total significant energy consumption in its upstream and downstream value chain in joules, watt-hours, or multiples, and list the upstream and downstream categories in which significant energy consumption occurs;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , watt-hours, or multiples, and list the upstream and downstream categories in which significant energy consumption occurs;",
           "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "103-3:b",
+          "item_code": "b",
+          "description_en": "Clause b: report standards, methodologies, assumptions, and calculation tools used, including the source of the conversion factors used.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , methodologies, assumptions, and calculation tools used, including the source of the conversion factors used.",
+          "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "103-3:9",
+          "item_code": "9",
+          "description_en": "Clause 9: Downstream transportation and distribution",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Downstream transportation and distribution",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 103-3.\n\nGuidance Summary:\nThis disclosure covers energy consumption from activities outside the organization and includes the upstream and downstream value chain.\n\nConsumption of non-renewable energy sources upstream and downstream in the organization's value chain contributes to the organization's Scope 3 GHG emissions, which are reported under [Disclosure 102-7 in GRI 102: Climate Change 2025](#).\n\n##### Guidance to 103-3-a\n\nTo compile the information required under 103-3-a, the organization can use the following steps:\n\n- Identify which activities in its upstream and downstream value chain have significant energy consumption.\n- Add up the energy consumption for these activities.\n- Attribute the activities that have significant energy consumption to the upstream and downstream categories listed below.\n- List the ...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 103-3.",
+      "sdg_mapping": [
+        "SDG 7: Affordable and Clean Energy",
+        "SDG 13: Climate Action"
+      ],
+      "esrs_mapping": [
+        "ESRS E1 Climate Change (E1-5 Energy consumption & mix)"
+      ],
+      "issb_mapping": [
+        "IFRS S2 Climate-related Disclosures (Paragraph 21)"
+      ]
     },
     {
       "disclosure_id": "103-4",
       "title_en": "Energy intensity",
       "title_vi": "Energy intensity",
-      "disclosure_type": "General Disclosures",
+      "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
           "requirement_id": "103-4:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 103-4 (Energy intensity)",
-          "description_vi": null,
+          "description_en": "Clause a: report energy intensity ratio(s), including the energy consumption in joules, watt-hours, or multiples (the numerator) and the organization-specific metric (the denominator) chosen to calculate the ratio(s);",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: (s), including the energy consumption in joules, watt-hours, or multiples (the numerator) and the organization-specific metric (the denominator) chosen to calculate the ratio(s);",
           "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "103-4:b",
+          "item_code": "b",
+          "description_en": "Clause b: report whether the energy intensity ratio(s) include energy consumption within the organization, in its upstream and downstream value chain, or both;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: (s) include energy consumption within the organization, in its upstream and downstream value chain, or both;",
+          "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "103-4:c",
+          "item_code": "c",
+          "description_en": "Clause c: report the types of energy consumption included in the energy intensity ratio(s), whether fuel, electricity, heating, cooling, or steam.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: (s), whether fuel, electricity, heating, cooling, or steam.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 103-4.\n\nGuidance Summary:\nEnergy intensity ratios are obtained by dividing the energy consumption (the numerator) by an organization-specific metric (the denominator). Many organizations track environmental performance with intensity ratio(s).\n\nEnergy intensity ratios express the amount of energy consumed per unit of activity, output, or any other organization-specific metric.\n\nEnergy intensity ratios can help stakeholders and the organization understand energy efficiency in relation to other organizations while supporting investment decisions for energy reduction and efficiency.\n\nThe organization should use data on energy consumption reported under Disclosures 103-2 and 103-3 to calculate the energy intensity ratio(s).\n\nThe organization should select a consistent organizational boundary for the numerator and denom...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 103-4.",
+      "sdg_mapping": [
+        "SDG 7: Affordable and Clean Energy",
+        "SDG 13: Climate Action"
+      ],
+      "esrs_mapping": [
+        "ESRS E1 Climate Change (E1-5 Energy consumption & mix)"
+      ],
+      "issb_mapping": [
+        "IFRS S2 Climate-related Disclosures (Paragraph 21)"
+      ]
     },
     {
       "disclosure_id": "103-5",
       "title_en": "Reduction in energy consumption",
       "title_vi": "Reduction in energy consumption",
-      "disclosure_type": "General Disclosures",
+      "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
           "requirement_id": "103-5:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 103-5 (Reduction in energy consumption)",
-          "description_vi": null,
+          "description_en": "Clause a: report the reduction in energy consumption achieved in joules, watt-hours, or multiples, including whether and how it is due to: - i. reductions from the organization's conservation and efficiency initiatives; - ii. other factors;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , watt-hours, or multiples, including whether and how it is due to: - i. reductions from the organization's conservation and efficiency initiatives; - ii. other factors;",
           "requirement_type": "Quantitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "3-3",
-      "title_en": "in GRI 3: Material Topics 2021.",
-      "title_vi": "in GRI 3: Material Topics 2021.",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
         {
-          "requirement_id": "3-3:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021.)",
-          "description_vi": null,
+          "requirement_id": "103-5:b",
+          "item_code": "b",
+          "description_en": "Clause b: report the types of energy consumption included in the reduction, whether fuel, electricity, heating, cooling, or steam;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , whether fuel, electricity, heating, cooling, or steam;",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "2-29",
-      "title_en": "in GRI 2: General Disclosures 2021 covers the organization’s approach to",
-      "title_vi": "in GRI 2: General Disclosures 2021 covers the organization’s approach to",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
         {
-          "requirement_id": "2-29:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 2-29 (in GRI 2: General Disclosures 2021 covers the organization’s approach to)",
-          "description_vi": null,
+          "requirement_id": "103-5:c",
+          "item_code": "c",
+          "description_en": "Clause c: report whether the reduction in energy consumption was achieved within the organization, in its upstream and downstream value chain, or both, and list the upstream and downstream categories in which reduction was achieved;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , in its upstream and downstream value chain, or both, and list the upstream and downstream categories in which reduction was achieved;",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "101-2",
-      "title_en": "in GRI 101: Biodiversity 2024 to report the actions",
-      "title_vi": "in GRI 101: Biodiversity 2024 to report the actions",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
         {
-          "requirement_id": "101-2:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 101-2 (in GRI 101: Biodiversity 2024 to report the actions)",
-          "description_vi": null,
+          "requirement_id": "103-5:d",
+          "item_code": "d",
+          "description_en": "Clause d: report whether the reduction in energy consumption is estimated, modeled, or sourced from direct measurements and, if applicable, the estimations or modeling methods used;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , modeled, or sourced from direct measurements and, if applicable, the estimations or modeling methods used;",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "102-5",
-      "title_en": "in GRI",
-      "title_vi": "in GRI",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
         {
-          "requirement_id": "102-5:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 102-5 (in GRI)",
-          "description_vi": null,
+          "requirement_id": "103-5:e",
+          "item_code": "e",
+          "description_en": "Clause e: report the base year or baseline for calculating the reduction in energy consumption, including: - i. the rationale for choosing it; - ii. energy consumption in the base year or baseline;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , including: - i. the rationale for choosing it; - ii. energy consumption in the base year or baseline;",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "102-6",
-      "title_en": "in GRI 102: Climate Change 2025.",
-      "title_vi": "in GRI 102: Climate Change 2025.",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
         {
-          "requirement_id": "102-6:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 102-6 (in GRI 102: Climate Change 2025.)",
-          "description_vi": null,
+          "requirement_id": "103-5:f",
+          "item_code": "f",
+          "description_en": "Clause f: report standards, methodologies, assumptions, and calculation tools used.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , methodologies, assumptions, and calculation tools used.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "102-7",
-      "title_en": "in GRI 102: Climate Change 2025.",
-      "title_vi": "in GRI 102: Climate Change 2025.",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
         {
-          "requirement_id": "102-7:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 102-7 (in GRI 102: Climate Change 2025.)",
-          "description_vi": null,
+          "requirement_id": "103-5:1",
+          "item_code": "1",
+          "description_en": "Clause 1: Purchased goods and services",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Purchased goods and services",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "103-5:9",
+          "item_code": "9",
+          "description_en": "Clause 9: Downstream transportation and distribution",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Downstream transportation and distribution",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 103-5.\n\nGuidance Summary:\nReductions in energy consumption can be related to target setting. For further information on energy target reporting, see [Guidance to 103-1-a](#).\n\n#### Guidance to 103-5-a\n\nThe reduction in energy consumption can be calculated by comparing the energy consumption in the reporting period to:\n\n- energy consumption in the base year; or\n- projected energy consumption in the absence of any reduction activity (baseline).\n\nEnergy conservation and efficiency initiatives can include:\n\n- process redesign;\n- conversion and retrofitting of equipment;\n- fuel switching;\n- changes in behavior.\n\nExamples of other factors include reduced production capacity or outsourcing, changes in organizational boundaries, and weather fluctuations that affect energy supply.\n\nThe organization should report the percent...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 103-5.",
+      "sdg_mapping": [
+        "SDG 7: Affordable and Clean Energy",
+        "SDG 13: Climate Action"
+      ],
+      "esrs_mapping": [
+        "ESRS E1 Climate Change (E1-5 Energy consumption & mix)"
+      ],
+      "issb_mapping": [
+        "IFRS S2 Climate-related Disclosures (Paragraph 21)"
+      ]
     }
   ]
 }

@@ -23,34 +23,44 @@
   "provenance": {
     "relative_pdf_path": "Full set of GRI Standards - English\\GRI Standards Glossary 2025.pdf",
     "file_size_bytes": 745639,
-    "page_count": 26,
+    "page_count": 25,
     "sha256": "04a52eea8a38a33be0137d5dbe7faf4f23e1285c29c4245c8856c37df1cf6da2",
-    "indexed_at": "2026-07-25T14:35:59.476976"
+    "indexed_at": "2026-08-01T20:30:14.434339"
   },
   "disclosures_count": 1,
   "disclosures": [
     {
       "disclosure_id": "2-25",
-      "title_en": "in GRI 2: General Disclosures 2021 for more",
-      "title_vi": "in GRI 2: General Disclosures 2021 for more",
+      "title_en": "in GRI 2: General Disclosures 2021]() for more information on 'grievance mechanism'.",
+      "title_vi": "in GRI 2: General Disclosures 2021]() for more information on 'grievance mechanism'.",
       "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
           "requirement_id": "2-25:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 2-25 (in GRI 2: General Disclosures 2021 for more)",
-          "description_vi": null,
+          "description_en": "The reporting organization shall report information specified in Disclosure 2-25: in GRI 2: General Disclosures 2021]() for more information on 'grievance mechanism'..",
+          "description_vi": "Tổ chức báo cáo phải công bố đầy đủ thông tin theo yêu cầu của Chỉ số 2-25: in GRI 2: General Disclosures 2021]() for more information on 'grievance mechanism'..",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 2-25.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 2-25.",
+      "sdg_mapping": [
+        "SDG 12: Responsible Consumption and Production"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     }
   ]
 }

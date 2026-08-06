@@ -2,7 +2,7 @@
   "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
   "standard_id": "GRI 305",
   "title_en": "Emissions 2016",
-  "title_vi": "Emissions 2016",
+  "title_vi": "GRI 305: Phát thải 2016",
   "pillar": "E — Environmental",
   "series": "Environmental (300 Series / Revisions)",
   "category": "Topic-Environmental",
@@ -23,11 +23,11 @@
   "provenance": {
     "relative_pdf_path": "Full set of GRI Standards - English\\GRI 305_ Emissions 2016.pdf",
     "file_size_bytes": 1006697,
-    "page_count": 26,
+    "page_count": 25,
     "sha256": "fd6c10b99940e4ab96ba810658cebf182e7c0389af71f7444fa9ecf2038c3a1c",
-    "indexed_at": "2026-07-25T14:35:58.718941"
+    "indexed_at": "2026-08-01T20:30:14.375974"
   },
-  "disclosures_count": 9,
+  "disclosures_count": 7,
   "disclosures": [
     {
       "disclosure_id": "305-1",
@@ -39,23 +39,171 @@
         {
           "requirement_id": "305-1:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 305-1 (Direct (Scope 1) GHG emissions)",
-          "description_vi": null,
+          "description_en": "Clause a: **Gross direct (Scope 1) GHG emissions** in metric tons of **CO<sub>2</sub> equivalent**.",
+          "description_vi": "Báo cáo tổng lượng phát thải khí nhà kính (GHG) trực tiếp (Scope 1) tính theo tấn CO2 tương đương.",
           "requirement_type": "Quantitative",
           "unit_of_measure": [
-            "metric tons CO2e"
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
           ],
           "breakdown_dimensions": [
-            "by Scope",
-            "by facility"
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-1:b",
+          "item_code": "b",
+          "description_en": "Clause b: **Gases included in the calculation**; whether CO<sub>2</sub>, CH<sub>4</sub>, N<sub>2</sub>O, HFCs, PFCs, SF<sub>6</sub>, NF<sub>3</sub>, or all.",
+          "description_vi": "Báo cáo các loại khí được bao gồm trong tính toán (CO2, CH4, N2O, HFCs, PFCs, SF6, NF3).",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-1:c",
+          "item_code": "c",
+          "description_en": "Clause c: **Biogenic CO<sub>2</sub> emissions** in metric tons of CO<sub>2</sub> equivalent.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **Biogenic CO<sub>2</sub> emissions** in metric tons of CO<sub>2</sub> equivalent.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-1:d",
+          "item_code": "d",
+          "description_en": "Clause d: **Base year** for the calculation, if applicable, including: - i. the rationale for choosing it; - ii. emissions in the base year; - iii. the context for any significant changes in emissions that triggered recalculations of base year emissions.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **Base year** for the calculation, if applicable, including: - i. the rationale for choosing it; - ii. emissions in the base year; - iii. the context for any significant changes in emissions that triggered recalculations of base year emissions.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-1:e",
+          "item_code": "e",
+          "description_en": "Clause e: **Source of the emission factors and the global warming potential (GWP) rates used**, or a reference to the GWP source.",
+          "description_vi": "Báo cáo nguồn của các hệ số phát thải và chỉ số tiềm năng làm nóng toàn cầu (GWP) được sử dụng.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-1:f",
+          "item_code": "f",
+          "description_en": "Clause f: **Consolidation approach for emissions**; whether equity share, financial control, or operational control.",
+          "description_vi": "Báo cáo phương pháp hợp nhất phát thải (tỷ lệ sở hữu vốn, kiểm soát tài chính, hoặc kiểm soát vận hành).",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-1:g",
+          "item_code": "g",
+          "description_en": "Clause g: **Standards, methodologies, assumptions, and/or calculation tools used**.",
+          "description_vi": "Báo cáo các tiêu chuẩn, phương pháp luận, giả định và công cụ tính toán được sử dụng.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-1:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 1 When compiling the information specified in Disclosure 305-1, the reporting organization shall: - 2.1.1 exclude any **GHG trades** from the calculation of gross direct (Scope 1) GHG emissions; - 2.1.2 report biogenic emissions of CO<sub>2</sub> from the combustion or biodegradation of biomass separately from the gross direct (Scope 1) GHG emissions. Exclude biogenic emissions of other types of GHG (such as CH<sub>4</sub> and N<sub>2</sub>O), and biogenic emissions of CO<sub>2</sub> that occur in the life cycle of biomass other than from combustion or biodegradation (such as GHG emissions from processing or transporting biomass).",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: When compiling the information specified in Disclosure 305-1, the reporting organization shall: - 2.1.1 exclude any **GHG trades** from the calculation of gross direct (Scope 1) GHG emissions; - 2.1.2 report biogenic emissions of CO<sub>2</sub> from the combustion or biodegradation of biomass separately from the gross direct (Scope 1) GHG emissions. Exclude biogenic emissions of other types of GHG (such as CH<sub>4</sub> and N<sub>2</sub>O), and biogenic emissions of CO<sub>2</sub> that occur in the life cycle of biomass other than from combustion or biodegradation (such as GHG emissions from processing or transporting biomass).",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-1:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 2 When compiling the information specified in Disclosure 305-1, the reporting organization should: - 2.2.1 apply emission factors and GWP rates consistently for the data disclosed; - 2.2.2 use the GWP rates from the IPCC assessment reports based on a 100-year timeframe; - 2.2.3 select a consistent approach for consolidating direct (Scope 1) and **energy indirect (Scope 2) GHG emissions**; choosing from the equity share, financial control, or operational control methods outlined in the 'GHG Protocol Corporate Standard'; - 2.2.4 if subject to different standards and methodologies, describe the approach to selecting them; - 2.2.5 where it aids transparency or comparability over time, provide a breakdown of the direct (Scope 1) GHG emissions by: - 2.2.5.1 business unit or facility; - 2.2.5.2 country; - 2.2.5.3 type of source (stationary combustion, process, fugitive); - 2.2.5.4 type of activity.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: When compiling the information specified in Disclosure 305-1, the reporting organization should: - 2.2.1 apply emission factors and GWP rates consistently for the data disclosed; - 2.2.2 use the GWP rates from the IPCC assessment reports based on a 100-year timeframe; - 2.2.3 select a consistent approach for consolidating direct (Scope 1) and **energy indirect (Scope 2) GHG emissions**; choosing from the equity share, financial control, or operational control methods outlined in the 'GHG Protocol Corporate Standard'; - 2.2.4 if subject to different standards and methodologies, describe the approach to selecting them; - 2.2.5 where it aids transparency or comparability over time, provide a breakdown of the direct (Scope 1) GHG emissions by: - 2.2.5.1 business unit or facility; - 2.2.5.2 country; - 2.2.5.3 type of source (stationary combustion, process, fugitive); - 2.2.5.4 type of activity.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
           ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "- 2.2 When compiling the information specified in Disclosure 305-1, the reporting organization should:\n  - 2.2.1 apply emission factors and GWP rates consistently for the data disclosed;\n  - 2.2.2 use the GWP rates from the IPCC assessment reports based on a 100-year timeframe;\n  - 2.2.3 select a consistent approach for consolidating direct (Scope 1) and **energy indirect (Scope 2) GHG emissions**; choosing from the equity share, financial control, or operational control methods outlined in the 'GHG Protocol Corporate Standard';\n  - 2.2.4 if subject to different standards and methodologies, describe the approach to selecting them;\n  - 2.2.5 where it aids transparency or comparability over time, provide a breakdown of the direct (Scope 1) GHG emissions by:\n    - 2.2.5.1 business unit or facility;\n    - 2.2.5.2 country;\n    - 2.2.5.3 type of source (stationary combustion, process, fugitive);\n    - 2.2.5.4 type of activity.\n\nGuidance Summary:\n#### Guidance for Disclosure 305-1\n\nDirect (Scope 1) GHG emissions include, but are not limited to, the CO<sub>2</sub> emissions from the fuel consumption as reported in [Disclosure 302-1 of GRI 302: Energy 2016](#).\n\nDirect (Scope 1) GHG emissions can come from the following sources owned or controlled by an organization:\n\n- Generation of electricity, heating, cooling and steam: these emissions result from combustion of fuels in stationary sources, such as boilers, furnaces, and turbines – and from other combustion processes such as flaring;\n- Physical or chemical processing: most of these emissions result from the manufacturing or processing of chemicals and materials, such as cement, steel, aluminum, ammonia, and waste processing;\n- Transportation of materials, products, waste, workers,...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 305-1.",
+      "sdg_mapping": [
+        "SDG 13: Climate Action",
+        "SDG 3: Good Health & Well-being",
+        "SDG 12: Responsible Consumption"
+      ],
+      "esrs_mapping": [
+        "ESRS E1 Climate Change (E1-6 GHG emissions)"
+      ],
+      "issb_mapping": [
+        "IFRS S2 Climate-related Disclosures (Paragraph 21)"
+      ]
     },
     {
       "disclosure_id": "305-2",
@@ -67,23 +215,321 @@
         {
           "requirement_id": "305-2:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 305-2 (Energy indirect (Scope 2) GHG emissions)",
-          "description_vi": null,
+          "description_en": "Clause a: Gross location-based energy indirect (Scope 2) GHG emissions in metric tons of CO<sub>2</sub> equivalent.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Gross location-based energy indirect (Scope 2) GHG emissions in metric tons of CO<sub>2</sub> equivalent.",
           "requirement_type": "Quantitative",
           "unit_of_measure": [
-            "metric tons CO2e"
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
           ],
           "breakdown_dimensions": [
-            "by Scope",
-            "by facility"
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-2:b",
+          "item_code": "b",
+          "description_en": "Clause b: If applicable, gross market-based energy indirect (Scope 2) GHG emissions in metric tons of CO<sub>2</sub> equivalent.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: If applicable, gross market-based energy indirect (Scope 2) GHG emissions in metric tons of CO<sub>2</sub> equivalent.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-2:c",
+          "item_code": "c",
+          "description_en": "Clause c: If available, the gases included in the calculation; whether CO<sub>2</sub>, CH<sub>4</sub>, N<sub>2</sub>O, HFCs, PFCs, SF<sub>6</sub>, NF<sub>3</sub>, or all.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: If available, the gases included in the calculation; whether CO<sub>2</sub>, CH<sub>4</sub>, N<sub>2</sub>O, HFCs, PFCs, SF<sub>6</sub>, NF<sub>3</sub>, or all.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-2:d",
+          "item_code": "d",
+          "description_en": "Clause d: Base year for the calculation, if applicable, including: - i. the rationale for choosing it; - ii. emissions in the base year; - iii. the context for any significant changes in emissions that triggered recalculations of base year emissions.",
+          "description_vi": "Báo cáo năm cơ sở cho tính toán, lý do lựa chọn, lượng phát thải trong năm cơ sở và bối cảnh tái tính toán.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-2:e",
+          "item_code": "e",
+          "description_en": "Clause e: Source of the emission factors and the global warming potential (GWP) rates used, or a reference to the GWP source.",
+          "description_vi": "Báo cáo nguồn của các hệ số phát thải và chỉ số tiềm năng làm nóng toàn cầu (GWP) được sử dụng.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-2:f",
+          "item_code": "f",
+          "description_en": "Clause f: Consolidation approach for emissions; whether equity share, financial control, or operational control.",
+          "description_vi": "Báo cáo phương pháp hợp nhất phát thải (tỷ lệ sở hữu vốn, kiểm soát tài chính, hoặc kiểm soát vận hành).",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-2:g",
+          "item_code": "g",
+          "description_en": "Clause g: Standards, methodologies, assumptions, and/or calculation tools used.",
+          "description_vi": "Báo cáo các tiêu chuẩn, phương pháp luận, giả định và công cụ tính toán được sử dụng.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-2:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 3 When compiling the information specified in Disclosure 305-2, the reporting organization shall:",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: When compiling the information specified in Disclosure 305-2, the reporting organization shall:",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-2:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 3.1 exclude any GHG trades from the calculation of gross energy indirect (Scope 2) GHG emissions;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: GHG trades from the calculation of gross energy indirect (Scope 2) GHG emissions;",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-2:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 3.2 exclude other indirect (Scope 3) GHG emissions that are disclosed as specified in Disclosure 305-3;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: (Scope 3) GHG emissions that are disclosed as specified in Disclosure 305-3;",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-2:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 3.3 account and report energy indirect (Scope 2) GHG emissions based on the location-based method, if it has operations in markets without product or supplier-specific data;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: (Scope 2) GHG emissions based on the location-based method, if it has operations in markets without product or supplier-specific data;",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-2:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 3.4 account and report energy indirect (Scope 2) GHG emissions based on both the location-based and market-based methods, if it has any operations in markets providing product or supplier-specific data in the form of contractual instruments.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: (Scope 2) GHG emissions based on both the location-based and market-based methods, if it has any operations in markets providing product or supplier-specific data in the form of contractual instruments.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-2:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 4 When compiling the information specified in Disclosure 305-2, the reporting organization should:",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: When compiling the information specified in Disclosure 305-2, the reporting organization should:",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-2:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 4.1 apply emission factors and GWP rates consistently for the data disclosed;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: GWP rates consistently for the data disclosed;",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-2:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 4.2 use the GWP rates from the IPCC assessment reports based on a 100-year timeframe;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: GWP rates from the IPCC assessment reports based on a 100-year timeframe;",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-2:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 4.3 select a consistent approach for consolidating direct (Scope 1) and energy indirect (Scope 2) GHG emissions, choosing from the equity share, financial control, or operational control methods outlined in the 'GHG Protocol Corporate Standard';",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: (Scope 1) and energy indirect (Scope 2) GHG emissions, choosing from the equity share, financial control, or operational control methods outlined in the 'GHG Protocol Corporate Standard';",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-2:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 4.4 if subject to different standards and methodologies, describe the approach to selecting them;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , describe the approach to selecting them;",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-2:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 4.5 where it aids transparency or comparability over time, provide a breakdown of the energy indirect (Scope 2) GHG emissions by: - 2.4.5.1 business unit or facility; - 2.4.5.2 country; - 2.4.5.3 type of source (electricity, heating, cooling, and steam); - 2.4.5.4 type of activity.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , provide a breakdown of the energy indirect (Scope 2) GHG emissions by: - 2.4.5.1 business unit or facility; - 2.4.5.2 country; - 2.4.5.3 type of source (electricity, heating, cooling, and steam); - 2.4.5.4 type of activity.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
           ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "- 2.4 When compiling the information specified in Disclosure 305-2, the reporting organization should:\n\n- 2.4.1 apply emission factors and GWP rates consistently for the data disclosed;\n- 2.4.2 use the GWP rates from the IPCC assessment reports based on a 100-year timeframe;\n- 2.4.3 select a consistent approach for consolidating direct (Scope 1) and energy indirect (Scope 2) GHG emissions, choosing from the equity share, financial control, or operational control methods outlined in the 'GHG Protocol Corporate Standard';\n- 2.4.4 if subject to different standards and methodologies, describe the approach to selecting them;\n- 2.4.5 where it aids transparency or comparability over time, provide a breakdown of the energy indirect (Scope 2) GHG emissions by:\n  - 2.4.5.1 business unit or facility;\n  - 2.4.5.2 country;\n  - 2.4.5.3 type of source (electricity, heating, cooling, and steam);\n  - 2.4.5.4 type of activity.\n\n#### **GUIDANCE**\n\n#### **Guidance for Disclosure 305-2**\n\nEnergy indirect (Scope 2) GHG emissions include, but are not limited to, the CO<sub>2</sub> emissions from the generation of purchased or acquired electricity, heating, cooling, and steam consumed by an organization – disclosed as specified in [Disclosure 302-1 of GRI 302: Energy 2016](#). For many organizations, the energy indirect (Scope 2) GHG emissions that result from the generation of purchased electricity can be much greater than their direct (Scope 1) GHG emissions.\n\nThe 'GHG Protocol Scope 2 Guidance' requires organizations to provide two distinct Scope 2 values: a location-based and a market-based value. A location-based method reflects the average GHG emissions intensity of grids on which energy consumption occurs, using mostly grid-average emission factor data. A market-based method reflects emissions from electricity that an organization has purposefully chosen (or its lack of choice). It derives emission factors from contractual instruments, which include any type of contract between two parties for the sale and purchase of energy bundled with attributes about the energy generation, or for unbundled attribute claims.\n\nThe market-based method calculation also includes the use of a residual mix, if the organization does not have specified emissions-intensity from its contractual instruments. This helps prevent double counting between consumers' market-based method figures. If a residual mix is unavailable, the organization can disclose this and use grid-average emission factors as a proxy (which can mean that the location-based and market-based are the same number until information on the residual mix is available).\n\nThe reporting organization can apply the Quality Criteria in the 'GHG Protocol Scope 2 Guidance' so that contractual instruments convey GHG emission rate claims and to prevent double counting. See reference [18] in the [Bibliography](#).\n\nFor recalculations of prior year emissions, the organization can follow the approach in the 'GHG Protocol Corporate Standard'.\n\nThe chosen emission factors can originate from mandatory reporting requirements, voluntary reporting frameworks, or industry groups.\n\nEstimates of GWP rates change over time as scientific research develops. GWP rates from the *Second Assessment Report* of the IPCC are used as the basis for international negotiations under the 'Kyoto Protocol'. Thus, such rates can be used for disclosing GHG emissions where it does not conflict with national or regional reporting requirements. The organization can also use the latest GWP rates from the most recent IPCC assessment report.\n\nThe organization can combine Disclosure 305-2 with Disclosures 305-1 (direct/Scope 1 GHG emissions) and 305-3 (other indirect/Scope 3 GHG emissions) to disclose total GHG emissions.\n\nFurther details and guidance are available in the 'GHG Protocol Corporate Standard'. Details on the location-based and market-based methods are available in the 'GHG Protocol Scope 2 Guidance'. See also references [1], [2], [12], [13], [14] and [18] in the [Bibliography](#).",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 305-2.",
+      "sdg_mapping": [
+        "SDG 13: Climate Action",
+        "SDG 3: Good Health & Well-being",
+        "SDG 12: Responsible Consumption"
+      ],
+      "esrs_mapping": [
+        "ESRS E1 Climate Change (E1-6 GHG emissions)"
+      ],
+      "issb_mapping": [
+        "IFRS S2 Climate-related Disclosures (Paragraph 21)"
+      ]
     },
     {
       "disclosure_id": "305-3",
@@ -95,23 +541,199 @@
         {
           "requirement_id": "305-3:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 305-3 (Other indirect (Scope 3) GHG emissions)",
-          "description_vi": null,
+          "description_en": "Clause a: **Gross other indirect (Scope 3) GHG emissions** in metric tons of **CO<sub>2</sub> equivalent**.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **Gross other indirect (Scope 3) GHG emissions** in metric tons of **CO<sub>2</sub> equivalent**.",
           "requirement_type": "Quantitative",
           "unit_of_measure": [
-            "metric tons CO2e"
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
           ],
           "breakdown_dimensions": [
-            "by Scope",
-            "by facility"
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-3:b",
+          "item_code": "b",
+          "description_en": "Clause b: If available, the gases included in the calculation; whether CO<sub>2</sub>, CH<sub>4</sub>, N<sub>2</sub>O, HFCs, PFCs, SF<sub>6</sub>, NF<sub>3</sub>, or all.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: If available, the gases included in the calculation; whether CO<sub>2</sub>, CH<sub>4</sub>, N<sub>2</sub>O, HFCs, PFCs, SF<sub>6</sub>, NF<sub>3</sub>, or all.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-3:c",
+          "item_code": "c",
+          "description_en": "Clause c: **Biogenic CO<sub>2</sub> emissions** in metric tons of CO<sub>2</sub> equivalent.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **Biogenic CO<sub>2</sub> emissions** in metric tons of CO<sub>2</sub> equivalent.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-3:d",
+          "item_code": "d",
+          "description_en": "Clause d: Other indirect (Scope 3) GHG emissions categories and activities included in the calculation.",
+          "description_vi": "Báo cáo tổng lượng phát thải khí nhà kính (GHG) gián tiếp khác (Scope 3) tính theo tấn CO2 tương đương.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-3:e",
+          "item_code": "e",
+          "description_en": "Clause e: **Base year** for the calculation, if applicable, including: - i. the rationale for choosing it; - ii. emissions in the base year; - iii. the context for any significant changes in emissions that triggered recalculations of base year emissions.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **Base year** for the calculation, if applicable, including: - i. the rationale for choosing it; - ii. emissions in the base year; - iii. the context for any significant changes in emissions that triggered recalculations of base year emissions.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-3:f",
+          "item_code": "f",
+          "description_en": "Clause f: Source of the emission factors and the **global warming potential (GWP)** rates used, or a reference to the GWP source.",
+          "description_vi": "Báo cáo nguồn của các hệ số phát thải và chỉ số tiềm năng làm nóng toàn cầu (GWP) được sử dụng.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-3:g",
+          "item_code": "g",
+          "description_en": "Clause g: Standards, methodologies, assumptions, and/or calculation tools used.",
+          "description_vi": "Báo cáo các tiêu chuẩn, phương pháp luận, giả định và công cụ tính toán được sử dụng.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-3:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 5 When compiling the information specified in Disclosure 305-3, the reporting organization shall: - 2.5.1 exclude any **GHG trades** from the calculation of gross other indirect (Scope 3) GHG emissions; - 2.5.2 exclude **energy indirect (Scope 2) GHG emissions** from this disclosure. Energy indirect (Scope 2) GHG emissions are disclosed as specified in Disclosure 305-2; - 2.5.3 report biogenic emissions of CO<sub>2</sub> from the combustion or biodegradation of biomass that occur in its value chain separately from the gross other indirect (Scope 3) GHG emissions. Exclude biogenic emissions of other types of GHG (such as CH<sub>4</sub> and N<sub>2</sub>O), and biogenic emissions of CO<sub>2</sub> that occur in the life cycle of biomass other than from combustion or biodegradation (such as GHG emissions from processing or transporting biomass).",
+          "description_vi": "Báo cáo tổng lượng phát thải khí nhà kính (GHG) gián tiếp từ năng lượng (Scope 2) tính theo tấn CO2 tương đương.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-3:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 6 When compiling the information specified in Disclosure 305-3, the reporting organization should: - 2.6.1 apply emission factors and GWP rates consistently for the data disclosed; - 2.6.2 use the GWP rates from the IPCC assessment reports based on a 100-year timeframe; - 2.6.3 if subject to different standards and methodologies, describe the approach to selecting them; - 2.6.4 list other indirect (Scope 3) GHG emissions, with a breakdown by upstream and downstream categories and activities; - 2.6.5 where it aids transparency or comparability over time, provide a breakdown of the other indirect (Scope 3) GHG emissions by: - 2.6.5.1 business unit or facility; - 2.6.5.2 country; - 2.6.5.3 type of source; - 2.6.5.4 type of activity.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: When compiling the information specified in Disclosure 305-3, the reporting organization should: - 2.6.1 apply emission factors and GWP rates consistently for the data disclosed; - 2.6.2 use the GWP rates from the IPCC assessment reports based on a 100-year timeframe; - 2.6.3 if subject to different standards and methodologies, describe the approach to selecting them; - 2.6.4 list other indirect (Scope 3) GHG emissions, with a breakdown by upstream and downstream categories and activities; - 2.6.5 where it aids transparency or comparability over time, provide a breakdown of the other indirect (Scope 3) GHG emissions by: - 2.6.5.1 business unit or facility; - 2.6.5.2 country; - 2.6.5.3 type of source; - 2.6.5.4 type of activity.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-3:1",
+          "item_code": "1",
+          "description_en": "Clause 1: Purchased goods and services",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Purchased goods and services",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-3:9",
+          "item_code": "9",
+          "description_en": "Clause 9: Downstream transportation and distribution",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Downstream transportation and distribution",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
           ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "- 2.6 When compiling the information specified in Disclosure 305-3, the reporting organization should:\n  - 2.6.1 apply emission factors and GWP rates consistently for the data disclosed;\n  - 2.6.2 use the GWP rates from the IPCC assessment reports based on a 100-year timeframe;\n  - 2.6.3 if subject to different standards and methodologies, describe the approach to selecting them;\n  - 2.6.4 list other indirect (Scope 3) GHG emissions, with a breakdown by upstream and downstream categories and activities;\n  - 2.6.5 where it aids transparency or comparability over time, provide a breakdown of the other indirect (Scope 3) GHG emissions by:\n    - 2.6.5.1 business unit or facility;\n    - 2.6.5.2 country;\n    - 2.6.5.3 type of source;\n    - 2.6.5.4 type of activity.\n\nGuidance Summary:\n#### Guidance for Disclosure 305-3\n\nOther indirect (Scope 3) GHG emissions are a consequence of an organization's activities, but occur from sources not owned or controlled by the organization. Other indirect (Scope 3) GHG\n\nemissions include both upstream and downstream emissions. Some examples of Scope 3 activities include extracting and producing purchased materials; transporting purchased fuels in vehicles not owned or controlled by the organization; and the end use of products and services.\n\nOther indirect emissions can also come from the decomposing of the organization's waste. Process-related emissions during the manufacture of purchased goods and fugitive emissions in facilities not owned by the organization can also produce indirect emissions.\n\nFor some organizations, GHG emissions...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 305-3.",
+      "sdg_mapping": [
+        "SDG 13: Climate Action",
+        "SDG 3: Good Health & Well-being",
+        "SDG 12: Responsible Consumption"
+      ],
+      "esrs_mapping": [
+        "ESRS E1 Climate Change (E1-6 GHG emissions)"
+      ],
+      "issb_mapping": [
+        "IFRS S2 Climate-related Disclosures (Paragraph 21)"
+      ]
     },
     {
       "disclosure_id": "305-4",
@@ -123,23 +745,219 @@
         {
           "requirement_id": "305-4:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 305-4 (GHG emissions intensity)",
-          "description_vi": null,
+          "description_en": "Clause a: GHG emissions intensity ratio for the organization.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: GHG emissions intensity ratio for the organization.",
           "requirement_type": "Quantitative",
           "unit_of_measure": [
-            "metric tons CO2e"
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
           ],
           "breakdown_dimensions": [
-            "by Scope",
-            "by facility"
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-4:b",
+          "item_code": "b",
+          "description_en": "Clause b: Organization-specific metric (the denominator) chosen to calculate the ratio.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Organization-specific metric (the denominator) chosen to calculate the ratio.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-4:c",
+          "item_code": "c",
+          "description_en": "Clause c: Types of GHG emissions included in the intensity ratio; whether direct (Scope 1), energy indirect (Scope 2), and/or other indirect (Scope 3).",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Types of GHG emissions included in the intensity ratio; whether direct (Scope 1), energy indirect (Scope 2), and/or other indirect (Scope 3).",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-4:d",
+          "item_code": "d",
+          "description_en": "Clause d: Gases included in the calculation; whether CO<sub>2</sub>, CH<sub>4</sub>, N<sub>2</sub>O, HFCs, PFCs, SF<sub>6</sub>, NF<sub>3</sub>, or all.",
+          "description_vi": "Báo cáo các loại khí được bao gồm trong tính toán (CO2, CH4, N2O, HFCs, PFCs, SF6, NF3).",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-4:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 7 When compiling the information specified in Disclosure 305-4, the reporting organization shall:**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: When compiling the information specified in Disclosure 305-4, the reporting organization shall:**",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-4:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 7.1 calculate the ratio by dividing the absolute GHG emissions (the numerator) by the organization-specific metric (the denominator);**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: GHG emissions (the numerator) by the organization-specific metric (the denominator);**",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-4:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 7.2 if reporting an intensity ratio for other indirect (Scope 3) GHG emissions, report this intensity ratio separately from the intensity ratios for direct (Scope 1) and energy indirect (Scope 2) emissions.**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: (Scope 3) GHG emissions, report this intensity ratio separately from the intensity ratios for direct (Scope 1) and energy indirect (Scope 2) emissions.**",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-4:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 8** When compiling the information specified in Disclosure 305-4, the reporting organization should, where it aids transparency or comparability over time, provide a breakdown of the GHG emissions intensity ratio by:",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ** When compiling the information specified in Disclosure 305-4, the reporting organization should, where it aids transparency or comparability over time, provide a breakdown of the GHG emissions intensity ratio by:",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-4:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 8.1 business unit or facility;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ;",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-4:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 8.2 country;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ;",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-4:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 8.3 type of source;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ;",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-4:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 8.4 type of activity.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-4:2",
+          "item_code": "2",
+          "description_en": "Clause 2: #### Background",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: #### Background",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
           ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "**2.8** When compiling the information specified in Disclosure 305-4, the reporting organization should, where it aids transparency or comparability over time, provide a breakdown of the GHG emissions intensity ratio by:\n\n- 2.8.1 business unit or facility;\n- 2.8.2 country;\n- 2.8.3 type of source;\n- 2.8.4 type of activity.\n\nGuidance Summary:\n#### Guidance for Disclosure 305-4\n\nIntensity ratios can be provided for, among others:\n\n- products (such as metric tons of CO<sub>2</sub> emissions per unit produced);\n- services (such as metric tons of CO<sub>2</sub> emissions per function or per service);\n- sales (such as metric tons of CO<sub>2</sub> emissions per sales).\n\nOrganization-specific metrics (denominators) can include:\n\n- units of product;\n- production volume (such as metric tons, liters, or MWh);\n- size (such as m<sup>2</sup> floor space);\n- number of full-time employees;\n- monetary units (such as revenue or sales).\n\nThe reporting organization can report an intensity ratio for direct (Scope 1) and energy indirect (Scope 2) GHG emissions combined, using the figures reported in Disclosures 305-1 and 305-2.\n\n#### Background\n\nI...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 305-4.",
+      "sdg_mapping": [
+        "SDG 13: Climate Action",
+        "SDG 3: Good Health & Well-being",
+        "SDG 12: Responsible Consumption"
+      ],
+      "esrs_mapping": [
+        "ESRS E1 Climate Change (E1-6 GHG emissions)"
+      ],
+      "issb_mapping": [
+        "IFRS S2 Climate-related Disclosures (Paragraph 21)"
+      ]
     },
     {
       "disclosure_id": "305-5",
@@ -151,23 +969,201 @@
         {
           "requirement_id": "305-5:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 305-5 (Reduction of GHG emissions)",
-          "description_vi": null,
+          "description_en": "Clause a: **GHG emissions reduced as a direct result of reduction initiatives, in metric tons of CO<sub>2</sub> equivalent.**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **GHG emissions reduced as a direct result of reduction initiatives, in metric tons of CO<sub>2</sub> equivalent.**",
           "requirement_type": "Quantitative",
           "unit_of_measure": [
-            "metric tons CO2e"
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
           ],
           "breakdown_dimensions": [
-            "by Scope",
-            "by facility"
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-5:b",
+          "item_code": "b",
+          "description_en": "Clause b: **Gases included in the calculation; whether CO<sub>2</sub>, CH<sub>4</sub>, N<sub>2</sub>O, HFCs, PFCs, SF<sub>6</sub>, NF<sub>3</sub>, or all.**",
+          "description_vi": "Báo cáo các loại khí được bao gồm trong tính toán (CO2, CH4, N2O, HFCs, PFCs, SF6, NF3).",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-5:c",
+          "item_code": "c",
+          "description_en": "Clause c: **Base year or baseline, including the rationale for choosing it.**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **Base year or baseline, including the rationale for choosing it.**",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-5:d",
+          "item_code": "d",
+          "description_en": "Clause d: **Scopes in which reductions took place; whether direct (Scope 1), energy indirect (Scope 2), and/or other indirect (Scope 3).**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **Scopes in which reductions took place; whether direct (Scope 1), energy indirect (Scope 2), and/or other indirect (Scope 3).**",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-5:e",
+          "item_code": "e",
+          "description_en": "Clause e: **Standards, methodologies, assumptions, and/or calculation tools used.**",
+          "description_vi": "Báo cáo các tiêu chuẩn, phương pháp luận, giả định và công cụ tính toán được sử dụng.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-5:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 9 When compiling the information specified in Disclosure 305-5, the reporting organization shall:",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: When compiling the information specified in Disclosure 305-5, the reporting organization shall:",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-5:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 9.1 **exclude reductions resulting from reduced production capacity or outsourcing;**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **exclude reductions resulting from reduced production capacity or outsourcing;**",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-5:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 9.2 **use the inventory or project method to account for reductions;**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **use the inventory or project method to account for reductions;**",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-5:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 9.3 **calculate an initiative's total reductions of GHG emissions as the sum of its associated primary effects and any significant secondary effects;**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **calculate an initiative's total reductions of GHG emissions as the sum of its associated primary effects and any significant secondary effects;**",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-5:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 9.4 **if reporting two or more Scope types, report the reductions for each separately;**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **if reporting two or more Scope types, report the reductions for each separately;**",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-5:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 9.5 **report reductions from offsets separately.**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **report reductions from offsets separately.**",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-5:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 10 When compiling the information specified in Disclosure 305-5, the reporting organization should, if subject to different standards and methodologies, describe the approach to selecting them.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: When compiling the information specified in Disclosure 305-5, the reporting organization should, if subject to different standards and methodologies, describe the approach to selecting them.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
           ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "- 2.10 When compiling the information specified in Disclosure 305-5, the reporting organization should, if subject to different standards and methodologies, describe the approach to selecting them.\n\nGuidance Summary:\n#### Guidance for Disclosure 305-5\n\nThe reporting organization can prioritize disclosing reduction initiatives that were implemented in the reporting period, and that have the potential to contribute significantly to reductions. The organization can describe reduction initiatives and their targets when reporting how it manages this topic.\n\nReduction initiatives can include:\n\n- process redesign;\n- conversion and retrofitting of equipment;\n- fuel switching;\n- changes in behavior;\n- offsets.\n\nThe organization can report reductions disaggregated by initiatives or groups of initiatives.\n\nThis disclosure can be used in combination with Disclosures 305-1, 305-2, and 305-3 of this Standard to monitor the reduction of GHG emissions with reference to the organization's targets, or to regulations and...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 305-5.",
+      "sdg_mapping": [
+        "SDG 13: Climate Action",
+        "SDG 3: Good Health & Well-being",
+        "SDG 12: Responsible Consumption"
+      ],
+      "esrs_mapping": [
+        "ESRS E1 Climate Change (E1-6 GHG emissions)"
+      ],
+      "issb_mapping": [
+        "IFRS S2 Climate-related Disclosures (Paragraph 21)"
+      ]
     },
     {
       "disclosure_id": "305-6",
@@ -179,107 +1175,329 @@
         {
           "requirement_id": "305-6:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 305-6 (Emissions of ozone-depleting substances (ODS))",
-          "description_vi": null,
+          "description_en": "Clause a: **Production, imports, and exports of ODS** in metric tons of **CFC-11 (trichlorofluoromethane) equivalent**.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **Production, imports, and exports of ODS** in metric tons of **CFC-11 (trichlorofluoromethane) equivalent**.",
           "requirement_type": "Quantitative",
           "unit_of_measure": [
-            "metric tons CO2e"
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
           ],
           "breakdown_dimensions": [
-            "by Scope",
-            "by facility"
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-6:b",
+          "item_code": "b",
+          "description_en": "Clause b: **Substances included in the calculation.**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **Substances included in the calculation.**",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-6:c",
+          "item_code": "c",
+          "description_en": "Clause c: **Source of the emission factors used.**",
+          "description_vi": "Báo cáo nguồn của các hệ số phát thải và chỉ số tiềm năng làm nóng toàn cầu (GWP) được sử dụng.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-6:d",
+          "item_code": "d",
+          "description_en": "Clause d: **Standards, methodologies, assumptions, and/or calculation tools used.**",
+          "description_vi": "Báo cáo các tiêu chuẩn, phương pháp luận, giả định và công cụ tính toán được sử dụng.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-6:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 11 When compiling the information specified in Disclosure 305-6, the reporting organization shall:**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: When compiling the information specified in Disclosure 305-6, the reporting organization shall:**",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-6:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 11.1 calculate the production of ODS as the amount of ODS produced, minus the amount destroyed by approved technologies, and minus the amount entirely used as feedstock in the manufacture of other chemicals;**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ODS as the amount of ODS produced, minus the amount destroyed by approved technologies, and minus the amount entirely used as feedstock in the manufacture of other chemicals;**",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-6:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 11.2 exclude ODS recycled and reused.**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ODS recycled and reused.**",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-6:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 12 When compiling the information specified in Disclosure 305-6, the reporting organization should:**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: When compiling the information specified in Disclosure 305-6, the reporting organization should:**",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-6:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 12.1 if subject to different standards and methodologies, describe the approach to selecting them;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , describe the approach to selecting them;",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-6:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 12.2 where it aids transparency or comparability over time, provide a breakdown of the ODS data by: - 2.12.2.1 business unit or facility; - 2.12.2.2 country; - 2.12.2.3 type of source; - 2.12.2.4 type of activity.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , provide a breakdown of the ODS data by: - 2.12.2.1 business unit or facility; - 2.12.2.2 country; - 2.12.2.3 type of source; - 2.12.2.4 type of activity.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
           ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "**2.12 When compiling the information specified in Disclosure 305-6, the reporting organization should:**\n\n- 2.12.1 if subject to different standards and methodologies, describe the approach to selecting them;\n- 2.12.2 where it aids transparency or comparability over time, provide a breakdown of the ODS data by:\n  - 2.12.2.1 business unit or facility;\n  - 2.12.2.2 country;\n  - 2.12.2.3 type of source;\n  - 2.12.2.4 type of activity.\n\nGuidance Summary:\n#### Guidance for Disclosure 305-6\n\nThe reporting organization can report separate or combined data for the substances included in the calculation.\n\n#### Background\n\nMeasuring ODS production, imports, and exports helps to indicate how an organization complies with legislation. This is particularly relevant if the organization produces or uses ODS in its processes, products and services and is subject to phase-out commitments. Results on ODS phase-out help to indicate the organization's position in any markets affected by regulation on ODS.\n\nThis disclosure covers the substances included in Annexes A, B, C, and E of the 'Montreal Protocol' as well as any other ODS produced, imported, or exported by an organization.\n\nSee references [1], [2], [8] and [9] in the [Bibliography](#)....",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 305-6.",
+      "sdg_mapping": [
+        "SDG 13: Climate Action",
+        "SDG 3: Good Health & Well-being",
+        "SDG 12: Responsible Consumption"
+      ],
+      "esrs_mapping": [
+        "ESRS E1 Climate Change (E1-6 GHG emissions)"
+      ],
+      "issb_mapping": [
+        "IFRS S2 Climate-related Disclosures (Paragraph 21)"
+      ]
     },
     {
       "disclosure_id": "305-7",
-      "title_en": "Nitrogen oxides (NOx), sulfur oxides (SOx), and other significant",
-      "title_vi": "Nitrogen oxides (NOx), sulfur oxides (SOx), and other significant",
+      "title_en": "Nitrogen oxides (NO<sub>x</sub>), sulfur oxides (SO<sub>x</sub>), and other significant air emissions",
+      "title_vi": "Nitrogen oxides (NO<sub>x</sub>), sulfur oxides (SO<sub>x</sub>), and other significant air emissions",
       "disclosure_type": "General Disclosures",
       "mandatory": true,
       "requirements": [
         {
           "requirement_id": "305-7:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 305-7 (Nitrogen oxides (NOx), sulfur oxides (SOx), and other significant)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
-          "unit_of_measure": [
-            "metric tons CO2e"
-          ],
-          "breakdown_dimensions": [
-            "by Scope",
-            "by facility"
-          ]
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "3-3",
-      "title_en": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "title_vi": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
-        {
-          "requirement_id": "3-3:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
-          "unit_of_measure": [
-            "metric tons CO2e"
-          ],
-          "breakdown_dimensions": [
-            "by Scope",
-            "by facility"
-          ]
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "302-1",
-      "title_en": "of GRI 302: Energy 2016.",
-      "title_vi": "of GRI 302: Energy 2016.",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
-        {
-          "requirement_id": "302-1:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 302-1 (of GRI 302: Energy 2016.)",
-          "description_vi": null,
+          "description_en": "Clause a: Significant air emissions, in kilograms or multiples, for each of the following: - i. NO<sub>x</sub> - ii. SO<sub>x</sub> - iii. Persistent organic pollutants (POP) - iv. Volatile organic compounds (VOC) - v. Hazardous air pollutants (HAP) - vi. Particulate matter (PM) - vii. Other standard categories of air emissions identified in relevant regulations",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Significant air emissions, in kilograms or multiples, for each of the following: - i. NO<sub>x</sub> - ii. SO<sub>x</sub> - iii. Persistent organic pollutants (POP) - iv. Volatile organic compounds (VOC) - v. Hazardous air pollutants (HAP) - vi. Particulate matter (PM) - vii. Other standard categories of air emissions identified in relevant regulations",
           "requirement_type": "Quantitative",
           "unit_of_measure": [
-            "metric tons CO2e"
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
           ],
           "breakdown_dimensions": [
-            "by Scope",
-            "by facility"
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-7:b",
+          "item_code": "b",
+          "description_en": "Clause b: Source of the emission factors used.",
+          "description_vi": "Báo cáo nguồn của các hệ số phát thải và chỉ số tiềm năng làm nóng toàn cầu (GWP) được sử dụng.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-7:c",
+          "item_code": "c",
+          "description_en": "Clause c: Standards, methodologies, assumptions, and/or calculation tools used.",
+          "description_vi": "Báo cáo các tiêu chuẩn, phương pháp luận, giả định và công cụ tính toán được sử dụng.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-7:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 13 When compiling the information specified in Disclosure 305-7, the reporting organization shall select one of the following approaches for calculating significant air emissions:",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: When compiling the information specified in Disclosure 305-7, the reporting organization shall select one of the following approaches for calculating significant air emissions:",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-7:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 13.1 Direct measurement of emissions (such as online analyzers);",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Direct measurement of emissions (such as online analyzers);",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-7:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 13.2 Calculation based on site-specific data;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Calculation based on site-specific data;",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-7:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 13.3 Calculation based on published emission factors;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Calculation based on published emission factors;",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-7:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 13.4 Estimation. If estimations are used due to a lack of default figures, the organization shall indicate the basis on which figures were estimated.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Estimation. If estimations are used due to a lack of default figures, the organization shall indicate the basis on which figures were estimated.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
+          ]
+        },
+        {
+          "requirement_id": "305-7:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 14 When compiling the information specified in Disclosure 305-7, the reporting organization should: - 2.14.1 if subject to different standards and methodologies, describe the approach to selecting them; - 2.14.2 where it aids transparency or comparability over time, provide a breakdown of the air emissions data by: - 2.14.2.1 business unit or facility; - 2.14.2.2 country; - 2.14.2.3 type of source; - 2.14.2.4 type of activity.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: When compiling the information specified in Disclosure 305-7, the reporting organization should: - 2.14.1 if subject to different standards and methodologies, describe the approach to selecting them; - 2.14.2 where it aids transparency or comparability over time, provide a breakdown of the air emissions data by: - 2.14.2.1 business unit or facility; - 2.14.2.2 country; - 2.14.2.3 type of source; - 2.14.2.4 type of activity.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "metric tons CO2e",
+            "kg CO2e",
+            "gCO2e/unit"
+          ],
+          "breakdown_dimensions": [
+            "by Scope (Scope 1, 2, 3)",
+            "by gas type (CO2, CH4, N2O...)",
+            "by facility",
+            "by country"
           ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "- 2.14 When compiling the information specified in Disclosure 305-7, the reporting organization should:\n  - 2.14.1 if subject to different standards and methodologies, describe the approach to selecting them;\n  - 2.14.2 where it aids transparency or comparability over time, provide a breakdown of the air emissions data by:\n    - 2.14.2.1 business unit or facility;\n    - 2.14.2.2 country;\n    - 2.14.2.3 type of source;\n    - 2.14.2.4 type of activity.\n\nGuidance Summary:\nSee references [3], [4], [5], [6] and [10] in the [Bibliography](#).\n\n# Glossary\n\nThis glossary provides definitions for terms used in this Standard. The organization is required to apply these definitions when using the GRI Standards.\n\nThe definitions included in this glossary may contain terms that are further defined in the complete [GRI Standards Glossary](#). All defined terms are underlined. If a term is not defined in this glossary or in the complete [GRI Standards Glossary](#), definitions that are commonly used and understood apply.\n\n## B\n\n### **base year \\***\n\nhistorical datum (such as year) against which a measurement is tracked over time\n\n*\\* Please note this term will be updated following the effective date of GRI 102: Climate Change 2025 and GRI 103: Energy 2025, as of 1 Janu...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 305-7.",
+      "sdg_mapping": [
+        "SDG 13: Climate Action",
+        "SDG 3: Good Health & Well-being",
+        "SDG 12: Responsible Consumption"
+      ],
+      "esrs_mapping": [
+        "ESRS E1 Climate Change (E1-6 GHG emissions)"
+      ],
+      "issb_mapping": [
+        "IFRS S2 Climate-related Disclosures (Paragraph 21)"
+      ]
     }
   ]
 }

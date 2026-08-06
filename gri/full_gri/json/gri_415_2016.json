@@ -2,7 +2,7 @@
   "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
   "standard_id": "GRI 415",
   "title_en": "Public Policy 2016",
-  "title_vi": "Public Policy 2016",
+  "title_vi": "GRI 415: Chính sách công 2016",
   "pillar": "S — Social",
   "series": "Social (400 Series)",
   "category": "Topic-Social",
@@ -23,11 +23,11 @@
   "provenance": {
     "relative_pdf_path": "Full set of GRI Standards - English\\GRI 415_ Public Policy 2016.pdf",
     "file_size_bytes": 816102,
-    "page_count": 12,
+    "page_count": 25,
     "sha256": "4d95da5838a290a4fe89fbb67b3062dcd258f34a9c9d419b8b0eec0f026c7b17",
-    "indexed_at": "2026-07-25T14:35:59.350166"
+    "indexed_at": "2026-08-01T20:30:14.434339"
   },
-  "disclosures_count": 2,
+  "disclosures_count": 1,
   "disclosures": [
     {
       "disclosure_id": "415-1",
@@ -39,41 +39,67 @@
         {
           "requirement_id": "415-1:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 415-1 (Political contributions)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
+          "description_en": "Clause a: Total monetary value of financial and in-kind political contributions made directly and indirectly by the organization by country and recipient/beneficiary.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Total monetary value of financial and in-kind political contributions made directly and indirectly by the organization by country and recipient/beneficiary.",
+          "requirement_type": "Quantitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "3-3",
-      "title_en": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "title_vi": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "disclosure_type": "Topic-Specific",
-      "mandatory": true,
-      "requirements": [
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
         {
-          "requirement_id": "3-3:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);)",
-          "description_vi": null,
+          "requirement_id": "415-1:b",
+          "item_code": "b",
+          "description_en": "Clause b: If applicable, how the monetary value of in-kind contributions was estimated.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: If applicable, how the monetary value of in-kind contributions was estimated.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "415-1:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 1 When compiling the information specified in Disclosure 415-1, the reporting organization shall calculate financial political contributions in compliance with national accounting rules, where these exist.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: When compiling the information specified in Disclosure 415-1, the reporting organization shall calculate financial political contributions in compliance with national accounting rules, where these exist.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "415-1:1",
+          "item_code": "1",
+          "description_en": "Clause 1: Organisation for Economic Co-operation and Development (OECD), *OECD Guidelines for Multinational Enterprises*, 2011.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Organisation for Economic Co-operation and Development (OECD), *OECD Guidelines for Multinational Enterprises*, 2011.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 415-1.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 415-1.",
+      "sdg_mapping": [
+        "SDG 12: Responsible Consumption and Production"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     }
   ]
 }

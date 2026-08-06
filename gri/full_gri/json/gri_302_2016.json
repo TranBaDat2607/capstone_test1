@@ -2,7 +2,7 @@
   "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
   "standard_id": "GRI 302",
   "title_en": "Energy 2016",
-  "title_vi": "Energy 2016",
+  "title_vi": "GRI 302: Năng lượng 2016",
   "pillar": "E — Environmental",
   "series": "Environmental (300 Series / Revisions)",
   "category": "Topic-Environmental",
@@ -23,11 +23,11 @@
   "provenance": {
     "relative_pdf_path": "Full set of GRI Standards - English\\GRI 302_ Energy 2016.pdf",
     "file_size_bytes": 906136,
-    "page_count": 19,
+    "page_count": 25,
     "sha256": "0dcb278efdff5323f116fc4e5815b978f64ea3337b40e61f03a96a1cbccafb62",
-    "indexed_at": "2026-07-25T14:35:58.616882"
+    "indexed_at": "2026-08-01T20:30:14.367652"
   },
-  "disclosures_count": 9,
+  "disclosures_count": 5,
   "disclosures": [
     {
       "disclosure_id": "302-1",
@@ -39,18 +39,181 @@
         {
           "requirement_id": "302-1:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 302-1 (Energy consumption within the organization)",
-          "description_vi": null,
+          "description_en": "Clause a: Total fuel consumption within the organization from non-renewable sources, in joules or multiples, and including fuel types used.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Total fuel consumption within the organization from non-renewable sources, in joules or multiples, and including fuel types used.",
           "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "Joules (J)",
+            "Gigajoules (GJ)",
+            "Kilowatt-hours (kWh)",
+            "MWh"
+          ],
+          "breakdown_dimensions": [
+            "by fuel type (renewable/non-renewable)",
+            "by activity",
+            "by facility"
+          ]
+        },
+        {
+          "requirement_id": "302-1:b",
+          "item_code": "b",
+          "description_en": "Clause b: Total fuel consumption within the organization from renewable sources, in joules or multiples, and including fuel types used.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Total fuel consumption within the organization from renewable sources, in joules or multiples, and including fuel types used.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "Joules (J)",
+            "Gigajoules (GJ)",
+            "Kilowatt-hours (kWh)",
+            "MWh"
+          ],
+          "breakdown_dimensions": [
+            "by fuel type (renewable/non-renewable)",
+            "by activity",
+            "by facility"
+          ]
+        },
+        {
+          "requirement_id": "302-1:c",
+          "item_code": "c",
+          "description_en": "Clause c: In joules, watt-hours or multiples, the total: - i. electricity consumption - ii. heating consumption - iii. cooling consumption - iv. steam consumption",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: In joules, watt-hours or multiples, the total: - i. electricity consumption - ii. heating consumption - iii. cooling consumption - iv. steam consumption",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "Joules (J)",
+            "Gigajoules (GJ)",
+            "Kilowatt-hours (kWh)",
+            "MWh"
+          ],
+          "breakdown_dimensions": [
+            "by fuel type (renewable/non-renewable)",
+            "by activity",
+            "by facility"
+          ]
+        },
+        {
+          "requirement_id": "302-1:d",
+          "item_code": "d",
+          "description_en": "Clause d: In joules, watt-hours or multiples, the total: - i. electricity sold - ii. heating sold - iii. cooling sold - iv. steam sold",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: In joules, watt-hours or multiples, the total: - i. electricity sold - ii. heating sold - iii. cooling sold - iv. steam sold",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "Joules (J)",
+            "Gigajoules (GJ)",
+            "Kilowatt-hours (kWh)",
+            "MWh"
+          ],
+          "breakdown_dimensions": [
+            "by fuel type (renewable/non-renewable)",
+            "by activity",
+            "by facility"
+          ]
+        },
+        {
+          "requirement_id": "302-1:e",
+          "item_code": "e",
+          "description_en": "Clause e: Total energy consumption within the organization, in joules or multiples.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Total energy consumption within the organization, in joules or multiples.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "Joules (J)",
+            "Gigajoules (GJ)",
+            "Kilowatt-hours (kWh)",
+            "MWh"
+          ],
+          "breakdown_dimensions": [
+            "by fuel type (renewable/non-renewable)",
+            "by activity",
+            "by facility"
+          ]
+        },
+        {
+          "requirement_id": "302-1:f",
+          "item_code": "f",
+          "description_en": "Clause f: Standards, methodologies, assumptions, and/or calculation tools used.",
+          "description_vi": "Báo cáo các tiêu chuẩn, phương pháp luận, giả định và công cụ tính toán được sử dụng.",
+          "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by fuel type (renewable/non-renewable)",
+            "by activity",
+            "by facility"
+          ]
+        },
+        {
+          "requirement_id": "302-1:g",
+          "item_code": "g",
+          "description_en": "Clause g: Source of the conversion factors used.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Source of the conversion factors used.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by fuel type (renewable/non-renewable)",
+            "by activity",
+            "by facility"
+          ]
+        },
+        {
+          "requirement_id": "302-1:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 1 When compiling the information specified in Disclosure 302-1, the reporting organization shall: - 2.1.1 avoid the double-counting of fuel consumption, when reporting self-generated energy consumption. If the organization generates electricity from a non-renewable or renewable fuel source and then consumes the generated electricity, the energy consumption shall be counted once under fuel consumption; - 2.1.2 report fuel consumption separately for non-renewable and renewable fuel sources; - 2.1.3 only report energy consumed by entities owned or controlled by the organization; - 2.1.4 calculate the total energy consumption within the organization in joules or multiples using the following formula:",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: When compiling the information specified in Disclosure 302-1, the reporting organization shall: - 2.1.1 avoid the double-counting of fuel consumption, when reporting self-generated energy consumption. If the organization generates electricity from a non-renewable or renewable fuel source and then consumes the generated electricity, the energy consumption shall be counted once under fuel consumption; - 2.1.2 report fuel consumption separately for non-renewable and renewable fuel sources; - 2.1.3 only report energy consumed by entities owned or controlled by the organization; - 2.1.4 calculate the total energy consumption within the organization in joules or multiples using the following formula:",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "Joules (J)",
+            "Gigajoules (GJ)",
+            "Kilowatt-hours (kWh)",
+            "MWh"
+          ],
+          "breakdown_dimensions": [
+            "by fuel type (renewable/non-renewable)",
+            "by activity",
+            "by facility"
+          ]
+        },
+        {
+          "requirement_id": "302-1:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 2 When compiling the information specified in Disclosure 302-1, the reporting organization should:",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: When compiling the information specified in Disclosure 302-1, the reporting organization should:",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by fuel type (renewable/non-renewable)",
+            "by activity",
+            "by facility"
+          ]
+        },
+        {
+          "requirement_id": "302-1:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 2.1 apply conversion factors consistently for the data disclosed; - 2.2.2 use local conversion factors to convert fuel to joules, or multiples, when possible; - 2.2.3 use the generic conversion factors, when local conversion factors are unavailable; - 2.2.4 if subject to different standards and methodologies, describe the approach to selecting them; - 2.2.5 report energy consumption for a consistent group of entities. When possible, the group of entities should also be consistent with the group of entities used in [Disclosures 305-1](#) and [305-2](#) of *GRI 305: Emissions 2016*; - 2.2.6 where it aids transparency or comparability over time, provide a breakdown of energy consumption data by: - 2.2.6.1 business unit or facility; - 2.2.6.2 country; - 2.2.6.3 type of source (see definitions for the listing of [non-renewable sources](#) and [renewable sources](#)); - 2.2.6.4 type of activity.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ; - 2.2.2 use local conversion factors to convert fuel to joules, or multiples, when possible; - 2.2.3 use the generic conversion factors, when local conversion factors are unavailable; - 2.2.4 if subject to different standards and methodologies, describe the approach to selecting them; - 2.2.5 report energy consumption for a consistent group of entities. When possible, the group of entities should also be consistent with the group of entities used in [Disclosures 305-1](#) and [305-2](#) of *GRI 305: Emissions 2016*; - 2.2.6 where it aids transparency or comparability over time, provide a breakdown of energy consumption data by: - 2.2.6.1 business unit or facility; - 2.2.6.2 country; - 2.2.6.3 type of source (see definitions for the listing of [non-renewable sources](#) and [renewable sources](#)); - 2.2.6.4 type of activity.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "Joules (J)",
+            "Gigajoules (GJ)",
+            "Kilowatt-hours (kWh)",
+            "MWh"
+          ],
+          "breakdown_dimensions": [
+            "by fuel type (renewable/non-renewable)",
+            "by activity",
+            "by facility"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 302-1.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 302-1.",
+      "sdg_mapping": [
+        "SDG 7: Affordable and Clean Energy",
+        "SDG 13: Climate Action"
+      ],
+      "esrs_mapping": [
+        "ESRS E1 Climate Change (E1-5 Energy consumption & mix)"
+      ],
+      "issb_mapping": [
+        "IFRS S2 Climate-related Disclosures (Paragraph 21)"
+      ]
     },
     {
       "disclosure_id": "302-2",
@@ -62,18 +225,164 @@
         {
           "requirement_id": "302-2:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 302-2 (Energy consumption outside of the organization)",
-          "description_vi": null,
+          "description_en": "Clause a: **Energy consumption outside of the organization, in joules or multiples.**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **Energy consumption outside of the organization, in joules or multiples.**",
           "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "Joules (J)",
+            "Gigajoules (GJ)",
+            "Kilowatt-hours (kWh)",
+            "MWh"
+          ],
+          "breakdown_dimensions": [
+            "by fuel type (renewable/non-renewable)",
+            "by activity",
+            "by facility"
+          ]
+        },
+        {
+          "requirement_id": "302-2:b",
+          "item_code": "b",
+          "description_en": "Clause b: **Standards, methodologies, assumptions, and/or calculation tools used.**",
+          "description_vi": "Báo cáo các tiêu chuẩn, phương pháp luận, giả định và công cụ tính toán được sử dụng.",
+          "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by fuel type (renewable/non-renewable)",
+            "by activity",
+            "by facility"
+          ]
+        },
+        {
+          "requirement_id": "302-2:c",
+          "item_code": "c",
+          "description_en": "Clause c: **Source of the conversion factors used.**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **Source of the conversion factors used.**",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by fuel type (renewable/non-renewable)",
+            "by activity",
+            "by facility"
+          ]
+        },
+        {
+          "requirement_id": "302-2:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 3 **When compiling the information specified in Disclosure 302-2, the reporting organization shall exclude energy consumption reported in Disclosure 302-1.**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **When compiling the information specified in Disclosure 302-2, the reporting organization shall exclude energy consumption reported in Disclosure 302-1.**",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by fuel type (renewable/non-renewable)",
+            "by activity",
+            "by facility"
+          ]
+        },
+        {
+          "requirement_id": "302-2:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 4 When compiling the information specified in Disclosure 302-2, the reporting organization should:",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: When compiling the information specified in Disclosure 302-2, the reporting organization should:",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by fuel type (renewable/non-renewable)",
+            "by activity",
+            "by facility"
+          ]
+        },
+        {
+          "requirement_id": "302-2:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 4.1 if subject to different standards and methodologies, describe the approach to selecting them;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , describe the approach to selecting them;",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by fuel type (renewable/non-renewable)",
+            "by activity",
+            "by facility"
+          ]
+        },
+        {
+          "requirement_id": "302-2:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 4.2 list energy consumption outside of the organization, with a breakdown by upstream and downstream categories and activities.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , with a breakdown by upstream and downstream categories and activities.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by fuel type (renewable/non-renewable)",
+            "by activity",
+            "by facility"
+          ]
+        },
+        {
+          "requirement_id": "302-2:1",
+          "item_code": "1",
+          "description_en": "Clause 1: Purchased goods and services",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Purchased goods and services",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by fuel type (renewable/non-renewable)",
+            "by activity",
+            "by facility"
+          ]
+        },
+        {
+          "requirement_id": "302-2:1",
+          "item_code": "1",
+          "description_en": "Clause 1: Downstream transportation and distribution",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Downstream transportation and distribution",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by fuel type (renewable/non-renewable)",
+            "by activity",
+            "by facility"
+          ]
+        },
+        {
+          "requirement_id": "302-2:6",
+          "item_code": "6",
+          "description_en": "Clause 6: Franchises",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Franchises",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by fuel type (renewable/non-renewable)",
+            "by activity",
+            "by facility"
+          ]
+        },
+        {
+          "requirement_id": "302-2:7",
+          "item_code": "7",
+          "description_en": "Clause 7: Investments - Other downstream",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Investments - Other downstream",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by fuel type (renewable/non-renewable)",
+            "by activity",
+            "by facility"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "- 2.4 When compiling the information specified in Disclosure 302-2, the reporting organization should:\n\n- 2.4.1 if subject to different standards and methodologies, describe the approach to selecting them;\n- 2.4.2 list energy consumption outside of the organization, with a breakdown by upstream and downstream categories and activities.\n\nGuidance Summary:\n#### Guidance for Disclosure 302-2\n\nThe reporting organization can identify energy consumption outside of the organization by assessing whether an activity's energy consumption:\n\n- contributes significantly to the organization's total anticipated energy consumption outside of the organization;\n- offers potential for reductions the organization can undertake or influence;\n- contributes to climate change-related risks, such as financial, regulatory, supply chain, product and customer, litigation, and reputational risks;\n- is deemed material by stakeholders, such as customers, suppliers, investors, or civil society;\n- results from outsourced activities previously performed in-house, or that are typically performed in-house by other organizations in the same sector;\n- has been identified as si...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 302-2.",
+      "sdg_mapping": [
+        "SDG 7: Affordable and Clean Energy",
+        "SDG 13: Climate Action"
+      ],
+      "esrs_mapping": [
+        "ESRS E1 Climate Change (E1-5 Energy consumption & mix)"
+      ],
+      "issb_mapping": [
+        "IFRS S2 Climate-related Disclosures (Paragraph 21)"
+      ]
     },
     {
       "disclosure_id": "302-3",
@@ -85,133 +394,177 @@
         {
           "requirement_id": "302-3:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 302-3 (Energy intensity)",
-          "description_vi": null,
-          "requirement_type": "Quantitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "302-5",
-      "title_en": "Reductions in energy requirements of products and services",
-      "title_vi": "Reductions in energy requirements of products and services",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
-        {
-          "requirement_id": "302-5:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 302-5 (Reductions in energy requirements of products and services)",
-          "description_vi": null,
-          "requirement_type": "Quantitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "3-3",
-      "title_en": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "title_vi": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
-        {
-          "requirement_id": "3-3:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);)",
-          "description_vi": null,
+          "description_en": "Clause a: **Energy intensity ratio for the organization.**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **Energy intensity ratio for the organization.**",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "305-1",
-      "title_en": "of GRI 305: Emissions 2016. Consuming",
-      "title_vi": "of GRI 305: Emissions 2016. Consuming",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
+          "breakdown_dimensions": [
+            "by fuel type (renewable/non-renewable)",
+            "by activity",
+            "by facility"
+          ]
+        },
         {
-          "requirement_id": "305-1:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 305-1 (of GRI 305: Emissions 2016. Consuming)",
-          "description_vi": null,
+          "requirement_id": "302-3:b",
+          "item_code": "b",
+          "description_en": "Clause b: **Organization-specific metric (the denominator) chosen to calculate the ratio.**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **Organization-specific metric (the denominator) chosen to calculate the ratio.**",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by fuel type (renewable/non-renewable)",
+            "by activity",
+            "by facility"
+          ]
+        },
+        {
+          "requirement_id": "302-3:c",
+          "item_code": "c",
+          "description_en": "Clause c: **Types of energy included in the intensity ratio; whether fuel, electricity, heating, cooling, steam, or all.**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **Types of energy included in the intensity ratio; whether fuel, electricity, heating, cooling, steam, or all.**",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by fuel type (renewable/non-renewable)",
+            "by activity",
+            "by facility"
+          ]
+        },
+        {
+          "requirement_id": "302-3:d",
+          "item_code": "d",
+          "description_en": "Clause d: **Whether the ratio uses energy consumption within the organization, outside of it, or both.**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **Whether the ratio uses energy consumption within the organization, outside of it, or both.**",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by fuel type (renewable/non-renewable)",
+            "by activity",
+            "by facility"
+          ]
+        },
+        {
+          "requirement_id": "302-3:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 5 When compiling the information specified in Disclosure 302-3, the reporting organization shall:**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: When compiling the information specified in Disclosure 302-3, the reporting organization shall:**",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by fuel type (renewable/non-renewable)",
+            "by activity",
+            "by facility"
+          ]
+        },
+        {
+          "requirement_id": "302-3:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 5.1 calculate the ratio by dividing the absolute energy consumption (the numerator) by the organization-specific metric (the denominator);**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: (the numerator) by the organization-specific metric (the denominator);**",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by fuel type (renewable/non-renewable)",
+            "by activity",
+            "by facility"
+          ]
+        },
+        {
+          "requirement_id": "302-3:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 5.2 if reporting an intensity ratio both for the energy consumed within the organization and outside of it, report these intensity ratios separately.**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , report these intensity ratios separately.**",
           "requirement_type": "Quantitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "305-2",
-      "title_en": "of GRI 305:",
-      "title_vi": "of GRI 305:",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
+          "unit_of_measure": [
+            "Joules (J)",
+            "Gigajoules (GJ)",
+            "Kilowatt-hours (kWh)",
+            "MWh"
+          ],
+          "breakdown_dimensions": [
+            "by fuel type (renewable/non-renewable)",
+            "by activity",
+            "by facility"
+          ]
+        },
         {
-          "requirement_id": "305-2:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 305-2 (of GRI 305:)",
-          "description_vi": null,
+          "requirement_id": "302-3:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 6** When compiling the information specified in Disclosure 302-3, the reporting organization should, where it aids transparency or comparability over time, provide a breakdown of the energy intensity ratio by:",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ** When compiling the information specified in Disclosure 302-3, the reporting organization should, where it aids transparency or comparability over time, provide a breakdown of the energy intensity ratio by:",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "305-3",
-      "title_en": "of GRI 305:",
-      "title_vi": "of GRI 305:",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
+          "breakdown_dimensions": [
+            "by fuel type (renewable/non-renewable)",
+            "by activity",
+            "by facility"
+          ]
+        },
         {
-          "requirement_id": "305-3:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 305-3 (of GRI 305:)",
-          "description_vi": null,
+          "requirement_id": "302-3:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 6.1 business unit or facility;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ;",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by fuel type (renewable/non-renewable)",
+            "by activity",
+            "by facility"
+          ]
+        },
+        {
+          "requirement_id": "302-3:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 6.2 country;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ;",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by fuel type (renewable/non-renewable)",
+            "by activity",
+            "by facility"
+          ]
+        },
+        {
+          "requirement_id": "302-3:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 6.3 type of source (see definitions for the listing of non-renewable sources and renewable sources);",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: (see definitions for the listing of non-renewable sources and renewable sources);",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by fuel type (renewable/non-renewable)",
+            "by activity",
+            "by facility"
+          ]
+        },
+        {
+          "requirement_id": "302-3:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 6.4 type of activity.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by fuel type (renewable/non-renewable)",
+            "by activity",
+            "by facility"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "**2.6** When compiling the information specified in Disclosure 302-3, the reporting organization should, where it aids transparency or comparability over time, provide a breakdown of the energy intensity ratio by:\n\n- 2.6.1 business unit or facility;\n- 2.6.2 country;\n- 2.6.3 type of source (see definitions for the listing of non-renewable sources and renewable sources);\n- 2.6.4 type of activity.\n\nGuidance Summary:\n#### Guidance for Disclosure 302-3\n\nIntensity ratios can be provided for, among others:\n\n- products (such as energy consumed per unit produced);\n- services (such as energy consumed per function or per service);\n- sales (such as energy consumed per monetary unit of sales).\n\nOrganization-specific metrics (denominators) can include:\n\n- units of product;\n- production volume (such as metric tons, liters, or MWh);\n- size (such as m<sup>2</sup> floor space);\n- number of full-time employees;\n- monetary units (such as revenue or sales).\n\n#### Background\n\nEnergy intensity ratios define energy consumption in the context of an organization-specific metric.\n\nThese ratios express the energy required per unit of activity, output, or any other organization-specific metric. Intensity ratios are often calle...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 302-3.",
+      "sdg_mapping": [
+        "SDG 7: Affordable and Clean Energy",
+        "SDG 13: Climate Action"
+      ],
+      "esrs_mapping": [
+        "ESRS E1 Climate Change (E1-5 Energy consumption & mix)"
+      ],
+      "issb_mapping": [
+        "IFRS S2 Climate-related Disclosures (Paragraph 21)"
+      ]
     },
     {
       "disclosure_id": "302-4",
@@ -223,18 +576,73 @@
         {
           "requirement_id": "302-4:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 302-4 (Reduction of energy consumption)",
-          "description_vi": null,
+          "description_en": "The reporting organization shall report information specified in Disclosure 302-4: Reduction of energy consumption.",
+          "description_vi": "Tổ chức báo cáo phải công bố đầy đủ thông tin theo yêu cầu của Chỉ số 302-4: Reduction of energy consumption.",
           "requirement_type": "Quantitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "unit_of_measure": [
+            "Joules (J)",
+            "Gigajoules (GJ)",
+            "Kilowatt-hours (kWh)",
+            "MWh"
+          ],
+          "breakdown_dimensions": [
+            "by fuel type (renewable/non-renewable)",
+            "by activity",
+            "by facility"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 302-4.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 302-4.",
+      "sdg_mapping": [
+        "SDG 7: Affordable and Clean Energy",
+        "SDG 13: Climate Action"
+      ],
+      "esrs_mapping": [
+        "ESRS E1 Climate Change (E1-5 Energy consumption & mix)"
+      ],
+      "issb_mapping": [
+        "IFRS S2 Climate-related Disclosures (Paragraph 21)"
+      ]
+    },
+    {
+      "disclosure_id": "302-5",
+      "title_en": "Reductions in energy requirements of products and services",
+      "title_vi": "Reductions in energy requirements of products and services",
+      "disclosure_type": "General Disclosures",
+      "mandatory": true,
+      "requirements": [
+        {
+          "requirement_id": "302-5:1",
+          "item_code": "1",
+          "description_en": "Clause 1: World Resources Institute (WRI) and World Business Council for Sustainable Development (WBCSD), 'GHG Protocol Corporate Accounting and Reporting Standard', Revised Edition, 2004.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: World Resources Institute (WRI) and World Business Council for Sustainable Development (WBCSD), 'GHG Protocol Corporate Accounting and Reporting Standard', Revised Edition, 2004.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "Joules (J)",
+            "Gigajoules (GJ)",
+            "Kilowatt-hours (kWh)",
+            "MWh"
+          ],
+          "breakdown_dimensions": [
+            "by fuel type (renewable/non-renewable)",
+            "by activity",
+            "by facility"
+          ]
+        }
+      ],
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 302-5.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 302-5.",
+      "sdg_mapping": [
+        "SDG 7: Affordable and Clean Energy",
+        "SDG 13: Climate Action"
+      ],
+      "esrs_mapping": [
+        "ESRS E1 Climate Change (E1-5 Energy consumption & mix)"
+      ],
+      "issb_mapping": [
+        "IFRS S2 Climate-related Disclosures (Paragraph 21)"
+      ]
     }
   ]
 }

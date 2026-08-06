@@ -2,7 +2,7 @@
   "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
   "standard_id": "GRI 303",
   "title_en": "Water and Effluents 2018",
-  "title_vi": "Water and Effluents 2018",
+  "title_vi": "GRI 303: Tài nguyên nước và Nước thải 2018",
   "pillar": "E — Environmental",
   "series": "Environmental (300 Series / Revisions)",
   "category": "Topic-Environmental",
@@ -23,11 +23,11 @@
   "provenance": {
     "relative_pdf_path": "Full set of GRI Standards - English\\GRI 303_ Water and Effluents 2018.pdf",
     "file_size_bytes": 1028306,
-    "page_count": 29,
+    "page_count": 25,
     "sha256": "f51de08431cd5abcffb5fd37f70549eb3ba0c6c7a645af2ed8a9b7a3d722493c",
-    "indexed_at": "2026-07-25T14:35:58.666918"
+    "indexed_at": "2026-08-01T20:30:14.375974"
   },
-  "disclosures_count": 6,
+  "disclosures_count": 5,
   "disclosures": [
     {
       "disclosure_id": "303-1",
@@ -39,18 +39,107 @@
         {
           "requirement_id": "303-1:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 303-1 (Interactions with water as a shared resource)",
-          "description_vi": null,
-          "requirement_type": "Quantitative",
+          "description_en": "Clause a: A description of how the organization interacts with water, including how and where water is withdrawn, consumed, and discharged, and the water-related impacts the organization has caused or contributed to, or that are directly linked to its operations, products, or services by its business relationships (e.g., impacts caused by runoff).",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: A description of how the organization interacts with water, including how and where water is withdrawn, consumed, and discharged, and the water-related impacts the organization has caused or contributed to, or that are directly linked to its operations, products, or services by its business relationships (e.g., impacts caused by runoff).",
+          "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by source (surface, ground, sea, third-party)",
+            "by water stress area",
+            "by freshwater/other"
+          ]
+        },
+        {
+          "requirement_id": "303-1:b",
+          "item_code": "b",
+          "description_en": "Clause b: A description of the approach used to identify water-related impacts, including the scope of assessments, their timeframe, and any tools or methodologies used.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: A description of the approach used to identify water-related impacts, including the scope of assessments, their timeframe, and any tools or methodologies used.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by source (surface, ground, sea, third-party)",
+            "by water stress area",
+            "by freshwater/other"
+          ]
+        },
+        {
+          "requirement_id": "303-1:c",
+          "item_code": "c",
+          "description_en": "Clause c: A description of how water-related impacts are addressed, including how the organization works with stakeholders to steward water as a shared resource, and how it engages with suppliers or customers with significant water-related impacts.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: A description of how water-related impacts are addressed, including how the organization works with stakeholders to steward water as a shared resource, and how it engages with suppliers or customers with significant water-related impacts.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by source (surface, ground, sea, third-party)",
+            "by water stress area",
+            "by freshwater/other"
+          ]
+        },
+        {
+          "requirement_id": "303-1:d",
+          "item_code": "d",
+          "description_en": "Clause d: An explanation of the process for setting any water-related goals and targets that are part of the organization's approach to managing water and effluents, and how they relate to public policy and the local context of each area with water stress.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: An explanation of the process for setting any water-related goals and targets that are part of the organization's approach to managing water and effluents, and how they relate to public policy and the local context of each area with water stress.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by source (surface, ground, sea, third-party)",
+            "by water stress area",
+            "by freshwater/other"
+          ]
+        },
+        {
+          "requirement_id": "303-1:1",
+          "item_code": "1",
+          "description_en": "Clause 1: 2 The reporting organization should report the following additional information:",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: The reporting organization should report the following additional information:",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by source (surface, ground, sea, third-party)",
+            "by water stress area",
+            "by freshwater/other"
+          ]
+        },
+        {
+          "requirement_id": "303-1:1",
+          "item_code": "1",
+          "description_en": "Clause 1: 2.1 An overview of water use across the organization's value chain;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: An overview of water use across the organization's value chain;",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by source (surface, ground, sea, third-party)",
+            "by water stress area",
+            "by freshwater/other"
+          ]
+        },
+        {
+          "requirement_id": "303-1:1",
+          "item_code": "1",
+          "description_en": "Clause 1: 2.2 A list of specific catchments where the organization causes significant water-related impacts.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: A list of specific catchments where the organization causes significant water-related impacts.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by source (surface, ground, sea, third-party)",
+            "by water stress area",
+            "by freshwater/other"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "- 1.2 The reporting organization should report the following additional information:\n\n- 1.2.1 An overview of water use across the organization's value chain;\n- 1.2.2 A list of specific catchments where the organization causes significant water-related impacts.\n\nGuidance Summary:\n##### Guidance for Disclosure 303-1\n\nThrough its value chain, an organization can affect both the quality as well as the availability of water. If the reporting organization has identified significant water-related impacts in the value chain, which includes activities carried out by the organization, and by entities upstream and downstream from the organization, it is required to report information about these impacts. See [Guidance to 3-3-b in GRI 3: Material Topics 2021](#) for more information about reporting an organization's involvement with negative impacts.\n\nThe description of how the organization interacts with water can include information on specific catchments where water is withdrawn, consumed, and discharged, and information on what the water is used for in activities carried ...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 303-1.",
+      "sdg_mapping": [
+        "SDG 6: Clean Water and Sanitation",
+        "SDG 12: Responsible Consumption"
+      ],
+      "esrs_mapping": [
+        "ESRS E3 Water and Marine Resources (E3-4 Water consumption)"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "303-2",
@@ -62,18 +151,29 @@
         {
           "requirement_id": "303-2:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 303-2 (Management of water discharge-related impacts)",
-          "description_vi": null,
-          "requirement_type": "Quantitative",
+          "description_en": "Clause a: **A description of any minimum standards set for the quality of effluent discharge, and how these minimum standards were determined, including:** - i. **how standards for facilities operating in locations with no local discharge requirements were determined;** - ii. **any internally developed water quality standards or guidelines;** - iii. **any sector-specific standards considered;** - iv. **whether the profile of the receiving waterbody was considered.**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **A description of any minimum standards set for the quality of effluent discharge, and how these minimum standards were determined, including:** - i. **how standards for facilities operating in locations with no local discharge requirements were determined;** - ii. **any internally developed water quality standards or guidelines;** - iii. **any sector-specific standards considered;** - iv. **whether the profile of the receiving waterbody was considered.**",
+          "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by source (surface, ground, sea, third-party)",
+            "by water stress area",
+            "by freshwater/other"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 303-2.\n\nGuidance Summary:\n##### Guidance for Disclosure 303-2\n\nMinimum standards are those that go beyond regulatory requirements in controlling the quality of effluent discharge.\n\nWater quality refers to the physical, chemical, biological, and taste-related characteristics of water. It is a measure of water suitability for a given purpose or function, including its use as a human right. Water quality standards help uphold water quality in order to protect ecosystems, wildlife, and human health and welfare, and can be based on water properties, such as temperature or pH value.\n\nThe specific choice of water quality standards and parameters can vary depending on an organization's products, services, and facility locations, and can depend on national and/or regional regulations, as well as the profile of the receiving...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 303-2.",
+      "sdg_mapping": [
+        "SDG 6: Clean Water and Sanitation",
+        "SDG 12: Responsible Consumption"
+      ],
+      "esrs_mapping": [
+        "ESRS E3 Water and Marine Resources (E3-4 Water consumption)"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "303-3",
@@ -85,18 +185,133 @@
         {
           "requirement_id": "303-3:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 303-3 (Water withdrawal)",
-          "description_vi": null,
-          "requirement_type": "Quantitative",
+          "description_en": "Clause a: Total water withdrawal from all areas in megaliters, and a breakdown of this total by the following sources, if applicable: - i. Surface water; - ii. Groundwater; - iii. Seawater; - iv. Produced water; - v. Third-party water.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Total water withdrawal from all areas in megaliters, and a breakdown of this total by the following sources, if applicable: - i. Surface water; - ii. Groundwater; - iii. Seawater; - iv. Produced water; - v. Third-party water.",
+          "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by source (surface, ground, sea, third-party)",
+            "by water stress area",
+            "by freshwater/other"
+          ]
+        },
+        {
+          "requirement_id": "303-3:b",
+          "item_code": "b",
+          "description_en": "Clause b: Total water withdrawal from all areas with water stress in megaliters, and a breakdown of this total by the following sources, if applicable: - i. Surface water; - ii. Groundwater; - iii. Seawater; - iv. Produced water; - v. Third-party water, and a breakdown of this total by the withdrawal sources listed in i-iv.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Total water withdrawal from all areas with water stress in megaliters, and a breakdown of this total by the following sources, if applicable: - i. Surface water; - ii. Groundwater; - iii. Seawater; - iv. Produced water; - v. Third-party water, and a breakdown of this total by the withdrawal sources listed in i-iv.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by source (surface, ground, sea, third-party)",
+            "by water stress area",
+            "by freshwater/other"
+          ]
+        },
+        {
+          "requirement_id": "303-3:c",
+          "item_code": "c",
+          "description_en": "Clause c: A breakdown of total water withdrawal from each of the sources listed in Disclosures 303-3-a and 303-3-b in megaliters by the following categories: - i. Freshwater ( $\\leq 1,000$ mg/L Total Dissolved Solids); - ii. Other water ( $> 1,000$ mg/L Total Dissolved Solids).",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: A breakdown of total water withdrawal from each of the sources listed in Disclosures 303-3-a and 303-3-b in megaliters by the following categories: - i. Freshwater ( $\\leq 1,000$ mg/L Total Dissolved Solids); - ii. Other water ( $> 1,000$ mg/L Total Dissolved Solids).",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by source (surface, ground, sea, third-party)",
+            "by water stress area",
+            "by freshwater/other"
+          ]
+        },
+        {
+          "requirement_id": "303-3:d",
+          "item_code": "d",
+          "description_en": "Clause d: Any contextual information necessary to understand how the data have been compiled, such as any standards, methodologies, and assumptions used.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Any contextual information necessary to understand how the data have been compiled, such as any standards, methodologies, and assumptions used.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by source (surface, ground, sea, third-party)",
+            "by water stress area",
+            "by freshwater/other"
+          ]
+        },
+        {
+          "requirement_id": "303-3:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 1 When compiling the information specified in Disclosure 303-3, the reporting organization shall use publicly available and credible tools and methodologies for assessing water stress in an area.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: When compiling the information specified in Disclosure 303-3, the reporting organization shall use publicly available and credible tools and methodologies for assessing water stress in an area.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by source (surface, ground, sea, third-party)",
+            "by water stress area",
+            "by freshwater/other"
+          ]
+        },
+        {
+          "requirement_id": "303-3:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 2 The reporting organization should report the following additional information:",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: The reporting organization should report the following additional information:",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by source (surface, ground, sea, third-party)",
+            "by water stress area",
+            "by freshwater/other"
+          ]
+        },
+        {
+          "requirement_id": "303-3:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 2.1 A breakdown of total water withdrawal in megaliters by withdrawal source categories listed in Disclosure 303-3, at each facility in areas with water stress;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: A breakdown of total water withdrawal in megaliters by withdrawal source categories listed in Disclosure 303-3, at each facility in areas with water stress;",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by source (surface, ground, sea, third-party)",
+            "by water stress area",
+            "by freshwater/other"
+          ]
+        },
+        {
+          "requirement_id": "303-3:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 2.2 Total water withdrawal in megaliters by suppliers with significant water-related impacts in areas with water stress.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Total water withdrawal in megaliters by suppliers with significant water-related impacts in areas with water stress.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by source (surface, ground, sea, third-party)",
+            "by water stress area",
+            "by freshwater/other"
+          ]
+        },
+        {
+          "requirement_id": "303-3:b",
+          "item_code": "b",
+          "description_en": "Clause b: The organization can additionally report any further breakdowns for other water withdrawal based on its water management and reporting practices, as long as it explains the approach used to define water quality using Disclosure 303-3-d. The organization can report additional information on how water quality has been determined, including consideration of the potential value of water to its users, as well as any absolute physical and/or chemical criteria used.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: The organization can additionally report any further breakdowns for other water withdrawal based on its water management and reporting practices, as long as it explains the approach used to define water quality using Disclosure 303-3-d. The organization can report additional information on how water quality has been determined, including consideration of the potential value of water to its users, as well as any absolute physical and/or chemical criteria used.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by source (surface, ground, sea, third-party)",
+            "by water stress area",
+            "by freshwater/other"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "- 2.2 The reporting organization should report the following additional information:\n\n- 2.2.1 A breakdown of total water withdrawal in megaliters by withdrawal source categories listed in Disclosure 303-3, at each facility in areas with water stress;\n- 2.2.2 Total water withdrawal in megaliters by suppliers with significant water-related impacts in areas with water stress.\n\n#\n\nGuidance Summary:\n##### Background\n\nThe volume of water withdrawal from areas with water stress can indicate an organization's impacts in sensitive locations.\n\nTo learn more about locations where water-related impacts might be significant, and where actions to address them are most needed, the reporting organization can also report the information requested in Disclosure 303-3 for each facility in areas with water stress. This can give stakeholders more confidence in the organization's water stewardship efforts and practices.\n\n##### Guidance for Disclosure 303-3\n\nFor an example of how to present information on requirements in Disclosure 303-3, see [Table 1](#).\n\nSurface water includes collected or harvested rainwater. Third-party water includes water supplied by municipal water networks or other organizatio...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 303-3.",
+      "sdg_mapping": [
+        "SDG 6: Clean Water and Sanitation",
+        "SDG 12: Responsible Consumption"
+      ],
+      "esrs_mapping": [
+        "ESRS E3 Water and Marine Resources (E3-4 Water consumption)"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "303-4",
@@ -108,18 +323,142 @@
         {
           "requirement_id": "303-4:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 303-4 (Water discharge)",
-          "description_vi": null,
+          "description_en": "Clause a: **Total water discharge** to all areas in megaliters, and a breakdown of this total by the following types of destination, if applicable: - i. Surface water; - ii. Groundwater; - iii. Seawater; - iv. Third-party water, and the volume of this total sent for use to other organizations, if applicable.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **Total water discharge** to all areas in megaliters, and a breakdown of this total by the following types of destination, if applicable: - i. Surface water; - ii. Groundwater; - iii. Seawater; - iv. Third-party water, and the volume of this total sent for use to other organizations, if applicable.",
           "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "megalitres (ML)",
+            "cubic meters (m3)"
+          ],
+          "breakdown_dimensions": [
+            "by source (surface, ground, sea, third-party)",
+            "by water stress area",
+            "by freshwater/other"
+          ]
+        },
+        {
+          "requirement_id": "303-4:b",
+          "item_code": "b",
+          "description_en": "Clause b: **A breakdown of total water discharge to all areas in megaliters by the following categories:** - i. Freshwater ( $\\leq 1,000$ mg/L Total Dissolved Solids); - ii. Other water ( $> 1,000$ mg/L Total Dissolved Solids).",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **A breakdown of total water discharge to all areas in megaliters by the following categories:** - i. Freshwater ( $\\leq 1,000$ mg/L Total Dissolved Solids); - ii. Other water ( $> 1,000$ mg/L Total Dissolved Solids).",
+          "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by source (surface, ground, sea, third-party)",
+            "by water stress area",
+            "by freshwater/other"
+          ]
+        },
+        {
+          "requirement_id": "303-4:c",
+          "item_code": "c",
+          "description_en": "Clause c: **Total water discharge to all areas with water stress in megaliters, and a breakdown of this total by the following categories:** - i. Freshwater ( $\\leq 1,000$ mg/L Total Dissolved Solids); - ii. Other water ( $> 1,000$ mg/L Total Dissolved Solids).",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **Total water discharge to all areas with water stress in megaliters, and a breakdown of this total by the following categories:** - i. Freshwater ( $\\leq 1,000$ mg/L Total Dissolved Solids); - ii. Other water ( $> 1,000$ mg/L Total Dissolved Solids).",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by source (surface, ground, sea, third-party)",
+            "by water stress area",
+            "by freshwater/other"
+          ]
+        },
+        {
+          "requirement_id": "303-4:d",
+          "item_code": "d",
+          "description_en": "Clause d: **Priority substances of concern for which discharges are treated, including:** - i. how priority substances of concern were defined, and any international standard, authoritative list, or criteria used; - ii. the approach for setting discharge limits for priority substances of concern; - iii. number of incidents of non-compliance with discharge limits.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **Priority substances of concern for which discharges are treated, including:** - i. how priority substances of concern were defined, and any international standard, authoritative list, or criteria used; - ii. the approach for setting discharge limits for priority substances of concern; - iii. number of incidents of non-compliance with discharge limits.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "megalitres (ML)",
+            "cubic meters (m3)"
+          ],
+          "breakdown_dimensions": [
+            "by source (surface, ground, sea, third-party)",
+            "by water stress area",
+            "by freshwater/other"
+          ]
+        },
+        {
+          "requirement_id": "303-4:e",
+          "item_code": "e",
+          "description_en": "Clause e: **Any contextual information necessary to understand how the data have been compiled, such as any standards, methodologies, and assumptions used.**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **Any contextual information necessary to understand how the data have been compiled, such as any standards, methodologies, and assumptions used.**",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by source (surface, ground, sea, third-party)",
+            "by water stress area",
+            "by freshwater/other"
+          ]
+        },
+        {
+          "requirement_id": "303-4:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 3 **When compiling the information specified in Disclosure 303-4, the reporting organization shall use publicly available and credible tools and methodologies for assessing water stress in an area.**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **When compiling the information specified in Disclosure 303-4, the reporting organization shall use publicly available and credible tools and methodologies for assessing water stress in an area.**",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by source (surface, ground, sea, third-party)",
+            "by water stress area",
+            "by freshwater/other"
+          ]
+        },
+        {
+          "requirement_id": "303-4:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 4 The reporting organization should report the following additional information: - 2.4.1 The number of occasions on which discharge limits were exceeded; - 2.4.2 A breakdown of total water discharge to all areas in megaliters by level of treatment, and how the treatment levels were determined; - 2.4.3 Percentage of suppliers with significant water-related impacts from water discharge that have set minimum standards for the quality of their effluent discharge.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: The reporting organization should report the following additional information: - 2.4.1 The number of occasions on which discharge limits were exceeded; - 2.4.2 A breakdown of total water discharge to all areas in megaliters by level of treatment, and how the treatment levels were determined; - 2.4.3 Percentage of suppliers with significant water-related impacts from water discharge that have set minimum standards for the quality of their effluent discharge.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "megalitres (ML)",
+            "cubic meters (m3)"
+          ],
+          "breakdown_dimensions": [
+            "by source (surface, ground, sea, third-party)",
+            "by water stress area",
+            "by freshwater/other"
+          ]
+        },
+        {
+          "requirement_id": "303-4:e",
+          "item_code": "e",
+          "description_en": "Clause e: The organization can report additional information on how water quality has been determined, including consideration of the potential value of water to its users, as well as any absolute physical and/or chemical criteria used.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: The organization can report additional information on how water quality has been determined, including consideration of the potential value of water to its users, as well as any absolute physical and/or chemical criteria used.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by source (surface, ground, sea, third-party)",
+            "by water stress area",
+            "by freshwater/other"
+          ]
+        },
+        {
+          "requirement_id": "303-4:d",
+          "item_code": "d",
+          "description_en": "Clause d: The organization can also describe any plans to reduce unauthorized discharges in the future.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: The organization can also describe any plans to reduce unauthorized discharges in the future.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by source (surface, ground, sea, third-party)",
+            "by water stress area",
+            "by freshwater/other"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "- 2.4 The reporting organization should report the following additional information:\n  - 2.4.1 The number of occasions on which discharge limits were exceeded;\n  - 2.4.2 A breakdown of total water discharge to all areas in megaliters by level of treatment, and how the treatment levels were determined;\n  - 2.4.3 Percentage of suppliers with significant water-related impacts from water discharge that have set minimum standards for the quality of their effluent discharge.\n\n#\n\nGuidance Summary:\n##### Background\n\nQuantifying the volume of water discharge can help an organization understand its negative impacts on the receiving waterbody.\n\nThe relationship between water discharge and negative impacts is not linear. An increase in the total volume of water discharge does not necessarily correspond to greater negative impacts, since these impacts depend on the quality of the water discharge and the sensitivity of the receiving waterbody. An organization with a high volume of water discharge, but also a high level of treatment and strict quality standards, can have positive impacts on the receiving waterbody.\n\nTo learn more about locations where water-related impacts might be significant, and where actions to address them are most needed, the reporting organization can also report the...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 303-4.",
+      "sdg_mapping": [
+        "SDG 6: Clean Water and Sanitation",
+        "SDG 12: Responsible Consumption"
+      ],
+      "esrs_mapping": [
+        "ESRS E3 Water and Marine Resources (E3-4 Water consumption)"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "303-5",
@@ -131,41 +470,107 @@
         {
           "requirement_id": "303-5:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 303-5 (Water consumption)",
-          "description_vi": null,
-          "requirement_type": "Quantitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "3-3",
-      "title_en": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "title_vi": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
-        {
-          "requirement_id": "3-3:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);)",
-          "description_vi": null,
+          "description_en": "Clause a: Total water consumption from all areas in megaliters.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Total water consumption from all areas in megaliters.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by source (surface, ground, sea, third-party)",
+            "by water stress area",
+            "by freshwater/other"
+          ]
+        },
+        {
+          "requirement_id": "303-5:b",
+          "item_code": "b",
+          "description_en": "Clause b: Total water consumption from all areas with water stress in megaliters.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Total water consumption from all areas with water stress in megaliters.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by source (surface, ground, sea, third-party)",
+            "by water stress area",
+            "by freshwater/other"
+          ]
+        },
+        {
+          "requirement_id": "303-5:c",
+          "item_code": "c",
+          "description_en": "Clause c: Change in water storage in megaliters, if water storage has been identified as having a significant water-related impact.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Change in water storage in megaliters, if water storage has been identified as having a significant water-related impact.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by source (surface, ground, sea, third-party)",
+            "by water stress area",
+            "by freshwater/other"
+          ]
+        },
+        {
+          "requirement_id": "303-5:d",
+          "item_code": "d",
+          "description_en": "Clause d: Any contextual information necessary to understand how the data have been compiled, such as any standards, methodologies, and assumptions used, including whether the information is calculated, estimated, modeled, or sourced from direct measurements, and the approach taken for this, such as the use of any sector-specific factors.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Any contextual information necessary to understand how the data have been compiled, such as any standards, methodologies, and assumptions used, including whether the information is calculated, estimated, modeled, or sourced from direct measurements, and the approach taken for this, such as the use of any sector-specific factors.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by source (surface, ground, sea, third-party)",
+            "by water stress area",
+            "by freshwater/other"
+          ]
+        },
+        {
+          "requirement_id": "303-5:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 5.1 Total water consumption in megaliters at each facility in areas with water stress;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Total water consumption in megaliters at each facility in areas with water stress;",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by source (surface, ground, sea, third-party)",
+            "by water stress area",
+            "by freshwater/other"
+          ]
+        },
+        {
+          "requirement_id": "303-5:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 5.2 Total water consumption in megaliters by suppliers with significant water-related impacts in areas with water stress.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Total water consumption in megaliters by suppliers with significant water-related impacts in areas with water stress.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by source (surface, ground, sea, third-party)",
+            "by water stress area",
+            "by freshwater/other"
+          ]
+        },
+        {
+          "requirement_id": "303-5:5",
+          "item_code": "5",
+          "description_en": "Clause 5: The reporting organization can amend the table according to its practices, for example by reporting additional information.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: The reporting organization can amend the table according to its practices, for example by reporting additional information.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by source (surface, ground, sea, third-party)",
+            "by water stress area",
+            "by freshwater/other"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "2.5 The reporting organization should report the following additional information:\n\n- 2.5.1 Total water consumption in megaliters at each facility in areas with water stress;\n- 2.5.2 Total water consumption in megaliters by suppliers with significant water-related impacts in areas with water stress.\n\nGuidance Summary:\n##### Background\n\nWater consumption measures water used by an organization such that it is no longer available for use by the ecosystem or local community in the reporting period. Reporting the volume of water consumption can help the organization understand the overall scale of its impact due to water withdrawal on downstream water availability.\n\n##### Guidance for Disclosure 303-5\n\nFor an example how to present information on requirements in Disclosure 303-5, see [Table 1](#).\n\nSee [Guidance for Disclosure 303-3-b](#) for how to assess areas with water stress.\n\nIf the reporting organization cannot directly measure water consumption, it may calculate this using the following formula:\n\n$$\\begin{array}{r}\n \\text{Water consumption} \\\\\n = \\\\\n \\text{Total water withdrawal} \\\\\n - \\\\\n \\text{Tota...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 303-5.",
+      "sdg_mapping": [
+        "SDG 6: Clean Water and Sanitation",
+        "SDG 12: Responsible Consumption"
+      ],
+      "esrs_mapping": [
+        "ESRS E3 Water and Marine Resources (E3-4 Water consumption)"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     }
   ]
 }

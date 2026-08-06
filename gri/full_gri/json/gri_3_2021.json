@@ -2,7 +2,7 @@
   "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
   "standard_id": "GRI 3",
   "title_en": "Material Topics 2021",
-  "title_vi": "Material Topics 2021",
+  "title_vi": "GRI 3: Các chủ đề trọng yếu 2021",
   "pillar": "Universal",
   "series": "Universal Standards",
   "category": "Universal",
@@ -23,11 +23,11 @@
   "provenance": {
     "relative_pdf_path": "Full set of GRI Standards - English\\GRI 3_ Material Topics 2021.pdf",
     "file_size_bytes": 1043984,
-    "page_count": 30,
+    "page_count": 25,
     "sha256": "42e2c8c511efaab1bf027d2b80dd9a972f14384402a8b3b6a69ebd15030d5ca4",
-    "indexed_at": "2026-07-25T14:35:58.925133"
+    "indexed_at": "2026-08-01T20:30:14.392649"
   },
-  "disclosures_count": 7,
+  "disclosures_count": 3,
   "disclosures": [
     {
       "disclosure_id": "3-1",
@@ -39,18 +39,42 @@
         {
           "requirement_id": "3-1:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 3-1 (Process to determine material topics)",
-          "description_vi": null,
+          "description_en": "Clause a: describe the process it has followed to determine its material topics, including: - i. how it has identified actual and potential, negative and positive impacts on the economy, environment, and people, including impacts on their human rights, across its activities and business relationships; - ii. how it has prioritized the impacts for reporting based on their significance;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , including: - i. how it has identified actual and potential, negative and positive impacts on the economy, environment, and people, including impacts on their human rights, across its activities and business relationships; - ii. how it has prioritized the impacts for reporting based on their significance;",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "3-1:b",
+          "item_code": "b",
+          "description_en": "Clause b: specify the stakeholders and experts whose views have informed the process of determining its material topics.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 3-1.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 3-1.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "3-2",
@@ -62,18 +86,42 @@
         {
           "requirement_id": "3-2:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 3-2 (List of material topics)",
-          "description_vi": null,
+          "description_en": "Clause a: list its material topics;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ;",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "3-2:b",
+          "item_code": "b",
+          "description_en": "Clause b: report changes to the list of material topics compared to the previous reporting period.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 3-2.\n\nGuidance Summary:\nThis disclosure requires information on the organization's material topics. The process of determining material topics is reported under [Disclosure 3-1](#) in this Standard.\n\nThe organization is required to include the material topics listed under this disclosure in the GRI content index. If the organization has determined any of the topics included in the applicable Sector Standards as not material, then the organization is required to list them in the content index and explain why they are not material. See [Requirement 5](#) and [Requirement 7](#) in *GRI 1: Foundation 2021* for more information.\n\n#### Guidance to 3-2-a\n\nThe organization can group material topics by relevant categories if this helps communicate its impacts. For example, the organization can indicate which of its materi...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 3-2.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "3-3",
@@ -85,110 +133,120 @@
         {
           "requirement_id": "3-3:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 3-3 (Management of material topics)",
-          "description_vi": null,
+          "description_en": "Clause a: describe the actual and potential, negative and positive impacts on the economy, environment, and people, including impacts on their human rights;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , negative and positive impacts on the economy, environment, and people, including impacts on their human rights;",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "2-12",
-      "title_en": "in GRI 2: General Disclosures 2021 requires information on the role of the",
-      "title_vi": "in GRI 2: General Disclosures 2021 requires information on the role of the",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
         {
-          "requirement_id": "2-12:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 2-12 (in GRI 2: General Disclosures 2021 requires information on the role of the)",
-          "description_vi": null,
+          "requirement_id": "3-3:b",
+          "item_code": "b",
+          "description_en": "Clause b: report whether the organization is involved with the negative impacts through its activities or as a result of its business relationships, and describe the activities or business relationships;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , and describe the activities or business relationships;",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "2-14",
-      "title_en": "in GRI 2. The organization",
-      "title_vi": "in GRI 2. The organization",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
         {
-          "requirement_id": "2-14:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 2-14 (in GRI 2. The organization)",
-          "description_vi": null,
+          "requirement_id": "3-3:c",
+          "item_code": "c",
+          "description_en": "Clause c: describe its policies or commitments regarding the material topic;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ;",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "2-23",
-      "title_en": "in GRI 2: General Disclosures 2021. If the organization has described its",
-      "title_vi": "in GRI 2: General Disclosures 2021. If the organization has described its",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
         {
-          "requirement_id": "2-23:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 2-23 (in GRI 2: General Disclosures 2021. If the organization has described its)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
+          "requirement_id": "3-3:d",
+          "item_code": "d",
+          "description_en": "Clause d: describe actions taken to manage the topic and related impacts, including: - i. actions to prevent or mitigate potential negative impacts; - ii. actions to address actual negative impacts, including actions to provide for or cooperate in their remediation; - iii. actions to manage actual and potential positive impacts;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , including: - i. actions to prevent or mitigate potential negative impacts; - ii. actions to address actual negative impacts, including actions to provide for or cooperate in their remediation; - iii. actions to manage actual and potential positive impacts;",
+          "requirement_type": "Quantitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "2-25",
-      "title_en": "in GRI 2 for more information on processes to remediate negative impacts.",
-      "title_vi": "in GRI 2 for more information on processes to remediate negative impacts.",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
         {
-          "requirement_id": "2-25:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 2-25 (in GRI 2 for more information on processes to remediate negative impacts.)",
-          "description_vi": null,
+          "requirement_id": "3-3:e",
+          "item_code": "e",
+          "description_en": "Clause e: report the following information about tracking the effectiveness of the actions taken: - i. processes used to track the effectiveness of the actions; - ii. goals, targets, and indicators used to evaluate progress; - iii. the effectiveness of the actions, including progress toward the goals and targets; - iv. lessons learned and how these have been incorporated into the organization's operational policies and procedures;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: : - i. processes used to track the effectiveness of the actions; - ii. goals, targets, and indicators used to evaluate progress; - iii. the effectiveness of the actions, including progress toward the goals and targets; - iv. lessons learned and how these have been incorporated into the organization's operational policies and procedures;",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "3-3:f",
+          "item_code": "f",
+          "description_en": "Clause f: describe how engagement with stakeholders has informed the actions taken (3-3-d) and how it has informed whether the actions have been effective (3-3-e).",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: (3-3-d) and how it has informed whether the actions have been effective (3-3-e).",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "3-3:3",
+          "item_code": "3",
+          "description_en": "Clause 3: If the organization's approach to managing a material topic, such as its policies or actions taken, applies to other material topics, the organization does not need to repeat this information for each topic. The organization can report this information once, with a clear explanation of all the topics it covers.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: If the organization's approach to managing a material topic, such as its policies or actions taken, applies to other material topics, the organization does not need to repeat this information for each topic. The organization can report this information once, with a clear explanation of all the topics it covers.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "3-3:6",
+          "item_code": "6",
+          "description_en": "Clause 6: 1 United Nations (UN), *Universal Declaration of Human Rights*, 1948. - 6.2 United Nations (UN), *International Covenant on Civil and Political Rights*, 1966. - 6.3 United Nations (UN), *International Covenant on Economic, Social, and Cultural Rights*, 1966. - 6.4 United Nations (UN), *Optional Protocol to the International Covenant on Civil and Political Rights*, 1966. - 6.5 United Nations (UN), *Second Optional Protocol to the International Covenant on Civil and Political Rights, aiming at the abolition of the death penalty*, 1989.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: United Nations (UN), *Universal Declaration of Human Rights*, 1948. - 6.2 United Nations (UN), *International Covenant on Civil and Political Rights*, 1966. - 6.3 United Nations (UN), *International Covenant on Economic, Social, and Cultural Rights*, 1966. - 6.4 United Nations (UN), *Optional Protocol to the International Covenant on Civil and Political Rights*, 1966. - 6.5 United Nations (UN), *Second Optional Protocol to the International Covenant on Civil and Political Rights, aiming at the abolition of the death penalty*, 1989.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 3-3.\n\nGuidance Summary:\nThis disclosure requires the organization to explain how it manages each of its material topics. This means that the organization is required to report this disclosure for each of its material topics. The requirements in this disclosure apply to every material topic.\n\nIn addition to this disclosure, there may also be disclosures and guidance in the Topic Standards and Sector Standards that address reporting information about how the organization manages a topic. For example, some Topic Standards contain disclosures about specific actions or methods to manage a topic. The organization does not need to repeat this information under Disclosure 3-3 if it is already reported under another disclosure. The organization can report the information once and provide a reference to this information to...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 3-3.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     }
   ]
 }

@@ -2,7 +2,7 @@
   "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
   "standard_id": "GRI 101",
   "title_en": "Biodiversity 2024",
-  "title_vi": "Biodiversity 2024",
+  "title_vi": "GRI 101: Đa dạng sinh học 2024",
   "pillar": "E — Environmental",
   "series": "Environmental (300 Series / Revisions)",
   "category": "Topic-Environmental",
@@ -23,11 +23,11 @@
   "provenance": {
     "relative_pdf_path": "Full set of GRI Standards - English\\GRI 101_ Biodiversity 2024 - English.pdf",
     "file_size_bytes": 1262397,
-    "page_count": 49,
+    "page_count": 25,
     "sha256": "e8b42d8fbabdec42e693db1e431690caa419dca77a20823a35fed7e9fa154732",
-    "indexed_at": "2026-07-25T14:35:57.091642"
+    "indexed_at": "2026-08-01T20:30:14.151057"
   },
-  "disclosures_count": 15,
+  "disclosures_count": 8,
   "disclosures": [
     {
       "disclosure_id": "101-1",
@@ -39,18 +39,29 @@
         {
           "requirement_id": "101-1:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 101-1 (Policies to halt and reverse biodiversity loss)",
-          "description_vi": null,
+          "description_en": "The reporting organization shall report information specified in Disclosure 101-1: Policies to halt and reverse biodiversity loss.",
+          "description_vi": "Tổ chức báo cáo phải công bố đầy đủ thông tin theo yêu cầu của Chỉ số 101-1: Policies to halt and reverse biodiversity loss.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 101-1.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 101-1.",
+      "sdg_mapping": [
+        "SDG 14: Life Below Water",
+        "SDG 15: Life on Land"
+      ],
+      "esrs_mapping": [
+        "ESRS E4 Biodiversity and Ecosystems"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "101-2",
@@ -62,18 +73,107 @@
         {
           "requirement_id": "101-2:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 101-2 (Management of biodiversity impacts)",
-          "description_vi": null,
+          "description_en": "Clause a: report how it applies the mitigation hierarchy by describing: - i. actions taken to avoid negative impacts on biodiversity; - ii. actions taken to minimize negative impacts on biodiversity that were not avoided; - iii. actions taken to restore and rehabilitate affected ecosystems, including the goals of the restoration and rehabilitation, and how stakeholders are engaged throughout the restoration and rehabilitation actions; - iv. actions taken to offset residual negative impacts on biodiversity; - v. transformative actions taken and additional conservation actions taken;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: : - i. actions taken to avoid negative impacts on biodiversity; - ii. actions taken to minimize negative impacts on biodiversity that were not avoided; - iii. actions taken to restore and rehabilitate affected ecosystems, including the goals of the restoration and rehabilitation, and how stakeholders are engaged throughout the restoration and rehabilitation actions; - iv. actions taken to offset residual negative impacts on biodiversity; - v. transformative actions taken and additional conservation actions taken;",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "101-2:b",
+          "item_code": "b",
+          "description_en": "Clause b: with reference to 101-2-a-iii, report for each site with the most significant impacts on biodiversity: - i. the size in hectares of the area under restoration or rehabilitation; - ii. the size in hectares of the area restored or rehabilitated;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , report for each site with the most significant impacts on biodiversity: - i. the size in hectares of the area under restoration or rehabilitation; - ii. the size in hectares of the area restored or rehabilitated;",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "101-2:c",
+          "item_code": "c",
+          "description_en": "Clause c: with reference to 101-2-a-iv, report for each offset: - i. the goals; - ii. the geographic location; - iii. whether and how principles of good offset practices are met; - iv. whether and how the offset is certified or verified by a third party;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , report for each offset: - i. the goals; - ii. the geographic location; - iii. whether and how principles of good offset practices are met; - iv. whether and how the offset is certified or verified by a third party;",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "101-2:d",
+          "item_code": "d",
+          "description_en": "Clause d: list which of its sites with the most significant impacts on biodiversity have a biodiversity management plan and explain why the other sites do not have a management plan;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ;",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "101-2:e",
+          "item_code": "e",
+          "description_en": "Clause e: describe how it enhances synergies and reduces trade-offs between actions taken to manage its biodiversity and climate change impacts;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ;",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "101-2:f",
+          "item_code": "f",
+          "description_en": "Clause f: describe how it ensures that the actions taken to manage its impacts on biodiversity avoid and minimize negative impacts and maximize positive impacts for stakeholders.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "101-2:v",
+          "item_code": "v",
+          "description_en": "Clause v: Restoration is the process of assisting the recovery of an ecosystem that has been degraded, damaged, or destroyed. Rehabilitation is the process of stabilizing the terrain,",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Restoration is the process of assisting the recovery of an ecosystem that has been degraded, damaged, or destroyed. Rehabilitation is the process of stabilizing the terrain,",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 101-2.\n\nGuidance Summary:\nThis disclosure provides information on the actions taken by the organization to manage its most significant impacts on biodiversity, including impacts in its supply chain. This disclosure covers the most significant impacts at the sites and for the products and services in the supply chain identified under [Disclosure 101-4](#). The organization can manage its negative impacts by managing the contribution to the direct drivers of biodiversity loss reported under [Disclosure 101-6](#) (e.g., avoid pollution or minimize greenhouse gas emissions). The organization should also report actions taken to manage impacts downstream in its value chain.\n\nOrganizations are expected to apply the mitigation hierarchy to manage their negative impacts on biodiversity and ecosystem services. The mitigation...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 101-2.",
+      "sdg_mapping": [
+        "SDG 14: Life Below Water",
+        "SDG 15: Life on Land"
+      ],
+      "esrs_mapping": [
+        "ESRS E4 Biodiversity and Ecosystems"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "101-3",
@@ -85,18 +185,42 @@
         {
           "requirement_id": "101-3:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 101-3 (Access and benefit-sharing)",
-          "description_vi": null,
+          "description_en": "Clause a: describe the process to ensure compliance with access and benefit-sharing regulations and measures;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ;",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "101-3:b",
+          "item_code": "b",
+          "description_en": "Clause b: describe voluntary actions taken to advance access and benefit-sharing that are additional to legal obligations or when there are no regulations and measures.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 101-3.\n\nGuidance Summary:\nThis disclosure provides information on how the organization complies with access and benefit-sharing (ABS) regulations and measures regarding access to genetic resources and associated traditional knowledge held by Indigenous Peoples and local communities. These regulations and measures also establish the rules on fair and equitable benefit-sharing arising from the utilization of genetic resources and the associated traditional knowledge. It also provides information on the voluntary actions taken by the organization to advance access and fair and equitable benefit-sharing.\n\nThis disclosure is relevant for organizations that use genetic resources to conduct research and development on the genetic or biochemical composition of resources, including through the application of biotechnology. ...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 101-3.",
+      "sdg_mapping": [
+        "SDG 14: Life Below Water",
+        "SDG 15: Life on Land"
+      ],
+      "esrs_mapping": [
+        "ESRS E4 Biodiversity and Ecosystems"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "101-4",
@@ -108,18 +232,29 @@
         {
           "requirement_id": "101-4:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 101-4 (Identification of biodiversity impacts)",
-          "description_vi": null,
+          "description_en": "Clause a: **explain how it has determined which of its sites and which products and services in its supply chain have the most significant actual and potential impacts on biodiversity.**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **explain how it has determined which of its sites and which products and services in its supply chain have the most significant actual and potential impacts on biodiversity.**",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 101-4.\n\nGuidance Summary:\nThis disclosure enables the organization to explain how it has determined which of its sites and which products and services in its supply chain have the most significant actual and potential impacts on biodiversity. It covers products and services from suppliers throughout the organization's supply chain, including from suppliers beyond the first tier. This provides an understanding of where in the supply chain, potentially many tiers removed from the organization, the most significant impacts on biodiversity are. The organization can additionally report the information for entities downstream in its value chain.\n\nThe activities undertaken by the organization in its sites can have impacts on biodiversity. Sites include sites owned, leased, or managed by the organization and locations wher...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 101-4.",
+      "sdg_mapping": [
+        "SDG 14: Life Below Water",
+        "SDG 15: Life on Land"
+      ],
+      "esrs_mapping": [
+        "ESRS E4 Biodiversity and Ecosystems"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "101-5",
@@ -131,18 +266,68 @@
         {
           "requirement_id": "101-5:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 101-5 (Locations with biodiversity impacts)",
-          "description_vi": null,
+          "description_en": "Clause a: report the location and size in hectares of its sites with the most significant impacts on biodiversity;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ;",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "101-5:b",
+          "item_code": "b",
+          "description_en": "Clause b: for each site reported under 101-5-a, report whether it is in or near an ecologically sensitive area, the distance to these areas, and whether these are: - i. areas of biodiversity importance; - ii. areas of high ecosystem integrity; - iii. areas of rapid decline in ecosystem integrity; - iv. areas of high physical water risks; - v. areas important for the delivery of ecosystem service benefits to Indigenous Peoples, local communities, and other stakeholders;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , report whether it is in or near an ecologically sensitive area, the distance to these areas, and whether these are: - i. areas of biodiversity importance; - ii. areas of high ecosystem integrity; - iii. areas of rapid decline in ecosystem integrity; - iv. areas of high physical water risks; - v. areas important for the delivery of ecosystem service benefits to Indigenous Peoples, local communities, and other stakeholders;",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "101-5:c",
+          "item_code": "c",
+          "description_en": "Clause c: report the activities that take place in each site reported under 101-5-a;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ;",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "101-5:d",
+          "item_code": "d",
+          "description_en": "Clause d: report the products and services in its supply chain with the most significant impacts on biodiversity and the countries or jurisdictions where the activities associated with these products and services take place.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: ",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 101-5.\n\nGuidance Summary:\nThis disclosure provides information about the locations of the organization's sites with the most significant impacts on biodiversity. It also provides information on the location of the activities associated with the products and services in its supply chain with the most significant impacts on biodiversity. The sites and products and services with the most significant impacts on biodiversity are identified under [Disclosure 101-4](#). These sites and products and services are the focus of [Disclosure 101-2](#) and Disclosures 101-5 to [101-8](#) of this Standard.\n\nIf available, the organization can additionally report the information for entities downstream in its value chain with the most significant impacts on biodiversity.\n\nFor an example of how to present information on requirements...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 101-5.",
+      "sdg_mapping": [
+        "SDG 14: Life Below Water",
+        "SDG 15: Life on Land"
+      ],
+      "esrs_mapping": [
+        "ESRS E4 Biodiversity and Ecosystems"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "101-6",
@@ -154,18 +339,120 @@
         {
           "requirement_id": "101-6:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 101-6 (Direct drivers of biodiversity loss)",
-          "description_vi": null,
+          "description_en": "Clause a: for each site reported under 101-5-a where its activities lead or could lead to land and sea use change, report: - i. the size in hectares of natural ecosystem converted since a cut-off or reference date, the cut-off date or reference date, and the type of ecosystem before and after conversion; - ii. the size in hectares of land and sea converted from one intensively used or modified ecosystem to another during the reporting period, and the type of ecosystem before and after conversion;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , report: - i. the size in hectares of natural ecosystem converted since a cut-off or reference date, the cut-off date or reference date, and the type of ecosystem before and after conversion; - ii. the size in hectares of land and sea converted from one intensively used or modified ecosystem to another during the reporting period, and the type of ecosystem before and after conversion;",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "101-6:b",
+          "item_code": "b",
+          "description_en": "Clause b: for each site reported under 101-5-a where its activities lead or could lead to the exploitation of natural resources, report: - i. for each wild species harvested, the quantity, the type, and extinction risk; - ii. water withdrawal and water consumption in megaliters;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , report: - i. for each wild species harvested, the quantity, the type, and extinction risk; - ii. water withdrawal and water consumption in megaliters;",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "101-6:c",
+          "item_code": "c",
+          "description_en": "Clause c: for each site reported under 101-5-a where its activities lead or could lead to pollution, report the quantity and the type of each pollutant generated;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , report the quantity and the type of each pollutant generated;",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "101-6:d",
+          "item_code": "d",
+          "description_en": "Clause d: for each site reported under 101-5-a where its activities lead or could lead to the introduction of invasive alien species, describe how invasive alien species are or may be introduced;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , describe how invasive alien species are or may be introduced;",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "101-6:e",
+          "item_code": "e",
+          "description_en": "Clause e: for each product and service in its supply chain reported under 101-5-d, report the information required under 101-6-a, 101-6-b, 101-6-c, and 101-6-d, with a breakdown by country or jurisdiction;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , report the information required under 101-6-a, 101-6-b, 101-6-c, and 101-6-d, with a breakdown by country or jurisdiction;",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "101-6:f",
+          "item_code": "f",
+          "description_en": "Clause f: report contextual information necessary to understand how the data has been compiled, including standards, methodologies, and assumptions used.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , including standards, methodologies, and assumptions used.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "101-6:2",
+          "item_code": "2",
+          "description_en": "Clause 2: Through its activities, an organization can use natural resources for its production processes (e.g., sand used in a construction project) or produce non-product outputs (e.g., pollutants or greenhouse gas emissions). These activities, responsible for the direct drivers of biodiversity loss, can have negative impacts on biodiversity.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Through its activities, an organization can use natural resources for its production processes (e.g., sand used in a construction project) or produce non-product outputs (e.g., pollutants or greenhouse gas emissions). These activities, responsible for the direct drivers of biodiversity loss, can have negative impacts on biodiversity.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "101-6:d",
+          "item_code": "d",
+          "description_en": "Clause d: Invasive alien species can be introduced accidentally (e.g., transport, discharge of ballast waters) or on purpose (e.g., for pest control, horticulture, pets, zoological gardens, and aquaria). The organization should report the species that are or may be introduced. For example, an organization imports ornamental plants to new areas, which may threaten local biodiversity. A maritime shipping organization may introduce shellfish, crustaceans, and other species to new areas through contaminated ballast water or encrusted organisms on ships. It can also inadvertently introduce other species, such as insects and rodents, through the transport of goods.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Invasive alien species can be introduced accidentally (e.g., transport, discharge of ballast waters) or on purpose (e.g., for pest control, horticulture, pets, zoological gardens, and aquaria). The organization should report the species that are or may be introduced. For example, an organization imports ornamental plants to new areas, which may threaten local biodiversity. A maritime shipping organization may introduce shellfish, crustaceans, and other species to new areas through contaminated ballast water or encrusted organisms on ships. It can also inadvertently introduce other species, such as insects and rodents, through the transport of goods.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 101-6.\n\nGuidance Summary:\nThis disclosure provides an understanding of the direct drivers of biodiversity loss (hereafter the direct drivers) leading to the most significant impacts. The organization should additionally report the information on the direct drivers for its downstream value chain.\n\nAccording to the Intergovernmental Science-Policy Platform on Biodiversity and Ecosystem Services (IPBES), direct drivers are the drivers that 'unequivocally influence biodiversity and ecosystem processes'. Direct drivers are sometimes referred to as 'pressures' or 'impact drivers'. The IPBES global assessment has identified land and sea use change and the exploitation of natural resources as the main direct drivers, followed by climate change, pollution, and the introduction of invasive alien species. These direct drivers...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 101-6.",
+      "sdg_mapping": [
+        "SDG 14: Life Below Water",
+        "SDG 15: Life on Land"
+      ],
+      "esrs_mapping": [
+        "ESRS E4 Biodiversity and Ecosystems"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "101-7",
@@ -177,18 +464,55 @@
         {
           "requirement_id": "101-7:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 101-7 (Changes to the state of biodiversity)",
-          "description_vi": null,
+          "description_en": "Clause a: for each site reported under 101-5-a, report the following information on affected or potentially affected ecosystems: - i. the ecosystem type for the base year; - ii. the ecosystem size in hectares for the base year; - iii. the ecosystem condition for the base year and the current reporting period;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , report the following information on affected or potentially affected ecosystems: - i. the ecosystem type for the base year; - ii. the ecosystem size in hectares for the base year; - iii. the ecosystem condition for the base year and the current reporting period;",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "101-7:b",
+          "item_code": "b",
+          "description_en": "Clause b: report contextual information necessary to understand how the data has been compiled, including standards, methodologies, and assumptions used.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , including standards, methodologies, and assumptions used.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "101-7:b",
+          "item_code": "b",
+          "description_en": "Clause b: The size and condition of an affected ecosystem can be combined into one unit: condition-adjusted area. This is the size of the ecosystem adjusted for its condition, and the unit (e.g., equivalent hectares) represents the residual condition within that area. The organization can also report impacts on affected ecosystems using condition-adjusted hectares. See *Align Measuring Ecosystem Condition – A primer for business* [50] and the *Endangered Wildlife Trust Biological Diversity Protocol* [16] for more information on condition-adjusted areas.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: The size and condition of an affected ecosystem can be combined into one unit: condition-adjusted area. This is the size of the ecosystem adjusted for its condition, and the unit (e.g., equivalent hectares) represents the residual condition within that area. The organization can also report impacts on affected ecosystems using condition-adjusted hectares. See *Align Measuring Ecosystem Condition – A primer for business* [50] and the *Endangered Wildlife Trust Biological Diversity Protocol* [16] for more information on condition-adjusted areas.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 101-7.\n\nGuidance Summary:\nThis disclosure provides information about the changes in the condition of the ecosystem affected or potentially affected by the organization.\n\nThe state of biodiversity is the holistic quality of the components of biodiversity (genes, species, and ecosystems), and is a function of the condition and size of its components. This disclosure focuses on the condition and size of affected ecosystems. By reporting this information for the base year and the current reporting period, the organization provides information about the ecosystem's overall health over time.\n\nChanges in the state of biodiversity may reflect the cumulative impacts of the organization's activities and the activities of others, such as governments, local communities, or other organizations. It is not always possible to dete...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 101-7.",
+      "sdg_mapping": [
+        "SDG 14: Life Below Water",
+        "SDG 15: Life on Land"
+      ],
+      "esrs_mapping": [
+        "ESRS E4 Biodiversity and Ecosystems"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "101-8",
@@ -200,179 +524,81 @@
         {
           "requirement_id": "101-8:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 101-8 (Ecosystem services)",
-          "description_vi": null,
+          "description_en": "Clause a: for each site reported under 101-5-a, list the ecosystem services and beneficiaries affected or potentially affected by the organization's activities;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: , list the ecosystem services and beneficiaries affected or potentially affected by the organization's activities;",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "306-3",
-      "title_en": "Significant spills)",
-      "title_vi": "Significant spills)",
-      "disclosure_type": "Topic-Specific",
-      "mandatory": true,
-      "requirements": [
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
         {
-          "requirement_id": "306-3:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 306-3 (Significant spills))",
-          "description_vi": null,
+          "requirement_id": "101-8:b",
+          "item_code": "b",
+          "description_en": "Clause b: explain how the ecosystem services and beneficiaries are or could be affected by the organization's activities.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: 's activities.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "3-3",
-      "title_en": "in GRI 3: Material Topics 2021.",
-      "title_vi": "in GRI 3: Material Topics 2021.",
-      "disclosure_type": "Topic-Specific",
-      "mandatory": true,
-      "requirements": [
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
         {
-          "requirement_id": "3-3:a",
+          "requirement_id": "101-8:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021.)",
-          "description_vi": null,
+          "description_en": "Clause a: The organization can explain if it engages with [stakeholders](#) to identify the ecosystem services and beneficiaries affected. It can also use the following methodologies and tools to identify ecosystem services:",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: The organization can explain if it engages with [stakeholders](#) to identify the ecosystem services and beneficiaries affected. It can also use the following methodologies and tools to identify ecosystem services:",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "2-23",
-      "title_en": "in GRI 2: General Disclosures 2021 or under 3-3-c in GRI 3: Material",
-      "title_vi": "in GRI 2: General Disclosures 2021 or under 3-3-c in GRI 3: Material",
-      "disclosure_type": "Topic-Specific",
-      "mandatory": true,
-      "requirements": [
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
         {
-          "requirement_id": "2-23:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 2-23 (in GRI 2: General Disclosures 2021 or under 3-3-c in GRI 3: Material)",
-          "description_vi": null,
+          "requirement_id": "101-8:8",
+          "item_code": "8",
+          "description_en": "Clause 8: The organization can amend the table according to its practices.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: The organization can amend the table according to its practices.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "2-27",
-      "title_en": "in GRI 2: General",
-      "title_vi": "in GRI 2: General",
-      "disclosure_type": "Topic-Specific",
-      "mandatory": true,
-      "requirements": [
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
         {
-          "requirement_id": "2-27:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 2-27 (in GRI 2: General)",
-          "description_vi": null,
+          "requirement_id": "101-8:6",
+          "item_code": "6",
+          "description_en": "Clause 6: The organization can amend the table according to its practices.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: The organization can amend the table according to its practices.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "305-7",
-      "title_en": "Nitrogen oxides (NOx), sulfur oxides (SOx), and other significant air",
-      "title_vi": "Nitrogen oxides (NOx), sulfur oxides (SOx), and other significant air",
-      "disclosure_type": "Topic-Specific",
-      "mandatory": true,
-      "requirements": [
-        {
-          "requirement_id": "305-7:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 305-7 (Nitrogen oxides (NOx), sulfur oxides (SOx), and other significant air)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 101-8.\n\nGuidance Summary:\nEcosystem services occur through an ecosystem's normal functioning and can fall into one or more of the following categories:\n\n- provisioning services;\n- regulating and maintenance services; and\n- cultural services.\n\nProvisioning services contribute to benefits extracted or harvested from ecosystems. Examples are timber in a forest, freshwater from a river, and subsistence hunting. Regulating and maintenance services result from the ability of ecosystems to regulate biological processes and influence climate, hydrological, and biochemical cycles, thereby maintaining environmental conditions beneficial to people. An example is the role of forests in preventing soil erosion. Cultural services are the non-material benefits people (beneficiaries) obtain from ecosystems through spiritual enrich...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 101-8.",
+      "sdg_mapping": [
+        "SDG 14: Life Below Water",
+        "SDG 15: Life on Land"
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "303-4",
-      "title_en": "Water discharge in GRI 303: Water and Effluents 2018 to have information",
-      "title_vi": "Water discharge in GRI 303: Water and Effluents 2018 to have information",
-      "disclosure_type": "Topic-Specific",
-      "mandatory": true,
-      "requirements": [
-        {
-          "requirement_id": "303-4:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 303-4 (Water discharge in GRI 303: Water and Effluents 2018 to have information)",
-          "description_vi": null,
-          "requirement_type": "Quantitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
+      "esrs_mapping": [
+        "ESRS E4 Biodiversity and Ecosystems"
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "2-25",
-      "title_en": "in GRI 2: General Disclosures 2021 for more",
-      "title_vi": "in GRI 2: General Disclosures 2021 for more",
-      "disclosure_type": "Topic-Specific",
-      "mandatory": true,
-      "requirements": [
-        {
-          "requirement_id": "2-25:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 2-25 (in GRI 2: General Disclosures 2021 for more)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     }
   ]
 }

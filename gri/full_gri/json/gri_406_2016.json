@@ -2,7 +2,7 @@
   "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
   "standard_id": "GRI 406",
   "title_en": "Non-discrimination 2016",
-  "title_vi": "Non-discrimination 2016",
+  "title_vi": "GRI 406: Chống phân biệt đối xử 2016",
   "pillar": "S — Social",
   "series": "Social (400 Series)",
   "category": "Topic-Social",
@@ -23,11 +23,11 @@
   "provenance": {
     "relative_pdf_path": "Full set of GRI Standards - English\\GRI 406_ Non-discrimination 2016.pdf",
     "file_size_bytes": 853865,
-    "page_count": 12,
+    "page_count": 25,
     "sha256": "3c1361ddb06e60595ad9e207e5b6a18ea796123d51e0fb1c2dd7939b6f0b74ef",
-    "indexed_at": "2026-07-25T14:35:59.133483"
+    "indexed_at": "2026-08-01T20:30:14.417770"
   },
-  "disclosures_count": 3,
+  "disclosures_count": 1,
   "disclosures": [
     {
       "disclosure_id": "406-1",
@@ -39,64 +39,54 @@
         {
           "requirement_id": "406-1:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 406-1 (Incidents of discrimination and corrective actions taken)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
+          "description_en": "Clause a: Total number of incidents of discrimination during the reporting period.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Total number of incidents of discrimination during the reporting period.",
+          "requirement_type": "Quantitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "3-3",
-      "title_en": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "title_vi": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "disclosure_type": "Topic-Specific",
-      "mandatory": true,
-      "requirements": [
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
         {
-          "requirement_id": "3-3:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);)",
-          "description_vi": null,
+          "requirement_id": "406-1:b",
+          "item_code": "b",
+          "description_en": "Clause b: Status of the incidents and actions taken with reference to the following: - i. Incident reviewed by the organization; - ii. Remediation plans being implemented; - iii. Remediation plans that have been implemented, with results reviewed through routine internal management review processes; - iv. Incident no longer subject to action.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Status of the incidents and actions taken with reference to the following: - i. Incident reviewed by the organization; - ii. Remediation plans being implemented; - iii. Remediation plans that have been implemented, with results reviewed through routine internal management review processes; - iv. Incident no longer subject to action.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "2-25",
-      "title_en": "in GRI 2: General Disclosures 2021 for more",
-      "title_vi": "in GRI 2: General Disclosures 2021 for more",
-      "disclosure_type": "Topic-Specific",
-      "mandatory": true,
-      "requirements": [
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
         {
-          "requirement_id": "2-25:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 2-25 (in GRI 2: General Disclosures 2021 for more)",
-          "description_vi": null,
+          "requirement_id": "406-1:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 1 When compiling the information specified in Disclosure 406-1, the reporting organization shall include incidents of discrimination on grounds of race, color, sex, religion, political opinion, national extraction, or social origin as defined by the ILO, or other relevant forms of discrimination involving internal and/or external stakeholders across operations in the reporting period.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: When compiling the information specified in Disclosure 406-1, the reporting organization shall include incidents of discrimination on grounds of race, color, sex, religion, political opinion, national extraction, or social origin as defined by the ILO, or other relevant forms of discrimination involving internal and/or external stakeholders across operations in the reporting period.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 406-1.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 406-1.",
+      "sdg_mapping": [
+        "SDG 12: Responsible Consumption and Production"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     }
   ]
 }

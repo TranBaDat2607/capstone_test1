@@ -2,7 +2,7 @@
   "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
   "standard_id": "GRI 405",
   "title_en": "Diversity and Equal Opportunity 2016",
-  "title_vi": "Diversity and Equal Opportunity 2016",
+  "title_vi": "GRI 405: Đa dạng và Bình đẳng cơ hội 2016",
   "pillar": "S — Social",
   "series": "Social (400 Series)",
   "category": "Topic-Social",
@@ -23,11 +23,11 @@
   "provenance": {
     "relative_pdf_path": "Full set of GRI Standards - English\\GRI 405_ Diversity and Equal Opportunity 2016.pdf",
     "file_size_bytes": 856772,
-    "page_count": 15,
+    "page_count": 25,
     "sha256": "c4ed2948ce47a145d5afab5107754c6d2ea2d01757725a5997fdd477ea04b278",
-    "indexed_at": "2026-07-25T14:35:59.108074"
+    "indexed_at": "2026-08-01T20:30:14.417770"
   },
-  "disclosures_count": 4,
+  "disclosures_count": 2,
   "disclosures": [
     {
       "disclosure_id": "405-1",
@@ -39,18 +39,34 @@
         {
           "requirement_id": "405-1:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 405-1 (Diversity of governance bodies and employees)",
-          "description_vi": null,
+          "description_en": "The reporting organization shall report information specified in Disclosure 405-1: Diversity of governance bodies and employees.",
+          "description_vi": "Tổ chức báo cáo phải công bố đầy đủ thông tin theo yêu cầu của Chỉ số 405-1: Diversity of governance bodies and employees.",
           "requirement_type": "Qualitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "unit_of_measure": [
+            "number of employees",
+            "hours",
+            "percentage %",
+            "injury rate per 200,000 hours"
+          ],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 405-1.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 405-1.",
+      "sdg_mapping": [
+        "SDG 12: Responsible Consumption and Production"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "405-2",
@@ -62,64 +78,34 @@
         {
           "requirement_id": "405-2:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 405-2 (Ratio of basic salary and remuneration of women to men)",
-          "description_vi": null,
+          "description_en": "The reporting organization shall report information specified in Disclosure 405-2: Ratio of basic salary and remuneration of women to men.",
+          "description_vi": "Tổ chức báo cáo phải công bố đầy đủ thông tin theo yêu cầu của Chỉ số 405-2: Ratio of basic salary and remuneration of women to men.",
           "requirement_type": "Qualitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "unit_of_measure": [
+            "number of employees",
+            "hours",
+            "percentage %",
+            "injury rate per 200,000 hours"
+          ],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "3-3",
-      "title_en": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "title_vi": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "disclosure_type": "Topic-Specific",
-      "mandatory": true,
-      "requirements": [
-        {
-          "requirement_id": "3-3:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 405-2.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 405-2.",
+      "sdg_mapping": [
+        "SDG 12: Responsible Consumption and Production"
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "2-7",
-      "title_en": "in GRI 2: General Disclosures 2021 to identify the",
-      "title_vi": "in GRI 2: General Disclosures 2021 to identify the",
-      "disclosure_type": "Topic-Specific",
-      "mandatory": true,
-      "requirements": [
-        {
-          "requirement_id": "2-7:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 2-7 (in GRI 2: General Disclosures 2021 to identify the)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     }
   ]
 }

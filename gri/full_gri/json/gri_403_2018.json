@@ -2,7 +2,7 @@
   "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
   "standard_id": "GRI 403",
   "title_en": "Occupational Health and Safety 2018",
-  "title_vi": "Occupational Health and Safety 2018",
+  "title_vi": "GRI 403: An toàn và Sức khỏe nghề nghiệp 2018",
   "pillar": "S — Social",
   "series": "Social (400 Series)",
   "category": "Topic-Social",
@@ -23,264 +23,912 @@
   "provenance": {
     "relative_pdf_path": "Full set of GRI Standards - English\\GRI 403_ Occupational Health and Safety 2018.pdf",
     "file_size_bytes": 1073472,
-    "page_count": 35,
+    "page_count": 25,
     "sha256": "50011958a813af55c47b3b91a44c826338b5dea4d7af7ba21bdd375c370985e7",
-    "indexed_at": "2026-07-25T14:35:59.049820"
+    "indexed_at": "2026-08-01T20:30:14.411443"
   },
-  "disclosures_count": 11,
+  "disclosures_count": 10,
   "disclosures": [
     {
       "disclosure_id": "403-1",
       "title_en": "Occupational health and safety management system",
       "title_vi": "Occupational health and safety management system",
-      "disclosure_type": "General Disclosures",
+      "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
           "requirement_id": "403-1:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 403-1 (Occupational health and safety management system)",
-          "description_vi": null,
+          "description_en": "Clause a: A statement of whether an occupational health and safety management system has been implemented, including whether: - i. the system has been implemented because of legal requirements and, if so, a list of the requirements; - ii. the system has been implemented based on recognized risk management and/or management system standards/guidelines and, if so, a list of the standards/guidelines.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: A statement of whether an occupational health and safety management system has been implemented, including whether: - i. the system has been implemented because of legal requirements and, if so, a list of the requirements; - ii. the system has been implemented based on recognized risk management and/or management system standards/guidelines and, if so, a list of the standards/guidelines.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
+        },
+        {
+          "requirement_id": "403-1:b",
+          "item_code": "b",
+          "description_en": "Clause b: A description of the scope of workers, activities, and workplaces covered by the occupational health and safety management system, and an explanation of whether and, if so, why any workers, activities, or workplaces are not covered.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: A description of the scope of workers, activities, and workplaces covered by the occupational health and safety management system, and an explanation of whether and, if so, why any workers, activities, or workplaces are not covered.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 403-1.\n\nGuidance Summary:\n##### Guidance for Disclosure 403-1\n\nDisclosure 403-1 requires the reporting organization to list any legal requirements it has followed in implementing the occupational health and safety management system.\n\nRecognized standards/guidelines for occupational health and safety management systems include international, national, and industry-specific standards.\n\nWhen reporting on the occupational health and safety management system, the organization can also describe:\n\n- the type of occupational health and safety professionals responsible for the management system, and whether these individuals are employed by the organization or engaged as consultants;\n- how the continual improvement of the management system is achieved, i.e., the iterative process of enhancing the management system to achiev...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 403-1.",
+      "sdg_mapping": [
+        "SDG 3: Good Health and Well-being",
+        "SDG 8: Decent Work and Economic Growth"
+      ],
+      "esrs_mapping": [
+        "ESRS S1 Own Workforce (S1-14 Health & Safety)"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "403-2",
       "title_en": "Hazard identification, risk assessment, and incident investigation",
       "title_vi": "Hazard identification, risk assessment, and incident investigation",
-      "disclosure_type": "General Disclosures",
+      "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
           "requirement_id": "403-2:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 403-2 (Hazard identification, risk assessment, and incident investigation)",
-          "description_vi": null,
+          "description_en": "Clause a: A description of the processes used to identify work-related hazards and assess risks on a routine and non-routine basis, and to apply the hierarchy of controls in order to eliminate hazards and minimize risks, including: - i. how the organization ensures the quality of these processes, including the competency of persons who carry them out; - ii. how the results of these processes are used to evaluate and continually improve the occupational health and safety management system.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: A description of the processes used to identify work-related hazards and assess risks on a routine and non-routine basis, and to apply the hierarchy of controls in order to eliminate hazards and minimize risks, including: - i. how the organization ensures the quality of these processes, including the competency of persons who carry them out; - ii. how the results of these processes are used to evaluate and continually improve the occupational health and safety management system.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
+        },
+        {
+          "requirement_id": "403-2:b",
+          "item_code": "b",
+          "description_en": "Clause b: A description of the processes for workers to report work-related hazards and hazardous situations, and an explanation of how workers are protected against reprisals.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: A description of the processes for workers to report work-related hazards and hazardous situations, and an explanation of how workers are protected against reprisals.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
+        },
+        {
+          "requirement_id": "403-2:c",
+          "item_code": "c",
+          "description_en": "Clause c: A description of the policies and processes for workers to remove themselves from work situations that they believe could cause injury or ill health, and an explanation of how workers are protected against reprisals.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: A description of the policies and processes for workers to remove themselves from work situations that they believe could cause injury or ill health, and an explanation of how workers are protected against reprisals.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
+        },
+        {
+          "requirement_id": "403-2:d",
+          "item_code": "d",
+          "description_en": "Clause d: A description of the processes used to investigate work-related incidents, including the processes to identify hazards and assess risks relating to the incidents, to determine corrective actions using the hierarchy of controls, and to determine improvements needed in the occupational health and safety management system.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: A description of the processes used to investigate work-related incidents, including the processes to identify hazards and assess risks relating to the incidents, to determine corrective actions using the hierarchy of controls, and to determine improvements needed in the occupational health and safety management system.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 403-2.\n\nGuidance Summary:\n#### Guidance for Disclosure 403-2-a\n\nWhen describing the processes used to identify hazards and assess risks on a routine and non-routine basis, and to apply the hierarchy of controls, the reporting organization can:\n\n- specify whether these processes are based on legal requirements and/or recognized standards/guidelines;\n- describe the frequency and scope of processes undertaken on a routine basis;\n- describe the triggers for processes undertaken on a non-routine basis, such as changes in operating procedures or equipment; incident investigations; worker complaints or referrals; changes in workers or workflow; results of surveillance of work environment and worker health, including exposure monitoring (e.g., exposure to noise, vibration, dust);\n- explain how obstacles to the implementati...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 403-2.",
+      "sdg_mapping": [
+        "SDG 3: Good Health and Well-being",
+        "SDG 8: Decent Work and Economic Growth"
+      ],
+      "esrs_mapping": [
+        "ESRS S1 Own Workforce (S1-14 Health & Safety)"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "403-3",
       "title_en": "Occupational health services",
       "title_vi": "Occupational health services",
-      "disclosure_type": "General Disclosures",
+      "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
           "requirement_id": "403-3:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 403-3 (Occupational health services)",
-          "description_vi": null,
+          "description_en": "The reporting organization shall report information specified in Disclosure 403-3: Occupational health services.",
+          "description_vi": "Tổ chức báo cáo phải công bố đầy đủ thông tin theo yêu cầu của Chỉ số 403-3: Occupational health services.",
           "requirement_type": "Qualitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "unit_of_measure": [
+            "number of employees",
+            "hours",
+            "percentage %",
+            "injury rate per 200,000 hours"
+          ],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 403-3.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 403-3.",
+      "sdg_mapping": [
+        "SDG 3: Good Health and Well-being",
+        "SDG 8: Decent Work and Economic Growth"
+      ],
+      "esrs_mapping": [
+        "ESRS S1 Own Workforce (S1-14 Health & Safety)"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "403-4",
-      "title_en": "Worker participation, consultation, and communication on",
-      "title_vi": "Worker participation, consultation, and communication on",
-      "disclosure_type": "General Disclosures",
+      "title_en": "Worker participation, consultation, and communication on occupational health and safety",
+      "title_vi": "Worker participation, consultation, and communication on occupational health and safety",
+      "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
           "requirement_id": "403-4:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 403-4 (Worker participation, consultation, and communication on)",
-          "description_vi": null,
+          "description_en": "Clause a: A description of the processes for worker participation and consultation in the development, implementation, and evaluation of the occupational health and safety management system, and for providing access to and communicating relevant information on occupational health and safety to workers.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: A description of the processes for worker participation and consultation in the development, implementation, and evaluation of the occupational health and safety management system, and for providing access to and communicating relevant information on occupational health and safety to workers.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
+        },
+        {
+          "requirement_id": "403-4:b",
+          "item_code": "b",
+          "description_en": "Clause b: Where formal joint management-worker health and safety committees exist, a description of their responsibilities, meeting frequency, decision-making authority, and whether and, if so, why any workers are not represented by these committees.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Where formal joint management-worker health and safety committees exist, a description of their responsibilities, meeting frequency, decision-making authority, and whether and, if so, why any workers are not represented by these committees.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
+        },
+        {
+          "requirement_id": "403-4:1",
+          "item_code": "1",
+          "description_en": "Clause 1: 4 The reporting organization should report whether and, if so, which occupational health and safety topics are covered in local or global formal agreements with trade unions.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: The reporting organization should report whether and, if so, which occupational health and safety topics are covered in local or global formal agreements with trade unions.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "- 1.4 The reporting organization should report whether and, if so, which occupational health and safety topics are covered in local or global formal agreements with trade unions.\n\nGuidance Summary:\n##### Guidance for Disclosure 403-4-a\n\nWhen describing the processes for worker participation in occupational health and safety, the reporting organization can include information on:\n\n- formal participation, based on legal requirements;\n- participation through engagement with formally recognized workers' representatives;\n- direct participation, particularly by affected workers (e.g., the direct involvement of all workers in occupational health and safety decisions in small organizations);\n- the use of committees, and how these committees are established and operated;\n- participation in the occupational health and safety management system (e.g., participation in identification of hazards, assessment of risks, application of the hierarchy of controls, investigation of incidents, audits, dec...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 403-4.",
+      "sdg_mapping": [
+        "SDG 3: Good Health and Well-being",
+        "SDG 8: Decent Work and Economic Growth"
+      ],
+      "esrs_mapping": [
+        "ESRS S1 Own Workforce (S1-14 Health & Safety)"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "403-5",
       "title_en": "Worker training on occupational health and safety",
       "title_vi": "Worker training on occupational health and safety",
-      "disclosure_type": "General Disclosures",
+      "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
           "requirement_id": "403-5:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 403-5 (Worker training on occupational health and safety)",
-          "description_vi": null,
+          "description_en": "Clause a: A description of any occupational health and safety training provided to workers, including generic training as well as training on specific work-related hazards, hazardous activities, or hazardous situations.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: A description of any occupational health and safety training provided to workers, including generic training as well as training on specific work-related hazards, hazardous activities, or hazardous situations.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 403-5.\n\nGuidance Summary:\nfor Disclosure 403-5\n\nWhen describing the occupational health and safety training provided, the reporting organization can include information on:\n\n- how training needs are assessed;\n- how the training is designed and delivered, including the content or topics addressed, the competency of trainers, which workers receive the training, the frequency of the training, and whether the training is provided in a language easily understood by workers;\n- whether the training is provided free of charge and during paid working hours – if not, whether it is mandatory for workers to attend, and whether they are compensated for this;\n- how the effectiveness of the training is evaluated....",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 403-5.",
+      "sdg_mapping": [
+        "SDG 3: Good Health and Well-being",
+        "SDG 8: Decent Work and Economic Growth"
+      ],
+      "esrs_mapping": [
+        "ESRS S1 Own Workforce (S1-14 Health & Safety)"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "403-6",
       "title_en": "Promotion of worker health",
       "title_vi": "Promotion of worker health",
-      "disclosure_type": "General Disclosures",
+      "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
           "requirement_id": "403-6:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 403-6 (Promotion of worker health)",
-          "description_vi": null,
+          "description_en": "Clause a: An explanation of how the organization facilitates workers' access to non-occupational medical and healthcare services, and the scope of access provided.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: An explanation of how the organization facilitates workers' access to non-occupational medical and healthcare services, and the scope of access provided.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
+        },
+        {
+          "requirement_id": "403-6:b",
+          "item_code": "b",
+          "description_en": "Clause b: A description of any voluntary **health promotion** services and programs offered to workers to address major non-work-related health risks, including the specific health risks addressed, and how the organization facilitates workers' access to these services and programs.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: A description of any voluntary **health promotion** services and programs offered to workers to address major non-work-related health risks, including the specific health risks addressed, and how the organization facilitates workers' access to these services and programs.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
+        },
+        {
+          "requirement_id": "403-6:1",
+          "item_code": "1",
+          "description_en": "Clause 1: 5 The reporting organization should report the following additional information: - 1.5.1 How the organization maintains the confidentiality of workers' personal health-related information; - 1.5.2 How the organization ensures that workers' personal health-related information and their participation in any services or programs is not used for any favorable or unfavorable treatment of workers.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: The reporting organization should report the following additional information: - 1.5.1 How the organization maintains the confidentiality of workers' personal health-related information; - 1.5.2 How the organization ensures that workers' personal health-related information and their participation in any services or programs is not used for any favorable or unfavorable treatment of workers.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "- 1.5 The reporting organization should report the following additional information:\n  - 1.5.1 How the organization maintains the confidentiality of workers' personal health-related information;\n  - 1.5.2 How the organization ensures that workers' personal health-related information and their participation in any services or programs is not used for any favorable or unfavorable treatment of workers.\n\nGuidance Summary:\n##### Guidance for Disclosure 403-6-a\n\nAchieving universal health coverage, including financial risk protection; access to quality essential healthcare services; and access to safe, effective, quality and affordable essential medicines and vaccines for all, is one of the targets of the UN Sustainable Development Goals (Target 3.8).\n\nWorkers' access to non-occupational medical and healthcare services might be facilitated, for example, through company clinics or disease treatment programs, referral systems, or health insurance or financial contributions.\n\nWhen describing the scope of access to non-occupational medical and healthcare services provided, the reporting organization can specify the types of service to which access is facilitated and the types of worker that have access to them.\n\n...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 403-6.",
+      "sdg_mapping": [
+        "SDG 3: Good Health and Well-being",
+        "SDG 8: Decent Work and Economic Growth"
+      ],
+      "esrs_mapping": [
+        "ESRS S1 Own Workforce (S1-14 Health & Safety)"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "403-7",
-      "title_en": "Prevention and mitigation of occupational health and safety",
-      "title_vi": "Prevention and mitigation of occupational health and safety",
-      "disclosure_type": "General Disclosures",
+      "title_en": "Prevention and mitigation of occupational health and safety impacts directly linked by business relationships",
+      "title_vi": "Prevention and mitigation of occupational health and safety impacts directly linked by business relationships",
+      "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
           "requirement_id": "403-7:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 403-7 (Prevention and mitigation of occupational health and safety)",
-          "description_vi": null,
+          "description_en": "Clause a: A description of the organization's approach to preventing or mitigating significant negative occupational health and safety impacts that are directly linked to its operations, products, or services by its business relationships, and the related hazards and risks.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: A description of the organization's approach to preventing or mitigating significant negative occupational health and safety impacts that are directly linked to its operations, products, or services by its business relationships, and the related hazards and risks.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 403-7.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 403-7.",
+      "sdg_mapping": [
+        "SDG 3: Good Health and Well-being",
+        "SDG 8: Decent Work and Economic Growth"
+      ],
+      "esrs_mapping": [
+        "ESRS S1 Own Workforce (S1-14 Health & Safety)"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "403-8",
-      "title_en": "Workers covered by an occupational health and safety",
-      "title_vi": "Workers covered by an occupational health and safety",
-      "disclosure_type": "General Disclosures",
+      "title_en": "Workers covered by an occupational health and safety management system",
+      "title_vi": "Workers covered by an occupational health and safety management system",
+      "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
           "requirement_id": "403-8:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 403-8 (Workers covered by an occupational health and safety)",
-          "description_vi": null,
+          "description_en": "The reporting organization shall report information specified in Disclosure 403-8: Workers covered by an occupational health and safety management system.",
+          "description_vi": "Tổ chức báo cáo phải công bố đầy đủ thông tin theo yêu cầu của Chỉ số 403-8: Workers covered by an occupational health and safety management system.",
           "requirement_type": "Qualitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "unit_of_measure": [
+            "number of employees",
+            "hours",
+            "percentage %",
+            "injury rate per 200,000 hours"
+          ],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 403-8.\n\nGuidance Summary:\nfor Disclosure 403-8\n\nThis disclosure indicates what proportion of an organization's employees, and workers who are not employees but whose work and/or workplace is controlled by the organization, are covered by an occupational health and safety management system based on legal requirements and/or recognized standards/guidelines. The list of legal requirements and/or recognized standards/guidelines used by the reporting organization in its occupational health and safety management system are reported using [Disclosures 403-1-a-i](#) and [403-1-a-ii](#) in the Topic management disclosures section.\n\nIf not all workers are covered by the occupational health and safety management system, the organization can report whether any of the workers not covered are at high risk of work-related injury ...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 403-8.",
+      "sdg_mapping": [
+        "SDG 3: Good Health and Well-being",
+        "SDG 8: Decent Work and Economic Growth"
+      ],
+      "esrs_mapping": [
+        "ESRS S1 Own Workforce (S1-14 Health & Safety)"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "403-9",
       "title_en": "Work-related injuries",
       "title_vi": "Work-related injuries",
-      "disclosure_type": "General Disclosures",
+      "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
           "requirement_id": "403-9:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 403-9 (Work-related injuries)",
-          "description_vi": null,
+          "description_en": "Clause a: For all employees: - i. The number and rate of fatalities as a result of work-related injury; - ii. The number and rate of high-consequence work-related injuries (excluding fatalities); - iii. The number and rate of recordable work-related injuries; - iv. The main types of work-related injury; - v. The number of hours worked.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: For all employees: - i. The number and rate of fatalities as a result of work-related injury; - ii. The number and rate of high-consequence work-related injuries (excluding fatalities); - iii. The number and rate of recordable work-related injuries; - iv. The main types of work-related injury; - v. The number of hours worked.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "number of employees",
+            "hours",
+            "percentage %",
+            "injury rate per 200,000 hours"
+          ],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
+        },
+        {
+          "requirement_id": "403-9:b",
+          "item_code": "b",
+          "description_en": "Clause b: For all workers who are not employees but whose work and/or workplace is controlled by the organization: - i. The number and rate of fatalities as a result of work-related injury; - ii. The number and rate of high-consequence work-related injuries (excluding fatalities); - iii. The number and rate of recordable work-related injuries; - iv. The main types of work-related injury; - v. The number of hours worked.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: For all workers who are not employees but whose work and/or workplace is controlled by the organization: - i. The number and rate of fatalities as a result of work-related injury; - ii. The number and rate of high-consequence work-related injuries (excluding fatalities); - iii. The number and rate of recordable work-related injuries; - iv. The main types of work-related injury; - v. The number of hours worked.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "number of employees",
+            "hours",
+            "percentage %",
+            "injury rate per 200,000 hours"
+          ],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
+        },
+        {
+          "requirement_id": "403-9:c",
+          "item_code": "c",
+          "description_en": "Clause c: The work-related hazards that pose a risk of high-consequence injury, including: - i. how these hazards have been determined; - ii. which of these hazards have caused or contributed to high-consequence injuries during the reporting period; - iii. actions taken or underway to eliminate these hazards and minimize risks using the hierarchy of controls.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: The work-related hazards that pose a risk of high-consequence injury, including: - i. how these hazards have been determined; - ii. which of these hazards have caused or contributed to high-consequence injuries during the reporting period; - iii. actions taken or underway to eliminate these hazards and minimize risks using the hierarchy of controls.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
+        },
+        {
+          "requirement_id": "403-9:d",
+          "item_code": "d",
+          "description_en": "Clause d: Any actions taken or underway to eliminate other work-related hazards and minimize risks using the hierarchy of controls.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Any actions taken or underway to eliminate other work-related hazards and minimize risks using the hierarchy of controls.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
+        },
+        {
+          "requirement_id": "403-9:e",
+          "item_code": "e",
+          "description_en": "Clause e: Whether the rates have been calculated based on 200,000 or 1,000,000 hours worked.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Whether the rates have been calculated based on 200,000 or 1,000,000 hours worked.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "number of employees",
+            "hours",
+            "percentage %",
+            "injury rate per 200,000 hours"
+          ],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
+        },
+        {
+          "requirement_id": "403-9:f",
+          "item_code": "f",
+          "description_en": "Clause f: Whether and, if so, why any workers have been excluded from this disclosure, including the types of worker excluded.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Whether and, if so, why any workers have been excluded from this disclosure, including the types of worker excluded.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
+        },
+        {
+          "requirement_id": "403-9:g",
+          "item_code": "g",
+          "description_en": "Clause g: Any contextual information necessary to understand how the data have been compiled, such as any standards, methodologies, and assumptions used.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Any contextual information necessary to understand how the data have been compiled, such as any standards, methodologies, and assumptions used.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
+        },
+        {
+          "requirement_id": "403-9:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 1 When compiling the information specified in Disclosure 403-9, the reporting organization shall: - 2.1.1 exclude fatalities in the calculation of the number and rate of high-consequence work-related injuries; - 2.1.2 include fatalities as a result of work-related injury in the calculation of the number and rate of recordable work-related injuries; - 2.1.3 include injuries as a result of commuting incidents only where the transport has been organized by the organization; - 2.1.4 calculate the rates based on either 200,000 or 1,000,000 hours worked, using the following formulas:",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: When compiling the information specified in Disclosure 403-9, the reporting organization shall: - 2.1.1 exclude fatalities in the calculation of the number and rate of high-consequence work-related injuries; - 2.1.2 include fatalities as a result of work-related injury in the calculation of the number and rate of recordable work-related injuries; - 2.1.3 include injuries as a result of commuting incidents only where the transport has been organized by the organization; - 2.1.4 calculate the rates based on either 200,000 or 1,000,000 hours worked, using the following formulas:",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "number of employees",
+            "hours",
+            "percentage %",
+            "injury rate per 200,000 hours"
+          ],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
+        },
+        {
+          "requirement_id": "403-9:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 2 The reporting organization should report the following additional information:",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: The reporting organization should report the following additional information:",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
+        },
+        {
+          "requirement_id": "403-9:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 2.1 If the numbers and rates reported are significantly higher for certain types of injury, countries, business lines, or workers' demographics (e.g., sex, gender, migrant status, age, or worker type), a breakdown of these data;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: If the numbers and rates reported are significantly higher for certain types of injury, countries, business lines, or workers' demographics (e.g., sex, gender, migrant status, age, or worker type), a breakdown of these data;",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "number of employees",
+            "hours",
+            "percentage %",
+            "injury rate per 200,000 hours"
+          ],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
+        },
+        {
+          "requirement_id": "403-9:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 2.2 A breakdown of the number of recordable work-related injuries by type of incident;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: A breakdown of the number of recordable work-related injuries by type of incident;",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "number of employees",
+            "hours",
+            "percentage %",
+            "injury rate per 200,000 hours"
+          ],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
+        },
+        {
+          "requirement_id": "403-9:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 2.3 If chemical hazards have been identified in Disclosure 403-9-c, a list of the chemicals;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: If chemical hazards have been identified in Disclosure 403-9-c, a list of the chemicals;",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
+        },
+        {
+          "requirement_id": "403-9:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 2.4 The number of high-potential work-related incidents identified;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: The number of high-potential work-related incidents identified;",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "number of employees",
+            "hours",
+            "percentage %",
+            "injury rate per 200,000 hours"
+          ],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
+        },
+        {
+          "requirement_id": "403-9:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 2.5 The number of close calls identified.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: The number of close calls identified.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "number of employees",
+            "hours",
+            "percentage %",
+            "injury rate per 200,000 hours"
+          ],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
+        },
+        {
+          "requirement_id": "403-9:9",
+          "item_code": "9",
+          "description_en": "Clause 9: See references [5] and [16] in the [Bibliography](#) for a list of musculoskeletal disorders.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: See references [5] and [16] in the [Bibliography](#) for a list of musculoskeletal disorders.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
+        },
+        {
+          "requirement_id": "403-9:i",
+          "item_code": "i",
+          "description_en": "Clause i: - other injuries from which the worker cannot recover (e.g., amputation of a limb), or does not or is not expected to recover fully to pre-injury health status within 6 months (e.g., fracture",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: (e.g., amputation of a limb), or does not or is not expected to recover fully to pre-injury health status within 6 months (e.g., fracture",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
+        },
+        {
+          "requirement_id": "403-9:g",
+          "item_code": "g",
+          "description_en": "Clause g: If the organization does not follow the ILO code of practice, it can indicate which system of rules it applies in recording and reporting work-related injuries and its relationship to the ILO code of practice.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: If the organization does not follow the ILO code of practice, it can indicate which system of rules it applies in recording and reporting work-related injuries and its relationship to the ILO code of practice.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 403-9.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 403-9.",
+      "sdg_mapping": [
+        "SDG 3: Good Health and Well-being",
+        "SDG 8: Decent Work and Economic Growth"
+      ],
+      "esrs_mapping": [
+        "ESRS S1 Own Workforce (S1-14 Health & Safety)"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "403-10",
       "title_en": "Work-related ill health",
       "title_vi": "Work-related ill health",
-      "disclosure_type": "General Disclosures",
+      "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
           "requirement_id": "403-10:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 403-10 (Work-related ill health)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "3-3",
-      "title_en": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "title_vi": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
+          "description_en": "Clause a: For all employees: - i. The number of fatalities as a result of work-related ill health; - ii. The number of cases of recordable work-related ill health; - iii. The main types of work-related ill health.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: For all employees: - i. The number of fatalities as a result of work-related ill health; - ii. The number of cases of recordable work-related ill health; - iii. The main types of work-related ill health.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "number of employees",
+            "hours",
+            "percentage %",
+            "injury rate per 200,000 hours"
+          ],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
+        },
         {
-          "requirement_id": "3-3:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);)",
-          "description_vi": null,
+          "requirement_id": "403-10:b",
+          "item_code": "b",
+          "description_en": "Clause b: For all workers who are not employees but whose work and/or workplace is controlled by the organization: - i. The number of fatalities as a result of work-related ill health; - ii. The number of cases of recordable work-related ill health; - iii. The main types of work-related ill health.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: For all workers who are not employees but whose work and/or workplace is controlled by the organization: - i. The number of fatalities as a result of work-related ill health; - ii. The number of cases of recordable work-related ill health; - iii. The main types of work-related ill health.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "number of employees",
+            "hours",
+            "percentage %",
+            "injury rate per 200,000 hours"
+          ],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
+        },
+        {
+          "requirement_id": "403-10:c",
+          "item_code": "c",
+          "description_en": "Clause c: The work-related hazards that pose a risk of ill health, including: - i. how these hazards have been determined; - ii. which of these hazards have caused or contributed to cases of ill health during the reporting period; - iii. actions taken or underway to eliminate these hazards and minimize risks using the hierarchy of controls.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: The work-related hazards that pose a risk of ill health, including: - i. how these hazards have been determined; - ii. which of these hazards have caused or contributed to cases of ill health during the reporting period; - iii. actions taken or underway to eliminate these hazards and minimize risks using the hierarchy of controls.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
+        },
+        {
+          "requirement_id": "403-10:d",
+          "item_code": "d",
+          "description_en": "Clause d: Whether and, if so, why any workers have been excluded from this disclosure, including the types of worker excluded.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Whether and, if so, why any workers have been excluded from this disclosure, including the types of worker excluded.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
+        },
+        {
+          "requirement_id": "403-10:e",
+          "item_code": "e",
+          "description_en": "Clause e: Any contextual information necessary to understand how the data have been compiled, such as any standards, methodologies, and assumptions used.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: Any contextual information necessary to understand how the data have been compiled, such as any standards, methodologies, and assumptions used.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
+        },
+        {
+          "requirement_id": "403-10:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 3 When compiling the information specified in Disclosure 403-10, the reporting organization shall include fatalities as a result of work-related ill health in the calculation of the number of cases of recordable work-related ill health.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: When compiling the information specified in Disclosure 403-10, the reporting organization shall include fatalities as a result of work-related ill health in the calculation of the number of cases of recordable work-related ill health.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "number of employees",
+            "hours",
+            "percentage %",
+            "injury rate per 200,000 hours"
+          ],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
+        },
+        {
+          "requirement_id": "403-10:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 4 The reporting organization should report the following additional information:",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: The reporting organization should report the following additional information:",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
+        },
+        {
+          "requirement_id": "403-10:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 4.1 If the numbers reported are significantly higher for certain types of ill health, countries, business lines, or workers' demographics (e.g., sex, gender, migrant status, age, or worker type), a breakdown of these data;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: If the numbers reported are significantly higher for certain types of ill health, countries, business lines, or workers' demographics (e.g., sex, gender, migrant status, age, or worker type), a breakdown of these data;",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "number of employees",
+            "hours",
+            "percentage %",
+            "injury rate per 200,000 hours"
+          ],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
+        },
+        {
+          "requirement_id": "403-10:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 4.2 If chemical hazards have been identified in Disclosure 403-10-c, a list of the chemicals;",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: If chemical hazards have been identified in Disclosure 403-10-c, a list of the chemicals;",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
+        },
+        {
+          "requirement_id": "403-10:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 4.3 The number of employees and workers who are not employees but whose work and/or workplace is controlled by the organization, exposed to each hazard identified in Disclosure 403-10-c.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: The number of employees and workers who are not employees but whose work and/or workplace is controlled by the organization, exposed to each hazard identified in Disclosure 403-10-c.",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [
+            "number of employees",
+            "hours",
+            "percentage %",
+            "injury rate per 200,000 hours"
+          ],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
+        },
+        {
+          "requirement_id": "403-10:e",
+          "item_code": "e",
+          "description_en": "Clause e: If the organization does not follow the ILO code of practice, it can indicate which system of rules it applies in recording and reporting work-related ill health and its relationship to the ILO code of practice.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: If the organization does not follow the ILO code of practice, it can indicate which system of rules it applies in recording and reporting work-related ill health and its relationship to the ILO code of practice.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by gender",
+            "by age group",
+            "by employee category",
+            "by region"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "- 2.4 The reporting organization should report the following additional information:\n\n- 2.4.1 If the numbers reported are significantly higher for certain types of ill health, countries, business lines, or workers' demographics (e.g., sex, gender, migrant status, age, or worker type), a breakdown of these data;\n- 2.4.2 If chemical hazards have been identified in Disclosure 403-10-c, a list of the chemicals;\n- 2.4.3 The number of employees and workers who are not employees but whose work and/or workplace is controlled by the organization, exposed to each hazard identified in Disclosure 403-10-c.\n\nGuidance Summary:\n##### Guidance for Disclosure 403-10\n\nWork-related ill health can include acute, recurring, and chronic health problems caused or aggravated by work conditions or practices. They include musculoskeletal disorders, skin and respiratory diseases, malignant cancers, diseases caused by physical agents (e.g., noise-induced hearing loss, vibration-caused diseases), and mental illnesses (e.g., anxiety, post-traumatic stress disorder). This disclosure covers, but is not limited to, the diseases included in the *ILO List of Occupational Diseases*. In the context of this Standard, work-related musculoskeletal disorders are covered under ill health (and not injuries) and are to be reported using this disclosure. See references [5] and [16] in the [Bibliography](#).\n\nThis disclosure covers all cases o...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 403-10.",
+      "sdg_mapping": [
+        "SDG 3: Good Health and Well-being",
+        "SDG 8: Decent Work and Economic Growth"
+      ],
+      "esrs_mapping": [
+        "ESRS S1 Own Workforce (S1-14 Health & Safety)"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     }
   ]
 }

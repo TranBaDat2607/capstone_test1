@@ -20,7 +20,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 101_ Biodiversity 2024 - English.pdf",
     "sha256": "e8b42d8fbabdec42e693db1e431690caa419dca77a20823a35fed7e9fa154732",
-    "page": 49
+    "page": 25
   },
   "GRI 101-2": {
     "gri_standard": "GRI 101",
@@ -43,7 +43,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 101_ Biodiversity 2024 - English.pdf",
     "sha256": "e8b42d8fbabdec42e693db1e431690caa419dca77a20823a35fed7e9fa154732",
-    "page": 49
+    "page": 25
   },
   "GRI 101-3": {
     "gri_standard": "GRI 101",
@@ -66,7 +66,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 101_ Biodiversity 2024 - English.pdf",
     "sha256": "e8b42d8fbabdec42e693db1e431690caa419dca77a20823a35fed7e9fa154732",
-    "page": 49
+    "page": 25
   },
   "GRI 101-4": {
     "gri_standard": "GRI 101",
@@ -89,7 +89,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 101_ Biodiversity 2024 - English.pdf",
     "sha256": "e8b42d8fbabdec42e693db1e431690caa419dca77a20823a35fed7e9fa154732",
-    "page": 49
+    "page": 25
   },
   "GRI 101-5": {
     "gri_standard": "GRI 101",
@@ -112,7 +112,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 101_ Biodiversity 2024 - English.pdf",
     "sha256": "e8b42d8fbabdec42e693db1e431690caa419dca77a20823a35fed7e9fa154732",
-    "page": 49
+    "page": 25
   },
   "GRI 101-6": {
     "gri_standard": "GRI 101",
@@ -135,7 +135,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 101_ Biodiversity 2024 - English.pdf",
     "sha256": "e8b42d8fbabdec42e693db1e431690caa419dca77a20823a35fed7e9fa154732",
-    "page": 49
+    "page": 25
   },
   "GRI 101-7": {
     "gri_standard": "GRI 101",
@@ -158,7 +158,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 101_ Biodiversity 2024 - English.pdf",
     "sha256": "e8b42d8fbabdec42e693db1e431690caa419dca77a20823a35fed7e9fa154732",
-    "page": 49
+    "page": 25
   },
   "GRI 101-8": {
     "gri_standard": "GRI 101",
@@ -181,7 +181,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 101_ Biodiversity 2024 - English.pdf",
     "sha256": "e8b42d8fbabdec42e693db1e431690caa419dca77a20823a35fed7e9fa154732",
-    "page": 49
+    "page": 25
   },
   "GRI 102-1": {
     "gri_standard": "GRI 102",
@@ -190,8 +190,12 @@
     "title_vi": "Transition plan for climate change mitigation",
     "pillar": "Môi trường",
     "definition_vi": "Chỉ số công bố GRI 102-1: Transition plan for climate change mitigation",
-    "requirement_type": "Qualitative",
-    "units": [],
+    "requirement_type": "Quantitative",
+    "units": [
+      "metric tons CO2e",
+      "kg CO2e",
+      "gCO2e/unit"
+    ],
     "tt96_equivalent": null,
     "versions": [
       {
@@ -204,7 +208,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 102_ Climate Change 2025.pdf",
     "sha256": "b082ea90a6f240a7d9fad443bdea3358381ba6fe85d4515f5c79c3a8420703ec",
-    "page": 60
+    "page": 25
   },
   "GRI 102-2": {
     "gri_standard": "GRI 102",
@@ -227,7 +231,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 102_ Climate Change 2025.pdf",
     "sha256": "b082ea90a6f240a7d9fad443bdea3358381ba6fe85d4515f5c79c3a8420703ec",
-    "page": 60
+    "page": 25
   },
   "GRI 102-3": {
     "gri_standard": "GRI 102",
@@ -236,8 +240,12 @@
     "title_vi": "Just transition",
     "pillar": "Môi trường",
     "definition_vi": "Chỉ số công bố GRI 102-3: Just transition",
-    "requirement_type": "Qualitative",
-    "units": [],
+    "requirement_type": "Quantitative",
+    "units": [
+      "metric tons CO2e",
+      "kg CO2e",
+      "gCO2e/unit"
+    ],
     "tt96_equivalent": null,
     "versions": [
       {
@@ -250,7 +258,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 102_ Climate Change 2025.pdf",
     "sha256": "b082ea90a6f240a7d9fad443bdea3358381ba6fe85d4515f5c79c3a8420703ec",
-    "page": 60
+    "page": 25
   },
   "GRI 102-4": {
     "gri_standard": "GRI 102",
@@ -260,7 +268,11 @@
     "pillar": "Môi trường",
     "definition_vi": "Chỉ số công bố GRI 102-4: GHG emissions reduction targets and progress",
     "requirement_type": "Quantitative",
-    "units": [],
+    "units": [
+      "metric tons CO2e",
+      "kg CO2e",
+      "gCO2e/unit"
+    ],
     "tt96_equivalent": null,
     "versions": [
       {
@@ -273,7 +285,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 102_ Climate Change 2025.pdf",
     "sha256": "b082ea90a6f240a7d9fad443bdea3358381ba6fe85d4515f5c79c3a8420703ec",
-    "page": 60
+    "page": 25
   },
   "GRI 102-5": {
     "gri_standard": "GRI 102",
@@ -283,7 +295,11 @@
     "pillar": "Môi trường",
     "definition_vi": "Chỉ số công bố GRI 102-5: Scope 1 GHG emissions",
     "requirement_type": "Quantitative",
-    "units": [],
+    "units": [
+      "metric tons CO2e",
+      "kg CO2e",
+      "gCO2e/unit"
+    ],
     "tt96_equivalent": null,
     "versions": [
       {
@@ -296,7 +312,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 102_ Climate Change 2025.pdf",
     "sha256": "b082ea90a6f240a7d9fad443bdea3358381ba6fe85d4515f5c79c3a8420703ec",
-    "page": 60
+    "page": 25
   },
   "GRI 102-6": {
     "gri_standard": "GRI 102",
@@ -306,7 +322,11 @@
     "pillar": "Môi trường",
     "definition_vi": "Chỉ số công bố GRI 102-6: Scope 2 GHG emissions",
     "requirement_type": "Quantitative",
-    "units": [],
+    "units": [
+      "metric tons CO2e",
+      "kg CO2e",
+      "gCO2e/unit"
+    ],
     "tt96_equivalent": null,
     "versions": [
       {
@@ -319,7 +339,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 102_ Climate Change 2025.pdf",
     "sha256": "b082ea90a6f240a7d9fad443bdea3358381ba6fe85d4515f5c79c3a8420703ec",
-    "page": 60
+    "page": 25
   },
   "GRI 102-7": {
     "gri_standard": "GRI 102",
@@ -329,7 +349,11 @@
     "pillar": "Môi trường",
     "definition_vi": "Chỉ số công bố GRI 102-7: Scope 3 GHG emissions",
     "requirement_type": "Quantitative",
-    "units": [],
+    "units": [
+      "metric tons CO2e",
+      "kg CO2e",
+      "gCO2e/unit"
+    ],
     "tt96_equivalent": null,
     "versions": [
       {
@@ -342,7 +366,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 102_ Climate Change 2025.pdf",
     "sha256": "b082ea90a6f240a7d9fad443bdea3358381ba6fe85d4515f5c79c3a8420703ec",
-    "page": 60
+    "page": 25
   },
   "GRI 102-8": {
     "gri_standard": "GRI 102",
@@ -352,7 +376,11 @@
     "pillar": "Môi trường",
     "definition_vi": "Chỉ số công bố GRI 102-8: GHG emissions intensity",
     "requirement_type": "Quantitative",
-    "units": [],
+    "units": [
+      "metric tons CO2e",
+      "kg CO2e",
+      "gCO2e/unit"
+    ],
     "tt96_equivalent": null,
     "versions": [
       {
@@ -365,7 +393,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 102_ Climate Change 2025.pdf",
     "sha256": "b082ea90a6f240a7d9fad443bdea3358381ba6fe85d4515f5c79c3a8420703ec",
-    "page": 60
+    "page": 25
   },
   "GRI 102-9": {
     "gri_standard": "GRI 102",
@@ -374,8 +402,12 @@
     "title_vi": "GHG removals in the value chain",
     "pillar": "Môi trường",
     "definition_vi": "Chỉ số công bố GRI 102-9: GHG removals in the value chain",
-    "requirement_type": "Qualitative",
-    "units": [],
+    "requirement_type": "Quantitative",
+    "units": [
+      "metric tons CO2e",
+      "kg CO2e",
+      "gCO2e/unit"
+    ],
     "tt96_equivalent": null,
     "versions": [
       {
@@ -388,7 +420,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 102_ Climate Change 2025.pdf",
     "sha256": "b082ea90a6f240a7d9fad443bdea3358381ba6fe85d4515f5c79c3a8420703ec",
-    "page": 60
+    "page": 25
   },
   "GRI 102-10": {
     "gri_standard": "GRI 102",
@@ -397,8 +429,12 @@
     "title_vi": "Carbon credits",
     "pillar": "Môi trường",
     "definition_vi": "Chỉ số công bố GRI 102-10: Carbon credits",
-    "requirement_type": "Qualitative",
-    "units": [],
+    "requirement_type": "Quantitative",
+    "units": [
+      "metric tons CO2e",
+      "kg CO2e",
+      "gCO2e/unit"
+    ],
     "tt96_equivalent": null,
     "versions": [
       {
@@ -411,7 +447,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 102_ Climate Change 2025.pdf",
     "sha256": "b082ea90a6f240a7d9fad443bdea3358381ba6fe85d4515f5c79c3a8420703ec",
-    "page": 60
+    "page": 25
   },
   "GRI 103-1": {
     "gri_standard": "GRI 103",
@@ -421,7 +457,11 @@
     "pillar": "Môi trường",
     "definition_vi": "Chỉ số công bố GRI 103-1: Energy policies and commitments",
     "requirement_type": "Quantitative",
-    "units": [],
+    "units": [
+      "metric tons CO2e",
+      "kg CO2e",
+      "gCO2e/unit"
+    ],
     "tt96_equivalent": null,
     "versions": [
       {
@@ -434,7 +474,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 103_ Energy 2025.pdf",
     "sha256": "0de8c902906e4dc9f282d5600c2fed20e34b53ab4ee2df554cc0841110f34df0",
-    "page": 29
+    "page": 25
   },
   "GRI 103-2": {
     "gri_standard": "GRI 103",
@@ -444,7 +484,11 @@
     "pillar": "Môi trường",
     "definition_vi": "Chỉ số công bố GRI 103-2: Energy consumption and self-generation within the organization",
     "requirement_type": "Quantitative",
-    "units": [],
+    "units": [
+      "metric tons CO2e",
+      "kg CO2e",
+      "gCO2e/unit"
+    ],
     "tt96_equivalent": null,
     "versions": [
       {
@@ -457,7 +501,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 103_ Energy 2025.pdf",
     "sha256": "0de8c902906e4dc9f282d5600c2fed20e34b53ab4ee2df554cc0841110f34df0",
-    "page": 29
+    "page": 25
   },
   "GRI 103-3": {
     "gri_standard": "GRI 103",
@@ -467,7 +511,11 @@
     "pillar": "Môi trường",
     "definition_vi": "Chỉ số công bố GRI 103-3: Upstream and downstream energy consumption",
     "requirement_type": "Quantitative",
-    "units": [],
+    "units": [
+      "metric tons CO2e",
+      "kg CO2e",
+      "gCO2e/unit"
+    ],
     "tt96_equivalent": null,
     "versions": [
       {
@@ -480,7 +528,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 103_ Energy 2025.pdf",
     "sha256": "0de8c902906e4dc9f282d5600c2fed20e34b53ab4ee2df554cc0841110f34df0",
-    "page": 29
+    "page": 25
   },
   "GRI 103-4": {
     "gri_standard": "GRI 103",
@@ -490,7 +538,11 @@
     "pillar": "Môi trường",
     "definition_vi": "Chỉ số công bố GRI 103-4: Energy intensity",
     "requirement_type": "Quantitative",
-    "units": [],
+    "units": [
+      "metric tons CO2e",
+      "kg CO2e",
+      "gCO2e/unit"
+    ],
     "tt96_equivalent": null,
     "versions": [
       {
@@ -503,7 +555,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 103_ Energy 2025.pdf",
     "sha256": "0de8c902906e4dc9f282d5600c2fed20e34b53ab4ee2df554cc0841110f34df0",
-    "page": 29
+    "page": 25
   },
   "GRI 103-5": {
     "gri_standard": "GRI 103",
@@ -513,7 +565,11 @@
     "pillar": "Môi trường",
     "definition_vi": "Chỉ số công bố GRI 103-5: Reduction in energy consumption",
     "requirement_type": "Quantitative",
-    "units": [],
+    "units": [
+      "metric tons CO2e",
+      "kg CO2e",
+      "gCO2e/unit"
+    ],
     "tt96_equivalent": null,
     "versions": [
       {
@@ -526,30 +582,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 103_ Energy 2025.pdf",
     "sha256": "0de8c902906e4dc9f282d5600c2fed20e34b53ab4ee2df554cc0841110f34df0",
-    "page": 29
-  },
-  "GRI 201-2": {
-    "gri_standard": "GRI 201",
-    "standard_title_en": "Economic Performance 2016",
-    "title_en": "in GRI 201: Economic Performance 2016 has been revised and will be",
-    "title_vi": "in GRI 201: Economic Performance 2016 has been revised and will be",
-    "pillar": "Quản trị",
-    "definition_vi": "Chỉ số công bố GRI 201-2: in GRI 201: Economic Performance 2016 has been revised and will be",
-    "requirement_type": "Qualitative",
-    "units": [],
-    "tt96_equivalent": null,
-    "versions": [
-      {
-        "version_id": "GRI_201_2016",
-        "version_year": 2016,
-        "effective_date": "2017-01-01",
-        "status": "Active"
-      }
-    ],
-    "superseded_by": null,
-    "source_pdf": "GRI 201_  Economic Performance 2016.pdf",
-    "sha256": "1ff3bc503b410aaf6ace049876f7228cc2772432a642829b252708f7d21435ea",
-    "page": 19
+    "page": 25
   },
   "GRI 201-1": {
     "gri_standard": "GRI 201",
@@ -558,8 +591,13 @@
     "title_vi": "Direct economic value generated and distributed",
     "pillar": "Quản trị",
     "definition_vi": "Chỉ số công bố GRI 201-1: Direct economic value generated and distributed",
-    "requirement_type": "Qualitative",
-    "units": [],
+    "requirement_type": "Quantitative",
+    "units": [
+      "VND",
+      "USD",
+      "EUR",
+      "local currency"
+    ],
     "tt96_equivalent": "TT96-6.7.2",
     "versions": [
       {
@@ -572,7 +610,35 @@
     "superseded_by": null,
     "source_pdf": "GRI 201_  Economic Performance 2016.pdf",
     "sha256": "1ff3bc503b410aaf6ace049876f7228cc2772432a642829b252708f7d21435ea",
-    "page": 19
+    "page": 25
+  },
+  "GRI 201-2": {
+    "gri_standard": "GRI 201",
+    "standard_title_en": "Economic Performance 2016",
+    "title_en": "Financial implications and other risks and opportunities due to climate change",
+    "title_vi": "Financial implications and other risks and opportunities due to climate change",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 201-2: Financial implications and other risks and opportunities due to climate change",
+    "requirement_type": "Quantitative",
+    "units": [
+      "VND",
+      "USD",
+      "EUR",
+      "local currency"
+    ],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_201_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 201_  Economic Performance 2016.pdf",
+    "sha256": "1ff3bc503b410aaf6ace049876f7228cc2772432a642829b252708f7d21435ea",
+    "page": 25
   },
   "GRI 201-3": {
     "gri_standard": "GRI 201",
@@ -595,7 +661,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 201_  Economic Performance 2016.pdf",
     "sha256": "1ff3bc503b410aaf6ace049876f7228cc2772432a642829b252708f7d21435ea",
-    "page": 19
+    "page": 25
   },
   "GRI 201-4": {
     "gri_standard": "GRI 201",
@@ -604,8 +670,13 @@
     "title_vi": "Financial assistance received from government",
     "pillar": "Quản trị",
     "definition_vi": "Chỉ số công bố GRI 201-4: Financial assistance received from government",
-    "requirement_type": "Qualitative",
-    "units": [],
+    "requirement_type": "Quantitative",
+    "units": [
+      "VND",
+      "USD",
+      "EUR",
+      "local currency"
+    ],
     "tt96_equivalent": null,
     "versions": [
       {
@@ -618,15 +689,15 @@
     "superseded_by": null,
     "source_pdf": "GRI 201_  Economic Performance 2016.pdf",
     "sha256": "1ff3bc503b410aaf6ace049876f7228cc2772432a642829b252708f7d21435ea",
-    "page": 19
+    "page": 25
   },
   "GRI 202-1": {
     "gri_standard": "GRI 202",
     "standard_title_en": "Market Presence 2016",
-    "title_en": "Ratios of standard entry level wage by gender compared to local",
-    "title_vi": "Ratios of standard entry level wage by gender compared to local",
+    "title_en": "Ratios of standard entry level wage by gender compared to local minimum wage",
+    "title_vi": "Ratios of standard entry level wage by gender compared to local minimum wage",
     "pillar": "Quản trị",
-    "definition_vi": "Chỉ số công bố GRI 202-1: Ratios of standard entry level wage by gender compared to local",
+    "definition_vi": "Chỉ số công bố GRI 202-1: Ratios of standard entry level wage by gender compared to local minimum wage",
     "requirement_type": "Qualitative",
     "units": [],
     "tt96_equivalent": null,
@@ -641,7 +712,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 202_ Market Presence 2016.pdf",
     "sha256": "46303460479d1f6e1c973d22a7855420cdc855394f434ca5d5322d007676cec7",
-    "page": 15
+    "page": 25
   },
   "GRI 202-2": {
     "gri_standard": "GRI 202",
@@ -650,7 +721,7 @@
     "title_vi": "Proportion of senior management hired from the local community",
     "pillar": "Quản trị",
     "definition_vi": "Chỉ số công bố GRI 202-2: Proportion of senior management hired from the local community",
-    "requirement_type": "Qualitative",
+    "requirement_type": "Quantitative",
     "units": [],
     "tt96_equivalent": null,
     "versions": [
@@ -664,7 +735,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 202_ Market Presence 2016.pdf",
     "sha256": "46303460479d1f6e1c973d22a7855420cdc855394f434ca5d5322d007676cec7",
-    "page": 15
+    "page": 25
   },
   "GRI 203-1": {
     "gri_standard": "GRI 203",
@@ -687,7 +758,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 203_ Indirect Economic Impacts 2016.pdf",
     "sha256": "fce4329654522da5812c5686f7ebfd3ac172801cb426953d6e420b2a62fb13a4",
-    "page": 11
+    "page": 25
   },
   "GRI 203-2": {
     "gri_standard": "GRI 203",
@@ -710,7 +781,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 203_ Indirect Economic Impacts 2016.pdf",
     "sha256": "fce4329654522da5812c5686f7ebfd3ac172801cb426953d6e420b2a62fb13a4",
-    "page": 11
+    "page": 25
   },
   "GRI 204-1": {
     "gri_standard": "GRI 204",
@@ -720,7 +791,12 @@
     "pillar": "Quản trị",
     "definition_vi": "Chỉ số công bố GRI 204-1: Proportion of spending on local suppliers",
     "requirement_type": "Qualitative",
-    "units": [],
+    "units": [
+      "VND",
+      "USD",
+      "EUR",
+      "local currency"
+    ],
     "tt96_equivalent": null,
     "versions": [
       {
@@ -733,7 +809,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 204_ Procurement Practices 2016.pdf",
     "sha256": "7c009a073b48b78473cad2443ebcdf481ae71ef79fc9f0b0e485d1a71ebe2f23",
-    "page": 11
+    "page": 25
   },
   "GRI 205-1": {
     "gri_standard": "GRI 205",
@@ -742,7 +818,7 @@
     "title_vi": "Operations assessed for risks related to corruption",
     "pillar": "Quản trị",
     "definition_vi": "Chỉ số công bố GRI 205-1: Operations assessed for risks related to corruption",
-    "requirement_type": "Qualitative",
+    "requirement_type": "Quantitative",
     "units": [],
     "tt96_equivalent": null,
     "versions": [
@@ -756,16 +832,16 @@
     "superseded_by": null,
     "source_pdf": "GRI 205_ Anti-corruption 2016.pdf",
     "sha256": "dc4ce16811bfe3306ae633e9b0a3ae738520ee8523ade8d87def81f64b688236",
-    "page": 16
+    "page": 25
   },
   "GRI 205-2": {
     "gri_standard": "GRI 205",
     "standard_title_en": "Anti-corruption 2016",
-    "title_en": "Communication and training about anti-corruption policies and",
-    "title_vi": "Communication and training about anti-corruption policies and",
+    "title_en": "Communication and training about anti-corruption policies and procedures",
+    "title_vi": "Communication and training about anti-corruption policies and procedures",
     "pillar": "Quản trị",
-    "definition_vi": "Chỉ số công bố GRI 205-2: Communication and training about anti-corruption policies and",
-    "requirement_type": "Qualitative",
+    "definition_vi": "Chỉ số công bố GRI 205-2: Communication and training about anti-corruption policies and procedures",
+    "requirement_type": "Quantitative",
     "units": [],
     "tt96_equivalent": null,
     "versions": [
@@ -779,7 +855,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 205_ Anti-corruption 2016.pdf",
     "sha256": "dc4ce16811bfe3306ae633e9b0a3ae738520ee8523ade8d87def81f64b688236",
-    "page": 16
+    "page": 25
   },
   "GRI 205-3": {
     "gri_standard": "GRI 205",
@@ -788,7 +864,7 @@
     "title_vi": "Confirmed incidents of corruption and actions taken",
     "pillar": "Quản trị",
     "definition_vi": "Chỉ số công bố GRI 205-3: Confirmed incidents of corruption and actions taken",
-    "requirement_type": "Qualitative",
+    "requirement_type": "Quantitative",
     "units": [],
     "tt96_equivalent": null,
     "versions": [
@@ -802,15 +878,15 @@
     "superseded_by": null,
     "source_pdf": "GRI 205_ Anti-corruption 2016.pdf",
     "sha256": "dc4ce16811bfe3306ae633e9b0a3ae738520ee8523ade8d87def81f64b688236",
-    "page": 16
+    "page": 25
   },
   "GRI 206-1": {
     "gri_standard": "GRI 206",
     "standard_title_en": "Anti-competitive Behavior 2016",
-    "title_en": "Legal actions for anti-competitive behavior, anti-trust, and",
-    "title_vi": "Legal actions for anti-competitive behavior, anti-trust, and",
+    "title_en": "Legal actions for anti-competitive behavior, anti-trust, and monopoly practices",
+    "title_vi": "Legal actions for anti-competitive behavior, anti-trust, and monopoly practices",
     "pillar": "Quản trị",
-    "definition_vi": "Chỉ số công bố GRI 206-1: Legal actions for anti-competitive behavior, anti-trust, and",
+    "definition_vi": "Chỉ số công bố GRI 206-1: Legal actions for anti-competitive behavior, anti-trust, and monopoly practices",
     "requirement_type": "Qualitative",
     "units": [],
     "tt96_equivalent": null,
@@ -825,7 +901,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 206_ Anti-competitive Behavior 2016.pdf",
     "sha256": "8c6a6364e00a27359979618a9fe0d7bd58bfe96554a405f53b37824825ac8ea7",
-    "page": 13
+    "page": 25
   },
   "GRI 207-1": {
     "gri_standard": "GRI 207",
@@ -835,7 +911,12 @@
     "pillar": "Quản trị",
     "definition_vi": "Chỉ số công bố GRI 207-1: Approach to tax",
     "requirement_type": "Quantitative",
-    "units": [],
+    "units": [
+      "VND",
+      "USD",
+      "EUR",
+      "local currency"
+    ],
     "tt96_equivalent": null,
     "versions": [
       {
@@ -848,7 +929,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 207_ Tax 2019.pdf",
     "sha256": "acfad9084e7f731f71e0f6431e4a1653b5898e102f152e6cad0d31d7090b122a",
-    "page": 21
+    "page": 25
   },
   "GRI 207-2": {
     "gri_standard": "GRI 207",
@@ -858,7 +939,12 @@
     "pillar": "Quản trị",
     "definition_vi": "Chỉ số công bố GRI 207-2: Tax governance, control, and risk management",
     "requirement_type": "Quantitative",
-    "units": [],
+    "units": [
+      "VND",
+      "USD",
+      "EUR",
+      "local currency"
+    ],
     "tt96_equivalent": null,
     "versions": [
       {
@@ -871,17 +957,22 @@
     "superseded_by": null,
     "source_pdf": "GRI 207_ Tax 2019.pdf",
     "sha256": "acfad9084e7f731f71e0f6431e4a1653b5898e102f152e6cad0d31d7090b122a",
-    "page": 21
+    "page": 25
   },
   "GRI 207-3": {
     "gri_standard": "GRI 207",
     "standard_title_en": "Tax 2019",
-    "title_en": "Stakeholder engagement and management of concerns related",
-    "title_vi": "Stakeholder engagement and management of concerns related",
+    "title_en": "Stakeholder engagement and management of concerns related to tax",
+    "title_vi": "Stakeholder engagement and management of concerns related to tax",
     "pillar": "Quản trị",
-    "definition_vi": "Chỉ số công bố GRI 207-3: Stakeholder engagement and management of concerns related",
-    "requirement_type": "Qualitative",
-    "units": [],
+    "definition_vi": "Chỉ số công bố GRI 207-3: Stakeholder engagement and management of concerns related to tax",
+    "requirement_type": "Quantitative",
+    "units": [
+      "VND",
+      "USD",
+      "EUR",
+      "local currency"
+    ],
     "tt96_equivalent": null,
     "versions": [
       {
@@ -894,7 +985,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 207_ Tax 2019.pdf",
     "sha256": "acfad9084e7f731f71e0f6431e4a1653b5898e102f152e6cad0d31d7090b122a",
-    "page": 21
+    "page": 25
   },
   "GRI 207-4": {
     "gri_standard": "GRI 207",
@@ -917,7 +1008,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 207_ Tax 2019.pdf",
     "sha256": "acfad9084e7f731f71e0f6431e4a1653b5898e102f152e6cad0d31d7090b122a",
-    "page": 21
+    "page": 25
   },
   "GRI 2-1": {
     "gri_standard": "GRI 2",
@@ -940,15 +1031,15 @@
     "superseded_by": null,
     "source_pdf": "GRI 2_ General Disclosures 2021.pdf",
     "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
-    "page": 58
+    "page": 25
   },
   "GRI 2-2": {
     "gri_standard": "GRI 2",
     "standard_title_en": "General Disclosures 2021",
-    "title_en": "Entities included in the organization’s sustainability reporting",
-    "title_vi": "Entities included in the organization’s sustainability reporting",
+    "title_en": "Entities included in the organization's sustainability reporting",
+    "title_vi": "Entities included in the organization's sustainability reporting",
     "pillar": "Quản trị",
-    "definition_vi": "Chỉ số công bố GRI 2-2: Entities included in the organization’s sustainability reporting",
+    "definition_vi": "Chỉ số công bố GRI 2-2: Entities included in the organization's sustainability reporting",
     "requirement_type": "Qualitative",
     "units": [],
     "tt96_equivalent": null,
@@ -963,7 +1054,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 2_ General Disclosures 2021.pdf",
     "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
-    "page": 58
+    "page": 25
   },
   "GRI 2-3": {
     "gri_standard": "GRI 2",
@@ -986,7 +1077,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 2_ General Disclosures 2021.pdf",
     "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
-    "page": 58
+    "page": 25
   },
   "GRI 2-4": {
     "gri_standard": "GRI 2",
@@ -1009,7 +1100,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 2_ General Disclosures 2021.pdf",
     "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
-    "page": 58
+    "page": 25
   },
   "GRI 2-5": {
     "gri_standard": "GRI 2",
@@ -1032,7 +1123,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 2_ General Disclosures 2021.pdf",
     "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
-    "page": 58
+    "page": 25
   },
   "GRI 2-6": {
     "gri_standard": "GRI 2",
@@ -1055,7 +1146,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 2_ General Disclosures 2021.pdf",
     "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
-    "page": 58
+    "page": 25
   },
   "GRI 2-7": {
     "gri_standard": "GRI 2",
@@ -1064,7 +1155,7 @@
     "title_vi": "Employees",
     "pillar": "Quản trị",
     "definition_vi": "Chỉ số công bố GRI 2-7: Employees",
-    "requirement_type": "Qualitative",
+    "requirement_type": "Quantitative",
     "units": [],
     "tt96_equivalent": "TT96-6.6.1",
     "versions": [
@@ -1078,7 +1169,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 2_ General Disclosures 2021.pdf",
     "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
-    "page": 58
+    "page": 25
   },
   "GRI 2-8": {
     "gri_standard": "GRI 2",
@@ -1087,7 +1178,7 @@
     "title_vi": "Workers who are not employees",
     "pillar": "Quản trị",
     "definition_vi": "Chỉ số công bố GRI 2-8: Workers who are not employees",
-    "requirement_type": "Qualitative",
+    "requirement_type": "Quantitative",
     "units": [],
     "tt96_equivalent": null,
     "versions": [
@@ -1101,7 +1192,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 2_ General Disclosures 2021.pdf",
     "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
-    "page": 58
+    "page": 25
   },
   "GRI 2-9": {
     "gri_standard": "GRI 2",
@@ -1124,7 +1215,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 2_ General Disclosures 2021.pdf",
     "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
-    "page": 58
+    "page": 25
   },
   "GRI 2-10": {
     "gri_standard": "GRI 2",
@@ -1147,7 +1238,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 2_ General Disclosures 2021.pdf",
     "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
-    "page": 58
+    "page": 25
   },
   "GRI 2-11": {
     "gri_standard": "GRI 2",
@@ -1170,15 +1261,15 @@
     "superseded_by": null,
     "source_pdf": "GRI 2_ General Disclosures 2021.pdf",
     "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
-    "page": 58
+    "page": 25
   },
   "GRI 2-12": {
     "gri_standard": "GRI 2",
     "standard_title_en": "General Disclosures 2021",
-    "title_en": "Role of the highest governance body in overseeing the",
-    "title_vi": "Role of the highest governance body in overseeing the",
+    "title_en": "Role of the highest governance body in overseeing the management of impacts",
+    "title_vi": "Role of the highest governance body in overseeing the management of impacts",
     "pillar": "Quản trị",
-    "definition_vi": "Chỉ số công bố GRI 2-12: Role of the highest governance body in overseeing the",
+    "definition_vi": "Chỉ số công bố GRI 2-12: Role of the highest governance body in overseeing the management of impacts",
     "requirement_type": "Qualitative",
     "units": [],
     "tt96_equivalent": null,
@@ -1193,7 +1284,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 2_ General Disclosures 2021.pdf",
     "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
-    "page": 58
+    "page": 25
   },
   "GRI 2-13": {
     "gri_standard": "GRI 2",
@@ -1216,7 +1307,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 2_ General Disclosures 2021.pdf",
     "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
-    "page": 58
+    "page": 25
   },
   "GRI 2-14": {
     "gri_standard": "GRI 2",
@@ -1239,7 +1330,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 2_ General Disclosures 2021.pdf",
     "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
-    "page": 58
+    "page": 25
   },
   "GRI 2-15": {
     "gri_standard": "GRI 2",
@@ -1262,7 +1353,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 2_ General Disclosures 2021.pdf",
     "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
-    "page": 58
+    "page": 25
   },
   "GRI 2-16": {
     "gri_standard": "GRI 2",
@@ -1285,30 +1376,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 2_ General Disclosures 2021.pdf",
     "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
-    "page": 58
-  },
-  "GRI 2-17": {
-    "gri_standard": "GRI 2",
-    "standard_title_en": "General Disclosures 2021",
-    "title_en": "Collective knowledge of the highest governance body",
-    "title_vi": "Collective knowledge of the highest governance body",
-    "pillar": "Quản trị",
-    "definition_vi": "Chỉ số công bố GRI 2-17: Collective knowledge of the highest governance body",
-    "requirement_type": "Qualitative",
-    "units": [],
-    "tt96_equivalent": null,
-    "versions": [
-      {
-        "version_id": "GRI_2_2021",
-        "version_year": 2021,
-        "effective_date": "2022-01-01",
-        "status": "Active"
-      }
-    ],
-    "superseded_by": null,
-    "source_pdf": "GRI 2_ General Disclosures 2021.pdf",
-    "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
-    "page": 58
+    "page": 25
   },
   "GRI 2-18": {
     "gri_standard": "GRI 2",
@@ -1331,7 +1399,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 2_ General Disclosures 2021.pdf",
     "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
-    "page": 58
+    "page": 25
   },
   "GRI 2-19": {
     "gri_standard": "GRI 2",
@@ -1354,7 +1422,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 2_ General Disclosures 2021.pdf",
     "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
-    "page": 58
+    "page": 25
   },
   "GRI 2-20": {
     "gri_standard": "GRI 2",
@@ -1377,7 +1445,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 2_ General Disclosures 2021.pdf",
     "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
-    "page": 58
+    "page": 25
   },
   "GRI 2-21": {
     "gri_standard": "GRI 2",
@@ -1400,7 +1468,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 2_ General Disclosures 2021.pdf",
     "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
-    "page": 58
+    "page": 25
   },
   "GRI 2-22": {
     "gri_standard": "GRI 2",
@@ -1409,7 +1477,7 @@
     "title_vi": "Statement on sustainable development strategy",
     "pillar": "Quản trị",
     "definition_vi": "Chỉ số công bố GRI 2-22: Statement on sustainable development strategy",
-    "requirement_type": "Qualitative",
+    "requirement_type": "Quantitative",
     "units": [],
     "tt96_equivalent": null,
     "versions": [
@@ -1423,7 +1491,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 2_ General Disclosures 2021.pdf",
     "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
-    "page": 58
+    "page": 25
   },
   "GRI 2-23": {
     "gri_standard": "GRI 2",
@@ -1446,7 +1514,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 2_ General Disclosures 2021.pdf",
     "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
-    "page": 58
+    "page": 25
   },
   "GRI 2-24": {
     "gri_standard": "GRI 2",
@@ -1469,7 +1537,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 2_ General Disclosures 2021.pdf",
     "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
-    "page": 58
+    "page": 25
   },
   "GRI 2-25": {
     "gri_standard": "GRI 2",
@@ -1478,7 +1546,7 @@
     "title_vi": "Processes to remediate negative impacts",
     "pillar": "Quản trị",
     "definition_vi": "Chỉ số công bố GRI 2-25: Processes to remediate negative impacts",
-    "requirement_type": "Qualitative",
+    "requirement_type": "Quantitative",
     "units": [],
     "tt96_equivalent": null,
     "versions": [
@@ -1492,7 +1560,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 2_ General Disclosures 2021.pdf",
     "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
-    "page": 58
+    "page": 25
   },
   "GRI 2-26": {
     "gri_standard": "GRI 2",
@@ -1515,7 +1583,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 2_ General Disclosures 2021.pdf",
     "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
-    "page": 58
+    "page": 25
   },
   "GRI 2-27": {
     "gri_standard": "GRI 2",
@@ -1538,7 +1606,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 2_ General Disclosures 2021.pdf",
     "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
-    "page": 58
+    "page": 25
   },
   "GRI 2-28": {
     "gri_standard": "GRI 2",
@@ -1561,7 +1629,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 2_ General Disclosures 2021.pdf",
     "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
-    "page": 58
+    "page": 25
   },
   "GRI 2-29": {
     "gri_standard": "GRI 2",
@@ -1584,7 +1652,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 2_ General Disclosures 2021.pdf",
     "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
-    "page": 58
+    "page": 25
   },
   "GRI 2-30": {
     "gri_standard": "GRI 2",
@@ -1593,7 +1661,7 @@
     "title_vi": "Collective bargaining agreements",
     "pillar": "Quản trị",
     "definition_vi": "Chỉ số công bố GRI 2-30: Collective bargaining agreements",
-    "requirement_type": "Qualitative",
+    "requirement_type": "Quantitative",
     "units": [],
     "tt96_equivalent": null,
     "versions": [
@@ -1607,7 +1675,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 2_ General Disclosures 2021.pdf",
     "sha256": "e75728efe274f606031abf775021c6e3c8076ad264b13342d58c0e4a8ef897ea",
-    "page": 58
+    "page": 25
   },
   "GRI 301-1": {
     "gri_standard": "GRI 301",
@@ -1630,7 +1698,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 301_ Materials 2016.pdf",
     "sha256": "8341ae1ff5b0b7c03ff9f6b2f07cbaf66204a3a61fd693025174568ed85857d4",
-    "page": 13
+    "page": 25
   },
   "GRI 301-2": {
     "gri_standard": "GRI 301",
@@ -1639,7 +1707,7 @@
     "title_vi": "Recycled input materials used",
     "pillar": "Môi trường",
     "definition_vi": "Chỉ số công bố GRI 301-2: Recycled input materials used",
-    "requirement_type": "Qualitative",
+    "requirement_type": "Quantitative",
     "units": [],
     "tt96_equivalent": "TT96-6.2.2",
     "versions": [
@@ -1653,7 +1721,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 301_ Materials 2016.pdf",
     "sha256": "8341ae1ff5b0b7c03ff9f6b2f07cbaf66204a3a61fd693025174568ed85857d4",
-    "page": 13
+    "page": 25
   },
   "GRI 301-3": {
     "gri_standard": "GRI 301",
@@ -1662,7 +1730,7 @@
     "title_vi": "Reclaimed products and their packaging materials",
     "pillar": "Môi trường",
     "definition_vi": "Chỉ số công bố GRI 301-3: Reclaimed products and their packaging materials",
-    "requirement_type": "Qualitative",
+    "requirement_type": "Quantitative",
     "units": [],
     "tt96_equivalent": null,
     "versions": [
@@ -1676,7 +1744,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 301_ Materials 2016.pdf",
     "sha256": "8341ae1ff5b0b7c03ff9f6b2f07cbaf66204a3a61fd693025174568ed85857d4",
-    "page": 13
+    "page": 25
   },
   "GRI 302-1": {
     "gri_standard": "GRI 302",
@@ -1686,7 +1754,12 @@
     "pillar": "Môi trường",
     "definition_vi": "Chỉ số công bố GRI 302-1: Energy consumption within the organization",
     "requirement_type": "Quantitative",
-    "units": [],
+    "units": [
+      "Joules (J)",
+      "Gigajoules (GJ)",
+      "Kilowatt-hours (kWh)",
+      "MWh"
+    ],
     "tt96_equivalent": "TT96-6.3.1",
     "versions": [
       {
@@ -1699,7 +1772,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 302_ Energy 2016.pdf",
     "sha256": "0dcb278efdff5323f116fc4e5815b978f64ea3337b40e61f03a96a1cbccafb62",
-    "page": 19
+    "page": 25
   },
   "GRI 302-2": {
     "gri_standard": "GRI 302",
@@ -1709,7 +1782,12 @@
     "pillar": "Môi trường",
     "definition_vi": "Chỉ số công bố GRI 302-2: Energy consumption outside of the organization",
     "requirement_type": "Quantitative",
-    "units": [],
+    "units": [
+      "Joules (J)",
+      "Gigajoules (GJ)",
+      "Kilowatt-hours (kWh)",
+      "MWh"
+    ],
     "tt96_equivalent": null,
     "versions": [
       {
@@ -1722,7 +1800,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 302_ Energy 2016.pdf",
     "sha256": "0dcb278efdff5323f116fc4e5815b978f64ea3337b40e61f03a96a1cbccafb62",
-    "page": 19
+    "page": 25
   },
   "GRI 302-3": {
     "gri_standard": "GRI 302",
@@ -1731,7 +1809,7 @@
     "title_vi": "Energy intensity",
     "pillar": "Môi trường",
     "definition_vi": "Chỉ số công bố GRI 302-3: Energy intensity",
-    "requirement_type": "Quantitative",
+    "requirement_type": "Qualitative",
     "units": [],
     "tt96_equivalent": null,
     "versions": [
@@ -1745,30 +1823,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 302_ Energy 2016.pdf",
     "sha256": "0dcb278efdff5323f116fc4e5815b978f64ea3337b40e61f03a96a1cbccafb62",
-    "page": 19
-  },
-  "GRI 302-5": {
-    "gri_standard": "GRI 302",
-    "standard_title_en": "Energy 2016",
-    "title_en": "Reductions in energy requirements of products and services",
-    "title_vi": "Reductions in energy requirements of products and services",
-    "pillar": "Môi trường",
-    "definition_vi": "Chỉ số công bố GRI 302-5: Reductions in energy requirements of products and services",
-    "requirement_type": "Quantitative",
-    "units": [],
-    "tt96_equivalent": null,
-    "versions": [
-      {
-        "version_id": "GRI_302_2016",
-        "version_year": 2016,
-        "effective_date": "2017-01-01",
-        "status": "Active"
-      }
-    ],
-    "superseded_by": null,
-    "source_pdf": "GRI 302_ Energy 2016.pdf",
-    "sha256": "0dcb278efdff5323f116fc4e5815b978f64ea3337b40e61f03a96a1cbccafb62",
-    "page": 19
+    "page": 25
   },
   "GRI 302-4": {
     "gri_standard": "GRI 302",
@@ -1778,7 +1833,12 @@
     "pillar": "Môi trường",
     "definition_vi": "Chỉ số công bố GRI 302-4: Reduction of energy consumption",
     "requirement_type": "Quantitative",
-    "units": [],
+    "units": [
+      "Joules (J)",
+      "Gigajoules (GJ)",
+      "Kilowatt-hours (kWh)",
+      "MWh"
+    ],
     "tt96_equivalent": "TT96-6.3.2",
     "versions": [
       {
@@ -1791,7 +1851,35 @@
     "superseded_by": null,
     "source_pdf": "GRI 302_ Energy 2016.pdf",
     "sha256": "0dcb278efdff5323f116fc4e5815b978f64ea3337b40e61f03a96a1cbccafb62",
-    "page": 19
+    "page": 25
+  },
+  "GRI 302-5": {
+    "gri_standard": "GRI 302",
+    "standard_title_en": "Energy 2016",
+    "title_en": "Reductions in energy requirements of products and services",
+    "title_vi": "Reductions in energy requirements of products and services",
+    "pillar": "Môi trường",
+    "definition_vi": "Chỉ số công bố GRI 302-5: Reductions in energy requirements of products and services",
+    "requirement_type": "Quantitative",
+    "units": [
+      "Joules (J)",
+      "Gigajoules (GJ)",
+      "Kilowatt-hours (kWh)",
+      "MWh"
+    ],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_302_2016",
+        "version_year": 2016,
+        "effective_date": "2017-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 302_ Energy 2016.pdf",
+    "sha256": "0dcb278efdff5323f116fc4e5815b978f64ea3337b40e61f03a96a1cbccafb62",
+    "page": 25
   },
   "GRI 303-1": {
     "gri_standard": "GRI 303",
@@ -1800,7 +1888,7 @@
     "title_vi": "Interactions with water as a shared resource",
     "pillar": "Môi trường",
     "definition_vi": "Chỉ số công bố GRI 303-1: Interactions with water as a shared resource",
-    "requirement_type": "Quantitative",
+    "requirement_type": "Qualitative",
     "units": [],
     "tt96_equivalent": null,
     "versions": [
@@ -1814,7 +1902,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 303_ Water and Effluents 2018.pdf",
     "sha256": "f51de08431cd5abcffb5fd37f70549eb3ba0c6c7a645af2ed8a9b7a3d722493c",
-    "page": 29
+    "page": 25
   },
   "GRI 303-2": {
     "gri_standard": "GRI 303",
@@ -1823,7 +1911,7 @@
     "title_vi": "Management of water discharge-related impacts",
     "pillar": "Môi trường",
     "definition_vi": "Chỉ số công bố GRI 303-2: Management of water discharge-related impacts",
-    "requirement_type": "Quantitative",
+    "requirement_type": "Qualitative",
     "units": [],
     "tt96_equivalent": null,
     "versions": [
@@ -1837,7 +1925,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 303_ Water and Effluents 2018.pdf",
     "sha256": "f51de08431cd5abcffb5fd37f70549eb3ba0c6c7a645af2ed8a9b7a3d722493c",
-    "page": 29
+    "page": 25
   },
   "GRI 303-3": {
     "gri_standard": "GRI 303",
@@ -1846,7 +1934,7 @@
     "title_vi": "Water withdrawal",
     "pillar": "Môi trường",
     "definition_vi": "Chỉ số công bố GRI 303-3: Water withdrawal",
-    "requirement_type": "Quantitative",
+    "requirement_type": "Qualitative",
     "units": [],
     "tt96_equivalent": "TT96-6.4.1",
     "versions": [
@@ -1860,7 +1948,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 303_ Water and Effluents 2018.pdf",
     "sha256": "f51de08431cd5abcffb5fd37f70549eb3ba0c6c7a645af2ed8a9b7a3d722493c",
-    "page": 29
+    "page": 25
   },
   "GRI 303-4": {
     "gri_standard": "GRI 303",
@@ -1870,7 +1958,10 @@
     "pillar": "Môi trường",
     "definition_vi": "Chỉ số công bố GRI 303-4: Water discharge",
     "requirement_type": "Quantitative",
-    "units": [],
+    "units": [
+      "megalitres (ML)",
+      "cubic meters (m3)"
+    ],
     "tt96_equivalent": null,
     "versions": [
       {
@@ -1883,7 +1974,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 303_ Water and Effluents 2018.pdf",
     "sha256": "f51de08431cd5abcffb5fd37f70549eb3ba0c6c7a645af2ed8a9b7a3d722493c",
-    "page": 29
+    "page": 25
   },
   "GRI 303-5": {
     "gri_standard": "GRI 303",
@@ -1892,7 +1983,7 @@
     "title_vi": "Water consumption",
     "pillar": "Môi trường",
     "definition_vi": "Chỉ số công bố GRI 303-5: Water consumption",
-    "requirement_type": "Quantitative",
+    "requirement_type": "Qualitative",
     "units": [],
     "tt96_equivalent": "SSCIFC-E4",
     "versions": [
@@ -1906,7 +1997,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 303_ Water and Effluents 2018.pdf",
     "sha256": "f51de08431cd5abcffb5fd37f70549eb3ba0c6c7a645af2ed8a9b7a3d722493c",
-    "page": 29
+    "page": 25
   },
   "GRI 305-1": {
     "gri_standard": "GRI 305",
@@ -1917,7 +2008,9 @@
     "definition_vi": "Chỉ số công bố GRI 305-1: Direct (Scope 1) GHG emissions",
     "requirement_type": "Quantitative",
     "units": [
-      "metric tons CO2e"
+      "metric tons CO2e",
+      "kg CO2e",
+      "gCO2e/unit"
     ],
     "tt96_equivalent": "TT96-6.1.1",
     "versions": [
@@ -1931,7 +2024,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 305_ Emissions 2016.pdf",
     "sha256": "fd6c10b99940e4ab96ba810658cebf182e7c0389af71f7444fa9ecf2038c3a1c",
-    "page": 26
+    "page": 25
   },
   "GRI 305-2": {
     "gri_standard": "GRI 305",
@@ -1942,7 +2035,9 @@
     "definition_vi": "Chỉ số công bố GRI 305-2: Energy indirect (Scope 2) GHG emissions",
     "requirement_type": "Quantitative",
     "units": [
-      "metric tons CO2e"
+      "metric tons CO2e",
+      "kg CO2e",
+      "gCO2e/unit"
     ],
     "tt96_equivalent": "TT96-6.1.1",
     "versions": [
@@ -1956,7 +2051,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 305_ Emissions 2016.pdf",
     "sha256": "fd6c10b99940e4ab96ba810658cebf182e7c0389af71f7444fa9ecf2038c3a1c",
-    "page": 26
+    "page": 25
   },
   "GRI 305-3": {
     "gri_standard": "GRI 305",
@@ -1967,7 +2062,9 @@
     "definition_vi": "Chỉ số công bố GRI 305-3: Other indirect (Scope 3) GHG emissions",
     "requirement_type": "Quantitative",
     "units": [
-      "metric tons CO2e"
+      "metric tons CO2e",
+      "kg CO2e",
+      "gCO2e/unit"
     ],
     "tt96_equivalent": null,
     "versions": [
@@ -1981,7 +2078,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 305_ Emissions 2016.pdf",
     "sha256": "fd6c10b99940e4ab96ba810658cebf182e7c0389af71f7444fa9ecf2038c3a1c",
-    "page": 26
+    "page": 25
   },
   "GRI 305-4": {
     "gri_standard": "GRI 305",
@@ -1992,7 +2089,9 @@
     "definition_vi": "Chỉ số công bố GRI 305-4: GHG emissions intensity",
     "requirement_type": "Quantitative",
     "units": [
-      "metric tons CO2e"
+      "metric tons CO2e",
+      "kg CO2e",
+      "gCO2e/unit"
     ],
     "tt96_equivalent": null,
     "versions": [
@@ -2006,7 +2105,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 305_ Emissions 2016.pdf",
     "sha256": "fd6c10b99940e4ab96ba810658cebf182e7c0389af71f7444fa9ecf2038c3a1c",
-    "page": 26
+    "page": 25
   },
   "GRI 305-5": {
     "gri_standard": "GRI 305",
@@ -2017,7 +2116,9 @@
     "definition_vi": "Chỉ số công bố GRI 305-5: Reduction of GHG emissions",
     "requirement_type": "Quantitative",
     "units": [
-      "metric tons CO2e"
+      "metric tons CO2e",
+      "kg CO2e",
+      "gCO2e/unit"
     ],
     "tt96_equivalent": "TT96-6.1.2",
     "versions": [
@@ -2031,7 +2132,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 305_ Emissions 2016.pdf",
     "sha256": "fd6c10b99940e4ab96ba810658cebf182e7c0389af71f7444fa9ecf2038c3a1c",
-    "page": 26
+    "page": 25
   },
   "GRI 305-6": {
     "gri_standard": "GRI 305",
@@ -2042,7 +2143,9 @@
     "definition_vi": "Chỉ số công bố GRI 305-6: Emissions of ozone-depleting substances (ODS)",
     "requirement_type": "Quantitative",
     "units": [
-      "metric tons CO2e"
+      "metric tons CO2e",
+      "kg CO2e",
+      "gCO2e/unit"
     ],
     "tt96_equivalent": null,
     "versions": [
@@ -2056,18 +2159,20 @@
     "superseded_by": null,
     "source_pdf": "GRI 305_ Emissions 2016.pdf",
     "sha256": "fd6c10b99940e4ab96ba810658cebf182e7c0389af71f7444fa9ecf2038c3a1c",
-    "page": 26
+    "page": 25
   },
   "GRI 305-7": {
     "gri_standard": "GRI 305",
     "standard_title_en": "Emissions 2016",
-    "title_en": "Nitrogen oxides (NOx), sulfur oxides (SOx), and other significant",
-    "title_vi": "Nitrogen oxides (NOx), sulfur oxides (SOx), and other significant",
+    "title_en": "Nitrogen oxides (NO<sub>x</sub>), sulfur oxides (SO<sub>x</sub>), and other significant air emissions",
+    "title_vi": "Nitrogen oxides (NO<sub>x</sub>), sulfur oxides (SO<sub>x</sub>), and other significant air emissions",
     "pillar": "Môi trường",
-    "definition_vi": "Chỉ số công bố GRI 305-7: Nitrogen oxides (NOx), sulfur oxides (SOx), and other significant",
-    "requirement_type": "Qualitative",
+    "definition_vi": "Chỉ số công bố GRI 305-7: Nitrogen oxides (NO<sub>x</sub>), sulfur oxides (SO<sub>x</sub>), and other significant air emissions",
+    "requirement_type": "Quantitative",
     "units": [
-      "metric tons CO2e"
+      "metric tons CO2e",
+      "kg CO2e",
+      "gCO2e/unit"
     ],
     "tt96_equivalent": null,
     "versions": [
@@ -2081,17 +2186,20 @@
     "superseded_by": null,
     "source_pdf": "GRI 305_ Emissions 2016.pdf",
     "sha256": "fd6c10b99940e4ab96ba810658cebf182e7c0389af71f7444fa9ecf2038c3a1c",
-    "page": 26
+    "page": 25
   },
   "GRI 306-3": {
     "gri_standard": "GRI 306",
     "standard_title_en": "Effluents and Waste 2016",
-    "title_en": "in GRI 306: Effluents and Waste 2016 remains in effect and will be revised as part of the",
-    "title_vi": "in GRI 306: Effluents and Waste 2016 remains in effect and will be revised as part of the",
+    "title_en": "Significant spills",
+    "title_vi": "Significant spills",
     "pillar": "Môi trường",
-    "definition_vi": "Chỉ số công bố GRI 306-3: in GRI 306: Effluents and Waste 2016 remains in effect and will be revised as part of the",
+    "definition_vi": "Chỉ số công bố GRI 306-3: Significant spills",
     "requirement_type": "Quantitative",
-    "units": [],
+    "units": [
+      "metric tons (t)",
+      "kilograms (kg)"
+    ],
     "tt96_equivalent": null,
     "versions": [
       {
@@ -2110,17 +2218,20 @@
     "superseded_by": "GRI 306 & GRI 303",
     "source_pdf": "GRI 306_ Effluents and Waste 2016.pdf",
     "sha256": "c27a2119e7c41b4f6fee270a9f65b07d0643ed7838cfcd752e86f9b7b1045e8c",
-    "page": 13
+    "page": 25
   },
   "GRI 306-1": {
     "gri_standard": "GRI 306",
-    "standard_title_en": "Effluents and Waste 2016",
-    "title_en": "Water discharge by quality and destination",
-    "title_vi": "Water discharge by quality and destination",
+    "standard_title_en": "Waste 2020",
+    "title_en": "Waste generation and significant waste-related impacts",
+    "title_vi": "Waste generation and significant waste-related impacts",
     "pillar": "Môi trường",
-    "definition_vi": "Chỉ số công bố GRI 306-1: Water discharge by quality and destination",
+    "definition_vi": "Chỉ số công bố GRI 306-1: Waste generation and significant waste-related impacts",
     "requirement_type": "Quantitative",
-    "units": [],
+    "units": [
+      "metric tons (t)",
+      "kilograms (kg)"
+    ],
     "tt96_equivalent": null,
     "versions": [
       {
@@ -2136,20 +2247,23 @@
         "status": "Active"
       }
     ],
-    "superseded_by": "GRI 306 & GRI 303",
-    "source_pdf": "GRI 306_ Effluents and Waste 2016.pdf",
-    "sha256": "c27a2119e7c41b4f6fee270a9f65b07d0643ed7838cfcd752e86f9b7b1045e8c",
-    "page": 13
+    "superseded_by": null,
+    "source_pdf": "GRI 306_ Waste 2020.pdf",
+    "sha256": "29912998398a42a5152a47aceaffbf8892a6aec4ad8e766ee9661299559a63de",
+    "page": 25
   },
   "GRI 306-2": {
     "gri_standard": "GRI 306",
-    "standard_title_en": "Effluents and Waste 2016",
-    "title_en": "Waste by type and disposal method",
-    "title_vi": "Waste by type and disposal method",
+    "standard_title_en": "Waste 2020",
+    "title_en": "Management of significant waste-related impacts",
+    "title_vi": "Management of significant waste-related impacts",
     "pillar": "Môi trường",
-    "definition_vi": "Chỉ số công bố GRI 306-2: Waste by type and disposal method",
+    "definition_vi": "Chỉ số công bố GRI 306-2: Management of significant waste-related impacts",
     "requirement_type": "Quantitative",
-    "units": [],
+    "units": [
+      "metric tons (t)",
+      "kilograms (kg)"
+    ],
     "tt96_equivalent": null,
     "versions": [
       {
@@ -2165,20 +2279,23 @@
         "status": "Active"
       }
     ],
-    "superseded_by": "GRI 306 & GRI 303",
-    "source_pdf": "GRI 306_ Effluents and Waste 2016.pdf",
-    "sha256": "c27a2119e7c41b4f6fee270a9f65b07d0643ed7838cfcd752e86f9b7b1045e8c",
-    "page": 13
+    "superseded_by": null,
+    "source_pdf": "GRI 306_ Waste 2020.pdf",
+    "sha256": "29912998398a42a5152a47aceaffbf8892a6aec4ad8e766ee9661299559a63de",
+    "page": 25
   },
   "GRI 306-4": {
     "gri_standard": "GRI 306",
-    "standard_title_en": "Effluents and Waste 2016",
-    "title_en": "Transport of hazardous waste",
-    "title_vi": "Transport of hazardous waste",
+    "standard_title_en": "Waste 2020",
+    "title_en": "Waste diverted from disposal",
+    "title_vi": "Waste diverted from disposal",
     "pillar": "Môi trường",
-    "definition_vi": "Chỉ số công bố GRI 306-4: Transport of hazardous waste",
+    "definition_vi": "Chỉ số công bố GRI 306-4: Waste diverted from disposal",
     "requirement_type": "Quantitative",
-    "units": [],
+    "units": [
+      "metric tons (t)",
+      "kilograms (kg)"
+    ],
     "tt96_equivalent": "SSCIFC-E7",
     "versions": [
       {
@@ -2194,20 +2311,23 @@
         "status": "Active"
       }
     ],
-    "superseded_by": "GRI 306 & GRI 303",
-    "source_pdf": "GRI 306_ Effluents and Waste 2016.pdf",
-    "sha256": "c27a2119e7c41b4f6fee270a9f65b07d0643ed7838cfcd752e86f9b7b1045e8c",
-    "page": 13
+    "superseded_by": null,
+    "source_pdf": "GRI 306_ Waste 2020.pdf",
+    "sha256": "29912998398a42a5152a47aceaffbf8892a6aec4ad8e766ee9661299559a63de",
+    "page": 25
   },
   "GRI 306-5": {
     "gri_standard": "GRI 306",
-    "standard_title_en": "Effluents and Waste 2016",
-    "title_en": "Water bodies affected by water discharges and/or runoff",
-    "title_vi": "Water bodies affected by water discharges and/or runoff",
+    "standard_title_en": "Waste 2020",
+    "title_en": "Waste directed to disposal",
+    "title_vi": "Waste directed to disposal",
     "pillar": "Môi trường",
-    "definition_vi": "Chỉ số công bố GRI 306-5: Water bodies affected by water discharges and/or runoff",
+    "definition_vi": "Chỉ số công bố GRI 306-5: Waste directed to disposal",
     "requirement_type": "Quantitative",
-    "units": [],
+    "units": [
+      "metric tons (t)",
+      "kilograms (kg)"
+    ],
     "tt96_equivalent": null,
     "versions": [
       {
@@ -2223,10 +2343,10 @@
         "status": "Active"
       }
     ],
-    "superseded_by": "GRI 306 & GRI 303",
-    "source_pdf": "GRI 306_ Effluents and Waste 2016.pdf",
-    "sha256": "c27a2119e7c41b4f6fee270a9f65b07d0643ed7838cfcd752e86f9b7b1045e8c",
-    "page": 13
+    "superseded_by": null,
+    "source_pdf": "GRI 306_ Waste 2020.pdf",
+    "sha256": "29912998398a42a5152a47aceaffbf8892a6aec4ad8e766ee9661299559a63de",
+    "page": 25
   },
   "GRI 308-1": {
     "gri_standard": "GRI 308",
@@ -2249,16 +2369,16 @@
     "superseded_by": null,
     "source_pdf": "GRI 308_ Supplier Environmental Assessment 2016.pdf",
     "sha256": "51cd0d91694b9e91dca986b83d21ba499beaf7711cc20a7109c956e3b5e56ad8",
-    "page": 14
+    "page": 25
   },
   "GRI 308-2": {
     "gri_standard": "GRI 308",
     "standard_title_en": "Supplier Environmental Assessment 2016",
-    "title_en": "Negative environmental impacts in the supply chain and actions",
-    "title_vi": "Negative environmental impacts in the supply chain and actions",
+    "title_en": "Negative environmental impacts in the supply chain and actions taken",
+    "title_vi": "Negative environmental impacts in the supply chain and actions taken",
     "pillar": "Môi trường",
-    "definition_vi": "Chỉ số công bố GRI 308-2: Negative environmental impacts in the supply chain and actions",
-    "requirement_type": "Qualitative",
+    "definition_vi": "Chỉ số công bố GRI 308-2: Negative environmental impacts in the supply chain and actions taken",
+    "requirement_type": "Quantitative",
     "units": [],
     "tt96_equivalent": null,
     "versions": [
@@ -2272,7 +2392,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 308_ Supplier Environmental Assessment 2016.pdf",
     "sha256": "51cd0d91694b9e91dca986b83d21ba499beaf7711cc20a7109c956e3b5e56ad8",
-    "page": 14
+    "page": 25
   },
   "GRI 3-1": {
     "gri_standard": "GRI 3",
@@ -2295,7 +2415,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 3_ Material Topics 2021.pdf",
     "sha256": "42e2c8c511efaab1bf027d2b80dd9a972f14384402a8b3b6a69ebd15030d5ca4",
-    "page": 30
+    "page": 25
   },
   "GRI 3-2": {
     "gri_standard": "GRI 3",
@@ -2318,7 +2438,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 3_ Material Topics 2021.pdf",
     "sha256": "42e2c8c511efaab1bf027d2b80dd9a972f14384402a8b3b6a69ebd15030d5ca4",
-    "page": 30
+    "page": 25
   },
   "GRI 3-3": {
     "gri_standard": "GRI 3",
@@ -2341,7 +2461,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 3_ Material Topics 2021.pdf",
     "sha256": "42e2c8c511efaab1bf027d2b80dd9a972f14384402a8b3b6a69ebd15030d5ca4",
-    "page": 30
+    "page": 25
   },
   "GRI 401-1": {
     "gri_standard": "GRI 401",
@@ -2351,7 +2471,12 @@
     "pillar": "Xã hội",
     "definition_vi": "Chỉ số công bố GRI 401-1: New employee hires and employee turnover",
     "requirement_type": "Qualitative",
-    "units": [],
+    "units": [
+      "number of employees",
+      "hours",
+      "percentage %",
+      "injury rate per 200,000 hours"
+    ],
     "tt96_equivalent": null,
     "versions": [
       {
@@ -2364,15 +2489,15 @@
     "superseded_by": null,
     "source_pdf": "GRI 401_ Employment 2016.pdf",
     "sha256": "a907f88ec011435a4d244fe61719cac4addb13756d36ac0aa607b2ad223d9965",
-    "page": 16
+    "page": 25
   },
   "GRI 401-2": {
     "gri_standard": "GRI 401",
     "standard_title_en": "Employment 2016",
-    "title_en": "Benefits provided to full-time employees that are not provided to",
-    "title_vi": "Benefits provided to full-time employees that are not provided to",
+    "title_en": "Benefits provided to full-time employees that are not provided to temporary or part-time employees",
+    "title_vi": "Benefits provided to full-time employees that are not provided to temporary or part-time employees",
     "pillar": "Xã hội",
-    "definition_vi": "Chỉ số công bố GRI 401-2: Benefits provided to full-time employees that are not provided to",
+    "definition_vi": "Chỉ số công bố GRI 401-2: Benefits provided to full-time employees that are not provided to temporary or part-time employees",
     "requirement_type": "Qualitative",
     "units": [],
     "tt96_equivalent": null,
@@ -2387,7 +2512,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 401_ Employment 2016.pdf",
     "sha256": "a907f88ec011435a4d244fe61719cac4addb13756d36ac0aa607b2ad223d9965",
-    "page": 16
+    "page": 25
   },
   "GRI 401-3": {
     "gri_standard": "GRI 401",
@@ -2396,8 +2521,13 @@
     "title_vi": "Parental leave",
     "pillar": "Xã hội",
     "definition_vi": "Chỉ số công bố GRI 401-3: Parental leave",
-    "requirement_type": "Qualitative",
-    "units": [],
+    "requirement_type": "Quantitative",
+    "units": [
+      "number of employees",
+      "hours",
+      "percentage %",
+      "injury rate per 200,000 hours"
+    ],
     "tt96_equivalent": null,
     "versions": [
       {
@@ -2410,16 +2540,16 @@
     "superseded_by": null,
     "source_pdf": "GRI 401_ Employment 2016.pdf",
     "sha256": "a907f88ec011435a4d244fe61719cac4addb13756d36ac0aa607b2ad223d9965",
-    "page": 16
+    "page": 25
   },
   "GRI 402-1": {
     "gri_standard": "GRI 402",
-    "standard_title_en": "Labor and Management Relations 2016",
+    "standard_title_en": "Labor/Management Relations 2016",
     "title_en": "Minimum notice periods regarding operational changes",
     "title_vi": "Minimum notice periods regarding operational changes",
     "pillar": "Xã hội",
     "definition_vi": "Chỉ số công bố GRI 402-1: Minimum notice periods regarding operational changes",
-    "requirement_type": "Qualitative",
+    "requirement_type": "Quantitative",
     "units": [],
     "tt96_equivalent": null,
     "versions": [
@@ -2433,7 +2563,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 402_ Labor and Management Relations 2016.pdf",
     "sha256": "4223292b5990088036db5e3d443d4343ceffe1f9542abad1b6924f7e069dd53b",
-    "page": 13
+    "page": 25
   },
   "GRI 403-1": {
     "gri_standard": "GRI 403",
@@ -2456,7 +2586,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 403_ Occupational Health and Safety 2018.pdf",
     "sha256": "50011958a813af55c47b3b91a44c826338b5dea4d7af7ba21bdd375c370985e7",
-    "page": 35
+    "page": 25
   },
   "GRI 403-2": {
     "gri_standard": "GRI 403",
@@ -2479,7 +2609,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 403_ Occupational Health and Safety 2018.pdf",
     "sha256": "50011958a813af55c47b3b91a44c826338b5dea4d7af7ba21bdd375c370985e7",
-    "page": 35
+    "page": 25
   },
   "GRI 403-3": {
     "gri_standard": "GRI 403",
@@ -2489,7 +2619,12 @@
     "pillar": "Xã hội",
     "definition_vi": "Chỉ số công bố GRI 403-3: Occupational health services",
     "requirement_type": "Qualitative",
-    "units": [],
+    "units": [
+      "number of employees",
+      "hours",
+      "percentage %",
+      "injury rate per 200,000 hours"
+    ],
     "tt96_equivalent": null,
     "versions": [
       {
@@ -2502,15 +2637,15 @@
     "superseded_by": null,
     "source_pdf": "GRI 403_ Occupational Health and Safety 2018.pdf",
     "sha256": "50011958a813af55c47b3b91a44c826338b5dea4d7af7ba21bdd375c370985e7",
-    "page": 35
+    "page": 25
   },
   "GRI 403-4": {
     "gri_standard": "GRI 403",
     "standard_title_en": "Occupational Health and Safety 2018",
-    "title_en": "Worker participation, consultation, and communication on",
-    "title_vi": "Worker participation, consultation, and communication on",
+    "title_en": "Worker participation, consultation, and communication on occupational health and safety",
+    "title_vi": "Worker participation, consultation, and communication on occupational health and safety",
     "pillar": "Xã hội",
-    "definition_vi": "Chỉ số công bố GRI 403-4: Worker participation, consultation, and communication on",
+    "definition_vi": "Chỉ số công bố GRI 403-4: Worker participation, consultation, and communication on occupational health and safety",
     "requirement_type": "Qualitative",
     "units": [],
     "tt96_equivalent": null,
@@ -2525,7 +2660,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 403_ Occupational Health and Safety 2018.pdf",
     "sha256": "50011958a813af55c47b3b91a44c826338b5dea4d7af7ba21bdd375c370985e7",
-    "page": 35
+    "page": 25
   },
   "GRI 403-5": {
     "gri_standard": "GRI 403",
@@ -2548,7 +2683,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 403_ Occupational Health and Safety 2018.pdf",
     "sha256": "50011958a813af55c47b3b91a44c826338b5dea4d7af7ba21bdd375c370985e7",
-    "page": 35
+    "page": 25
   },
   "GRI 403-6": {
     "gri_standard": "GRI 403",
@@ -2571,15 +2706,15 @@
     "superseded_by": null,
     "source_pdf": "GRI 403_ Occupational Health and Safety 2018.pdf",
     "sha256": "50011958a813af55c47b3b91a44c826338b5dea4d7af7ba21bdd375c370985e7",
-    "page": 35
+    "page": 25
   },
   "GRI 403-7": {
     "gri_standard": "GRI 403",
     "standard_title_en": "Occupational Health and Safety 2018",
-    "title_en": "Prevention and mitigation of occupational health and safety",
-    "title_vi": "Prevention and mitigation of occupational health and safety",
+    "title_en": "Prevention and mitigation of occupational health and safety impacts directly linked by business relationships",
+    "title_vi": "Prevention and mitigation of occupational health and safety impacts directly linked by business relationships",
     "pillar": "Xã hội",
-    "definition_vi": "Chỉ số công bố GRI 403-7: Prevention and mitigation of occupational health and safety",
+    "definition_vi": "Chỉ số công bố GRI 403-7: Prevention and mitigation of occupational health and safety impacts directly linked by business relationships",
     "requirement_type": "Qualitative",
     "units": [],
     "tt96_equivalent": null,
@@ -2594,17 +2729,22 @@
     "superseded_by": null,
     "source_pdf": "GRI 403_ Occupational Health and Safety 2018.pdf",
     "sha256": "50011958a813af55c47b3b91a44c826338b5dea4d7af7ba21bdd375c370985e7",
-    "page": 35
+    "page": 25
   },
   "GRI 403-8": {
     "gri_standard": "GRI 403",
     "standard_title_en": "Occupational Health and Safety 2018",
-    "title_en": "Workers covered by an occupational health and safety",
-    "title_vi": "Workers covered by an occupational health and safety",
+    "title_en": "Workers covered by an occupational health and safety management system",
+    "title_vi": "Workers covered by an occupational health and safety management system",
     "pillar": "Xã hội",
-    "definition_vi": "Chỉ số công bố GRI 403-8: Workers covered by an occupational health and safety",
+    "definition_vi": "Chỉ số công bố GRI 403-8: Workers covered by an occupational health and safety management system",
     "requirement_type": "Qualitative",
-    "units": [],
+    "units": [
+      "number of employees",
+      "hours",
+      "percentage %",
+      "injury rate per 200,000 hours"
+    ],
     "tt96_equivalent": null,
     "versions": [
       {
@@ -2617,7 +2757,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 403_ Occupational Health and Safety 2018.pdf",
     "sha256": "50011958a813af55c47b3b91a44c826338b5dea4d7af7ba21bdd375c370985e7",
-    "page": 35
+    "page": 25
   },
   "GRI 403-9": {
     "gri_standard": "GRI 403",
@@ -2626,8 +2766,13 @@
     "title_vi": "Work-related injuries",
     "pillar": "Xã hội",
     "definition_vi": "Chỉ số công bố GRI 403-9: Work-related injuries",
-    "requirement_type": "Qualitative",
-    "units": [],
+    "requirement_type": "Quantitative",
+    "units": [
+      "number of employees",
+      "hours",
+      "percentage %",
+      "injury rate per 200,000 hours"
+    ],
     "tt96_equivalent": "SSCIFC-S5",
     "versions": [
       {
@@ -2640,7 +2785,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 403_ Occupational Health and Safety 2018.pdf",
     "sha256": "50011958a813af55c47b3b91a44c826338b5dea4d7af7ba21bdd375c370985e7",
-    "page": 35
+    "page": 25
   },
   "GRI 403-10": {
     "gri_standard": "GRI 403",
@@ -2649,8 +2794,13 @@
     "title_vi": "Work-related ill health",
     "pillar": "Xã hội",
     "definition_vi": "Chỉ số công bố GRI 403-10: Work-related ill health",
-    "requirement_type": "Qualitative",
-    "units": [],
+    "requirement_type": "Quantitative",
+    "units": [
+      "number of employees",
+      "hours",
+      "percentage %",
+      "injury rate per 200,000 hours"
+    ],
     "tt96_equivalent": null,
     "versions": [
       {
@@ -2663,7 +2813,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 403_ Occupational Health and Safety 2018.pdf",
     "sha256": "50011958a813af55c47b3b91a44c826338b5dea4d7af7ba21bdd375c370985e7",
-    "page": 35
+    "page": 25
   },
   "GRI 404-1": {
     "gri_standard": "GRI 404",
@@ -2673,7 +2823,12 @@
     "pillar": "Xã hội",
     "definition_vi": "Chỉ số công bố GRI 404-1: Average hours of training per year per employee",
     "requirement_type": "Qualitative",
-    "units": [],
+    "units": [
+      "number of employees",
+      "hours",
+      "percentage %",
+      "injury rate per 200,000 hours"
+    ],
     "tt96_equivalent": "TT96-6.6.3",
     "versions": [
       {
@@ -2686,15 +2841,15 @@
     "superseded_by": null,
     "source_pdf": "GRI 404_ Training and Education 2016.pdf",
     "sha256": "57036193c0a16f00a5278edee25c21770740952714eb00a32b3adb2523994ce5",
-    "page": 15
+    "page": 25
   },
   "GRI 404-2": {
     "gri_standard": "GRI 404",
     "standard_title_en": "Training and Education 2016",
-    "title_en": "Programs for upgrading employee skills and transition assistance",
-    "title_vi": "Programs for upgrading employee skills and transition assistance",
+    "title_en": "Programs for upgrading employee skills and transition assistance programs",
+    "title_vi": "Programs for upgrading employee skills and transition assistance programs",
     "pillar": "Xã hội",
-    "definition_vi": "Chỉ số công bố GRI 404-2: Programs for upgrading employee skills and transition assistance",
+    "definition_vi": "Chỉ số công bố GRI 404-2: Programs for upgrading employee skills and transition assistance programs",
     "requirement_type": "Qualitative",
     "units": [],
     "tt96_equivalent": "TT96-6.6.5",
@@ -2709,17 +2864,22 @@
     "superseded_by": null,
     "source_pdf": "GRI 404_ Training and Education 2016.pdf",
     "sha256": "57036193c0a16f00a5278edee25c21770740952714eb00a32b3adb2523994ce5",
-    "page": 15
+    "page": 25
   },
   "GRI 404-3": {
     "gri_standard": "GRI 404",
     "standard_title_en": "Training and Education 2016",
-    "title_en": "Percentage of employees receiving regular performance and",
-    "title_vi": "Percentage of employees receiving regular performance and",
+    "title_en": "Percentage of employees receiving regular performance and career development reviews",
+    "title_vi": "Percentage of employees receiving regular performance and career development reviews",
     "pillar": "Xã hội",
-    "definition_vi": "Chỉ số công bố GRI 404-3: Percentage of employees receiving regular performance and",
-    "requirement_type": "Qualitative",
-    "units": [],
+    "definition_vi": "Chỉ số công bố GRI 404-3: Percentage of employees receiving regular performance and career development reviews",
+    "requirement_type": "Quantitative",
+    "units": [
+      "number of employees",
+      "hours",
+      "percentage %",
+      "injury rate per 200,000 hours"
+    ],
     "tt96_equivalent": null,
     "versions": [
       {
@@ -2732,7 +2892,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 404_ Training and Education 2016.pdf",
     "sha256": "57036193c0a16f00a5278edee25c21770740952714eb00a32b3adb2523994ce5",
-    "page": 15
+    "page": 25
   },
   "GRI 405-1": {
     "gri_standard": "GRI 405",
@@ -2742,7 +2902,12 @@
     "pillar": "Xã hội",
     "definition_vi": "Chỉ số công bố GRI 405-1: Diversity of governance bodies and employees",
     "requirement_type": "Qualitative",
-    "units": [],
+    "units": [
+      "number of employees",
+      "hours",
+      "percentage %",
+      "injury rate per 200,000 hours"
+    ],
     "tt96_equivalent": "SSCIFC-S6",
     "versions": [
       {
@@ -2755,7 +2920,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 405_ Diversity and Equal Opportunity 2016.pdf",
     "sha256": "c4ed2948ce47a145d5afab5107754c6d2ea2d01757725a5997fdd477ea04b278",
-    "page": 15
+    "page": 25
   },
   "GRI 405-2": {
     "gri_standard": "GRI 405",
@@ -2765,7 +2930,12 @@
     "pillar": "Xã hội",
     "definition_vi": "Chỉ số công bố GRI 405-2: Ratio of basic salary and remuneration of women to men",
     "requirement_type": "Qualitative",
-    "units": [],
+    "units": [
+      "number of employees",
+      "hours",
+      "percentage %",
+      "injury rate per 200,000 hours"
+    ],
     "tt96_equivalent": "TT96-6.6.1",
     "versions": [
       {
@@ -2778,7 +2948,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 405_ Diversity and Equal Opportunity 2016.pdf",
     "sha256": "c4ed2948ce47a145d5afab5107754c6d2ea2d01757725a5997fdd477ea04b278",
-    "page": 15
+    "page": 25
   },
   "GRI 406-1": {
     "gri_standard": "GRI 406",
@@ -2787,7 +2957,7 @@
     "title_vi": "Incidents of discrimination and corrective actions taken",
     "pillar": "Xã hội",
     "definition_vi": "Chỉ số công bố GRI 406-1: Incidents of discrimination and corrective actions taken",
-    "requirement_type": "Qualitative",
+    "requirement_type": "Quantitative",
     "units": [],
     "tt96_equivalent": null,
     "versions": [
@@ -2801,15 +2971,15 @@
     "superseded_by": null,
     "source_pdf": "GRI 406_ Non-discrimination 2016.pdf",
     "sha256": "3c1361ddb06e60595ad9e207e5b6a18ea796123d51e0fb1c2dd7939b6f0b74ef",
-    "page": 12
+    "page": 25
   },
   "GRI 407-1": {
     "gri_standard": "GRI 407",
     "standard_title_en": "Freedom of Association and Collective Bargaining 2016",
-    "title_en": "Operations and suppliers in which the right to freedom of",
-    "title_vi": "Operations and suppliers in which the right to freedom of",
+    "title_en": "Operations and suppliers in which the right to freedom of association and collective bargaining may be at risk",
+    "title_vi": "Operations and suppliers in which the right to freedom of association and collective bargaining may be at risk",
     "pillar": "Xã hội",
-    "definition_vi": "Chỉ số công bố GRI 407-1: Operations and suppliers in which the right to freedom of",
+    "definition_vi": "Chỉ số công bố GRI 407-1: Operations and suppliers in which the right to freedom of association and collective bargaining may be at risk",
     "requirement_type": "Qualitative",
     "units": [],
     "tt96_equivalent": null,
@@ -2824,15 +2994,15 @@
     "superseded_by": null,
     "source_pdf": "GRI 407_ Freedom of Association and Collective Bargaining 2016.pdf",
     "sha256": "43eb7a252dfe418c12641e593a3a8356c9a1a01f1ce621ccee5ee9d6b193a698",
-    "page": 13
+    "page": 25
   },
   "GRI 408-1": {
     "gri_standard": "GRI 408",
     "standard_title_en": "Child Labor 2016",
-    "title_en": "Operations and suppliers at significant risk for incidents of child",
-    "title_vi": "Operations and suppliers at significant risk for incidents of child",
+    "title_en": "Operations and suppliers at significant risk for incidents of child labor",
+    "title_vi": "Operations and suppliers at significant risk for incidents of child labor",
     "pillar": "Xã hội",
-    "definition_vi": "Chỉ số công bố GRI 408-1: Operations and suppliers at significant risk for incidents of child",
+    "definition_vi": "Chỉ số công bố GRI 408-1: Operations and suppliers at significant risk for incidents of child labor",
     "requirement_type": "Qualitative",
     "units": [],
     "tt96_equivalent": null,
@@ -2847,15 +3017,15 @@
     "superseded_by": null,
     "source_pdf": "GRI 408_ Child Labor 2016.pdf",
     "sha256": "3d56b9ba19765d1f5c6a58cc462b45a75cc3acaddf5f9a1e0ba3dc79eb053045",
-    "page": 14
+    "page": 25
   },
   "GRI 409-1": {
     "gri_standard": "GRI 409",
     "standard_title_en": "Forced or Compulsory Labor 2016",
-    "title_en": "Operations and suppliers at significant risk for incidents of forced",
-    "title_vi": "Operations and suppliers at significant risk for incidents of forced",
+    "title_en": "Operations and suppliers at significant risk for incidents of forced or compulsory labor",
+    "title_vi": "Operations and suppliers at significant risk for incidents of forced or compulsory labor",
     "pillar": "Xã hội",
-    "definition_vi": "Chỉ số công bố GRI 409-1: Operations and suppliers at significant risk for incidents of forced",
+    "definition_vi": "Chỉ số công bố GRI 409-1: Operations and suppliers at significant risk for incidents of forced or compulsory labor",
     "requirement_type": "Qualitative",
     "units": [],
     "tt96_equivalent": null,
@@ -2870,7 +3040,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 409_ Forced or Compulsory Labor 2016.pdf",
     "sha256": "0a3f40c3e20f1060955942f59e01fc1eb81930511f28ae34fe8e8c1b9f9bf729",
-    "page": 13
+    "page": 25
   },
   "GRI 410-1": {
     "gri_standard": "GRI 410",
@@ -2893,7 +3063,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 410_ Security Practices 2016.pdf",
     "sha256": "7128a7c0a4925e481ebc88801baa5cfdd6119b938241c69048987c4c03882508",
-    "page": 11
+    "page": 25
   },
   "GRI 411-1": {
     "gri_standard": "GRI 411",
@@ -2916,15 +3086,15 @@
     "superseded_by": null,
     "source_pdf": "GRI 411_ Rights of Indigenous Peoples 2016.pdf",
     "sha256": "96404fb45a8034ed68938291b4ded91f47114700f3d9d2fb85f05a8a2a623a57",
-    "page": 14
+    "page": 25
   },
   "GRI 413-1": {
     "gri_standard": "GRI 413",
     "standard_title_en": "Local Communities 2016",
-    "title_en": "Operations with local community engagement, impact",
-    "title_vi": "Operations with local community engagement, impact",
+    "title_en": "Operations with local community engagement, impact assessments, and development programs",
+    "title_vi": "Operations with local community engagement, impact assessments, and development programs",
     "pillar": "Xã hội",
-    "definition_vi": "Chỉ số công bố GRI 413-1: Operations with local community engagement, impact",
+    "definition_vi": "Chỉ số công bố GRI 413-1: Operations with local community engagement, impact assessments, and development programs",
     "requirement_type": "Qualitative",
     "units": [],
     "tt96_equivalent": "TT96-6.7.1",
@@ -2939,15 +3109,15 @@
     "superseded_by": null,
     "source_pdf": "GRI 413_ Local Communities 2016.pdf",
     "sha256": "3eed81a73a1f3735ea208a91f6818322df591293b7aad238ece3e56a5e11c8e2",
-    "page": 16
+    "page": 25
   },
   "GRI 413-2": {
     "gri_standard": "GRI 413",
     "standard_title_en": "Local Communities 2016",
-    "title_en": "Operations with significant actual and potential negative impacts",
-    "title_vi": "Operations with significant actual and potential negative impacts",
+    "title_en": "Operations with significant actual and potential negative impacts on local communities",
+    "title_vi": "Operations with significant actual and potential negative impacts on local communities",
     "pillar": "Xã hội",
-    "definition_vi": "Chỉ số công bố GRI 413-2: Operations with significant actual and potential negative impacts",
+    "definition_vi": "Chỉ số công bố GRI 413-2: Operations with significant actual and potential negative impacts on local communities",
     "requirement_type": "Qualitative",
     "units": [],
     "tt96_equivalent": null,
@@ -2962,7 +3132,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 413_ Local Communities 2016.pdf",
     "sha256": "3eed81a73a1f3735ea208a91f6818322df591293b7aad238ece3e56a5e11c8e2",
-    "page": 16
+    "page": 25
   },
   "GRI 414-1": {
     "gri_standard": "GRI 414",
@@ -2971,7 +3141,7 @@
     "title_vi": "New suppliers that were screened using social criteria",
     "pillar": "Xã hội",
     "definition_vi": "Chỉ số công bố GRI 414-1: New suppliers that were screened using social criteria",
-    "requirement_type": "Qualitative",
+    "requirement_type": "Quantitative",
     "units": [],
     "tt96_equivalent": null,
     "versions": [
@@ -2985,7 +3155,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 414_ Supplier Social Assessment 2016.pdf",
     "sha256": "b2f52706c73f064425dc91a30dd9005502f0f141d77cc4c5453bfca1131edda2",
-    "page": 14
+    "page": 25
   },
   "GRI 414-2": {
     "gri_standard": "GRI 414",
@@ -2994,7 +3164,7 @@
     "title_vi": "Negative social impacts in the supply chain and actions taken",
     "pillar": "Xã hội",
     "definition_vi": "Chỉ số công bố GRI 414-2: Negative social impacts in the supply chain and actions taken",
-    "requirement_type": "Qualitative",
+    "requirement_type": "Quantitative",
     "units": [],
     "tt96_equivalent": null,
     "versions": [
@@ -3008,7 +3178,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 414_ Supplier Social Assessment 2016.pdf",
     "sha256": "b2f52706c73f064425dc91a30dd9005502f0f141d77cc4c5453bfca1131edda2",
-    "page": 14
+    "page": 25
   },
   "GRI 415-1": {
     "gri_standard": "GRI 415",
@@ -3017,7 +3187,7 @@
     "title_vi": "Political contributions",
     "pillar": "Xã hội",
     "definition_vi": "Chỉ số công bố GRI 415-1: Political contributions",
-    "requirement_type": "Qualitative",
+    "requirement_type": "Quantitative",
     "units": [],
     "tt96_equivalent": null,
     "versions": [
@@ -3031,39 +3201,16 @@
     "superseded_by": null,
     "source_pdf": "GRI 415_ Public Policy 2016.pdf",
     "sha256": "4d95da5838a290a4fe89fbb67b3062dcd258f34a9c9d419b8b0eec0f026c7b17",
-    "page": 12
-  },
-  "GRI 416-1": {
-    "gri_standard": "GRI 416",
-    "standard_title_en": "Customer Health and Safety 2016",
-    "title_en": "Assessment of the health and safety impacts of product and",
-    "title_vi": "Assessment of the health and safety impacts of product and",
-    "pillar": "Xã hội",
-    "definition_vi": "Chỉ số công bố GRI 416-1: Assessment of the health and safety impacts of product and",
-    "requirement_type": "Qualitative",
-    "units": [],
-    "tt96_equivalent": null,
-    "versions": [
-      {
-        "version_id": "GRI_416_2016",
-        "version_year": 2016,
-        "effective_date": "2017-01-01",
-        "status": "Active"
-      }
-    ],
-    "superseded_by": null,
-    "source_pdf": "GRI 416_ Customer Health and Safety 2016.pdf",
-    "sha256": "8992e3bdda9a006021af35aabccabd50cb0602b8b5584fa4c2ec0609c90a88c9",
-    "page": 12
+    "page": 25
   },
   "GRI 416-2": {
     "gri_standard": "GRI 416",
     "standard_title_en": "Customer Health and Safety 2016",
-    "title_en": "Incidents of non-compliance concerning the health and safety",
-    "title_vi": "Incidents of non-compliance concerning the health and safety",
+    "title_en": "Incidents of non-compliance concerning the health and safety impacts of products and services",
+    "title_vi": "Incidents of non-compliance concerning the health and safety impacts of products and services",
     "pillar": "Xã hội",
-    "definition_vi": "Chỉ số công bố GRI 416-2: Incidents of non-compliance concerning the health and safety",
-    "requirement_type": "Qualitative",
+    "definition_vi": "Chỉ số công bố GRI 416-2: Incidents of non-compliance concerning the health and safety impacts of products and services",
+    "requirement_type": "Quantitative",
     "units": [],
     "tt96_equivalent": null,
     "versions": [
@@ -3077,7 +3224,7 @@
     "superseded_by": null,
     "source_pdf": "GRI 416_ Customer Health and Safety 2016.pdf",
     "sha256": "8992e3bdda9a006021af35aabccabd50cb0602b8b5584fa4c2ec0609c90a88c9",
-    "page": 12
+    "page": 25
   },
   "GRI 417-1": {
     "gri_standard": "GRI 417",
@@ -3100,16 +3247,16 @@
     "superseded_by": null,
     "source_pdf": "GRI 417_ Marketing and Labeling 2016.pdf",
     "sha256": "d0b95f61170636a8bfb0929309b7923da6d1062f80199789e842369aa02a19ae",
-    "page": 14
+    "page": 25
   },
   "GRI 417-2": {
     "gri_standard": "GRI 417",
     "standard_title_en": "Marketing and Labeling 2016",
-    "title_en": "Incidents of non-compliance concerning product and service",
-    "title_vi": "Incidents of non-compliance concerning product and service",
+    "title_en": "Incidents of non-compliance concerning product and service information and labeling",
+    "title_vi": "Incidents of non-compliance concerning product and service information and labeling",
     "pillar": "Xã hội",
-    "definition_vi": "Chỉ số công bố GRI 417-2: Incidents of non-compliance concerning product and service",
-    "requirement_type": "Qualitative",
+    "definition_vi": "Chỉ số công bố GRI 417-2: Incidents of non-compliance concerning product and service information and labeling",
+    "requirement_type": "Quantitative",
     "units": [],
     "tt96_equivalent": null,
     "versions": [
@@ -3123,16 +3270,16 @@
     "superseded_by": null,
     "source_pdf": "GRI 417_ Marketing and Labeling 2016.pdf",
     "sha256": "d0b95f61170636a8bfb0929309b7923da6d1062f80199789e842369aa02a19ae",
-    "page": 14
+    "page": 25
   },
   "GRI 417-3": {
     "gri_standard": "GRI 417",
     "standard_title_en": "Marketing and Labeling 2016",
-    "title_en": "Incidents of non-compliance concerning marketing",
-    "title_vi": "Incidents of non-compliance concerning marketing",
+    "title_en": "Incidents of non-compliance concerning marketing communications",
+    "title_vi": "Incidents of non-compliance concerning marketing communications",
     "pillar": "Xã hội",
-    "definition_vi": "Chỉ số công bố GRI 417-3: Incidents of non-compliance concerning marketing",
-    "requirement_type": "Qualitative",
+    "definition_vi": "Chỉ số công bố GRI 417-3: Incidents of non-compliance concerning marketing communications",
+    "requirement_type": "Quantitative",
     "units": [],
     "tt96_equivalent": null,
     "versions": [
@@ -3146,15 +3293,15 @@
     "superseded_by": null,
     "source_pdf": "GRI 417_ Marketing and Labeling 2016.pdf",
     "sha256": "d0b95f61170636a8bfb0929309b7923da6d1062f80199789e842369aa02a19ae",
-    "page": 14
+    "page": 25
   },
   "GRI 418-1": {
     "gri_standard": "GRI 418",
     "standard_title_en": "Customer Privacy 2016",
-    "title_en": "Substantiated complaints concerning breaches of customer",
-    "title_vi": "Substantiated complaints concerning breaches of customer",
+    "title_en": "Substantiated complaints concerning breaches of customer privacy and losses of customer data",
+    "title_vi": "Substantiated complaints concerning breaches of customer privacy and losses of customer data",
     "pillar": "Xã hội",
-    "definition_vi": "Chỉ số công bố GRI 418-1: Substantiated complaints concerning breaches of customer",
+    "definition_vi": "Chỉ số công bố GRI 418-1: Substantiated complaints concerning breaches of customer privacy and losses of customer data",
     "requirement_type": "Qualitative",
     "units": [],
     "tt96_equivalent": null,
@@ -3169,6 +3316,259 @@
     "superseded_by": null,
     "source_pdf": "GRI 418_ Customer Privacy 2016.pdf",
     "sha256": "7735430fcdcf04ba44c4bc110cb64c3d97afa642d15e1d17c859cf3783210be9",
-    "page": 12
+    "page": 25
+  },
+  "GRI 416-1": {
+    "gri_standard": "GRI 11",
+    "standard_title_en": "Oil and Gas Sector 2021 V1.1",
+    "title_en": "Assessment of the health and safety impacts of product and service categories</a><br><br><i>Additional sector recommendations</i> <ul style=\"list-style-type: none\"> <li>Describe actions taken to improve product quality to reduce air emissions</li> </ul> | 11.3.3                   |",
+    "title_vi": "Assessment of the health and safety impacts of product and service categories</a><br><br><i>Additional sector recommendations</i> <ul style=\"list-style-type: none\"> <li>Describe actions taken to improve product quality to reduce air emissions</li> </ul> | 11.3.3                   |",
+    "pillar": "Môi trường",
+    "definition_vi": "Chỉ số công bố GRI 416-1: Assessment of the health and safety impacts of product and service categories</a><br><br><i>Additional sector recommendations</i> <ul style=\"list-style-type: none\"> <li>Describe actions taken to improve product quality to reduce air emissions</li> </ul> | 11.3.3                   |",
+    "requirement_type": "Quantitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_11_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 11_ Oil and Gas Sector 2021 V1.1.pdf",
+    "sha256": "e4fb37586df28ab4a28dcef224f00b816a9f4ca070380690357a70e66da313b7",
+    "page": 25
+  },
+  "GRI 1.1": {
+    "gri_standard": "GRI 1",
+    "standard_title_en": "Foundation 2021",
+    "title_en": "Purpose of the GRI Standards",
+    "title_vi": "Purpose of the GRI Standards",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 1.1: Purpose of the GRI Standards",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_1_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 1_ Foundation 2021.pdf",
+    "sha256": "c0333b1e7767abee07df7cf93ee5db3d8d46521f3f88ec963fb3a746a04058a5",
+    "page": 25
+  },
+  "GRI 1.2": {
+    "gri_standard": "GRI 1",
+    "standard_title_en": "Foundation 2021",
+    "title_en": "Users",
+    "title_vi": "Users",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 1.2: Users",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_1_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 1_ Foundation 2021.pdf",
+    "sha256": "c0333b1e7767abee07df7cf93ee5db3d8d46521f3f88ec963fb3a746a04058a5",
+    "page": 25
+  },
+  "GRI 1.3": {
+    "gri_standard": "GRI 1",
+    "standard_title_en": "Foundation 2021",
+    "title_en": "System of GRI Standards",
+    "title_vi": "System of GRI Standards",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 1.3: System of GRI Standards",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_1_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 1_ Foundation 2021.pdf",
+    "sha256": "c0333b1e7767abee07df7cf93ee5db3d8d46521f3f88ec963fb3a746a04058a5",
+    "page": 25
+  },
+  "GRI 1.4": {
+    "gri_standard": "GRI 1",
+    "standard_title_en": "Foundation 2021",
+    "title_en": "Using the GRI Standards",
+    "title_vi": "Using the GRI Standards",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 1.4: Using the GRI Standards",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_1_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 1_ Foundation 2021.pdf",
+    "sha256": "c0333b1e7767abee07df7cf93ee5db3d8d46521f3f88ec963fb3a746a04058a5",
+    "page": 25
+  },
+  "GRI 2.1": {
+    "gri_standard": "GRI 1",
+    "standard_title_en": "Foundation 2021",
+    "title_en": "Impact",
+    "title_vi": "Impact",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 2.1: Impact",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_1_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 1_ Foundation 2021.pdf",
+    "sha256": "c0333b1e7767abee07df7cf93ee5db3d8d46521f3f88ec963fb3a746a04058a5",
+    "page": 25
+  },
+  "GRI 2.2": {
+    "gri_standard": "GRI 1",
+    "standard_title_en": "Foundation 2021",
+    "title_en": "Material topics",
+    "title_vi": "Material topics",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 2.2: Material topics",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_1_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 1_ Foundation 2021.pdf",
+    "sha256": "c0333b1e7767abee07df7cf93ee5db3d8d46521f3f88ec963fb3a746a04058a5",
+    "page": 25
+  },
+  "GRI 2.3": {
+    "gri_standard": "GRI 1",
+    "standard_title_en": "Foundation 2021",
+    "title_en": "Due diligence",
+    "title_vi": "Due diligence",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 2.3: Due diligence",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_1_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 1_ Foundation 2021.pdf",
+    "sha256": "c0333b1e7767abee07df7cf93ee5db3d8d46521f3f88ec963fb3a746a04058a5",
+    "page": 25
+  },
+  "GRI 2.4": {
+    "gri_standard": "GRI 1",
+    "standard_title_en": "Foundation 2021",
+    "title_en": "Stakeholder",
+    "title_vi": "Stakeholder",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 2.4: Stakeholder",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_1_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 1_ Foundation 2021.pdf",
+    "sha256": "c0333b1e7767abee07df7cf93ee5db3d8d46521f3f88ec963fb3a746a04058a5",
+    "page": 25
+  },
+  "GRI 5.1": {
+    "gri_standard": "GRI 1",
+    "standard_title_en": "Foundation 2021",
+    "title_en": "Aligning sustainability reporting with other reporting",
+    "title_vi": "Aligning sustainability reporting with other reporting",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 5.1: Aligning sustainability reporting with other reporting",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_1_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 1_ Foundation 2021.pdf",
+    "sha256": "c0333b1e7767abee07df7cf93ee5db3d8d46521f3f88ec963fb3a746a04058a5",
+    "page": 25
+  },
+  "GRI 5.2": {
+    "gri_standard": "GRI 1",
+    "standard_title_en": "Foundation 2021",
+    "title_en": "Enhancing the credibility of sustainability reporting",
+    "title_vi": "Enhancing the credibility of sustainability reporting",
+    "pillar": "Quản trị",
+    "definition_vi": "Chỉ số công bố GRI 5.2: Enhancing the credibility of sustainability reporting",
+    "requirement_type": "Qualitative",
+    "units": [],
+    "tt96_equivalent": null,
+    "versions": [
+      {
+        "version_id": "GRI_1_2021",
+        "version_year": 2021,
+        "effective_date": "2022-01-01",
+        "status": "Active"
+      }
+    ],
+    "superseded_by": null,
+    "source_pdf": "GRI 1_ Foundation 2021.pdf",
+    "sha256": "c0333b1e7767abee07df7cf93ee5db3d8d46521f3f88ec963fb3a746a04058a5",
+    "page": 25
   }
 }

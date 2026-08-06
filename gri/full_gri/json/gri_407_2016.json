@@ -2,7 +2,7 @@
   "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
   "standard_id": "GRI 407",
   "title_en": "Freedom of Association and Collective Bargaining 2016",
-  "title_vi": "Freedom of Association and Collective Bargaining 2016",
+  "title_vi": "GRI 407: Tự do liên kết và Thỏa ước lao động tập thể 2016",
   "pillar": "S — Social",
   "series": "Social (400 Series)",
   "category": "Topic-Social",
@@ -23,80 +23,44 @@
   "provenance": {
     "relative_pdf_path": "Full set of GRI Standards - English\\GRI 407_ Freedom of Association and Collective Bargaining 2016.pdf",
     "file_size_bytes": 871481,
-    "page_count": 13,
+    "page_count": 25,
     "sha256": "43eb7a252dfe418c12641e593a3a8356c9a1a01f1ce621ccee5ee9d6b193a698",
-    "indexed_at": "2026-07-25T14:35:59.158369"
+    "indexed_at": "2026-08-01T20:30:14.417770"
   },
-  "disclosures_count": 3,
+  "disclosures_count": 1,
   "disclosures": [
     {
       "disclosure_id": "407-1",
-      "title_en": "Operations and suppliers in which the right to freedom of",
-      "title_vi": "Operations and suppliers in which the right to freedom of",
+      "title_en": "Operations and suppliers in which the right to freedom of association and collective bargaining may be at risk",
+      "title_vi": "Operations and suppliers in which the right to freedom of association and collective bargaining may be at risk",
       "disclosure_type": "Topic-Specific",
       "mandatory": true,
       "requirements": [
         {
-          "requirement_id": "407-1:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 407-1 (Operations and suppliers in which the right to freedom of)",
-          "description_vi": null,
+          "requirement_id": "407-1:9",
+          "item_code": "9",
+          "description_en": "Clause 9: 1 United Nations (UN) Declaration, 'Universal Declaration of Human Rights', 1948. - 9.2 United Nations (UN) Convention, 'International Covenant on Civil and Political Rights', 1966. - 9.3 United Nations (UN) Convention, 'International Covenant on Economic, Social, and Cultural Rights', 1966.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: United Nations (UN) Declaration, 'Universal Declaration of Human Rights', 1948. - 9.2 United Nations (UN) Convention, 'International Covenant on Civil and Political Rights', 1966. - 9.3 United Nations (UN) Convention, 'International Covenant on Economic, Social, and Cultural Rights', 1966.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "2-30",
-      "title_en": "in GRI 2: General Disclosures 2021 requires reporting on the percentage of",
-      "title_vi": "in GRI 2: General Disclosures 2021 requires reporting on the percentage of",
-      "disclosure_type": "Topic-Specific",
-      "mandatory": true,
-      "requirements": [
-        {
-          "requirement_id": "2-30:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 2-30 (in GRI 2: General Disclosures 2021 requires reporting on the percentage of)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 407-1.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 407-1.",
+      "sdg_mapping": [
+        "SDG 12: Responsible Consumption and Production"
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "3-3",
-      "title_en": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "title_vi": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "disclosure_type": "Topic-Specific",
-      "mandatory": true,
-      "requirements": [
-        {
-          "requirement_id": "3-3:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
-          "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     }
   ]
 }

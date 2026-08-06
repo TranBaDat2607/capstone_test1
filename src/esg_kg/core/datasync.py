@@ -241,6 +241,7 @@ def cmd_pull(args: argparse.Namespace) -> int:
         # png/jpg/zip/parquet in a repo that never wanted it. Guarded by
         # test/test_data_sync_scope.py.
         allow_patterns=ALLOW_PATTERNS,
+        max_workers=4,
     )
     logger.info("Done. Rebuild Neo4j with: python src/run.py neo4j_load --clear")
     return 0

@@ -2,7 +2,7 @@
   "node_tier": "T1 — Identity (Thực thể bền phi thời gian)",
   "standard_id": "GRI 202",
   "title_en": "Market Presence 2016",
-  "title_vi": "Market Presence 2016",
+  "title_vi": "GRI 202: Hiện diện thị trường 2016",
   "pillar": "G — Governance",
   "series": "Economic (200 Series)",
   "category": "Topic-Economic",
@@ -23,34 +23,45 @@
   "provenance": {
     "relative_pdf_path": "Full set of GRI Standards - English\\GRI 202_ Market Presence 2016.pdf",
     "file_size_bytes": 834704,
-    "page_count": 15,
+    "page_count": 25,
     "sha256": "46303460479d1f6e1c973d22a7855420cdc855394f434ca5d5322d007676cec7",
-    "indexed_at": "2026-07-25T14:35:58.324623"
+    "indexed_at": "2026-08-01T20:30:14.342656"
   },
-  "disclosures_count": 4,
+  "disclosures_count": 2,
   "disclosures": [
     {
       "disclosure_id": "202-1",
-      "title_en": "Ratios of standard entry level wage by gender compared to local",
-      "title_vi": "Ratios of standard entry level wage by gender compared to local",
+      "title_en": "Ratios of standard entry level wage by gender compared to local minimum wage",
+      "title_vi": "Ratios of standard entry level wage by gender compared to local minimum wage",
       "disclosure_type": "General Disclosures",
       "mandatory": true,
       "requirements": [
         {
           "requirement_id": "202-1:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 202-1 (Ratios of standard entry level wage by gender compared to local)",
-          "description_vi": null,
+          "description_en": "The reporting organization shall report information specified in Disclosure 202-1: Ratios of standard entry level wage by gender compared to local minimum wage.",
+          "description_vi": "Tổ chức báo cáo phải công bố đầy đủ thông tin theo yêu cầu của Chỉ số 202-1: Ratios of standard entry level wage by gender compared to local minimum wage.",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 202-1.",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 202-1.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     },
     {
       "disclosure_id": "202-2",
@@ -62,64 +73,94 @@
         {
           "requirement_id": "202-2:a",
           "item_code": "a",
-          "description_en": "Report according to requirement of 202-2 (Proportion of senior management hired from the local community)",
-          "description_vi": null,
-          "requirement_type": "Qualitative",
+          "description_en": "Clause a: **Percentage of senior management at significant locations of operation that are hired from the local community.**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **Percentage of senior management at significant locations of operation that are hired from the local community.**",
+          "requirement_type": "Quantitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "3-3",
-      "title_en": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "title_vi": "in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
         {
-          "requirement_id": "3-3:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 3-3 (in GRI 3: Material Topics 2021 (see clause 1.1 in this Standard);)",
-          "description_vi": null,
+          "requirement_id": "202-2:b",
+          "item_code": "b",
+          "description_en": "Clause b: **The definition used for 'senior management'.**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **The definition used for 'senior management'.**",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
-        }
-      ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
-    },
-    {
-      "disclosure_id": "2-8",
-      "title_en": "in GRI 2: General Disclosures 2021 to identify",
-      "title_vi": "in GRI 2: General Disclosures 2021 to identify",
-      "disclosure_type": "General Disclosures",
-      "mandatory": true,
-      "requirements": [
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
         {
-          "requirement_id": "2-8:a",
-          "item_code": "a",
-          "description_en": "Report according to requirement of 2-8 (in GRI 2: General Disclosures 2021 to identify)",
-          "description_vi": null,
+          "requirement_id": "202-2:c",
+          "item_code": "c",
+          "description_en": "Clause c: **The organization's geographical definition of 'local'.**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **The organization's geographical definition of 'local'.**",
           "requirement_type": "Qualitative",
           "unit_of_measure": [],
-          "breakdown_dimensions": []
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "202-2:d",
+          "item_code": "d",
+          "description_en": "Clause d: **The definition used for 'significant locations of operation'.**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **The definition used for 'significant locations of operation'.**",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "202-2:2",
+          "item_code": "2",
+          "description_en": "Clause 2: 2 **When compiling the information specified in Disclosure 202-2, the reporting organization shall calculate this percentage using data on full-time employees.**",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: **When compiling the information specified in Disclosure 202-2, the reporting organization shall calculate this percentage using data on full-time employees.**",
+          "requirement_type": "Quantitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
+        },
+        {
+          "requirement_id": "202-2:1",
+          "item_code": "1",
+          "description_en": "Clause 1: United Nations (UN) Convention, 'Convention on the Elimination of all Forms of Discrimination against Women (CEDAW)', 1979.",
+          "description_vi": "Tổ chức báo cáo thông tin chi tiết về: United Nations (UN) Convention, 'Convention on the Elimination of all Forms of Discrimination against Women (CEDAW)', 1979.",
+          "requirement_type": "Qualitative",
+          "unit_of_measure": [],
+          "breakdown_dimensions": [
+            "by facility",
+            "by region",
+            "by business line"
+          ]
         }
       ],
-      "recommendations_en": null,
-      "recommendations_vi": null,
-      "sdg_mapping": [],
-      "esrs_mapping": [],
-      "issb_mapping": []
+      "recommendations_en": "Follow GRI technical compilation recommendations for Disclosure 202-2.\n\nGuidance Summary:\nSenior management hired from the local community includes those individuals either born or who have the legal right to reside indefinitely (such as naturalized citizens or permanent visa holders) in the same geographic market as the operation. The geographical definition of 'local' can include the community surrounding operations, a region within a country, or a country.\n\n## Background\n\nIncluding members from the local community in an organization's senior management demonstrates the organization's positive market presence. Including local community members in the management team can enhance human capital. It can also increase the economic benefit to the local community, and improve an organization's ability to understand local needs.\n\n## Glossary\n\nThis glossary provides definitions for te...",
+      "recommendations_vi": "Tuân thủ các khuyến nghị kỹ thuật và phương pháp luận tổng hợp dữ liệu cho Chỉ số 202-2.",
+      "sdg_mapping": [
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships"
+      ],
+      "esrs_mapping": [
+        "ESRS 2 General Disclosures"
+      ],
+      "issb_mapping": [
+        "IFRS S1 General Requirements"
+      ]
     }
   ]
 }
