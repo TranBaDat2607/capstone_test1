@@ -266,6 +266,90 @@ def test_adjudication_cache_is_reused_on_a_rerun():
           f"run 2 called it 0x)")
 
 
+# --------------------------------------------------------------------------- #
+# Stage A.2 issuer anchor with a MULTI-TICKER registry (2026-08-06 bug).
+# Found when config/issuer_registry.json grew from 1 ticker (AAA, the original
+# pilot) to 5: Stage A.2 collected every Organization node matching ANY alias in
+# the WHOLE registry into `issuer_members`, then unioned issuer_members[0..] into
+# ONE cluster — silently merging every registered company's issuer Organization
+# into a single node once the registry held more than one ticker. Live symptom:
+# after adding ACC/ACG/ADP/AGG, `resolved_graph.json` had exactly ONE Organization
+# node carrying a `ticker` property (tagged "ACC", absorbing AAA's node too) instead
+# of five. This fixture reproduces it with two clearly distinct issuers.
+# --------------------------------------------------------------------------- #
+def _two_ticker_registry_fixture(tmp_path: Path) -> Path:
+    registry = {
+        "AAA": {
+            "ticker": "AAA",
+            "canonical_name": "CTCP Nhựa An Phát Xanh",
+            "aliases": ["AAA", VN_NAME],
+            "exclusions": [],
+            "needs_review": [],
+        },
+        "ACC": {
+            "ticker": "ACC",
+            "canonical_name": "Công ty Cổ phần Bê tông Becamex",
+            "aliases": ["ACC", "Công ty Cổ phần Bê tông Becamex"],
+            "exclusions": [],
+            "needs_review": [],
+        },
+    }
+    path = tmp_path / "two_ticker_registry.json"
+    path.write_text(json.dumps(registry, ensure_ascii=False), encoding="utf-8")
+    return path
+
+
+def _two_issuer_fixture():
+    """One Organization node per ticker, each linked to its OWN facility — nothing
+    here should merge on identity keys or normalized names; only the issuer-registry
+    alias match (Stage A.2) can bring them together, which is exactly the bug."""
+    triples = [
+        {"subject": {"class": "Organization",
+                     "properties": {"name": "AAA", "valid_from": "2023", "valid_to": None, "is_current": True}},
+         "predicate": "ownsFacility", "object": {"class": "Facility",
+                     "properties": {"name": "Nhà máy An Phát", "valid_from": "2023", "valid_to": None, "is_current": True}},
+         "temporal_metadata": {"valid_from": "2023", "valid_to": None, "recorded_at": "2023"}},
+        {"subject": {"class": "Organization",
+                     "properties": {"name": "ACC", "valid_from": "2023", "valid_to": None, "is_current": True}},
+         "predicate": "ownsFacility", "object": {"class": "Facility",
+                     "properties": {"name": "Nhà máy Becamex", "valid_from": "2023", "valid_to": None, "is_current": True}},
+         "temporal_metadata": {"valid_from": "2023", "valid_to": None, "recorded_at": "2023"}},
+    ]
+    return triples
+
+
+def test_issuer_anchor_does_not_merge_across_different_tickers():
+    """Stage A.2 must produce ONE cluster PER TICKER, never one giant cluster for the
+    whole registry. Two different companies (AAA, ACC), each matching only its own
+    ticker's aliases, must stay as TWO separate Organization nodes after resolve_graph()
+    — merging them would silently fuse two real, unrelated companies into one entity,
+    corrupting every downstream stage (provenance, indicators, claims_vs_conduct)."""
+    schema = load_schema()
+    idkeys = new_entities.load_identity_keys(schema)
+    triples = _two_issuer_fixture()
+    missing_registry = REPO / "config" / "__no_such_registry__.json"
+
+    with tempfile.TemporaryDirectory() as td:
+        registry_path = _two_ticker_registry_fixture(Path(td))
+        prev = _quiet()
+        try:
+            resolved, stats = new_entities.resolve_graph(
+                triples, idkeys, registry_path=registry_path,
+                standards_registry_path=missing_registry, no_llm=True,
+            )
+        finally:
+            _unquiet(prev)
+
+    orgs = [n for n in resolved["nodes"] if n["class"] == "Organization"]
+    assert len(orgs) == 2, (
+        f"expected AAA and ACC to stay as 2 separate Organization nodes, "
+        f"got {len(orgs)}: {[n['properties'] for n in orgs]}"
+    )
+    tickers = {n["properties"].get("ticker") for n in orgs}
+    assert tickers == {"AAA", "ACC"}, f"expected each node tagged with its OWN ticker, got {tickers}"
+    print("     (AAA and ACC stay separate, each tagged with its own ticker)")
+
+
 # 2026-08-04: the additive OpenAI path for Stage B/C (added 2026-07-29,
 # `test_openai_paid_path_resolves_the_near_duplicate_org` /
 # `test_openai_and_gemini_clients_are_not_confused`) was removed outright along with

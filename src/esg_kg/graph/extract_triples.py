@@ -40,13 +40,22 @@ its first two return values, so every call site now unpacks that 3-tuple and dis
 Matches the precedent of step03/step04 dropping a stage-local duplicate once a kernel
 equivalent exists, rather than keeping it "for compatibility".
 
-There is no ``_Provider`` involved: like step01, this stage talks to Gemini directly via
-``google.genai.Client``. ``TEMPORAL_GRAPH_PROMPT_TEMPLATE``, ``NEWS_GRAPH_PROMPT_TEMPLATE``,
-and everything else in this file stay stage-local: nothing else in the pipeline imports them.
+By default this stage talks to Gemini directly via ``google.genai.Client`` (with optional
+explicit context caching, see ``GeminiContextCache``) — like step01, not through
+``_Provider``. ``TEMPORAL_GRAPH_PROMPT_TEMPLATE``, ``NEWS_GRAPH_PROMPT_TEMPLATE``, and
+everything else in this file stay stage-local: nothing else in the pipeline imports them.
 
 2026-08-04: the additive ``--provider openai`` path (added 2026-07-29 while the Gemini
 project behind GEMINI_API_KEY was billing-blocked) was removed outright — this project
-now pays only for Gemini, so this stage is gemini-only again, no fallback.
+now pays only for Gemini by default, no fallback.
+
+2026-08-06: ``--provider deepseek`` was added back, but as a SWAP, not that fallback
+episode again — ``call_llm`` takes an optional ``provider: _Provider`` (``core/llm.py``'s
+``build_llm_provider("deepseek", ...)``); when set, ``client``/``cached_content`` are
+ignored and ``provider.call(JSON_ONLY_SYSTEM_INSTRUCTION, prompt)`` is used instead,
+always with the FULL prompt (``build_page_prompt``, never ``build_page_body``) since
+DeepSeek has no context-cache equivalent. Default stays Gemini; opt in per run with
+``--provider deepseek`` or the ``LLM_PROVIDER`` env var.
 
 Both prompt templates carry the Vietnamese-output fix (issue #6, landed in ``src/``
 first per DESIGN.md §5.3/§5.6 the day before this migration) — this file moved them
@@ -82,7 +91,16 @@ from esg_kg.core.io_jsonl import (
     parse_company_year_from_filename,
     select_documents,
 )
-from esg_kg.core.llm import DEFAULT_MODEL, DEFAULT_RATE_LIMIT, GeminiContextCache, RateLimiter, build_gemini_client
+from esg_kg.core.llm import (
+    DEEPSEEK_DEFAULT_MODEL,
+    DEFAULT_MODEL,
+    DEFAULT_RATE_LIMIT,
+    GeminiContextCache,
+    RateLimiter,
+    _Provider,
+    build_gemini_client,
+    build_llm_provider,
+)
 from esg_kg.core.schema import get_identity_keys, load_schema_sets
 from esg_kg.core.identity import PROVENANCE_CLASSES, get_stable_entity_id
 
@@ -849,11 +867,20 @@ def load_news_doc_meta(path: Path) -> Dict[str, Dict[str, Any]]:
 # --------------------------------------------------------------------------- #
 def call_llm(prompt: str, client: Any, client_idx: int,
              rate_limiter: RateLimiter, schema: Dict[str, Any], model: str,
-             retries: int = 3, cached_content: Optional[str] = None) -> Tuple[Any, str, bool]:
+             retries: int = 3, cached_content: Optional[str] = None,
+             provider: Optional[_Provider] = None) -> Tuple[Any, str, bool]:
     """`client` is a `genai.Client`. When `cached_content` is set (a Gemini cache name
     from `GeminiContextCache`, issue #11), `prompt` is expected to be the page BODY only
     (see `build_page_body`) — the document header lives in the cache instead of being
-    resent every call."""
+    resent every call.
+
+    `provider` (2026-08-06): when set, this is a swappable-alternative run
+    (`--provider deepseek`) and `client`/`cached_content`/`rate_limiter` are ALL
+    ignored — `provider.call(system, user)` does its own throttling (see
+    `_DeepSeekProvider` in core/llm.py), and DeepSeek has no context-cache equivalent,
+    so `prompt` is always the FULL prompt (`build_page_prompt`, never `build_page_body`;
+    enforced by `process_page` never building a cache_name when a provider is active).
+    """
     last_error: Optional[Exception] = None
     last_raw = ""
     rate_limit_failures = 0
@@ -870,9 +897,12 @@ def call_llm(prompt: str, client: Any, client_idx: int,
     )
     for attempt in range(1, retries + 1):
         try:
-            rate_limiter.wait_if_needed(client_idx)
-            resp = client.models.generate_content(model=model, contents=prompt, config=cfg)
-            last_raw = _response_to_text(resp)
+            if provider is not None:
+                last_raw = provider.call(JSON_ONLY_SYSTEM_INSTRUCTION, prompt)
+            else:
+                rate_limiter.wait_if_needed(client_idx)
+                resp = client.models.generate_content(model=model, contents=prompt, config=cfg)
+                last_raw = _response_to_text(resp)
             parsed, ok = _parse_json_response(last_raw)
             if ok:
                 if _validate_extraction_format(parsed, schema):
@@ -909,7 +939,8 @@ def process_page(page_info: Dict[str, Any], page_kpis: List[Dict[str, Any]],
                  company: str, year: int,
                  source: str = "report", article_meta: Optional[Dict[str, Any]] = None,
                  page_rows: Optional[List[Tuple[int, str, bool]]] = None,
-                 cache_name: Optional[str] = None) -> Tuple[int, bool, bool]:
+                 cache_name: Optional[str] = None,
+                 provider: Optional[_Provider] = None) -> Tuple[int, bool, bool]:
     p_no = page_info["page"]
     page_text = page_info["text"]
     has_esg = page_info["has_esg"]
@@ -933,7 +964,11 @@ def process_page(page_info: Dict[str, Any], page_kpis: List[Dict[str, Any]],
         return p_no, True, False
 
     logger.info(f"-> Processing page {p_no} with client {client_idx}")
-    if cache_name is not None:
+    # cache_name is only ever set by process_document when a Gemini ctx_cache is active,
+    # which never happens together with `provider` in practice (DeepSeek has no cache
+    # equivalent) — `provider is None` here is belt-and-braces so a provider run always
+    # takes the full-prompt branch below even if a stale cache_name were passed in.
+    if cache_name is not None and provider is None:
         prompt = build_page_body(page_text, p_no, page_kpis)
     else:
         prompt = build_page_prompt(schema, page_text, p_no, page_kpis, company=company, year=year,
@@ -946,7 +981,8 @@ def process_page(page_info: Dict[str, Any], page_kpis: List[Dict[str, Any]],
     # (2 outer attempts x 2 inner attempts = up to 4 real generate_content calls for
     # one page). One call_llm invocation now owns the whole retry budget.
     parsed, raw, rate_limited = call_llm(prompt, client, client_idx, rate_limiter,
-                                         schema, model, retries=3, cached_content=cache_name)
+                                         schema, model, retries=3, cached_content=cache_name,
+                                         provider=provider)
     if rate_limited:
         logger.warning(f"Page {p_no} skipped due to rate limiting on client {client_idx}")
         return p_no, False, True
@@ -1023,7 +1059,8 @@ def process_document(source_pdf: str, jsonl_pages: Dict[int, List[Tuple[int, str
                      client: Any, rate_limiter: RateLimiter,
                      esg_only: bool, max_workers: int,
                      source: str = "report", doc_meta: Optional[Dict[str, Any]] = None,
-                     ctx_cache: Optional[GeminiContextCache] = None
+                     ctx_cache: Optional[GeminiContextCache] = None,
+                     provider: Optional[_Provider] = None,
                      ) -> Tuple[int, int]:
     if source == "news":
         # news source_pdf is an id like "AAA__vietstock.vn__<hash>" (no .pdf); do NOT
@@ -1055,7 +1092,7 @@ def process_document(source_pdf: str, jsonl_pages: Dict[int, List[Tuple[int, str
     article_meta = doc_meta if source == "news" else None
 
     cache_name: Optional[str] = None
-    if ctx_cache is not None and pages:
+    if ctx_cache is not None and pages and provider is None:
         header = build_document_header(schema, company, year, source=source, article_meta=article_meta)
         # JSON_ONLY_SYSTEM_INSTRUCTION is constant across every call this stage makes,
         # so it is baked into the cache itself (system_instruction=) rather than sent
@@ -1075,7 +1112,7 @@ def process_document(source_pdf: str, jsonl_pages: Dict[int, List[Tuple[int, str
                 pdf_stem, dbg_pdf_dir, g_pdf_dir, company, year,
                 source, article_meta,
                 jsonl_pages.get(pg["page"], []),
-                cache_name,
+                cache_name, provider,
             ): pg["page"]
             for pg in pages
         }
@@ -1163,7 +1200,13 @@ def main() -> None:
                         help="Run every non-empty page (default: only pages with >=1 ESG sentence)")
     parser.add_argument("--max-workers", type=int, default=DEFAULT_MAX_WORKERS, help="Parallel page workers")
     parser.add_argument("--rate-limit", type=int, default=DEFAULT_RATE_LIMIT, help="Max RPM (default 10)")
-    parser.add_argument("--model", type=str, default=DEFAULT_MODEL, help="Gemini model id")
+    parser.add_argument("--provider", choices=["gemini", "deepseek"], default=None,
+                        help="LLM provider; defaults to LLM_PROVIDER env var, or gemini. "
+                             "deepseek is a swappable alternative, not a fallback cascade "
+                             "(see core/llm.py's docstring) — it never uses context caching.")
+    parser.add_argument("--model", type=str, default=None,
+                        help="Model id; defaults to the chosen provider's own default "
+                             "(GEMINI_MODEL for gemini, DEEPSEEK_MODEL for deepseek) when omitted.")
     parser.add_argument("--source", choices=["report", "news"], default="report",
                         help="report (default): company self-reporting -> claim side. "
                              "news: third-party news -> conduct side; uses the news prompt and "
@@ -1206,12 +1249,26 @@ def main() -> None:
 
     load_dotenv(REPO_ROOT / ".env")
     rate_limiter = RateLimiter(max_calls_per_minute=args.rate_limit)
-    client = build_gemini_client()
-    if client is None:
-        logger.error(f"GEMINI_API_KEY not set in {REPO_ROOT / '.env'}")
-        return
-    model = args.model
-    ctx_cache = None if args.no_context_cache else GeminiContextCache(client, model)
+    provider_name = (args.provider or os.getenv("LLM_PROVIDER", "gemini")).strip().lower()
+
+    provider: Optional[_Provider] = None
+    client = None
+    ctx_cache = None
+    if provider_name == "deepseek":
+        provider = build_llm_provider("deepseek", args.model, args.rate_limit)
+        if not provider.enabled:
+            logger.error(f"DEEPSEEK_API_KEY not set in {REPO_ROOT / '.env'}")
+            return
+        model = provider.model
+        logger.info("Using DeepSeek — Gemini explicit context caching does not apply "
+                    "(--no-context-cache is a no-op here; the full prompt is sent every call).")
+    else:
+        client = build_gemini_client()
+        if client is None:
+            logger.error(f"GEMINI_API_KEY not set in {REPO_ROOT / '.env'}")
+            return
+        model = args.model or DEFAULT_MODEL
+        ctx_cache = None if args.no_context_cache else GeminiContextCache(client, model)
 
     total_success = 0
     total_failed = 0
@@ -1221,6 +1278,7 @@ def main() -> None:
             args.kpi_dir, args.out_dir, schema, model,
             client, rate_limiter, esg_only=esg_only, max_workers=args.max_workers,
             source=args.source, doc_meta=news_meta.get(src), ctx_cache=ctx_cache,
+            provider=provider,
         )
         total_success += s
         total_failed += f

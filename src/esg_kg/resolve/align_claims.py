@@ -46,6 +46,11 @@ exists and still runs). NO logic line changed. What differs:
     fallback anywhere in this project any more) and replaced here with
     `_GeminiProvider` — same `call(system, user) -> str` contract, no other logic
     line changed.
+  * 2026-08-06: switched from constructing `_GeminiProvider` directly to
+    `core.llm.build_llm_provider()`, so this stage can also run on DeepSeek V4
+    Flash via `--provider deepseek` (a swappable alternative, not a cascade —
+    see core/llm.py's docstring). `--model` now defaults to `None` so each
+    provider falls back to ITS OWN default model instead of Gemini's.
 
 WHAT MUST NOT BE "TIDIED" HERE
 `node_text` below is NOT the same function as `step07:133`'s despite the shared name: this
@@ -73,7 +78,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from esg_kg.core.graph_patch import GraphPatch, temporal_md
-from esg_kg.core.llm import DEFAULT_MODEL, _GeminiProvider
+from esg_kg.core.llm import build_llm_provider
 from esg_kg.core.paths import REPO_ROOT
 from esg_kg.core.schema import load_schema_sets
 
@@ -157,9 +162,10 @@ def run(args: argparse.Namespace) -> None:
         logger.info("--dry-run: no LLM calls, nothing written.")
         return
 
-    provider = _GeminiProvider(args.model, args.rate_limit)
+    provider = build_llm_provider(getattr(args, "provider", None), args.model, args.rate_limit)
     if not provider.enabled:
-        logger.error("No Gemini provider (need GEMINI_API_KEY in .env) — step05d requires an LLM.")
+        logger.error(f"No '{provider.name}' provider available (need its API key in .env) — "
+                     "step05d requires an LLM.")
         return
 
     stats: Counter = Counter()
@@ -207,7 +213,11 @@ def main() -> None:
     p.add_argument("--defs", type=Path, default=DEFAULT_DEFS)
     p.add_argument("--schema", type=Path, default=DEFAULT_SCHEMA)
     p.add_argument("--max-llm-pairs", type=int, default=200, help="Max LLM classifications this run.")
-    p.add_argument("--model", default=DEFAULT_MODEL, help="Gemini model id.")
+    p.add_argument("--provider", default=None, choices=["gemini", "deepseek"],
+                   help="LLM provider; defaults to LLM_PROVIDER env var, or gemini.")
+    p.add_argument("--model", default=None,
+                   help="Model id; defaults to the chosen provider's own default "
+                        "(GEMINI_MODEL for gemini, DEEPSEEK_MODEL for deepseek) when omitted.")
     p.add_argument("--rate-limit", type=int, default=60)
     p.add_argument("--stats-out", type=Path, default=DEFAULT_STATS_OUT)
     p.add_argument("--dry-run", action="store_true", help="Count candidates; no LLM, no write.")

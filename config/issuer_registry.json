@@ -8,59 +8,64 @@
       "xanh"
     ],
     "aliases": [
-      "AAA_Baocaothuongnien",
       "AAA",
-      "CÔNG TY CỔ PHẦN NHỰA VÀ MÔI TRƯỜNG XANH AN PHÁT",
-      "CÔNG TY CỔ PHẦN NHỰA VÀ MÔI TRƢỜNG XANH AN PHÁT",
-      "An Phat Green Plastic and Environment Joint Stock Company",
-      "An Phat Green Plastic and Environment JSC",
-      "Nhựa An Phát Xanh",
-      "Công ty Cổ phần Nhựa và Môi trường xanh An Phát",
-      "CTCP Nhựa An Phát Xanh",
-      "An Phat Plastic and Green Environment JSC",
-      "CÔNG TY CP NHỰA VÀ MÔI TRƯỜNG XANH AN PHÁT",
-      "An Phat Green Environment Plastic Joint Stock Company",
-      "Công ty cổ phần Nhựa và Môi trường xanh An Phát",
-      "Công ty Cổ phần Nhựa và Môi trường Xanh An Phát",
-      "AAA Company",
-      "AAA Corporation",
-      "An Phat Xanh Plastic",
-      "Công ty Cổ phần Nhựa An Phát Xanh",
-      "An Phat Plastic and Green Environment Joint Stock Company",
-      "CTCP Nhựa và Môi trường xanh An Phát",
-      "An Phat Xanh Plastics",
-      "CÔNG TY CỔ PHẦN NHỰA AN PHÁT XANH",
-      "Công ty Cổ phần Nhựa và Môi trƣờng xanh An Phát",
-      "AAA Corp",
-      "An Phat Green Environment and Plastic JSC",
-      "An Phát Plastic and Green Environment Joint Stock Company",
-      "CÔNG TY CP NHỰA VÀ MÔI TRƯƠM XANH AN PHÁT",
-      "An Phat Green Environment and Plastic Joint Stock Company",
-      "AAA Group",
       "AAA An Phát",
-      "An Phat Green Plastic and Environment",
-      "General Director Board (AAA Company)",
-      "Nhựa An Phát Xanh US Subsidiary",
-      "An Phat Xanh Plastics subsidiaries",
-      "CÔNG TY CP NHỰA VÀ MÔI TRƯỜM XANH AN PHÁT",
-      "CÔNG TY CỔ PHẦN NHỰA VÀ MÔI TRƯỜM XANH AN PHÁT",
+      "AAA Company",
+      "AAA Corp",
       "AAA Corp Subsidiary",
+      "AAA Corporation",
       "AAA Customers",
+      "AAA Group",
       "AAA Subsidiary 1",
       "AAA Subsidiary 2",
       "AAA Subsidiary Companies",
       "AAA Suppliers",
       "AAA member companies",
       "AAA's US subsidiary",
+      "AAA_Baocaothuongnien",
       "An Phat Green Environment & Plastic JSC",
+      "An Phat Green Environment Plastic Joint Stock Company",
+      "An Phat Green Environment and Plastic JSC",
+      "An Phat Green Environment and Plastic Joint Stock Company",
+      "An Phat Green Plastic and Environment",
+      "An Phat Green Plastic and Environment JSC",
+      "An Phat Green Plastic and Environment Joint Stock Company",
       "An Phat Plastic & Green Environment",
       "An Phat Plastic and Green Environment Company",
+      "An Phat Plastic and Green Environment JSC",
+      "An Phat Plastic and Green Environment Joint Stock Company",
+      "An Phat Xanh Plastic",
+      "An Phat Xanh Plastics",
+      "An Phat Xanh Plastics subsidiaries",
+      "An Phát Plastic and Green Environment Joint Stock Company",
       "C6ng ty C6 phan Nhựa và Môi trường Xanh An Phát",
+      "CTCP Nhựa An Phát Xanh",
       "CTCP Nhựa và Môi trường Xanh An Phát",
+      "CTCP Nhựa và Môi trường xanh An Phát",
       "Creditors of AAA",
       "Customers of AAA",
+      "CÔNG TY CP NHỰA VÀ MÔI TRƯƠM XANH AN PHÁT",
+      "CÔNG TY CP NHỰA VÀ MÔI TRƯỜM XANH AN PHÁT",
+      "CÔNG TY CP NHỰA VÀ MÔI TRƯỜNG XANH AN PHÁT",
+      "CÔNG TY CỔ PHẦN AAA",
+      "CÔNG TY CỔ PHẦN NHỰA AN PHÁT XANH",
+      "CÔNG TY CỔ PHẦN NHỰA VÀ MÔI TRƢỜNG XANH AN PHÁT",
+      "CÔNG TY CỔ PHẦN NHỰA VÀ MÔI TRƯỜM XANH AN PHÁT",
+      "CÔNG TY CỔ PHẦN NHỰA VÀ MÔI TRƯỜNG XANH AN PHÁT",
+      "Công ty Cổ phần Nhựa & Môi trường xanh An Phát",
+      "Công ty Cổ phần Nhựa An Phát Xanh",
+      "Công ty Cổ phần Nhựa và Môi trƣờng xanh An Phát",
+      "Công ty Cổ phần Nhựa và Môi trường Xanh An Phát",
+      "Công ty Cổ phần Nhựa và Môi trường xanh An Phát",
       "Công ty Cổ phần Nhựa và Môi trường xanh An Phát (v1)",
       "Công ty Cổ phần Nhựa và Môi trường xanh An Phát (v2)",
+      "Công ty con của AAA",
+      "Công ty con của Nhựa An Phát Xanh",
+      "Công ty cổ phần Nhựa và Môi trường Xanh An Phát",
+      "Công ty cổ phần Nhựa và Môi trường xanh An Phát",
+      "General Director Board (AAA Company)",
+      "Nhựa An Phát Xanh",
+      "Nhựa An Phát Xanh US Subsidiary",
       "Shareholders and Investors of AAA_Baocaothuongnien",
       "Subsidiary Companies of AAA_Baocaothuongnien",
       "Suppliers of AAA",
@@ -156,6 +161,10 @@
         "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000) and qualifier ['bai', 'yen']"
       },
       {
+        "name": "An Tiến Industries",
+        "reason": "An Tiến Industries (HII) — affiliate, separate listed entity"
+      },
+      {
         "name": "C6ng ty Cd phAn Nhpa vd M6i trucmg xanh An Ph6t",
         "reason": "shares issuer core ['an', 'xanh'] but low graph similarity (0.001)"
       },
@@ -192,6 +201,10 @@
         "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
       },
       {
+        "name": "CTCP Khu công nghiệp kỹ thuật cao An Phát",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.001)"
+      },
+      {
         "name": "CTCP Nhem vd MOi trudng xanh An Phdt",
         "reason": "shares issuer core ['an', 'xanh'] but low graph similarity (0.001)"
       },
@@ -220,6 +233,10 @@
         "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.001)"
       },
       {
+        "name": "CTCP TẬP ĐOÀN AN PHÁT HOLDINGS",
+        "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
+      },
+      {
         "name": "CTCP Tập đoàn An Phát Holdings",
         "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
       },
@@ -229,6 +246,70 @@
       },
       {
         "name": "CTCP sản xuất PBAT An Phát",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CTCP Đầu tư và Phát triển Bất động sản An Gia",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.002)"
+      },
+      {
+        "name": "CÔNG TY AN PHÁT COMPLEX",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN AN TIẾN INDUSTRIES",
+        "reason": "An Tiến Industries (HII) — affiliate, separate listed entity"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN BÊ TÔNG LY TÂM ỨNG SUẤT TRƯỚC AN PHÁT",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN KHU CÔNG NGHIỆP KỸ THUẬT CAO AN PHÁT",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.001)"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN NHỰA HÀ NỘI",
+        "reason": "Nhựa Hà Nội (NHH) — affiliate, separate listed entity"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN NHỰA VÀ KHO SẢN AN PHÁT",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN NHỰA VÀ KHOÁNG SẢN AN PHÁT - YÊN BÁI",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.001) and qualifier ['bai', 'khoang', 'yen']"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN NHỰA VÀ KHOÁNG SẢN AN PHÁT YÊN BÁI",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.002) and qualifier ['bai', 'khoang', 'yen']"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN NHỰA VÀ KHOÁNG SẢN AN PHÁT – YÊN BÁI",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.002) and qualifier ['bai', 'khoang', 'yen']"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN SẢN XUẤT PBAT AN PHÁT",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.001)"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN TẬP ĐOÀN AN PHÁT HOLDINGS",
+        "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN ĐẦU TƯ AN PHÁT",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CÔNG TY KCN KỸ THUẬT CAO AN PHÁT 1",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CÔNG TY TNHH KCN KỸ THUẬT CAO AN PHÁT",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.002)"
+      },
+      {
+        "name": "CÔNG TY TNHH KHU CÔNG NGHIỆP KỸ THUẬT CAO AN PHÁT",
         "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
       },
       {
@@ -252,12 +333,20 @@
         "reason": "An Tiến Industries (HII) — affiliate, separate listed entity"
       },
       {
+        "name": "Công ty CP Dịch vụ Suất ăn Công nghiệp An Phát",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
         "name": "Công ty CP Nhựa và Khoán sản An Phát - Yên Bái",
         "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000) and qualifier ['bai', 'yen']"
       },
       {
         "name": "Công ty CP Nhựa và Khoáng sản An Phát - Yên Bái",
         "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000) and qualifier ['bai', 'khoang', 'yen']"
+      },
+      {
+        "name": "Công ty CP Nhựa và MTX An Phát",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
       },
       {
         "name": "Công ty Cổ phần An Phát Holdings",
@@ -272,12 +361,20 @@
         "reason": "An Tiến Industries (HII) — affiliate, separate listed entity"
       },
       {
+        "name": "Công ty Cổ phần An phát Holdings",
+        "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
+      },
+      {
         "name": "Công ty Cổ phần Khu Công nghiệp Kỹ thuật Cao An Phát",
         "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
       },
       {
         "name": "Công ty Cổ phần Khu Công nghiệp Kỹ thuật cao An Phát",
         "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Khu công nghiệp Kỹ thuật cao An Phát",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.001)"
       },
       {
         "name": "Công ty Cổ phần Khu công nghiệp Kỹ thuật cao An Phát 1",
@@ -304,6 +401,10 @@
         "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000) and qualifier ['bai', 'khoang', 'yen']"
       },
       {
+        "name": "Công ty Cổ phần Nhựa và Khoáng sản An Phát",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000) and qualifier ['khoang']"
+      },
+      {
         "name": "Công ty Cổ phần Nhựa và Khoáng sản An Phát - Yên Bái",
         "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.002) and qualifier ['bai', 'khoang', 'yen']"
       },
@@ -314,6 +415,10 @@
       {
         "name": "Công ty Cổ phần Nhựa và Khoáng sản An Phát – Yên Bái",
         "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.002) and qualifier ['bai', 'khoang', 'yen']"
+      },
+      {
+        "name": "Công ty Cổ phần Sản xuất PBAT An Phát",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.001)"
       },
       {
         "name": "Công ty Cổ phần Tập đoàn An Phát Holdings",
@@ -332,6 +437,10 @@
         "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
       },
       {
+        "name": "Công ty Cổ phần sản xuất PBAT An Phát (PBAT)",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.001)"
+      },
+      {
         "name": "Công ty Cổ phần Đầu tư An Phát",
         "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.001)"
       },
@@ -346,6 +455,10 @@
       {
         "name": "Công ty KCN Kỹ thuật cao An Phát 1",
         "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Nhựa Hà Nội",
+        "reason": "Nhựa Hà Nội (NHH) — affiliate, separate listed entity"
       },
       {
         "name": "Công ty TNHH KCN Kỹ thuật cao An Phát",
@@ -388,6 +501,10 @@
         "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000) and qualifier ['bai', 'khoang', 'yen']"
       },
       {
+        "name": "Khu công nghiệp An Phát Complex",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
         "name": "Quỹ hỗ trợ và phát triển tài năng giáo dục An Phát",
         "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
       },
@@ -398,8 +515,105 @@
       {
         "name": "Tập đoàn An Phát Holdings",
         "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
+      },
+      {
+        "name": "Tổng công ty Cổ phần Xây dựng và Vật liệu Xây dựng An Phát",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
       }
     ],
+    "needs_review": []
+  },
+  "ACC": {
+    "ticker": "ACC",
+    "canonical_name": "Công ty Cổ phần Bê tông Becamex",
+    "core_tokens": [
+      "be",
+      "tong",
+      "becamex"
+    ],
+    "aliases": [
+      "ACC",
+      "CÔNG TY CỔ PHẦN BÊ TÔNG BECAMEX",
+      "Công ty Cổ phần Bê tông Becamex",
+      "Công ty Cổ phần Bê tông Becamex (ACC)",
+      "Công ty Cổ phần Becamex ACC",
+      "Becamex ACC",
+      "Công ty Cổ phần ACC"
+    ],
+    "exclusions": [
+      {
+        "name": "CÔNG TY CỔ PHẦN NHỰA VÀ MÔI TRƯỜNG XANH AN PHÁT",
+        "reason": "different company (AAA/AAA-related), co-mentioned in ACC report text"
+      },
+      {
+        "name": "Công ty Cổ phần Vật liệu Xây dựng Sông Hồng",
+        "reason": "different company, co-mentioned in ACC report text"
+      },
+      {
+        "name": "Công ty Cổ phần Xây dựng và Kinh doanh Địa ốc Hòa Bình",
+        "reason": "different company (Hoa Binh Construction), co-mentioned in ACC report text"
+      }
+    ],
+    "needs_review": []
+  },
+  "ACG": {
+    "ticker": "ACG",
+    "canonical_name": "Công ty Cổ phần Gỗ An Cường",
+    "core_tokens": [
+      "an",
+      "cuong",
+      "go"
+    ],
+    "aliases": [
+      "ACG",
+      "Công ty Cổ phần Gỗ An Cường",
+      "An Cường",
+      "Công ty An Cường",
+      "TẬP ĐOÀN AN CƯỜNG",
+      "AN CƯỜNG",
+      "AN CUONG WOOD - WORKING JOINT STOCK COMPANY",
+      "Công ty ACG"
+    ],
+    "exclusions": [],
+    "needs_review": []
+  },
+  "ADP": {
+    "ticker": "ADP",
+    "canonical_name": "Công ty Cổ phần Sơn Á Đông",
+    "core_tokens": [
+      "son",
+      "a",
+      "dong"
+    ],
+    "aliases": [
+      "ADP",
+      "Công ty Cổ phần Sơn Á Đông",
+      "Sơn Á Đông"
+    ],
+    "exclusions": [
+      {
+        "name": "Tổng cục thống kê",
+        "reason": "government statistics agency, not the issuer"
+      }
+    ],
+    "needs_review": []
+  },
+  "AGG": {
+    "ticker": "AGG",
+    "canonical_name": "Công ty Cổ phần Đầu tư và Phát triển Bất động sản An Gia",
+    "core_tokens": [
+      "an",
+      "gia"
+    ],
+    "aliases": [
+      "AGG",
+      "Angia Group - Tập Đoàn Bất Động Sản An Gia",
+      "Tập Đoàn Bất Động Sản An Gia",
+      "An Gia",
+      "Công ty Cổ phần Đầu tư và Phát triển Bất động sản An Gia",
+      "CÔNG TY CỔ PHẦN ĐẦU TƯ VÀ PHÁT TRIỂN BẤT ĐỘNG SẢN AN GIA"
+    ],
+    "exclusions": [],
     "needs_review": []
   }
 }
