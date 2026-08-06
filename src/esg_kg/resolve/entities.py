@@ -558,22 +558,33 @@ def resolve_graph(triples: List[Dict[str, Any]], idkeys: Dict[str, List[str]], *
     logger.info(f"Stage A.1 identity-key merge: {n} -> {after_a1} nodes")
 
     # ---- Stage A.2: issuer anchor (frozen) ----
+    # Group matches BY TICKER before unioning — the registry can (and, since
+    # 2026-08-06, does: AAA/ACC/ACG/ADP/AGG) hold more than one company. Unioning
+    # every matched Organization node into a single `issuer_members[0]` root
+    # regardless of which ticker it matched silently fuses unrelated companies into
+    # one entity the moment a second ticker is registered (found live: adding 4
+    # tickers collapsed all 5 issuers into one node). One DSU union pass per ticker
+    # keeps each company's mentions in their OWN frozen cluster.
     issuer_index, n_alias, n_excl = load_issuer_index(registry_path)
-    issuer_members: List[int] = []
+    issuer_members_by_ticker: Dict[str, List[int]] = defaultdict(list)
     for i in entity_idx:
         if nodes[i]["class"] != "Organization":
             continue
-        if normalize_name(primary_name(nodes[i])) in issuer_index:
-            issuer_members.append(i)
+        key = normalize_name(primary_name(nodes[i]))
+        if key in issuer_index:
+            ticker = issuer_index[key][0]
+            issuer_members_by_ticker[ticker].append(i)
     issuer_roots: Set[int] = set()
     issuer_tag: Dict[int, Tuple[str, str]] = {}
-    if issuer_members:
-        for j in issuer_members[1:]:
-            dsu.union(issuer_members[0], j)
-        root = dsu.find(issuer_members[0])
+    total_members = 0
+    for ticker, members in issuer_members_by_ticker.items():
+        total_members += len(members)
+        for j in members[1:]:
+            dsu.union(members[0], j)
+        root = dsu.find(members[0])
         issuer_roots.add(root)
-        issuer_tag[root] = issuer_index[normalize_name(primary_name(nodes[issuer_members[0]]))]
-    logger.info(f"Stage A.2 issuer anchor: merged {len(issuer_members)} Organization node(s) "
+        issuer_tag[root] = issuer_index[normalize_name(primary_name(nodes[members[0]]))]
+    logger.info(f"Stage A.2 issuer anchor: merged {total_members} Organization node(s) "
                 f"into {len(issuer_roots)} frozen issuer cluster(s) "
                 f"(registry: {n_alias} aliases, {n_excl} exclusions)")
 
@@ -718,7 +729,7 @@ def resolve_graph(triples: List[Dict[str, Any]], idkeys: Dict[str, List[str]], *
                   "entity_nodes": len(entity_idx), "observation_nodes": len(obs_idx)},
         "stages": {
             "after_identity_key_merge": after_a1,
-            "issuer_members_merged": len(issuer_members),
+            "issuer_members_merged": total_members,
             "issuer_clusters": len(issuer_roots),
             "after_normalized_merge_entities": after_b1,
             "llm_comparisons": llm_comparisons,

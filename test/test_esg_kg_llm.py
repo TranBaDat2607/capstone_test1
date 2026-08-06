@@ -137,7 +137,9 @@ def test_provider_base_contract():
     else:
         raise AssertionError(f"{new_llm._Provider}: base call() must raise NotImplementedError")
     assert issubclass(new_llm._GeminiProvider, new_llm._Provider)
-    print("     (base contract holds; _GeminiProvider subclasses it)")
+    assert issubclass(new_llm._DeepSeekProvider, new_llm._Provider)
+    assert issubclass(new_llm._OpenAIProvider, new_llm._Provider)
+    print("     (base contract holds; _GeminiProvider/_DeepSeekProvider/_OpenAIProvider subclass it)")
 
 
 def _without_gemini_key():
@@ -267,6 +269,289 @@ def test_gemini_provider_survives_a_none_reply():
 
     assert out == "", f"None-reply handling diverged: {out!r}"
     print("     (text=None -> '')")
+
+
+# --------------------------------------------------------------------------- #
+# _DeepSeekProvider (swappable alternative to _GeminiProvider — OpenAI-compatible
+# REST API, no SDK dependency: stub `requests.post` the same way the Gemini arm
+# stubs `client.models.generate_content`).
+# --------------------------------------------------------------------------- #
+def _without_env_key(name: str):
+    """Same restore-callable shape as `_without_gemini_key`, generalised to any var."""
+    saved = os.environ.pop(name, None)
+
+    def restore():
+        if saved is not None:
+            os.environ[name] = saved
+    return restore
+
+
+def test_deepseek_provider_accepts_an_explicit_key():
+    restore = _without_env_key("DEEPSEEK_API_KEY")
+    try:
+        p = new_llm._DeepSeekProvider("deepseek-v4-flash", 10, api_key="explicit-key")
+        assert p.enabled is True, "an explicit api_key must enable the provider even with no env var"
+    finally:
+        restore()
+    print("     (explicit api_key override works with no DEEPSEEK_API_KEY in env)")
+
+
+def test_deepseek_provider_disabled_without_key():
+    restore = _without_env_key("DEEPSEEK_API_KEY")
+    try:
+        p = new_llm._DeepSeekProvider("deepseek-v4-flash", 10)
+        assert p.enabled is False, f"{new_llm._DeepSeekProvider} claimed to be enabled with no API key"
+        assert p.name == "deepseek", p.name
+    finally:
+        restore()
+    print("     (disables cleanly, no raise)")
+
+
+class _StubResponse:
+    def __init__(self, payload):
+        self._payload = payload
+
+    def raise_for_status(self):
+        pass
+
+    def json(self):
+        return self._payload
+
+
+class _StubPost:
+    """Captures the request instead of sending it, mirroring `_StubModels` above."""
+
+    def __init__(self, log, payload=None):
+        self.log = log
+        self.payload = payload if payload is not None else {
+            "choices": [{"message": {"content": ' {"verdict": "supports"} '}}]
+        }
+        self.captured_url = None
+        self.captured_kwargs = None
+
+    def __call__(self, url, **kwargs):
+        self.log.append("post")
+        self.captured_url = url
+        self.captured_kwargs = kwargs
+        return _StubResponse(self.payload)
+
+
+def _call_deepseek_with_stub(payload=None):
+    os.environ["DEEPSEEK_API_KEY"] = "not-a-real-key"
+    p = new_llm._DeepSeekProvider("deepseek-v4-flash", 10)
+    assert p.enabled is True, "_DeepSeekProvider did not enable with a key present"
+
+    log: list = []
+    stub = _StubPost(log, payload=payload)
+    original_post = new_llm.requests.post
+    new_llm.requests.post = stub
+    p.rl = _SpyLimiter(log)
+    try:
+        out = p.call("SYSTEM PROMPT", "USER PROMPT")
+    finally:
+        new_llm.requests.post = original_post
+    return out, stub, log
+
+
+def test_deepseek_provider_request_shape():
+    """Pin the exact paid request: OpenAI-compatible chat/completions body, bearer
+    auth, temperature=0 and JSON response_format for the same determinism reason
+    `_GeminiProvider`'s shape is pinned above. `thinking: disabled` is pinned for the
+    same reason: DeepSeek V4 Flash's docs say `temperature`/`top_p` are INERT while
+    thinking mode is on (the default), so without this flag `temperature=0` above is
+    silently a no-op and every reply also wastes tokens on a reasoning trace this
+    pipeline throws away (it only parses `content` as JSON)."""
+    saved = os.environ.get("DEEPSEEK_API_KEY")
+    try:
+        out, stub, log = _call_deepseek_with_stub()
+    finally:
+        if saved is None:
+            os.environ.pop("DEEPSEEK_API_KEY", None)
+        else:
+            os.environ["DEEPSEEK_API_KEY"] = saved
+
+    assert stub.captured_url == "https://api.deepseek.com/chat/completions", stub.captured_url
+    headers = stub.captured_kwargs["headers"]
+    assert headers["Authorization"] == "Bearer not-a-real-key", headers
+    body = stub.captured_kwargs["json"]
+    assert body["model"] == "deepseek-v4-flash", body["model"]
+    assert body["messages"] == [
+        {"role": "system", "content": "SYSTEM PROMPT"},
+        {"role": "user", "content": "USER PROMPT"},
+    ], body["messages"]
+    assert body["temperature"] == 0, "temperature must stay 0 (determinism)"
+    assert body["response_format"] == {"type": "json_object"}, body["response_format"]
+    assert body["thinking"] == {"type": "disabled"}, \
+        "thinking mode must be disabled, or temperature=0 above is silently inert"
+
+    assert out == '{"verdict": "supports"}', repr(out)
+    assert log == [("wait", 0), "post"], f"throttle must precede the request: {log}"
+    print("     (request shape, strip, and wait->post ordering pinned)")
+
+
+def test_deepseek_provider_survives_an_empty_choices_reply():
+    """A malformed/empty reply must yield '' rather than crash, same discipline as
+    `_GeminiProvider`'s None-reply arm."""
+    out, _, _ = _call_deepseek_with_stub(payload={"choices": []})
+    assert out == "", f"empty-choices handling diverged: {out!r}"
+    print("     (choices=[] -> '')")
+
+
+# --------------------------------------------------------------------------- #
+# _OpenAIProvider (2026-08-06 re-add, opt-in for claims_vs_conduct only — see
+# core/llm.py's docstring). Same OpenAI-compatible REST shape as _DeepSeekProvider:
+# stub `requests.post`, no `openai` SDK dependency.
+# --------------------------------------------------------------------------- #
+def test_openai_provider_accepts_an_explicit_key():
+    restore = _without_env_key("OPENAI_API_KEY")
+    try:
+        p = new_llm._OpenAIProvider("gpt-4o-mini", 10, api_key="explicit-key")
+        assert p.enabled is True, "an explicit api_key must enable the provider even with no env var"
+    finally:
+        restore()
+    print("     (explicit api_key override works with no OPENAI_API_KEY in env)")
+
+
+def test_openai_provider_disabled_without_key():
+    restore = _without_env_key("OPENAI_API_KEY")
+    try:
+        p = new_llm._OpenAIProvider("gpt-4o-mini", 10)
+        assert p.enabled is False, f"{new_llm._OpenAIProvider} claimed to be enabled with no API key"
+        assert p.name == "openai", p.name
+    finally:
+        restore()
+    print("     (disables cleanly, no raise)")
+
+
+def _call_openai_with_stub(payload=None):
+    os.environ["OPENAI_API_KEY"] = "not-a-real-key"
+    p = new_llm._OpenAIProvider("gpt-4o-mini", 10)
+    assert p.enabled is True, "_OpenAIProvider did not enable with a key present"
+
+    log: list = []
+    stub = _StubPost(log, payload=payload)
+    original_post = new_llm.requests.post
+    new_llm.requests.post = stub
+    p.rl = _SpyLimiter(log)
+    try:
+        out = p.call("SYSTEM PROMPT", "USER PROMPT")
+    finally:
+        new_llm.requests.post = original_post
+    return out, stub, log
+
+
+def test_openai_provider_request_shape():
+    """Pin the exact paid request: OpenAI chat/completions body, bearer auth,
+    temperature=0 and JSON response_format for the same determinism reason
+    `_GeminiProvider`'s/`_DeepSeekProvider`'s shapes are pinned above."""
+    saved = os.environ.get("OPENAI_API_KEY")
+    try:
+        out, stub, log = _call_openai_with_stub()
+    finally:
+        if saved is None:
+            os.environ.pop("OPENAI_API_KEY", None)
+        else:
+            os.environ["OPENAI_API_KEY"] = saved
+
+    assert stub.captured_url == "https://api.openai.com/v1/chat/completions", stub.captured_url
+    headers = stub.captured_kwargs["headers"]
+    assert headers["Authorization"] == "Bearer not-a-real-key", headers
+    body = stub.captured_kwargs["json"]
+    assert body["model"] == "gpt-4o-mini", body["model"]
+    assert body["messages"] == [
+        {"role": "system", "content": "SYSTEM PROMPT"},
+        {"role": "user", "content": "USER PROMPT"},
+    ], body["messages"]
+    assert body["temperature"] == 0, "temperature must stay 0 (determinism)"
+    assert body["response_format"] == {"type": "json_object"}, body["response_format"]
+
+    assert out == '{"verdict": "supports"}', repr(out)
+    assert log == [("wait", 0), "post"], f"throttle must precede the request: {log}"
+    print("     (request shape, strip, and wait->post ordering pinned)")
+
+
+def test_openai_provider_survives_an_empty_choices_reply():
+    """A malformed/empty reply must yield '' rather than crash, same discipline as
+    `_GeminiProvider`'s/`_DeepSeekProvider`'s empty-reply arms."""
+    out, _, _ = _call_openai_with_stub(payload={"choices": []})
+    assert out == "", f"empty-choices handling diverged: {out!r}"
+    print("     (choices=[] -> '')")
+
+
+# --------------------------------------------------------------------------- #
+# build_llm_provider() — the one factory every stage should call instead of
+# hardcoding `_GeminiProvider(...)`, so "which provider" is a single switch
+# (LLM_PROVIDER env var / an explicit override) rather than N copies.
+# --------------------------------------------------------------------------- #
+def test_build_llm_provider_selects_gemini_by_default():
+    restore = _without_env_key("LLM_PROVIDER")
+    try:
+        p = new_llm.build_llm_provider(model="gemini-2.5-flash", rate_limit=10, api_key="k")
+        assert isinstance(p, new_llm._GeminiProvider), type(p)
+    finally:
+        restore()
+    print("     (no LLM_PROVIDER set -> gemini)")
+
+
+def test_build_llm_provider_selects_deepseek_explicitly():
+    p = new_llm.build_llm_provider(provider="deepseek", model="deepseek-v4-flash",
+                                    rate_limit=10, api_key="k")
+    assert isinstance(p, new_llm._DeepSeekProvider), type(p)
+    assert p.enabled is True
+    print("     (explicit provider='deepseek' -> _DeepSeekProvider)")
+
+
+def test_build_llm_provider_reads_env_switch():
+    """The switch is read fresh per call (not frozen at import), so a test can flip
+    it without reimporting the module — this is what makes it a per-run swap."""
+    os.environ["LLM_PROVIDER"] = "deepseek"
+    try:
+        p = new_llm.build_llm_provider(model="deepseek-v4-flash", rate_limit=10, api_key="k")
+        assert isinstance(p, new_llm._DeepSeekProvider), type(p)
+    finally:
+        os.environ.pop("LLM_PROVIDER", None)
+    print("     (LLM_PROVIDER=deepseek env switch honoured)")
+
+
+def test_build_llm_provider_rejects_unknown_name():
+    try:
+        new_llm.build_llm_provider(provider="bogus", api_key="k")
+    except ValueError as e:
+        assert "bogus" in str(e), str(e)
+    else:
+        raise AssertionError("build_llm_provider must reject an unknown provider name")
+    print("     (unknown provider name raises ValueError)")
+
+
+def test_build_llm_provider_defaults_model_per_provider():
+    """When `model` is omitted, each provider must fall back to ITS OWN default
+    model, not another provider's — a plain `model or DEFAULT_MODEL` bug would
+    silently send a Gemini model id to DeepSeek's/OpenAI's API."""
+    restore = _without_env_key("DEEPSEEK_API_KEY")
+    try:
+        p = new_llm.build_llm_provider(provider="deepseek", rate_limit=10, api_key="k")
+        assert p.model == new_llm.DEEPSEEK_DEFAULT_MODEL, p.model
+    finally:
+        restore()
+    print(f"     (deepseek default model = {new_llm.DEEPSEEK_DEFAULT_MODEL})")
+
+
+def test_build_llm_provider_selects_openai_explicitly():
+    p = new_llm.build_llm_provider(provider="openai", model="gpt-4o-mini",
+                                    rate_limit=10, api_key="k")
+    assert isinstance(p, new_llm._OpenAIProvider), type(p)
+    assert p.enabled is True
+    print("     (explicit provider='openai' -> _OpenAIProvider)")
+
+
+def test_build_llm_provider_defaults_model_for_openai():
+    restore = _without_env_key("OPENAI_API_KEY")
+    try:
+        p = new_llm.build_llm_provider(provider="openai", rate_limit=10, api_key="k")
+        assert p.model == new_llm.OPENAI_DEFAULT_MODEL, p.model
+    finally:
+        restore()
+    print(f"     (openai default model = {new_llm.OPENAI_DEFAULT_MODEL})")
 
 
 if __name__ == "__main__":

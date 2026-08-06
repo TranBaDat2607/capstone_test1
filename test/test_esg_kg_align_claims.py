@@ -25,10 +25,16 @@ five symbols from the old tree and every one was already lifted: `REPO_ROOT`
 (-> `core/graph_patch`, lifted by the 05c slice), `_GeminiProvider` (-> `core/llm`;
 replaced `_OpenAIProvider` outright on 2026-08-04, no fallback kept).
 
+2026-08-06: the stage stopped constructing `_GeminiProvider` directly and now calls
+`core.llm.build_llm_provider(provider, model, rate_limit)` instead, so `--provider
+deepseek` also works (a swappable alternative to Gemini, not a cascade — see
+core/llm.py's docstring). The stub below is injected over `build_llm_provider`
+accordingly, not over the `_GeminiProvider` class.
+
 HOW THE PAID BRANCH IS COVERED WITHOUT PAYING
 This is a mandatory-LLM stage: `--dry-run` returns before the provider is even built, so a
 dry-run-only arm would prove almost nothing. The stage is therefore driven by a STUB
-provider injected over `_GeminiProvider`, exactly as the step03 slice drives phase 2. The
+provider injected over `build_llm_provider`, exactly as the step03 slice drives phase 2. The
 stub answers deterministically from a CRC of the prompt, and it deliberately returns all
 five reply shapes the parser must survive: clean JSON, "none", JSON embedded in prose,
 junk, and a well-formed id that is not in the vocabulary.
@@ -108,7 +114,7 @@ def load_defs() -> list:
 # replies for the same nodes — that is what makes the comparison meaningful.
 # --------------------------------------------------------------------------- #
 def make_stub(valid_ids: list, mode: str = "mixed"):
-    """Return a class with `_GeminiProvider(model, rate_limit)`'s interface.
+    """Return a class with `_GeminiProvider`/`_DeepSeekProvider(model, rate_limit)`'s interface.
 
     `mode="mixed"` walks all five reply shapes the parser must survive.
     `mode="always_raise"` drives the 3-failures-0-successes abort branch.
@@ -165,7 +171,7 @@ class Workspace:
     def args(self, **overrides) -> argparse.Namespace:
         args = argparse.Namespace(
             input=self.graph_path, defs=self.defs_path, schema=SCHEMA_FILE,
-            max_llm_pairs=200, model="gemini-2.5-flash", rate_limit=60,
+            max_llm_pairs=200, provider="gemini", model="gemini-2.5-flash", rate_limit=60,
             stats_out=self.stats_path, dry_run=False,
         )
         for k, v in overrides.items():
@@ -190,20 +196,23 @@ def run_new(graph: dict, defs: list = None, stub_mode: str = "mixed", **override
     """Run the stage against esg_kg on the given input; return (ws, stub, logs)."""
     valid_ids = [d["id"] for d in (defs if defs is not None else load_defs())]
     ws = Workspace(copy.deepcopy(graph), defs)
-    stub = make_stub(valid_ids, stub_mode)
-    original = new_05d._GeminiProvider
+    stub_cls = make_stub(valid_ids, stub_mode)
+    original = new_05d.build_llm_provider
     handler = _LogCatcher()
     new_05d.logger.addHandler(handler)
     try:
-        new_05d._GeminiProvider = stub
+        # Stub the FACTORY, not a provider class: since 2026-08-06 the stage picks
+        # gemini/deepseek via `build_llm_provider(provider, model, rate_limit)`, so
+        # that is the one seam to replace regardless of which provider is requested.
+        new_05d.build_llm_provider = lambda provider, model, rate_limit: stub_cls(model, rate_limit)
         new_05d.run(ws.args(**overrides))
     finally:
-        new_05d._GeminiProvider = original
+        new_05d.build_llm_provider = original
         new_05d.logger.removeHandler(handler)
     # The final log line echoes the workspace's mkdtemp path — mask it so a rerun's
     # comparison against fixed strings (e.g. "unaligned") is not sensitive to it.
     logs = [m.replace(str(ws.dir), "<WS>") for m in handler.messages]
-    return ws, stub, logs
+    return ws, stub_cls, logs
 
 
 class _LogCatcher(logging.Handler):
@@ -263,7 +272,7 @@ def test_new_tree_imports_the_kernel_rather_than_recopying():
     """A migrated stage must USE core/, not carry its own copy — otherwise the two drift."""
     assert new_05d.GraphPatch is core_graph_patch.GraphPatch, "GraphPatch was re-copied"
     assert new_05d.temporal_md is core_graph_patch.temporal_md, "temporal_md was re-copied"
-    assert new_05d._GeminiProvider is core_llm._GeminiProvider, "_GeminiProvider was re-copied"
+    assert new_05d.build_llm_provider is core_llm.build_llm_provider, "build_llm_provider was re-copied"
     assert new_05d.load_schema_sets is core_schema.load_schema_sets, "load_schema_sets re-copied"
 
 

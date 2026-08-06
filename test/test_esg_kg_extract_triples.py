@@ -250,6 +250,69 @@ def test_call_llm_produces_a_valid_paid_request_shape_across_response_shapes():
         assert nc["response_mime_type"] == "application/json"
 
 
+class _FakeProvider:
+    """Stub for a `core.llm._Provider` (2026-08-06 `--provider deepseek` swap). Records
+    every `call(system, user)` invocation; `client`/`cached_content` must be ignored
+    entirely when a provider is passed to `call_llm`."""
+    name = "deepseek"
+
+    def __init__(self):
+        self.calls_seen: list = []
+
+    def call(self, system, user):
+        self.calls_seen.append({"system": system, "user": user})
+        return '[{"subject": {"class": "Organization", "properties": {}}, ' \
+               '"predicate": "reportsKPI", "object": {"class": "KPIObservation", "properties": {}}}]'
+
+
+def test_call_llm_with_a_provider_ignores_the_gemini_client_entirely():
+    """The DeepSeek swap (core/llm.py's `build_llm_provider`) must bypass `client` and
+    `cached_content` completely — `provider.call` is the only thing that fires."""
+    new_client = _FakeClient()  # would raise/record if anything touched it
+    provider = _FakeProvider()
+    new_rl = new_mod.RateLimiter(max_calls_per_minute=1000)
+    parsed, raw, rate_limited = new_mod.call_llm(
+        "USER PROMPT", new_client, 0, new_rl, SCHEMA, "deepseek-v4-flash",
+        retries=1, cached_content="should-be-ignored", provider=provider,
+    )
+    assert len(new_client.calls_seen) == 0, "provider path must never touch the Gemini client"
+    assert len(provider.calls_seen) == 1, "arm is vacuous: provider.call was never reached"
+    assert provider.calls_seen[0]["system"] == new_mod.JSON_ONLY_SYSTEM_INSTRUCTION
+    assert provider.calls_seen[0]["user"] == "USER PROMPT"
+    assert rate_limited is False
+    assert isinstance(parsed, list) and parsed, f"reply not parsed as triples: {raw!r}"
+
+
+def test_process_page_with_a_provider_always_sends_the_full_prompt():
+    """Even when a Gemini `cache_name` is passed in (should never happen in practice —
+    process_document never builds one when a provider is active — but if it did),
+    `process_page` must send the FULL prompt when a provider is set, never
+    `build_page_body`'s cache-only body: DeepSeek has no context-cache equivalent."""
+    tmp = Path(tempfile.mkdtemp(prefix="esgkg_02_provider_"))
+    try:
+        new_g = tmp / "g"
+        new_dbg = tmp / "dbg"
+        for d in (new_g, new_dbg):
+            d.mkdir(parents=True)
+        provider = _FakeProvider()
+        new_client = _FakeClient()
+        new_rl = new_mod.RateLimiter(max_calls_per_minute=1000)
+        pg = {"page": 1, "text": "Cong ty giam phat thai 20% trong nam.", "has_esg": True}
+        new_mod.process_page(pg, [], new_client, 0, new_rl, SCHEMA, "deepseek-v4-flash",
+                             esg_only=True, pdf_stem="doc", dbg_pdf_dir=new_dbg, g_pdf_dir=new_g,
+                             company="AAA", year=2024, source="report",
+                             cache_name="should-be-ignored", provider=provider)
+        assert len(new_client.calls_seen) == 0, "provider path must never touch the Gemini client"
+        assert len(provider.calls_seen) == 1
+        sent_user = provider.calls_seen[0]["user"]
+        # build_page_body (the cache-only body) has no "## KNOWLEDGE GRAPH SCHEMA" header;
+        # build_page_prompt (the full prompt) does — this is the observable difference.
+        assert "KNOWLEDGE GRAPH SCHEMA" in sent_user, \
+            "process_page sent the cache-only body instead of the full prompt"
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
 def test_process_page_skips_non_esg_pages_and_is_idempotent_on_rerun():
     tmp = Path(tempfile.mkdtemp(prefix="esgkg_02_page_"))
     try:

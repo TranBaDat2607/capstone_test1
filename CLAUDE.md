@@ -85,7 +85,9 @@ repo and secrets, so it is never committed or pushed with this project.
 - **Other deps are deliberately unlisted and imported lazily** — each degrades gracefully
   so a bare clone still runs: `huggingface_hub` (`datasync.py`), `rapidfuzz` (the
   KPI-canonicalization stage's fuzzy tier; disabled with a warning if absent).
-- **Gemini is the only paid LLM provider in this project — there is no OpenAI fallback.**
+- **Gemini is the default paid LLM provider; DeepSeek V4 Flash is a swappable
+  alternative for the stages built against the provider-agnostic `_Provider`
+  contract — there is no automatic fallback cascade between them.**
   2026-07-27 through 2026-08-04 the code ran on OpenAI instead (`--provider openai` on
   `extract`/`extract_triples`/`fix_triples`/`entities`, and OpenAI as the sole provider
   for `claims_vs_conduct`/`align_claims`) because the Gemini project behind
@@ -94,13 +96,33 @@ repo and secrets, so it is never committed or pushed with this project.
   `--provider openai` / `--openai-model` / `--openai-base-url` flag, and the `openai`
   dependency itself — was **removed outright, no fallback kept**, once the project went
   back to paying only for Gemini. `claims_vs_conduct` and `align_claims` (the two stages
-  that mandate an LLM) now run on a `_GeminiProvider` in `core/llm.py`. Entity resolution
-  is still normally run with `--no-llm` (Stages A + B.1 only — no embedding blocking, no
-  adjudication) because Stage B/C is dormant, not because of a billing block; don't assume
-  it's safe to flip that default without checking. Real-LLM tests for the Gemini path live
-  in `test/test_esg_kg_integration_llm.py` / `test/test_esg_kg_system_llm.py`, gated behind
-  `RUN_LLM_INTEGRATION_TESTS=1` / `RUN_LLM_SYSTEM_TEST=1` — they cost money and are
-  deliberately NOT part of the free/offline suite.
+  that mandate an LLM) ran on a `_GeminiProvider` in `core/llm.py` exclusively from
+  2026-08-04. On 2026-08-06 `_DeepSeekProvider` was added alongside it — same
+  `call(system, user) -> str` contract, OpenAI-compatible REST via `requests` (no `openai`
+  SDK reintroduced) — as a **swap you opt into**, not a repeat of the OpenAI episode:
+  Gemini stays the working default. `align_claims` picks a provider via
+  `core/llm.py`'s `build_llm_provider()` factory (`--provider gemini|deepseek`, or the
+  `LLM_PROVIDER` env var); `claims_vs_conduct`'s `Adjudicator` keeps its own registry
+  (`--provider-order`, e.g. `deepseek` alone, or a comma list if a cascade is ever
+  wanted) since that class is stage logic, not kernel — see `core/llm.py`'s docstring.
+  Also on 2026-08-06, `extract_triples` gained its own `--provider deepseek` (same
+  `build_llm_provider()` factory, called directly from its `main()`): when a provider is
+  set, `client`/`cached_content` are ignored and `call_llm` calls `provider.call(...)`
+  instead of `client.models.generate_content(...)`, always with the full per-page prompt
+  (`build_page_prompt`, never the cache-shortened `build_page_body`) since DeepSeek has no
+  equivalent to `GeminiContextCache` — `--no-context-cache` is a no-op on a DeepSeek run.
+  `extract`/`fix_triples`/`entities` are still Gemini-only: they call
+  `build_gemini_client()` directly and use Gemini-specific explicit context caching
+  (`GeminiContextCache`) that has no DeepSeek equivalent, so making them swappable too
+  would be a separate, larger redesign. `DEEPSEEK_API_KEY`/`DEEPSEEK_MODEL` in `.env`
+  configure the DeepSeek side; unset it and every stage keeps using Gemini. Entity
+  resolution is still normally run with `--no-llm` (Stages A + B.1 only — no embedding
+  blocking, no adjudication) because Stage B/C is dormant, not because of a billing
+  block; don't assume it's safe to flip that default without checking. Real-LLM tests
+  for the Gemini path live in `test/test_esg_kg_integration_llm.py` /
+  `test/test_esg_kg_system_llm.py`, gated behind `RUN_LLM_INTEGRATION_TESTS=1` /
+  `RUN_LLM_SYSTEM_TEST=1` — they cost money and are deliberately NOT part of the
+  free/offline suite.
 
 ## Working rule: Test-Driven Development (applies to ALL code from now on)
 
@@ -244,7 +266,9 @@ extract_triples  (step02) → graph_output/graphs/<pdf_stem>/page{N}.json  (+ _b
    (per page: page text + page KPIs + config/schema.json → temporal triples → node/edge graph.
     --source report (default) = claim-side prompt; --source news = conduct-side prompt (Controversy/
     MediaReport/Penalty/observed KPIObservation); every node/edge stamped source_type=report|news.
-    Gemini-only, no provider flag — same removal as extract above)
+    Gemini by default (build_gemini_client + GeminiContextCache, same as extract above);
+    --provider deepseek added 2026-08-06 as a swappable alternative — skips context
+    caching, always sends the full per-page prompt, via core/llm.py's build_llm_provider())
 fix_triples      (step03) → graph_output/validated/all_validated_triples.json (+ unfixable_triples.json)
    (Phase 1 offline: swap reversed edge directions + schema-validate;
     Phase 1.5 offline (P4): canonicalize dates to ISO YYYY[-MM[-DD]], warn valid_from>valid_to,
@@ -334,13 +358,15 @@ neo4j_load       (step06) → Neo4j (bolt://localhost:8687, db `neo4j`)         
 claims_vs_conduct (step07) → graph_output/crosscheck/<ticker>_claim_assessments.json   (step 6)
    (the analytical core: for each SustainabilityClaim, retrieve conduct-side candidates →
     LLM-adjudicate supports/contradicts/irrelevant → write verifiedBy / contradictedBy* edges.
-    LLM adjudication is MANDATORY (no deterministic fallback) — provider cascade
-    (--provider-order, default `gemini` = gemini-2.5-flash); aborts up front if no
-    provider is available. **Gemini is the ONLY provider**: OpenAI was used here from
-    2026-07-27 (when the Gemini project was 403-blocked) until 2026-08-04, when it was
-    removed outright — `_GeminiProvider` (core/llm.py) is the sole adjudication backend
-    now, so passing `openai` logs "Unknown adjudication provider — ignored". Do not
-    re-add an OpenAI fallback without checking whether Gemini is billing-blocked again.
+    LLM adjudication is MANDATORY (no deterministic fallback) — `Adjudicator`'s own
+    registry (--provider-order, default `gemini`) picks `_GeminiProvider` or
+    `_DeepSeekProvider` (both core/llm.py); aborts up front if no provider is available.
+    OpenAI was used here from 2026-07-27 (when the Gemini project was 403-blocked) until
+    2026-08-04, when it was removed outright — do not re-add an OpenAI path without
+    checking whether Gemini is billing-blocked again. DeepSeek V4 Flash (2026-08-06) is
+    a different situation: a swappable alternative you opt into via
+    `--provider-order deepseek`, not a forced fallback, needing `DEEPSEEK_API_KEY` in
+    `.env`. Passing any other name still logs "Unknown adjudication provider — ignored".
     Self-verification guard drops company-own-domain "verify" edges.
     Emits advisory dossiers — NO greenwashing score/label. --dry-run / --to-neo4j)
 neo4j_sync       (step08) → Neo4j advisory layer                                        (step 6b)
@@ -485,19 +511,22 @@ python api/main.py                                                         # 3-c
 
 # Useful flags: --doc <substr>, --limit-docs N, --all (scope);
 #   --all-pages (don't restrict to ESG pages); --dry-run (fix/resolve/load stages: offline only, no LLM/DB/writes);
-#   extract/extract_triples/fix_triples/entities are Gemini-only — no --provider flag any more
+#   extract/fix_triples/entities are Gemini-only — no --provider flag
 #     (the 2026-07-29..2026-08-04 --provider openai path was removed outright);
+#   extract_triples: --provider gemini|deepseek (added 2026-08-06, default from LLM_PROVIDER
+#     env/gemini; deepseek skips GeminiContextCache — --no-context-cache is a no-op there);
 #   quality: --label <name>, --skip-slow (skip the BFS-heavy Q7(c)/(d)), --max-hops, --standards-registry;
 #   fix_triples: --renormalize (P4 pass only); anchor_kpi: --max-per-facility, --dry-run;
 #   canonicalize: --aliases, --fuzzy-threshold, --no-goals, --dry-run;
 #   provenance: --graphs-dir, --news-globs, --stats-out, --dry-run;
 #   indicators: --crosswalk, --no-gri, --no-align, --trust-draft-crosswalk, --dry-run;
-#   align_claims: --max-llm-pairs, --model (gemini, mandatory LLM), --dry-run;
+#   align_claims: --max-llm-pairs, --provider (gemini|deepseek, default from LLM_PROVIDER env/gemini),
+#     --model (per-provider default when omitted), mandatory LLM, --dry-run;
 #   export_kgc: --max-bucket-degree (default 500), --issuer-registry, --dry-run;
 #   entities: --no-llm (Stages A+B.1 only), --standards-registry, --similarity-threshold, --max-llm-pairs;
 #   neo4j_load: --clear (wipe first), --no-versions (canonical only), --database, --strict (env: NEO4J_URI/USER/PASSWORD);
-#   claims_vs_conduct: LLM adjudication is mandatory (no --no-llm); --max-llm-pairs, --provider-order (default gemini),
-#     --model, --to-neo4j;
+#   claims_vs_conduct: LLM adjudication is mandatory (no --no-llm); --max-llm-pairs, --provider-order (default gemini;
+#     'deepseek' is a swappable alternative, not a required cascade), --model, --to-neo4j;
 #   neo4j_sync: --clear-advisory, --dry-run;
 #   claim_ledger (Neo4j-only): --review-queue, --assessment, --claim-id, --limit, --markdown;
 ```

@@ -65,6 +65,59 @@ is called right below, before this constant is computed, so a plain ``import
 esg_kg.core.llm`` — even before a stage's own ``main()`` calls ``load_dotenv`` again — is
 enough to pick up ``.env``. Every stage's ``--model`` CLI flag still overrides this at
 runtime.
+
+2026-08-06: A SECOND PROVIDER, AS A SWAP NOT A CASCADE
+``_DeepSeekProvider`` adds DeepSeek V4 Flash as a second ``_Provider`` — same
+``call(system, user) -> str`` contract as ``_GeminiProvider``, so any caller written
+against that contract (``claims_vs_conduct``'s ``Adjudicator``, ``align_claims``) can use
+either one unchanged. This is deliberately NOT the 2026-07-27..2026-08-04 OpenAI episode
+again: that was a forced fallback (Gemini was billing-blocked, OpenAI was the only thing
+that worked, then it was removed outright once Gemini came back — see the note above).
+This is the opposite shape — Gemini stays the default and fully working, DeepSeek is an
+opt-in ALTERNATIVE the caller picks deliberately (one provider active per run, chosen via
+``build_llm_provider()`` below), not an automatic fallback chain. Unlike the old OpenAI
+provider, DeepSeek's API is OpenAI-compatible REST (``POST /chat/completions``), so this
+uses the already-a-dependency ``requests`` rather than reintroducing the ``openai`` SDK
+that was deliberately removed.
+
+``_DeepSeekProvider.call()`` always sends ``"thinking": {"type": "disabled"}``.
+``deepseek-v4-flash`` defaults to thinking mode ON, and DeepSeek's own docs say
+``temperature``/``top_p`` are INERT while it's on — so without this flag, this class's own
+``temperature=0`` would silently do nothing (breaking the determinism every caller here
+assumes), and every call would also pay for a reasoning trace nothing in this pipeline
+reads (only the plain ``content`` field is ever parsed as JSON).
+
+``build_llm_provider()`` is the ONE place that turns an env var / explicit override into a
+provider instance — the same "one constructor, not six" reasoning as
+``build_gemini_client()`` above, generalized across providers. It reads ``LLM_PROVIDER``
+FRESH on every call (not frozen at import like ``DEFAULT_MODEL``) so a caller — or a test —
+can flip providers without reimporting this module; a stage's own ``--provider`` CLI flag
+overrides it the same way ``--model`` overrides ``DEFAULT_MODEL``. ``align_claims`` (a
+single-provider stage) goes through this factory directly. ``claims_vs_conduct`` keeps its
+OWN registry inside ``Adjudicator`` instead — that class is stage logic (prompt text,
+verdict parsing, the provider cascade), not kernel, exactly as this module's docstring has
+always said — but its registry constructs the same ``_GeminiProvider``/``_DeepSeekProvider``
+classes from here, so adding a provider still means editing this file once, not per-stage.
+``extract``/``extract_triples``/``fix_triples``/``entities`` still call
+``build_gemini_client()`` directly because they use Gemini-specific explicit context caching
+(``GeminiContextCache`` below) that has no DeepSeek equivalent — making those swappable too
+is a separate, larger redesign, not a drop-in.
+
+2026-08-06: OPENAI RE-ADDED, OPT-IN, ``claims_vs_conduct`` ONLY
+``_OpenAIProvider`` is back, at the user's explicit request, for ``claims_vs_conduct``
+(step07) specifically — NOT a reversal of the 2026-08-04 removal note above, and NOT
+another forced-fallback episode: Gemini stays the default, this is a third opt-in
+alternative the caller picks deliberately (same shape as the DeepSeek addition one
+section up), selected via ``claims_vs_conduct --provider-order openai``. Same
+"OpenAI-compatible REST via ``requests``, no SDK" reasoning as ``_DeepSeekProvider`` —
+the ``openai`` Python package is still not a dependency of this project.
+``align_claims``/``extract_triples``/``fix_triples``/``entities`` do NOT expose this:
+their own ``--provider`` flags still only accept ``choices=["gemini", "deepseek"]``,
+so adding ``"openai"`` to ``_PROVIDER_CLASSES``/``_PROVIDER_DEFAULT_MODELS`` below does
+not silently enable it anywhere but ``claims_vs_conduct``'s own registry (which
+constructs providers straight from this module, not through those other stages'
+argparse). ``OPENAI_API_KEY``/``OPENAI_MODEL`` in ``.env`` configure it; unset it and
+every stage keeps using Gemini exactly as before.
 """
 
 import hashlib
@@ -75,6 +128,7 @@ from collections import deque
 from threading import Lock
 from typing import Dict, Optional
 
+import requests
 from google import genai
 from google.genai import types
 
@@ -86,6 +140,8 @@ load_env()  # so GEMINI_MODEL below sees .env even if no stage has loaded it yet
 
 DEFAULT_RATE_LIMIT = 10  # RPM
 DEFAULT_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash-lite")
+DEEPSEEK_DEFAULT_MODEL = os.getenv("DEEPSEEK_MODEL", "deepseek-v4-flash")
+OPENAI_DEFAULT_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 
 
 # --------------------------------------------------------------------------- #
@@ -183,6 +239,132 @@ class _GeminiProvider(_Provider):
             ),
         )
         return (resp.text or "").strip()
+
+
+class _DeepSeekProvider(_Provider):
+    """DeepSeek backend (OpenAI-compatible REST, no SDK dependency) — a swappable
+    ALTERNATIVE to `_GeminiProvider`, not a fallback: same `call(system, user) -> str`
+    contract, so `Adjudicator` (step07) and `align_claims` (step05d) use it unchanged.
+    See the module docstring for why this isn't the 2026-08-04 OpenAI episode again.
+    """
+    name = "deepseek"
+    API_URL = "https://api.deepseek.com/chat/completions"
+
+    def __init__(self, model: str, rate_limit: int, api_key: Optional[str] = None) -> None:
+        super().__init__()
+        self.model = model
+        api_key = api_key or os.getenv("DEEPSEEK_API_KEY")
+        if not api_key:
+            return
+        self.api_key = api_key
+        self.rl = RateLimiter(max_calls_per_minute=rate_limit)
+        self.enabled = True
+
+    def call(self, system: str, user: str) -> str:
+        self.rl.wait_if_needed(0)
+        resp = requests.post(
+            self.API_URL,
+            headers={
+                "Authorization": f"Bearer {self.api_key}",
+                "Content-Type": "application/json",
+            },
+            json={
+                "model": self.model,
+                "messages": [
+                    {"role": "system", "content": system},
+                    {"role": "user", "content": user},
+                ],
+                "temperature": 0,
+                "response_format": {"type": "json_object"},
+                # Thinking mode is ON by default for deepseek-v4-flash and, per DeepSeek's
+                # own docs, makes temperature/top_p INERT — so without this, `temperature=0`
+                # above silently does nothing, and every call also pays for a reasoning
+                # trace this pipeline never reads (only `content` is parsed as JSON).
+                "thinking": {"type": "disabled"},
+            },
+            timeout=120,
+        )
+        resp.raise_for_status()
+        choices = resp.json().get("choices") or []
+        if not choices:
+            return ""
+        content = (choices[0].get("message") or {}).get("content")
+        return (content or "").strip()
+
+
+class _OpenAIProvider(_Provider):
+    """OpenAI backend (Chat Completions REST, no `openai` SDK dependency) — a
+    swappable ALTERNATIVE, opt-in for `claims_vs_conduct` (step07) only, re-added
+    2026-08-06 at the user's explicit request. Same `call(system, user) -> str`
+    contract as `_GeminiProvider`/`_DeepSeekProvider`, and the same "no SDK"
+    reasoning as `_DeepSeekProvider`: OpenAI's REST API is plain JSON over
+    `requests`, so this does not reintroduce the `openai` package removed
+    2026-08-04 (see the module docstring's history above — this is a deliberate
+    opt-in swap the user asked for, not a repeat of that forced-fallback episode).
+    """
+    name = "openai"
+    API_URL = "https://api.openai.com/v1/chat/completions"
+
+    def __init__(self, model: str, rate_limit: int, api_key: Optional[str] = None) -> None:
+        super().__init__()
+        self.model = model
+        api_key = api_key or os.getenv("OPENAI_API_KEY")
+        if not api_key:
+            return
+        self.api_key = api_key
+        self.rl = RateLimiter(max_calls_per_minute=rate_limit)
+        self.enabled = True
+
+    def call(self, system: str, user: str) -> str:
+        self.rl.wait_if_needed(0)
+        resp = requests.post(
+            self.API_URL,
+            headers={
+                "Authorization": f"Bearer {self.api_key}",
+                "Content-Type": "application/json",
+            },
+            json={
+                "model": self.model,
+                "messages": [
+                    {"role": "system", "content": system},
+                    {"role": "user", "content": user},
+                ],
+                "temperature": 0,
+                "response_format": {"type": "json_object"},
+            },
+            timeout=120,
+        )
+        resp.raise_for_status()
+        choices = resp.json().get("choices") or []
+        if not choices:
+            return ""
+        content = (choices[0].get("message") or {}).get("content")
+        return (content or "").strip()
+
+
+_PROVIDER_CLASSES = {"gemini": _GeminiProvider, "deepseek": _DeepSeekProvider, "openai": _OpenAIProvider}
+_PROVIDER_DEFAULT_MODELS = {
+    "gemini": DEFAULT_MODEL, "deepseek": DEEPSEEK_DEFAULT_MODEL, "openai": OPENAI_DEFAULT_MODEL,
+}
+
+
+def build_llm_provider(provider: Optional[str] = None, model: Optional[str] = None,
+                        rate_limit: int = DEFAULT_RATE_LIMIT,
+                        api_key: Optional[str] = None) -> _Provider:
+    """The one factory a caller should use instead of hardcoding `_GeminiProvider(...)`,
+    so "which provider" is a single switch: `provider` (an explicit override, e.g. a
+    stage's own `--provider` flag) or, if omitted, the `LLM_PROVIDER` env var (read fresh
+    here, not frozen at import — a run can pick its provider without reimporting this
+    module), defaulting to `"gemini"` when neither is set. `model`, if omitted, falls back
+    to THAT provider's own default (`DEFAULT_MODEL` for gemini, `DEEPSEEK_DEFAULT_MODEL`
+    for deepseek) — never the other provider's, which would silently send a Gemini model
+    id to DeepSeek's API or vice versa.
+    """
+    name = (provider or os.getenv("LLM_PROVIDER", "gemini")).strip().lower()
+    cls = _PROVIDER_CLASSES.get(name)
+    if cls is None:
+        raise ValueError(f"Unknown LLM provider '{name}' (known: {sorted(_PROVIDER_CLASSES)})")
+    return cls(model or _PROVIDER_DEFAULT_MODELS[name], rate_limit, api_key=api_key)
 
 
 # --------------------------------------------------------------------------- #

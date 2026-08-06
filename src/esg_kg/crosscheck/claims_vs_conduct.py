@@ -16,8 +16,9 @@ the graph, producing advisory evidence links — no ground truth, no accuracy cl
 Pipeline (mirrors §6):
   6a  retrieve conduct candidates per claim   — same issuer + VN topic overlap +
       temporal window (+ optional embedding rank behind --embed)
-  6b  adjudicate each (claim, candidate) pair  — REQUIRED. Gemini structured
-      output (--provider-order); the run aborts up front if no provider is
+  6b  adjudicate each (claim, candidate) pair  — REQUIRED. LLM structured output
+      via Gemini or DeepSeek, whichever --provider-order names (a swappable
+      choice, not a cascade); the run aborts up front if no provider is
       available — there is no deterministic fallback.
   6c  write schema-legal linking edges         — verifiedBy / contradictedBy /
       contradictedByMedia, each stamped llm_suggested=true (attributable, re-runnable)
@@ -29,11 +30,21 @@ Design decisions (docs/SYSTEM_DESIGN.md, plan glistening-hopping-galaxy):
   * LLM-only: adjudication is mandatory. Quota/billing limits are managed via
     --max-llm-pairs, not by falling back to a deterministic-only mode.
   * deterministic retrieval by default; embeddings (--embed) are optional.
-  * 2026-08-04: OpenAI support was removed outright (no fallback). This project
-    now pays only for GEMINI_API_KEY, so Gemini is the sole adjudication
-    provider again — see core/llm.py's docstring for the history of why OpenAI
-    was ever here (the Gemini project was billing-blocked from 2026-07-27 to
-    2026-08-04).
+  * 2026-08-04: OpenAI support was removed outright (no fallback) once Gemini
+    came back from billing-block — see core/llm.py's docstring for that history.
+  * 2026-08-06: DeepSeek V4 Flash (`core.llm._DeepSeekProvider`) was added as a
+    SWAPPABLE alternative, not a repeat of the OpenAI episode: Gemini stays the
+    working default, DeepSeek is opt-in via `--provider-order deepseek`. One
+    provider is normally active per run; `--provider-order` still accepts a
+    comma list if a cascade is ever wanted, but that isn't the intended use.
+  * 2026-08-06 (later same day): OpenAI (`core.llm._OpenAIProvider`) was
+    RE-ADDED, at the user's explicit request, as a third opt-in alternative for
+    THIS stage only — `--provider-order openai`. Needs `OPENAI_API_KEY` in
+    `.env`; `OPENAI_MODEL` overrides the default model. Not a reversal of the
+    2026-08-04 removal note above: this is the same deliberate-swap shape as
+    the DeepSeek addition, not a forced fallback, and it is NOT wired into
+    align_claims/extract_triples/fix_triples/entities (their own --provider
+    flags still only accept gemini/deepseek).
 
 Run from the repo root:
   python src/step07_crosscheck_claims_vs_conduct.py --dry-run   (old tree, still runs)
@@ -110,7 +121,15 @@ from typing import Any, Dict, List, Optional, Set, Tuple
 
 from dotenv import load_dotenv
 
-from esg_kg.core.llm import DEFAULT_MODEL, _GeminiProvider, _Provider
+from esg_kg.core.llm import (
+    DEEPSEEK_DEFAULT_MODEL,
+    DEFAULT_MODEL,
+    OPENAI_DEFAULT_MODEL,
+    _DeepSeekProvider,
+    _GeminiProvider,
+    _OpenAIProvider,
+    _Provider,
+)
 from esg_kg.core.llm_cache import ContentCache
 from esg_kg.core.naming import name_tokens, normalize_name
 from esg_kg.core.paths import REPO_ROOT
@@ -362,8 +381,17 @@ class Adjudicator:
         # api_key is not explicitly given (a one-off override).
         if api_key is None:
             load_dotenv(REPO_ROOT / ".env", override=True)
+        # `model or <provider's own default>`, never the caller's raw `model`: with
+        # a single positional argument shared across the whole registry, a Gemini
+        # model id passed for `--provider-order deepseek` would otherwise be sent
+        # straight to DeepSeek's API (see core.llm.build_llm_provider's docstring).
         registry = {
-            "gemini": lambda: _GeminiProvider(model, rate_limit, api_key=api_key),
+            "gemini": lambda: _GeminiProvider(model or DEFAULT_MODEL, rate_limit, api_key=api_key),
+            "deepseek": lambda: _DeepSeekProvider(model or DEEPSEEK_DEFAULT_MODEL, rate_limit, api_key=api_key),
+            # 2026-08-06: re-added at the user's explicit request, opt-in via
+            # --provider-order openai — see core/llm.py's docstring for why this
+            # isn't a repeat of the 2026-08-04 OpenAI removal.
+            "openai": lambda: _OpenAIProvider(model or OPENAI_DEFAULT_MODEL, rate_limit, api_key=api_key),
         }
         self.providers: List[_Provider] = []
         for name in order:
@@ -492,7 +520,8 @@ def run(args: argparse.Namespace) -> None:
     cache = ContentCache(cache_path) if cache_path else None
     adjud = Adjudicator(args.model, args.rate_limit, args.provider_order, cache=cache)
     if not adjud.enabled:
-        logger.error("No LLM provider available (need GEMINI_API_KEY in .env) — "
+        logger.error("No LLM provider available (need GEMINI_API_KEY, DEEPSEEK_API_KEY "
+                     "and/or OPENAI_API_KEY in .env, matching --provider-order) — "
                      "aborting: this pipeline requires LLM adjudication.")
         return
 
@@ -743,9 +772,15 @@ def main() -> None:
     p.add_argument("--window-before", type=int, default=DEFAULT_WINDOW_BEFORE)
     p.add_argument("--window-after", type=int, default=DEFAULT_WINDOW_AFTER)
     p.add_argument("--max-llm-pairs", type=int, default=DEFAULT_MAX_LLM_PAIRS)
-    p.add_argument("--model", type=str, default=DEFAULT_MODEL, help="Gemini model id.")
+    p.add_argument("--model", type=str, default=None,
+                   help="Model id; defaults to the chosen provider's own default "
+                        "(GEMINI_MODEL for gemini, DEEPSEEK_MODEL for deepseek, "
+                        "OPENAI_MODEL for openai) when omitted.")
     p.add_argument("--provider-order", type=str, default=DEFAULT_PROVIDER_ORDER,
-                   help="Comma-separated adjudication preference (currently only 'gemini' is supported).")
+                   help="Comma-separated adjudication preference: gemini, deepseek, openai. "
+                        "A swappable choice, not a required fallback chain — set to "
+                        "e.g. 'deepseek' or 'openai' alone to use that provider instead "
+                        "of Gemini. 'openai' needs OPENAI_API_KEY in .env.")
     p.add_argument("--max-workers", type=int, default=8, help="Concurrent adjudication workers.")
     p.add_argument("--rate-limit", type=int, default=DEFAULT_RATE_LIMIT)
     p.add_argument("--embed", action="store_true",
