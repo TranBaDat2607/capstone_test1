@@ -1,0 +1,714 @@
+{
+  "schema": "evalu.report/v1",
+  "generated_at": "2026-08-07T04:20:22+00:00",
+  "framework": "Khung Đánh giá Toàn diện cho Hệ thống Graph-RAG Phát hiện Greenwashing Không Nhãn",
+  "context": {
+    "Đồ thị đã phân giải": "10,634 node / 14,744 cạnh",
+    "Hồ sơ đối soát": "464 claim / 5 mã CK",
+    "Mã chứng khoán": "AAA, ACC, ACG, ADP, AGG",
+    "Thời gian chạy": "0.2s"
+  },
+  "component_metrics": [
+    {
+      "metric_id": "M1.1",
+      "module": "1. Thu thập & Phân loại ESG",
+      "name": "ESG Signal-to-Noise Ratio",
+      "value": null,
+      "pct": null,
+      "numerator": null,
+      "denominator": null,
+      "target": null,
+      "passed": null,
+      "higher_is_better": true,
+      "details": {
+        "note": "BỎ QUA — chạy với --quick"
+      }
+    },
+    {
+      "metric_id": "M1.2",
+      "module": "1. Thu thập & Phân loại ESG",
+      "name": "Paragraph Source Provenance Rate",
+      "value": null,
+      "pct": null,
+      "numerator": null,
+      "denominator": null,
+      "target": null,
+      "passed": null,
+      "higher_is_better": true,
+      "details": {
+        "note": "BỎ QUA — chạy với --quick"
+      }
+    },
+    {
+      "metric_id": "M2.1",
+      "module": "2. Trích xuất Triplet & KPI",
+      "name": "Temporal Metadata Completeness",
+      "value": 0.9301725250613088,
+      "pct": "93.02%",
+      "numerator": 21620,
+      "denominator": 23243,
+      "target": "100%",
+      "passed": false,
+      "higher_is_better": true,
+      "details": {
+        "edges_total": 14744,
+        "edges_complete": 14227,
+        "nodes_total": 8499,
+        "nodes_complete": 7393,
+        "edge_gaps_by_predicate": {
+          "alignsWithIndicator": 413,
+          "partOf": 43,
+          "worksAt": 30,
+          "equivalentTo": 26,
+          "reportsKPI": 2,
+          "subjectToRegulation": 1,
+          "investsIn": 1,
+          "adoptsStandard": 1
+        },
+        "node_gaps_by_class": {
+          "Goal": 511,
+          "Initiative": 429,
+          "Project": 163,
+          "KPIObservation": 2,
+          "Investment": 1
+        },
+        "note": "Mẫu số lấy theo config/schema.json: mọi edge spec đều khai temporal_properties và mọi lớp T2/T3 đều khai valid_from. Phần hụt vì thế là sai lệch thật so với hợp đồng schema, không phải giả định của phép đo."
+      }
+    },
+    {
+      "metric_id": "M2.2",
+      "module": "2. Trích xuất Triplet & KPI",
+      "name": "Schema Compliance Rate",
+      "value": 1.0,
+      "pct": "100.00%",
+      "numerator": 14744,
+      "denominator": 14744,
+      "target": "100% (0 vi phạm)",
+      "passed": true,
+      "higher_is_better": true,
+      "details": {
+        "violations": [],
+        "violations_total": 0,
+        "by_reason": {}
+      }
+    },
+    {
+      "metric_id": "M2.3",
+      "module": "2. Trích xuất Triplet & KPI",
+      "name": "Value Preservation Guard",
+      "value": null,
+      "pct": null,
+      "numerator": null,
+      "denominator": null,
+      "target": null,
+      "passed": null,
+      "higher_is_better": true,
+      "details": {
+        "note": "BỎ QUA — chạy với --quick"
+      }
+    },
+    {
+      "metric_id": "M3.1",
+      "module": "3. Phân giải Thực thể",
+      "name": "Timeless Identity Violation Rate",
+      "value": 0.0,
+      "pct": "0.00%",
+      "numerator": 0,
+      "denominator": 14,
+      "target": "0 vi phạm",
+      "passed": true,
+      "higher_is_better": false,
+      "details": {
+        "violations": [],
+        "t1_classes_checked": 14
+      }
+    },
+    {
+      "metric_id": "M3.2",
+      "module": "3. Phân giải Thực thể",
+      "name": "Oversimplification & Cluster Conciseness",
+      "value": 0.00468384074941452,
+      "pct": "0.47%",
+      "numerator": 10,
+      "denominator": 2135,
+      "target": "thấp hơn = ít thực thể trùng còn sót sau hợp nhất",
+      "passed": null,
+      "higher_is_better": false,
+      "details": {
+        "t1_nodes": 2135,
+        "residual_duplicates": 10,
+        "clusters": [
+          {
+            "class": "Location",
+            "signature": "an dong",
+            "size": 3,
+            "node_indexes": [
+              901,
+              2055,
+              2598
+            ]
+          },
+          {
+            "class": "Location",
+            "signature": "yen bai",
+            "size": 2,
+            "node_indexes": [
+              563,
+              2730
+            ]
+          },
+          {
+            "class": "Location",
+            "signature": "lo cn11 cn12",
+            "size": 2,
+            "node_indexes": [
+              711,
+              2616
+            ]
+          },
+          {
+            "class": "Location",
+            "signature": "so 18 duong phong dinh cang phuong ben thuy thanh pho vinh tinh nghe an",
+            "size": 2,
+            "node_indexes": [
+              851,
+              1143
+            ]
+          },
+          {
+            "class": "Location",
+            "signature": "my",
+            "size": 2,
+            "node_indexes": [
+              3003,
+              5323
+            ]
+          },
+          {
+            "class": "Location",
+            "signature": "da nang",
+            "size": 2,
+            "node_indexes": [
+              6560,
+              6667
+            ]
+          },
+          {
+            "class": "Location",
+            "signature": "phnom penh",
+            "size": 2,
+            "node_indexes": [
+              6628,
+              8086
+            ]
+          },
+          {
+            "class": "Authority",
+            "signature": "singapore",
+            "size": 2,
+            "node_indexes": [
+              6956,
+              7621
+            ]
+          },
+          {
+            "class": "Location",
+            "signature": "thanh pho ho chi minh",
+            "size": 2,
+            "node_indexes": [
+              7406,
+              7444
+            ]
+          }
+        ],
+        "clusters_total": 9
+      }
+    },
+    {
+      "metric_id": "M4.1",
+      "module": "4. Ánh xạ Trục Chỉ tiêu",
+      "name": "Standard Indicator Alignment Coverage",
+      "value": 0.5052779732582688,
+      "pct": "50.53%",
+      "numerator": 718,
+      "denominator": 1421,
+      "target": "cao hơn = độ phủ TT96/GRI tốt hơn",
+      "passed": null,
+      "higher_is_better": true,
+      "details": {
+        "by_class": {
+          "Goal": {
+            "aligned": 248,
+            "total": 511
+          },
+          "Initiative": {
+            "aligned": 171,
+            "total": 429
+          },
+          "SustainabilityClaim": {
+            "aligned": 299,
+            "total": 481
+          }
+        }
+      }
+    },
+    {
+      "metric_id": "M4.2",
+      "module": "4. Ánh xạ Trục Chỉ tiêu",
+      "name": "Zero-Report Self-Praise Exclusion",
+      "value": 1.0,
+      "pct": "100.00%",
+      "numerator": 1,
+      "denominator": 1,
+      "target": "100%",
+      "passed": true,
+      "higher_is_better": true,
+      "details": {
+        "violations": [],
+        "violations_total": 0,
+        "by_reason": {}
+      }
+    },
+    {
+      "metric_id": "M5.1",
+      "module": "5. Đối soát Chéo",
+      "name": "Evidence Asymmetry & Abstention Rate",
+      "value": 0.7349137931034483,
+      "pct": "73.49%",
+      "numerator": 341,
+      "denominator": 464,
+      "target": "mô tả độ mỏng của kho bằng chứng — không phải chỉ tiêu cần tối ưu",
+      "passed": null,
+      "higher_is_better": false,
+      "details": {
+        "by_assessment": {
+          "unverified_insufficient_evidence": 341,
+          "appears_contradicted": 72,
+          "appears_supported": 51
+        }
+      }
+    },
+    {
+      "metric_id": "M5.2",
+      "module": "5. Đối soát Chéo",
+      "name": "Self-Verification Exclusion Rate",
+      "value": 0.0,
+      "pct": "0.00%",
+      "numerator": 0,
+      "denominator": 99,
+      "target": "bằng chứng xác nhận phải đến từ nguồn độc lập",
+      "passed": null,
+      "higher_is_better": false,
+      "details": {
+        "kept_independent": 99,
+        "flagged_own_domain": 0,
+        "top_domains": []
+      }
+    },
+    {
+      "metric_id": "NC.1",
+      "module": "Negative control — quy thuộc bằng chứng",
+      "name": "Same-Company Evidence Rate",
+      "value": 0.28761061946902655,
+      "pct": "28.76%",
+      "numerator": 65,
+      "denominator": 226,
+      "target": "100% (bằng chứng phải nói về chính doanh nghiệp bị xét)",
+      "passed": false,
+      "higher_is_better": true,
+      "details": {
+        "cited_total": 226,
+        "same_feed": 65,
+        "cross_feed": 161,
+        "cross_feed_unmentioned": 161,
+        "unattributed_nodes": 0,
+        "by_kind": {
+          "supporting_evidence": {
+            "total": 99,
+            "same_feed": 38,
+            "cross_feed": 61,
+            "cross_feed_unmentioned": 61
+          },
+          "contradicting_evidence": {
+            "total": 127,
+            "cross_feed": 100,
+            "cross_feed_unmentioned": 100,
+            "same_feed": 27
+          }
+        },
+        "examples": [
+          {
+            "claim_ticker": "AAA",
+            "evidence_ticker": "AGG",
+            "kind": "contradicting_evidence",
+            "assessment": "appears_contradicted",
+            "claim": "trao tặng số tiền 30.000.000 đồng để ủng hộ đồng bào miền Trung thiệt hại do cơn bão số 10.",
+            "evidence": "Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG"
+          },
+          {
+            "claim_ticker": "AAA",
+            "evidence_ticker": "ACG",
+            "kind": "supporting_evidence",
+            "assessment": "appears_supported",
+            "claim": "Cam kết đưa phát thải ròng về 0 (Net Zero) vào năm 2050",
+            "evidence": "An Cường – 30 năm phát triển bền vững, tiên phong hướng tới mục tiêu Net Zero 2050 - CafeLand.Vn..."
+          },
+          {
+            "claim_ticker": "AAA",
+            "evidence_ticker": "ACC",
+            "kind": "supporting_evidence",
+            "assessment": "appears_supported",
+            "claim": "AAA đã nỗ lực để “xanh” trong cách doanh nghiệp vận hành, đồng thời thúc đẩy chuyển dịch cơ cấu sản phẩm sang các sản phẩm thân thiện với môi trường.",
+            "evidence": "Giảm phát thải: Khi doanh nghiệp 'chuyển vai' từ tìm hiểu sang triển khai"
+          },
+          {
+            "claim_ticker": "AAA",
+            "evidence_ticker": "ACG",
+            "kind": "supporting_evidence",
+            "assessment": "appears_supported",
+            "claim": "Nhựa An Phát Xanh là nhà sản xuất và xuất khẩu bao bì nhựa lớn nhất Việt Nam",
+            "evidence": "Doanh thu xuất khẩu tăng gần 19% so với 2024 doanh thu xuất khẩu tăng trưởng 19.0 phần trăm achieved"
+          },
+          {
+            "claim_ticker": "AAA",
+            "evidence_ticker": "ACG",
+            "kind": "supporting_evidence",
+            "assessment": "appears_supported",
+            "claim": "Tiên phong trên hành trình chuyển đổi xanh, không ngừng kiến tạo các giá trị bền vững",
+            "evidence": "An Cường – 30 năm phát triển bền vững, tiên phong hướng tới mục tiêu Net Zero 2050 - CafeLand.Vn..."
+          },
+          {
+            "claim_ticker": "AAA",
+            "evidence_ticker": "ACC",
+            "kind": "supporting_evidence",
+            "assessment": "appears_supported",
+            "claim": "AAA đã nỗ lực để “xanh” trong cách doanh nghiệp vận hành, đồng thời thúc đẩy chuyển dịch cơ cấu sản phẩm sang các sản phẩm thân thiện với môi trường.",
+            "evidence": "Giảm phát thải: Khi doanh nghiệp 'chuyển vai' từ tìm hiểu sang triển khai"
+          },
+          {
+            "claim_ticker": "ACC",
+            "evidence_ticker": "ACG",
+            "kind": "supporting_evidence",
+            "assessment": "appears_supported",
+            "claim": "Cam kết với định hướng phát triển bền vững bằng tất cả trách nhiệm và đạo đức kinh doanh của một doanh nghiệp, đề cao giá trị doanh nghiệp trong mối quan hệ với",
+            "evidence": "An Cường – 30 năm phát triển bền vững, tiên phong hướng tới mục tiêu Net Zero 2050 - CafeLand.Vn..."
+          },
+          {
+            "claim_ticker": "ACC",
+            "evidence_ticker": "ACG",
+            "kind": "supporting_evidence",
+            "assessment": "appears_supported",
+            "claim": "Cam kết với định hướng phát triển bền vững bằng tất cả trách nhiệm và đạo đức kinh doanh của một doanh nghiệp, đề cao giá trị doanh nghiệp trong mối quan hệ với",
+            "evidence": "7 lần được vinh danh Top 100 Doanh nghiệp Bền vững (CSI) Top 100 Doanh nghiệp Bền vững (CSI) 7.0 lần achieved"
+          },
+          {
+            "claim_ticker": "ACC",
+            "evidence_ticker": "ACG",
+            "kind": "supporting_evidence",
+            "assessment": "appears_supported",
+            "claim": "Xác định đây là tiêu chí quan trọng trong phương hướng và chiến lược xây dựng xã hội văn minh, cuộc sống xanh.",
+            "evidence": "An Cường – 30 năm phát triển bền vững, tiên phong hướng tới mục tiêu Net Zero 2050 - CafeLand.Vn..."
+          },
+          {
+            "claim_ticker": "ACC",
+            "evidence_ticker": "ACG",
+            "kind": "supporting_evidence",
+            "assessment": "appears_supported",
+            "claim": "Luôn chú trọng giải quyết đủ việc làm và thanh toán lương đầy đủ cho người lao động.",
+            "evidence": "Khoản phải trả cho người lao động tính đến 31/12/2022 payables to employees 23 tỷ đồng achieved"
+          },
+          {
+            "claim_ticker": "ACC",
+            "evidence_ticker": "ACG",
+            "kind": "supporting_evidence",
+            "assessment": "appears_supported",
+            "claim": "Luôn chú trọng giải quyết đủ việc làm và thanh toán lương đầy đủ cho người lao động.",
+            "evidence": "Đạt danh hiệu Nơi làm việc tốt nhất châu Á Nơi làm việc tốt nhất châu Á achieved"
+          },
+          {
+            "claim_ticker": "ACC",
+            "evidence_ticker": "ACG",
+            "kind": "supporting_evidence",
+            "assessment": "appears_supported",
+            "claim": "Nhân dịp Tết Nguyên Đán hằng năm, Công đoàn Công ty tổ chức tặng cho toàn thể nhân viên những phần quà nhằm chăm lo đầy đủ phúc lợi cho người lao động.",
+            "evidence": "Khoản phải trả cho người lao động tính đến 31/12/2022 payables to employees 23 tỷ đồng achieved"
+          },
+          {
+            "claim_ticker": "ACG",
+            "evidence_ticker": "AGG",
+            "kind": "contradicting_evidence",
+            "assessment": "appears_contradicted",
+            "claim": "Cải tiến liên tục để luôn theo theo đuổi sự hoàn hảo. Điều đó cũng giúp cho mỗi con người hạn chế tối đa “tính ì”. Và sự cải tiến đóng vai trò hết sức quan trọn",
+            "evidence": "Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG"
+          },
+          {
+            "claim_ticker": "ACG",
+            "evidence_ticker": "AGG",
+            "kind": "contradicting_evidence",
+            "assessment": "appears_contradicted",
+            "claim": "Đảm bảo các quyền cơ bản của cổ đông.",
+            "evidence": "Phạt 1,5 tỷ đồng, cấm giao dịch chứng khoán và đảm nhiệm chức vụ trong 2 năm do thao túng cổ phiếu AGG"
+          },
+          {
+            "claim_ticker": "ACG",
+            "evidence_ticker": "ADP",
+            "kind": "contradicting_evidence",
+            "assessment": "appears_contradicted",
+            "claim": "Công ty không trả cổ tức bằng phương thức \"Script dividend\".",
+            "evidence": "Cổ tức đợt 1 năm 2026 bằng tiền mặt theo tỷ lệ 7% cổ tức 7.0 percent achieved"
+          },
+          {
+            "claim_ticker": "ACG",
+            "evidence_ticker": "ADP",
+            "kind": "contradicting_evidence",
+            "assessment": "appears_contradicted",
+            "claim": "Công ty không trả cổ tức bằng phương thức \"Script dividend\".",
+            "evidence": "ADP: Nghị quyết HĐQT về chi trả cổ tức đợt 1 năm 2026"
+          },
+          {
+            "claim_ticker": "ACG",
+            "evidence_ticker": "AGG",
+            "kind": "contradicting_evidence",
+            "assessment": "appears_contradicted",
+            "claim": "Cổ đông có quyền kiểm soát quyền đề cử Thành viên HĐQT bằng cách xem trước hồ sơ lý lịch của từng ứng viên đề cử do Công ty đăng tải lên website. Ngoài ra, cổ đ",
+            "evidence": "Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG"
+          },
+          {
+            "claim_ticker": "ACG",
+            "evidence_ticker": "AGG",
+            "kind": "contradicting_evidence",
+            "assessment": "appears_contradicted",
+            "claim": "Cổ đông bầu chọn từng Thành viên HĐQT bằng cách bỏ phiếu bầu cử tại cuộc họp ĐHĐCĐ hoặc gửi phiếu bầu cử trong các đợt lấy ý kiến cổ đông bằng văn bản. HĐQT đều",
+            "evidence": "Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG"
+          },
+          {
+            "claim_ticker": "ACG",
+            "evidence_ticker": "AGG",
+            "kind": "contradicting_evidence",
+            "assessment": "appears_contradicted",
+            "claim": "Cổ đông bầu chọn từng Thành viên HĐQT bằng cách bỏ phiếu bầu cử tại cuộc họp ĐHĐCĐ hoặc gửi phiếu bầu cử trong các đợt lấy ý kiến cổ đông bằng văn bản. HĐQT đều",
+            "evidence": "Dùng 92 tài khoản chứng khoán để thao túng cổ phiếu AGG"
+          },
+          {
+            "claim_ticker": "ACG",
+            "evidence_ticker": "AGG",
+            "kind": "contradicting_evidence",
+            "assessment": "appears_contradicted",
+            "claim": "Công ty công bố kết quả bầu chọn bao gồm số phiếu thông qua, phản đối và phiếu trống cho mỗi nội dung dự thảo lấy ý kiến của ĐHĐCĐ gần nhất.",
+            "evidence": "Dùng 92 tài khoản chứng khoán để thao túng cổ phiếu AGG"
+          },
+          {
+            "claim_ticker": "ACG",
+            "evidence_ticker": "AGG",
+            "kind": "contradicting_evidence",
+            "assessment": "appears_contradicted",
+            "claim": "Công ty công bố kết quả bầu chọn bao gồm số phiếu thông qua, phản đối và phiếu trống cho mỗi nội dung dự thảo lấy ý kiến của ĐHĐCĐ gần nhất.",
+            "evidence": "AGG: Công ty do Chủ tịch sáng lập bị phạt vì thao túng cổ phiếu"
+          },
+          {
+            "claim_ticker": "ACG",
+            "evidence_ticker": "AGG",
+            "kind": "contradicting_evidence",
+            "assessment": "appears_contradicted",
+            "claim": "Công ty công bố kết quả bầu chọn bao gồm số phiếu thông qua, phản đối và phiếu trống cho mỗi nội dung dự thảo lấy ý kiến của ĐHĐCĐ gần nhất.",
+            "evidence": "Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG"
+          },
+          {
+            "claim_ticker": "ACG",
+            "evidence_ticker": "AGG",
+            "kind": "contradicting_evidence",
+            "assessment": "appears_contradicted",
+            "claim": "Công ty công bố kết quả bầu chọn bao gồm số phiếu thông qua, phản đối và phiếu trống cho mỗi nội dung dự thảo lấy ý kiến của ĐHĐCĐ gần nhất.",
+            "evidence": "Phạt 3 tỷ đồng, cấm giao dịch chứng khoán trong 2 năm do giúp sức thao túng cổ phiếu AGG"
+          },
+          {
+            "claim_ticker": "ACG",
+            "evidence_ticker": "AGG",
+            "kind": "contradicting_evidence",
+            "assessment": "appears_contradicted",
+            "claim": "Công ty công bố kết quả bầu chọn bao gồm số phiếu thông qua, phản đối và phiếu trống cho mỗi nội dung dự thảo lấy ý kiến của ĐHĐCĐ gần nhất.",
+            "evidence": "Phạt 1,5 tỷ đồng, cấm giao dịch chứng khoán và đảm nhiệm chức vụ trong 2 năm do thao túng cổ phiếu AGG"
+          },
+          {
+            "claim_ticker": "ACG",
+            "evidence_ticker": "AGG",
+            "kind": "contradicting_evidence",
+            "assessment": "appears_contradicted",
+            "claim": "Cổ đông có thể biểu quyết thông qua đại diện theo ủy quyền hoặc thực hiện bỏ phiếu từ xa qua văn bản hoặc thông qua hệ thống điện tử được Công ty áp dụng theo K",
+            "evidence": "Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG"
+          }
+        ],
+        "note": "cross_feed_unmentioned là con số quyết định: bài đến từ feed công ty khác VÀ không hề nhắc tên doanh nghiệp đang xét trong phần text mà LLM thực sự nhìn thấy."
+      }
+    },
+    {
+      "metric_id": "NC.2",
+      "module": "Negative control — độ đặc hiệu theo công ty",
+      "name": "Same-Feed Specificity vs Chance",
+      "value": 0.28761061946902655,
+      "pct": "28.76%",
+      "numerator": 65,
+      "denominator": 226,
+      "target": "lift >> 1 (nếu ~1 thì truy hồi không mang tín hiệu công ty nào)",
+      "passed": false,
+      "higher_is_better": true,
+      "details": {
+        "observed_rate": 0.28761061946902655,
+        "expected_rate_by_chance": 0.2888173773129526,
+        "lift": 0.9958217270194984,
+        "pool_by_ticker": {
+          "AAA": 7,
+          "ACC": 9,
+          "ACG": 18,
+          "ADP": 2,
+          "AGG": 8
+        },
+        "pool_total": 44,
+        "by_ticker": {
+          "AAA": {
+            "cited": 8,
+            "same_feed": 2,
+            "observed_rate": 0.25,
+            "expected_rate": 0.1590909090909091,
+            "expected_count": 1.2727272727272727,
+            "lift": 1.5714285714285714
+          },
+          "ACC": {
+            "cited": 6,
+            "same_feed": 0,
+            "observed_rate": 0.0,
+            "expected_rate": 0.20454545454545456,
+            "expected_count": 1.2272727272727273,
+            "lift": 0.0
+          },
+          "ACG": {
+            "cited": 127,
+            "same_feed": 41,
+            "observed_rate": 0.3228346456692913,
+            "expected_rate": 0.4090909090909091,
+            "expected_count": 51.95454545454546,
+            "lift": 0.7891513560804898
+          },
+          "ADP": {
+            "cited": 34,
+            "same_feed": 0,
+            "observed_rate": 0.0,
+            "expected_rate": 0.045454545454545456,
+            "expected_count": 1.5454545454545454,
+            "lift": 0.0
+          },
+          "AGG": {
+            "cited": 51,
+            "same_feed": 22,
+            "observed_rate": 0.43137254901960786,
+            "expected_rate": 0.18181818181818182,
+            "expected_count": 9.272727272727273,
+            "lift": 2.372549019607843
+          }
+        },
+        "null_hypothesis": "bằng chứng được rút ngẫu nhiên đều từ kho conduct toàn cục, không phụ thuộc công ty"
+      }
+    }
+  ],
+  "expert_rubric": {
+    "schema": "evalu.rubric/v1",
+    "scale": {
+      "min": 1,
+      "max": 5,
+      "anchors": {
+        "1": "Unacceptable",
+        "3": "Acceptable / Moderate",
+        "5": "Excellent / Production-Ready"
+      }
+    },
+    "panels": {
+      "ceo": {
+        "label": "Tổng Giám đốc (CEO / C-Suite)",
+        "focus": "Chiến lược: rủi ro uy tín, rủi ro pháp lý, giá trị hỗ trợ ra quyết định",
+        "weight_on": [
+          "decision_utility"
+        ]
+      },
+      "hrd": {
+        "label": "Giám đốc Nhân sự (HRD)",
+        "focus": "Trụ cột S và một phần G: an toàn lao động, bình đẳng giới, đào tạo, an sinh",
+        "weight_on": [
+          "decision_utility"
+        ]
+      },
+      "esg_audit": {
+        "label": "Chuyên gia Kiểm toán & ESG",
+        "focus": "Kỹ thuật pháp lý: ánh xạ TT96/GRI, provenance cấp trang/câu, logic đối soát",
+        "weight_on": [
+          "grounding",
+          "adjudication",
+          "provenance"
+        ]
+      }
+    },
+    "dimensions": [
+      {
+        "key": "grounding",
+        "name_vi": "Độ chính xác Căn cứ",
+        "name_en": "Fact-Checking Precision & Grounding",
+        "anchor_1": "Tuyên bố/bằng chứng bị suy diễn sai lệch hoàn toàn so với văn bản gốc; xuất hiện ảo giác (hallucination).",
+        "anchor_3": "Trích xuất đúng nội dung chính nhưng sót ngữ cảnh điều kiện hoặc làm tròn con số sai lệch nhẹ.",
+        "anchor_5": "Chính xác tuyệt đối từng con số, đơn vị tính, mốc thời gian và ngữ cảnh điều kiện từ tài liệu gốc."
+      },
+      {
+        "key": "adjudication",
+        "name_vi": "Chất lượng Đối soát Chéo",
+        "name_en": "Adjudication Quality",
+        "anchor_1": "Đánh giá tư vấn sai bối cảnh (ví dụ gán appears_supported cho hai thông tin mâu thuẫn).",
+        "anchor_3": "Phân loại đúng hướng nhưng giải thích còn chung chung, thiếu chiều sâu lập luận.",
+        "anchor_5": "Lập luận sắc bén, chỉ rõ khoảng cách giữa Tuyên bố (T3) và Hành vi (T2), phân biệt rõ dữ liệu lịch sử và mục tiêu."
+      },
+      {
+        "key": "provenance",
+        "name_vi": "Minh bạch Nguồn gốc",
+        "name_en": "Provenance Transparency",
+        "anchor_1": "Không thể truy xuất trích dẫn; link nguồn hỏng hoặc trỏ sai tài liệu/trang.",
+        "anchor_3": "Trỏ đúng tài liệu nhưng lệch toạ độ trang hoặc đoạn văn.",
+        "anchor_5": "Chính xác tuyệt đối tên tài liệu, số trang, số câu và URL gốc."
+      },
+      {
+        "key": "decision_utility",
+        "name_vi": "Giá trị Hỗ trợ Ra Quyết định",
+        "name_en": "Decision Utility",
+        "anchor_1": "Hồ sơ gây nhiễu, khiến người quản lý tốn thêm thời gian đọc lại tài liệu thô.",
+        "anchor_3": "Tổng hợp thông tin cơ bản, rút ngắn 30-50% thời gian đọc hiểu nhưng vẫn cần kiểm tra thủ công.",
+        "anchor_5": "Hồ sơ sắc nét, làm nổi bật ngay các điểm mâu thuẫn cốt lõi; rút ngắn đáng kể thời gian thẩm định."
+      }
+    ],
+    "panel_weights": {
+      "grounding": {
+        "esg_audit": 2.0,
+        "ceo": 1.0,
+        "hrd": 1.0
+      },
+      "adjudication": {
+        "esg_audit": 2.0,
+        "ceo": 1.0,
+        "hrd": 1.0
+      },
+      "provenance": {
+        "esg_audit": 2.0,
+        "ceo": 1.0,
+        "hrd": 1.0
+      },
+      "decision_utility": {
+        "esg_audit": 1.0,
+        "ceo": 2.0,
+        "hrd": 2.0
+      }
+    },
+    "disagreement_spread": 2,
+    "iaa": {
+      "headline": "gwet_ac2",
+      "why": "Phân bố nhãn lệch mạnh về unverified_insufficient_evidence khiến chance-agreement của Kappa tiệm cận 1 và hệ số sụp về 0 (prevalence paradox). Gwet neo chance theo prevalence nên bền vững.",
+      "threshold": 0.61,
+      "threshold_source": "Landis & Koch — substantial agreement"
+    }
+  },
+  "expert_evaluation": null
+}

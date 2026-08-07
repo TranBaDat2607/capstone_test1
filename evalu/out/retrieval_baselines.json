@@ -1,0 +1,68 @@
+{
+  "gold": "proxy_same_company",
+  "results": {
+    "random": {
+      "claims_scored": 360,
+      "recall@3": 0.17393318101651434,
+      "precision@3": 0.35555555555555557,
+      "recall@5": 0.2978041325957993,
+      "precision@5": 0.35888888888888887,
+      "recall@10": 0.6195300224466891,
+      "precision@10": 0.36027777777777775
+    },
+    "bm25": {
+      "claims_scored": 360,
+      "recall@3": 0.23473775452942117,
+      "precision@3": 0.4629629629629629,
+      "recall@5": 0.3403353976270643,
+      "precision@5": 0.41277777777777774,
+      "recall@10": 0.5223773448773449,
+      "precision@10": 0.3388888888888889
+    },
+    "token_overlap": {
+      "claims_scored": 360,
+      "recall@3": 0.2035407647907648,
+      "precision@3": 0.4166666666666667,
+      "recall@5": 0.3083059764309764,
+      "precision@5": 0.38388888888888895,
+      "recall@10": 0.5018898308481642,
+      "precision@10": 0.32611111111111113
+    },
+    "indicator_only": {
+      "claims_scored": 360,
+      "recall@3": 0.0,
+      "precision@3": 0.0,
+      "recall@5": 0.0,
+      "precision@5": 0.0,
+      "recall@10": 0.0,
+      "precision@10": 0.0
+    },
+    "token_plus_indicator": {
+      "claims_scored": 360,
+      "recall@3": 0.2035407647907648,
+      "precision@3": 0.4166666666666667,
+      "recall@5": 0.3083059764309764,
+      "precision@5": 0.38388888888888895,
+      "recall@10": 0.5018898308481642,
+      "precision@10": 0.32611111111111113
+    },
+    "token_plus_indicator_scoped": {
+      "claims_scored": 360,
+      "recall@3": 0.40111712361712365,
+      "precision@3": 0.812037037037037,
+      "recall@5": 0.5397818462401796,
+      "precision@5": 0.7,
+      "recall@10": 0.6362974987974989,
+      "precision@10": 0.4361111111111111
+    },
+    "bm25_scoped": {
+      "claims_scored": 360,
+      "recall@3": 0.40111712361712365,
+      "precision@3": 0.812037037037037,
+      "recall@5": 0.5397818462401796,
+      "precision@5": 0.7,
+      "recall@10": 0.6362974987974989,
+      "precision@10": 0.4361111111111111
+    }
+  }
+}
