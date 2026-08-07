@@ -88,6 +88,35 @@ def _pillar_key(pillar: Any) -> str:
     return "environment"
 
 
+# 2026-08-07: EXPERIMENTAL relaxation, at the user's explicit request ("nới lỏng điều kiện,
+# cho hiện mâu thuẫn") — surface appears_supported/appears_contradicted claims that have NO
+# alignsWithIndicator edge (previously invisible in this view entirely, e.g. ACG's 3 real
+# dividend/revenue contradictions). This REINTRODUCES pillar guessing that the module
+# docstring above deliberately avoided ("each card's pillar comes precisely from the linked
+# StandardIndicator.pillar — never guessed") — there is no indicator to read a pillar from
+# for these claims, so the pillar below is a keyword guess over the claim's OWN text, and
+# every such card is stamped standard_id="NGOÀI-KHUNG" so the UI can visibly flag it as
+# unclassified rather than silently presenting a guess as if it were as reliable as an
+# indicator-backed pillar.
+_FALLBACK_PILLAR_KEYWORDS = {
+    "environment": ["môi trường", "khí thải", "nước thải", "chất thải", "rác thải",
+                     "năng lượng", "phát thải", "khí nhà kính", "tái chế", "ô nhiễm"],
+    "social": ["người lao động", "nhân viên", "cộng đồng", "an toàn lao động", "phúc lợi",
+               "đào tạo", "bình đẳng giới", "sức khỏe", "khách hàng", "nhân sự"],
+    "governance": ["cổ tức", "hội đồng quản trị", "hđqt", "đại hội đồng cổ đông", "đhđcđ",
+                   "ban điều hành", "btgđ", "ban giám đốc", "kiểm toán", "minh bạch",
+                   "cổ đông", "quản trị"],
+}
+
+
+def _fallback_pillar_from_text(claim_text: str) -> str:
+    t = str(claim_text or "").lower()
+    for pillar, keywords in _FALLBACK_PILLAR_KEYWORDS.items():
+        if any(kw in t for kw in keywords):
+            return pillar
+    return "governance"  # default bucket when no keyword matches
+
+
 # --------------------------------------------------------------------------- #
 # Cypher
 # --------------------------------------------------------------------------- #
@@ -105,8 +134,16 @@ MATCH (c:SustainabilityClaim {crosscheck_ticker:$t})-[:alignsWithIndicator]->(:S
 RETURN DISTINCT c.date AS date
 """
 
+# 2026-08-07: OPTIONAL MATCH + a WHERE that also admits verified/contradicted claims with
+# NO alignsWithIndicator edge — see _fallback_pillar_from_text above for why. Claims that
+# are neither indicator-aligned NOR verified/contradicted are still excluded (unindicated
+# "missing"/neutral claims stay out, or the "missing" column would explode from a handful
+# to hundreds of un-triaged rows — not what was asked for).
 _Q_CLAIMS = """
-MATCH (c:SustainabilityClaim {crosscheck_ticker:$t})-[:alignsWithIndicator]->(ind:StandardIndicator)
+MATCH (c:SustainabilityClaim {crosscheck_ticker:$t})
+WHERE (c)-[:alignsWithIndicator]->(:StandardIndicator)
+   OR c.assessment IN ['appears_supported', 'appears_contradicted']
+OPTIONAL MATCH (c)-[:alignsWithIndicator]->(ind:StandardIndicator)
 OPTIONAL MATCH (ind)-[:equivalentTo]->(gri:StandardIndicator)
 RETURN c._node_key AS key, c.description AS claim_text, c.date AS year,
        c.assessment AS assessment, c.source_doc AS source_doc, c.source_page AS source_page,
@@ -198,11 +235,19 @@ def get_evidence(ticker: str, selected_year: Optional[str] = None) -> Dict[str, 
         seen_keys.add(key)
 
         assessment = row.get("assessment")
-        pillar_key = _pillar_key(row.get("pillar"))
         year = _year_of(row.get("year"))
-        std_id = row.get("standard_id") or "TT96-ESG"
-        std_name = row.get("standard_name") or "Chỉ tiêu ESG"
         gri = row.get("gri_id")
+
+        if row.get("standard_id"):
+            pillar_key = _pillar_key(row.get("pillar"))
+            std_id = row["standard_id"]
+            std_name = row.get("standard_name") or "Chỉ tiêu ESG"
+        else:
+            # relaxed match (2026-08-07): no StandardIndicator to read a pillar from —
+            # keyword-guessed from the claim's own text, visibly flagged as such.
+            pillar_key = _fallback_pillar_from_text(row.get("claim_text"))
+            std_id = "NGOÀI-KHUNG"
+            std_name = "Chưa gắn chỉ tiêu chuẩn hóa (pillar suy luận từ nội dung claim)"
 
         if assessment in ("appears_supported", "appears_contradicted"):
             column = "verified" if assessment == "appears_supported" else "contradicted"

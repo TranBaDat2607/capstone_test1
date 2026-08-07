@@ -16,8 +16,9 @@ the graph, producing advisory evidence links — no ground truth, no accuracy cl
 Pipeline (mirrors §6):
   6a  retrieve conduct candidates per claim   — same issuer + VN topic overlap +
       temporal window (+ optional embedding rank behind --embed)
-  6b  adjudicate each (claim, candidate) pair  — REQUIRED. gpt-4o-mini structured
-      output (--provider-order); the run aborts up front if no provider is
+  6b  adjudicate each (claim, candidate) pair  — REQUIRED. LLM structured output
+      via Gemini or DeepSeek, whichever --provider-order names (a swappable
+      choice, not a cascade); the run aborts up front if no provider is
       available — there is no deterministic fallback.
   6c  write schema-legal linking edges         — verifiedBy / contradictedBy /
       contradictedByMedia, each stamped llm_suggested=true (attributable, re-runnable)
@@ -29,9 +30,21 @@ Design decisions (docs/SYSTEM_DESIGN.md, plan glistening-hopping-galaxy):
   * LLM-only: adjudication is mandatory. Quota/billing limits are managed via
     --max-llm-pairs, not by falling back to a deterministic-only mode.
   * deterministic retrieval by default; embeddings (--embed) are optional.
-  * Gemini support was removed — the Gemini project backing GEMINI_API_KEY is
-    permanently 403 PERMISSION_DENIED (account-level block, not transient), so
-    every run wasted several seconds retrying it before falling back to OpenAI.
+  * 2026-08-04: OpenAI support was removed outright (no fallback) once Gemini
+    came back from billing-block — see core/llm.py's docstring for that history.
+  * 2026-08-06: DeepSeek V4 Flash (`core.llm._DeepSeekProvider`) was added as a
+    SWAPPABLE alternative, not a repeat of the OpenAI episode: Gemini stays the
+    working default, DeepSeek is opt-in via `--provider-order deepseek`. One
+    provider is normally active per run; `--provider-order` still accepts a
+    comma list if a cascade is ever wanted, but that isn't the intended use.
+  * 2026-08-06 (later same day): OpenAI (`core.llm._OpenAIProvider`) was
+    RE-ADDED, at the user's explicit request, as a third opt-in alternative for
+    THIS stage only — `--provider-order openai`. Needs `OPENAI_API_KEY` in
+    `.env`; `OPENAI_MODEL` overrides the default model. Not a reversal of the
+    2026-08-04 removal note above: this is the same deliberate-swap shape as
+    the DeepSeek addition, not a forced fallback, and it is NOT wired into
+    align_claims/extract_triples/fix_triples/entities (their own --provider
+    flags still only accept gemini/deepseek).
 
 Run from the repo root:
   python src/step07_crosscheck_claims_vs_conduct.py --dry-run   (old tree, still runs)
@@ -50,9 +63,13 @@ exists and still runs). NO logic line changed. What differs:
     two classes FROM this very file, so this migration is the one that finally imports
     them back rather than re-defining them.
   * one DEAD import from the old file is not carried over: `RateLimiter` (from step02).
-    It was never referenced directly in step07 — only `_OpenAIProvider.__init__`
-    constructs one, and that class is now imported pre-built from core.llm. Same shape
+    It was never referenced directly in step07 — only the provider's own `__init__`
+    constructs one, and that class is imported pre-built from core.llm. Same shape
     the 05d slice found with its own dead `RateLimiter` import.
+  * 2026-08-04: `_OpenAIProvider` was removed outright from core.llm (no OpenAI
+    fallback anywhere in this project any more) and replaced here with
+    `_GeminiProvider` — same `call(system, user) -> str` contract, so nothing else
+    in this file's Adjudicator cascade needed to change shape.
 
 WHAT MUST NOT BE "TIDIED" HERE
 `node_text` below is NOT the same function as `esg_kg.resolve.align_claims.node_text`
@@ -104,7 +121,16 @@ from typing import Any, Dict, List, Optional, Set, Tuple
 
 from dotenv import load_dotenv
 
-from esg_kg.core.llm import _OpenAIProvider, _Provider
+from esg_kg.core.llm import (
+    DEEPSEEK_DEFAULT_MODEL,
+    DEFAULT_MODEL,
+    OPENAI_DEFAULT_MODEL,
+    _DeepSeekProvider,
+    _GeminiProvider,
+    _OpenAIProvider,
+    _Provider,
+)
+from esg_kg.core.llm_cache import ContentCache
 from esg_kg.core.naming import name_tokens, normalize_name
 from esg_kg.core.paths import REPO_ROOT
 from esg_kg.core.schema import load_schema_sets
@@ -115,13 +141,21 @@ logger = logging.getLogger(__name__)
 DEFAULT_INPUT = REPO_ROOT / "graph_output" / "resolved" / "resolved_graph.json"
 DEFAULT_SCHEMA = REPO_ROOT / "config" / "schema.json"
 DEFAULT_OUT_DIR = REPO_ROOT / "graph_output" / "crosscheck"
-DEFAULT_OPENAI_MODEL = "gpt-4o-mini"
-DEFAULT_PROVIDER_ORDER = "openai"
+# DEFAULT_MODEL comes from esg_kg.core.llm (GEMINI_MODEL env var, default
+# gemini-2.5-flash-lite) — see that module's docstring.
+DEFAULT_PROVIDER_ORDER = "gemini"
 DEFAULT_RATE_LIMIT = 10
 DEFAULT_MAX_LLM_PAIRS = 300
 DEFAULT_TOP_K = 8
 DEFAULT_WINDOW_BEFORE = 1     # conduct may predate the claim year by at most this
 DEFAULT_WINDOW_AFTER = 50     # ...and may follow it by "any" plausible number of years
+DEFAULT_MIN_TOPIC_OVERLAP = 2  # a single shared token is too weak a retrieval signal on
+                                # its own (even VN-aware, a lone shared word can still be
+                                # coincidental) — require at least 2. Indicator-axis pairs
+                                # (tier="indicator") bypass this gate entirely by design.
+DEFAULT_CACHE = DEFAULT_OUT_DIR / "adjudication_cache.json"  # issue #9: per-issuer, keyed
+                                                               # by (claim_text, evidence_text,
+                                                               # evidence_meta) content
 
 # Conduct-side node classes (the "doing"). Claims are the "saying" (SustainabilityClaim).
 CONDUCT_CLASSES = {"Controversy", "Penalty", "MediaReport", "KPIObservation", "ThirdPartyVerification"}
@@ -153,6 +187,14 @@ STOPWORDS: Set[str] = {
     "bao", "cao", "report", "nien", "thuong", "ve", "la", "den", "cho", "khi",
 }
 
+# Tightened 2026-08-07 (Layer 2 of the ACG/AGG contamination fix): production rationale
+# text was generalizing from ONE adverse event to the company's ENTIRE trustworthiness —
+# e.g. "the company was fined for stock manipulation, therefore it likely didn't really
+# appoint an independent vote-counter either" — a halo inference the old wording's own
+# example ("a green/responsible claim vs a penalty... in the same period") invited. The
+# retrieval-side fix (issuer scoping + VN-aware topic tokens) removes the WRONG-COMPANY
+# case; this prompt change targets the remaining SAME-COMPANY-but-different-topic case,
+# which retrieval alone cannot rule out.
 ADJUDICATE_SYSTEM = (
     "You assess greenwashing evidence for a Vietnamese ESG knowledge graph. You are given "
     "ONE ESG claim a company made in its own report, and ONE piece of independent evidence "
@@ -161,13 +203,25 @@ ADJUDICATE_SYSTEM = (
     "Rules:\n"
     "- Treat the evidence as independent conduct ('what the company did'), not as a restatement "
     "of the claim.\n"
-    "- 'contradicts' means the evidence is in tension with the claim (e.g. a green/responsible "
-    "claim vs a penalty, violation, controversy, or an adverse metric in the same period).\n"
-    "- 'supports' means the evidence independently corroborates the claim (e.g. a third-party "
-    "verification, certification, or an observed metric consistent with the claim).\n"
-    "- Prefer 'irrelevant' when the evidence is about an unrelated topic or is neutral "
-    "financial/market coverage. Do not guess.\n"
-    "- The texts are Vietnamese. confidence is 0.0-1.0. Ground the rationale in the evidence text."
+    "- 'contradicts' means the evidence is in tension with the SAME SPECIFIC topic, process, or "
+    "activity the claim describes (e.g. a claim about emissions vs an emissions violation; a claim "
+    "about a specific governance procedure vs evidence that THAT SAME procedure failed or was "
+    "skipped). A general negative fact about the company (an unrelated penalty, violation, or "
+    "controversy on a different topic) does NOT by itself contradict a claim about a different, "
+    "specific topic — do not infer 'the company is untrustworthy in general, therefore this claim "
+    "is false' from one adverse event unless the evidence is actually about the same matter as "
+    "the claim.\n"
+    "- 'supports' means the evidence independently corroborates that SAME specific claim (e.g. a "
+    "third-party verification, certification, or an observed metric consistent with the claim).\n"
+    "- Prefer 'irrelevant' when the evidence is about a different topic than the claim — even if "
+    "both are negative, both are positive, or both broadly concern ESG/governance — or when the "
+    "evidence is neutral financial/market coverage. Do not guess.\n"
+    "- The texts are Vietnamese. confidence is 0.0-1.0. Ground the rationale in the evidence text.\n"
+    "## OUTPUT LANGUAGE\n"
+    "Write `rationale` in VIETNAMESE, with full diacritics, matching the language of the claim/evidence "
+    "texts. Do NOT translate into English. Do NOT strip diacritics (khong duoc bo dau). This rule does "
+    "NOT apply to `verdict` (a fixed English label: supports/contradicts/irrelevant) or `confidence` "
+    "(a number)."
 )
 
 
@@ -223,6 +277,21 @@ def node_domain(node: Dict[str, Any]) -> str:
     return ""
 
 
+def node_ticker(node: Dict[str, Any]) -> Optional[str]:
+    """The issuer ticker a conduct node's crawl belongs to, read from `source_doc`
+    (`esg_news_crawler` names every crawled doc "<TICKER>__<domain>__<hash>", verified
+    100% coverage on the live graph's news-sourced conduct nodes). Returns None when
+    source_doc is absent/unparseable — synthetic fixtures and any future conduct source
+    that doesn't carry this convention — so retrieval treats "unknown origin" as
+    "don't exclude it" rather than "wrong company"; only a POSITIVELY MISMATCHED ticker
+    is filtered out (§6a's "same issuer", never actually enforced before this)."""
+    src = str(props(node).get("source_doc", "") or "")
+    if "__" not in src:
+        return None
+    ticker = src.split("__", 1)[0].strip().upper()
+    return ticker or None
+
+
 def date_uncertain(node: Dict[str, Any]) -> bool:
     p = props(node)
     if p.get("date_uncertain") in (True, "true", "True"):
@@ -231,8 +300,49 @@ def date_uncertain(node: Dict[str, Any]) -> bool:
     return bool(re.fullmatch(r"(19|20)\d{2}-01-01", str(p.get("date", "") or "")))
 
 
+_word_tokenize = None  # lazy-bound on first call, see _vn_segments
+
+
+def _vn_segments(text: str) -> List[str]:
+    """Word-level VN segments via underthesea (already a hard dependency — same tool
+    `data_processing/sentence_splitter.py` uses, imported the same guarded way). Bound
+    lazily rather than at module import time: `import underthesea` has the side effect of
+    attaching a handler to the ROOT logger, which makes this module's own
+    `logging.basicConfig(level=logging.INFO)` below a silent no-op (basicConfig only
+    configures root when it has no handlers yet) if underthesea were imported above it —
+    every INFO-level progress log in this stage would vanish. Falls back to a plain
+    whitespace split if the tokenizer errors on unusual input — retrieval must never crash
+    on that."""
+    global _word_tokenize
+    if _word_tokenize is None:
+        from underthesea import word_tokenize as _wt
+        _word_tokenize = _wt
+    try:
+        return _word_tokenize(text or "")
+    except Exception:
+        return (text or "").split()
+
+
 def topic_tokens(text: str, extra: Optional[Set[str]] = None) -> Set[str]:
-    toks = {t for t in name_tokens(text) if len(t) >= 3 and t not in STOPWORDS}
+    """Topic tokens for retrieval overlap. Each underthesea segment is normalize_name()'d
+    and kept WHOLE (space-joined for multi-word segments), not exploded into unigrams —
+    that is what stops an unrelated VN compound from colliding with an unrelated word that
+    only shares one syllable. Concretely: "cổ phiếu" (stock) normalizes to "co phieu" and
+    survives as ONE token, distinct from the bare "phieu" that "phiếu bầu" (ballot)
+    contributes — plain unigram splitting used to strip "cổ" as a stopword and leave the
+    orphan "phieu", which is exactly how an unrelated company's stock-manipulation Penalty
+    got matched against a ballot-counting governance claim in production (2026-08-07).
+    A segment is dropped only when EVERY one of its words is itself a STOPWORD (e.g. "công
+    ty" -> "cong"+"ty", both boilerplate) — one non-boilerplate word is enough to keep the
+    whole segment, same threshold plain name_tokens applied per-word before."""
+    toks: Set[str] = set()
+    for seg in _vn_segments(text):
+        norm = normalize_name(seg)
+        words = norm.split()
+        if not words or all(w in STOPWORDS for w in words):
+            continue
+        if len(norm) >= 3:
+            toks.add(norm)
     if extra:
         toks |= {t for t in extra if len(t) >= 3 and t not in STOPWORDS}
     return toks
@@ -289,7 +399,7 @@ def claim_keywords(g: Graph) -> Dict[int, Set[str]]:
 
 
 # --------------------------------------------------------------------------- #
-# LLM adjudication (single provider: OpenAI gpt-4o-mini).
+# LLM adjudication (single provider: Gemini).
 #
 # Does the SAME narrow, grounded 3-way task regardless of provider. A provider that
 # fails 3x with no success (e.g. a 403 billing block) is disabled, so the run still
@@ -326,18 +436,45 @@ class Adjudicator:
     """A cascade of LLM providers with per-provider graceful failure. `adjudicate` tries
     each enabled provider in preference order and returns the first parsed verdict, tagged
     with the provider that produced it. When one provider dies (e.g. a 403), the next takes
-    over automatically; if all die, the caller falls back to deterministic signals."""
+    over automatically; if all die, the caller falls back to deterministic signals.
 
-    def __init__(self, openai_model: str, rate_limit: int, order: List[str],
-                 openai_api_key: Optional[str] = None, openai_base_url: Optional[str] = None) -> None:
-        # override=True so the repo .env is authoritative — a stale shell OPENAI_API_KEY
+    `cache` (GitHub issue #9, `core.llm_cache.ContentCache`) is optional and keyed on the
+    content actually sent — `(claim_text, evidence_text, evidence_meta)` — not on the
+    (claim, candidate) node-index pair, so two DIFFERENT pairs that happen to carry the
+    IDENTICAL text (e.g. a boilerplate claim sentence repeated across two report years,
+    or two claims retrieved against the same conduct candidate) share one paid call,
+    within a single run as well as across re-runs. Only a DEFINITIVE outcome is cached —
+    a real verdict, or a confirmed-unparseable reply from a provider that actually
+    answered — never a pure provider failure/unavailability, so a transient 403 or a
+    not-yet-configured API key can't freeze "no verdict" into the cache forever."""
+
+    def __init__(self, model: str, rate_limit: int, order: List[str],
+                 api_key: Optional[str] = None,
+                 cache: Optional[ContentCache] = None,
+                 base_url: Optional[str] = None) -> None:
+        """`base_url` points the OpenAI-SHAPED provider at an OpenAI-COMPATIBLE endpoint
+        that is not OpenAI (e.g. a GLM host). It is passed to `_OpenAIProvider` ONLY —
+        the Gemini and DeepSeek providers speak their own APIs and would be meaningless
+        recipients. Omitted (the default) means real OpenAI, unchanged."""
+        # override=True so the repo .env is authoritative — a stale shell GEMINI_API_KEY
         # must not shadow the key the user edits in .env. Only applies when
-        # openai_api_key is not explicitly given (a one-off Novita-style override).
-        if openai_api_key is None:
+        # api_key is not explicitly given (a one-off override).
+        if api_key is None:
             load_dotenv(REPO_ROOT / ".env", override=True)
+        # `model or <provider's own default>`, never the caller's raw `model`: with
+        # a single positional argument shared across the whole registry, a Gemini
+        # model id passed for `--provider-order deepseek` would otherwise be sent
+        # straight to DeepSeek's API (see core.llm.build_llm_provider's docstring).
         registry = {
-            "openai": lambda: _OpenAIProvider(openai_model, rate_limit,
-                                              api_key=openai_api_key, base_url=openai_base_url),
+            "gemini": lambda: _GeminiProvider(model or DEFAULT_MODEL, rate_limit, api_key=api_key),
+            "deepseek": lambda: _DeepSeekProvider(model or DEEPSEEK_DEFAULT_MODEL, rate_limit, api_key=api_key),
+            # 2026-08-06: re-added at the user's explicit request, opt-in via
+            # --provider-order openai — see core/llm.py's docstring for why this
+            # isn't a repeat of the 2026-08-04 OpenAI removal.
+            # base_url is forwarded ONLY here: it is an OpenAI-request-shaped override
+            # (see this class's docstring), so the two providers above never receive it.
+            "openai": lambda: _OpenAIProvider(model or OPENAI_DEFAULT_MODEL, rate_limit,
+                                              api_key=api_key, base_url=base_url),
         }
         self.providers: List[_Provider] = []
         for name in order:
@@ -351,6 +488,7 @@ class Adjudicator:
             else:
                 logger.info(f"[{name}] not available (no key / SDK) — skipped.")
         self.enabled = bool(self.providers)
+        self.cache = cache
         if self.enabled:
             logger.info(f"Adjudicator ready: providers = {[p.name for p in self.providers]}")
         else:
@@ -359,18 +497,24 @@ class Adjudicator:
     def adjudicate(self, claim_text: str, evidence_text: str, evidence_meta: str) -> Optional[Dict[str, Any]]:
         if not self.enabled:
             return None
+        if self.cache is not None:
+            cached, hit = self.cache.get(claim_text, evidence_text, evidence_meta)
+            if hit:
+                return cached
         user = (
             f"CLAIM (company report): \"{claim_text}\"\n\n"
             f"EVIDENCE ({evidence_meta}): \"{evidence_text}\"\n\n"
             "Return only JSON: verdict (supports|contradicts|irrelevant), confidence (0-1), rationale."
         )
         result: Optional[Dict[str, Any]] = None
+        answered = False  # a provider returned WITHOUT raising, i.e. gave a real reply
         for p in self.providers:
             if not p.enabled:
                 continue
             try:
                 raw = p.call(ADJUDICATE_SYSTEM, user)
                 p.calls += 1
+                answered = True
                 out = _parse_verdict(raw)
                 if out is not None:
                     out["provider"] = p.name
@@ -385,6 +529,8 @@ class Adjudicator:
                 continue  # try the next provider for this same pair
         if not any(p.enabled for p in self.providers):
             self.enabled = False
+        if self.cache is not None and answered:
+            self.cache.put(claim_text, evidence_text, evidence_meta, value=result)
         return result
 
     def summary(self) -> Dict[str, Any]:
@@ -418,11 +564,21 @@ def run(args: argparse.Namespace) -> None:
     kw = claim_keywords(g)
     logger.info(f"{len(claim_idxs)} SustainabilityClaims linked to the issuer")
 
-    # ---- conduct pool (independent = news) ----
+    # ---- conduct pool (independent = news, SAME ISSUER only) ----
+    # §6a always documented "same issuer + VN topic overlap + temporal window" but the
+    # issuer half was never enforced — the pool spanned every ticker's crawled news, so a
+    # generic topic-token collision (e.g. "phieu" shared between "phiếu bầu"/ballot and
+    # "cổ phiếu"/stock once "cổ" is stripped as a stopword) could pull another company's
+    # penalty into this issuer's dossier. Scope by source_doc's "<TICKER>__" prefix now;
+    # a node with no parseable source_doc (synthetic fixtures, non-crawler sources) is
+    # kept rather than dropped — see node_ticker's docstring.
+    ticker_u = args.ticker.upper()
     conduct = [i for i, n in enumerate(g.nodes)
-               if n.get("class") in CONDUCT_CLASSES and props(n).get("source_type") == "news"]
+               if n.get("class") in CONDUCT_CLASSES and props(n).get("source_type") == "news"
+               and node_ticker(n) in (None, ticker_u)]
     conduct_by_cls = Counter(g.cls(i) for i in conduct)
-    logger.info(f"Conduct pool (source_type=news): {len(conduct)} nodes {dict(conduct_by_cls)}")
+    logger.info(f"Conduct pool (source_type=news, issuer={ticker_u}): "
+                f"{len(conduct)} nodes {dict(conduct_by_cls)}")
 
     # pre-tokenize the conduct pool once
     ctok = {i: topic_tokens(node_text(g.nodes[i])) for i in conduct}
@@ -453,15 +609,18 @@ def run(args: argparse.Namespace) -> None:
 
     # LLM adjudication is mandatory — no deterministic fallback. Abort up front if no
     # provider is available so the run never silently degrades into a weaker mode.
-    adjud = Adjudicator(args.openai_model, args.rate_limit, args.provider_order,
-                        openai_api_key=getattr(args, "openai_api_key", None),
-                        openai_base_url=getattr(args, "openai_base_url", None))
+    cache_path = getattr(args, "cache", None)
+    cache = ContentCache(cache_path) if cache_path else None
+    adjud = Adjudicator(args.model, args.rate_limit, args.provider_order, cache=cache,
+                        base_url=getattr(args, "openai_base_url", None))
     if not adjud.enabled:
-        logger.error("No LLM provider available (need OPENAI_API_KEY in .env) — "
+        logger.error("No LLM provider available (need GEMINI_API_KEY, DEEPSEEK_API_KEY "
+                     "and/or OPENAI_API_KEY in .env, matching --provider-order) — "
                      "aborting: this pipeline requires LLM adjudication.")
         return
 
     # ---- 6a retrieval: candidate conduct per claim (deterministic, cheap) ----
+    min_overlap = getattr(args, "min_topic_overlap", DEFAULT_MIN_TOPIC_OVERLAP)
     cand_of: Dict[int, List[int]] = {}
     all_pairs: List[Tuple[int, int, int]] = []  # (overlap, claim_idx, conduct_idx)
     for ci in claim_idxs:
@@ -470,7 +629,7 @@ def run(args: argparse.Namespace) -> None:
         scored: List[Tuple[int, int, int]] = []  # (overlap, recency, conduct_idx)
         for xi in conduct:
             overlap = len(ctoks & ctok[xi])
-            if overlap == 0:
+            if overlap < min_overlap:
                 continue
             xyear = node_year(g.nodes[xi])
             if cyear is not None and xyear is not None and not date_uncertain(g.nodes[xi]):
@@ -652,6 +811,8 @@ def run(args: argparse.Namespace) -> None:
     (args.out_dir / "crosscheck_edges.json").write_text(
         json.dumps(new_edges, indent=2, ensure_ascii=False), encoding="utf-8")
     logger.info(f"Wrote {len(dossiers)} dossiers + {len(new_edges)} linking edges to {args.out_dir}")
+    if cache is not None:
+        cache.save()
 
     if args.to_neo4j and new_edges:
         _write_back_neo4j(new_edges, args)
@@ -705,13 +866,24 @@ def main() -> None:
     p.add_argument("--top-k", type=int, default=DEFAULT_TOP_K)
     p.add_argument("--window-before", type=int, default=DEFAULT_WINDOW_BEFORE)
     p.add_argument("--window-after", type=int, default=DEFAULT_WINDOW_AFTER)
+    p.add_argument("--min-topic-overlap", type=int, default=DEFAULT_MIN_TOPIC_OVERLAP,
+                   help="Minimum shared VN topic-token count for a token-overlap candidate "
+                        "(indicator-axis pairs bypass this gate).")
     p.add_argument("--max-llm-pairs", type=int, default=DEFAULT_MAX_LLM_PAIRS)
-    p.add_argument("--openai-model", type=str, default=DEFAULT_OPENAI_MODEL, help="OpenAI model id.")
-    p.add_argument("--openai-base-url", type=str, default=None,
-                   help="Override the OpenAI endpoint (e.g. an OpenAI-compatible "
-                        "third-party host); default is OpenAI's own API")
+    p.add_argument("--model", type=str, default=None,
+                   help="Model id; defaults to the chosen provider's own default "
+                        "(GEMINI_MODEL for gemini, DEEPSEEK_MODEL for deepseek, "
+                        "OPENAI_MODEL for openai) when omitted.")
+    p.add_argument("--openai-base-url", type=str, default=os.getenv("OPENAI_BASE_URL"),
+                   help="Point the OpenAI-shaped provider at an OpenAI-COMPATIBLE endpoint "
+                        "that is not OpenAI (e.g. https://api.xah.io/v1 serving a GLM model). "
+                        "Defaults to $OPENAI_BASE_URL; omit for real OpenAI. Pair it with "
+                        "--provider-order openai and --model <that host's model id>.")
     p.add_argument("--provider-order", type=str, default=DEFAULT_PROVIDER_ORDER,
-                   help="Comma-separated adjudication preference (currently only 'openai' is supported).")
+                   help="Comma-separated adjudication preference: gemini, deepseek, openai. "
+                        "A swappable choice, not a required fallback chain — set to "
+                        "e.g. 'deepseek' or 'openai' alone to use that provider instead "
+                        "of Gemini. 'openai' needs OPENAI_API_KEY in .env.")
     p.add_argument("--max-workers", type=int, default=8, help="Concurrent adjudication workers.")
     p.add_argument("--rate-limit", type=int, default=DEFAULT_RATE_LIMIT)
     p.add_argument("--embed", action="store_true",
@@ -720,8 +892,14 @@ def main() -> None:
                    help="Still runs LLM adjudication and prints stats, but writes nothing.")
     p.add_argument("--to-neo4j", action="store_true", help="Also MERGE advisory edges into Neo4j.")
     p.add_argument("--database", default=None, help="Neo4j database for --to-neo4j (default: user home db).")
+    p.add_argument("--cache", type=Path, default=DEFAULT_CACHE,
+                   help="Adjudication cache (issue #9); a re-run reuses it instead of paying again.")
+    p.add_argument("--no-cache", action="store_true",
+                   help="Ignore the adjudication cache (forces every pair to ask the model again).")
     args = p.parse_args()
 
+    if args.no_cache:
+        args.cache = None
     args.provider_order = [s.strip().lower() for s in args.provider_order.split(",") if s.strip()]
     if not args.input.exists():
         logger.error(f"Input not found: {args.input} (run step05_resolve_entities.py first)")

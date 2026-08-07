@@ -2121,6 +2121,90 @@ python evalu/run_evaluation.py                        # đo lại NC.1/NC.2 sau 
 Chưa chạy lại thì **không được** dùng những con số đó để nói về hệ thống hiện tại — theo cả hai chiều
 (chúng có thể tệ hơn *hoặc* tốt hơn thực tế).
 
+#### Cập nhật 2026-08-07: đã thử chạy lại, CHƯA XONG — bốn phát hiện chặn
+
+**(a) Bản sửa `7c108f9` không nằm trên nhánh làm việc.** Nó chỉ có trên `main`/`origin/main`, không phải
+`wip/gri-parser-and-eval` (nơi có `evalu/`). Không nhánh nào một mình chạy được cả 5 bước. Đã **cherry-pick**
+sang nhánh này: `core/llm_cache.py`, `crosscheck/claims_vs_conduct.py`, `load/neo4j_sync.py`,
+`api/evidence_service.py` + 2 file test; `core/llm.py` được **bổ sung** (không thay thế)
+`DEFAULT_MODEL` / `DEEPSEEK_DEFAULT_MODEL` / `OPENAI_DEFAULT_MODEL` / `build_gemini_client` /
+`_GeminiProvider` / `_DeepSeekProvider`, giữ nguyên `_OpenAIProvider` (bản SDK có `base_url`) và
+`_OpenAIEmbeddingProvider` / `openai_json_call` mà các stage khác của nhánh vẫn import — hai nhánh đã
+refactor `_OpenAIProvider` theo hai hướng **không tương thích**, nên nuốt trọn `llm.py` của `main` sẽ làm
+hỏng `entities` và `kpi/extract`. Test: 27 + 9 + 13 nhóm đều PASS.
+
+**(b) Cache adjudication KHÔNG băm `ADJUDICATE_SYSTEM`.** `ContentCache.key = sha256(json.dumps(parts))`
+với `parts = (claim_text, evidence_text, evidence_meta)`. Vì `7c108f9` có **siết** prompt đó, mọi entry
+ghi trước bản sửa sẽ được phục vụ dưới prompt mới → verdict cũ. Các file `adjudication_cache*.json` cũ
+(ghi 2026-08-06 23:32) **đã bị xoá** trước khi chạy. Ai chạy lại sau này phải làm đúng vậy, hoặc `--no-cache`.
+
+**(c) Không còn provider nào chạy nổi 401 cặp.** `OPENAI_API_KEY` trong `.env` **rỗng**. Gemini thì
+**không còn 403** như mục này từng ghi — mà là **404**: `gemini-2.5-flash*` đã bị gỡ khỏi key này;
+`gemini-flash-latest` (→ `gemini-3.6-flash`) gọi được, nhưng quota free tier chỉ **5 request/phút** và đã
+cạn. Hạ xuống 4 RPM / 1 worker vẫn 429 ngay. Kết quả: chỉ **ACC hoàn tất thật** (2/2 lời gọi OK); AAA 7/23;
+ACG, ADP, AGG **0** lời gọi thành công. Hồ sơ hỏng đã **không** để lại trên đĩa — đã khôi phục bản pre-fix,
+giữ lại cache 23 verdict hợp lệ để lần chạy sau rẻ hơn. **Cần một OPENAI_API_KEY thật (hoặc Gemini có
+billing) mới chạy tiếp được.**
+
+**(d) Đã đo trước khi trả tiền — bản sửa có tác dụng rất lớn.** Chạy stage thật với provider giả (miễn phí,
+kỹ thuật của `test_esg_kg_crosscheck.py`), ghi ra thư mục tạm:
+
+| | claims | pool trước | pool sau | cặp trước | cặp sau | |
+|---|---|---|---|---|---|---|
+| AAA | 36 | 342 | 68 | 288 | 23 | −92% |
+| ACC | 14 | 342 | 52 | 112 | 2 | −98% |
+| ACG | 301 | 342 | 190 | 2.406 | 359 | −85% |
+| ADP | 69 | 342 | 3 | 534 | 9 | −98% |
+| AGG | 44 | 342 | 29 | 352 | 8 | −98% |
+| **TỔNG** | | | | **3.692** | **401** | **−89%** |
+
+`conduct_pool = 342` cho **cả 5 mã** trước bản sửa là bằng chứng trực tiếp của lỗi nhiễm chéo: không hề có
+scoping theo issuer, mọi công ty đối soát với **cùng một rổ tin**. Sau bản sửa mỗi mã có rổ riêng.
+
+Và trên ACC — mã duy nhất chạy trọn — **cả 4 verdict `appears_supported` đều biến mất**, thành
+`unverified_insufficient_evidence` (14/14 claim khớp `claim_id`, 4 claim đổi verdict). Tức bốn "bằng chứng
+ủng hộ" đó được dựng trên tin của công ty khác. Đây đúng là thứ NC.1/NC.2 = 28,76% đang bắt, và là lý do
+**không được** trích 28,76% như số liệu của hệ thống hiện tại.
+
+#### (e) ĐÃ CHẠY XONG — NC.1/NC.2 sau bản sửa: 28,76% → 100%, nhưng phải đọc kèm mẫu số
+
+Cả 5 mã đã chạy lại step 07 → `neo4j_sync` → `claim_ledger` → đo lại negative control:
+
+| | TRƯỚC (gpt-4o-mini, chưa sửa) | SAU (glm-5.2, đã sửa) |
+|---|---|---|
+| **NC.1** Same-Company Evidence Rate | **28,76%** (65/226) — FAIL | **100,00%** (21/21) — **PASS** |
+| `cross_feed` | 161 | **0** |
+| `cross_feed_unmentioned` | 161 | **0** |
+| **NC.2** Same-Feed Specificity | 28,76% — FAIL | **100,00%** — **PASS** |
+| kỳ vọng nếu bốc ngẫu nhiên | 28,88% | 39,83% |
+| **lift** (quan sát / kỳ vọng) | **0,996** | **2,511** |
+
+`by_kind` sau bản sửa: `supporting_evidence` 17/17 same-feed, `contradicting_evidence` 4/4 same-feed —
+**không còn một cáo buộc mâu thuẫn chéo công ty nào**, so với 100 cái trước đó.
+
+**Nhưng đây KHÔNG phải một chiến thắng sạch, và không được trích 100% mà bỏ phần này:**
+
+1. **Mẫu số sụp từ 226 xuống 21 trích dẫn.** Hệ thống hết trích nhầm chủ yếu vì nó gần như **không còn
+   trích gì**. 100% trên 21 trích dẫn là một cơ sở mỏng; chính `limitation` của NC.2 đã cảnh báo kho
+   conduct 44 node / 5 mã cho phương sai rất lớn, nên đọc `lift = 2,511` như dấu hiệu định tính, không
+   phải ước lượng điểm.
+2. **Đổi luôn adjudicator** (gpt-4o-mini → glm-5.2 qua endpoint OpenAI-compatible), nên so sánh này
+   **hai biến cùng đổi**, không cô lập được bản sửa. NC.1/NC.2 đo nguồn gốc bằng chứng (thuộc tầng
+   retrieval, nơi bản sửa tác động) nên ít nhạy với model hơn phân bố verdict — nhưng vẫn phải ghi.
+3. ~~Độ phủ chưa trọn~~ — **đã trọn:** cả 5 mã phủ **100%** số cặp ứng viên (401 cặp; ACG 359/359),
+   **0 lỗi provider**. 32 cặp ACG từng hỏng ở lượt trước (endpoint hết số dư, HTTP 402) đã được xét ở
+   lượt sau và **toàn bộ trả `irrelevant`**, nên không thêm trích dẫn nào — NC.1/NC.2 **không đổi** khi
+   bổ sung chúng. Đây là một dấu hiệu tốt về độ ổn định: kết luận không phụ thuộc vào 8% cặp còn thiếu.
+4. Nguyên nhân sâu xa của mẫu số 21 chính là **§16.5**: rổ conduct phía news gần như toàn KPI tài chính,
+   nên phần lớn verdict là `irrelevant` và rất ít cạnh liên kết được ghi (21 advisory edge trên 464 claim).
+
+**Kết luận trung thực:** bản sửa đã loại sạch nhiễm chéo — negative control chuyển từ FAIL sang PASS và
+đó là kết quả thật. Nhưng hệ thống hiện **nói rất ít**, và cái ít đó đúng; nó chưa chứng minh được là
+**nói nhiều và vẫn đúng**. Muốn khẳng định điều sau thì phải sửa §16.5 trước (kênh tin hành vi ESG),
+rồi đo lại trên mẫu số lớn hơn.
+
+Số liệu chi tiết: `evalu/out/evaluation_report_nc_postfix.json`.
+
 ### 16.2 Corpus phân loại (197 DN) >> corpus đã dựng đồ thị (5 mã CK)
 
 Chênh lệch chủ ý vì chi phí LLM, nhưng phải luôn nói rõ. Đồ thị hiện chỉ có **AAA, ACC, ACG, ADP, AGG**.
@@ -2151,6 +2235,36 @@ hiện đến từ **trùng token**, còn `token_plus_indicator` bằng **đúng
 phía **news** không nhận được `kpi_id` (nên không có `measuredUnder`), trong khi claim thì **có** cạnh
 `alignsWithIndicator` (216/301 với ACG) — hai đầu của phép join không gặp nhau. Kiểm bằng cách đếm
 `measuredUnder` trên node có `source_type=news`.
+
+#### Đã đo — 2026-08-07. Giả thuyết ĐÚNG, nhưng nguyên nhân gốc sâu hơn một lỗi nối dây
+
+| Đo trên `graph_output/resolved/resolved_graph.json` | Kết quả |
+|---|---|
+| `measuredUnder` xuất phát từ node `source_type=news` | **0** trên `KPIObservation` (chỉ 3 trên `Penalty`) |
+| Phân rã toàn bộ 1.338 cạnh `measuredUnder` | 1.311 `KPIObservation`/report · 17 `Emission`/report · 7 `Penalty`/report · 3 `Penalty`/news |
+| `KPIObservation` phía news mang `kpi_id` | **0 / 298** |
+| `kpi_id_method` của đúng 298 node đó | `rejected_unit` 179 + `no_match` 119 (không node nào match) |
+
+Phía conduct **không có đầu vào nào** để join, vì KPI trích từ tin tức gần như toàn là **chỉ số tài
+chính**: `revenue` 22, `net profit` 14, `ownership percentage` 11, `stock price` 11, `total assets` 7,
+`vốn điều lệ` 7, `inventory` 6, `gross profit margin` 4, `short-term debt` 3… — mà `canonicalize` (03c)
+**cố ý loại** KPI tài chính VND (nguyên tắc "precision over recall" của stage đó, xem §7).
+
+**Vậy đây không phải lỗi nối dây ở tầng chỉ tiêu, mà là lỗi ở tầng DỮ LIỆU:** kênh tin tức đang trả về
+tin **tài chính / chứng khoán**, không phải tin **hành vi ESG**. Không có `measuredUnder` phía news thì
+tầng chỉ tiêu không thể sinh cặp nào, và `token_plus_indicator` mãi bằng `token_overlap`.
+
+**KHÔNG sửa nhanh được — ghi nhận là hạn chế đã biết.** Ba đường đi, không đường nào rẻ:
+
+1. Sửa truy vấn crawl để lấy tin **hành vi** ESG (môi trường, lao động, xử phạt) thay vì tin tài chính,
+   rồi crawl lại → phân loại lại → trích xuất lại. **CÓ PHÍ**, và là đường duy nhất thực sự sửa được.
+2. Mở rộng từ vựng chỉ tiêu sang KPI tài chính — **bác bỏ**: phá đúng cái guarantee precision của 03c và
+   sinh join sai (gán `revenue` vào một chỉ tiêu ESG là bịa quan hệ).
+3. Chấp nhận, và trình bày trung thực rằng phần retrieval hiện chạy **hoàn toàn trên trùng token**.
+
+Vẫn đúng sau bản sửa `7c108f9`: log step 07 in `0 indicator←conduct(news) link(s)` và
+`indicator_tier_pairs = 0` trong mọi file stats sinh ra sau bản sửa. Bản sửa nhiễm chéo **không** chạm
+tới lỗ hổng này — hai vấn đề độc lập.
 
 ### 16.6 R5 không đạt: hub của issuer
 

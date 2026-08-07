@@ -202,7 +202,7 @@ def _mini_dossiers():
             "score_disagrees_with_assessment": False,
             "supporting_evidence": [
                 {"class": "MediaReport", "text": "Bai bao doc lap X", "node_index": 999,
-                 "confidence": 0.9, "rationale": "r", "provider": "openai",
+                 "confidence": 0.9, "rationale": "r", "provider": "gemini",
                  "date_uncertain": True, "source_domain": "", "date": None, "year": 2024},
             ],
             "contradicting_evidence": [], "flagged_non_independent_support": [],
@@ -276,6 +276,40 @@ def test_run_clear_advisory_both_trees_send_identical_neo4j_calls():
         assert "DELETE r" in calls[0][0]
 
 
+def test_clear_advisory_edge_delete_is_scoped_to_this_ticker():
+    """Bug found in production 2026-08-07: `--clear-advisory`'s edge-DELETE carried no
+    ticker filter at all (`MATCH ()-[r]->() WHERE r.llm_suggested = true DELETE r`) — a
+    blanket delete across the WHOLE database. Syncing AAA, then ACG, then AGG with
+    --clear-advisory each time silently wiped the PRIOR ticker's just-written advisory
+    edges on every subsequent sync — only the last-synced ticker (AGG) had any advisory
+    data left afterward. The property-removal query right below it (REMOVE c.assessment,
+    ... WHERE c.crosscheck_ticker=$t) was already correctly scoped; the edge DELETE must
+    be too — not a global `MATCH ()-[r]->()`, and it must carry an actual scoping
+    parameter (claim node keys or ticker), not none at all."""
+    import json
+    import tempfile
+    graph = _mini_graph()
+    dossiers = _mini_dossiers()
+    with tempfile.TemporaryDirectory() as td:
+        td = Path(td)
+        graph_file = td / "resolved_graph.json"
+        graph_file.write_text(json.dumps(graph), encoding="utf-8")
+        dossier_file = td / "aaa_claim_assessments.json"
+        dossier_file.write_text(json.dumps(dossiers), encoding="utf-8")
+
+        calls, _ = _run_with_stub(
+            new_step08, _ns(input=dossier_file, resolved=graph_file, clear_advisory=True))
+
+    delete_calls = [c for c in calls if "llm_suggested" in c[0] and "DELETE" in c[0]]
+    assert delete_calls, f"no llm_suggested-edge DELETE query found among: {[c[0] for c in calls]}"
+    query, params = delete_calls[0]
+    assert query != "MATCH ()-[r]->() WHERE r.llm_suggested = true DELETE r", (
+        "the clear-advisory edge DELETE is still the unscoped global query — it will "
+        "wipe every OTHER ticker's advisory edges whenever any one ticker is re-synced "
+        "with --clear-advisory")
+    assert params, f"a properly scoped DELETE must carry scoping parameter(s), got none: {query}"
+
+
 def test_dry_run_touches_no_driver_both_trees():
     import json
     import tempfile
@@ -335,8 +369,15 @@ def test_real_corpus_both_trees_send_identical_neo4j_calls():
     calls, driver_calls = _run_with_stub(new_step08, _ns())
 
     assert len(driver_calls) > 0
-    assert len(calls) >= 3, \
-        f"expected >=3 real Neo4j calls (claim props + scoped clear + >=1 edge type), got {len(calls)}"
+    # claim props (always) + scoped clear (always, since default clear_advisory=False) is
+    # the floor; edge-type calls (>=1 more) only fire if AAA's dossier actually has any
+    # supports/contradicts. 2026-08-07: AAA's real dossier was re-adjudicated with the
+    # issuer-scope + VN-tokenizer + tightened-prompt fixes and now legitimately has ZERO
+    # supports/contradicts (far more conservative, correctly so) — >=3 was true only
+    # because AAA used to have at least one; asserting >=2 is the part that's actually
+    # invariant regardless of what today's real adjudication verdicts happen to be.
+    assert len(calls) >= 2, \
+        f"expected >=2 real Neo4j calls (claim props + scoped clear), got {len(calls)}"
 
     print(f"    real corpus: {len(calls)} Neo4j calls issued "
           f"({len(calls[0][1].get('rows', []))} claim rows in call 0)")

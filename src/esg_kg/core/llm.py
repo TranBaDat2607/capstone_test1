@@ -50,9 +50,16 @@ from collections import deque
 from threading import Lock
 from typing import Dict, List, Optional
 
+from esg_kg.core.paths import load_env
+
 logger = logging.getLogger(__name__)
 
+load_env()  # so the model env vars below see .env even if no stage has loaded it yet
+
 DEFAULT_RATE_LIMIT = 10  # RPM
+DEFAULT_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash-lite")
+DEEPSEEK_DEFAULT_MODEL = os.getenv("DEEPSEEK_MODEL", "deepseek-v4-flash")
+OPENAI_DEFAULT_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 
 
 # --------------------------------------------------------------------------- #
@@ -101,6 +108,114 @@ class _Provider:
 
     def call(self, system: str, user: str) -> str:  # pragma: no cover
         raise NotImplementedError
+
+
+def build_gemini_client(api_key: Optional[str] = None):
+    """Turn ``GEMINI_API_KEY`` (or an explicit override) into a ``genai.Client``, or
+    ``None`` if no key is available or the SDK rejects it. Never raises — every call
+    site bails out on ``None`` the same way, instead of several slightly different
+    getenv/construct blocks each deciding for itself how to fail.
+
+    ``google.genai`` is imported lazily, unlike the twin on ``main``: this tree's
+    ``core.llm`` must stay importable for the OpenAI path on a clone that has no
+    Gemini SDK (the repo's lazy-dependency convention).
+    """
+    api_key = api_key or os.getenv("GEMINI_API_KEY")
+    if not api_key:
+        return None
+    try:
+        from google import genai
+        return genai.Client(api_key=api_key)
+    except Exception as e:  # pragma: no cover
+        logger.warning(f"[gemini] client init failed ({e}).")
+        return None
+
+
+class _GeminiProvider(_Provider):
+    """Google Gemini backend (`google.genai.Client`).
+
+    Same `call(system, user) -> str` contract as `_OpenAIProvider`, so step07's
+    `Adjudicator` cascade uses it unchanged — only the construction call site differs.
+    Ported from `main` (7c108f9) so this tree's step07 can import it; note the project
+    behind `GEMINI_API_KEY` is billing-blocked (403), so in practice runs pass
+    `--provider-order openai`.
+    """
+    name = "gemini"
+
+    def __init__(self, model: str, rate_limit: int, api_key: Optional[str] = None) -> None:
+        super().__init__()
+        self.model = model
+        client = build_gemini_client(api_key)
+        if client is None:
+            return
+        self.client = client
+        self.rl = RateLimiter(max_calls_per_minute=rate_limit)
+        self.enabled = True
+
+    def call(self, system: str, user: str) -> str:
+        from google.genai import types
+        self.rl.wait_if_needed(0)
+        resp = self.client.models.generate_content(
+            model=self.model,
+            contents=user,
+            config=types.GenerateContentConfig(
+                system_instruction=system,
+                response_mime_type="application/json",
+                temperature=0,
+            ),
+        )
+        return (resp.text or "").strip()
+
+
+class _DeepSeekProvider(_Provider):
+    """DeepSeek backend (OpenAI-compatible REST, no SDK dependency) — a swappable
+    ALTERNATIVE, not a fallback: same `call(system, user) -> str` contract, so
+    `Adjudicator` (step07) uses it unchanged. Ported from `main` (7c108f9).
+    """
+    name = "deepseek"
+    API_URL = "https://api.deepseek.com/chat/completions"
+
+    def __init__(self, model: str, rate_limit: int, api_key: Optional[str] = None) -> None:
+        super().__init__()
+        self.model = model
+        api_key = api_key or os.getenv("DEEPSEEK_API_KEY")
+        if not api_key:
+            return
+        self.api_key = api_key
+        self.rl = RateLimiter(max_calls_per_minute=rate_limit)
+        self.enabled = True
+
+    def call(self, system: str, user: str) -> str:
+        import requests
+        self.rl.wait_if_needed(0)
+        resp = requests.post(
+            self.API_URL,
+            headers={
+                "Authorization": f"Bearer {self.api_key}",
+                "Content-Type": "application/json",
+            },
+            json={
+                "model": self.model,
+                "messages": [
+                    {"role": "system", "content": system},
+                    {"role": "user", "content": user},
+                ],
+                "temperature": 0,
+                "response_format": {"type": "json_object"},
+                # Thinking mode is ON by default for deepseek-v4-flash and, per DeepSeek's
+                # own docs, makes temperature/top_p INERT — so without this, `temperature=0`
+                # above silently does nothing, and every call also pays for a reasoning
+                # trace this pipeline never reads (only `content` is parsed as JSON).
+                "thinking": {"type": "disabled"},
+            },
+            timeout=120,
+        )
+        resp.raise_for_status()
+        choices = resp.json().get("choices") or []
+        if not choices:
+            return ""
+        content = (choices[0].get("message") or {}).get("content")
+        return (content or "").strip()
 
 
 class _OpenAIProvider(_Provider):
