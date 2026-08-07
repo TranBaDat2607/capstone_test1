@@ -64,7 +64,7 @@ def collect_pairs(dossiers: Sequence[Dict[str, Any]],
     variants = variants or {}
     out: List[Dict[str, Any]] = []
     for d in dossiers:
-        ticker = str(d.get("_ticker") or "").upper()
+        ticker = str(d.get("_ticker") or d.get("claim_company") or d.get("company") or d.get("ticker") or "").upper()
         claim_id = d.get("claim_id") or ""
         for kind in EVIDENCE_KINDS:
             for ev in (d.get(kind) or []):
