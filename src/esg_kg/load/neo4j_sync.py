@@ -274,7 +274,21 @@ def run(args: argparse.Namespace) -> None:
         with driver.session(database=database) as s:
             if args.clear_advisory:
                 logger.info("Clearing prior advisory layer …")
-                s.run("MATCH ()-[r]->() WHERE r.llm_suggested = true DELETE r")
+                # Bug fixed 2026-08-07: this used to be a BLANKET
+                # `MATCH ()-[r]->() WHERE r.llm_suggested = true DELETE r` — no ticker
+                # filter at all, so syncing ticker B with --clear-advisory silently wiped
+                # ticker A's just-written advisory edges too. Scope it to exactly this
+                # dossier's claim node keys — the same scoping the non-clear-advisory
+                # branch already uses below (`cks`) — so --clear-advisory only ever
+                # touches THIS ticker's own advisory layer, matching its own docstring
+                # ("...before writing [it] for this ticker").
+                cks = [r["ck"] for r in claim_rows]
+                cleared = s.run(
+                    f"MATCH (c:`{SHARED_LABEL}`)-[r]->() "
+                    f"WHERE c._node_key IN $cks AND r.llm_suggested = true DELETE r",
+                    cks=cks).consume()
+                logger.info(f"Cleared {cleared.counters.relationships_deleted} prior "
+                            f"advisory edge(s) for ticker {args.ticker.upper()}.")
                 s.run(f"MATCH (c:SustainabilityClaim {{crosscheck_ticker:$t}}) "
                       f"REMOVE c.assessment, c.assessment_is_advisory, c.caveats, "
                       f"c.structural_contradiction, c.kpi_gap, c.crosscheck_ticker, "

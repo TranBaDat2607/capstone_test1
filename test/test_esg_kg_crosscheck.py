@@ -169,7 +169,7 @@ class Workspace:
     def args(self, **overrides) -> argparse.Namespace:
         args = argparse.Namespace(
             input=self.graph_path, schema=SCHEMA_FILE, out_dir=self.out_dir,
-            ticker="AAA", top_k=8, window_before=1, window_after=50,
+            ticker="AAA", top_k=8, window_before=1, window_after=50, min_topic_overlap=2,
             max_llm_pairs=40, model="gemini-2.5-flash",
             provider_order=["gemini"], max_workers=4, rate_limit=60,
             embed=False, dry_run=False, to_neo4j=False, database=None,
@@ -249,12 +249,19 @@ EXPECTED_ADJUDICATE_SYSTEM = (
     "Rules:\n"
     "- Treat the evidence as independent conduct ('what the company did'), not as a restatement "
     "of the claim.\n"
-    "- 'contradicts' means the evidence is in tension with the claim (e.g. a green/responsible "
-    "claim vs a penalty, violation, controversy, or an adverse metric in the same period).\n"
-    "- 'supports' means the evidence independently corroborates the claim (e.g. a third-party "
-    "verification, certification, or an observed metric consistent with the claim).\n"
-    "- Prefer 'irrelevant' when the evidence is about an unrelated topic or is neutral "
-    "financial/market coverage. Do not guess.\n"
+    "- 'contradicts' means the evidence is in tension with the SAME SPECIFIC topic, process, or "
+    "activity the claim describes (e.g. a claim about emissions vs an emissions violation; a claim "
+    "about a specific governance procedure vs evidence that THAT SAME procedure failed or was "
+    "skipped). A general negative fact about the company (an unrelated penalty, violation, or "
+    "controversy on a different topic) does NOT by itself contradict a claim about a different, "
+    "specific topic — do not infer 'the company is untrustworthy in general, therefore this claim "
+    "is false' from one adverse event unless the evidence is actually about the same matter as "
+    "the claim.\n"
+    "- 'supports' means the evidence independently corroborates that SAME specific claim (e.g. a "
+    "third-party verification, certification, or an observed metric consistent with the claim).\n"
+    "- Prefer 'irrelevant' when the evidence is about a different topic than the claim — even if "
+    "both are negative, both are positive, or both broadly concern ESG/governance — or when the "
+    "evidence is neutral financial/market coverage. Do not guess.\n"
     "- The texts are Vietnamese. confidence is 0.0-1.0. Ground the rationale in the evidence text.\n"
     "## OUTPUT LANGUAGE\n"
     "Write `rationale` in VIETNAMESE, with full diacritics, matching the language of the claim/evidence "
@@ -278,6 +285,7 @@ def test_constants_match():
     assert new_step07.DEFAULT_TOP_K == 8
     assert new_step07.DEFAULT_WINDOW_BEFORE == 1
     assert new_step07.DEFAULT_WINDOW_AFTER == 50
+    assert new_step07.DEFAULT_MIN_TOPIC_OVERLAP == 2
 
     assert new_step07.CONDUCT_CLASSES == {
         "Controversy", "Penalty", "MediaReport", "KPIObservation", "ThirdPartyVerification"}
@@ -404,13 +412,23 @@ def test_date_uncertain_matches():
 
 
 def test_topic_tokens_matches():
-    """topic_tokens = name_tokens(text) [len>=3, not a STOPWORD] union filtered `extra`.
-    Uses the module's own (already-migrated) name_tokens/STOPWORDS as the oracle for
+    """topic_tokens = VN-aware segments (underthesea.word_tokenize via _vn_segments), each
+    normalize_name()'d and kept WHOLE (not exploded into unigrams) UNLESS every word in
+    the segment is itself a STOPWORD, union filtered `extra`. Uses the module's own
+    (already-migrated) _vn_segments/normalize_name/STOPWORDS as the oracle for
     tokenization itself — what this test verifies is that topic_tokens WIRES them
-    correctly (length + stopword filtering, extra-set union), not that tokenization of
-    Vietnamese text is correct."""
+    correctly (the drop-if-all-stopwords rule, length filter, extra-set union), not that
+    VN segmentation itself is linguistically correct (2026-08-07: replaced plain unigram
+    name_tokens() — see test_topic_tokens_avoids_vn_homograph_collision for why)."""
     def expected(text, extra):
-        toks = {t for t in new_step07.name_tokens(text) if len(t) >= 3 and t not in new_step07.STOPWORDS}
+        toks = set()
+        for seg in new_step07._vn_segments(text):
+            norm = new_step07.normalize_name(seg)
+            words = norm.split()
+            if not words or all(w in new_step07.STOPWORDS for w in words):
+                continue
+            if len(norm) >= 3:
+                toks.add(norm)
         if extra:
             toks |= {t for t in extra if len(t) >= 3 and t not in new_step07.STOPWORDS}
         return toks
@@ -421,9 +439,76 @@ def test_topic_tokens_matches():
     for text, extra in cases:
         assert new_step07.topic_tokens(text, extra) == expected(text, extra)
     # non-vacuity: the Vietnamese case must actually surface real topic words, not stopwords
-    assert "kinh" in new_step07.topic_tokens(cases[0][0], None) or \
-           "thai" in new_step07.topic_tokens(cases[0][0], None), \
+    assert new_step07.topic_tokens(cases[0][0], None), \
         "fixture stopped producing any topic token"
+    # "Công ty" (both words boilerplate) must still be dropped, same as the old unigram rule
+    assert "cong ty" not in new_step07.topic_tokens(cases[0][0], None)
+
+
+def test_topic_tokens_avoids_vn_homograph_collision():
+    """The concrete bug this stage hit in production (2026-08-07): 'phiếu bầu' (ballot)
+    and 'cổ phiếu' (stock) share only the bare syllable 'phiếu' once naive unigram split
+    strips 'cổ' as a stopword — an unrelated AGG stock-manipulation Penalty then became
+    'contradicting evidence' for an ACG ballot-appointment claim (77/91 of ACG's
+    contradicting-evidence citations traced back to this). underthesea keeps 'cổ phiếu'
+    together as ONE segment, distinct from the bare 'phiếu' the ballot claim contributes,
+    so the two texts below must share NO topic token — closing the collision at the
+    tokenizer level (independent of, and in addition to, the source_doc issuer-scope fix
+    and the min-topic-overlap gate)."""
+    ballot = new_step07.topic_tokens(
+        "Công ty đã bổ nhiệm một bên độc lập kiểm đếm phiếu bầu tại ĐHĐCĐ")
+    stock = new_step07.topic_tokens("Phạt tiền vì thao túng cổ phiếu AGG")
+    assert not (ballot & stock), f"unexpected shared token(s): {ballot & stock}"
+    # sanity: a genuinely similar sentence about the SAME topic still overlaps plenty
+    same_topic = new_step07.topic_tokens(
+        "AAA công bố đã bổ nhiệm bên độc lập kiểm phiếu bầu ĐHĐCĐ")
+    assert len(ballot & same_topic) >= new_step07.DEFAULT_MIN_TOPIC_OVERLAP
+
+
+def _weak_overlap_graph():
+    """One claim and one same-issuer MediaReport sharing EXACTLY ONE topic token
+    ('nha may' / factory) — a real but weak signal on its own (many unrelated claims and
+    conduct items can both mention "nhà máy"). Used to prove the min-topic-overlap gate
+    (default 2) filters single-token matches at retrieval, before the LLM ever sees them."""
+    return {
+        "nodes": [
+            {"class": "Organization", "properties": {"ticker": "AAA", "name": "CTCP AAA"}},
+            {"class": "SustainabilityClaim",
+             "properties": {"description": "Chúng tôi đã lắp đặt hệ thống xử lý nước thải "
+                                            "hiện đại tại nhà máy"}},
+            {"class": "MediaReport",
+             "properties": {"text": "Nhà máy bị đình chỉ hoạt động do vi phạm an toàn lao động",
+                            "source_domain": "vnexpress.net", "source_type": "news",
+                            "date": "2023-01-01"}},
+        ],
+        "edges": [{"subject": 0, "predicate": "claims", "object": 1}],
+    }
+
+
+def test_min_topic_overlap_gate_filters_single_token_matches():
+    """Default min_topic_overlap=2: a same-issuer conduct node sharing only 1 topic token
+    with the claim must never reach the LLM. Overriding the gate down to 1 must let it
+    through — proving the filter is the reason, not something else (e.g. the temporal
+    window) accidentally excluding the pair."""
+    graph = _weak_overlap_graph()
+
+    nw, _, log = run_new(graph, stub_mode="always_contradicts", max_llm_pairs=10)
+    try:
+        d = nw.dossiers()[0]
+        assert d["contradicting_evidence"] == [], \
+            f"a 1-token match must be filtered by the default gate: {d}"
+        assert d["assessment"] == "unverified_insufficient_evidence"
+    finally:
+        nw.close()
+
+    nw2, _, _ = run_new(graph, stub_mode="always_contradicts", max_llm_pairs=10,
+                         min_topic_overlap=1)
+    try:
+        d2 = nw2.dossiers()[0]
+        assert len(d2["contradicting_evidence"]) == 1, \
+            f"lowering the gate to 1 must let the same pair through: {d2}"
+    finally:
+        nw2.close()
 
 
 def test_is_company_domain_matches():
@@ -588,11 +673,18 @@ def test_full_run_on_real_graph_matches():
 
 def test_dry_run_still_adjudicates_but_writes_nothing():
     """Unlike step05d, step07's --dry-run does NOT return before the provider is built —
-    it only skips the final writes, so this arm is a real check of that behaviour."""
+    it only skips the final writes, so this arm is a real check of that behaviour.
+
+    budget is kept well below AAA's real retrieval count on purpose: it was 30 when
+    retrieval was pure token-overlap (287 real candidate pairs), but the 2026-08-07
+    issuer-scope + VN-aware-tokenizer + min-topic-overlap fix cut AAA's real pairs to 23 —
+    a legitimate precision improvement, not a regression. Pinning budget below whatever
+    that number happens to be today would make this test fragile to future retrieval
+    tuning; 10 has headroom either way."""
     graph = real_graph()
     if graph is None:
         return _skip("test_dry_run_still_adjudicates_but_writes_nothing", "resolved_graph.json not present")
-    budget = 30
+    budget = 10
     nw, nstub, nlogs = run_new(graph, max_llm_pairs=budget, dry_run=True)
     try:
         assert any("Dry run" in m for m in nlogs), f"dry-run notice missing: {nlogs}"
@@ -645,6 +737,55 @@ def test_self_verification_guard_matches():
         assert d["assessment"] == "unverified_insufficient_evidence", \
             "company-owned support must not flip the assessment"
         assert not nw.edges(), "a company-owned domain must never get a verifiedBy edge"
+    finally:
+        nw.close()
+
+
+def _cross_company_graph():
+    """Two issuers (AAA, AGG) in the same graph. AAA's claim and AGG's crawled Penalty
+    share exactly one topic token ('phieu' — from AAA's 'phiếu bầu' / ballot vs AGG's
+    'cổ phiếu' / stock, a homograph collision once 'cổ' is stripped as a stopword), so
+    pre-fix retrieval (topic overlap only, no issuer scope) would pull AGG's conduct into
+    AAA's candidate pool. AAA's own MediaReport shares much stronger overlap and must
+    still be retrieved — the fix scopes by source_doc's <TICKER>__ prefix, not by
+    dropping topic-overlap retrieval altogether. Reproduces the real ACG/AGG contamination
+    found in the live graph (77/91 of ACG's 'contradicting evidence' citations were
+    actually about AGG)."""
+    return {
+        "nodes": [
+            {"class": "Organization", "properties": {"ticker": "AAA", "name": "CTCP AAA"}},
+            {"class": "Organization", "properties": {"ticker": "AGG", "name": "CTCP AGG"}},
+            {"class": "SustainabilityClaim",
+             "properties": {"description": "Công ty đã bổ nhiệm một bên độc lập kiểm đếm "
+                                            "phiếu bầu tại ĐHĐCĐ"}},
+            {"class": "Penalty",
+             "properties": {"description": "Phạt tiền vì thao túng cổ phiếu AGG",
+                            "source_domain": "vnexpress.net", "source_type": "news",
+                            "source_doc": "AGG__vnexpress.net__deadbeef01", "date": "2024-03-01"}},
+            {"class": "MediaReport",
+             "properties": {"text": "AAA công bố đã bổ nhiệm bên độc lập kiểm phiếu bầu ĐHĐCĐ",
+                            "source_domain": "baodautu.vn", "source_type": "news",
+                            "source_doc": "AAA__baodautu.vn__cafef0001", "date": "2024-04-01"}},
+        ],
+        "edges": [{"subject": 0, "predicate": "claims", "object": 2}],
+    }
+
+
+def test_conduct_pool_scoped_to_same_issuer_by_source_doc():
+    """A different issuer's crawled conduct (source_doc='AGG__...') must never enter AAA's
+    candidate pool even when it shares a topic token with AAA's claim — closes the
+    cross-company contamination retrieval used to allow (the module docstring's §6a has
+    always promised 'same issuer + VN topic overlap', the code never enforced the first
+    half). AAA's own conduct, which overlaps far more strongly, must still come through."""
+    graph = _cross_company_graph()
+    nw, _, _ = run_new(graph, stub_mode="always_contradicts", max_llm_pairs=10)
+    try:
+        d = nw.dossiers()[0]
+        cited_domains = [e.get("source_domain") for e in d["contradicting_evidence"]]
+        assert "vnexpress.net" not in cited_domains, (
+            f"AGG's conduct node must never reach AAA's dossier: {cited_domains}")
+        assert "baodautu.vn" in cited_domains, (
+            f"AAA's own conduct must still be retrieved: {cited_domains}")
     finally:
         nw.close()
 

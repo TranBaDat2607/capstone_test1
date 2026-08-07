@@ -149,6 +149,10 @@ DEFAULT_MAX_LLM_PAIRS = 300
 DEFAULT_TOP_K = 8
 DEFAULT_WINDOW_BEFORE = 1     # conduct may predate the claim year by at most this
 DEFAULT_WINDOW_AFTER = 50     # ...and may follow it by "any" plausible number of years
+DEFAULT_MIN_TOPIC_OVERLAP = 2  # a single shared token is too weak a retrieval signal on
+                                # its own (even VN-aware, a lone shared word can still be
+                                # coincidental) — require at least 2. Indicator-axis pairs
+                                # (tier="indicator") bypass this gate entirely by design.
 DEFAULT_CACHE = DEFAULT_OUT_DIR / "adjudication_cache.json"  # issue #9: per-issuer, keyed
                                                                # by (claim_text, evidence_text,
                                                                # evidence_meta) content
@@ -183,6 +187,14 @@ STOPWORDS: Set[str] = {
     "bao", "cao", "report", "nien", "thuong", "ve", "la", "den", "cho", "khi",
 }
 
+# Tightened 2026-08-07 (Layer 2 of the ACG/AGG contamination fix): production rationale
+# text was generalizing from ONE adverse event to the company's ENTIRE trustworthiness —
+# e.g. "the company was fined for stock manipulation, therefore it likely didn't really
+# appoint an independent vote-counter either" — a halo inference the old wording's own
+# example ("a green/responsible claim vs a penalty... in the same period") invited. The
+# retrieval-side fix (issuer scoping + VN-aware topic tokens) removes the WRONG-COMPANY
+# case; this prompt change targets the remaining SAME-COMPANY-but-different-topic case,
+# which retrieval alone cannot rule out.
 ADJUDICATE_SYSTEM = (
     "You assess greenwashing evidence for a Vietnamese ESG knowledge graph. You are given "
     "ONE ESG claim a company made in its own report, and ONE piece of independent evidence "
@@ -191,12 +203,19 @@ ADJUDICATE_SYSTEM = (
     "Rules:\n"
     "- Treat the evidence as independent conduct ('what the company did'), not as a restatement "
     "of the claim.\n"
-    "- 'contradicts' means the evidence is in tension with the claim (e.g. a green/responsible "
-    "claim vs a penalty, violation, controversy, or an adverse metric in the same period).\n"
-    "- 'supports' means the evidence independently corroborates the claim (e.g. a third-party "
-    "verification, certification, or an observed metric consistent with the claim).\n"
-    "- Prefer 'irrelevant' when the evidence is about an unrelated topic or is neutral "
-    "financial/market coverage. Do not guess.\n"
+    "- 'contradicts' means the evidence is in tension with the SAME SPECIFIC topic, process, or "
+    "activity the claim describes (e.g. a claim about emissions vs an emissions violation; a claim "
+    "about a specific governance procedure vs evidence that THAT SAME procedure failed or was "
+    "skipped). A general negative fact about the company (an unrelated penalty, violation, or "
+    "controversy on a different topic) does NOT by itself contradict a claim about a different, "
+    "specific topic — do not infer 'the company is untrustworthy in general, therefore this claim "
+    "is false' from one adverse event unless the evidence is actually about the same matter as "
+    "the claim.\n"
+    "- 'supports' means the evidence independently corroborates that SAME specific claim (e.g. a "
+    "third-party verification, certification, or an observed metric consistent with the claim).\n"
+    "- Prefer 'irrelevant' when the evidence is about a different topic than the claim — even if "
+    "both are negative, both are positive, or both broadly concern ESG/governance — or when the "
+    "evidence is neutral financial/market coverage. Do not guess.\n"
     "- The texts are Vietnamese. confidence is 0.0-1.0. Ground the rationale in the evidence text.\n"
     "## OUTPUT LANGUAGE\n"
     "Write `rationale` in VIETNAMESE, with full diacritics, matching the language of the claim/evidence "
@@ -258,6 +277,21 @@ def node_domain(node: Dict[str, Any]) -> str:
     return ""
 
 
+def node_ticker(node: Dict[str, Any]) -> Optional[str]:
+    """The issuer ticker a conduct node's crawl belongs to, read from `source_doc`
+    (`esg_news_crawler` names every crawled doc "<TICKER>__<domain>__<hash>", verified
+    100% coverage on the live graph's news-sourced conduct nodes). Returns None when
+    source_doc is absent/unparseable — synthetic fixtures and any future conduct source
+    that doesn't carry this convention — so retrieval treats "unknown origin" as
+    "don't exclude it" rather than "wrong company"; only a POSITIVELY MISMATCHED ticker
+    is filtered out (§6a's "same issuer", never actually enforced before this)."""
+    src = str(props(node).get("source_doc", "") or "")
+    if "__" not in src:
+        return None
+    ticker = src.split("__", 1)[0].strip().upper()
+    return ticker or None
+
+
 def date_uncertain(node: Dict[str, Any]) -> bool:
     p = props(node)
     if p.get("date_uncertain") in (True, "true", "True"):
@@ -266,8 +300,49 @@ def date_uncertain(node: Dict[str, Any]) -> bool:
     return bool(re.fullmatch(r"(19|20)\d{2}-01-01", str(p.get("date", "") or "")))
 
 
+_word_tokenize = None  # lazy-bound on first call, see _vn_segments
+
+
+def _vn_segments(text: str) -> List[str]:
+    """Word-level VN segments via underthesea (already a hard dependency — same tool
+    `data_processing/sentence_splitter.py` uses, imported the same guarded way). Bound
+    lazily rather than at module import time: `import underthesea` has the side effect of
+    attaching a handler to the ROOT logger, which makes this module's own
+    `logging.basicConfig(level=logging.INFO)` below a silent no-op (basicConfig only
+    configures root when it has no handlers yet) if underthesea were imported above it —
+    every INFO-level progress log in this stage would vanish. Falls back to a plain
+    whitespace split if the tokenizer errors on unusual input — retrieval must never crash
+    on that."""
+    global _word_tokenize
+    if _word_tokenize is None:
+        from underthesea import word_tokenize as _wt
+        _word_tokenize = _wt
+    try:
+        return _word_tokenize(text or "")
+    except Exception:
+        return (text or "").split()
+
+
 def topic_tokens(text: str, extra: Optional[Set[str]] = None) -> Set[str]:
-    toks = {t for t in name_tokens(text) if len(t) >= 3 and t not in STOPWORDS}
+    """Topic tokens for retrieval overlap. Each underthesea segment is normalize_name()'d
+    and kept WHOLE (space-joined for multi-word segments), not exploded into unigrams —
+    that is what stops an unrelated VN compound from colliding with an unrelated word that
+    only shares one syllable. Concretely: "cổ phiếu" (stock) normalizes to "co phieu" and
+    survives as ONE token, distinct from the bare "phieu" that "phiếu bầu" (ballot)
+    contributes — plain unigram splitting used to strip "cổ" as a stopword and leave the
+    orphan "phieu", which is exactly how an unrelated company's stock-manipulation Penalty
+    got matched against a ballot-counting governance claim in production (2026-08-07).
+    A segment is dropped only when EVERY one of its words is itself a STOPWORD (e.g. "công
+    ty" -> "cong"+"ty", both boilerplate) — one non-boilerplate word is enough to keep the
+    whole segment, same threshold plain name_tokens applied per-word before."""
+    toks: Set[str] = set()
+    for seg in _vn_segments(text):
+        norm = normalize_name(seg)
+        words = norm.split()
+        if not words or all(w in STOPWORDS for w in words):
+            continue
+        if len(norm) >= 3:
+            toks.add(norm)
     if extra:
         toks |= {t for t in extra if len(t) >= 3 and t not in STOPWORDS}
     return toks
@@ -481,11 +556,21 @@ def run(args: argparse.Namespace) -> None:
     kw = claim_keywords(g)
     logger.info(f"{len(claim_idxs)} SustainabilityClaims linked to the issuer")
 
-    # ---- conduct pool (independent = news) ----
+    # ---- conduct pool (independent = news, SAME ISSUER only) ----
+    # §6a always documented "same issuer + VN topic overlap + temporal window" but the
+    # issuer half was never enforced — the pool spanned every ticker's crawled news, so a
+    # generic topic-token collision (e.g. "phieu" shared between "phiếu bầu"/ballot and
+    # "cổ phiếu"/stock once "cổ" is stripped as a stopword) could pull another company's
+    # penalty into this issuer's dossier. Scope by source_doc's "<TICKER>__" prefix now;
+    # a node with no parseable source_doc (synthetic fixtures, non-crawler sources) is
+    # kept rather than dropped — see node_ticker's docstring.
+    ticker_u = args.ticker.upper()
     conduct = [i for i, n in enumerate(g.nodes)
-               if n.get("class") in CONDUCT_CLASSES and props(n).get("source_type") == "news"]
+               if n.get("class") in CONDUCT_CLASSES and props(n).get("source_type") == "news"
+               and node_ticker(n) in (None, ticker_u)]
     conduct_by_cls = Counter(g.cls(i) for i in conduct)
-    logger.info(f"Conduct pool (source_type=news): {len(conduct)} nodes {dict(conduct_by_cls)}")
+    logger.info(f"Conduct pool (source_type=news, issuer={ticker_u}): "
+                f"{len(conduct)} nodes {dict(conduct_by_cls)}")
 
     # pre-tokenize the conduct pool once
     ctok = {i: topic_tokens(node_text(g.nodes[i])) for i in conduct}
@@ -526,6 +611,7 @@ def run(args: argparse.Namespace) -> None:
         return
 
     # ---- 6a retrieval: candidate conduct per claim (deterministic, cheap) ----
+    min_overlap = getattr(args, "min_topic_overlap", DEFAULT_MIN_TOPIC_OVERLAP)
     cand_of: Dict[int, List[int]] = {}
     all_pairs: List[Tuple[int, int, int]] = []  # (overlap, claim_idx, conduct_idx)
     for ci in claim_idxs:
@@ -534,7 +620,7 @@ def run(args: argparse.Namespace) -> None:
         scored: List[Tuple[int, int, int]] = []  # (overlap, recency, conduct_idx)
         for xi in conduct:
             overlap = len(ctoks & ctok[xi])
-            if overlap == 0:
+            if overlap < min_overlap:
                 continue
             xyear = node_year(g.nodes[xi])
             if cyear is not None and xyear is not None and not date_uncertain(g.nodes[xi]):
@@ -771,6 +857,9 @@ def main() -> None:
     p.add_argument("--top-k", type=int, default=DEFAULT_TOP_K)
     p.add_argument("--window-before", type=int, default=DEFAULT_WINDOW_BEFORE)
     p.add_argument("--window-after", type=int, default=DEFAULT_WINDOW_AFTER)
+    p.add_argument("--min-topic-overlap", type=int, default=DEFAULT_MIN_TOPIC_OVERLAP,
+                   help="Minimum shared VN topic-token count for a token-overlap candidate "
+                        "(indicator-axis pairs bypass this gate).")
     p.add_argument("--max-llm-pairs", type=int, default=DEFAULT_MAX_LLM_PAIRS)
     p.add_argument("--model", type=str, default=None,
                    help="Model id; defaults to the chosen provider's own default "
