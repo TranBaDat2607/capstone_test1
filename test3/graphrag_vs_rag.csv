@@ -1,0 +1,1457 @@
+﻿pair_id,ticker,evidence_text,graph_claim,graph_tier,graph_relation,rag_claim,rag_relation,token_f1,token_precision,token_recall,jaccard,rouge_l,cosine,labels_agree,graph_claim_norerank,graph_rerank_changed
+8f97195afbea,AGG,"Phạt 1,5 tỷ đồng, cấm giao dịch chứng khoán và đảm nhiệm chức vụ trong 2 năm do thao túng cổ phiếu AGG",,,,"Trong năm qua, công ty đã bị Ủy ban Chứng khoán Nhà nước xử phạt do chưa thực hiện tốt công tác này trong các năm trước.",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+a3f5be43dafd,AGG,Giảm doanh thu tài chính quý I/2026 so với cùng kỳ financial revenue growth -27.3 percent achieved,"Báo cáo tài chính 2020 được lập và trình bày trung thực, phù hợp với Chuẩn mực Kế toán Việt Nam (VAS) và các quy định hiện hành.",token_overlap,irrelevant,"121
+120 Báo cáo thường niên 2022 An Gia Group - Tập Đoàn Bất Động Sản An Gia Giới thiệu doanh nghiệp Bối cảnh và định hướng chiến lược Báo cáo quản trị doanh nghiệp Báo cáo của Ban Điều Hành Báo cáo phát triển bền vững Báo cáo tài chính kiểm toán
+121
+120 ĐÓNG GÓP VÀO TĂNG TRƯỞNG KINH TẾ BỀN VỮNG Chỉ tiêu Giá trị kinh tế tạo lập
+2021
+2022 Doanh thu từ hoạt động kinh doanh
+1.808,4
+6.118,6 Doanh thu tài chính
+610,1
+321,6 Doanh thu khác
+11,4
+29,4 Tổng cộng
+2.429,9
+6.539,6
+6.539,6 Tổng giá trị kinh tế tạo lập Tỷ đồng GIÁ TRỊ KINH TẾ TẠO LẬP An Gia vẫn duy trì đà tăng trưởng trong hoạt động kinh doanh với doanh thu thuần từ bán hàng và cung cấp dịch vụ đạt hơn 6.000 tỷ đồng trong năm
+2022, doanh thu tài chính ghi nhận đạt 323,2 tỷ và doanh thu khác đạt 29,3 tỷ đồng.",irrelevant,0.1058,0.3929,0.0611,0.0893,0.0673,0.4435,True,"Báo cáo tài chính 2020 được lập và trình bày trung thực, phù hợp với Chuẩn mực Kế toán Việt Nam (VAS) và các quy định hiện hành.",False
+403ac1b1baf3,ACG,Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG,Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+1d48c03f0504,ACG,Dùng 92 tài khoản chứng khoán để thao túng cổ phiếu AGG,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",token_overlap,irrelevant,"Thành viên HĐQT có nghĩa vụ phải CBTT khi phát sinh giao dịch cổ phiếu Công ty theo quy định tại Thông tư số
+96-2020/TT-BTC hướng dẫn công bố thông tin trên thị trường chứng khoán.",irrelevant,0.2424,0.2,0.3077,0.1486,0.1818,0.4988,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",False
+92f417641b53,AGG,Tỷ lệ trả cổ tức bằng cổ phiếu năm 2021 Tỷ lệ trả cổ tức bằng cổ phiếu 50.0 percent achieved,Triển khai phương án phát hành cổ phiếu để chi trả cổ tức cho Cổ đông,token_overlap,supports,"100% Stt Số Nghị quyết/ Quyết định Ngày Nội dung Tỷ lệ thông qua
+23
+26/2022/QĐ-AGI-PL
+08/09/2022 Thông qua phương án chi tiết và triển khai thực hiện việc phát hành cổ phiếu để trả cổ tức cho cổ đông đã được thông qua tại Nghị quyết Đại hội đồng Cổ đông số 17/2022/NQAGI ngày 15/04/2022.",irrelevant,0.3902,1.0,0.2424,0.28,0.3171,0.5752,False,Xác định ngày đăng ký cuối cùng thực hiện quyền nhận cổ tức bằng cổ phiếu cho cổ đông hiện hữu là ngày 28/08/2020,True
+00a7b50e0e6b,ACG,"Phạt 1,5 tỷ đồng, cấm giao dịch chứng khoán và đảm nhiệm chức vụ trong 2 năm do thao túng cổ phiếu AGG",Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+731096377a9f,ACG,Nhóm liên quan VinaCapital giao dịch trái chiều 133.200 cổ phiếu Gỗ An Cường (ACG),Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"NGHIỆP VỤ VỚI CÁC BÊN LIÊN QUAN Danh sách các bên liên quan có quan hệ kiểm soát và các bên liên quan có giao dịch trọng yếu trong năm với Nhóm Công ty và tại ngày 31 tháng 12 năm 2025 như sau:
+Bên liên quan Mối quan hệ Thắng Lợi Homes Công ty liên kết Công ty TNHH Đầu tư NC Việt Nam (“Đầu tư NC Việt Nam”) Cổ đông kiểm soát Whitlam Holding Pte. Ltd.",irrelevant,0.1856,0.4737,0.1154,0.0877,0.1237,0.3541,True,"Công ty không có trường hợp nào không tuân thủ luật pháp, quy tắc và quy định liên quan đến giao dịch bên liên quan đáng kể hoặc trọng yếu",True
+2fde131e1b64,ACG,Giảm chi phí tài chính quý I/2026 so với cùng kỳ financial expenses growth -77.3 percent achieved,"Công ty công bố Báo cáo tài chính hợp nhất và báo cáo tài chính riêng hàng quý bằng song ngữ (tiếng Việt và tiếng Anh). Bên cạnh đó, Công ty công bố báo cáo IR định kỳ hàng quý.",token_overlap,irrelevant,"Một số nội dung cụ thể BKS định hướng tập trung giám sát trong năm 2026 như sau:
+Giám sát khoản đầu tư vào công ty con;
+Giám sát giao dịch với các bên liên quan;
+Giám sát việc thực hiện các hoạt động ESG mà Công ty đã đặt mục tiêu cụ thể;
+Giám sát việc thực hiện các dự án trách nhiệm xã hội và thiện nguyện theo ngân sách đã phê duyệt;
+Quản lý dòng tiền và nợ vay.",irrelevant,0.1311,0.2,0.0976,0.0602,0.082,0.3939,True,"Công ty luôn chủ động tiếp và làm việc với các chuyên gia phân tích hằng quý. Ngoài ra, Công ty cũng gặp gỡ và cập nhật thông tin bất thường với các chuyên gia phân tích để truyền tải rõ hơn về hoạt động của Công ty.",True
+cfcf8052bd71,AGG,Dòng tiền kinh doanh chính quý I/2026 operating cash flow -121.7 tỷ đồng achieved,,,,"TẬP ĐOÀN BẤT ĐỘNG SẢN AN GIA
+93 Quản trị doanh nghiệp Báo cáo phát triển bền vững Bối cảnh và Định hướng chiến lược Báo cáo tài chính 2025 Giới thiệu doanh nghiệp Hoạt động kinh doanh trong năm BÁO CÁO THƯỜNG NIÊN 2025
+92
+01 TÌNH HÌNH TÀI CHÍNH GIAI ĐOẠN
+2021 - 2025 Tình hình tài chính Năm 2021 Năm 2022 Năm 2023 Năm 2024 Năm 2025 Cân đối kế toán Tổng tài sản
+12.565
+11.099
+9.293
+7.035
+5.477 Tài sản ngắn hạn
+11.090
+8.701
+8.302
+5.819
+1.610 Tài sản dài hạn
+1.475
+2.398
+991
+1.216
+3.867 Nợ phải trả
+9.889
+8.373
+6.417
+3.898
+1.962 Vốn chủ sở hữu
+2.676
+2.726
+2.876
+3.137
+3.515 Vốn điều lệ
+828
+1.251
+1.251
+1.625
+1.625 Kết quả kinh doanh Doanh thu thuần
+1.808
+6.189
+3.891
+1.913
+829 Lợi nhuận gộp
+399
+1.047
+977
+593
+583 Lợi nhuận trước thuế
+494
+219
+582
+302
+360 Lợi nhuận sau thuế
+421
+97
+460
+261
+379 Lưu chuyển tiền tệ Lưu chuyển tiền thuần từ hoạt động kinh doanh
+872
+2.815
+121 (945) (244) Lưu chuyển tiền thuần từ hoạt động đầu tư (375) (1.451)
+234
+645
+601 Lưu chuyển tiền thuần từ hoạt động tài chính (618) (1.039) (306) (306) (434) Tiền và tương đương tiền đầu kỳ
+519
+398
+723
+772
+167 Tiền và tương đương tiền cuối kỳ
+398
+723
+772
+167
+91 ĐVT: Tỷ đồng BÁO CÁO THƯỜNG NIÊN 2025
+92 TỔNG QUAN TÀI CHÍNH 2021 - 2025 » .",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+f7da86f9fabe,ADP,năng suất lao động tăng 15%-20% labor_productivity 17.5 percent achieved,,,," Tăng cường năng lực cạnh tranh: Nâng cao năng suất lao động, giảm chi phí sản xuất.",supports,0.0,0.0,0.0,0.0,0.0,,,,
+d8187ff5113b,ACG,Giá trị phát hành cổ phiếu trả cổ tức năm 2021 theo mệnh giá Giá trị phát hành cổ phiếu trả cổ tức theo mệnh giá 438.0 tỷ đồng achieved,"Nghị quyết của ĐHĐCĐ số 09-2022/NQ-GAC ngày 06/06/2022 thông qua phương án chia cổ tức năm 2021, Kế hoạch chi trả cổ tức năm 2022.",token_overlap,supports,"Thông qua ngày đăng ký cuối cùng chốt danh sách cổ đông để chi trả cổ tức năm
+2021 bằng cổ phiếu.",supports,0.3846,0.3333,0.4545,0.2571,0.3077,0.5355,True,"Nghị quyết của ĐHĐCĐ số 09-2022/NQ-GAC ngày 06/06/2022 thông qua phương án chia cổ tức năm 2021, Kế hoạch chi trả cổ tức năm 2022.",False
+46bf4fbbc276,ACG,"[LIVE] ĐHĐCĐ Gỗ An Cường: Công ty đã không còn nợ xấu, sắp thu hồi được bằng bất động sản",Mỗi nội dung trình ĐHĐCĐ tại cuộc họp thường niên được thể hiện ở từng tờ trình riêng và đều được thể hiện thành từng mục riêng khi trình bày trong một Nghị quyết. Công ty không tách riêng từng nội dung được thông qua trong từng Nghị quyết riêng lẻ.,token_overlap,irrelevant,"100%
+11
+11-2025/NQ-GAC
+31/07/2025 Thông qua việc thay đổi mẫu dấu của Công ty Cổ phần Gỗ An Cường.",irrelevant,0.1067,0.0784,0.1667,0.0769,0.0533,0.3016,True,An Cường đã minh chứng được chữ “Tầm” bằng cách tạo được chỗ đứng vững chắc trong ngành vật liệu nội thất tại thị trường Việt Nam cũng như quốc tế.,True
+8dd681462758,ADP,Chất lượng tương đương với dòng sản phẩm 50 triệu/m2 giá trị tương đương 50 triệu VND/m2 achieved,"ADP cam kết cung cấp những sản phẩm chất lượng cao, giá cả hợp lý nhất để đáp ứng nhu cầu của khách hàng.",token_overlap,irrelevant,"Sơn Á Đông cam kết đổi mới không ngừng để cung cấp những sản phẩm chất lượng cao với giá thành hợp lý cho người tiêu dùng nhằm mang lại không gian sống đẹp, bền vững, bảo vệ công trình và tạo giá trị bền vững cho cộng đồng.",irrelevant,0.3836,0.5833,0.2857,0.2593,0.3562,0.5916,True,"Cam kết đổi mới không ngừng để cung cấp những sản phẩm chất lượng cao với giá thành hợp lý cho người tiêu dùng nhằm mang lại không gian sống đẹp, bền vững, bảo vệ công trình và tạo giá trị bền vững cho cộng đồng.",True
+d934432ed5ce,ACG,Dòng tiền kinh doanh chính quý I/2026 operating cash flow -121.7 tỷ đồng achieved,"Công ty luôn chú trọng giữ uy tín đối với các cam kết của Công ty. Công ty luôn thanh toán đúng hạn đối với các khoản vay ngân hàng, nợ phải trả cho nhà cung cấp, các khoản tiền phải trả cho người lao động và các khoản phải nộp/ phải trả cho nhà nước, cơ quan BHXH. Công ty luôn công bố thông tin định kỳ về hoạt động kinh doanh (hàng tháng), công bố BCTC (hàng quý/ năm) trên website của Công ty và trên các phương tiện thông tin đại chúng.",token_overlap,irrelevant,"Bên cạnh đó, Công ty đã quản trị tốt rủi ro, đảm bảo chất lượng doanh thu, lợi nhuận và dòng tiền kinh doanh, tuân thủ các quy định của pháp luật trong hoạt động kinh doanh, công tác tài chính kế toán và công bố thông tin.",contradicts,0.2517,0.1895,0.375,0.1765,0.1818,0.649,False,"Công ty luôn chú trọng giữ uy tín đối với các cam kết của Công ty. Công ty luôn thanh toán đúng hạn đối với các khoản vay ngân hàng, nợ phải trả cho nhà cung cấp, các khoản tiền phải trả cho người lao động và các khoản phải nộp/ phải trả cho nhà nước, cơ quan BHXH. Công ty luôn công bố thông tin định kỳ về hoạt động kinh doanh (hàng tháng), công bố BCTC (hàng quý/ năm) trên website của Công ty và trên các phương tiện thông tin đại chúng.",False
+870fe9181619,AGG,8 năm liên tiếp đạt Thương hiệu Quốc gia Việt Nam Thương hiệu Quốc gia Việt Nam 8.0 năm achieved,,,,"Chất thải lỏng 0 0 trước cộng đồng và còn là một chiến lược đúng đắn để gia tăng uy tín cho thương hiệu, tạo thiện An Gia phát triển, có thể kể đến như The Gar- den, River Panorama, hay mới nhất là Westgate Nước thải sinh hoạt (m3) 500 1.604,4",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+8da64d2ed3d0,ACG,"Phạt 3 tỷ đồng, cấm giao dịch chứng khoán trong 2 năm do giúp sức thao túng cổ phiếu AGG",Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+725bc8f1c97a,ACG,"Phạt 3 tỷ đồng, cấm giao dịch chứng khoán trong 2 năm do giúp sức thao túng cổ phiếu AGG",Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+238aad56d20f,AGG,"Phạt 3 tỷ đồng, cấm giao dịch chứng khoán trong 2 năm do giúp sức thao túng cổ phiếu AGG",,,,"Trong năm qua, công ty đã bị Ủy ban Chứng khoán Nhà nước xử phạt do chưa thực hiện tốt công tác này trong các năm trước.",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+a9c569400f20,AGG,Khoản phải trả cho người lao động tính đến 31/12/2022 payables to employees 23 tỷ đồng achieved,Thu hồi 74.750 cổ phiếu đã phát hành cho cán bộ nhân viên theo chương trình lựa chọn người lao động năm 2019,token_overlap,irrelevant,"Phải trả người lao động
+680.000.000
+9.000.000
+315
+5.",contradicts,0.1622,0.125,0.2308,0.0968,0.1622,0.467,False,Thu hồi 74.750 cổ phiếu đã phát hành cho cán bộ nhân viên theo chương trình lựa chọn người lao động năm 2019,False
+b73ade9ec41f,ACG,Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG,Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+51b19d80babf,ADP,"Phạt 1,5 tỷ đồng, cấm giao dịch chứng khoán và đảm nhiệm chức vụ trong 2 năm do thao túng cổ phiếu AGG",,,,"Giao dịch cổ phiếu của người nội bộ:
+STT Người thực hiện giao dịch Quan hệ với người nội bộ Số cổ phiếu sở hữu đầu kỳ Số cổ phiếu sở hữu cuối kỳ Lý do tăng, giảm (mua, bán, chuyển đổi,…) Số lượng Tỷ lệ Số lượng Tỷ lệ
+1 Võ Hồng Hà Thành viên HĐQT kiêm Phó tổng giám đốc
+2.534.400
+11,00%
+1.821.200
+7,90% Bán Hợp đồng hoặc giao dịch với người nội bộ:
+- Giao dịch giữa công ty với người có liên quan của công ty; hoặc giữa công ty với cổ đông lớn, người nội bộ, người có liên quan của người nội bộ: (Không có) - Giao dịch giữa người nội bộ công ty, người có liên quan của người nội bộ với công ty con, công ty do công ty nắm quyền kiểm soát: (Không có)",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+b7a4d90cebb0,ACG,"An Cường – 30 năm phát triển bền vững, tiên phong hướng tới mục tiêu Net Zero 2050 - CafeLand.Vn...",Cải tiến liên tục để luôn theo theo đuổi sự hoàn hảo. Điều đó cũng giúp cho mỗi con người hạn chế tối đa “tính ì”. Và sự cải tiến đóng vai trò hết sức quan trọng nhằm quyết định cho sự phát triển cũng như đột phá thành công và tiến đến vững bền phát triển của An Cường.,token_overlap,supports,"Một trong số đó là việc An Cường cam kết đồng hành cùng Chính phủ Việt Nam trong việc thực hiện cam kết Net Zero vào năm
+2050, theo đó, HĐQT và Ban Điều hành của Công ty đã có chiến lược và hành động cụ thể nhằm tích hợp các mục tiêu liên quan đến định hướng giảm phát thải khí nhà kính vào hoạt động kinh doanh của Công ty.",supports,0.2273,0.25,0.2083,0.1489,0.1212,0.3718,True,"Con người được xem là trung tâm của mọi sự vận động trong doanh nghiệp, quyết định tới sự phát triển bền vững của doanh nghiệp hay xã hội. Và con người cũng chính là tài sản của doanh nghiệp. Công ty luôn có cơ chế tốt để thu hút nhân tài tạo môi trường làm việc thật tốt để từng cá nhân hoà đồng và chuyên nghiệp hơn trong một tập thể lớn.",True
+9826f6622225,ACG,Số lô đất thế chấp làm tài sản bảo đảm mortgaged assets 549.0 lots achieved,"Quyền sử dụng đất của thửa đất 218, thửa đất 441 tọa lạc tại phường Tân Khánh, Thành phố Hồ Chí Minh đã được dùng để làm tài sản thế chấp cho các khoản vay ngắn hạn ngân hàng của Nhóm Công ty.",token_overlap,irrelevant,"Quyền đòi nợ, quyền sử dụng đất và tài sản gắn liền với đất của thửa đất 441 và thửa đất 820 tọa lạc tại Tỉnh Bình Dương, máy móc thiết bị.",irrelevant,0.4,0.3488,0.4688,0.2264,0.32,0.6924,True,"Quyền sử dụng đất của thửa đất 218, thửa đất 441 tọa lạc tại phường Tân Khánh, Thành phố Hồ Chí Minh đã được dùng để làm tài sản thế chấp cho các khoản vay ngắn hạn ngân hàng của Nhóm Công ty.",False
+739bc023feac,ACG,Cổ tức đợt 1 năm 2026 bằng tiền mặt theo tỷ lệ 7% cổ tức 7.0 percent achieved,"thực hiện chi trả cổ tức năm 2024 đợt 2 và tạm ứng cổ tức năm 2025 đợt 1 bằng tiền mặt, với tổng giá trị chi trả hơn 300 tỷ đồng",token_overlap,irrelevant,Thông qua việc tạm ứng cổ tức đợt 1 năm 2023 bằng tiền mặt cho cổ đông hiện hữu.,irrelevant,0.4706,0.375,0.6316,0.3333,0.3529,0.727,True,"thực hiện chi trả cổ tức năm 2024 đợt 2 và tạm ứng cổ tức năm 2025 đợt 1 bằng tiền mặt, với tổng giá trị chi trả hơn 300 tỷ đồng",False
+e6015bd13845,ACG,Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG,Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+378c70550a9f,AGG,Vốn điều lệ vốn điều lệ 1135.0 tỷ đồng achieved,,,,"BÁO CÁO THƯỜNG NIÊN 2025
+94 TẬP ĐOÀN BẤT ĐỘNG SẢN AN GIA
+95 Quản trị doanh nghiệp Báo cáo phát triển bền vững Bối cảnh và Định hướng chiến lược Báo cáo tài chính 2025 Giới thiệu doanh nghiệp Hoạt động kinh doanh trong năm Chỉ tiêu ĐVT
+2021
+2022
+2023
+2024
+2025 Chỉ tiêu về khả năng thanh toán Hệ số thanh toán ngắn hạn Lần
+1,83
+1,45
+1,57
+1,81
+1,01 Hệ số thanh toán nhanh Lần
+0,72
+0,83
+1,19
+1,57
+0,79 Chỉ tiêu về cơ cấu vốn Hệ số Nợ/Tổng tài sản Lần
+0,79
+0,75
+0,69
+0,55
+0,36 Hệ số Nợ/Vốn chủ sở hữu Lần
+3,70
+3,07
+2,23
+1,24
+0,56 Chỉ tiêu về năng lực hoạt động Vòng quay Tổng tài sản Vòng
+0,23
+0,98
+1,02
+0,95
+0,44 Vòng quay Hàng tồn kho Vòng
+0,14
+0,56
+0,42
+0,27
+0,13 Chỉ tiêu về khả năng sinh lời Hệ số LNST/Doanh thu thuần (ROS) %
+23,29
+1,56
+11,83
+13,64
+45,67 Hệ số LNST/VCSH bình quân (ROEA) %
+16,86
+3,58
+16,44
+8,68
+11,38 Hệ số LNST/Tổng tài sản bình quân (ROAA) %
+3,77
+0,82
+4,52
+3,20
+6,05 Hệ số LN từ HĐSXKD/Doanh thu thuần %
+27,22
+3,36
+12,89
+16,04
+42,14 Hệ số LN gộp/Doanh thu thuần %
+22,05
+16,92
+25,11
+31,02
+70,36 Thông tin khác Thu nhập trên mỗi cổ phiếu (EPS) VNĐ/CP
+5.068
+159
+1.402
+1.830
+2.333 Giá trị sổ sách mỗi cổ phiếu (BVPS) VNĐ/CP
+25.502
+18.825
+22.368
+19.050
+21.626 BÁO CÁO THƯỜNG NIÊN 2025
+94 Về tình hình tài chính:
+Xét về quy mô tài chính, tổng tài sản của An Gia có xu hướng giảm dần từ 12.565 tỷ đồng năm 2021 xuống
+5.477 tỷ đồng vào cuối năm 2025.",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+2c51d810e119,ACG,"Phạt 3 tỷ đồng, cấm giao dịch chứng khoán trong 2 năm do giúp sức thao túng cổ phiếu AGG",Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+07c1da6e4f49,AGG,Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG,,,,"Trong năm qua, công ty đã bị Ủy ban Chứng khoán Nhà nước xử phạt do chưa thực hiện tốt công tác này trong các năm trước.",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+f8ff946cbafa,AGG,Doanh thu thuần về bán hàng và cung cấp dịch vụ revenue 7363.0 tỷ đồng achieved,"Doanh thu được ghi nhận khi Tập đoàn có khả năng nhận được các lợi ích kinh tế có thể xác định được một cách chắc chắn. Doanh thu được xác định theo giá trị hợp lý của các khoản đã thu hoặc sẽ thu được sau khi trừ đi các khoản chiết khấu thương mại, giảm giá hàng bán và hàng bán bị trả lại.",token_overlap,irrelevant,"121
+120 Báo cáo thường niên 2023 An Gia Group - Tập Đoàn Bất Động Sản An Gia Giới thiệu doanh nghiệp Bối cảnh và định hướng chiến lược Báo cáo quản trị doanh nghiệp Báo cáo của Ban Điều Hành Báo cáo phát triển bền vững Báo cáo tài chính kiểm toán
+121
+120 ĐÓNG GÓP VÀO TĂNG TRƯỞNG KINH TẾ BỀN VỮNG Chỉ tiêu Giá trị kinh tế tạo lập (tỷ đồng)
+2022
+2023 Doanh thu từ hoạt động kinh doanh
+6.118,6
+3.891,0 Doanh thu tài chính
+321,6
+376,4 Doanh thu khác
+29,4
+97,9 Tổng cộng
+6.539,6
+4.365,3
+3.891 Tổng giá trị kinh tế tạo lập Tỷ đồng GIÁ TRỊ KINH TẾ TẠO LẬP An Gia vẫn duy trì đà tăng trưởng trong hoạt động kinh doanh với doanh thu thuần từ bán hàng và cung cấp dịch vụ đạt hơn 3.891 tỷ đồng trong năm
+2023, chủ yếu đến từ việc bàn giao dự án Westgate (Bình Chánh) và dự án The Standard (Bình Dương).",contradicts,0.1457,0.2727,0.0994,0.0942,0.0891,0.4441,False,"Doanh thu được ghi nhận khi Tập đoàn có khả năng nhận được các lợi ích kinh tế có thể xác định được một cách chắc chắn. Doanh thu được xác định theo giá trị hợp lý của các khoản đã thu hoặc sẽ thu được sau khi trừ đi các khoản chiết khấu thương mại, giảm giá hàng bán và hàng bán bị trả lại.",False
+5ca5551e7121,ADP,AGG: Công ty do Chủ tịch sáng lập bị phạt vì thao túng cổ phiếu,,,,"vn BÁO CÁO THƯỜNG NIÊN 2023 73 CÁC GIAO DỊCH, THÙ LAO VÀ CÁC KHOẢN LỢI ÍCH CỦA HỘI ĐỒNG QUẢN TRỊ, ban tổng giám đốc và ủy ban kiểm toán Lương, thưởng, thù lao, các khoản lợi ích STT Thành viên Chức vụ Thu nhập
+1 Bà Nguyễn Thị Nhung Chủ tịch
+168.000.000
+2 Bà Dương Thị Thùy Hương Tổng Giám đốc
+434.395.691
+3 Ông Võ Hồng Hà Phó Tổng Giám đốc
+493.256.094
+4 Ông Lê Đình Quang Phó Tổng Giám đốc
+530.703.665
+5 Bà Võ Thị Bích Ngọc Thành viên HĐQT
+144.000.000
+6 Ông Trần Bửu Trí Thành viên HĐQT
+126.000.000
+7 Bà Nguyễn Thị Minh Sáu Chủ tịch UBKT
+174.000.000
+8 Ông Tống Trường Thịnh Thành viên UBKT
+166.000.000 Hợp đồng giao dịch với người nội bộ Giao dịch giữa công ty với người có liên quan của công ty; hoặc giữa công ty với cổ đông lớn, người nội bộ, người có liên quan của người nội bộ: (Không có) Giao dịch giữa người nội bộ công ty, người có liên quan của người nội bộ với công ty con, công ty do công ty nắm quyền kiểm soát: (Không có) Giao dịch cổ phiếu của người nội bộ STT Người thực hiện giao dịch Quan hệ với người nội bộ Số cổ phiếu sở hữu đầu kỳ Số cổ phiếu sở hữu cuối kỳ Lý do tăng, giảm (mua, bán, chuyển đổi, thưởng…) Số cổ phiếu Tỷ lệ Số cổ phiếu Tỷ lệ
+1 Nguyễn Thị Nhung CT HĐQT
+3.700.669
+17,70%
+2.318.269
+10,06% Bán cổ phần
+2 Võ Hồng Hà TV HĐQT
+1.152.000
+5,51%
+2.534.400
+11,00% Mua cổ phần
+3 Tống Trường Thịnh TV HĐQT
+103.500
+0,50%
+133.500
+0,58% Mua cổ phần
+4 Tống Trường Lộc Chị Ông Tống Trường Thịnh
+103.025
+0,49%
+133.025
+0,58% Mua cổ phần Đánh giá việc thực hiện các quy định về quản trị công ty Việc quản trị Công ty luôn được đảm bảo theo đúng pháp luật, Điều lệ, các quy chế nội bộ và các tiêu chí nhằm đảm bảo được hoạt động của Công ty một cách suôn sẻ nhất; theo đuổi các mục tiêu vì lợi ích của Công ty và của các cổ đông, cũng như tạo điều kiện thuận lợi cho việc giám sát hoạt động của Công ty một cách hiệu quả, từ đó khuyến khích Công ty sử dụng các nguồn lực một cách tốt nhất.",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+101058f95b50,ACG,Dùng 92 tài khoản chứng khoán để thao túng cổ phiếu AGG,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",token_overlap,irrelevant,"Quản trị doanh nghiệp CHƯƠNG 3
+86 - 147
+92
+92
+94
+99
+102
+103
+106
+112
+114
+124
+124
+124
+125
+125
+126
+127
+128 Báo cáo hoạt động của HĐQT Thông tin thành viên HĐQT Hoạt động của HĐQT năm 2023 Đánh giá của HĐQT Hoạt động của Thành viên HĐQT độc lập Đánh giá của Thành viên HĐQT độc lập Báo cáo Ban kiểm soát Thù lao và các khoản lợi ích của HĐQT và Ban Tổng giám đốc Quản trị rủi ro Thông tin cổ phiếu và Hoạt động Quan hệ nhà đầu tư Thông tin cổ phiếu Diễn biến giá chính giá cổ phiếu 2023 Cơ cấu cổ đông Sở hữu cổ đông lớn Giao dịch của người nội bộ và người có liên quan trong năm 2023 Hoạt động quan hệ nhà đầu tư năm 2023 Phân tích & Đánh giá Quản trị công ty theo thẻ điểm quản trị công ty khu vực ASEAN
+2.",irrelevant,0.1727,0.3167,0.1187,0.1157,0.0818,0.4634,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",False
+c856f606f7b4,ACG,"Phạt 1,5 tỷ đồng, cấm giao dịch chứng khoán và đảm nhiệm chức vụ trong 2 năm do thao túng cổ phiếu AGG",Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+4d60dc1b8f84,ACG,"Phạt 3 tỷ đồng, cấm giao dịch chứng khoán trong 2 năm do giúp sức thao túng cổ phiếu AGG",Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+0d940433100a,ACG,Dư nợ vay ngắn hạn short-term debt 722000000000 VND achieved,Công ty đã sử dụng hàng tồn kho với giá trị là 167.000.000.000 VND làm tài sản thế chấp cho các khoản vay ngắn hạn ngân hàng.,token_overlap,irrelevant,"Một số nội dung cụ thể BKS định hướng tập trung giám sát trong năm 2026 như sau:
+Giám sát khoản đầu tư vào công ty con;
+Giám sát giao dịch với các bên liên quan;
+Giám sát việc thực hiện các hoạt động ESG mà Công ty đã đặt mục tiêu cụ thể;
+Giám sát việc thực hiện các dự án trách nhiệm xã hội và thiện nguyện theo ngân sách đã phê duyệt;
+Quản lý dòng tiền và nợ vay.",irrelevant,0.1429,0.2667,0.0976,0.0976,0.0893,0.3754,True,Công ty đã sử dụng hàng tồn kho với giá trị là 167.000.000.000 VND làm tài sản thế chấp cho các khoản vay ngắn hạn ngân hàng.,False
+a4aa141ff7d8,ADP,Chi phí quản lý doanh nghiệp “bào mòn” lợi nhuận của Gỗ An Cường,,,,"Quản lý chi phí: quản lý chi phí hiệu quả để tăng lợi nhuận, tối đa hóa lợi ích cho cổ đông và các bên đối tác liên quan.",contradicts,0.0,0.0,0.0,0.0,0.0,,,,
+f3b1aeab6ede,ADP,Vốn điều lệ vốn điều lệ 997.0 tỷ đồng achieved,,,,"Với quyết tâm tập trung hoàn thành ở mức cao nhất kế hoạch sản xuất kinh doanh và đầu tư phát triển năm 2025, Hội đồng quản trị xây dựng kế hoạch hoạt động với các mục tiêu và giải pháp như sau:
+ Thực hiện và đảm bảo hoạt động của HĐQT tuân thủ theo đúng các quy định của pháp luật và điều lệ của Công ty.",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+04862b6b32b7,ACG,Dòng tiền kinh doanh âm năm 2025 operating cash flow -377.0 tỷ đồng achieved,"thực hiện chi trả cổ tức năm 2024 đợt 2 và tạm ứng cổ tức năm 2025 đợt 1 bằng tiền mặt, với tổng giá trị chi trả hơn 300 tỷ đồng",token_overlap,irrelevant,"Trong năm, tổng chi phí lương, thưởng và phúc lợi của Công ty đạt Giai đoạn 2021–2025, thu nhập của người lao động không ngừng cải thiện TỶ ĐỒNG TỶ ĐỒNG TỶ ĐỒNG triệu đồng người/tháng vào năm 2020 triệu đồng người/tháng vào năm 2025
+701,2
+15,1% so với năm 2024
+16,0
+22,7 -7,8% -9,0%
+3,8%
+15,1%
+18,5%
+0.0
+100.0
+200.0
+300.0
+400.0
+500.0
+600.0
+700.0
+800.0
+2021
+2022
+2023
+2024
+2025 Nguồn: An Cường Vốn chủ sở hữu Tổng chi phí nhân sự Công ty đã tiến hành thanh lý một lượng lớn thiết bị không còn phù hợp với mô hình sản xuất mới, với giá trị thanh lý đạt Đồng thời đầu tư mua sắm thiết bị hiện đại mới với tổng giá trị
+72,6
+45,7 tảng cho mọi hoạt động của Công ty.",irrelevant,0.1771,0.5312,0.1062,0.1327,0.1042,0.5096,True,Cải tiến liên tục để luôn theo theo đuổi sự hoàn hảo. Điều đó cũng giúp cho mỗi con người hạn chế tối đa “tính ì”. Và sự cải tiến đóng vai trò hết sức quan trọng nhằm quyết định cho sự phát triển cũng như đột phá thành công và tiến đến vững bền phát triển của An Cường.,True
+d0864c8ac551,ADP,năng suất lao động tăng 15%-20% labor_productivity 17.5 percent achieved,,,," Tăng cường năng lực cạnh tranh: Nâng cao năng suất lao động, giảm chi phí sản xuất.",supports,0.0,0.0,0.0,0.0,0.0,,,,
+e09d75d62a14,ACG,Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG,Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+725a0b1d1aa2,ACG,Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG,Tình hình tuân thủ tiêu chí A.7.1: Thành viên HĐQT có được yêu cầu phải báo cáo giao dịch cổ phiếu Công ty trong 3 ngày làm việc? - Xanh,token_overlap,irrelevant,"(P) A.6 Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi (P) A.6.1 Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2821,0.3548,0.234,0.1897,0.1795,0.4767,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+009e7018eb14,ACG,"Phạt 1,5 tỷ đồng, cấm giao dịch chứng khoán và đảm nhiệm chức vụ trong 2 năm do thao túng cổ phiếu AGG",Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+878e822d2086,AAA,"Nhựa An Phát Xanh (AAA): Hé lộ sản phẩm “át chủ bài” mới, mục tiêu chiếm lĩnh thị trường Mỹ","Công ty cũng đẩy mạnh phát triển các sản phẩm nhựa thân thiện môi trường, đặc biệt tại thị trường nội địa, góp phần giải quyết các vấn đề về ô nhiễm môi trường do rác thải nhựa.",token_overlap,irrelevant,"Đến cuối năm 2018, Nhựa An Phát Xanh đã chính thức ra mắt dòng sản phẩm ANECO thân thiện với môi trường tại thị trường nội địa.",irrelevant,0.4,0.3421,0.4815,0.2553,0.3692,0.5415,True,"Công ty cũng đẩy mạnh phát triển các sản phẩm nhựa thân thiện môi trường, đặc biệt tại thị trường nội địa, góp phần giải quyết các vấn đề về ô nhiễm môi trường do rác thải nhựa.",False
+e55948a63b08,ACG,"Phạt 1,5 tỷ đồng, cấm giao dịch chứng khoán và đảm nhiệm chức vụ trong 2 năm do thao túng cổ phiếu AGG",Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+cba0ed858265,ACG,"An Cường – 30 năm phát triển bền vững, tiên phong hướng tới mục tiêu Net Zero 2050 - CafeLand.Vn...",Cải tiến liên tục để luôn theo theo đuổi sự hoàn hảo. Điều đó cũng giúp cho mỗi con người hạn chế tối đa “tính ì”. Và sự cải tiến đóng vai trò hết sức quan trọng nhằm quyết định cho sự phát triển cũng như đột phá thành công và tiến đến vững bền phát triển của An Cường.,token_overlap,irrelevant,"Định hướng phát triển bền vững được triển khai nhất quán theo mô hình ESG, hướng tới mục tiêu Net Zero vào năm 2030.",contradicts,0.1667,0.1167,0.2917,0.0923,0.119,0.3857,False,"Con người được xem là trung tâm của mọi sự vận động trong doanh nghiệp, quyết định tới sự phát triển bền vững của doanh nghiệp hay xã hội. Và con người cũng chính là tài sản của doanh nghiệp. Công ty luôn có cơ chế tốt để thu hút nhân tài tạo môi trường làm việc thật tốt để từng cá nhân hoà đồng và chuyên nghiệp hơn trong một tập thể lớn.",True
+58992f442cbf,ACG,Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG,Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+f8bccf369818,ACG,"An Cường – 30 năm phát triển bền vững, tiên phong hướng tới mục tiêu Net Zero 2050 - CafeLand.Vn...",Cải tiến liên tục để luôn theo theo đuổi sự hoàn hảo. Điều đó cũng giúp cho mỗi con người hạn chế tối đa “tính ì”. Và sự cải tiến đóng vai trò hết sức quan trọng nhằm quyết định cho sự phát triển cũng như đột phá thành công và tiến đến vững bền phát triển của An Cường.,token_overlap,irrelevant,"Định hướng phát triển bền vững được triển khai nhất quán theo mô hình ESG, hướng tới mục tiêu Net Zero vào năm 2030.",contradicts,0.1667,0.1167,0.2917,0.0923,0.119,0.3857,False,"Con người được xem là trung tâm của mọi sự vận động trong doanh nghiệp, quyết định tới sự phát triển bền vững của doanh nghiệp hay xã hội. Và con người cũng chính là tài sản của doanh nghiệp. Công ty luôn có cơ chế tốt để thu hút nhân tài tạo môi trường làm việc thật tốt để từng cá nhân hoà đồng và chuyên nghiệp hơn trong một tập thể lớn.",True
+a29475913a1c,AGG,"Cổ phiếu lao dốc, Gỗ An Cường tổ chức Đại hội đồng cổ đông trực tuyến",Thông qua kế hoạch tổ chức và dự thảo chương trình họp Đại hội đồng cổ đông thường niên,token_overlap,supports,Việc phát hành cổ phiếu này nhằm mục đích chia cổ tức và bổ sung vốn lưu động của Công ty và đã được chấp thuận bởi các cổ đông theo Nghị quyết Đại hội đồng Cổ đông thường niên năm 2022 số 17/2022/NQ-AGI ngày 15 tháng 4 năm 2022 và các Nghị quyết Hội đồng Quản trị số 26/2022/ QĐ-AGI-PL ngày 8 tháng 9 năm 2022 và số 41/2022/NQ-AGI-PL ngày 4 tháng 11 năm 2022.,irrelevant,0.1524,0.4211,0.093,0.1231,0.1524,0.4062,False,Thông qua kế hoạch tổ chức và dự thảo chương trình họp Đại hội đồng cổ đông thường niên,False
+853880fb72c6,ACG,"Phạt 1,5 tỷ đồng, cấm giao dịch chứng khoán và đảm nhiệm chức vụ trong 2 năm do thao túng cổ phiếu AGG",Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+e6b85cd7e98c,ACG,Đạt danh hiệu Nơi làm việc tốt nhất châu Á Nơi làm việc tốt nhất châu Á achieved,"Chú trọng công tác đào tạo, phát triển nguồn nhân lực và xây dựng môi trường làm việc tốt.",token_overlap,supports,"Đây là nơi làm việc của hơn
+1.400 lao động phổ thông đến từ nhiều vùng miền khác nhau của cả nước.",irrelevant,0.0952,0.1053,0.087,0.0513,0.0952,0.3714,False,"Con người được xem là trung tâm của mọi sự vận động trong doanh nghiệp, quyết định tới sự phát triển bền vững của doanh nghiệp hay xã hội. Và con người cũng chính là tài sản của doanh nghiệp. Công ty luôn có cơ chế tốt để thu hút nhân tài tạo môi trường làm việc thật tốt để từng cá nhân hoà đồng và chuyên nghiệp hơn trong một tập thể lớn.",True
+94f79fee8cc5,ACG,"Tăng lãi từ các công ty liên doanh, liên kết quý I/2026 so với cùng kỳ profit from associates growth 774.2 percent achieved","Công ty luôn chủ động tiếp và làm việc với các chuyên gia phân tích hằng quý. Ngoài ra, Công ty cũng gặp gỡ và cập nhật thông tin bất thường với các chuyên gia phân tích để truyền tải rõ hơn về hoạt động của Công ty.",token_overlap,irrelevant,"PHƯƠNG ÁN KINH DOANH NĂM 2026 Năm 2026 mở ra trong bối cảnh kinh tế toàn cầu tiếp tục đối diện với nhiều biến động: bất ổn địa chính trị, xu hướng bảo hộ thương mại, áp lực lạm phát và những tác động khó lường từ biến đổi khí hậu...",irrelevant,0.1414,0.1458,0.1373,0.0789,0.0808,0.2582,True,"Mọi nhân viên luôn được tuyển chọn, đào tạo, định hướng và sắp xếp công việc hợp lý nhất theo phương châm “đúng người - đúng việc"" nhằm giúp họ say mê sáng tạo và tận tâm trong công việc, điều đó sẽ góp phần mang lại những sản phẩm tốt cùng với chất lượng dịch vụ tốt nhất đến với khách hàng. Và đó cũng làm yếu tố làm nên giá trị của doanh nghiệp.",True
+aadf739186f1,ACG,Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG,Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"(P) A.6 Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi (P) A.6.1 Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.1818,0.3158,0.1277,0.1304,0.1515,0.3876,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+311df1f023b5,ACG,"An Cường – 30 năm phát triển bền vững, tiên phong hướng tới mục tiêu Net Zero 2050 - CafeLand.Vn...",An Cường đã có những bước tiến vượt bậc so với mục tiêu được hoạch định đầu năm.,token_overlap,irrelevant,"Một trong số đó là việc An Cường cam kết đồng hành cùng Chính phủ Việt Nam trong việc thực hiện cam kết Net Zero vào năm
+2050, theo đó, HĐQT và Ban Điều hành của Công ty đã có chiến lược và hành động cụ thể nhằm tích hợp các mục tiêu liên quan đến định hướng giảm phát thải khí nhà kính vào hoạt động kinh doanh của Công ty.",supports,0.1778,0.4444,0.1111,0.1159,0.1556,0.437,False,"Con người được xem là trung tâm của mọi sự vận động trong doanh nghiệp, quyết định tới sự phát triển bền vững của doanh nghiệp hay xã hội. Và con người cũng chính là tài sản của doanh nghiệp. Công ty luôn có cơ chế tốt để thu hút nhân tài tạo môi trường làm việc thật tốt để từng cá nhân hoà đồng và chuyên nghiệp hơn trong một tập thể lớn.",True
+33f29a919c5f,ACG,Đạt danh hiệu Nơi làm việc tốt nhất châu Á Nơi làm việc tốt nhất châu Á achieved,"Chú trọng công tác đào tạo, phát triển nguồn nhân lực và xây dựng môi trường làm việc tốt.",token_overlap,supports,"Với giải thưởng này, An Cường được đánh giá là doanh nghiệp có môi trường làm việc tốt, có chính sách nhân sự vượt trội, chế độ đãi ngộ hấp dẫn và thường xuyên tổ chức các hoạt động nội bộ sôi nổi nhằm gia tăng sự gắn kết của nhân viên.",supports,0.1972,0.3684,0.1346,0.1148,0.1408,0.5027,True,"Con người được xem là trung tâm của mọi sự vận động trong doanh nghiệp, quyết định tới sự phát triển bền vững của doanh nghiệp hay xã hội. Và con người cũng chính là tài sản của doanh nghiệp. Công ty luôn có cơ chế tốt để thu hút nhân tài tạo môi trường làm việc thật tốt để từng cá nhân hoà đồng và chuyên nghiệp hơn trong một tập thể lớn.",True
+3b91eb5d3a8b,ACG,Nhóm liên quan VinaCapital giao dịch trái chiều 133.200 cổ phiếu Gỗ An Cường (ACG),Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"NGHIỆP VỤ VỚI CÁC BÊN LIÊN QUAN Danh sách các bên liên quan có quan hệ kiểm soát và các bên liên quan có giao dịch trọng yếu trong năm với Nhóm Công ty và tại ngày 31 tháng 12 năm 2025 như sau:
+Bên liên quan Mối quan hệ Thắng Lợi Homes Công ty liên kết Công ty TNHH Đầu tư NC Việt Nam (“Đầu tư NC Việt Nam”) Cổ đông kiểm soát Whitlam Holding Pte. Ltd.",irrelevant,0.1856,0.4737,0.1154,0.0877,0.1237,0.3541,True,"Công ty không có trường hợp nào không tuân thủ luật pháp, quy tắc và quy định liên quan đến giao dịch bên liên quan đáng kể hoặc trọng yếu",True
+c4bbca318193,ADP,Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG,,,,"Giao dịch cổ phiếu của người nội bộ: Không có Hợp đồng hoặc giao dịch với người nội bộ:
+- Giao dịch giữa công ty với người có liên quan của công ty; hoặc giữa công ty với cổ đông lớn, người nội bộ, người có liên quan của người nội bộ: (Không có) - Giao dịch giữa người nội bộ công ty, người có liên quan của người nội bộ với công ty con, công ty do công ty nắm quyền kiểm soát: (Không có)",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+a9ef34f8478d,AAA,Giảm phát thải: Khi doanh nghiệp 'chuyển vai' từ tìm hiểu sang triển khai,"AAA đã nỗ lực để “xanh” trong cách doanh nghiệp vận hành, đồng thời thúc đẩy chuyển dịch cơ cấu sản phẩm sang các sản phẩm thân thiện với môi trường.",token_overlap,irrelevant,Tác động lên môi trường Tổng phát thải khí nhà kính (GHG) trực tiếp và gián tiếp: Hiện Công ty đang làm việc với một số đơn vị tư vấn để bắt đầu triển khai kiểm kê khí thải nhà kính từ năm 2024.,irrelevant,0.1067,0.129,0.0909,0.0625,0.0533,0.3971,True,"AAA đã nỗ lực để “xanh” trong cách doanh nghiệp vận hành, đồng thời thúc đẩy chuyển dịch cơ cấu sản phẩm sang các sản phẩm thân thiện với môi trường.",False
+62012e632079,AGG,Vốn điều lệ của CTCP Kinh doanh và Đầu tư Bình Dương charter capital 618.0 billion VND achieved,"Nền tảng tài chính vững mạnh, báo cáo minh bạch, chuẩn mực là hành trang giúp An Gia tiếp cận thị trường vốn hiệu quả, thể hiện qua các đợt huy động vốn thành công từ quỹ đầu tư, định chế tài chính, phát hành trái phiếu…, hướng đến một tương lai vững bền.",token_overlap,irrelevant,"21
+20 Báo cáo thường niên 2020 Angia Group - Tập Đoàn Bất Động Sản An Gia Giới thiệu doanh nghiệp Bối cảnh và định hướng chiến lược Báo cáo quản trị doanh nghiệp Báo cáo của Ban Điều Hành Báo cáo phát triển bền vững Báo cáo tài chính kiểm toán CƠ CẤU CỔ ĐÔNG VÀ QUÁ TRÌNH TĂNG VỐN ĐIỀU LỆ CƠ CẤU CỔ ĐÔNG TẠI NGÀY 31/12/2020 QUÁ TRÌNH TĂNG VỐN ĐIỀU LỆ Thời gian Giá trị tăng (VNĐ) Vốn điều lệ sau khi tăng (VNĐ) Phương thức tăng vốn
+2012
+18/01/2012
+100.000.000.000 Vốn thành lập ban đầu dưới hình thức công ty cổ phần
+2017
+18/07/2017
+5.263.160.000
+105.263.160.000 Phát hành riêng lẻ cho Hoosiers VN-1 LTD
+2018
+11/09/2018
+26.315.790.000
+131.578.950.000 Phát hành riêng lẻ để hoán đổi khoản vay của Creed Investment
+26/10/2018
+78.421.050.000
+210.000.000.000 Phát hành cổ phiếu để tăng vốn từ nguồn vốn chủ sở hữu và trả cổ tức bằng cổ phiếu
+28/12/2018
+240.000.000.000
+450.000.000.000 Phát hành cổ phiếu cho cổ đông hiện hữu
+2019
+21/03/2019
+18.200.000.000
+468.200.000.000 Phát hành cổ phiếu cho cán bộ công nhân viên
+29/03/2019
+231.800.000.000
+700.000.000.000 Phát hành cổ phiếu để tăng vốn từ nguồn vốn chủ sở hữu
+26/09/2019
+50.000.000.000
+750.000.000.000 Phát hành riêng lẻ cho 02 Quỹ đầu tư là KIM Vietnam IPO balanced fund, KIM KOIC Vietnam IPO Private Fund
+2020
+02/10/2020
+74.925.170.000
+824.925.170.000 Phát hành cổ phiếu để trả cổ tức 2019 NGÀNH NGHỀ KINH DOANH CHÍNH KINH DOANH BẤT ĐỘNG SẢN, QUYỀN SỬ DỤNG ĐẤT THUỘC CHỦ SỞ HỮU, CHỦ SỬ DỤNG HOẶC ĐI THUÊ, mã ngành nghề (theo Khoản 1 Điều 10 Luật Kinh doanh bất động sản)
+6810 HOẠT ĐỘNG TƯ VẤN QUẢN LÝ mã ngành nghề (trừ tư vấn tài chính kế toán) (CPC: 865)
+7020 Đối tượng Số lượng cổ phiếu Tỷ lệ sở hữu (%) Số lượng cổ đông Cơ cấu cổ đông (*) Tổ chức Cá nhân
+1 Cổ đông Nhà nước - - - -
+2 Cổ đông sáng lập
+476.905
+0,58%
+2
+2   Trong nước
+476.905
+0,58%
+2
+2   Nước ngoài - - - -
+3 Cổ đông lớn (sở hữu từ 5% vốn CP trở lên)
+35.620.546
+43,18%
+2
+2 -   Trong nước
+31.079.046
+37,67%
+1
+1 -   Nước ngoài
+4.541.500
+5,51%
+1
+1
+4 Công đoàn Công ty - - - - -   Trong nước - - - - -   Nước ngoài - - - -
+5 Cổ phiếu quỹ
+99.417
+0,12%
+1
+1
+6 Cổ đông sở hữu cổ phiếu ưu đãi (nếu có) - - - -
+7 Cổ đông khác
+46.295.649
+56,12%
+2.932
+17
+2.915   Trong nước
+38.655.661
+46,86%
+2.916
+10
+2.906   Nước ngoài
+7.639.988
+9,26%
+16
+7
+9 TỔNG CỘNG
+82.492.517
+100,00%
+2.937
+20
+2.917 Trong đó:
+  Trong nước
+70.311.029
+85,23%
+2.920
+12
+2.908   Nước ngoài
+12.181.488
+14,77%
+17
+8
+9 STT Tên tổ chức/cá nhân Địa chỉ Số lượng cổ phiếu Tỷ lệ sở hữu (%) CỔ ĐÔNG LỚN (sở hữu từ 5% vốn CP trở lên):
+1 Công ty Cổ phần Quản lý và Đầu tư Trường Giang
+30 Nguyễn Thị Diệu, Phường 6, Q.3, TP. Hồ Chí Minh
+31.079.046
+37,67%
+2 CREED INVESTMENTS VN-1 LTD.",irrelevant,0.0896,0.5556,0.0487,0.0878,0.0448,0.4116,True,Giảm vốn đầu tư của Công ty tại Công ty TNHH Quản lý và Đầu tư Sơn Lâm,True
+b08157048cff,ACG,"Phạt 3 tỷ đồng, cấm giao dịch chứng khoán trong 2 năm do giúp sức thao túng cổ phiếu AGG",Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+9d459eb2aafc,ACG,Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG,Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+02b0537c9ca8,ACG,7 lần được vinh danh Top 100 Doanh nghiệp Bền vững (CSI) Top 100 Doanh nghiệp Bền vững (CSI) 7.0 lần achieved,được xếp hạng vào nhóm Top 100 Doanh nghiệp tư nhân nộp ngân sách lớn nhất Việt Nam và 10 công ty thép – vật liệu xây dựng nộp ngân sách lớn nhất Việt Nam,token_overlap,irrelevant,"Giải Thưởng CSI - Vinh Danh “Top 100” Doanh Nghiệp Bền Vững Tại Việt Nam An Cường luôn nỗ lực hiện thực hóa các cam kết trong việc xây dựng một mô hình kinh doanh có trách nhiệm với xã hội, cộng đồng và môi trường.",supports,0.2278,0.2647,0.2,0.1452,0.2025,0.517,False,được xếp hạng vào nhóm Top 100 Doanh nghiệp tư nhân nộp ngân sách lớn nhất Việt Nam và 10 công ty thép – vật liệu xây dựng nộp ngân sách lớn nhất Việt Nam,False
+da342c0f367c,ACG,Vay ngắn hạn short-term debt 507.0 billion VND achieved,Công ty đã sử dụng hàng tồn kho với giá trị là 167.000.000.000 VND làm tài sản thế chấp cho các khoản vay ngắn hạn ngân hàng.,token_overlap,irrelevant,"Thuyết minh báo cáo tài chính hợp nhất (tiếp theo) vào ngày 31 tháng 12 năm 2025 và cho năm tài chính kết thúc cùng ngày (*) Căn cứ Nghị quyết của Đại hội đồng Cổ đông thường niên số 01-2025/NQ-GAC-ĐHCĐ ngày 8 tháng 5 năm 2025, Cổ đông Công ty đã thông qua việc:
+• Trích lập Quỹ khen thưởng, phúc lợi và Quỹ đầu tư phát triển với tỷ lệ 5% trên lợi nhuận sau thuế theo báo cáo tài chính hợp nhất của Công ty đã được kiểm toán cho năm tài chính kết thúc ngày 31 tháng 12 năm 2024 tương ứng với số tiền là 20.998.599.300 VND cho mỗi Quỹ;
+• Trích lập quỹ thiện nguyện với số tiền là 6.000.000.000 VND.",irrelevant,0.1341,0.3667,0.0821,0.0891,0.1098,0.4803,True,Công ty đã sử dụng hàng tồn kho với giá trị là 167.000.000.000 VND làm tài sản thế chấp cho các khoản vay ngắn hạn ngân hàng.,False
+abadc9c467c6,ACG,Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG,Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+b8e1d711983c,AGG,Vốn điều lệ vốn điều lệ 718.0 tỷ đồng achieved,,,,"TẬP ĐOÀN BẤT ĐỘNG SẢN AN GIA
+93 Quản trị doanh nghiệp Báo cáo phát triển bền vững Bối cảnh và Định hướng chiến lược Báo cáo tài chính 2025 Giới thiệu doanh nghiệp Hoạt động kinh doanh trong năm BÁO CÁO THƯỜNG NIÊN 2025
+92
+01 TÌNH HÌNH TÀI CHÍNH GIAI ĐOẠN
+2021 - 2025 Tình hình tài chính Năm 2021 Năm 2022 Năm 2023 Năm 2024 Năm 2025 Cân đối kế toán Tổng tài sản
+12.565
+11.099
+9.293
+7.035
+5.477 Tài sản ngắn hạn
+11.090
+8.701
+8.302
+5.819
+1.610 Tài sản dài hạn
+1.475
+2.398
+991
+1.216
+3.867 Nợ phải trả
+9.889
+8.373
+6.417
+3.898
+1.962 Vốn chủ sở hữu
+2.676
+2.726
+2.876
+3.137
+3.515 Vốn điều lệ
+828
+1.251
+1.251
+1.625
+1.625 Kết quả kinh doanh Doanh thu thuần
+1.808
+6.189
+3.891
+1.913
+829 Lợi nhuận gộp
+399
+1.047
+977
+593
+583 Lợi nhuận trước thuế
+494
+219
+582
+302
+360 Lợi nhuận sau thuế
+421
+97
+460
+261
+379 Lưu chuyển tiền tệ Lưu chuyển tiền thuần từ hoạt động kinh doanh
+872
+2.815
+121 (945) (244) Lưu chuyển tiền thuần từ hoạt động đầu tư (375) (1.451)
+234
+645
+601 Lưu chuyển tiền thuần từ hoạt động tài chính (618) (1.039) (306) (306) (434) Tiền và tương đương tiền đầu kỳ
+519
+398
+723
+772
+167 Tiền và tương đương tiền cuối kỳ
+398
+723
+772
+167
+91 ĐVT: Tỷ đồng BÁO CÁO THƯỜNG NIÊN 2025
+92 TỔNG QUAN TÀI CHÍNH 2021 - 2025 » .",contradicts,0.0,0.0,0.0,0.0,0.0,,,,
+dc2b4e0f96c1,AGG,năng suất lao động tăng 15%-20% labor_productivity 17.5 percent achieved,,,,"Năng suất lao động của toàn nền kinh tế năm
+2022 theo giá hiện hành ước tính đạt tăng 4,8% do trình độ của người lao động được cải thiện, thể hiện qua tỷ lệ lao động qua đào tạo có bằng, chứng chỉ năm 2022 cũng tăng so với cùng kỳ năm trước.",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+f523087e36b2,ACG,"Phạt 1,5 tỷ đồng, cấm giao dịch chứng khoán và đảm nhiệm chức vụ trong 2 năm do thao túng cổ phiếu AGG",Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+a53cf6af708c,AGG,"Phạt 1,5 tỷ đồng, cấm giao dịch chứng khoán và đảm nhiệm chức vụ trong 2 năm do thao túng cổ phiếu AGG",,,,"vn Tên giao dịch Công ty Cổ phần Đầu tư và Phát triển Bất động sản An Gia Tên viết tắt An Gia Mã cổ phiếu AGG (HoSE) Giấy chứng nhận đăng ký doanh nghiệp số
+0311500196 Vốn điều lệ
+1.251.183.680.000 VNĐ (Một nghìn hai trăm năm mươi mốt tỷ một trăm tám mươi ba triệu sáu trăm tám mươi nghìn đồng) Giới thiệu doanh nghiệp Bối cảnh và định hướng chiến lược Báo cáo quản trị doanh nghiệp Báo cáo của Ban Điều Hành Báo cáo Phát triển bền vững Báo cáo tài chính kiểm toán
+13
+12",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+50e83e8bb17e,ADP,Chất lượng tương đương với dòng sản phẩm 50 triệu/m2 giá trị tương đương 50 triệu VND/m2 achieved,"Cam kết đổi mới không ngừng để cung cấp những sản phẩm chất lượng cao với giá thành hợp lý cho người tiêu dùng nhằm mang lại không gian sống đẹp, bền vững, bảo vệ công trình và tạo giá trị bền vững cho cộng đồng.",token_overlap,irrelevant,"Sơn Á Đông cam kết đổi mới không ngừng để cung cấp những sản phẩm chất lượng cao với giá thành hợp lý cho người tiêu dùng nhằm mang lại không gian sống đẹp, bền vững, bảo vệ công trình và tạo giá trị bền vững cho cộng đồng.",supports,0.9684,1.0,0.9388,0.9318,0.9684,0.7801,False,"Cam kết đổi mới không ngừng để cung cấp những sản phẩm chất lượng cao với giá thành hợp lý cho người tiêu dùng nhằm mang lại không gian sống đẹp, bền vững, bảo vệ công trình và tạo giá trị bền vững cho cộng đồng.",False
+d5b8334f4244,AGG,Giá trị phát hành cổ phiếu trả cổ tức năm 2021 theo mệnh giá Giá trị phát hành cổ phiếu trả cổ tức theo mệnh giá 438.0 tỷ đồng achieved,Triển khai phương án phát hành cổ phiếu để chi trả cổ tức cho Cổ đông,token_overlap,supports,Việc phát hành cổ phiếu này nhằm mục đích chia cổ tức và bổ sung vốn lưu động của Công ty và đã được chấp thuận bởi các cổ đông theo Nghị quyết Đại hội đồng Cổ đông thường niên năm 2022 số 17/2022/NQ-AGI ngày 15 tháng 4 năm 2022 và các Nghị quyết Hội đồng Quản trị số 26/2022/ QĐ-AGI-PL ngày 8 tháng 9 năm 2022 và số 41/2022/NQ-AGI-PL ngày 4 tháng 11 năm 2022.,supports,0.1569,0.5,0.093,0.0968,0.1569,0.5923,True,Thu hồi 74.750 cổ phiếu đã phát hành cho cán bộ nhân viên theo chương trình lựa chọn người lao động năm 2019,True
+669721c537ca,AAA,Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG,trao tặng số tiền 30.000.000 đồng để ủng hộ đồng bào miền Trung thiệt hại do cơn bão số 10.,token_overlap,irrelevant,HĐQT cần phải thông qua một chính sách yêu cầu mọi thành viên HĐQT và lãnh đạo cấp cao phải công bố/báo cáo cho công ty tất cả các giao dịch cổ phiếu của công ty trong vòng 3 (ba) ngày làm việc.,irrelevant,0.0,0.0,0.0,0.0,0.0,0.2901,True,trao tặng số tiền 30.000.000 đồng để ủng hộ đồng bào miền Trung thiệt hại do cơn bão số 10.,False
+5cb4650ffa01,AGG,ADP: Nghị quyết HĐQT về chi trả cổ tức đợt 1 năm 2026,,,,"HĐQT đã thông qua, triển khai 33 Nghị quyết/Quyết định về các vấn đề quan trọng của Công ty, cụ thể:
+HOẠT ĐỘNG CỦA HĐQT VÀ QUẢN TRỊ DOANH NGHIỆP (TIẾP THEO) Stt Số Nghị quyết/ Quyết định Ngày Nội dung Tỷ lệ thông qua
+01
+01/2022/QĐ-AGI-PL
+11/01/2022 Thông qua Ngày đăng ký cuối cùng để thực hiện quyền trả cổ tức năm 2020 bằng cổ phiếu và thực hiện quyền mua cổ phiếu phát hành thêm.",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+a1bb3b512b0d,ACC,"An Cường – 30 năm phát triển bền vững, tiên phong hướng tới mục tiêu Net Zero 2050 - CafeLand.Vn...","Cam kết với định hướng phát triển bền vững bằng tất cả trách nhiệm và đạo đức kinh doanh của một doanh nghiệp, đề cao giá trị doanh nghiệp trong mối quan hệ với sự phát triển tốt đẹp của cộng đồng và xã hội.",token_overlap,supports," Phát triển bền vững, bảo vệ môi trường và gắn kết cộng đồng - Đẩy mạnh áp dụng các giải pháp sản xuất xanh, tiết kiệm năng lượng, giảm thiểu khí thải và chất thải.",supports,0.2278,0.2,0.2647,0.1311,0.2025,0.4989,True,"Cam kết với định hướng phát triển bền vững bằng tất cả trách nhiệm và đạo đức kinh doanh của một doanh nghiệp, đề cao giá trị doanh nghiệp trong mối quan hệ với sự phát triển tốt đẹp của cộng đồng và xã hội.",False
+4463d15fb8ee,AAA,Giảm phát thải: Khi doanh nghiệp 'chuyển vai' từ tìm hiểu sang triển khai,"AAA đã nỗ lực để “xanh” trong cách doanh nghiệp vận hành, đồng thời thúc đẩy chuyển dịch cơ cấu sản phẩm sang các sản phẩm thân thiện với môi trường.",token_overlap,irrelevant,"Chuyển đổi xanh sẽ không chỉ tạo ra tăng trưởng trong kết quả kinh doanh và tạo lập giá trị doanh nghiệp mà còn giúp giảm thiểu rủi ro hoạt động trong quá trình vận hành, giúp Nhựa An Phát Xanh thích ứng trong một thế giới mới hậu COVID – một thế giới đã nhìn nhận nghiêm túc về các vấn đề phát triển bền vững và sẵn sàng hành động quyết liệt và mạnh mẽ trên hành trình kiến tạo tương lai xanh.",irrelevant,0.1565,0.2903,0.1071,0.1047,0.1217,0.6013,True,"AAA đã nỗ lực để “xanh” trong cách doanh nghiệp vận hành, đồng thời thúc đẩy chuyển dịch cơ cấu sản phẩm sang các sản phẩm thân thiện với môi trường.",False
+72816e063866,ACG,Tiền mặt tại 31/12/2024 cash_balance 50.8 tỷ đồng achieved,"thực hiện chi trả cổ tức năm 2024 đợt 2 và tạm ứng cổ tức năm 2025 đợt 1 bằng tiền mặt, với tổng giá trị chi trả hơn 300 tỷ đồng",token_overlap,irrelevant,"Thuyết minh báo cáo tài chính hợp nhất (tiếp theo) vào ngày 31 tháng 12 năm 2025 và cho năm tài chính kết thúc cùng ngày (*) Căn cứ Nghị quyết của Đại hội đồng Cổ đông thường niên số 01-2025/NQ-GAC-ĐHCĐ ngày 8 tháng 5 năm 2025, Cổ đông Công ty đã thông qua việc:
+• Trích lập Quỹ khen thưởng, phúc lợi và Quỹ đầu tư phát triển với tỷ lệ 5% trên lợi nhuận sau thuế theo báo cáo tài chính hợp nhất của Công ty đã được kiểm toán cho năm tài chính kết thúc ngày 31 tháng 12 năm 2024 tương ứng với số tiền là 20.998.599.300 VND cho mỗi Quỹ;
+• Trích lập quỹ thiện nguyện với số tiền là 6.000.000.000 VND.",irrelevant,0.1566,0.4062,0.097,0.1122,0.0843,0.5393,True,"thực hiện chi trả cổ tức năm 2024 đợt 2 và tạm ứng cổ tức năm 2025 đợt 1 bằng tiền mặt, với tổng giá trị chi trả hơn 300 tỷ đồng",False
+33552acff276,ACG,Thị phần mảng gỗ công nghiệp và nội thất làm từ gỗ công nghiệp phân khúc trung và cao cấp tại thị trường trong nước thị phần 55.0 percent achieved,An Cường đã minh chứng được chữ “Tầm” bằng cách tạo được chỗ đứng vững chắc trong ngành vật liệu nội thất tại thị trường Việt Nam cũng như quốc tế.,token_overlap,supports,Tiếp tục chiếm lĩnh thị phần nội địa trong lĩnh vực gỗ và vật liệu gỗ công nghiệp ở phân khúc cao và trung cao cấp.,supports,0.1754,0.1613,0.1923,0.1064,0.1053,0.3915,True,An Cường đã minh chứng được chữ “Tầm” bằng cách tạo được chỗ đứng vững chắc trong ngành vật liệu nội thất tại thị trường Việt Nam cũng như quốc tế.,False
+dd3a769d27ab,ACG,Số lượng cổ phiếu phát hành để trả cổ tức năm 2021 Số lượng cổ phiếu phát hành 43.82 triệu cổ phiếu achieved,"Nghị quyết của ĐHĐCĐ số 09-2022/NQ-GAC ngày 06/06/2022 thông qua phương án chia cổ tức năm 2021, Kế hoạch chi trả cổ tức năm 2022.",token_overlap,supports,"Thông qua ngày đăng ký cuối cùng chốt danh sách cổ đông để chi trả cổ tức năm
+2021 bằng cổ phiếu.",supports,0.3846,0.3333,0.4545,0.2571,0.3077,0.5355,True,"Nghị quyết của ĐHĐCĐ số 09-2022/NQ-GAC ngày 06/06/2022 thông qua phương án chia cổ tức năm 2021, Kế hoạch chi trả cổ tức năm 2022.",False
+2f274900b2d1,ACG,"An Cường – 30 năm phát triển bền vững, tiên phong hướng tới mục tiêu Net Zero 2050 - CafeLand.Vn...",Cải tiến liên tục để luôn theo theo đuổi sự hoàn hảo. Điều đó cũng giúp cho mỗi con người hạn chế tối đa “tính ì”. Và sự cải tiến đóng vai trò hết sức quan trọng nhằm quyết định cho sự phát triển cũng như đột phá thành công và tiến đến vững bền phát triển của An Cường.,token_overlap,irrelevant,"Định hướng phát triển bền vững được triển khai nhất quán theo mô hình ESG, hướng tới mục tiêu Net Zero vào năm 2030.",contradicts,0.1667,0.1167,0.2917,0.0923,0.119,0.3857,False,"Con người được xem là trung tâm của mọi sự vận động trong doanh nghiệp, quyết định tới sự phát triển bền vững của doanh nghiệp hay xã hội. Và con người cũng chính là tài sản của doanh nghiệp. Công ty luôn có cơ chế tốt để thu hút nhân tài tạo môi trường làm việc thật tốt để từng cá nhân hoà đồng và chuyên nghiệp hơn trong một tập thể lớn.",True
+bb1be6bee89f,ACG,ADP: Nghị quyết HĐQT về chi trả cổ tức đợt 1 năm 2026,"thực hiện chi trả cổ tức năm 2024 đợt 2 và tạm ứng cổ tức năm 2025 đợt 1 bằng tiền mặt, với tổng giá trị chi trả hơn 300 tỷ đồng",token_overlap,irrelevant,"Căn cứ Nghị quyết của Hội đồng quản trị số 18-2025/ NQ-GAC ngày 30 tháng 10 năm 2025, Hội đồng Quản trị đã thông qua việc chi trả cổ tức đợt 1 năm 2025 bằng tiền cho cổ đông hiện hữu với tỷ lệ 13% trên mệnh giá cổ phần, tương ứng với số tiền là 196.024.329.800 VND.",irrelevant,0.4,0.5938,0.3016,0.2833,0.2316,0.6814,True,"Nghị quyết của ĐHĐCĐ số 09-2022/NQ-GAC ngày 06/06/2022 thông qua phương án chia cổ tức năm 2021, Kế hoạch chi trả cổ tức năm 2022.",True
+ab55877a9e36,ACG,7 lần được vinh danh Top 100 Doanh nghiệp Bền vững (CSI) Top 100 Doanh nghiệp Bền vững (CSI) 7.0 lần achieved,được xếp hạng vào nhóm Top 100 Doanh nghiệp tư nhân nộp ngân sách lớn nhất Việt Nam và 10 công ty thép – vật liệu xây dựng nộp ngân sách lớn nhất Việt Nam,token_overlap,irrelevant,"Giải Thưởng CSI - Vinh Danh “Top 100” Doanh Nghiệp Bền Vững Tại Việt Nam An Cường luôn nỗ lực hiện thực hóa các cam kết trong việc xây dựng một mô hình kinh doanh có trách nhiệm với xã hội, cộng đồng và môi trường.",supports,0.2278,0.2647,0.2,0.1452,0.2025,0.517,False,được xếp hạng vào nhóm Top 100 Doanh nghiệp tư nhân nộp ngân sách lớn nhất Việt Nam và 10 công ty thép – vật liệu xây dựng nộp ngân sách lớn nhất Việt Nam,False
+d313ec5f9f99,ACG,Dùng 92 tài khoản chứng khoán để thao túng cổ phiếu AGG,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",token_overlap,irrelevant,"Thành viên HĐQT có nghĩa vụ phải CBTT khi phát sinh giao dịch cổ phiếu Công ty theo quy định tại Thông tư số
+96-2020/TT-BTC hướng dẫn công bố thông tin trên thị trường chứng khoán.",irrelevant,0.2424,0.2,0.3077,0.1486,0.1818,0.4988,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",False
+5905bbcd2c33,ADP,Giảm phát thải: Khi doanh nghiệp 'chuyển vai' từ tìm hiểu sang triển khai,,,," Chất thải rắn: Phát sinh từ các sản phẩm phụ gia, dung môi, nguyên liệu bị hư hỏng, các thùng nhựa có dính chất sơn…
+Nhằm giảm thiểu những tác động tiêu cực đến môi trường, Sơn Á Đông đã triển khai nhiều giải pháp như:
+ Áp dụng công nghệ tiên tiến: Công ty đầu tư áp dụng các công nghệ tiên tiến để giảm thiểu phát thải khí thải, nước thải, tiếng ồn, rung...
+ Tăng cường công tác quản lý: Công ty tăng cường công tác quản lý, giám sát hoạt động sản xuất để phát hiện và xử lý kịp thời các vi phạm về bảo vệ môi trường.",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+27cd0473c81f,AGG,Vốn điều lệ vốn điều lệ 20.0 tỷ đồng achieved,,,,"Nguồn: Danh sách cổ đông chốt ngày 06/01/2026
+06 CƠ CẤU CỔ ĐÔNG VÀ QUÁ TRÌNH TĂNG VỐN ĐIỀU LỆ QUÁ TRÌNH TĂNG VỐN » .",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+3d294e5a3b2a,ADP,Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG,,,,"vn BÁO CÁO THƯỜNG NIÊN 2023 73 CÁC GIAO DỊCH, THÙ LAO VÀ CÁC KHOẢN LỢI ÍCH CỦA HỘI ĐỒNG QUẢN TRỊ, ban tổng giám đốc và ủy ban kiểm toán Lương, thưởng, thù lao, các khoản lợi ích STT Thành viên Chức vụ Thu nhập
+1 Bà Nguyễn Thị Nhung Chủ tịch
+168.000.000
+2 Bà Dương Thị Thùy Hương Tổng Giám đốc
+434.395.691
+3 Ông Võ Hồng Hà Phó Tổng Giám đốc
+493.256.094
+4 Ông Lê Đình Quang Phó Tổng Giám đốc
+530.703.665
+5 Bà Võ Thị Bích Ngọc Thành viên HĐQT
+144.000.000
+6 Ông Trần Bửu Trí Thành viên HĐQT
+126.000.000
+7 Bà Nguyễn Thị Minh Sáu Chủ tịch UBKT
+174.000.000
+8 Ông Tống Trường Thịnh Thành viên UBKT
+166.000.000 Hợp đồng giao dịch với người nội bộ Giao dịch giữa công ty với người có liên quan của công ty; hoặc giữa công ty với cổ đông lớn, người nội bộ, người có liên quan của người nội bộ: (Không có) Giao dịch giữa người nội bộ công ty, người có liên quan của người nội bộ với công ty con, công ty do công ty nắm quyền kiểm soát: (Không có) Giao dịch cổ phiếu của người nội bộ STT Người thực hiện giao dịch Quan hệ với người nội bộ Số cổ phiếu sở hữu đầu kỳ Số cổ phiếu sở hữu cuối kỳ Lý do tăng, giảm (mua, bán, chuyển đổi, thưởng…) Số cổ phiếu Tỷ lệ Số cổ phiếu Tỷ lệ
+1 Nguyễn Thị Nhung CT HĐQT
+3.700.669
+17,70%
+2.318.269
+10,06% Bán cổ phần
+2 Võ Hồng Hà TV HĐQT
+1.152.000
+5,51%
+2.534.400
+11,00% Mua cổ phần
+3 Tống Trường Thịnh TV HĐQT
+103.500
+0,50%
+133.500
+0,58% Mua cổ phần
+4 Tống Trường Lộc Chị Ông Tống Trường Thịnh
+103.025
+0,49%
+133.025
+0,58% Mua cổ phần Đánh giá việc thực hiện các quy định về quản trị công ty Việc quản trị Công ty luôn được đảm bảo theo đúng pháp luật, Điều lệ, các quy chế nội bộ và các tiêu chí nhằm đảm bảo được hoạt động của Công ty một cách suôn sẻ nhất; theo đuổi các mục tiêu vì lợi ích của Công ty và của các cổ đông, cũng như tạo điều kiện thuận lợi cho việc giám sát hoạt động của Công ty một cách hiệu quả, từ đó khuyến khích Công ty sử dụng các nguồn lực một cách tốt nhất.",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+5f9d421ae420,ACG,Vay ngắn hạn short-term debt 507.0 billion VND achieved,Công ty đã sử dụng hàng tồn kho với giá trị là 167.000.000.000 VND làm tài sản thế chấp cho các khoản vay ngắn hạn ngân hàng.,token_overlap,irrelevant,"Thuyết minh báo cáo tài chính hợp nhất (tiếp theo) vào ngày 31 tháng 12 năm 2025 và cho năm tài chính kết thúc cùng ngày (*) Căn cứ Nghị quyết của Đại hội đồng Cổ đông thường niên số 01-2025/NQ-GAC-ĐHCĐ ngày 8 tháng 5 năm 2025, Cổ đông Công ty đã thông qua việc:
+• Trích lập Quỹ khen thưởng, phúc lợi và Quỹ đầu tư phát triển với tỷ lệ 5% trên lợi nhuận sau thuế theo báo cáo tài chính hợp nhất của Công ty đã được kiểm toán cho năm tài chính kết thúc ngày 31 tháng 12 năm 2024 tương ứng với số tiền là 20.998.599.300 VND cho mỗi Quỹ;
+• Trích lập quỹ thiện nguyện với số tiền là 6.000.000.000 VND.",irrelevant,0.1341,0.3667,0.0821,0.0891,0.1098,0.4803,True,Công ty đã sử dụng hàng tồn kho với giá trị là 167.000.000.000 VND làm tài sản thế chấp cho các khoản vay ngắn hạn ngân hàng.,False
+89e0f7a82eb3,ACG,Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG,Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+079b0f225aa6,AGG,Đạt danh hiệu Nơi làm việc tốt nhất châu Á Nơi làm việc tốt nhất châu Á achieved,,,,"Signial đáp ứng tốt nhất mọi nhu cầu về làm việc, học tập, nghỉ ngơi thư giãn hay vui chơi giải trí của cư dân.",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+a7997cf3c041,ACG,Vốn điều lệ vốn điều lệ 997.0 tỷ đồng achieved,,,,Thông qua việc thay đổi vốn điều lệ và sửa đổi Điều lệ của Công ty Cổ phần Gỗ An Cường.,supports,0.0,0.0,0.0,0.0,0.0,,,,
+76df95010ebe,ACG,Số lượng cổ phiếu phát hành để trả cổ tức năm 2021 Số lượng cổ phiếu phát hành 43.82 triệu cổ phiếu achieved,"Nghị quyết của ĐHĐCĐ số 09-2022/NQ-GAC ngày 06/06/2022 thông qua phương án chia cổ tức năm 2021, Kế hoạch chi trả cổ tức năm 2022.",token_overlap,irrelevant,"Thông qua ngày đăng ký cuối cùng chốt danh sách cổ đông để chi trả cổ tức năm
+2021 bằng cổ phiếu.",supports,0.3846,0.3333,0.4545,0.2571,0.3077,0.5355,False,"Nghị quyết của ĐHĐCĐ số 09-2022/NQ-GAC ngày 06/06/2022 thông qua phương án chia cổ tức năm 2021, Kế hoạch chi trả cổ tức năm 2022.",False
+3a805a08028c,ADP,Giảm chi phí bán hàng và quản lý doanh nghiệp quý I/2026 so với cùng kỳ selling and administrative expenses growth -31.4 percent achieved,"ADP chủ động đàm phán với các nhà cung cấp nguyên vật liệu để điều chỉnh giá, hướng đến tối ưu hóa chi phí đầu vào.",token_overlap,irrelevant,"Sự sụt giảm này chủ yếu đến từ các khoản phải trả ngắn hạn, do thời điểm cuối năm Công ty chủ động nguồn nguyên vật liệu để chuẩn bị cho công tác sản xuất đầu năm 2026.",irrelevant,0.2812,0.3462,0.2368,0.1731,0.2188,0.4771,True,"ADP chủ động đàm phán với các nhà cung cấp nguyên vật liệu để điều chỉnh giá, hướng đến tối ưu hóa chi phí đầu vào.",False
+658a91bd3821,AGG,Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG,,,,"Trong năm qua, công ty đã bị Ủy ban Chứng khoán Nhà nước xử phạt do chưa thực hiện tốt công tác này trong các năm trước.",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+2248d938b4b5,ACG,"An Cường – 30 năm phát triển bền vững, tiên phong hướng tới mục tiêu Net Zero 2050 - CafeLand.Vn...",Cải tiến liên tục để luôn theo theo đuổi sự hoàn hảo. Điều đó cũng giúp cho mỗi con người hạn chế tối đa “tính ì”. Và sự cải tiến đóng vai trò hết sức quan trọng nhằm quyết định cho sự phát triển cũng như đột phá thành công và tiến đến vững bền phát triển của An Cường.,token_overlap,irrelevant,"Một trong số đó là việc An Cường cam kết đồng hành cùng Chính phủ Việt Nam trong việc thực hiện cam kết Net Zero vào năm
+2050, theo đó, HĐQT và Ban Điều hành của Công ty đã có chiến lược và hành động cụ thể nhằm tích hợp các mục tiêu liên quan đến định hướng giảm phát thải khí nhà kính vào hoạt động kinh doanh của Công ty.",supports,0.2273,0.25,0.2083,0.1489,0.1212,0.3718,False,"Con người được xem là trung tâm của mọi sự vận động trong doanh nghiệp, quyết định tới sự phát triển bền vững của doanh nghiệp hay xã hội. Và con người cũng chính là tài sản của doanh nghiệp. Công ty luôn có cơ chế tốt để thu hút nhân tài tạo môi trường làm việc thật tốt để từng cá nhân hoà đồng và chuyên nghiệp hơn trong một tập thể lớn.",True
+f4138cbf9d72,ACG,Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG,Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+fa1b51f8d0dd,ACG,AGG: Công ty do Chủ tịch sáng lập bị phạt vì thao túng cổ phiếu,,,,"(P) A.5 Cơ cấu vốn và các thỏa ước cho phép một số cổ đông nắm giữ quyền kiểm soát không tương ứng với tỷ lệ cổ phần mà họ sở hữu phải được công bố công khai (P) A.5.1 Cấu trúc sở hữu kim tự tháp hoặc cấu trúc sở hữu chéo có Hiện tại là theo cấu trúc kim tự tháp với Chủ tịch HĐQT và Người có liên quan đến Chủ tịch HĐQT (P) B ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG (P) B.1 Giao dịch nội gián và hành vi lạm dụng kinh doanh để tư (P) B.1.1 Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+f7d87bada804,ACG,Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG,Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+00e9a2a9af99,ACG,Dùng 92 tài khoản chứng khoán để thao túng cổ phiếu AGG,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",token_overlap,irrelevant,"Thông qua ngày đăng ký cuối cùng chốt danh sách cổ đông để chi trả cổ tức năm
+2021 bằng cổ phiếu.",irrelevant,0.122,0.0833,0.2273,0.0625,0.0732,0.4784,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",False
+126fa1d8314b,ACG,"Thị giá trên 100.000 đồng/cp, Gỗ An Cường (ACG) chốt danh sách cổ đông phát hành 44 triệu cổ phiếu trả cổ tức tỷ lệ 50%",Công ty trả cổ tức (kỳ giữa và kỳ cuối hàng năm) một cách bình đẳng và kịp thời; tất cả cổ đông được đối xử bình đẳng và được trả trong vòng 30 ngày sau khi được công bố đối với cổ tức giữa kỳ và được cổ đông thông qua tại các ĐHĐCĐ đối với cổ tức cuối năm.,token_overlap,irrelevant,Thông qua ngày đăng ký cuối cùng chốt danh sách cổ đông để chi trả cổ tức đợt 2 năm 2022 bằng cổ phiếu.,supports,0.2588,0.1803,0.4583,0.1837,0.1647,0.6032,False,Công ty trả cổ tức (kỳ giữa và kỳ cuối hàng năm) một cách bình đẳng và kịp thời; tất cả cổ đông được đối xử bình đẳng và được trả trong vòng 30 ngày sau khi được công bố đối với cổ tức giữa kỳ và được cổ đông thông qua tại các ĐHĐCĐ đối với cổ tức cuối năm.,False
+66a2a9b956e5,ACG,Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG,Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+ce87a73748ce,ACG,Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG,Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+656a5ede42a5,ACG,7 lần được vinh danh Top 100 Doanh nghiệp Bền vững (CSI) Top 100 Doanh nghiệp Bền vững (CSI) 7.0 lần achieved,được xếp hạng vào nhóm Top 100 Doanh nghiệp tư nhân nộp ngân sách lớn nhất Việt Nam và 10 công ty thép – vật liệu xây dựng nộp ngân sách lớn nhất Việt Nam,token_overlap,irrelevant,"Giải Thưởng CSI - Vinh Danh “Top 100” Doanh Nghiệp Bền Vững Tại Việt Nam An Cường luôn nỗ lực hiện thực hóa các cam kết trong việc xây dựng một mô hình kinh doanh có trách nhiệm với xã hội, cộng đồng và môi trường.",supports,0.2278,0.2647,0.2,0.1452,0.2025,0.517,False,được xếp hạng vào nhóm Top 100 Doanh nghiệp tư nhân nộp ngân sách lớn nhất Việt Nam và 10 công ty thép – vật liệu xây dựng nộp ngân sách lớn nhất Việt Nam,False
+75b1b54b1638,AGG,"Thị giá trên 100.000 đồng/cp, Gỗ An Cường (ACG) chốt danh sách cổ đông phát hành 44 triệu cổ phiếu trả cổ tức tỷ lệ 50%",Triển khai phương án phát hành cổ phiếu để chi trả cổ tức cho Cổ đông,token_overlap,supports,"100%
+32
+48/2022/NQ-AGI-PL
+24/11/2022 Thông qua việc xác định ngày đăng ký cuối cùng thực hiện quyền nhận cổ tức bằng cổ phiếu cho cổ đông hiện hữu theo phương án đã được Đại hội đồng Cổ đông thường niên
+2022 thông qua là ngày 08/12/2022.",irrelevant,0.2571,0.5625,0.1667,0.14,0.1429,0.5308,False,Triển khai phương án phát hành cổ phiếu để chi trả cổ tức cho Cổ đông,False
+c3c80c396da5,ADP,Chất lượng tương đương với dòng sản phẩm 50 triệu/m2 giá trị tương đương 50 triệu VND/m2 achieved,"ADP cam kết cung cấp những sản phẩm chất lượng cao, giá cả hợp lý nhất để đáp ứng nhu cầu của khách hàng.",token_overlap,supports,"Sơn Á Đông cam kết đổi mới không ngừng để cung cấp những sản phẩm chất lượng cao với giá thành hợp lý cho người tiêu dùng nhằm mang lại không gian sống đẹp, bền vững, bảo vệ công trình và tạo giá trị bền vững cho cộng đồng.",irrelevant,0.3836,0.5833,0.2857,0.2593,0.3562,0.5916,False,"Cam kết đổi mới không ngừng để cung cấp những sản phẩm chất lượng cao với giá thành hợp lý cho người tiêu dùng nhằm mang lại không gian sống đẹp, bền vững, bảo vệ công trình và tạo giá trị bền vững cho cộng đồng.",True
+618d6ee71045,ACG,Hoàn thành 114% kế hoạch doanh thu hoàn thành kế hoạch doanh thu 114.0 phần trăm achieved,"BTGĐ đã chủ động, sáng tạo và linh hoạt trong công tác điều hành, triển khai các chiến lược kinh doanh linh hoạt nhằm nắm bắt tốt các cơ hội kinh doanh, đảm bảo tuân thủ các nguyên tắc quản trị rủi ro qua đó hoàn thành vượt kế hoạch kinh doanh mà ĐHĐCĐ thường niên 2022 đã thông qua.",token_overlap,supports,"Thông qua hoạt động kiểm soát năm 2025, cho thấy hoạt động sản xuất kinh doanh của Công ty có kết quả vượt kế hoạch đặt ra, tuân thủ pháp luật, đúng định hướng theo nghi ̣ quyết ĐHĐCĐ, bám sát chiến lược kinh doanh.",supports,0.3429,0.3,0.4,0.1974,0.1714,0.5403,True,"BTGĐ đã chủ động, sáng tạo và linh hoạt trong công tác điều hành, triển khai các chiến lược kinh doanh linh hoạt nhằm nắm bắt tốt các cơ hội kinh doanh, đảm bảo tuân thủ các nguyên tắc quản trị rủi ro qua đó hoàn thành vượt kế hoạch kinh doanh mà ĐHĐCĐ thường niên 2022 đã thông qua.",False
+e9cfad4f76f3,ADP,"Phạt 1,5 tỷ đồng, cấm giao dịch chứng khoán và đảm nhiệm chức vụ trong 2 năm do thao túng cổ phiếu AGG",,,,"Giao dịch cổ phiếu của người nội bộ:
+STT Người thực hiện giao dịch Quan hệ với người nội bộ Số cổ phiếu sở hữu đầu kỳ Số cổ phiếu sở hữu cuối kỳ Lý do tăng, giảm (mua, bán, chuyển đổi,…) Số lượng Tỷ lệ Số lượng Tỷ lệ
+1 Võ Hồng Hà Thành viên HĐQT kiêm Phó tổng giám đốc
+2.534.400
+11,00%
+1.821.200
+7,90% Bán Hợp đồng hoặc giao dịch với người nội bộ:
+- Giao dịch giữa công ty với người có liên quan của công ty; hoặc giữa công ty với cổ đông lớn, người nội bộ, người có liên quan của người nội bộ: (Không có) - Giao dịch giữa người nội bộ công ty, người có liên quan của người nội bộ với công ty con, công ty do công ty nắm quyền kiểm soát: (Không có)",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+711ebd8744ec,AAA,"An Cường – 30 năm phát triển bền vững, tiên phong hướng tới mục tiêu Net Zero 2050 - CafeLand.Vn...","Tiên phong trên hành trình chuyển đổi xanh, không ngừng kiến tạo các giá trị bền vững",token_overlap,supports,Nhà máy sẽ giúp An Phát Holdings ghi tên vào bản đồ nguyên liệu xanh toàn cầu đồng thời trở thành doanh nghiệp tiên phong thực hiện cam kết đưa phát thải ròng về 0 (Net Zero) vào năm 2050 của Việt Nam.,irrelevant,0.1,0.1765,0.0698,0.0545,0.0667,0.3742,False,"Tiên phong trên hành trình chuyển đổi xanh, không ngừng kiến tạo các giá trị bền vững",False
+d2270137dd69,AGG,"An Cường – 30 năm phát triển bền vững, tiên phong hướng tới mục tiêu Net Zero 2050 - CafeLand.Vn...","Báo cáo phát triển bền vững được lập dưới dạng một báo cáo tích hợp vào Báo cáo thường niên, tập trung vào các lĩnh vực trọng yếu chưa được đề cập trong các phần khác của Báo cáo thường niên của An Gia Group. Báo cáo được lập cho niên độ tài chính kết thúc ngày 31/12/2020, được lập định kỳ hàng năm.",token_overlap,irrelevant,Mục tiêu trung hạn 2026 – 2030 CHIẾN LƯỢC PHÁT TRIỂN TRUNG VÀ DÀI HẠN » .,irrelevant,0.075,0.0455,0.2143,0.0536,0.075,0.3809,True,phát triển bền vững trong dài hạn,True
+014595888a50,ACG,Giảm phát thải: Khi doanh nghiệp 'chuyển vai' từ tìm hiểu sang triển khai,,,,"Với mục tiêu cắt giảm 2% đơn vị phát thải mỗi năm (tính trên doanh thu), An Cường tiếp tục hoàn thiện lộ trình và kế hoạch hành động tích hợp vào các kế hoạch kinh doanh của Công ty, với sự hỗ trợ và tham vấn các đơn vị tư vấn chuyên nghiệp.",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+3e1548c794b6,AGG,Chất lượng tương đương với dòng sản phẩm 60 triệu/m2 giá trị tương đương 60 triệu VND/m2 achieved,An Gia khẳng định thương hiệu là nhà phát triển bất động sản dẫn đầu trong phân khúc nhà ở vừa túi tiền và trung cấp với chất lượng xây dựng và thiết kế vượt trội.,token_overlap,irrelevant,"Các căn hộ được tiêu thụ tập trung ở các dự án tầm trung, có mức giá từ 40 – 55 triệu đồng/m2, pháp lý hoàn thiện, tiến độ xây dựng nhanh chóng và hơn hết là thuận tiện kết nối với trung tâm thành phố.",irrelevant,0.1707,0.1944,0.1522,0.1,0.122,0.4543,True,An Gia khẳng định thương hiệu là nhà phát triển bất động sản dẫn đầu trong phân khúc nhà ở vừa túi tiền và trung cấp với chất lượng xây dựng và thiết kế vượt trội.,False
+11bf01291eb2,AGG,Thị phần mảng gỗ công nghiệp và nội thất làm từ gỗ công nghiệp phân khúc trung và cao cấp tại thị trường trong nước thị phần 55.0 percent achieved,,,,"Trong năm
+2025, Công ty tập trung nâng cao tính nhất quán và kỷ luật thực thi trong công bố thông tin, chuẩn hóa quy trình rà soát trước công bố, làm rõ đầu mối phối hợp nội bộ và kiểm soát các nội dung nhạy cảm theo phân cấp thẩm quyền.",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+755097d752bc,AGG,Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG,,,,"100%
+10
+10/2023/NQ-AGI-PL
+22/05/2023 Thông qua việc bổ nhiệm Bà Huỳnh Thị Kim Ánh giữ chức danh Tổng Giám đốc của Công ty nhiệm kỳ 2023 – 2024 kể từ ngày 22/05/2023
+100%
+11
+11/2023/NQ-AGI-PL
+23/06/2023 Thông qua việc triển khai phương án mua lại cổ phiếu đã được ĐHĐCĐ cổ đông thông qua tại Nghị quyết ĐHĐCĐ số 01/2023/NQ-AGI
+100%
+12
+12/2023/NQ-AGI-PL
+11/07/2023 Thông qua việc lựa chọn Công ty TNHH Ernst & Young Việt Nam làm đơn vị kiểm toán Báo cáo tài chính năm 2023 của Công ty
+100%
+13
+11/2023/QĐ-AGI-PL
+24/07/2023 Thông qua việc Công ty kéo dài thời hạn nhận cấp tín dụng tại Ngân hang TMCP Công thương Việt Nam – Chi nhánh 11
+100%
+14
+13/2023/NQ-AGI-PL
+29/08/2023 Chấp thuận việc đăng ký giao dịch toàn bộ Trái phiếu của Công ty tại Sở giao dịch Chứng khoán Hà Nội, bao gồm các mã trái phiếu AGGH2224002 và mã trái phiếu AGGH2224003.",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+6c403f46e516,ACG,"Phạt 3 tỷ đồng, cấm giao dịch chứng khoán trong 2 năm do giúp sức thao túng cổ phiếu AGG",Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+1c45cc722999,ACG,"Phạt 3 tỷ đồng, cấm giao dịch chứng khoán trong 2 năm do giúp sức thao túng cổ phiếu AGG",Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+2e1e35eebf2c,ACC,Khoản phải trả cho người lao động tính đến 31/12/2022 payables to employees 23 tỷ đồng achieved,Luôn chú trọng giải quyết đủ việc làm và thanh toán lương đầy đủ cho người lao động.,token_overlap,irrelevant,"Chính sách liên quan đến người lao động  Số lượng lao động, mức lương trung bình đối với người lao động Tổng số lao động của Công ty tính đến thời điểm 31/12/2024 là 127 người.",irrelevant,0.1429,0.2222,0.1053,0.0976,0.1429,0.4493,True,Luôn chú trọng giải quyết đủ việc làm và thanh toán lương đầy đủ cho người lao động.,False
+f281b18f6178,ACG,Dùng 92 tài khoản chứng khoán để thao túng cổ phiếu AGG,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",token_overlap,irrelevant,"Quản trị doanh nghiệp CHƯƠNG 3
+86 - 147
+92
+92
+94
+99
+102
+103
+106
+112
+114
+124
+124
+124
+125
+125
+126
+127
+128 Báo cáo hoạt động của HĐQT Thông tin thành viên HĐQT Hoạt động của HĐQT năm 2023 Đánh giá của HĐQT Hoạt động của Thành viên HĐQT độc lập Đánh giá của Thành viên HĐQT độc lập Báo cáo Ban kiểm soát Thù lao và các khoản lợi ích của HĐQT và Ban Tổng giám đốc Quản trị rủi ro Thông tin cổ phiếu và Hoạt động Quan hệ nhà đầu tư Thông tin cổ phiếu Diễn biến giá chính giá cổ phiếu 2023 Cơ cấu cổ đông Sở hữu cổ đông lớn Giao dịch của người nội bộ và người có liên quan trong năm 2023 Hoạt động quan hệ nhà đầu tư năm 2023 Phân tích & Đánh giá Quản trị công ty theo thẻ điểm quản trị công ty khu vực ASEAN
+2.",irrelevant,0.1727,0.3167,0.1187,0.1157,0.0818,0.4634,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",False
+e6addb4bdddc,ACG,Dùng 92 tài khoản chứng khoán để thao túng cổ phiếu AGG,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",token_overlap,irrelevant,"Quản trị doanh nghiệp CHƯƠNG 3
+86 - 147
+92
+92
+94
+99
+102
+103
+106
+112
+114
+124
+124
+124
+125
+125
+126
+127
+128 Báo cáo hoạt động của HĐQT Thông tin thành viên HĐQT Hoạt động của HĐQT năm 2023 Đánh giá của HĐQT Hoạt động của Thành viên HĐQT độc lập Đánh giá của Thành viên HĐQT độc lập Báo cáo Ban kiểm soát Thù lao và các khoản lợi ích của HĐQT và Ban Tổng giám đốc Quản trị rủi ro Thông tin cổ phiếu và Hoạt động Quan hệ nhà đầu tư Thông tin cổ phiếu Diễn biến giá chính giá cổ phiếu 2023 Cơ cấu cổ đông Sở hữu cổ đông lớn Giao dịch của người nội bộ và người có liên quan trong năm 2023 Hoạt động quan hệ nhà đầu tư năm 2023 Phân tích & Đánh giá Quản trị công ty theo thẻ điểm quản trị công ty khu vực ASEAN
+2.",irrelevant,0.1727,0.3167,0.1187,0.1157,0.0818,0.4634,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",False
+f0ff88c0e287,ACG,Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG,Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+221696b8195c,ACG,7 lần được vinh danh Top 100 Doanh nghiệp Bền vững (CSI) Top 100 Doanh nghiệp Bền vững (CSI) 7.0 lần achieved,được xếp hạng vào nhóm Top 100 Doanh nghiệp tư nhân nộp ngân sách lớn nhất Việt Nam và 10 công ty thép – vật liệu xây dựng nộp ngân sách lớn nhất Việt Nam,token_overlap,irrelevant,"Giải Thưởng CSI - Vinh Danh “Top 100” Doanh Nghiệp Bền Vững Tại Việt Nam An Cường luôn nỗ lực hiện thực hóa các cam kết trong việc xây dựng một mô hình kinh doanh có trách nhiệm với xã hội, cộng đồng và môi trường.",supports,0.2278,0.2647,0.2,0.1452,0.2025,0.517,False,được xếp hạng vào nhóm Top 100 Doanh nghiệp tư nhân nộp ngân sách lớn nhất Việt Nam và 10 công ty thép – vật liệu xây dựng nộp ngân sách lớn nhất Việt Nam,False
+545ea3b6ea34,ACG,"Phạt 1,5 tỷ đồng, cấm giao dịch chứng khoán và đảm nhiệm chức vụ trong 2 năm do thao túng cổ phiếu AGG",Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+315e7b41b276,ADP,Đạt danh hiệu Nơi làm việc tốt nhất châu Á Nơi làm việc tốt nhất châu Á achieved,Cam kết mang đến những sản phẩm sơn đạt chất lượng cao nhất,token_overlap,irrelevant,"Đồng thời, chúng tôi luôn hướng đến việc tối đa hóa lợi ích cho cổ đông và mang lại môi trường làm việc tốt nhất, đầy cảm hứng cho đội ngũ nhân viên.",supports,0.1304,0.2308,0.0909,0.0732,0.087,0.3763,False,Cam kết mang đến những sản phẩm sơn đạt chất lượng cao nhất,False
+1325cd06fa9f,ACG,Tỷ lệ hoàn thành kế hoạch doanh thu năm revenue target achievement 44 percent achieved,"BTGĐ đã chủ động, sáng tạo và linh hoạt trong công tác điều hành, triển khai các chiến lược kinh doanh linh hoạt nhằm nắm bắt tốt các cơ hội kinh doanh, đảm bảo tuân thủ các nguyên tắc quản trị rủi ro qua đó hoàn thành vượt kế hoạch kinh doanh mà ĐHĐCĐ thường niên 2022 đã thông qua.",token_overlap,contradicts,"Thông qua hoạt động kiểm soát năm 2025, cho thấy hoạt động sản xuất kinh doanh của Công ty có kết quả vượt kế hoạch đặt ra, tuân thủ pháp luật, đúng định hướng theo nghi ̣ quyết ĐHĐCĐ, bám sát chiến lược kinh doanh.",contradicts,0.3429,0.3,0.4,0.1974,0.1714,0.5403,True,"BTGĐ đã chủ động, sáng tạo và linh hoạt trong công tác điều hành, triển khai các chiến lược kinh doanh linh hoạt nhằm nắm bắt tốt các cơ hội kinh doanh, đảm bảo tuân thủ các nguyên tắc quản trị rủi ro qua đó hoàn thành vượt kế hoạch kinh doanh mà ĐHĐCĐ thường niên 2022 đã thông qua.",False
+624b2dfe53d1,ACG,Tỷ lệ trả cổ tức bằng cổ phiếu năm 2021 Tỷ lệ trả cổ tức bằng cổ phiếu 50.0 percent achieved,"Nghị quyết của ĐHĐCĐ số 09-2022/NQ-GAC ngày 06/06/2022 thông qua phương án chia cổ tức năm 2021, Kế hoạch chi trả cổ tức năm 2022.",token_overlap,irrelevant,"Thông qua ngày đăng ký cuối cùng chốt danh sách cổ đông để chi trả cổ tức năm
+2021 bằng cổ phiếu.",supports,0.3846,0.3333,0.4545,0.2571,0.3077,0.5355,False,"Công ty không trả cổ tức bằng phương thức ""Script dividend"".",True
+07efd8a71d25,ACG,Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG,Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+e49d8e8ab8d9,AGG,"Phạt 3 tỷ đồng, cấm giao dịch chứng khoán trong 2 năm do giúp sức thao túng cổ phiếu AGG",,,,"Trong năm qua, công ty đã bị Ủy ban Chứng khoán Nhà nước xử phạt do chưa thực hiện tốt công tác này trong các năm trước.",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+496126c83349,AGG,"Phạt 1,5 tỷ đồng, cấm giao dịch chứng khoán và đảm nhiệm chức vụ trong 2 năm do thao túng cổ phiếu AGG",,,,"Trong năm qua, công ty đã bị Ủy ban Chứng khoán Nhà nước xử phạt do chưa thực hiện tốt công tác này trong các năm trước.",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+566d0cc36912,ACG,Tỷ lệ trả cổ tức bằng cổ phiếu năm 2021 Tỷ lệ trả cổ tức bằng cổ phiếu 50.0 percent achieved,"Nghị quyết của ĐHĐCĐ số 09-2022/NQ-GAC ngày 06/06/2022 thông qua phương án chia cổ tức năm 2021, Kế hoạch chi trả cổ tức năm 2022.",token_overlap,irrelevant,"Thông qua ngày đăng ký cuối cùng chốt danh sách cổ đông để chi trả cổ tức năm
+2021 bằng cổ phiếu.",supports,0.3846,0.3333,0.4545,0.2571,0.3077,0.5355,False,"Công ty không trả cổ tức bằng phương thức ""Script dividend"".",True
+d27f487c146a,AGG,"An Cường – 30 năm phát triển bền vững, tiên phong hướng tới mục tiêu Net Zero 2050 - CafeLand.Vn...","Báo cáo phát triển bền vững được lập dưới dạng một báo cáo tích hợp vào Báo cáo thường niên, tập trung vào các lĩnh vực trọng yếu chưa được đề cập trong các phần khác của Báo cáo thường niên của An Gia Group. Báo cáo được lập cho niên độ tài chính kết thúc ngày 31/12/2020, được lập định kỳ hàng năm.",token_overlap,irrelevant,Mục tiêu trung hạn 2026 – 2030 CHIẾN LƯỢC PHÁT TRIỂN TRUNG VÀ DÀI HẠN » .,irrelevant,0.075,0.0455,0.2143,0.0536,0.075,0.3809,True,phát triển bền vững trong dài hạn,True
+8a0bfe9027d0,AGG,Dòng tiền kinh doanh chính quý I/2026 operating cash flow -121.7 tỷ đồng achieved,,,,"TẬP ĐOÀN BẤT ĐỘNG SẢN AN GIA
+93 Quản trị doanh nghiệp Báo cáo phát triển bền vững Bối cảnh và Định hướng chiến lược Báo cáo tài chính 2025 Giới thiệu doanh nghiệp Hoạt động kinh doanh trong năm BÁO CÁO THƯỜNG NIÊN 2025
+92
+01 TÌNH HÌNH TÀI CHÍNH GIAI ĐOẠN
+2021 - 2025 Tình hình tài chính Năm 2021 Năm 2022 Năm 2023 Năm 2024 Năm 2025 Cân đối kế toán Tổng tài sản
+12.565
+11.099
+9.293
+7.035
+5.477 Tài sản ngắn hạn
+11.090
+8.701
+8.302
+5.819
+1.610 Tài sản dài hạn
+1.475
+2.398
+991
+1.216
+3.867 Nợ phải trả
+9.889
+8.373
+6.417
+3.898
+1.962 Vốn chủ sở hữu
+2.676
+2.726
+2.876
+3.137
+3.515 Vốn điều lệ
+828
+1.251
+1.251
+1.625
+1.625 Kết quả kinh doanh Doanh thu thuần
+1.808
+6.189
+3.891
+1.913
+829 Lợi nhuận gộp
+399
+1.047
+977
+593
+583 Lợi nhuận trước thuế
+494
+219
+582
+302
+360 Lợi nhuận sau thuế
+421
+97
+460
+261
+379 Lưu chuyển tiền tệ Lưu chuyển tiền thuần từ hoạt động kinh doanh
+872
+2.815
+121 (945) (244) Lưu chuyển tiền thuần từ hoạt động đầu tư (375) (1.451)
+234
+645
+601 Lưu chuyển tiền thuần từ hoạt động tài chính (618) (1.039) (306) (306) (434) Tiền và tương đương tiền đầu kỳ
+519
+398
+723
+772
+167 Tiền và tương đương tiền cuối kỳ
+398
+723
+772
+167
+91 ĐVT: Tỷ đồng BÁO CÁO THƯỜNG NIÊN 2025
+92 TỔNG QUAN TÀI CHÍNH 2021 - 2025 » .",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+620509e61e04,ACG,AGG: Công ty do Chủ tịch sáng lập bị phạt vì thao túng cổ phiếu,,,,"(P) A.5 Cơ cấu vốn và các thỏa ước cho phép một số cổ đông nắm giữ quyền kiểm soát không tương ứng với tỷ lệ cổ phần mà họ sở hữu phải được công bố công khai (P) A.5.1 Cấu trúc sở hữu kim tự tháp hoặc cấu trúc sở hữu chéo có Hiện tại là theo cấu trúc kim tự tháp với Chủ tịch HĐQT và Người có liên quan đến Chủ tịch HĐQT (P) B ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG (P) B.1 Giao dịch nội gián và hành vi lạm dụng kinh doanh để tư (P) B.1.1 Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+8f4e454c817c,ACG,Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG,Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+1c57d54014d8,ACG,Dùng 92 tài khoản chứng khoán để thao túng cổ phiếu AGG,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",token_overlap,irrelevant,"Quản trị doanh nghiệp CHƯƠNG 3
+86 - 147
+92
+92
+94
+99
+102
+103
+106
+112
+114
+124
+124
+124
+125
+125
+126
+127
+128 Báo cáo hoạt động của HĐQT Thông tin thành viên HĐQT Hoạt động của HĐQT năm 2023 Đánh giá của HĐQT Hoạt động của Thành viên HĐQT độc lập Đánh giá của Thành viên HĐQT độc lập Báo cáo Ban kiểm soát Thù lao và các khoản lợi ích của HĐQT và Ban Tổng giám đốc Quản trị rủi ro Thông tin cổ phiếu và Hoạt động Quan hệ nhà đầu tư Thông tin cổ phiếu Diễn biến giá chính giá cổ phiếu 2023 Cơ cấu cổ đông Sở hữu cổ đông lớn Giao dịch của người nội bộ và người có liên quan trong năm 2023 Hoạt động quan hệ nhà đầu tư năm 2023 Phân tích & Đánh giá Quản trị công ty theo thẻ điểm quản trị công ty khu vực ASEAN
+2.",irrelevant,0.1727,0.3167,0.1187,0.1157,0.0818,0.4634,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",False
+1b05dc37f818,ACG,Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG,Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+0670094029cb,ACG,"Phạt 1,5 tỷ đồng, cấm giao dịch chứng khoán và đảm nhiệm chức vụ trong 2 năm do thao túng cổ phiếu AGG",Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+f68f4c0e578d,AGG,Dòng tiền kinh doanh âm năm 2025 operating cash flow -377.0 tỷ đồng achieved,,,,"BÁO CÁO THƯỜNG NIÊN 2025
+138 TẬP ĐOÀN BẤT ĐỘNG SẢN AN GIA
+139 Quản trị doanh nghiệp Báo cáo phát triển bền vững Bối cảnh và Định hướng chiến lược Báo cáo tài chính 2025 Giới thiệu doanh nghiệp Hoạt động kinh doanh trong năm BẢNG CÂN ĐỐI KẾ TOÁN HỢP NHẤT Mã số NGUỒN VỐN Thuyết minh
+31/12/2025
+01/01/2025
+300 C. NỢ PHẢI TRẢ
+1.961.947.389.780
+3.898.395.385.751
+310 I. Nợ ngắn hạn
+1.591.376.546.864
+3.210.829.019.083
+311
+1.",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+d43767056ce5,ADP,"Phạt 1,5 tỷ đồng, cấm giao dịch chứng khoán và đảm nhiệm chức vụ trong 2 năm do thao túng cổ phiếu AGG",,,,"Giao dịch cổ phiếu của người nội bộ:
+STT Người thực hiện giao dịch Quan hệ với người nội bộ Số cổ phiếu sở hữu đầu kỳ Số cổ phiếu sở hữu cuối kỳ Lý do tăng, giảm (mua, bán, chuyển đổi,…) Số lượng Tỷ lệ Số lượng Tỷ lệ
+1 Võ Hồng Hà Thành viên HĐQT kiêm Phó tổng giám đốc
+2.534.400
+11,00%
+1.821.200
+7,90% Bán Hợp đồng hoặc giao dịch với người nội bộ:
+- Giao dịch giữa công ty với người có liên quan của công ty; hoặc giữa công ty với cổ đông lớn, người nội bộ, người có liên quan của người nội bộ: (Không có) - Giao dịch giữa người nội bộ công ty, người có liên quan của người nội bộ với công ty con, công ty do công ty nắm quyền kiểm soát: (Không có)",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+bea9e1964450,ACG,"Phạt 1,5 tỷ đồng, cấm giao dịch chứng khoán và đảm nhiệm chức vụ trong 2 năm do thao túng cổ phiếu AGG",Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+55580e438328,AGG,Vốn điều lệ vốn điều lệ 997.0 tỷ đồng achieved,,,,"TẬP ĐOÀN BẤT ĐỘNG SẢN AN GIA
+93 Quản trị doanh nghiệp Báo cáo phát triển bền vững Bối cảnh và Định hướng chiến lược Báo cáo tài chính 2025 Giới thiệu doanh nghiệp Hoạt động kinh doanh trong năm BÁO CÁO THƯỜNG NIÊN 2025
+92
+01 TÌNH HÌNH TÀI CHÍNH GIAI ĐOẠN
+2021 - 2025 Tình hình tài chính Năm 2021 Năm 2022 Năm 2023 Năm 2024 Năm 2025 Cân đối kế toán Tổng tài sản
+12.565
+11.099
+9.293
+7.035
+5.477 Tài sản ngắn hạn
+11.090
+8.701
+8.302
+5.819
+1.610 Tài sản dài hạn
+1.475
+2.398
+991
+1.216
+3.867 Nợ phải trả
+9.889
+8.373
+6.417
+3.898
+1.962 Vốn chủ sở hữu
+2.676
+2.726
+2.876
+3.137
+3.515 Vốn điều lệ
+828
+1.251
+1.251
+1.625
+1.625 Kết quả kinh doanh Doanh thu thuần
+1.808
+6.189
+3.891
+1.913
+829 Lợi nhuận gộp
+399
+1.047
+977
+593
+583 Lợi nhuận trước thuế
+494
+219
+582
+302
+360 Lợi nhuận sau thuế
+421
+97
+460
+261
+379 Lưu chuyển tiền tệ Lưu chuyển tiền thuần từ hoạt động kinh doanh
+872
+2.815
+121 (945) (244) Lưu chuyển tiền thuần từ hoạt động đầu tư (375) (1.451)
+234
+645
+601 Lưu chuyển tiền thuần từ hoạt động tài chính (618) (1.039) (306) (306) (434) Tiền và tương đương tiền đầu kỳ
+519
+398
+723
+772
+167 Tiền và tương đương tiền cuối kỳ
+398
+723
+772
+167
+91 ĐVT: Tỷ đồng BÁO CÁO THƯỜNG NIÊN 2025
+92 TỔNG QUAN TÀI CHÍNH 2021 - 2025 » .",contradicts,0.0,0.0,0.0,0.0,0.0,,,,
+cd69c29e9d73,ACG,"An Cường – 30 năm phát triển bền vững, tiên phong hướng tới mục tiêu Net Zero 2050 - CafeLand.Vn...",An Cường đã có những bước tiến vượt bậc so với mục tiêu được hoạch định đầu năm.,token_overlap,irrelevant,"Một trong số đó là việc An Cường cam kết đồng hành cùng Chính phủ Việt Nam trong việc thực hiện cam kết Net Zero vào năm
+2050, theo đó, HĐQT và Ban Điều hành của Công ty đã có chiến lược và hành động cụ thể nhằm tích hợp các mục tiêu liên quan đến định hướng giảm phát thải khí nhà kính vào hoạt động kinh doanh của Công ty.",supports,0.1778,0.4444,0.1111,0.1159,0.1556,0.437,False,"Con người được xem là trung tâm của mọi sự vận động trong doanh nghiệp, quyết định tới sự phát triển bền vững của doanh nghiệp hay xã hội. Và con người cũng chính là tài sản của doanh nghiệp. Công ty luôn có cơ chế tốt để thu hút nhân tài tạo môi trường làm việc thật tốt để từng cá nhân hoà đồng và chuyên nghiệp hơn trong một tập thể lớn.",True
+7452afd38bc0,ACG,Thị phần mảng gỗ công nghiệp và nội thất làm từ gỗ công nghiệp phân khúc trung và cao cấp tại thị trường trong nước thị phần 55.0 percent achieved,An Cường đã minh chứng được chữ “Tầm” bằng cách tạo được chỗ đứng vững chắc trong ngành vật liệu nội thất tại thị trường Việt Nam cũng như quốc tế.,token_overlap,supports,Tiếp tục chiếm lĩnh thị phần nội địa trong lĩnh vực gỗ và vật liệu gỗ công nghiệp ở phân khúc cao và trung cao cấp.,supports,0.1754,0.1613,0.1923,0.1064,0.1053,0.3915,True,An Cường đã minh chứng được chữ “Tầm” bằng cách tạo được chỗ đứng vững chắc trong ngành vật liệu nội thất tại thị trường Việt Nam cũng như quốc tế.,False
+545ac4688a61,AGG,Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG,,,,"Trong năm qua, công ty đã bị Ủy ban Chứng khoán Nhà nước xử phạt do chưa thực hiện tốt công tác này trong các năm trước.",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+b5956f78f580,AGG,Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG,,,,"Trong năm qua, công ty đã bị Ủy ban Chứng khoán Nhà nước xử phạt do chưa thực hiện tốt công tác này trong các năm trước.",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+ca995f93ef05,ADP,8 năm liên tiếp đạt Thương hiệu Quốc gia Việt Nam Thương hiệu Quốc gia Việt Nam 8.0 năm achieved,,,,"Bên cạnh đó, chúng tôi chú trọng xây dựng một thương hiệu vững mạnh và sự đồng hành lâu dài cùng khách hàng, nhân viên và cổ đông.",supports,0.0,0.0,0.0,0.0,0.0,,,,
+2ab076ef044c,ACG,Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG,Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+edcb0fb98fc6,ADP,Giảm chi phí tài chính quý I/2026 so với cùng kỳ financial expenses growth -77.3 percent achieved,"ADP chủ động đàm phán với các nhà cung cấp nguyên vật liệu để điều chỉnh giá, hướng đến tối ưu hóa chi phí đầu vào.",token_overlap,irrelevant,"Sự sụt giảm này chủ yếu đến từ các khoản phải trả ngắn hạn, do thời điểm cuối năm Công ty chủ động nguồn nguyên vật liệu để chuẩn bị cho công tác sản xuất đầu năm 2026.",irrelevant,0.2812,0.3462,0.2368,0.1731,0.2188,0.4771,True,"ADP chủ động đàm phán với các nhà cung cấp nguyên vật liệu để điều chỉnh giá, hướng đến tối ưu hóa chi phí đầu vào.",False
+970264a913e6,ACG,Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG,Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+6822c42b9034,ACG,AGG: Công ty do Chủ tịch sáng lập bị phạt vì thao túng cổ phiếu,,,,"(P) A.5 Cơ cấu vốn và các thỏa ước cho phép một số cổ đông nắm giữ quyền kiểm soát không tương ứng với tỷ lệ cổ phần mà họ sở hữu phải được công bố công khai (P) A.5.1 Cấu trúc sở hữu kim tự tháp hoặc cấu trúc sở hữu chéo có Hiện tại là theo cấu trúc kim tự tháp với Chủ tịch HĐQT và Người có liên quan đến Chủ tịch HĐQT (P) B ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG (P) B.1 Giao dịch nội gián và hành vi lạm dụng kinh doanh để tư (P) B.1.1 Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+328adec95604,ACG,7 lần được vinh danh Top 100 Doanh nghiệp Bền vững (CSI) Top 100 Doanh nghiệp Bền vững (CSI) 7.0 lần achieved,được xếp hạng vào nhóm Top 100 Doanh nghiệp tư nhân nộp ngân sách lớn nhất Việt Nam và 10 công ty thép – vật liệu xây dựng nộp ngân sách lớn nhất Việt Nam,token_overlap,irrelevant,"Giải Thưởng CSI - Vinh Danh “Top 100” Doanh Nghiệp Bền Vững Tại Việt Nam An Cường luôn nỗ lực hiện thực hóa các cam kết trong việc xây dựng một mô hình kinh doanh có trách nhiệm với xã hội, cộng đồng và môi trường.",supports,0.2278,0.2647,0.2,0.1452,0.2025,0.517,False,được xếp hạng vào nhóm Top 100 Doanh nghiệp tư nhân nộp ngân sách lớn nhất Việt Nam và 10 công ty thép – vật liệu xây dựng nộp ngân sách lớn nhất Việt Nam,False
+974dea675c32,ACG,Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG,Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+717954f07e1c,AGG,Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG,,,,"Trong năm qua, công ty đã bị Ủy ban Chứng khoán Nhà nước xử phạt do chưa thực hiện tốt công tác này trong các năm trước.",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+1a1f415e7104,ACG,Dùng 92 tài khoản chứng khoán để thao túng cổ phiếu AGG,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",token_overlap,irrelevant,"Quản trị doanh nghiệp CHƯƠNG 3
+86 - 147
+92
+92
+94
+99
+102
+103
+106
+112
+114
+124
+124
+124
+125
+125
+126
+127
+128 Báo cáo hoạt động của HĐQT Thông tin thành viên HĐQT Hoạt động của HĐQT năm 2023 Đánh giá của HĐQT Hoạt động của Thành viên HĐQT độc lập Đánh giá của Thành viên HĐQT độc lập Báo cáo Ban kiểm soát Thù lao và các khoản lợi ích của HĐQT và Ban Tổng giám đốc Quản trị rủi ro Thông tin cổ phiếu và Hoạt động Quan hệ nhà đầu tư Thông tin cổ phiếu Diễn biến giá chính giá cổ phiếu 2023 Cơ cấu cổ đông Sở hữu cổ đông lớn Giao dịch của người nội bộ và người có liên quan trong năm 2023 Hoạt động quan hệ nhà đầu tư năm 2023 Phân tích & Đánh giá Quản trị công ty theo thẻ điểm quản trị công ty khu vực ASEAN
+2.",irrelevant,0.1727,0.3167,0.1187,0.1157,0.0818,0.4634,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",False
+0f67788819fd,AGG,Vốn điều lệ vốn điều lệ 225.0 tỷ đồng achieved,,,,"BÁO CÁO THƯỜNG NIÊN 2025
+94 TẬP ĐOÀN BẤT ĐỘNG SẢN AN GIA
+95 Quản trị doanh nghiệp Báo cáo phát triển bền vững Bối cảnh và Định hướng chiến lược Báo cáo tài chính 2025 Giới thiệu doanh nghiệp Hoạt động kinh doanh trong năm Chỉ tiêu ĐVT
+2021
+2022
+2023
+2024
+2025 Chỉ tiêu về khả năng thanh toán Hệ số thanh toán ngắn hạn Lần
+1,83
+1,45
+1,57
+1,81
+1,01 Hệ số thanh toán nhanh Lần
+0,72
+0,83
+1,19
+1,57
+0,79 Chỉ tiêu về cơ cấu vốn Hệ số Nợ/Tổng tài sản Lần
+0,79
+0,75
+0,69
+0,55
+0,36 Hệ số Nợ/Vốn chủ sở hữu Lần
+3,70
+3,07
+2,23
+1,24
+0,56 Chỉ tiêu về năng lực hoạt động Vòng quay Tổng tài sản Vòng
+0,23
+0,98
+1,02
+0,95
+0,44 Vòng quay Hàng tồn kho Vòng
+0,14
+0,56
+0,42
+0,27
+0,13 Chỉ tiêu về khả năng sinh lời Hệ số LNST/Doanh thu thuần (ROS) %
+23,29
+1,56
+11,83
+13,64
+45,67 Hệ số LNST/VCSH bình quân (ROEA) %
+16,86
+3,58
+16,44
+8,68
+11,38 Hệ số LNST/Tổng tài sản bình quân (ROAA) %
+3,77
+0,82
+4,52
+3,20
+6,05 Hệ số LN từ HĐSXKD/Doanh thu thuần %
+27,22
+3,36
+12,89
+16,04
+42,14 Hệ số LN gộp/Doanh thu thuần %
+22,05
+16,92
+25,11
+31,02
+70,36 Thông tin khác Thu nhập trên mỗi cổ phiếu (EPS) VNĐ/CP
+5.068
+159
+1.402
+1.830
+2.333 Giá trị sổ sách mỗi cổ phiếu (BVPS) VNĐ/CP
+25.502
+18.825
+22.368
+19.050
+21.626 BÁO CÁO THƯỜNG NIÊN 2025
+94 Về tình hình tài chính:
+Xét về quy mô tài chính, tổng tài sản của An Gia có xu hướng giảm dần từ 12.565 tỷ đồng năm 2021 xuống
+5.477 tỷ đồng vào cuối năm 2025.",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+756cf48fef5e,ACG,Dùng 92 tài khoản chứng khoán để thao túng cổ phiếu AGG,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",token_overlap,irrelevant,"Quản trị doanh nghiệp CHƯƠNG 3
+86 - 147
+92
+92
+94
+99
+102
+103
+106
+112
+114
+124
+124
+124
+125
+125
+126
+127
+128 Báo cáo hoạt động của HĐQT Thông tin thành viên HĐQT Hoạt động của HĐQT năm 2023 Đánh giá của HĐQT Hoạt động của Thành viên HĐQT độc lập Đánh giá của Thành viên HĐQT độc lập Báo cáo Ban kiểm soát Thù lao và các khoản lợi ích của HĐQT và Ban Tổng giám đốc Quản trị rủi ro Thông tin cổ phiếu và Hoạt động Quan hệ nhà đầu tư Thông tin cổ phiếu Diễn biến giá chính giá cổ phiếu 2023 Cơ cấu cổ đông Sở hữu cổ đông lớn Giao dịch của người nội bộ và người có liên quan trong năm 2023 Hoạt động quan hệ nhà đầu tư năm 2023 Phân tích & Đánh giá Quản trị công ty theo thẻ điểm quản trị công ty khu vực ASEAN
+2.",irrelevant,0.1727,0.3167,0.1187,0.1157,0.0818,0.4634,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",False
+861569fd078c,AAA,Doanh thu xuất khẩu tăng gần 19% so với 2024 doanh thu xuất khẩu tăng trưởng 19.0 phần trăm achieved,,,,Nhập khẩu nhiều loại chất dẻo nguyên liệu tăng so với năm 2023.,irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+1e82deeecbe9,ADP,Chất lượng tương đương với dòng sản phẩm 60 triệu/m2 giá trị tương đương 60 triệu VND/m2 achieved,"Cam kết đổi mới không ngừng để cung cấp những sản phẩm chất lượng cao với giá thành hợp lý cho người tiêu dùng nhằm mang lại không gian sống đẹp, bền vững, bảo vệ công trình và tạo giá trị bền vững cho cộng đồng.",token_overlap,supports,"Sơn Á Đông cam kết đổi mới không ngừng để cung cấp những sản phẩm chất lượng cao với giá thành hợp lý cho người tiêu dùng nhằm mang lại không gian sống đẹp, bền vững, bảo vệ công trình và tạo giá trị bền vững cho cộng đồng.",supports,0.9684,1.0,0.9388,0.9318,0.9684,0.7801,True,"Cam kết đổi mới không ngừng để cung cấp những sản phẩm chất lượng cao với giá thành hợp lý cho người tiêu dùng nhằm mang lại không gian sống đẹp, bền vững, bảo vệ công trình và tạo giá trị bền vững cho cộng đồng.",False
+7a038f5e266c,ACG,Dùng 92 tài khoản chứng khoán để thao túng cổ phiếu AGG,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",token_overlap,irrelevant,"Quản trị doanh nghiệp CHƯƠNG 3
+86 - 147
+92
+92
+94
+99
+102
+103
+106
+112
+114
+124
+124
+124
+125
+125
+126
+127
+128 Báo cáo hoạt động của HĐQT Thông tin thành viên HĐQT Hoạt động của HĐQT năm 2023 Đánh giá của HĐQT Hoạt động của Thành viên HĐQT độc lập Đánh giá của Thành viên HĐQT độc lập Báo cáo Ban kiểm soát Thù lao và các khoản lợi ích của HĐQT và Ban Tổng giám đốc Quản trị rủi ro Thông tin cổ phiếu và Hoạt động Quan hệ nhà đầu tư Thông tin cổ phiếu Diễn biến giá chính giá cổ phiếu 2023 Cơ cấu cổ đông Sở hữu cổ đông lớn Giao dịch của người nội bộ và người có liên quan trong năm 2023 Hoạt động quan hệ nhà đầu tư năm 2023 Phân tích & Đánh giá Quản trị công ty theo thẻ điểm quản trị công ty khu vực ASEAN
+2.",irrelevant,0.1727,0.3167,0.1187,0.1157,0.0818,0.4634,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",False
+f4773f8c67b0,ACG,"Phạt 1,5 tỷ đồng, cấm giao dịch chứng khoán và đảm nhiệm chức vụ trong 2 năm do thao túng cổ phiếu AGG",Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+f0f18547b27c,ACG,"Phạt 1,5 tỷ đồng, cấm giao dịch chứng khoán và đảm nhiệm chức vụ trong 2 năm do thao túng cổ phiếu AGG",Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+5e9650eceaee,ACG,AGG: Công ty do Chủ tịch sáng lập bị phạt vì thao túng cổ phiếu,,,,"Năm 2025, Công ty quy định chi tiết trong Quy chế tổ chức, thực hiện và kiểm phiếu lấy ý kiến cổ đông bằng văn bản và thực hiện bầu bổ sung 01 Thành viên HĐQT.",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+eb4b2c9b4704,ACG,"Phạt 1,5 tỷ đồng, cấm giao dịch chứng khoán và đảm nhiệm chức vụ trong 2 năm do thao túng cổ phiếu AGG",Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+4c0862e575b3,ADP,"Phạt 1,5 tỷ đồng, cấm giao dịch chứng khoán và đảm nhiệm chức vụ trong 2 năm do thao túng cổ phiếu AGG",,,,"Giao dịch cổ phiếu của người nội bộ:
+STT Người thực hiện giao dịch Quan hệ với người nội bộ Số cổ phiếu sở hữu đầu kỳ Số cổ phiếu sở hữu cuối kỳ Lý do tăng, giảm (mua, bán, chuyển đổi,…) Số lượng Tỷ lệ Số lượng Tỷ lệ
+1 Võ Hồng Hà Thành viên HĐQT kiêm Phó tổng giám đốc
+2.534.400
+11,00%
+1.821.200
+7,90% Bán Hợp đồng hoặc giao dịch với người nội bộ:
+- Giao dịch giữa công ty với người có liên quan của công ty; hoặc giữa công ty với cổ đông lớn, người nội bộ, người có liên quan của người nội bộ: (Không có) - Giao dịch giữa người nội bộ công ty, người có liên quan của người nội bộ với công ty con, công ty do công ty nắm quyền kiểm soát: (Không có)",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+ae7f23df57e8,ACG,Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG,Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"(P) A.6 Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi (P) A.6.1 Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.1818,0.3158,0.1277,0.1304,0.1515,0.3876,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+5a1646312a70,ACG,"Phạt 3 tỷ đồng, cấm giao dịch chứng khoán trong 2 năm do giúp sức thao túng cổ phiếu AGG",Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+ef6a746cf01f,ACG,Giá trị phát hành cổ phiếu trả cổ tức năm 2021 theo mệnh giá Giá trị phát hành cổ phiếu trả cổ tức theo mệnh giá 438.0 tỷ đồng achieved,"Nghị quyết của ĐHĐCĐ số 09-2022/NQ-GAC ngày 06/06/2022 thông qua phương án chia cổ tức năm 2021, Kế hoạch chi trả cổ tức năm 2022.",token_overlap,supports,"Thông qua ngày đăng ký cuối cùng chốt danh sách cổ đông để chi trả cổ tức năm
+2021 bằng cổ phiếu.",supports,0.3846,0.3333,0.4545,0.2571,0.3077,0.5355,True,"Nghị quyết của ĐHĐCĐ số 09-2022/NQ-GAC ngày 06/06/2022 thông qua phương án chia cổ tức năm 2021, Kế hoạch chi trả cổ tức năm 2022.",False
+88d50ee78e36,AGG,Đạt danh hiệu Nơi làm việc tốt nhất châu Á Nơi làm việc tốt nhất châu Á achieved,,,,"MÔI TRƯỜNG LÀM VIỆC QUY CHẾ LƯƠNG THƯỞNG MINH BẠCH, KHOA HỌC An Gia luôn nô lực nhằm mang lại điều kiện làm việc tốt nhất có thể, tạo tâm lý thoải mái, từ đó nâng cao năng suất lao động cũng như giúp người lao động gắn bó lâu dài với Công ty.",supports,0.0,0.0,0.0,0.0,0.0,,,,
+2d4cd2a1b808,ADP,"Phạt 1,5 tỷ đồng, cấm giao dịch chứng khoán và đảm nhiệm chức vụ trong 2 năm do thao túng cổ phiếu AGG",,,,"Giao dịch cổ phiếu của người nội bộ:
+STT Người thực hiện giao dịch Quan hệ với người nội bộ Số cổ phiếu sở hữu đầu kỳ Số cổ phiếu sở hữu cuối kỳ Lý do tăng, giảm (mua, bán, chuyển đổi,…) Số lượng Tỷ lệ Số lượng Tỷ lệ
+1 Võ Hồng Hà Thành viên HĐQT kiêm Phó tổng giám đốc
+2.534.400
+11,00%
+1.821.200
+7,90% Bán Hợp đồng hoặc giao dịch với người nội bộ:
+- Giao dịch giữa công ty với người có liên quan của công ty; hoặc giữa công ty với cổ đông lớn, người nội bộ, người có liên quan của người nội bộ: (Không có) - Giao dịch giữa người nội bộ công ty, người có liên quan của người nội bộ với công ty con, công ty do công ty nắm quyền kiểm soát: (Không có)",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+f7f3215403ee,ACG,Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG,Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+e892f06a7ef8,ADP,Lãi ròng tăng 12% so với cùng kỳ nửa đầu năm 2025 Tăng trưởng lợi nhuận ròng 12 percent achieved,Thông qua KQ-SX-KD Quý 2/2025 và 06 tháng đầu năm 2025,token_overlap,irrelevant,"Sản lượng tiêu thụ năm 2025 đạt 5.832 tấn giảm 18,25% so với năm 2024.",irrelevant,0.129,0.1429,0.1176,0.0741,0.129,0.4233,True,"Mong muốn góp phần làm tăng tiến chất lượng cuộc sống bằng các hoạt động thân thiện với con người, môi trường và thiên nhiên",True
+38905f002f69,ACC,"An Cường – 30 năm phát triển bền vững, tiên phong hướng tới mục tiêu Net Zero 2050 - CafeLand.Vn...","Cam kết với định hướng phát triển bền vững bằng tất cả trách nhiệm và đạo đức kinh doanh của một doanh nghiệp, đề cao giá trị doanh nghiệp trong mối quan hệ với sự phát triển tốt đẹp của cộng đồng và xã hội.",token_overlap,irrelevant,"Hướng tới sựphát triển ổn định và bền vững trong tương lai, ACC không ngừng phát triển sản phẩm mới, mởrộng thịtrường tiêu thụ, xây dựng thương hiệu, nâng cao trách nhiệm xã hội và bảo vệmôi trường.",supports,0.3614,0.3333,0.3947,0.2167,0.2169,0.5464,False,"Cam kết với định hướng phát triển bền vững bằng tất cả trách nhiệm và đạo đức kinh doanh của một doanh nghiệp, đề cao giá trị doanh nghiệp trong mối quan hệ với sự phát triển tốt đẹp của cộng đồng và xã hội.",False
+14ecf9686d73,AGG,"Phạt 1,5 tỷ đồng, cấm giao dịch chứng khoán và đảm nhiệm chức vụ trong 2 năm do thao túng cổ phiếu AGG",,,,"vn Tên giao dịch Công ty Cổ phần Đầu tư và Phát triển Bất động sản An Gia Tên viết tắt An Gia Mã cổ phiếu AGG (HoSE) Giấy chứng nhận đăng ký doanh nghiệp số
+0311500196 Vốn điều lệ
+1.251.183.680.000 VNĐ (Một nghìn hai trăm năm mươi mốt tỷ một trăm tám mươi ba triệu sáu trăm tám mươi nghìn đồng) Giới thiệu doanh nghiệp Bối cảnh và định hướng chiến lược Báo cáo quản trị doanh nghiệp Báo cáo của Ban Điều Hành Báo cáo Phát triển bền vững Báo cáo tài chính kiểm toán
+13
+12",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+d60cdd323ae6,AGG,Vốn điều lệ vốn điều lệ 180.0 tỷ đồng achieved,,,,"BÁO CÁO THƯỜNG NIÊN 2025
+94 TẬP ĐOÀN BẤT ĐỘNG SẢN AN GIA
+95 Quản trị doanh nghiệp Báo cáo phát triển bền vững Bối cảnh và Định hướng chiến lược Báo cáo tài chính 2025 Giới thiệu doanh nghiệp Hoạt động kinh doanh trong năm Chỉ tiêu ĐVT
+2021
+2022
+2023
+2024
+2025 Chỉ tiêu về khả năng thanh toán Hệ số thanh toán ngắn hạn Lần
+1,83
+1,45
+1,57
+1,81
+1,01 Hệ số thanh toán nhanh Lần
+0,72
+0,83
+1,19
+1,57
+0,79 Chỉ tiêu về cơ cấu vốn Hệ số Nợ/Tổng tài sản Lần
+0,79
+0,75
+0,69
+0,55
+0,36 Hệ số Nợ/Vốn chủ sở hữu Lần
+3,70
+3,07
+2,23
+1,24
+0,56 Chỉ tiêu về năng lực hoạt động Vòng quay Tổng tài sản Vòng
+0,23
+0,98
+1,02
+0,95
+0,44 Vòng quay Hàng tồn kho Vòng
+0,14
+0,56
+0,42
+0,27
+0,13 Chỉ tiêu về khả năng sinh lời Hệ số LNST/Doanh thu thuần (ROS) %
+23,29
+1,56
+11,83
+13,64
+45,67 Hệ số LNST/VCSH bình quân (ROEA) %
+16,86
+3,58
+16,44
+8,68
+11,38 Hệ số LNST/Tổng tài sản bình quân (ROAA) %
+3,77
+0,82
+4,52
+3,20
+6,05 Hệ số LN từ HĐSXKD/Doanh thu thuần %
+27,22
+3,36
+12,89
+16,04
+42,14 Hệ số LN gộp/Doanh thu thuần %
+22,05
+16,92
+25,11
+31,02
+70,36 Thông tin khác Thu nhập trên mỗi cổ phiếu (EPS) VNĐ/CP
+5.068
+159
+1.402
+1.830
+2.333 Giá trị sổ sách mỗi cổ phiếu (BVPS) VNĐ/CP
+25.502
+18.825
+22.368
+19.050
+21.626 BÁO CÁO THƯỜNG NIÊN 2025
+94 Về tình hình tài chính:
+Xét về quy mô tài chính, tổng tài sản của An Gia có xu hướng giảm dần từ 12.565 tỷ đồng năm 2021 xuống
+5.477 tỷ đồng vào cuối năm 2025.",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+16b185e84043,AGG,7 lần được vinh danh Top 100 Doanh nghiệp Bền vững (CSI) Top 100 Doanh nghiệp Bền vững (CSI) 7.0 lần achieved,"Báo cáo phát triển bền vững được lập dưới dạng một báo cáo tích hợp vào Báo cáo thường niên, tập trung vào các lĩnh vực trọng yếu chưa được đề cập trong các phần khác của Báo cáo thường niên của An Gia Group. Báo cáo được lập cho niên độ tài chính kết thúc ngày 31/12/2020, được lập định kỳ hàng năm.",token_overlap,irrelevant,"19
+18 Báo cáo thường niên 2020 Angia Group - Tập Đoàn Bất Động Sản An Gia Giới thiệu doanh nghiệp Bối cảnh và định hướng chiến lược Báo cáo quản trị doanh nghiệp Báo cáo của Ban Điều Hành Báo cáo phát triển bền vững Báo cáo tài chính kiểm toán GIẢI THƯỞNG TIÊU BIỂU TOP CHỦ ĐẦU TƯ UY TÍN NHẤT do Hiệp hội môi giới Việt Nam bình chọn.",irrelevant,0.365,0.3788,0.3521,0.1889,0.1898,0.6409,True,"Báo cáo phát triển bền vững được lập dưới dạng một báo cáo tích hợp vào Báo cáo thường niên, tập trung vào các lĩnh vực trọng yếu chưa được đề cập trong các phần khác của Báo cáo thường niên của An Gia Group. Báo cáo được lập cho niên độ tài chính kết thúc ngày 31/12/2020, được lập định kỳ hàng năm.",False
+f5faf7041842,ADP,Giảm chi phí bán hàng và quản lý doanh nghiệp quý I/2026 so với cùng kỳ selling and administrative expenses growth -31.4 percent achieved,"ADP chủ động đàm phán với các nhà cung cấp nguyên vật liệu để điều chỉnh giá, hướng đến tối ưu hóa chi phí đầu vào.",token_overlap,irrelevant,"Sự sụt giảm này chủ yếu đến từ các khoản phải trả ngắn hạn, do thời điểm cuối năm Công ty chủ động nguồn nguyên vật liệu để chuẩn bị cho công tác sản xuất đầu năm 2026.",irrelevant,0.2812,0.3462,0.2368,0.1731,0.2188,0.4771,True,"ADP chủ động đàm phán với các nhà cung cấp nguyên vật liệu để điều chỉnh giá, hướng đến tối ưu hóa chi phí đầu vào.",False
+cb62f469b5a3,ADP,8 năm liên tiếp đạt Thương hiệu Quốc gia Việt Nam Thương hiệu Quốc gia Việt Nam 8.0 năm achieved,,,,"Bên cạnh đó, chúng tôi chú trọng xây dựng một thương hiệu vững mạnh và sự đồng hành lâu dài cùng khách hàng, nhân viên và cổ đông.",supports,0.0,0.0,0.0,0.0,0.0,,,,
+32f13712fdab,AGG,Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG,,,,"Trong năm qua, công ty đã bị Ủy ban Chứng khoán Nhà nước xử phạt do chưa thực hiện tốt công tác này trong các năm trước.",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+9d84905eb525,ACG,"An Cường – 30 năm phát triển bền vững, tiên phong hướng tới mục tiêu Net Zero 2050 - CafeLand.Vn...",Cải tiến liên tục để luôn theo theo đuổi sự hoàn hảo. Điều đó cũng giúp cho mỗi con người hạn chế tối đa “tính ì”. Và sự cải tiến đóng vai trò hết sức quan trọng nhằm quyết định cho sự phát triển cũng như đột phá thành công và tiến đến vững bền phát triển của An Cường.,token_overlap,irrelevant,"Định hướng phát triển bền vững được triển khai nhất quán theo mô hình ESG, hướng tới mục tiêu Net Zero vào năm 2030.",contradicts,0.1667,0.1167,0.2917,0.0923,0.119,0.3857,False,"Con người được xem là trung tâm của mọi sự vận động trong doanh nghiệp, quyết định tới sự phát triển bền vững của doanh nghiệp hay xã hội. Và con người cũng chính là tài sản của doanh nghiệp. Công ty luôn có cơ chế tốt để thu hút nhân tài tạo môi trường làm việc thật tốt để từng cá nhân hoà đồng và chuyên nghiệp hơn trong một tập thể lớn.",True
+4af4fbec7c73,ACC,Đạt danh hiệu Nơi làm việc tốt nhất châu Á Nơi làm việc tốt nhất châu Á achieved,,,,Đảm bảo thu nhập và môi trường làm việc đối với người lao động ở điều kiện tốt nhất.,supports,0.0,0.0,0.0,0.0,0.0,,,,
+0d6482506561,ADP,Tỷ lệ hoàn thành kế hoạch doanh thu năm revenue target achievement 44 percent achieved,Chi thưởng cho HĐQT và Ban điều hành khi thực hiện hoàn thành kế hoạch năm 2024,token_overlap,contradicts,"Với quyết tâm tập trung hoàn thành ở mức cao nhất kế hoạch sản xuất kinh doanh và đầu tư phát triển năm 2025, Hội đồng quản trị xây dựng kế hoạch hoạt động với các mục tiêu và giải pháp như sau:
+ Thực hiện và đảm bảo hoạt động của HĐQT tuân thủ theo đúng các quy định của pháp luật và điều lệ của Công ty.",irrelevant,0.2353,0.5882,0.1471,0.1587,0.1176,0.6014,False,Chi thưởng cho HĐQT và Ban điều hành khi thực hiện hoàn thành kế hoạch năm 2024,False
+56e84edb66c3,AGG,Số lượng cổ phiếu phát hành để trả cổ tức năm 2021 Số lượng cổ phiếu phát hành 43.82 triệu cổ phiếu achieved,Triển khai phương án phát hành cổ phiếu để chi trả cổ tức cho Cổ đông,token_overlap,supports,Việc phát hành cổ phiếu này nhằm mục đích chia cổ tức và bổ sung vốn lưu động của Công ty và đã được chấp thuận bởi các cổ đông theo Nghị quyết Đại hội đồng Cổ đông thường niên năm 2022 số 17/2022/NQ-AGI ngày 15 tháng 4 năm 2022 và các Nghị quyết Hội đồng Quản trị số 26/2022/ QĐ-AGI-PL ngày 8 tháng 9 năm 2022 và số 41/2022/NQ-AGI-PL ngày 4 tháng 11 năm 2022.,supports,0.1569,0.5,0.093,0.0968,0.1569,0.5923,True,Thu hồi 74.750 cổ phiếu đã phát hành cho cán bộ nhân viên theo chương trình lựa chọn người lao động năm 2019,True
+5674b91c4c3a,AGG,An Phát Holdings cầm cố cổ phiếu AAA để phát hành trái phiếu,Thông qua giao dịch giữa Công ty với các bên có liên quan để đảm bảo nghĩa vụ của Công ty theo phương án phát hành trái phiếu,token_overlap,supports,"100%
+10
+10/2023/NQ-AGI-PL
+22/05/2023 Thông qua việc bổ nhiệm Bà Huỳnh Thị Kim Ánh giữ chức danh Tổng Giám đốc của Công ty nhiệm kỳ 2023 – 2024 kể từ ngày 22/05/2023
+100%
+11
+11/2023/NQ-AGI-PL
+23/06/2023 Thông qua việc triển khai phương án mua lại cổ phiếu đã được ĐHĐCĐ cổ đông thông qua tại Nghị quyết ĐHĐCĐ số 01/2023/NQ-AGI
+100%
+12
+12/2023/NQ-AGI-PL
+11/07/2023 Thông qua việc lựa chọn Công ty TNHH Ernst & Young Việt Nam làm đơn vị kiểm toán Báo cáo tài chính năm 2023 của Công ty
+100%
+13
+11/2023/QĐ-AGI-PL
+24/07/2023 Thông qua việc Công ty kéo dài thời hạn nhận cấp tín dụng tại Ngân hang TMCP Công thương Việt Nam – Chi nhánh 11
+100%
+14
+13/2023/NQ-AGI-PL
+29/08/2023 Chấp thuận việc đăng ký giao dịch toàn bộ Trái phiếu của Công ty tại Sở giao dịch Chứng khoán Hà Nội, bao gồm các mã trái phiếu AGGH2224002 và mã trái phiếu AGGH2224003.",irrelevant,0.1284,0.5,0.0737,0.0952,0.0826,0.5519,False,Thông qua giao dịch giữa Công ty với các bên có liên quan để đảm bảo nghĩa vụ của Công ty theo phương án phát hành trái phiếu,False
+42685698fe6a,ACG,Nhóm liên quan VinaCapital giao dịch trái chiều 133.200 cổ phiếu Gỗ An Cường (ACG),Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,supports,"100%
+15
+15-2025/NQ-GAC
+20/10/2025 Thông qua các hợp đồng, giao dịch giữa Công ty Cổ phần Gỗ An Cường và Người có liên quan là Công ty Cổ phần Sản Xuất Gỗ An Cường Đồng Nai (tên cũ là Công ty Cổ phần Green Board Việt Nhật).",irrelevant,0.2817,0.5263,0.1923,0.1333,0.1972,0.3605,False,"Công ty không có trường hợp nào không tuân thủ luật pháp, quy tắc và quy định liên quan đến giao dịch bên liên quan đáng kể hoặc trọng yếu",True
+fc04f4b487ed,ACG,"Phạt 3 tỷ đồng, cấm giao dịch chứng khoán trong 2 năm do giúp sức thao túng cổ phiếu AGG",Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+492c95007a0c,ACC,7 lần được vinh danh Top 100 Doanh nghiệp Bền vững (CSI) Top 100 Doanh nghiệp Bền vững (CSI) 7.0 lần achieved,"Cam kết với định hướng phát triển bền vững bằng tất cả trách nhiệm và đạo đức kinh doanh của một doanh nghiệp, đề cao giá trị doanh nghiệp trong mối quan hệ với sự phát triển tốt đẹp của cộng đồng và xã hội.",token_overlap,supports,"Cam kết với định hướng phát triển bền vững bằng tất cả trách nhiệm và đạo đức kinh doanh của một doanh nghiệp, đề cao giá trị doanh nghiệp trong mối quan hệ với sự phát triển tốt đẹp của cộng đồng và xã hội.",supports,1.0,1.0,1.0,1.0,1.0,1.0,True,"Cam kết với định hướng phát triển bền vững bằng tất cả trách nhiệm và đạo đức kinh doanh của một doanh nghiệp, đề cao giá trị doanh nghiệp trong mối quan hệ với sự phát triển tốt đẹp của cộng đồng và xã hội.",False
+2a5e9f63e3cf,AGG,Số lô đất thế chấp làm tài sản bảo đảm mortgaged assets 549.0 lots achieved,"Thông qua việc sử dụng tài sản bảo đảm và biện pháp bảo đảm cho các nghĩa vụ thanh toán gốc, lãi và nghĩa vụ khác",token_overlap,supports,"171
+170 Báo cáo thường niên 2021 Angia Group - Tập Đoàn Bất Động Sản An Gia Giới thiệu doanh nghiệp Bối cảnh và định hướng chiến lược Báo cáo quản trị doanh nghiệp Báo cáo của Ban Điều Hành Báo cáo phát triển bền vững Báo cáo tài chính kiểm toán BÁO CÁO TÀI CHÍNH HỢP NHẤT KIỂM TOÁN 2021 (tiếp theo) Cho năm tài chính kết thúc ngày 31 tháng 12 năm 2021 VND Ngân hàng Số cuối năm Thời hạn thanh toán Mục đích Tài sản đảm bảo Ngân hàng TMCP Tiên Phong
+100.000.000.000 Ngày 30 tháng 6 năm 2023 Góp vốn đầu tư vào HĐHTKD Các quyền sử dụng đất, quyền sử dụng nhà ở và các tài sản khác gắn liền với đất thuộc sở hữu của Công ty và các bên khác Ngân hàng Thương Mại Cổ phần Bảo Việt - Chi nhánh TP Hồ Chí Minh
+5.840.000.000 Từ ngày 9 tháng 1 năm 2022 đến ngày 30 tháng 12 năm 2025 Mua phương tiện vận tải Phương tiện vận tải (TM số 13) Ngân hàng TNHH Shinhan Việt Nam - Chi nhánh Bình Dương
+4.864.864.865 Từ ngày 25 tháng 1 năm 2022 đến ngày 18 tháng 8 năm 2023 Ngân hàng United Overseas Bank Việt Nam
+2.459.549.988 Từ ngày 5 tháng 1 năm 2022 đến ngày 19 tháng 12 năm 2024 TỔNG CỘNG
+113.164.414.853 Trong đó:
+Đến hạn trả
+5.338.718.925 Dài hạn
+107.825.695.928
+22.3 VAY DÀI HẠN NGÂN HÀNG
+22.",supports,0.0959,0.5385,0.0526,0.0702,0.0479,0.4823,True,"Thông qua việc sử dụng tài sản bảo đảm và biện pháp bảo đảm cho các nghĩa vụ thanh toán gốc, lãi và nghĩa vụ khác",False
+5d74c301b381,ACG,Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG,Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+6d30c2f05408,ACG,"Phạt 3 tỷ đồng, cấm giao dịch chứng khoán trong 2 năm do giúp sức thao túng cổ phiếu AGG",Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+15dd14789166,ADP,"Phạt 1,5 tỷ đồng, cấm giao dịch chứng khoán và đảm nhiệm chức vụ trong 2 năm do thao túng cổ phiếu AGG",,,,"Giao dịch cổ phiếu của người nội bộ:
+STT Người thực hiện giao dịch Quan hệ với người nội bộ Số cổ phiếu sở hữu đầu kỳ Số cổ phiếu sở hữu cuối kỳ Lý do tăng, giảm (mua, bán, chuyển đổi,…) Số lượng Tỷ lệ Số lượng Tỷ lệ
+1 Võ Hồng Hà Thành viên HĐQT kiêm Phó tổng giám đốc
+2.534.400
+11,00%
+1.821.200
+7,90% Bán Hợp đồng hoặc giao dịch với người nội bộ:
+- Giao dịch giữa công ty với người có liên quan của công ty; hoặc giữa công ty với cổ đông lớn, người nội bộ, người có liên quan của người nội bộ: (Không có) - Giao dịch giữa người nội bộ công ty, người có liên quan của người nội bộ với công ty con, công ty do công ty nắm quyền kiểm soát: (Không có)",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+1a5b944e5015,ACG,Dùng 92 tài khoản chứng khoán để thao túng cổ phiếu AGG,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",token_overlap,irrelevant,"Thông qua ngày đăng ký cuối cùng chốt danh sách cổ đông để chi trả cổ tức năm
+2021 bằng cổ phiếu.",irrelevant,0.122,0.0833,0.2273,0.0625,0.0732,0.4784,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",False
+eb694199f765,ACG,"Phạt 3 tỷ đồng, cấm giao dịch chứng khoán trong 2 năm do giúp sức thao túng cổ phiếu AGG",Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+974c9de35848,ACC,Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG,,,,"Giám sát việc thực hiện nghĩa vụ công bố thông tin đến Ủy ban Chứng khoán Nhà nước, Sở giao dịch chứng khoán TP HCM, cũng như đến các cổ đông tại trang thông tin điện tử của Công ty; giám sát việc thực hiện chế độ Báo cáo tài chính quý, Báo cáo tài chính năm
+2025.",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+bf5495c819c6,ACG,"Phạt 1,5 tỷ đồng, cấm giao dịch chứng khoán và đảm nhiệm chức vụ trong 2 năm do thao túng cổ phiếu AGG",Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+b7027140b202,ACG,7 lần được vinh danh Top 100 Doanh nghiệp Bền vững (CSI) Top 100 Doanh nghiệp Bền vững (CSI) 7.0 lần achieved,được xếp hạng vào nhóm Top 100 Doanh nghiệp tư nhân nộp ngân sách lớn nhất Việt Nam và 10 công ty thép – vật liệu xây dựng nộp ngân sách lớn nhất Việt Nam,token_overlap,irrelevant,"Giải Thưởng CSI - Vinh Danh “Top 100” Doanh Nghiệp Bền Vững Tại Việt Nam An Cường luôn nỗ lực hiện thực hóa các cam kết trong việc xây dựng một mô hình kinh doanh có trách nhiệm với xã hội, cộng đồng và môi trường.",supports,0.2278,0.2647,0.2,0.1452,0.2025,0.517,False,được xếp hạng vào nhóm Top 100 Doanh nghiệp tư nhân nộp ngân sách lớn nhất Việt Nam và 10 công ty thép – vật liệu xây dựng nộp ngân sách lớn nhất Việt Nam,False
+5615567b985e,ADP,Chất lượng tương đương với dòng sản phẩm 60 triệu/m2 giá trị tương đương 60 triệu VND/m2 achieved,"ADP cam kết cung cấp những sản phẩm chất lượng cao, giá cả hợp lý nhất để đáp ứng nhu cầu của khách hàng.",token_overlap,irrelevant,"Sơn Á Đông cam kết đổi mới không ngừng để cung cấp những sản phẩm chất lượng cao với giá thành hợp lý cho người tiêu dùng nhằm mang lại không gian sống đẹp, bền vững, bảo vệ công trình và tạo giá trị bền vững cho cộng đồng.",irrelevant,0.3836,0.5833,0.2857,0.2593,0.3562,0.5916,True,"Cam kết đổi mới không ngừng để cung cấp những sản phẩm chất lượng cao với giá thành hợp lý cho người tiêu dùng nhằm mang lại không gian sống đẹp, bền vững, bảo vệ công trình và tạo giá trị bền vững cho cộng đồng.",True
+0d983e2776d8,ACG,Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG,Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+27a2db548c5b,AGG,Tỷ lệ trả cổ tức bằng cổ phiếu năm 2021 Tỷ lệ trả cổ tức bằng cổ phiếu 50.0 percent achieved,Triển khai phương án phát hành cổ phiếu để chi trả cổ tức cho Cổ đông,token_overlap,supports,"100% Stt Số Nghị quyết/ Quyết định Ngày Nội dung Tỷ lệ thông qua
+23
+26/2022/QĐ-AGI-PL
+08/09/2022 Thông qua phương án chi tiết và triển khai thực hiện việc phát hành cổ phiếu để trả cổ tức cho cổ đông đã được thông qua tại Nghị quyết Đại hội đồng Cổ đông số 17/2022/NQAGI ngày 15/04/2022.",irrelevant,0.3902,1.0,0.2424,0.28,0.3171,0.5752,False,Xác định ngày đăng ký cuối cùng thực hiện quyền nhận cổ tức bằng cổ phiếu cho cổ đông hiện hữu là ngày 28/08/2020,True
+8726327c68bb,ACG,"Phạt 3 tỷ đồng, cấm giao dịch chứng khoán trong 2 năm do giúp sức thao túng cổ phiếu AGG",Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+abfceacc16ac,ACG,AGG: Công ty do Chủ tịch sáng lập bị phạt vì thao túng cổ phiếu,,,,"Năm 2025, Công ty quy định chi tiết trong Quy chế tổ chức, thực hiện và kiểm phiếu lấy ý kiến cổ đông bằng văn bản và thực hiện bầu bổ sung 01 Thành viên HĐQT.",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+9cbc955d1cf7,ACG,năng suất lao động tăng 15%-20% labor_productivity 17.5 percent achieved,"Công ty đã ban hành và thực hiện chính sách khen thưởng và phúc lợi cả trong dài hạn và ngắn hạn nhằm khuyến khích sự gắn bó của người lao động, ghi nhận đóng góp của người lao động và gia tăng năng suất lao động. Chương trình khen thưởng bao gồm: phát hành ESOP cho CBNV, thưởng thâm niên, thưởng hàng năm dựa trên kết quả công việc.",token_overlap,supports,"Theo đó, tổng lượng điện tiêu thụ trong năm 2025 chỉ tăng 6,5% so với mức tăng trưởng
+15,8% của doanh thu.",irrelevant,0.0851,0.0571,0.1667,0.0548,0.0426,0.2944,False,"Công ty đã ban hành và thực hiện chính sách khen thưởng và phúc lợi cả trong dài hạn và ngắn hạn nhằm khuyến khích sự gắn bó của người lao động, ghi nhận đóng góp của người lao động và gia tăng năng suất lao động. Chương trình khen thưởng bao gồm: phát hành ESOP cho CBNV, thưởng thâm niên, thưởng hàng năm dựa trên kết quả công việc.",False
+8540b2781c9f,ACG,Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG,Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+ac55c9ab2cd4,ACG,7 lần được vinh danh Top 100 Doanh nghiệp Bền vững (CSI) Top 100 Doanh nghiệp Bền vững (CSI) 7.0 lần achieved,được xếp hạng vào nhóm Top 100 Doanh nghiệp tư nhân nộp ngân sách lớn nhất Việt Nam và 10 công ty thép – vật liệu xây dựng nộp ngân sách lớn nhất Việt Nam,token_overlap,irrelevant,"Giải Thưởng CSI - Vinh Danh “Top 100” Doanh Nghiệp Bền Vững Tại Việt Nam An Cường luôn nỗ lực hiện thực hóa các cam kết trong việc xây dựng một mô hình kinh doanh có trách nhiệm với xã hội, cộng đồng và môi trường.",supports,0.2278,0.2647,0.2,0.1452,0.2025,0.517,False,được xếp hạng vào nhóm Top 100 Doanh nghiệp tư nhân nộp ngân sách lớn nhất Việt Nam và 10 công ty thép – vật liệu xây dựng nộp ngân sách lớn nhất Việt Nam,False
+703dcce147f7,AGG,"Phạt 1,5 tỷ đồng, cấm giao dịch chứng khoán và đảm nhiệm chức vụ trong 2 năm do thao túng cổ phiếu AGG",,,,"Trong năm qua, công ty đã bị Ủy ban Chứng khoán Nhà nước xử phạt do chưa thực hiện tốt công tác này trong các năm trước.",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+80f9e87573ac,AGG,"Phạt 1,5 tỷ đồng, cấm giao dịch chứng khoán và đảm nhiệm chức vụ trong 2 năm do thao túng cổ phiếu AGG",,,,"Trong năm qua, công ty đã bị Ủy ban Chứng khoán Nhà nước xử phạt do chưa thực hiện tốt công tác này trong các năm trước.",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+03dfbfb6dd72,AGG,"Cổ phiếu lao dốc, Gỗ An Cường tổ chức Đại hội đồng cổ đông trực tuyến",Thay đổi địa điểm tổ chức Đại hội đồng cổ đông thường niên,token_overlap,supports,Việc phát hành cổ phiếu này nhằm mục đích chia cổ tức và bổ sung vốn lưu động của Công ty và đã được chấp thuận bởi các cổ đông theo Nghị quyết Đại hội đồng Cổ đông thường niên năm 2022 số 17/2022/NQ-AGI ngày 15 tháng 4 năm 2022 và các Nghị quyết Hội đồng Quản trị số 26/2022/ QĐ-AGI-PL ngày 8 tháng 9 năm 2022 và số 41/2022/NQ-AGI-PL ngày 4 tháng 11 năm 2022.,irrelevant,0.1414,0.5385,0.0814,0.1167,0.1414,0.3467,False,Thông qua kế hoạch tổ chức và dự thảo chương trình họp Đại hội đồng cổ đông thường niên,True
+feff18c71b18,ACG,Dùng 92 tài khoản chứng khoán để thao túng cổ phiếu AGG,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",token_overlap,irrelevant,"Quản trị doanh nghiệp CHƯƠNG 3
+86 - 147
+92
+92
+94
+99
+102
+103
+106
+112
+114
+124
+124
+124
+125
+125
+126
+127
+128 Báo cáo hoạt động của HĐQT Thông tin thành viên HĐQT Hoạt động của HĐQT năm 2023 Đánh giá của HĐQT Hoạt động của Thành viên HĐQT độc lập Đánh giá của Thành viên HĐQT độc lập Báo cáo Ban kiểm soát Thù lao và các khoản lợi ích của HĐQT và Ban Tổng giám đốc Quản trị rủi ro Thông tin cổ phiếu và Hoạt động Quan hệ nhà đầu tư Thông tin cổ phiếu Diễn biến giá chính giá cổ phiếu 2023 Cơ cấu cổ đông Sở hữu cổ đông lớn Giao dịch của người nội bộ và người có liên quan trong năm 2023 Hoạt động quan hệ nhà đầu tư năm 2023 Phân tích & Đánh giá Quản trị công ty theo thẻ điểm quản trị công ty khu vực ASEAN
+2.",irrelevant,0.1727,0.3167,0.1187,0.1157,0.0818,0.4634,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",False
+80ac4f6fb8e4,ADP,giảm hơn 10% chi phí cost_reduction 10.0 percent achieved,,,,"Quản lý chi phí: quản lý chi phí hiệu quả để tăng lợi nhuận, tối đa hóa lợi ích cho cổ đông và các bên đối tác liên quan.",supports,0.0,0.0,0.0,0.0,0.0,,,,
+5207d5c70f28,ADP,Chất lượng tương đương với dòng sản phẩm 60 triệu/m2 giá trị tương đương 60 triệu VND/m2 achieved,"Cam kết đổi mới không ngừng để cung cấp những sản phẩm chất lượng cao với giá thành hợp lý cho người tiêu dùng nhằm mang lại không gian sống đẹp, bền vững, bảo vệ công trình và tạo giá trị bền vững cho cộng đồng.",token_overlap,irrelevant,"Sơn Á Đông cam kết đổi mới không ngừng để cung cấp những sản phẩm chất lượng cao với giá thành hợp lý cho người tiêu dùng nhằm mang lại không gian sống đẹp, bền vững, bảo vệ công trình và tạo giá trị bền vững cho cộng đồng.",irrelevant,0.9684,1.0,0.9388,0.9318,0.9684,0.7801,True,"Cam kết đổi mới không ngừng để cung cấp những sản phẩm chất lượng cao với giá thành hợp lý cho người tiêu dùng nhằm mang lại không gian sống đẹp, bền vững, bảo vệ công trình và tạo giá trị bền vững cho cộng đồng.",False
+02f5d7b6b525,ACG,Nhóm liên quan VinaCapital giao dịch trái chiều 133.200 cổ phiếu Gỗ An Cường (ACG),Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,supports,"100%
+15
+15-2025/NQ-GAC
+20/10/2025 Thông qua các hợp đồng, giao dịch giữa Công ty Cổ phần Gỗ An Cường và Người có liên quan là Công ty Cổ phần Sản Xuất Gỗ An Cường Đồng Nai (tên cũ là Công ty Cổ phần Green Board Việt Nhật).",irrelevant,0.2817,0.5263,0.1923,0.1333,0.1972,0.3605,False,"Công ty không có trường hợp nào không tuân thủ luật pháp, quy tắc và quy định liên quan đến giao dịch bên liên quan đáng kể hoặc trọng yếu",True
+21f17a7aacce,ACG,"Phạt 1,5 tỷ đồng, cấm giao dịch chứng khoán và đảm nhiệm chức vụ trong 2 năm do thao túng cổ phiếu AGG",Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"(P) A.6 Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi (P) A.6.1 Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.1818,0.3158,0.1277,0.1304,0.1515,0.3876,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+8c5b940af8d2,ADP,Chất lượng tương đương với dòng sản phẩm 60 triệu/m2 giá trị tương đương 60 triệu VND/m2 achieved,ADP đã chủ động tìm kiếm thêm các nhà cung cấp khác. Việc đa dạng hóa nguồn cung giúp Công ty chủ động hơn trong việc lựa chọn nguyên vật liệu với giá cả hợp lý và chất lượng đảm bảo.,token_overlap,irrelevant,"Sơn Á Đông cam kết đổi mới không ngừng để cung cấp những sản phẩm chất lượng cao với giá thành hợp lý cho người tiêu dùng nhằm mang lại không gian sống đẹp, bền vững, bảo vệ công trình và tạo giá trị bền vững cho cộng đồng.",irrelevant,0.2444,0.2683,0.2245,0.1571,0.1556,0.4627,True,"Cam kết đổi mới không ngừng để cung cấp những sản phẩm chất lượng cao với giá thành hợp lý cho người tiêu dùng nhằm mang lại không gian sống đẹp, bền vững, bảo vệ công trình và tạo giá trị bền vững cho cộng đồng.",True
+3bf8dbc5930c,ACG,"Phạt 3 tỷ đồng, cấm giao dịch chứng khoán trong 2 năm do giúp sức thao túng cổ phiếu AGG",Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+8e25ad51a369,ADP,"An Cường – 30 năm phát triển bền vững, tiên phong hướng tới mục tiêu Net Zero 2050 - CafeLand.Vn...",,,,"vn BÁO CÁO THƯỜNG NIÊN 2023 47 Phát triển bền vững là một quá trình hướng đến sự kết hợp chặt chẽ, hợp lý và hài hòa giữa ba mặt: kinh tế, xã hội và môi trường.",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+a2d18b4e9b0c,AGG,Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG,,,,"Trong năm qua, công ty đã bị Ủy ban Chứng khoán Nhà nước xử phạt do chưa thực hiện tốt công tác này trong các năm trước.",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+77d07915e68a,ACG,"Thị giá trên 100.000 đồng/cp, Gỗ An Cường (ACG) chốt danh sách cổ đông phát hành 44 triệu cổ phiếu trả cổ tức tỷ lệ 50%","Công ty không trả cổ tức bằng phương thức ""Script dividend"".",token_overlap,contradicts,Thông qua ngày đăng ký cuối cùng chốt danh sách cổ đông để chi trả cổ tức đợt 2 năm 2022 bằng cổ phiếu.,supports,0.2286,0.3636,0.1667,0.1379,0.2286,0.4704,False,Công ty trả cổ tức (kỳ giữa và kỳ cuối hàng năm) một cách bình đẳng và kịp thời; tất cả cổ đông được đối xử bình đẳng và được trả trong vòng 30 ngày sau khi được công bố đối với cổ tức giữa kỳ và được cổ đông thông qua tại các ĐHĐCĐ đối với cổ tức cuối năm.,True
+95540dd20a51,AGG,Vốn điều lệ vốn điều lệ 280.0 tỷ đồng achieved,,,,"BÁO CÁO THƯỜNG NIÊN 2025
+94 TẬP ĐOÀN BẤT ĐỘNG SẢN AN GIA
+95 Quản trị doanh nghiệp Báo cáo phát triển bền vững Bối cảnh và Định hướng chiến lược Báo cáo tài chính 2025 Giới thiệu doanh nghiệp Hoạt động kinh doanh trong năm Chỉ tiêu ĐVT
+2021
+2022
+2023
+2024
+2025 Chỉ tiêu về khả năng thanh toán Hệ số thanh toán ngắn hạn Lần
+1,83
+1,45
+1,57
+1,81
+1,01 Hệ số thanh toán nhanh Lần
+0,72
+0,83
+1,19
+1,57
+0,79 Chỉ tiêu về cơ cấu vốn Hệ số Nợ/Tổng tài sản Lần
+0,79
+0,75
+0,69
+0,55
+0,36 Hệ số Nợ/Vốn chủ sở hữu Lần
+3,70
+3,07
+2,23
+1,24
+0,56 Chỉ tiêu về năng lực hoạt động Vòng quay Tổng tài sản Vòng
+0,23
+0,98
+1,02
+0,95
+0,44 Vòng quay Hàng tồn kho Vòng
+0,14
+0,56
+0,42
+0,27
+0,13 Chỉ tiêu về khả năng sinh lời Hệ số LNST/Doanh thu thuần (ROS) %
+23,29
+1,56
+11,83
+13,64
+45,67 Hệ số LNST/VCSH bình quân (ROEA) %
+16,86
+3,58
+16,44
+8,68
+11,38 Hệ số LNST/Tổng tài sản bình quân (ROAA) %
+3,77
+0,82
+4,52
+3,20
+6,05 Hệ số LN từ HĐSXKD/Doanh thu thuần %
+27,22
+3,36
+12,89
+16,04
+42,14 Hệ số LN gộp/Doanh thu thuần %
+22,05
+16,92
+25,11
+31,02
+70,36 Thông tin khác Thu nhập trên mỗi cổ phiếu (EPS) VNĐ/CP
+5.068
+159
+1.402
+1.830
+2.333 Giá trị sổ sách mỗi cổ phiếu (BVPS) VNĐ/CP
+25.502
+18.825
+22.368
+19.050
+21.626 BÁO CÁO THƯỜNG NIÊN 2025
+94 Về tình hình tài chính:
+Xét về quy mô tài chính, tổng tài sản của An Gia có xu hướng giảm dần từ 12.565 tỷ đồng năm 2021 xuống
+5.477 tỷ đồng vào cuối năm 2025.",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+11e10c333865,ADP,Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG,,,,"vn BÁO CÁO THƯỜNG NIÊN 2023 73 CÁC GIAO DỊCH, THÙ LAO VÀ CÁC KHOẢN LỢI ÍCH CỦA HỘI ĐỒNG QUẢN TRỊ, ban tổng giám đốc và ủy ban kiểm toán Lương, thưởng, thù lao, các khoản lợi ích STT Thành viên Chức vụ Thu nhập
+1 Bà Nguyễn Thị Nhung Chủ tịch
+168.000.000
+2 Bà Dương Thị Thùy Hương Tổng Giám đốc
+434.395.691
+3 Ông Võ Hồng Hà Phó Tổng Giám đốc
+493.256.094
+4 Ông Lê Đình Quang Phó Tổng Giám đốc
+530.703.665
+5 Bà Võ Thị Bích Ngọc Thành viên HĐQT
+144.000.000
+6 Ông Trần Bửu Trí Thành viên HĐQT
+126.000.000
+7 Bà Nguyễn Thị Minh Sáu Chủ tịch UBKT
+174.000.000
+8 Ông Tống Trường Thịnh Thành viên UBKT
+166.000.000 Hợp đồng giao dịch với người nội bộ Giao dịch giữa công ty với người có liên quan của công ty; hoặc giữa công ty với cổ đông lớn, người nội bộ, người có liên quan của người nội bộ: (Không có) Giao dịch giữa người nội bộ công ty, người có liên quan của người nội bộ với công ty con, công ty do công ty nắm quyền kiểm soát: (Không có) Giao dịch cổ phiếu của người nội bộ STT Người thực hiện giao dịch Quan hệ với người nội bộ Số cổ phiếu sở hữu đầu kỳ Số cổ phiếu sở hữu cuối kỳ Lý do tăng, giảm (mua, bán, chuyển đổi, thưởng…) Số cổ phiếu Tỷ lệ Số cổ phiếu Tỷ lệ
+1 Nguyễn Thị Nhung CT HĐQT
+3.700.669
+17,70%
+2.318.269
+10,06% Bán cổ phần
+2 Võ Hồng Hà TV HĐQT
+1.152.000
+5,51%
+2.534.400
+11,00% Mua cổ phần
+3 Tống Trường Thịnh TV HĐQT
+103.500
+0,50%
+133.500
+0,58% Mua cổ phần
+4 Tống Trường Lộc Chị Ông Tống Trường Thịnh
+103.025
+0,49%
+133.025
+0,58% Mua cổ phần Đánh giá việc thực hiện các quy định về quản trị công ty Việc quản trị Công ty luôn được đảm bảo theo đúng pháp luật, Điều lệ, các quy chế nội bộ và các tiêu chí nhằm đảm bảo được hoạt động của Công ty một cách suôn sẻ nhất; theo đuổi các mục tiêu vì lợi ích của Công ty và của các cổ đông, cũng như tạo điều kiện thuận lợi cho việc giám sát hoạt động của Công ty một cách hiệu quả, từ đó khuyến khích Công ty sử dụng các nguồn lực một cách tốt nhất.",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+bd611b8946e0,ACG,"An Cường – 30 năm phát triển bền vững, tiên phong hướng tới mục tiêu Net Zero 2050 - CafeLand.Vn...",An Cường đã có những bước tiến vượt bậc so với mục tiêu được hoạch định đầu năm.,token_overlap,irrelevant,"Định hướng phát triển bền vững được triển khai nhất quán theo mô hình ESG, hướng tới mục tiêu Net Zero vào năm 2030.",contradicts,0.2381,0.2778,0.2083,0.1429,0.1429,0.3488,False,"Con người được xem là trung tâm của mọi sự vận động trong doanh nghiệp, quyết định tới sự phát triển bền vững của doanh nghiệp hay xã hội. Và con người cũng chính là tài sản của doanh nghiệp. Công ty luôn có cơ chế tốt để thu hút nhân tài tạo môi trường làm việc thật tốt để từng cá nhân hoà đồng và chuyên nghiệp hơn trong một tập thể lớn.",True
+5dce86d14933,ADP,Chất lượng tương đương với dòng sản phẩm 60 triệu/m2 giá trị tương đương 60 triệu VND/m2 achieved,"Cam kết đổi mới không ngừng để cung cấp những sản phẩm chất lượng cao với giá thành hợp lý cho người tiêu dùng nhằm mang lại không gian sống đẹp, bền vững, bảo vệ công trình và tạo giá trị bền vững cho cộng đồng.",token_overlap,irrelevant,"Sơn Á Đông cam kết đổi mới không ngừng để cung cấp những sản phẩm chất lượng cao với giá thành hợp lý cho người tiêu dùng nhằm mang lại không gian sống đẹp, bền vững, bảo vệ công trình và tạo giá trị bền vững cho cộng đồng.",irrelevant,0.9684,1.0,0.9388,0.9318,0.9684,0.7801,True,"Cam kết đổi mới không ngừng để cung cấp những sản phẩm chất lượng cao với giá thành hợp lý cho người tiêu dùng nhằm mang lại không gian sống đẹp, bền vững, bảo vệ công trình và tạo giá trị bền vững cho cộng đồng.",False
+8ea3807bdefe,ACG,Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.1682,0.15,0.1915,0.1125,0.1308,0.3687,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",False
+35b2242595b2,ACG,Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG,Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+b273ec70f72e,ACG,"Phạt 3 tỷ đồng, cấm giao dịch chứng khoán trong 2 năm do giúp sức thao túng cổ phiếu AGG",Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
+93cc964fc2b7,AAA,Khối lượng sản phẩm nhựa dùng một lần bị cấm volume of banned products 300000 tấn achieved,"Sản phẩm bao bì nhựa tự hủy – một sản phẩm vẫn có tất cả các đặc tính của túi nilon thông thường nhưng có khả năng tự phân hủy sau khi sử dụng. Sản phẩm sẽ được phân hủy thành những phần tử nhỏ hòa vào trong đất, hoàn toàn không độc hại với con người và môi trường xung quanh",token_overlap,irrelevant,"Đóng góp cho việc hoàn thiện các tiêu chuẩn về sản phẩm xanh tại Việt Nam, thúc đẩy xu hướng mới trong ngành nhựa: sử dụng các sản phẩm nhựa sinh học tự phân hủy, thay thế cho các sản phẩm nhựa dùng một lần.",irrelevant,0.3019,0.2623,0.3556,0.1579,0.1887,0.5364,True,"Sản phẩm bao bì nhựa tự hủy – một sản phẩm vẫn có tất cả các đặc tính của túi nilon thông thường nhưng có khả năng tự phân hủy sau khi sử dụng. Sản phẩm sẽ được phân hủy thành những phần tử nhỏ hòa vào trong đất, hoàn toàn không độc hại với con người và môi trường xung quanh",False
+9cc4bf497e4b,ACG,Dùng 92 tài khoản chứng khoán để thao túng cổ phiếu AGG,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",token_overlap,irrelevant,"Quản trị doanh nghiệp CHƯƠNG 3
+86 - 147
+92
+92
+94
+99
+102
+103
+106
+112
+114
+124
+124
+124
+125
+125
+126
+127
+128 Báo cáo hoạt động của HĐQT Thông tin thành viên HĐQT Hoạt động của HĐQT năm 2023 Đánh giá của HĐQT Hoạt động của Thành viên HĐQT độc lập Đánh giá của Thành viên HĐQT độc lập Báo cáo Ban kiểm soát Thù lao và các khoản lợi ích của HĐQT và Ban Tổng giám đốc Quản trị rủi ro Thông tin cổ phiếu và Hoạt động Quan hệ nhà đầu tư Thông tin cổ phiếu Diễn biến giá chính giá cổ phiếu 2023 Cơ cấu cổ đông Sở hữu cổ đông lớn Giao dịch của người nội bộ và người có liên quan trong năm 2023 Hoạt động quan hệ nhà đầu tư năm 2023 Phân tích & Đánh giá Quản trị công ty theo thẻ điểm quản trị công ty khu vực ASEAN
+2.",irrelevant,0.1727,0.3167,0.1187,0.1157,0.0818,0.4634,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",False
+230fcae7d84e,ADP,"Phạt 3 tỷ đồng, cấm giao dịch chứng khoán trong 2 năm do giúp sức thao túng cổ phiếu AGG",,,,"vn BÁO CÁO THƯỜNG NIÊN 2023 73 CÁC GIAO DỊCH, THÙ LAO VÀ CÁC KHOẢN LỢI ÍCH CỦA HỘI ĐỒNG QUẢN TRỊ, ban tổng giám đốc và ủy ban kiểm toán Lương, thưởng, thù lao, các khoản lợi ích STT Thành viên Chức vụ Thu nhập
+1 Bà Nguyễn Thị Nhung Chủ tịch
+168.000.000
+2 Bà Dương Thị Thùy Hương Tổng Giám đốc
+434.395.691
+3 Ông Võ Hồng Hà Phó Tổng Giám đốc
+493.256.094
+4 Ông Lê Đình Quang Phó Tổng Giám đốc
+530.703.665
+5 Bà Võ Thị Bích Ngọc Thành viên HĐQT
+144.000.000
+6 Ông Trần Bửu Trí Thành viên HĐQT
+126.000.000
+7 Bà Nguyễn Thị Minh Sáu Chủ tịch UBKT
+174.000.000
+8 Ông Tống Trường Thịnh Thành viên UBKT
+166.000.000 Hợp đồng giao dịch với người nội bộ Giao dịch giữa công ty với người có liên quan của công ty; hoặc giữa công ty với cổ đông lớn, người nội bộ, người có liên quan của người nội bộ: (Không có) Giao dịch giữa người nội bộ công ty, người có liên quan của người nội bộ với công ty con, công ty do công ty nắm quyền kiểm soát: (Không có) Giao dịch cổ phiếu của người nội bộ STT Người thực hiện giao dịch Quan hệ với người nội bộ Số cổ phiếu sở hữu đầu kỳ Số cổ phiếu sở hữu cuối kỳ Lý do tăng, giảm (mua, bán, chuyển đổi, thưởng…) Số cổ phiếu Tỷ lệ Số cổ phiếu Tỷ lệ
+1 Nguyễn Thị Nhung CT HĐQT
+3.700.669
+17,70%
+2.318.269
+10,06% Bán cổ phần
+2 Võ Hồng Hà TV HĐQT
+1.152.000
+5,51%
+2.534.400
+11,00% Mua cổ phần
+3 Tống Trường Thịnh TV HĐQT
+103.500
+0,50%
+133.500
+0,58% Mua cổ phần
+4 Tống Trường Lộc Chị Ông Tống Trường Thịnh
+103.025
+0,49%
+133.025
+0,58% Mua cổ phần Đánh giá việc thực hiện các quy định về quản trị công ty Việc quản trị Công ty luôn được đảm bảo theo đúng pháp luật, Điều lệ, các quy chế nội bộ và các tiêu chí nhằm đảm bảo được hoạt động của Công ty một cách suôn sẻ nhất; theo đuổi các mục tiêu vì lợi ích của Công ty và của các cổ đông, cũng như tạo điều kiện thuận lợi cho việc giám sát hoạt động của Công ty một cách hiệu quả, từ đó khuyến khích Công ty sử dụng các nguồn lực một cách tốt nhất.",irrelevant,0.0,0.0,0.0,0.0,0.0,,,,
+58060ae177be,ACG,Phạt tiền 3 tỷ đồng và cấm giao dịch chứng khoán 2 năm do giúp sức ông Hồ Thành Trung thao túng thị trường chứng khoán cổ phiếu AGG,Công ty công bố giao dịch cổ phiếu của Công ty do người nội bộ Công ty thực hiện.,token_overlap,irrelevant,"ĐỐI XỬ BÌNH ĐẲNG VỚI CỔ ĐÔNG Nghiêm cấm giao dịch nội gián và hành vi lạm dụng kinh doanh để tư lợi Công ty có bị kết luận vi phạm về giao dịch nội gián của HĐQT, Ban TGĐ và nhân viên trong 3 năm qua?",irrelevant,0.2121,0.3684,0.1489,0.1458,0.1515,0.4229,True,"Tình hình tuân thủ tiêu chí A.5.1: Trường hợp Công ty có nhiều hơn một loại cổ phiếu, Công ty có công khai quyền biểu quyết tương ứng với từng loại cổ phiếu (ví dụ: thông qua trang web / báo cáo của công ty / sàn giao dịch chứng khoán / trang web của cơ quan quản lý) không? - Xanh",True
