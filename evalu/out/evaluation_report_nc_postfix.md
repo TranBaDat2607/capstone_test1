@@ -1,6 +1,6 @@
 # Báo cáo Đánh giá Hệ thống Graph-RAG (không nhãn)
 
-*Sinh tự động lúc 2026-08-08T04:24:57+00:00 — `python evalu/run_evaluation.py`*
+*Sinh tự động lúc 2026-08-08T04:24:58+00:00 — `python evalu/run_evaluation.py`*
 
 > Hệ thống là **Decision-Support System**, không phải bộ phân loại greenwashing. Không tồn tại nhãn chuẩn, nên mọi con số dưới đây là **chỉ số nội bộ (intrinsic)** đo tính nhất quán của pipeline — KHÔNG phải accuracy so với sự thật.
 
@@ -10,12 +10,12 @@
 |---|---|
 | Từ vựng ESG neo được (M1.1) | 417 cụm từ |
 | Số câu đã quét (báo cáo) | KHÔNG ĐO ĐƯỢC |
-| Số câu đã quét (tin tức) | 174,256 |
+| Số câu đã quét (tin tức) | KHÔNG ĐO ĐƯỢC |
 | Đồ thị đã phân giải | 10,634 node / 14,744 cạnh |
-| Bộ ba đã kiểm định | 14,500 |
+| Bộ ba đã kiểm định | KHÔNG ĐO ĐƯỢC |
 | Hồ sơ đối soát | 464 claim / 5 mã CK |
 | Mã chứng khoán | AAA, ACC, ACG, ADP, AGG |
-| Thời gian chạy | 16.8s |
+| Thời gian chạy | 0.2s |
 
 ## 1. Tổng hợp chỉ số nội bộ theo module (§2)
 
@@ -23,11 +23,11 @@
 |---|---|---:|---:|:--:|
 | M1.1r | ESG Signal-to-Noise Ratio — báo cáo | — | — | info |
 | M1.2r | Paragraph Source Provenance Rate — báo cáo | — | — | info |
-| M1.1n | ESG Signal-to-Noise Ratio — tin tức | 62.14% | 47,990 / 77,229 | info |
-| M1.2n | Paragraph Source Provenance Rate — tin tức | 100.00% | 174,256 / 174,256 | PASS |
+| M1.1n | ESG Signal-to-Noise Ratio — tin tức | — | — | info |
+| M1.2n | Paragraph Source Provenance Rate — tin tức | — | — | info |
 | M2.1 | Temporal Metadata Completeness | 93.02% | 21,620 / 23,243 | FAIL |
 | M2.2 | Schema Compliance Rate | 100.00% | 14,744 / 14,744 | PASS |
-| M2.3 | Value Preservation Guard | 100.00% | 500 / 500 | PASS |
+| M2.3 | Value Preservation Guard | — | — | info |
 | M3.1 | Timeless Identity Violation Rate | 0.00% | 0 / 14 | PASS |
 | M3.2 | Oversimplification & Cluster Conciseness | 0.47% | 10 / 2,135 | info |
 | M4.1 | Standard Indicator Alignment Coverage | 50.53% | 718 / 1,421 | info |
@@ -62,7 +62,7 @@ Giá trị: **—** · Mục tiêu: 100%
 
 
 **M1.1n — ESG Signal-to-Noise Ratio — tin tức**  
-Giá trị: **62.14%** (47,990/77,229) · Mục tiêu: cao hơn = ít câu tiếp thị chung chung lọt qua bộ phân loại
+Giá trị: **—** · Mục tiêu: cao hơn = ít câu tiếp thị chung chung lọt qua bộ phân loại
 
 *Chỉ số này dùng để làm gì:* Bộ phân loại ViDeBERTa gán esg=true theo ngữ nghĩa câu, nên văn tiếp thị rỗng ('hướng tới phát triển bền vững', 'tầm nhìn trở thành doanh nghiệp hàng đầu') vẫn lọt qua. Chỉ số này đo phần câu đã lọt qua mà còn neo được vào một cụm từ trong từ vựng KPI/GRI có kiểm soát — tức phần thực sự dùng được cho các khâu sau.
 
@@ -72,7 +72,7 @@ Giá trị: **62.14%** (47,990/77,229) · Mục tiêu: cao hơn = ít câu tiế
 
 
 **M1.2n — Paragraph Source Provenance Rate — tin tức**  
-Giá trị: **100.00%** (174,256/174,256) · Mục tiêu: 100%
+Giá trị: **—** · Mục tiêu: 100%
 
 *Chỉ số này dùng để làm gì:* Mỗi câu phải giữ nguyên toạ độ nguồn (source_pdf, page, sentence_index) qua toàn bộ pipeline. Đây là điều kiện để mọi node trong đồ thị truy ngược được về đúng trang, đúng câu trong báo cáo gốc — nền tảng của toàn bộ tính minh bạch mà hệ thống hứa hẹn với kiểm toán viên.
 
@@ -108,7 +108,7 @@ Giá trị: **100.00%** (14,744/14,744) · Mục tiêu: 100% (0 vi phạm)
 
 
 **M2.3 — Value Preservation Guard**  
-Giá trị: **100.00%** (500/500) · Mục tiêu: 100% (LLM không được sửa giá trị/đơn vị)
+Giá trị: **—** · Mục tiêu: 100% (LLM không được sửa giá trị/đơn vị)
 
 *Chỉ số này dùng để làm gì:* Khâu sửa lỗi ở step03 dùng LLM để chữa HÌNH DẠNG của bộ ba (sai lớp, sai chiều cạnh, sai định dạng ngày). Nó tuyệt đối không được đụng vào GIÁ TRỊ ĐO. Một mô hình được nhắc bằng tiếng Anh rất dễ 'sửa' 'tấn' thành 'tons' hoặc làm tròn một con số — và sai lệch đó sẽ đi thẳng vào hồ sơ đối soát mà không ai thấy. Chỉ số này so sánh từng trường giá trị trước và sau khi sửa.
 
@@ -116,9 +116,6 @@ Giá trị: **100.00%** (500/500) · Mục tiêu: 100% (LLM không được sử
 
 *Hạn chế:* Chỉ so được các node ghép được stable_id ở cả hai phía; số node lệch được báo riêng ở `match_stats` thay vì bỏ qua âm thầm.
 
-Số trường được canh giữ thực tế: 992 (trên các trường `value`, `unit`, `amount`, `quantity`, `target_value`) — mẫu số chỉ tính node thực sự mang giá trị đo, nên 100% ở đây không phải kết quả rỗng
-Ghép node trước/sau sửa: 937 khớp · 9 chỉ có trước · 9,525 chỉ có sau
-*Mẫu số chỉ gồm node ghép được cả hai phía — 275 file trang / 6 tài liệu có mặt trên đĩa. Đọc kèm dòng 'Ghép node trước/sau sửa' bên trên: `chỉ có sau` lớn nghĩa là phía trang chưa được pull đủ, không phải node bị mất.*
 
 ### 3. Phân giải Thực thể
 

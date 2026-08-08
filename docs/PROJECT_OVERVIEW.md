@@ -113,8 +113,9 @@ Greenwashing = khoảng cách giữa **thông tin công bố** và **hành vi th
 2. **Sự im lặng** — tuyên bố không có bất kỳ bằng chứng độc lập nào để đối chứng
    (`unverified_insufficient_evidence`). Đây là **thuộc tính của kho dữ liệu**, không phải của doanh
    nghiệp; hệ thống buộc phải nói rõ điều đó (caveat *"absence of contradiction is NOT exoneration"*).
-   Trên dữ liệu hiện tại tỷ lệ này là **73,49%** — cao, và **không được** trình bày như một chỉ tiêu
-   cần giảm (§13.2, M5.1).
+   Trên dữ liệu hiện tại tỷ lệ này là **96,55%** (448/464, đo 2026-08-08 sau bản sửa nhiễm chéo issuer;
+   trước đó là 73,49% nhưng phần lớn "bằng chứng" khi ấy là tin của công ty khác — §16.1) — cao, và
+   **không được** trình bày như một chỉ tiêu cần giảm (§13.2, M5.1).
 3. **Tính nhất quán nội bộ của chính pipeline** — tuyên bố có truy được về trang gốc, ngày tháng có
    chuẩn hoá được, thực thể có bị vỡ thành nhiều node… (§13).
 
@@ -1544,27 +1545,35 @@ cạnh) · R7 (metapath dài 3 hub-free, support ≥ 50) **325 metapath**.
 | R5 | 5.300 | 5.389 | vẫn không đạt |
 | Standards curate | 5/259 | 5/386 | tử số không tăng, mẫu số tăng |
 
-### 12.5 Đối soát chéo — 5 mã CK (hồ sơ ghi 2026-08-06 23:32)
+### 12.5 Đối soát chéo — 5 mã CK (hồ sơ **sau bản sửa nhiễm chéo issuer**, §16.1)
 
-| Mã CK | Tên | Claim | Cặp ứng viên | supported | contradicted | unverified | Cạnh ghi |
-|---|---|---:|---:|---:|---:|---:|---:|
-| AAA | CTCP Nhựa An Phát Xanh | 36 | 288 | 6 | 2 | 28 | 1 |
-| ACC | CTCP Bê tông Becamex | 14 | 112 | 4 | 0 | 10 | 4 |
-| ACG | CTCP Gỗ An Cường | 301 | 2.406 | 21 | 47 | 233 | 47 |
-| ADP | CTCP Sơn Á Đông | 69 | 534 | 11 | 11 | 47 | 22 |
-| AGG | CTCP ĐT&PT BĐS An Gia | 44 | 352 | 9 | 12 | 23 | 26 |
-| **Tổng** | | **464** | **3.692** | **51** | **72** | **341** | **100** |
+| Mã CK | Tên | Claim | Kho conduct | Cặp ứng viên | supported | contradicted | unverified | Cạnh ghi |
+|---|---|---:|---:|---:|---:|---:|---:|---:|
+| AAA | CTCP Nhựa An Phát Xanh | 36 | 68 | 23 | 0 | 0 | 36 | 0 |
+| ACC | CTCP Bê tông Becamex | 14 | 52 | 2 | 0 | 0 | 14 | 0 |
+| ACG | CTCP Gỗ An Cường | 301 | 190 | 359 | 12 | 3 | 286 | 16 |
+| ADP | CTCP Sơn Á Đông | 69 | 3 | 9 | 0 | 0 | 69 | 0 |
+| AGG | CTCP ĐT&PT BĐS An Gia | 44 | 29 | 8 | 1 | 0 | 43 | 0 |
+| **Tổng** | | **464** | | **401** | **13** | **3** | **448** | **16** |
 
-Tham số mọi lần chạy: `top_k=8`, `window_before=1`, `window_after=50`. Kho conduct: **342 node**
-(`KPIObservation` 298, `MediaReport` 41, `Penalty` 3). `indicator_tier_pairs = 0` ở **cả 5 mã** — tầng
-join qua chỉ tiêu **chưa đóng góp cặp nào** (§16.5), dù 20/36 claim của AAA và 216/301 claim của ACG
-**có** cạnh indicator.
+Tham số mọi lần chạy: `top_k=8`, `window_before=1`, `window_after=50`. Độ phủ adjudication **401/401 cặp,
+0 lỗi provider**. `indicator_tier_pairs = 0` ở **cả 5 mã** — tầng join qua chỉ tiêu **chưa đóng góp cặp
+nào** (§16.5), dù 20/36 claim của AAA và 216/301 claim của ACG **có** cạnh indicator.
 
-> ⚠ **Hồ sơ này ĐÃ CŨ so với code và so với đồ thị.** Ba dấu hiệu: (1) `edges_by_provider` ghi
-> `"openai"` — provider đã bị gỡ hẳn ngày 2026-08-04 rồi mới thêm lại 2026-08-06, tức hồ sơ thuộc giai
-> đoạn trước; (2) file ghi 2026-08-06 23:32 còn `resolved_graph.json` ghi **2026-08-07 08:07**; (3) bản
-> sửa nhiễm chéo issuer + tokenizer VN + siết prompt là commit **2026-08-07**. **Phải chạy lại step 07
-> (và 08, 09) trước khi trích dẫn bất kỳ con số đối soát nào** — §16.1.
+> **So với lần chạy trước bản sửa (hồ sơ 2026-08-06 23:32), đây là thay đổi lớn nhất trong toàn bộ số
+> liệu của dự án** — và nó đi theo hướng *ít khẳng định hơn*:
+>
+> | | Trước | Sau |
+> |---|---:|---:|
+> | Kho conduct mỗi mã | **342 cho cả 5 mã** (dùng chung một rổ ⇒ chính là lỗi) | 68 / 52 / 190 / 3 / 29 |
+> | Cặp ứng viên | 3.692 | **401** (−89%) |
+> | supported / contradicted | 51 / 72 | **13 / 3** |
+> | Cạnh liên kết ghi vào đồ thị | 100 | **16** |
+>
+> `conduct_pool = 342` giống hệt nhau ở cả 5 mã là **bằng chứng trực tiếp** của lỗi nhiễm chéo: không hề
+> có scoping theo issuer, mọi công ty đối soát với **cùng một rổ tin**. Ba trong năm mã giờ **không còn
+> một kết luận nào** ngoài `unverified` — trung thực hơn, nhưng cũng nói thẳng rằng hệ thống hiện **nói
+> rất ít** (§16.1(e), §16.5).
 
 ### 12.6 Quy mô code
 
@@ -1613,25 +1622,39 @@ python evalu/export_docx.py evalu/out/evaluation_report_final.md
 
 ### 13.2 Mười một chỉ số §2 — kết quả và **giới hạn tự khai**
 
-Kết quả lần chạy **2026-08-07T04:56 UTC** (`evalu/out/evaluation_report_final.md`, 58,5s):
+Kết quả lần chạy **2026-08-08T04:15 UTC** (`evalu/out/evaluation_report_final.md`, 18,1s) — sinh bằng
+`python evalu/run_report.py --label final --docx`. Đây là lần đầu bảng này đo trên **hồ sơ đối soát sau
+bản sửa nhiễm chéo issuer** (§16.1); cột "trước" là lần chạy 2026-08-07T04:56 UTC mà nó thay thế.
 
-| Mã | Chỉ số | Giá trị | Tử/Mẫu | Trạng thái |
-|---|---|---:|---:|:--:|
-| M1.1r | ESG Signal-to-Noise — báo cáo | 50,34% | 152.896 / 303.723 | info |
-| M1.2r | Provenance Rate — báo cáo | **100,00%** | 873.756 / 873.756 | PASS |
-| M1.1n | ESG Signal-to-Noise — tin tức | 62,04% | 47.913 / 77.229 | info |
-| M1.2n | Provenance Rate — tin tức | **100,00%** | 174.256 / 174.256 | PASS |
-| M2.1 | Temporal Metadata Completeness | 93,02% | 21.620 / 23.243 | **FAIL** |
-| M2.2 | Schema Compliance Rate | 100,00% | 14.744 / 14.744 | PASS |
-| M2.3 | Value Preservation Guard | 100,00% | 6.426 / 6.426 | PASS |
-| M3.1 | Timeless Identity Violation Rate | 0,00% | 0 / 14 | PASS |
-| M3.2 | Oversimplification & Cluster Conciseness | 0,47% | 10 / 2.135 | info |
-| M4.1 | Standard Indicator Alignment Coverage | 50,53% | 718 / 1.421 | info |
-| M4.2 | Zero-Report Self-Praise Exclusion | 100,00% | 1 / 1 | PASS |
-| M5.1 | Evidence Asymmetry & Abstention Rate | 73,49% | 341 / 464 | info |
-| M5.2 | Self-Verification Exclusion Rate | 0,00% | 0 / 99 | info |
-| NC.1 | Same-Company Evidence Rate | 28,76% | 65 / 226 | **FAIL** |
-| NC.2 | Same-Feed Specificity vs Chance | 28,76% | 65 / 226 | **FAIL** |
+| Mã | Chỉ số | Giá trị | Tử/Mẫu | Trạng thái | Trước (07-08) |
+|---|---|---:|---:|:--:|---:|
+| M1.1r | ESG Signal-to-Noise — báo cáo | *KHÔNG ĐO ĐƯỢC* | — | info | 50,34% (152.896 / 303.723) |
+| M1.2r | Provenance Rate — báo cáo | *KHÔNG ĐO ĐƯỢC* | — | info | 100,00% (873.756 / 873.756) |
+| M1.1n | ESG Signal-to-Noise — tin tức | 62,14% | 47.990 / 77.229 | info | 62,04% |
+| M1.2n | Provenance Rate — tin tức | **100,00%** | 174.256 / 174.256 | PASS | 100,00% |
+| M2.1 | Temporal Metadata Completeness | 93,02% | 21.620 / 23.243 | **FAIL** | = |
+| M2.2 | Schema Compliance Rate | 100,00% | 14.744 / 14.744 | PASS | = |
+| M2.3 | Value Preservation Guard | 100,00% | 500 / 500 | PASS | 100,00% (6.426 / 6.426) |
+| M3.1 | Timeless Identity Violation Rate | 0,00% | 0 / 14 | PASS | = |
+| M3.2 | Oversimplification & Cluster Conciseness | 0,47% | 10 / 2.135 | info | = |
+| M4.1 | Standard Indicator Alignment Coverage | 50,53% | 718 / 1.421 | info | = |
+| M4.2 | Zero-Report Self-Praise Exclusion | 100,00% | 1 / 1 | PASS | = |
+| M5.1 | Evidence Asymmetry & Abstention Rate | **96,55%** | 448 / 464 | info | 73,49% (341 / 464) |
+| M5.2 | Self-Verification Exclusion Rate | 0,00% | 0 / **19** | info | 0,00% (0 / 99) |
+| NC.1 | Same-Company Evidence Rate | **100,00%** | 24 / 24 | **PASS** | 28,76% (65 / 226) — FAIL |
+| NC.2 | Same-Feed Specificity vs Chance | **100,00%** | 24 / 24 | **PASS** | 28,76% — FAIL |
+
+> **Ba dòng phải đọc kèm điều kiện, không được trích trần:**
+> - **M1.1r / M1.2r `KHÔNG ĐO ĐƯỢC`** vì `data/labeled/classified/all_sentences_classified.jsonl` (~380 MB)
+>   **chưa có trên đĩa** — corpus phân phối qua Hugging Face, lần `datasync pull` gần nhất chưa hoàn tất.
+>   Đây là ranh giới của **lần chạy này**, không phải của chỉ số: chạy `python src/esg_kg/core/datasync.py pull`
+>   rồi chạy lại là có số. Báo cáo ghi thẳng lý do thay vì bỏ dòng đi hoặc điền 0.
+> - **M2.3 = 100% nhưng mẫu số tụt 6.426 → 500**: `graph_output/graphs/` mới pull được **275 file trang /
+>   6 tài liệu** trên tổng 3.957 / 137. 100% trên 7% số trang và 100% trên toàn bộ là **hai phát hiện khác
+>   nhau**; báo cáo in kèm `match_stats` (937 khớp · 9 chỉ có trước · 9.525 chỉ có sau) để không đọc nhầm.
+> - **M5.1 nhảy 73,49% → 96,55%** không phải hệ thống kém đi. Bản sửa cắt 3.692 → 401 cặp ứng viên vì
+>   trước đó mọi mã đối soát với **cùng một rổ tin** (§16.1). Nhiều tuyên bố mất "bằng chứng" vốn là tin
+>   của công ty khác → chuyển đúng về `unverified_insufficient_evidence`.
 
 Điểm làm nên giá trị học thuật của bộ này là **mỗi chỉ số tự khai giới hạn của chính nó**. Vài giới hạn
 quan trọng nhất, chép nguyên ý:
@@ -1652,7 +1675,7 @@ quan trọng nhất, chép nguyên ý:
 - **M4.1 chỉ có ĐỘ PHỦ, không có ĐỘ CHÍNH XÁC.** Một bộ khớp *ngu hơn*, gán bừa chỉ tiêu cho mọi tuyên
   bố, sẽ đạt 100%. Vì vậy "cao hơn" **KHÔNG** đương nhiên là "tốt hơn"; muốn dùng được thì phải kiểm tay
   ~50 cạnh để có vế precision.
-- **M5.1 (abstention 73,49%) là thuộc tính của DỮ LIỆU, không phải của thuật toán.** Cách sửa là **crawl
+- **M5.1 (abstention 96,55%) là thuộc tính của DỮ LIỆU, không phải của thuật toán.** Cách sửa là **crawl
   thêm tin**, KHÔNG PHẢI nới ngưỡng phán quyết — nới ngưỡng chỉ đổi *im lặng trung thực* lấy *tiếng ồn*.
   **Đừng bao giờ trình bày như chỉ tiêu cần giảm.**
 - **M5.2 = 0% có HAI cách hiểu trái ngược:** (a) không có bằng chứng tự công bố nào lọt vào — tốt; hoặc
@@ -1710,15 +1733,18 @@ tiền tố là **feed** bài được thu dưới. Node từ BCTN dùng quy ư�
 bỏ hết bằng chứng cross-feed cũng sẽ **loại luôn** những bài viết chính đáng về T mà tình cờ được crawl
 dưới feed của U.
 
-**Kết quả: NC.1 = NC.2 = 28,76% (65/226) — FAIL.** Dòng cần đọc trước tiên là `cross_feed_unmentioned`,
-và đặc biệt là `contradicting_evidence` trong `by_kind` — **mâu thuẫn là output chính của hệ thống, nên
-một mâu thuẫn chéo công ty là một cáo buộc greenwashing sai gán cho một doanh nghiệp có thật, nêu đích
-danh.** Ví dụ cụ thể ở §10.6.
+**Kết quả lần đầu (2026-08-07, TRƯỚC bản sửa): NC.1 = NC.2 = 28,76% (65/226) — FAIL.** Dòng cần đọc
+trước tiên là `cross_feed_unmentioned`, và đặc biệt là `contradicting_evidence` trong `by_kind` —
+**mâu thuẫn là output chính của hệ thống, nên một mâu thuẫn chéo công ty là một cáo buộc greenwashing sai
+gán cho một doanh nghiệp có thật, nêu đích danh.** Ví dụ cụ thể ở §10.6.
 
-Đây chính là phép đo đã **phát hiện** lỗi mà commit `7c108f9` (2026-08-07) sửa. Giá trị 28,76% là **của
-lần chạy TRƯỚC bản sửa**; phải chạy lại step 07 rồi chạy lại `evalu` mới biết bản sửa hiệu quả đến đâu
-(§16.1). Giới hạn tự khai: kho conduct hiện rất nhỏ (44 node / 5 mã), nên lift theo từng mã có **phương
-sai lớn** — đọc con số tổng, và đọc `by_ticker` như dấu hiệu định tính chứ đừng như ước lượng điểm.
+Đây chính là phép đo đã **phát hiện** lỗi mà commit `7c108f9` (2026-08-07) sửa.
+
+**Kết quả sau khi chạy lại step 07 cho cả 5 mã (2026-08-08): NC.1 = NC.2 = 100,00% (24/24) — PASS**,
+`cross_feed = 0`, `lift = 2,50` (kỳ vọng nếu bốc ngẫu nhiên 39,96%). Chi tiết ở §16.1(e) và trong
+`evalu/out/evaluation_report_nc_postfix.json`. Giới hạn tự khai vẫn nguyên: kho conduct rất nhỏ
+(44 node / 5 mã) và **mẫu số chỉ còn 24 trích dẫn**, nên lift theo từng mã có **phương sai lớn** — đọc
+con số tổng, và đọc `by_ticker` như dấu hiệu định tính chứ đừng như ước lượng điểm.
 
 ### 13.4 So sánh baseline truy hồi (`retrieval_eval.py`)
 
@@ -2172,21 +2198,21 @@ Cả 5 mã đã chạy lại step 07 → `neo4j_sync` → `claim_ledger` → đo
 
 | | TRƯỚC (gpt-4o-mini, chưa sửa) | SAU (glm-5.2, đã sửa) |
 |---|---|---|
-| **NC.1** Same-Company Evidence Rate | **28,76%** (65/226) — FAIL | **100,00%** (21/21) — **PASS** |
+| **NC.1** Same-Company Evidence Rate | **28,76%** (65/226) — FAIL | **100,00%** (24/24) — **PASS** |
 | `cross_feed` | 161 | **0** |
 | `cross_feed_unmentioned` | 161 | **0** |
 | **NC.2** Same-Feed Specificity | 28,76% — FAIL | **100,00%** — **PASS** |
-| kỳ vọng nếu bốc ngẫu nhiên | 28,88% | 39,83% |
-| **lift** (quan sát / kỳ vọng) | **0,996** | **2,511** |
+| kỳ vọng nếu bốc ngẫu nhiên | 28,88% | 39,96% |
+| **lift** (quan sát / kỳ vọng) | **0,996** | **2,502** |
 
-`by_kind` sau bản sửa: `supporting_evidence` 17/17 same-feed, `contradicting_evidence` 4/4 same-feed —
+`by_kind` sau bản sửa: `supporting_evidence` 19/19 same-feed, `contradicting_evidence` 5/5 same-feed —
 **không còn một cáo buộc mâu thuẫn chéo công ty nào**, so với 100 cái trước đó.
 
 **Nhưng đây KHÔNG phải một chiến thắng sạch, và không được trích 100% mà bỏ phần này:**
 
-1. **Mẫu số sụp từ 226 xuống 21 trích dẫn.** Hệ thống hết trích nhầm chủ yếu vì nó gần như **không còn
-   trích gì**. 100% trên 21 trích dẫn là một cơ sở mỏng; chính `limitation` của NC.2 đã cảnh báo kho
-   conduct 44 node / 5 mã cho phương sai rất lớn, nên đọc `lift = 2,511` như dấu hiệu định tính, không
+1. **Mẫu số sụp từ 226 xuống 24 trích dẫn.** Hệ thống hết trích nhầm chủ yếu vì nó gần như **không còn
+   trích gì**. 100% trên 24 trích dẫn là một cơ sở mỏng; chính `limitation` của NC.2 đã cảnh báo kho
+   conduct 44 node / 5 mã cho phương sai rất lớn, nên đọc `lift = 2,502` như dấu hiệu định tính, không
    phải ước lượng điểm.
 2. **Đổi luôn adjudicator** (gpt-4o-mini → glm-5.2 qua endpoint OpenAI-compatible), nên so sánh này
    **hai biến cùng đổi**, không cô lập được bản sửa. NC.1/NC.2 đo nguồn gốc bằng chứng (thuộc tầng
@@ -2203,7 +2229,13 @@ Cả 5 mã đã chạy lại step 07 → `neo4j_sync` → `claim_ledger` → đo
 **nói nhiều và vẫn đúng**. Muốn khẳng định điều sau thì phải sửa §16.5 trước (kênh tin hành vi ESG),
 rồi đo lại trên mẫu số lớn hơn.
 
-Số liệu chi tiết: `evalu/out/evaluation_report_nc_postfix.json`.
+Số liệu chi tiết: **`evalu/out/evaluation_report_nc_postfix.json`** — sinh lại ngày **2026-08-08** bằng
+`python evalu/run_report.py --label nc_postfix --quick`. (Cho tới lúc đó file này **chưa từng tồn tại**:
+driver sinh ra bộ `evalu/out/evaluation_report_*` của ngày 2026-08-07 không được commit, nên các con số
+postfix ở mục này chỉ sống trong văn xuôi, không có artifact chống lưng. `evalu/run_report.py` là driver
+thay thế, có test ở `test/test_evalu_run_report.py`. Đo lại trên hồ sơ hiện có trên đĩa cho mẫu số
+**24 trích dẫn** chứ không phải 21 như bản ghi tay đầu tiên; **chênh lệch này chưa được truy nguyên** —
+kết luận PASS / `cross_feed = 0` / lift ≈ 2,5 thì không đổi. Con số trong artifact là con số nên trích.)
 
 ### 16.2 Corpus phân loại (197 DN) >> corpus đã dựng đồ thị (5 mã CK)
 
@@ -2290,9 +2322,10 @@ chạy lại `entities`. Đây là công việc tay, rẻ, và ảnh hưởng tr
 
 - `kpi_gap` / `structural_contradiction` có mặt trong hồ sơ nhưng step 07 **chưa bao giờ ghi** giá trị
   khác mặc định (phát hiện D1).
-- **M5.2 = 0/99**: self-verification guard **chưa kích hoạt lần nào** trên dữ liệu hiện tại → chỉ số
-  **không chứng minh** guard hoạt động (test có pin hành vi của guard, nhưng dữ liệu sống chưa gặp tình
-  huống cần nó).
+- **M5.2 = 0/19** (trước bản sửa nhiễm chéo là 0/99): self-verification guard **chưa kích hoạt lần nào**
+  trên dữ liệu hiện tại → chỉ số **không chứng minh** guard hoạt động (test có pin hành vi của guard,
+  nhưng dữ liệu sống chưa gặp tình huống cần nó). Mẫu số co lại còn cho thấy: sau bản sửa hệ thống chỉ
+  còn **19 mẩu bằng chứng ủng hộ** trên toàn bộ 464 tuyên bố.
 - Cột **"Missing"** trên UI đang **để trống** (deferred).
 - `Controversy` = **0 node** trong toàn đồ thị (Q4) — lớp conduct mạnh nhất về mặt ngữ nghĩa lại chưa có
   dữ liệu.

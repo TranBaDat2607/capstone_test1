@@ -1,16 +1,16 @@
 {
   "schema": "evalu.report/v1",
-  "generated_at": "2026-08-08T04:24:57+00:00",
+  "generated_at": "2026-08-08T04:24:58+00:00",
   "framework": "Khung Đánh giá Toàn diện cho Hệ thống Graph-RAG Phát hiện Greenwashing Không Nhãn",
   "context": {
     "Từ vựng ESG neo được (M1.1)": "417 cụm từ",
     "Số câu đã quét (báo cáo)": "KHÔNG ĐO ĐƯỢC",
-    "Số câu đã quét (tin tức)": "174,256",
+    "Số câu đã quét (tin tức)": "KHÔNG ĐO ĐƯỢC",
     "Đồ thị đã phân giải": "10,634 node / 14,744 cạnh",
-    "Bộ ba đã kiểm định": "14,500",
+    "Bộ ba đã kiểm định": "KHÔNG ĐO ĐƯỢC",
     "Hồ sơ đối soát": "464 claim / 5 mã CK",
     "Mã chứng khoán": "AAA, ACC, ACG, ADP, AGG",
-    "Thời gian chạy": "16.8s"
+    "Thời gian chạy": "0.2s"
   },
   "component_metrics": [
     {
@@ -28,7 +28,7 @@
       "how_to_read": "Thấp = nhiều câu vào pipeline nhưng không mang nội dung ESG đo được, làm loãng đầu vào của khâu trích xuất KPI. Không có ngưỡng chuẩn; dùng để so sánh giữa các lần chạy hoặc giữa hai nguồn (báo cáo vs tin tức).",
       "limitation": "KHÔNG phải độ chính xác của bộ phân loại. Giá trị phụ thuộc mạnh vào cách dựng từ vựng: đổi cách dựng làm con số nhảy từ 4% lên 50%. Đây là chỉ số yếu nhất trong bộ, không nên trích dẫn như một kết quả độc lập.",
       "details": {
-        "unmeasured_reason": "KHÔNG ĐO ĐƯỢC — thiếu artifact: data\\labeled\\classified\\all_sentences_classified.jsonl not found. Lấy về bằng: python src/esg_kg/core/datasync.py pull"
+        "unmeasured_reason": "KHÔNG ĐO ĐƯỢC ở chế độ nhanh — cần stream toàn bộ corpus đã gán nhãn (~380 MB / 874k câu báo cáo + 174k câu tin tức). Bỏ `--quick` để đo."
       }
     },
     {
@@ -46,17 +46,17 @@
       "how_to_read": "Phải đạt 100%. Dưới 100% nghĩa là có tuyên bố hiển thị trên giao diện mà không dẫn được về nguồn, tức mất khả năng kiểm chứng.",
       "limitation": "Gần như tất yếu đạt 100% vì pipeline chỉ sao chép cơ học ba trường này. Giá trị của nó là làm lưới chắn hồi quy, không phải là bằng chứng chất lượng.",
       "details": {
-        "unmeasured_reason": "KHÔNG ĐO ĐƯỢC — thiếu artifact: data\\labeled\\classified\\all_sentences_classified.jsonl not found. Lấy về bằng: python src/esg_kg/core/datasync.py pull"
+        "unmeasured_reason": "KHÔNG ĐO ĐƯỢC ở chế độ nhanh — cần stream toàn bộ corpus đã gán nhãn (~380 MB / 874k câu báo cáo + 174k câu tin tức). Bỏ `--quick` để đo."
       }
     },
     {
       "metric_id": "M1.1n",
       "module": "1. Thu thập & Phân loại ESG",
       "name": "ESG Signal-to-Noise Ratio — tin tức",
-      "value": 0.6213986973805177,
-      "pct": "62.14%",
-      "numerator": 47990,
-      "denominator": 77229,
+      "value": null,
+      "pct": null,
+      "numerator": null,
+      "denominator": null,
       "target": "cao hơn = ít câu tiếp thị chung chung lọt qua bộ phân loại",
       "passed": null,
       "higher_is_better": true,
@@ -64,25 +64,25 @@
       "how_to_read": "Thấp = nhiều câu vào pipeline nhưng không mang nội dung ESG đo được, làm loãng đầu vào của khâu trích xuất KPI. Không có ngưỡng chuẩn; dùng để so sánh giữa các lần chạy hoặc giữa hai nguồn (báo cáo vs tin tức).",
       "limitation": "KHÔNG phải độ chính xác của bộ phân loại. Giá trị phụ thuộc mạnh vào cách dựng từ vựng: đổi cách dựng làm con số nhảy từ 4% lên 50%. Đây là chỉ số yếu nhất trong bộ, không nên trích dẫn như một kết quả độc lập.",
       "details": {
-        "lexicon_terms": 417
+        "unmeasured_reason": "KHÔNG ĐO ĐƯỢC ở chế độ nhanh — cần stream toàn bộ corpus đã gán nhãn (~380 MB / 874k câu báo cáo + 174k câu tin tức). Bỏ `--quick` để đo."
       }
     },
     {
       "metric_id": "M1.2n",
       "module": "1. Thu thập & Phân loại ESG",
       "name": "Paragraph Source Provenance Rate — tin tức",
-      "value": 1.0,
-      "pct": "100.00%",
-      "numerator": 174256,
-      "denominator": 174256,
+      "value": null,
+      "pct": null,
+      "numerator": null,
+      "denominator": null,
       "target": "100%",
-      "passed": true,
+      "passed": null,
       "higher_is_better": true,
       "purpose": "Mỗi câu phải giữ nguyên toạ độ nguồn (source_pdf, page, sentence_index) qua toàn bộ pipeline. Đây là điều kiện để mọi node trong đồ thị truy ngược được về đúng trang, đúng câu trong báo cáo gốc — nền tảng của toàn bộ tính minh bạch mà hệ thống hứa hẹn với kiểm toán viên.",
       "how_to_read": "Phải đạt 100%. Dưới 100% nghĩa là có tuyên bố hiển thị trên giao diện mà không dẫn được về nguồn, tức mất khả năng kiểm chứng.",
       "limitation": "Gần như tất yếu đạt 100% vì pipeline chỉ sao chép cơ học ba trường này. Giá trị của nó là làm lưới chắn hồi quy, không phải là bằng chứng chất lượng.",
       "details": {
-        "missing_by_field": {}
+        "unmeasured_reason": "KHÔNG ĐO ĐƯỢC ở chế độ nhanh — cần stream toàn bộ corpus đã gán nhãn (~380 MB / 874k câu báo cáo + 174k câu tin tức). Bỏ `--quick` để đo."
       }
     },
     {
@@ -148,36 +148,18 @@
       "metric_id": "M2.3",
       "module": "2. Trích xuất Triplet & KPI",
       "name": "Value Preservation Guard",
-      "value": 1.0,
-      "pct": "100.00%",
-      "numerator": 500,
-      "denominator": 500,
+      "value": null,
+      "pct": null,
+      "numerator": null,
+      "denominator": null,
       "target": "100% (LLM không được sửa giá trị/đơn vị)",
-      "passed": true,
+      "passed": null,
       "higher_is_better": true,
       "purpose": "Khâu sửa lỗi ở step03 dùng LLM để chữa HÌNH DẠNG của bộ ba (sai lớp, sai chiều cạnh, sai định dạng ngày). Nó tuyệt đối không được đụng vào GIÁ TRỊ ĐO. Một mô hình được nhắc bằng tiếng Anh rất dễ 'sửa' 'tấn' thành 'tons' hoặc làm tròn một con số — và sai lệch đó sẽ đi thẳng vào hồ sơ đối soát mà không ai thấy. Chỉ số này so sánh từng trường giá trị trước và sau khi sửa.",
       "how_to_read": "Bất kỳ giá trị nào dưới 100% đều là lỗi nghiêm trọng: hệ thống đang báo cáo con số mà doanh nghiệp không hề công bố. Đọc kèm `guarded_fields_seen` để biết có bao nhiêu trường thực sự được đối chiếu — 100% trên mẫu số rỗng thì vô nghĩa.",
       "limitation": "Chỉ so được các node ghép được stable_id ở cả hai phía; số node lệch được báo riêng ở `match_stats` thay vì bỏ qua âm thầm.",
       "details": {
-        "violations": [],
-        "violations_total": 0,
-        "guarded_fields_seen": 992,
-        "guarded_field_names": [
-          "value",
-          "unit",
-          "amount",
-          "quantity",
-          "target_value"
-        ],
-        "by_reason": {},
-        "match_stats": {
-          "before_nodes": 946,
-          "after_nodes": 10462,
-          "matched": 937,
-          "only_before": 9,
-          "only_after": 9525
-        },
-        "note": "Mẫu số chỉ gồm node ghép được cả hai phía — 275 file trang / 6 tài liệu có mặt trên đĩa. Đọc kèm dòng 'Ghép node trước/sau sửa' bên trên: `chỉ có sau` lớn nghĩa là phía trang chưa được pull đủ, không phải node bị mất."
+        "unmeasured_reason": "KHÔNG ĐO ĐƯỢC ở chế độ nhanh — cần đọc 3.957 file đồ thị theo trang trong graph_output/graphs/ và ghép với all_validated_triples.json. Bỏ `--quick` để đo."
       }
     },
     {
