@@ -1,316 +1,239 @@
-# Claim ↔ conduct cross-check — purpose, reason and logic
+# Stage 07 — claim ↔ conduct cross-check
 
-Script: [`src/step07_crosscheck_claims_vs_conduct.py`](../src/step07_crosscheck_claims_vs_conduct.py)
-(Step 6 / P4). System context: [`SYSTEM_DESIGN.md`](./SYSTEM_DESIGN.md) §6.
-
-This step runs **after** the temporal knowledge graph is built, resolved and loaded
-(steps 1–5). It reads the resolved graph
-(`graph_output/resolved/resolved_graph.json`) and, for every `SustainabilityClaim` the
-issuer made in its **reports**, finds the **news conduct** that supports or contradicts
-it, then emits an **advisory evidence dossier** at
-`graph_output/crosscheck/aaa_claim_assessments.json`. It is the analytical core of the
-greenwashing-evidence system — the stage that finally connects "what the company *says*"
-to "what the company *does*."
-
-It plays the role of EmeraldMind's detection steps (`6a-parse_claims_to_nodes.py` →
-`6b-generate_embeddings.py` → `7-classify.py`), but is a **deliberate inversion**, not a
-port (Section 5). The one non-negotiable framing, carried from `SYSTEM_DESIGN.md` §1.1:
-**there is no ground truth**, so this step produces *evidence + an explicitly advisory
-opinion*, **never a greenwashing score or a hard label**.
-
----
-
-## 1. Why this step exists
-
-Steps 1–5 put two kinds of node on the **one** resolved issuer node: the company's own
-`SustainabilityClaim`s (from reports, `source_type=report`) and third-party `MediaReport`
-/ `Controversy` / `Penalty` / observed `KPIObservation` (from news, `source_type=news`).
-Co-locating them is necessary but not sufficient — nothing yet **links a specific claim to
-the specific evidence that bears on it**. Greenwashing is a *gap between saying and doing*;
-that gap only becomes visible once a claim is connected to the conduct that confirms or
-undercuts it.
-
-This step writes those links. Its output lets an analyst ask the schema's payoff question
-directly: *which claims have contradicting evidence and no independent verification?* —
-the review queue in `SYSTEM_DESIGN.md` §9.2.
-
-**Why it must be advisory.** We have no labelled greenwashing dataset for Vietnamese
-companies (§1.1). A score or a `greenwashing/not_greenwashing` label would imply a truth
-we cannot back. So every output is `assessment_is_advisory: true`, every claim carries
-`caveats` (always including the no-ground-truth note), and the LLM's suggested links are
-namespaced `llm_suggested=true` so they can never be mistaken for extracted facts.
-
----
-
-## 2. What it consumes and what it produces
-
-**Inputs**
-- `graph_output/resolved/resolved_graph.json` — the step-4 `{nodes, edges}` graph
-  (index-referenced edges, provenance-tagged, one resolved issuer node).
-- `config/schema.json` — read via `load_schema_sets` (from `step03_fix_invalid_triplets.py`) to
-  check that every edge this step writes is **schema-legal** before it is emitted.
-- `.env` `GEMINI_API_KEY` — **only** if LLM adjudication is enabled (Section 4, 6b).
-
-**Outputs** (`graph_output/crosscheck/`)
-- `aaa_claim_assessments.json` — one advisory dossier per claim (Section 4, 6e).
-- `aaa_crosscheck_stats.json` — run summary (assessment histogram, retrieval stats,
-  coverage caveat, LLM status).
-- `crosscheck_edges.json` — the LLM-suggested linking edges in the resolved graph's
-  index format (re-loadable; empty in `--no-llm`). Optionally MERGEd into Neo4j with
-  `--to-neo4j`.
-
-**Current AAA run (offline, `--no-llm`):** 1093 claims on the issuer; conduct pool of 124
-`source_type=news` nodes (16 `MediaReport` + 108 observed `KPIObservation`); topical
-candidates found for 744 claims (avg 2.85/claim); assessments = **1091 unverified +
-2 appears_contradicted**. The two contradictions are genuine, deterministic, and
-explainable (Section 6).
-
----
-
-## 3. Pipeline at a glance
-
-```
-resolved_graph.json ──▶ index issuer + claims + conduct pool
-                         │
-   6a  retrieve   ──────▶ per claim: same issuer → VN topic overlap → temporal window
-                         │            → top-k candidates   (--embed rank optional, off)
-   6b  adjudicate ──────▶ gemini-2.5-flash structured {verdict, confidence, rationale}
-                         │            (optional, budgeted, degrades gracefully on 403)
-   6c  write edges ─────▶ verifiedBy / contradictedBy / contradictedByMedia  (schema-checked)
-   6c-guard ────────────▶ company-owned domain ⇒ never a verifiedBy edge
-   6d  signals ─────────▶ structural contradiction + KPI numeric gap (deterministic)
-   6e  dossier ─────────▶ assessment ∈ {appears_supported | appears_contradicted |
-                                        unverified_insufficient_evidence} + caveats
+```bash
+python src/run.py claims_vs_conduct --dry-run              # preview pairs (still calls the LLM)
+python src/run.py claims_vs_conduct --ticker AAA
+python src/run.py claims_vs_conduct --provider-order deepseek --max-llm-pairs 200
 ```
 
+Module: `src/esg_kg/crosscheck/claims_vs_conduct.py` · Output:
+`graph_output/crosscheck/<ticker>_claim_assessments.json` (+ `<ticker>_crosscheck_stats.json`,
+`crosscheck_edges.json`, `adjudication_cache.json`)
+
+The analytical core. For every `SustainabilityClaim` on the issuer it retrieves conduct
+candidates, has them adjudicated, writes schema-legal linking edges, and emits an
+**advisory evidence dossier** — never a greenwashing score or label.
+
+**This is the only stage where an LLM verdict is mandatory.**
+
 ---
 
-## 4. Logic walkthrough
+## 1. Framing (non-negotiable)
 
-### 6a — candidate retrieval (which conduct might bear on this claim?)
-For each claim, the conduct pool is filtered by cheap, explainable signals before any LLM:
-1. **Same issuer** — the pool is the news-side conduct on the one resolved issuer node
-   (guaranteed by step 4). No cross-company leakage.
-2. **Topic overlap** — VN-normalized token overlap (`name_tokens` from
-   `step04_build_issuer_registry.py`) between the claim (its `description` **plus** its
-   `ClaimKeyword` terms) and each candidate's text. Issuer-name and generic tokens are
-   stop-listed so overlap reflects the ESG *topic*, not the company name.
-3. **Temporal window** — a candidate's effective year must lie in
-   `[claim_year − window_before, claim_year + window_after]`; a claim can only be
-   contradicted by conduct around or after it. Candidates with an uncertain date are
-   **surfaced but flagged**, never silently dropped (§7.2).
-4. Remaining candidates are ranked by (overlap, recency) and the top-`k` kept. An optional
-   embedding re-rank (`--embed`) is reserved but **off by default** — the pool is tiny and
-   the Gemini embedding endpoint is currently billing-blocked.
+No ground-truth greenwashing labels exist for Vietnamese companies
+([SYSTEM_DESIGN.md](SYSTEM_DESIGN.md) §1.1). Therefore:
 
-### 6b — LLM adjudication (does this evidence support or contradict?)
-Candidate pairs are ranked by topic overlap **globally** and the top `--max-llm-pairs`
-(highest overlap first, §6.2) are adjudicated **concurrently** (`--max-workers`). Each pair
-is judged only from the two provided texts, treating news as independent conduct and
-preferring `irrelevant` over guessing, returning
-`{verdict: supports|contradicts|irrelevant, confidence: 0-1, rationale}` as structured
-output (the robust `response_schema` / `json_object` pattern from `step01_extract_kpi_from_jsonl.py`).
+- the output field is `assessment` with three values — `appears_supported`,
+  `appears_contradicted`, `unverified_insufficient_evidence`;
+- `assessment_is_advisory` is always `true`;
+- `caveats` always includes the no-ground-truth note;
+- there is no score, no probability, and no binary label anywhere in the output.
 
-**Multi-provider with graceful fallback.** Adjudication is *optional and non-fatal*, and
-runs through a **provider cascade** (`--provider-order`, default `gemini,openai`):
+This is the in-graph **inversion** of the reference implementation's detection steps: their
+claim is an external CSV row scored against a KG with gold labels; here the claim is a node
+already *in* the graph, cross-checked against conduct nodes already in the graph, producing
+advisory evidence links.
 
-- **Primary — `gemini-2.5-flash`** (structured output via `response_schema`).
-- **Fallback — OpenAI `gpt-4o-mini`** (`response_format=json_object`). For this narrow,
-  grounded 3-way task the two are comparable, so either produces usable links; spot-checked
-  `gpt-4o-mini` verdicts were well-grounded (e.g. it flagged a claimed EPS target of 2,550
-  VND against an observed 1,213 VND as a contradiction).
+---
 
-A provider that fails 3× with no success (e.g. a 403 billing block) is disabled and the
-next takes over automatically; if all providers die — or `--no-llm`/`--dry-run` is set, or
-no key is present — the run finishes on the deterministic signals alone. Each written edge
-records which model produced it (`llm_provider`) so results stay auditable across
-mixed-provider runs. **Key precedence:** the adjudicator loads `.env` with `override=True`,
-so the repo `.env` is authoritative even if a stale `GEMINI_API_KEY` sits in the shell
-environment (a real gotcha we hit — the shell var silently shadowed `.env`).
-2026-08-04: Gemini is the only adjudication provider — the OpenAI path this section used
-to describe (2026-07-27..2026-08-04, while the Gemini project was billing-blocked) was
-removed outright, no fallback kept.
+## 2. Pipeline
 
-### 6c — write the linking edges
-A verdict becomes a **schema-legal** edge, checked against `edge_directions` before it is
-written:
+### 6a — candidate retrieval (deterministic, cheap)
 
-| Verdict | Evidence class | Edge | Legal pair (schema) |
-|---|---|---|---|
-| supports | ThirdPartyVerification / KPIObservation | `verifiedBy` | SustainabilityClaim → {TPV, KPIObservation} |
-| contradicts | Controversy | `contradictedBy` | SustainabilityClaim → Controversy |
-| contradicts | MediaReport | `contradictedByMedia` | SustainabilityClaim → MediaReport |
-| irrelevant | — | *(none)* | — |
+The conduct pool is the issuer's nodes in `CONDUCT_CLASSES` = `Controversy`, `Penalty`,
+`MediaReport`, `KPIObservation`, `ThirdPartyVerification`.
 
-Anything not schema-legal (e.g. a `Penalty`, which has no direct claim edge — its link to
-the issuer is `Organization —subjectToPenalty→ Penalty`) still appears in the dossier's
-evidence list but is **not** written as a claim edge, keeping the graph schema-valid. Every
-edge carries `llm_verdict`, `confidence`, `rationale`, `evidence_source_type`,
-`recorded_at`, and `llm_suggested=true`.
+**Two retrieval tiers.**
 
-### 6c-guard — the self-verification guard (independence, no config file)
-The one independence rule the pipeline keeps (§6.4). When about to write a `verifiedBy`
-edge, if the evidence's domain is one of the **issuer's own** sites (a short inline set
-plus an issuer-token heuristic on the domain), the support link is **not** counted as
-independent verification — it is kept in the dossier flagged `independent=false` and never
-contributes to `appears_supported`. The guard touches support only; contradiction is
-unaffected. Safe-failure direction: a missed PR domain can only inflate *support*, never
-fabricate a contradiction.
+**Token tier.** Vietnamese-segmented topic overlap between the claim's text (plus its
+keywords) and the candidate's text, requiring at least `--min-topic-overlap` shared tokens
+(default **2** — a single shared token is too weak a signal on Vietnamese text). Then a
+temporal filter: candidates outside `[claim_year − window_before, claim_year + window_after]`
+are dropped, **unless the candidate's date is uncertain**, in which case it is kept rather
+than silently discarded. Defaults are `--window-before 1` and `--window-after 50`: conduct
+may precede a claim by at most a year, and follow it indefinitely.
 
-### 6d — deterministic complementary signals (not verdicts)
-Two cheap, fully explainable signals run **always**, independent of the LLM:
-- **Structural contradiction** — a claim that has a `contradictedBy` / `contradictedByMedia`
-  edge (pre-existing in the graph or newly adjudicated) but no independent verification.
-  Pure graph query.
-- **KPI numeric gap** — a report *target* `KPIObservation` and a news *observed*
-  `KPIObservation` that share a topic with the claim but move in opposite directions
-  (respecting `kind`/`direction`). Deliberately **strict** (same non-generic `kpi_type`,
-  ≥2 shared title tokens) and precomputed once.
+**Indicator tier.** Conduct joined to the claim through the indicator axis
+(`claim -[:alignsWithIndicator]-> StandardIndicator <-[:measuredUnder]- conduct`) is
+injected with a boosted score and **bypasses the token gate entirely**. This matters
+because a claim and its own measurement frequently share zero tokens — *"giảm phát thải"*
+versus *"12.450 tCO2e"*. The temporal window still applies. Every such pair is stamped
+`retrieval_tier: "indicator"` in the dossier; token-tier pairs are `"token_overlap"`.
 
-Per `SYSTEM_DESIGN.md` §6.5 these **enrich** the dossier and enable ablations; the KPI gap
-is recorded as a signal and **never** flips the headline assessment on its own (an earlier
-loose version wrongly did, marking 416/1093 claims contradicted — now fixed).
+Candidates are ranked by (score, recency) and capped at `--top-k` (default 8).
 
-### 6e — the output: dossier + advisory assessment (NOT a score)
-Per claim:
+`--embed` adds optional embedding-based ranking; it is off by default because deterministic
+retrieval is free and reproducible.
+
+### 6b — adjudication (mandatory)
+
+Each `(claim, candidate)` pair is sent with a fixed system prompt and must return
+`supports` / `contradicts` / `irrelevant`, with a confidence and a rationale.
+
+- **No deterministic fallback.** If no provider is available, the run aborts up front with
+  an explicit error rather than silently degrading into a weaker mode.
+- Pairs are adjudicated **highest-overlap first**, up to `--max-llm-pairs` (default 300),
+  concurrently across `--max-workers`, throttled by the shared rate limiter.
+- `budget_hit` is recorded when there were more pairs than budget, and the affected claims
+  get a caveat saying their evidence was not evaluated. Truncation is reported, never
+  silent.
+- Verdicts are cached content-addressed on `(claim_text, evidence_text, evidence_meta)` —
+  never on position in a batch, because candidate ranking moves between runs. A re-run is
+  free and reproducible.
+
+`ADJUDICATE_SYSTEM` is pinned byte-for-byte by tests.
+
+### 6c — linking edges
+
+| Verdict | Evidence class | Edge |
+|---|---|---|
+| `supports` | `ThirdPartyVerification`, `KPIObservation` | `verifiedBy` |
+| `contradicts` | `Controversy` | `contradictedBy` |
+| `contradicts` | `MediaReport`, `Penalty` | `contradictedByMedia` |
+| `irrelevant` | — | none (but the pair counts as adjudicated) |
+
+Each edge carries `llm_suggested=true`, the confidence, the rationale, the provider and the
+`source_type`, so every advisory link is attributable and re-runnable. An edge is only
+written if the schema declares that pair legal.
+
+Contradictions the schema cannot express — notably `Claim → KPIObservation` — stay in the
+dossier and reach Neo4j through the advisory layer instead ([CLAIM_LEDGER.md](CLAIM_LEDGER.md)).
+
+### 6c-guard — self-verification
+
+See [SYSTEM_DESIGN.md](SYSTEM_DESIGN.md) §6.4 for the rationale. Implementation: when a
+`supports` verdict's evidence comes from a company-owned domain (a small per-ticker set
+plus an issuer-core-token check — `anphat`, `aneco`, `aaplastic` for AAA), the item is
+**still recorded** in `supporting_evidence` with `independent: false` and a `guard`
+explanation, but **no `verifiedBy` edge is written** and it does not count toward
+`appears_supported`.
+
+Visible but not counted. Hiding it would lose information; counting it would let a company
+verify itself.
+
+### 6d — assessment and dossier
+
+```
+if any contradicting evidence          → appears_contradicted
+elif any INDEPENDENT supporting        → appears_supported
+else                                    → unverified_insufficient_evidence
+```
+
+Contradiction outranks support in a mixed dossier, and the mixed case adds its own caveat.
+Note the middle branch: it tests `independent` support, not all support — the guard is what
+makes that distinction real.
+
+Caveats are generated for: no ground truth (always), no independent conduct for the issuer
+at all, no topically-related evidence for this claim, evidence skipped due to budget, an
+uncertain publish date among the evidence, and mixed evidence.
+
+---
+
+## 3. Dossier shape
+
 ```jsonc
 {
-  "claim_id": "AAA_HasSeparateRiskDept_Implicit_2021",
-  "claim_text": "AAA has a separate risk management department",
-  "claim_source_type": "report", "year": 2021,
-  "assessment": "appears_contradicted",     // | appears_supported | unverified_insufficient_evidence
-  "assessment_is_advisory": true,           // ALWAYS true
-  "supporting_evidence": [ /* guard-passed, independent */ ],
-  "flagged_non_independent_support": [ /* company-domain support, shown but not counted */ ],
-  "contradicting_evidence": [ /* node id, text, source_domain, date, confidence, rationale */ ],
-  "signals": { "structural_contradiction": true, "kpi_gap": null },
-  "caveats": [ "No ground-truth greenwashing label exists; this is an advisory opinion.", ... ]
+  "claim_id": "claim_a1b2c3d4e5f6a7b8",
+  "claim_text": "...",
+  "claim_node_index": 1234,
+  "assessment": "appears_contradicted",
+  "assessment_is_advisory": true,
+  "caveats": ["No ground-truth greenwashing label exists; this is an advisory opinion.", "..."],
+  "supporting_evidence": [
+    { "node_index": 5678, "class": "KPIObservation", "text": "...",
+      "source_domain": "vietstock.vn", "date": "2023-05-01", "year": 2023,
+      "confidence": 0.8, "rationale": "...", "provider": "gemini",
+      "date_uncertain": false, "retrieval_tier": "indicator", "independent": true }
+  ],
+  "contradicting_evidence": [ /* ... */ ]
 }
 ```
-Aggregation is deterministic: contradiction evidence **or** a structural contradiction ⇒
-`appears_contradicted`; else independent support ⇒ `appears_supported`; else
-`unverified_insufficient_evidence`.
+
+`node_index` and `claim_node_index` are **positions** in the resolved graph's node array.
+This is why upstream stages must never reorder that array, and why `neo4j_sync` resolves
+claims by stable id first rather than trusting position blindly.
+
+### 3.1 The stats file
+
+`<ticker>_crosscheck_stats.json` records the issuer, claim count, conduct pool by class,
+retrieval counts (including `indicator_tier_pairs` and `claims_with_indicator_link`), the
+assessment histogram, edges written, LLM calls and failures per provider, the parameters
+used, and an explicit `coverage_caveat` string.
+
+Read the histogram together with the pool size. On the pinned AAA run: 36 claims, a conduct
+pool of 68, only 11 claims drew any candidate, 23 pairs adjudicated, and all 36 assessments
+came back `unverified_insufficient_evidence`. That is a coverage result, not a clean bill of
+health — which is precisely what the caveat says.
 
 ---
 
-## 5. Design vs EmeraldMind's detection steps (6a/6b/7)
+## 4. Providers
 
-EmeraldMind detects greenwashing by treating a claim as an **external query** scored
-against the KG, with **gold labels**. This project inverts that into **intra-graph
-advisory linking** with **no labels**:
+`--provider-order` is a comma-separated preference list; `gemini` is the default.
+`deepseek` and `openai` are **swappable alternatives you opt into**, not a required
+fallback cascade — set `--provider-order deepseek` to use DeepSeek alone. An unknown name
+logs `Unknown adjudication provider — ignored`.
 
-| Aspect | EmeraldKG `6a/6b/7` | This step |
-|---|---|---|
-| What a claim is | an external CSV row parsed into a node (`6a`) | a `SustainabilityClaim` node **already in the KG** |
-| Query vs corpus | claim = query, KG = corpus | claim **and** conduct are both nodes in the graph |
-| Mechanism | embed claim → retrieve from KG → `classify` | retrieve conduct candidates for a claim → adjudicate → **write linking edges** |
-| Output | a predicted **label** + accuracy / precision / recall | **evidence dossier + advisory assessment**; no label, no score |
-| Supervision | gold labels | **no ground truth**; case studies + manual link-precision |
-| Independence | weak (claims + KG both company-authored) | explicit: report = claim, news = conduct; self-verification guard |
+`Adjudicator` keeps its own small provider registry rather than using the shared
+`build_llm_provider()` factory, because provider preference here is stage logic (prompt
+text, verdict parsing, ordering), not kernel. See
+[LLM_PROVIDERS_AND_CACHING.md](LLM_PROVIDERS_AND_CACHING.md).
 
-The retrieval loop mirrors `7-classify.py`'s `retrieve_evidence`, but the corpus is
-*conduct nodes in the KG* and the query is *a claim node in the KG*. (Notably, that
-reference does its retrieval with a **local** `SentenceTransformer`, not a paid embedding
-API — precedent for the deterministic-retrieval default here.)
+Historical note: OpenAI was the sole provider here from 2026-07-27 to 2026-08-04 while the
+Gemini project was billing-blocked, then removed outright, then re-added on 2026-08-06 as an
+opt-in REST provider. Some cached artifacts under `graph_output/crosscheck/` are named
+`adjudication_cache_openai*.json` from that period.
 
 ---
 
-## 6. The data-availability caveat (surfaced, not hidden)
+## 5. Flags
 
-The design is schema-complete, but the **current graph is thin on independent conduct**,
-and this step reports that honestly rather than papering over it:
-
-- The news channel produced **0** `Controversy`, **0** `Penalty`, and 16 `MediaReport`s —
-  all neutral/positive analyst & PR coverage. The two `appears_contradicted` results come
-  from **self-disclosed** report-side Controversies ("AAA has no separate risk-management
-  department", "…has not applied an internal-audit model"), correctly matched to the
-  opposing claims via existing `contradictedBy` edges.
-- The headline **vietnamnet.vn tax-penalty** example (§1.2, §9.3) exists in the labeled
-  news input but was never extracted into a `Controversy`/`Penalty` node (that domain was
-  not among the news docs processed in P2).
-
-Consequently, on today's data most claims resolve to `unverified_insufficient_evidence`,
-and the tool prints a standing coverage caveat: **thin conduct means "little external
-evidence found," not "the company is clean"** (§8.3). To make the worked example fire,
-re-extract the penalty-bearing news and re-run steps 3→5, then re-run this step
-(Section 8, follow-up).
-
----
-
-## 7. Schema reference
-
-Edges this step may write (all already in `config/schema.json`; validated at runtime):
-
-| Edge | Direction | Written when |
-|---|---|---|
-| `verifiedBy` | SustainabilityClaim → ThirdPartyVerification / KPIObservation | `supports`, and the evidence is **independent** (guard-passed) |
-| `contradictedBy` | SustainabilityClaim → Controversy | `contradicts` |
-| `contradictedByMedia` | SustainabilityClaim → MediaReport | `contradicts` |
-
-No new node classes and no new edge labels are introduced. `llm_suggested=true` on every
-written edge keeps advisory links separable from extracted facts.
-
----
-
-## 8. Setup & run
-
-```bash
-# 0. Prereqs: steps 1–5 done, so graph_output/resolved/resolved_graph.json exists.
-#    .env needs a working GEMINI_API_KEY (the only adjudication provider).
-
-# 1. Offline preview — no API, no writes (recommended first)
-python src/step07_crosscheck_claims_vs_conduct.py --dry-run
-
-# 2. Deterministic run — writes dossiers from structural + KPI signals only (no API)
-python src/step07_crosscheck_claims_vs_conduct.py --no-llm
-
-# 3. Full run — gemini-2.5-flash primary, gpt-4o-mini fallback, concurrent, whole budget
-python src/step07_crosscheck_claims_vs_conduct.py --max-llm-pairs 3200 --rate-limit 400 --max-workers 8
-
-# 3b. OpenAI only (skip the currently-blocked Gemini and its wasted 403s)
-python src/step07_crosscheck_claims_vs_conduct.py --provider-order openai --max-llm-pairs 3200 --rate-limit 400
-
-# 4. Optionally MERGE the advisory edges into Neo4j (llm_suggested=true)
-python src/step07_crosscheck_claims_vs_conduct.py --to-neo4j
-```
-
-### Flags
 | Flag | Meaning |
 |---|---|
-| `--ticker` | issuer to cross-check (default `AAA`) |
-| `--top-k` | candidates kept per claim after retrieval (default 8) |
-| `--window-before` / `--window-after` | temporal window in years (default 1 / 50) |
-| `--max-llm-pairs` | adjudication budget, highest-overlap first (default 300) |
-| `--provider-order` | LLM cascade preference (default `gemini,openai`; e.g. `openai`) |
-| `--model` / `--openai-model` | Gemini primary id / OpenAI fallback id (`gpt-4o-mini`) |
-| `--max-workers` | concurrent adjudication workers (default 8) |
-| `--no-llm` | deterministic signals only (no adjudication) |
-| `--dry-run` | `--no-llm` + write nothing (offline preview) |
-| `--embed` | (reserved) embedding re-rank of candidates; off by default |
-| `--to-neo4j` / `--database` | MERGE advisory edges into Neo4j on the loader's `_node_key` convention |
-| `--rate-limit` | max requests/min per provider (raise for OpenAI, e.g. 400) |
+| `-i`, `-s`, `-o` | Input graph, schema, output directory |
+| `--ticker` | Which issuer to process |
+| `--top-k` | Candidates kept per claim (default 8) |
+| `--window-before`, `--window-after` | Temporal window in years (1, 50) |
+| `--min-topic-overlap` | Token-tier gate (default 2) |
+| `--max-llm-pairs` | Adjudication budget (default 300) |
+| `--provider-order` | Comma list: `gemini`, `deepseek`, `openai` |
+| `--model` | Model id |
+| `--max-workers`, `--rate-limit` | Concurrency and throttle |
+| `--embed` | Optional embedding re-ranking |
+| `--cache` / `--no-cache` | Adjudication cache path / disable |
+| `--to-neo4j`, `--database` | Write the linking edges straight to Neo4j |
+| `--dry-run` | Write no files — **still calls the LLM** |
 
-**Cost discipline** (carried from the pipeline, per the memory note *"verify cheaply, not
-via expensive re-runs"*): deterministic signals need no API; `--dry-run`/`--no-llm` preview
-for free; `--max-llm-pairs` bounds spend; a full AAA run (~3.1k pairs) of `gpt-4o-mini`
-costs roughly US$0.5 and ~13 min at `--max-workers 8`. The Gemini project is currently
-billing-suspended (`gemini-2.5-flash` **and** `gemini-embedding-001` return a "Lightning
-dunning" 403), so the pipeline falls back to `gpt-4o-mini`; the deterministic path remains
-the zero-API default.
-
-### Follow-up (to light up the worked example — needs billing restored)
-```bash
-python src/step02_extract_triplet_from_jsonl.py -i data/interim/news_preprocessed/aaa_news_classified_preprocessed.jsonl \
-    --source news --doc vietnamnet            # re-extract the tax-penalty article
-python src/step03_fix_invalid_triplets.py && python src/step05_resolve_entities.py --no-llm && python src/step06_load_graph_to_neo4j.py --clear
-python src/step07_crosscheck_claims_vs_conduct.py    # now a real Controversy/Penalty exists to contradict a claim
-```
+> `--dry-run` here is not free. Unlike most stages it does not return before the provider
+> is built; it exercises the whole retrieval and adjudication path and simply skips the
+> writes.
 
 ---
 
-## 9. Related docs
+## 6. Known limitations
 
-[`SYSTEM_DESIGN.md`](./SYSTEM_DESIGN.md) (§6 — the cross-check spec) ·
-[`SCHEMA_EXPLAINED.md`](./SCHEMA_EXPLAINED.md) ·
-[`ENTITY_RESOLUTION.md`](./ENTITY_RESOLUTION.md) ·
-[`GRAPH_LOAD_NEO4J.md`](./GRAPH_LOAD_NEO4J.md)
+- **Retrieval does not route through graph structure.** The token tier is global overlap,
+  and the indicator tier only reaches conduct joined by an indicator. A subsidiary's or a
+  named facility's misconduct never reaches the parent's claims. See
+  [ROADMAP.md](ROADMAP.md) §2.2 — `config/subsidiaries/` already holds the ownership data
+  this would need.
+- **No always-include tier.** A `Penalty` with no token overlap and no indicator link is
+  never considered, even though penalties are the most checkable evidence the graph holds.
+- **`signals` are not written.** `kpi_gap`, `structural_contradiction` and
+  `broken_promise` are read by stages 08 and 09 but never produced here. See
+  [ROADMAP.md](ROADMAP.md) §2.1.
+- **Assessment is per claim, not per company.** There is deliberately no company-level
+  roll-up, because aggregating advisory opinions into one figure would reconstruct the
+  score this design refuses to emit.
+
+---
+
+## 7. Tests
+
+`python test/test_esg_kg_crosscheck.py` — the full retrieval, stub adjudication and
+dossier path on the real resolved graph in one arm (masking the non-deterministic
+`recorded_at`), plus synthetic fixtures for the self-verification guard, the
+contradiction-beats-support priority, and a malformed verdict reply being refused rather
+than crashing. `ADJUDICATE_SYSTEM` is pinned byte-for-byte.
+
+`python test/test_step01_step07_language_guard.py` — output-language requirements.

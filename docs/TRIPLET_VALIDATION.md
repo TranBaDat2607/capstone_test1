@@ -1,385 +1,223 @@
-# Triplet validation & repair — purpose, reason and logic
+# Stages 03 / 03b / 03c — validation, anchoring, canonicalization
 
-Script: [`src/step03_fix_invalid_triplets.py`](../src/step03_fix_invalid_triplets.py)
+```bash
+python src/run.py build_validated --dry-run     # the normal way: 03 → 03b → 03c
+python src/run.py build_validated
 
-This step takes the per-page temporal graphs produced by
-[`step02_extract_triplet_from_jsonl.py`](../src/step02_extract_triplet_from_jsonl.py) and turns
-them into a single **clean, schema-conformant triple list** at
-`graph_output/validated/all_validated_triples.json`, ready to be consumed by
-entity resolution (step 4). Triples that can't be repaired are kept in
-`unfixable_triples.json` for inspection.
+python src/run.py fix_triples --renormalize      # P4 date pass only, no LLM
+python src/run.py anchor_kpi --dry-run           # preview gazetteer matches
+python src/run.py canonicalize --dry-run         # preview kpi_id assignment
+```
 
-It mirrors the role of EmeraldMind's `3-fix-invalid-triplet.py`, but adapts that
-script to our pipeline: a single `GEMINI_API_KEY`, the same `RateLimiter`
-class we use in step 2, and aggregated outputs in a dedicated sibling directory
-instead of mixed in with the per-page graphs.
+Modules: `graph/fix_triples.py` · `graph/anchor_kpi.py` · `kpi/canonicalize.py` ·
+`graph/build_validated.py`
+Output: `graph_output/validated/all_validated_triples.json` (+ `unfixable_triples.json`,
+`anchor_patch_stats.json`, `kpi_canonical_stats.json`)
 
----
-
-## 1. Why this step exists
-
-Step 2 calls Gemini with `response_mime_type="application/json"` only — no
-schema is enforced server-side, because the triple schema is too dynamic
-(every subject/object class has different properties). Step 2 validates each
-triple in-line and writes the schema-failing ones into `page{N}_bugged.json`
-sidecar files. In practice ~10–20 % of all triples come back with one of three
-fixable bugs:
-
-1. **Direction swap** — the model wrote `KPIObservation -reportsKPI-> Organization`
-   when the schema declares `Organization -reportsKPI-> KPIObservation`. The
-   relationship is correct, only the subject/object are swapped.
-2. **Missing temporal properties** — a node lacks `valid_from` / `valid_to` /
-   `is_current`, or an edge lacks `temporal_metadata`. The model knew the fact
-   but forgot the housekeeping.
-3. **Typo'd class or predicate** — `KPIObservaion` instead of `KPIObservation`,
-   or `reportKPI` instead of `reportsKPI`. Trivial to repair against the schema.
-
-Throwing these away would lose real signal. This step recovers them in two
-phases:
-
-- **Offline (free)**: fixes direction bugs deterministically using the schema's
-  declared `source_class` / `target_class` per edge. No LLM cost.
-- **LLM (paid)**: batches anything still invalid and asks Gemini to repair it
-  against the full schema. Re-validates the model's output and keeps only what
-  passes — model-generated repairs are not trusted blindly.
-
-The result is a strict superset of step 2's valid output, at the cost of a
-small number of LLM calls (batched at 25 invalid triples per call by default).
+These three stages turn per-page extraction output into one validated, anchored,
+canonically-labelled triple set. **Run them as the block.**
 
 ---
 
-## 2. What it consumes and what it produces
+## 1. Why the block exists
 
-**Inputs**
+All three read *and* write the same artifact. That intermediate file was never a
+deliverable — it is internal state that leaked into being a contract, and it has a
+measurable cost. On the AAA corpus the file was:
 
-| Input | Default path | Role |
+```
+14,492  phase 1, offline        → free to rebuild
++   90  phase 2, LLM            → PAID FOR, and not deterministic
++   95  03b gazetteer anchors   → free to rebuild
+= 14,677 triples  (plus 683 kpi_id stamps from 03c)
+```
+
+Re-running `fix_triples` alone rebuilds from the page graphs and writes over all of it —
+destroying the anchors, the stamps and the 90 paid repairs, with no warning. The only thing
+holding the chain together was a log line at the end of each stage: a contract by memory.
+
+`build_validated` chains the three **in memory** and writes the artifact exactly **once**.
+
+### 1.1 Artifact versus cache — the distinction that makes it safe
+
+Dropping the intermediate *artifact* is the point. Dropping the *cache of a paid result*
+would be a regression: every block run would re-pay for phase 2, and because the model is
+not deterministic it would return something different each time.
+
+| | Answers | Verdict |
 |---|---|---|
-| Per-page graphs | `graph_output/graphs/<stem>/page{N}.json` | Triples already in graph form `{nodes, edges}` from step 2. Reconstructed back into triples. |
-| Per-page bugged lists | `graph_output/graphs/<stem>/page{N}_bugged.json` | Step 2's invalid triples — second chance through phase 2's LLM repair. |
-| Schema | `config/schema.json` | Source of truth for validation: 27 entity classes, 44 edge labels, 126 directed `(source_class, target_class)` entries. |
+| Intermediate artifact | "how far did the pipeline get?" | internal state — droppable |
+| Cache | "what already cost money?" | not reproducible for free — keep |
 
-**Outputs**
+So phase-2 repairs go to their own cache, keyed by the **content** of the input triple
+(never its position in a batch — batch boundaries move between runs). The cache stores the
+model's **raw reply**; `preserve_property_values` is applied on the way out, so the guard
+stays our code and improving it also fixes cached repairs.
 
-```
-graph_output/validated/
-  all_validated_triples.json   ← flat list of every triple that passes validation
-  unfixable_triples.json       ← triples the LLM couldn't repair (only present if non-empty)
-```
+A second block run calls the LLM zero times and reproduces the identical artifact —
+asserted by `test/test_esg_kg_validated_block.py`, together with a non-vacuity arm proving
+the separate-stage chain writes the file three times and the block exactly once.
 
-`all_validated_triples.json` is a flat array of triple dicts. Each triple has
-the standard `subject` / `predicate` / `object` / `temporal_metadata` shape that
-step 4 (entity resolution) expects:
-
-```json
-[
-  {
-    "subject": {
-      "class": "Organization",
-      "properties": {
-        "name": "AAA",
-        "industry": "Plastics",
-        "valid_from": "2011",
-        "valid_to": null,
-        "is_current": true
-      }
-    },
-    "predicate": "reportsKPI",
-    "object": {
-      "class": "KPIObservation",
-      "properties": {
-        "kpi_type": "TT96-6.6.1",
-        "title": "Mức lương trung bình",
-        "value": 4000000,
-        "unit": "đồng/tháng",
-        "year": 2011,
-        "valid_from": "2011-01-01",
-        "valid_to": "2011-12-31",
-        "is_current": false
-      }
-    },
-    "temporal_metadata": {
-      "valid_from": "2011-01-01",
-      "valid_to": null,
-      "recorded_at": "2011-01-01"
-    }
-  }
-]
-```
-
-Note: triples are **flattened across documents**. Entity resolution (step 4)
-wants one global list so it can merge, e.g., `Organization{name=AAA}` across
-all 13 annual reports into one canonical entity with multiple versions.
+Every member stage stays individually runnable. A block *adds* an entry point; losing the
+ability to run one stage alone would lose the ability to diagnose it.
 
 ---
 
-## 2b. Pipeline at a glance
+## 2. Stage 03 — `fix_triples`
 
-```mermaid
-flowchart TD
-    A[graph_output/graphs/<br/>page*.json, page*_bugged.json] --> B[Recursive glob<br/>page*.json]
-    B --> C{File format?}
-    C -- graph --> D[Reconstruct triples<br/>from nodes/edges]
-    C -- triple_array --> E[Read raw list]
-    D --> F[Offline direction fix<br/>swap subj/obj if needed]
-    E --> F
-    F --> G[validate_triple<br/>structure + classes + predicate + direction + temporal]
-    G --> H{Valid?}
-    H -- yes --> V[all_valid]
-    H -- no --> I[Phase-1 invalid bucket]
-    I --> J{--dry-run?}
-    J -- yes --> X[Report counts<br/>and exit]
-    J -- no --> K[Batch 25 invalid triples]
-    K --> L[Gemini 2.5 Flash<br/>BATCH_FIX_PROMPT + schema]
-    L --> M[extract_json_from_response]
-    M --> N[Re-validate each<br/>repaired triple]
-    N --> O{Valid?}
-    O -- yes --> V
-    O -- no --> P[unfixable]
-    V --> Q[all_validated_triples.json]
-    P --> R[unfixable_triples.json]
-    S[RateLimiter 10 RPM] -.- L
-```
+Four phases.
 
-The diagram is the data flow for one full run. The dashed arrow on the
-`RateLimiter` indicates it gates phase-2 LLM calls only — phase 1 is pure local
-computation.
+### Phase 1 — offline reconstruction and validation
 
----
+Reconstruct triples from the per-page `{nodes, edges}` graphs, then validate against
+`config/schema.json`. Two behaviours worth knowing:
 
-## 3. Logic walkthrough
+- **Direction auto-swap.** If a triple's `(source_class, target_class)` pair is illegal but
+  the *reversed* pair is legal, the subject and object are swapped rather than the triple
+  discarded. The extractor confuses direction often enough that repairing is cheaper than
+  losing the fact.
+- **Any legal pair counts.** A label may have several legal pairs; the validator accepts a
+  match against any of them.
 
-### 3.1 File discovery + format auto-detect (`load_triples_from_file`)
+Output: valid triples, plus an invalid set for phase 2.
 
-The script does `rglob("page*.json")` under `--input-dir` (default
-`graph_output/graphs/`). The recursive glob picks up every stem in one go, so
-running `python src/step03_fix_invalid_triplets.py` covers all 13 annual reports at
-once with no flags needed.
+### Phase 1.5 — temporal canonicalization (P4)
 
-Each file is auto-classified:
+Offline, no LLM:
 
-- **Graph format** (`{nodes: [...], edges: [...]}`) — this is what step 2 writes
-  for `page{N}.json`. We **reconstruct** full triples by dereferencing each
-  edge's `subject` / `object` integer indices into the `nodes` array and
-  copying `temporal_metadata`. Indices out of range are skipped with a warning.
-- **Triple-array format** (`[{subject, predicate, object, ...}, ...]`) — this is
-  what step 2 writes for `page{N}_bugged.json` (the schema-failing triples).
-  We keep only triples that have all three required keys.
+- every date normalized to ISO `YYYY[-MM[-DD]]`;
+- `valid_from > valid_to` flagged;
+- a missing `date_uncertain` defaulted on news-derived T2 nodes.
 
-A defensive filter excludes anything inside our own `--out-dir`, so re-runs
-won't try to ingest a previously-written `all_validated_triples.json` even if
-the glob pattern is loosened in future.
+`--renormalize` runs **only this phase** against the existing aggregated file. It is the
+safe way to re-apply date rules without touching the LLM or losing prior repairs.
 
-### 3.2 Offline direction fix (`fix_direction`)
+The bug that motivated P4: one node had two `temporal_versions` both `is_current = true`
+and both `valid_to = null`, differing only as `"2011"` versus `"2011-01-01"` — one fact
+split into two fake versions.
 
-The schema declares every edge with an explicit direction:
+### Phase 2 — LLM repair
 
-```json
-{
-  "label": "reportsKPI",
-  "source_class": "Organization",
-  "target_class": "KPIObservation",
-  "temporal_properties": ["valid_from", "valid_to", "recorded_at"]
-}
-```
+The invalid triples are batched and sent for repair against the schema, then re-validated;
+whatever is now valid is kept, the rest goes to `unfixable_triples.json`. Gemini only —
+no provider flag on this stage.
 
-`load_schema_sets` builds `edge_directions: {label -> [(source, target), ...]}`.
-Some labels have multiple legal pairs — e.g. `verifiedBy` can go from
-`SustainabilityClaim` to either `ThirdPartyVerification` or `KPIObservation` —
-so the value is a list, not a single tuple.
+**`preserve_property_values` is the guard that matters.** Phase 2 may repair a triple's
+*shape* — its class, predicate or temporal fields — but must never translate, reformat,
+invent or drop a property **value**. Since extraction now emits Vietnamese names and
+titles, an English-instructed repair model "fixing" a Vietnamese name would silently split
+one entity into two during resolution. The guard restores altered values, drops invented
+ones, and permits the shape changes the repair is for.
 
-`fix_direction` then asks: is the triple's `(subject.class, object.class)` in
-the legal-pair list for this predicate? If yes, leave it alone. If no but the
-**swapped** pair `(object.class, subject.class)` is legal, swap them. Otherwise
-do nothing (the triple goes on to schema validation and either passes the rest
-of the checks or falls into phase 2 for the LLM to handle).
+`BATCH_FIX_PROMPT` is pinned byte-for-byte by tests, for the same reason as the extraction
+prompts.
 
-This is the cheapest possible repair — no LLM, no network call. It catches the
-single most common bug type from step 2.
+### Phase 3 — aggregate
 
-### 3.3 Schema validation (`validate_triple`)
-
-Five rule classes, in order:
-
-1. **Structural** — `subject`, `predicate`, `object` keys present; subject/object
-   are dicts with `class` and `properties` keys; `properties` is a dict.
-2. **Class membership** — `subject.class` and `object.class` are in the schema's
-   entity class set.
-3. **Predicate membership** — `predicate` is in the schema's edge label set.
-4. **Direction** — `(subject.class, object.class)` is in the legal-pair list for
-   that predicate. Runs only if (1)–(3) passed.
-5. **Temporal** — every node has `valid_from` / `valid_to` / `is_current` in its
-   properties; the triple has a `temporal_metadata` dict with `valid_from` /
-   `valid_to` / `recorded_at`.
-
-Each failure produces a string error message. The full error list is attached
-to the triple as `_validation_errors` before it falls into the phase-2 bucket.
-We also attach `_source_file` so we can trace back to the page that produced
-the bad triple. Both underscore-prefixed keys are stripped before the triple is
-sent to the LLM in phase 2.
-
-### 3.4 Phase-1 driver (`process_file_offline`, `process_all_files`)
-
-For each page file:
-
-1. Load triples (graph or array format).
-2. Run `fix_direction` over each triple — record how many were swapped.
-3. Run `validate_triple` over each (post-fix) triple — split into valid / invalid.
-
-Then aggregate across all files into `all_valid` and `all_invalid` lists with
-running stats. Phase-1 logging looks like:
-
-```
-Offline results:
-  Total files: 547 (graph: 547, triple_array: 12)
-  Total triples: 8421
-  Direction fixed: 312
-  Valid: 6890
-  Invalid (need LLM): 1531
-```
-
-### 3.5 Phase-2 LLM repair (`BATCH_FIX_PROMPT`, `fix_batch_with_llm`)
-
-Invalid triples are batched (default 25 per batch) and sent to Gemini with the
-verbatim `BATCH_FIX_PROMPT`. The prompt:
-
-- Embeds the full `config/schema.json` so the model can resolve class/predicate
-  typos against the canonical names.
-- Asks for a JSON array of repaired triples **in the same order as input**,
-  with `null` in the position of any triple the model can't repair.
-- Forbids markdown fences and prose. Combined with `response_mime_type=json`,
-  this gives a high parse-success rate.
-
-`extract_json_from_response` then strips fences (in case the model ignored the
-instruction), trailing commas, and JS-style comments, and finds the outer
-`[…]` bracket pair before `json.loads`. Robust against the same minor
-malformations step 2's cleaner handles.
-
-### 3.6 Rate limiting
-
-We reuse `RateLimiter` from
-[`step02_extract_triplet_from_jsonl.py`](../src/step02_extract_triplet_from_jsonl.py).
-`fix_batch_with_llm` calls `rate_limiter.wait_if_needed(0)` before every
-`generate_content`, so batches space themselves to honor `--rate-limit` (default
-10 RPM, matching the Gemini free tier). EmeraldMind's original used a fixed
-`time.sleep(1)` between batches; our shared limiter is more accurate and works
-without modification if a paid-tier user bumps `--rate-limit` to 1000.
-
-### 3.7 Re-validation of LLM output (the trust boundary)
-
-Repaired triples from the LLM are **re-validated** by the same `validate_triple`
-that flagged them in the first place. Only those that pass become part of
-`all_valid` and end up in `all_validated_triples.json`. Anything the LLM
-returned but that still fails validation is silently dropped (we don't trust
-the model's verdict, only the schema's). Anything the LLM returned as `null` —
-declaring it unfixable — is dropped too.
-
-Whatever remains in the phase-1 invalid bucket but isn't in `fixed_triples`
-goes to `unfixable_triples.json`, carrying the original `_validation_errors`
-and `_source_file` markers for inspection.
-
-### 3.8 Output layout
-
-```
-graph_output/
-  graphs/                                    ← step-2 output (untouched)
-    AAA_Baocaothuongnien_2011/
-      page2.json
-      page3_bugged.json
-      ...
-  validated/                                 ← step-3 output
-    all_validated_triples.json
-    unfixable_triples.json                   (only if any)
-```
-
-EmeraldMind wrote the aggregates into the input dir, mixing per-page graphs
-with the aggregated outputs. We keep them in a sibling dir so re-runs are
-clean and the per-page provenance is easy to inspect.
-
----
-
-## 4. Differences from EmeraldMind's step 3
-
-| Aspect | EmeraldMind | This script |
-|---|---|---|
-| API keys | `GEMINI_API_KEY_1..7` + round-robin | single `GEMINI_API_KEY` |
-| Phase-2 throttling | fixed `time.sleep(1)` per batch | shared `RateLimiter` (default 10 RPM) |
-| Output location | inside `--input_dir` (mixed with per-page graphs) | dedicated `graph_output/validated/` |
-| Defaults | `--input_dir` and `--schema` required | both default to repo-relative paths; you can run with no flags |
-| Success-rate log line | misformatted on empty input (ternary in wrong place) | guarded with `if/else` |
-| Dry-run | none | `--dry-run` stops after phase 1 — useful for estimating cost before spending tokens |
-| Filename filters | excludes `_validated`, `_bugged`, `_fixed`, `_unfixable` | adds `_malformed` (step-2 sidecar) |
-| Defensive out-dir guard | none | rglob skips any file inside `--out-dir` so re-runs don't re-ingest aggregates |
-
----
-
-## 5. Schema reference
-
-The ontology this script validates against is
-[`config/schema.json`](../config/schema.json). The two pieces we depend on are:
-
-- **Entity classes** (27): used to validate `subject.class` and `object.class`.
-- **Directed edges** (44 labels / 126 `(source_class, target_class)` entries):
-  used both for direction-fixing and for direction-validation.
-
-See [`SCHEMA_EXPLAINED.md`](./SCHEMA_EXPLAINED.md) for the human-readable tour.
-
-Adding a new class or edge to `config/schema.json` is a no-code change here —
-the next run picks it up automatically.
-
----
-
-## 6. Setup
-
-```bash
-pip install -r requirements.txt   # no new deps beyond what step 2 needs
-```
-
-Make sure `.env` at the repo root has your key (only needed if you'll run
-phase 2; `--dry-run` skips the key check):
-
-```bash
-# .env
-GEMINI_API_KEY="..."
-```
-
-And make sure **step 2 has been run** for the documents you want to validate.
-The default `--input-dir` is `graph_output/graphs/`, populated by step 2.
-
----
-
-## 7. Run
-
-```bash
-# Default: validate everything under graph_output/graphs/
-python src/step03_fix_invalid_triplets.py
-
-# Just see the counts, don't spend any tokens
-python src/step03_fix_invalid_triplets.py --dry-run
-
-# Smaller batches if a single batch is timing out
-python src/step03_fix_invalid_triplets.py --batch-size 10
-
-# Paid Tier 1: crank the throttle
-python src/step03_fix_invalid_triplets.py --rate-limit 1000
-```
+Write `all_validated_triples.json` and `unfixable_triples.json`.
 
 ### Flags
 
-| Flag | Default | Meaning |
-|------|---------|---------|
-| `-i, --input-dir` | `graph_output/graphs/` | Where to find `page*.json` files (recursively) |
-| `-s, --schema` | `config/schema.json` | Graph schema JSON |
-| `-o, --out-dir` | `graph_output/validated/` | Where to write the aggregated outputs |
-| `--batch-size N` | 25 | Triples per LLM repair batch |
-| `--rate-limit N` | 10 | Max RPM for phase 2 |
-| `--model` | `gemini-2.5-flash` | Gemini model id |
-| `--dry-run` | off | Stop after phase 1: report counts but don't call the LLM or write files |
+`-i` · `-s` · `-o` · `--batch-size` · `--rate-limit` · `--model` · `--dry-run`
+(phase 1 only, no LLM, no writes) · `--renormalize` · `--no-context-cache`
 
 ---
 
-## 8. Related docs
+## 3. Stage 03b — `anchor_kpi`
 
-- [`TRIPLET_EXTRACTION_FROM_JSONL.md`](./TRIPLET_EXTRACTION_FROM_JSONL.md) — step 2, produces the per-page graphs this script validates.
-- [`KPI_EXTRACTION_FROM_JSONL.md`](./KPI_EXTRACTION_FROM_JSONL.md) — step 1, produces the KPI evidence used in step 2's prompt.
-- [`SCHEMA_EXPLAINED.md`](./SCHEMA_EXPLAINED.md) — the knowledge-graph ontology this script validates against.
-- [`VIETNAM_IMPROVEMENT_PLAN.md`](./VIETNAM_IMPROVEMENT_PLAN.md) — broader plan for adapting the graph to the Vietnamese regulatory reality.
+Offline structural anchoring, no LLM. Implements P3 for data that was already extracted and
+paid for.
+
+```
+1. build a gazetteer of Facility names already present in the validated graph
+2. for each KPIObservation, resolve its source sentence via source_id
+   ("<source_pdf>_<page>_<sentence_index>") against the labeled JSONL
+3. if the sentence literally names a known facility (Vietnamese-normalized,
+   word-bounded match) emit the edge the extractor should have made:
+       KPIObservation --observedAtFacility--> Facility
+   with the KPI's own event time as the edge's temporal_metadata and
+   anchor_method="offline_gazetteer" for auditability
+```
+
+No new classes and no new edge labels — only edges the schema already defines.
+
+**What it deliberately cannot do:**
+
+- Location names cannot be attached: the schema has no `KPIObservation → Location` edge,
+  by design.
+- `Penalty → Authority` (`enforcedBy`) cannot be patched offline, because `Penalty` nodes
+  carry no sentence-level `source_id`.
+
+Both are covered going forward by the extraction prompt instead. Extending the gazetteer to
+news event classes is blocked on adding schema pairs — [ROADMAP.md](ROADMAP.md) §2.3.
+
+`--max-per-facility` caps how many anchors one facility may absorb, a hub guard the live
+data does not currently trip.
+
+Flags: `-i` · `-s` · `--sentences` · `--max-per-facility` · `--stats-out` · `--dry-run`
+
+---
+
+## 4. Stage 03c — `canonicalize`
+
+Offline, no LLM. Assigns each `KPIObservation` a canonical `kpi_id` from the 35-indicator
+vocabulary, plus unit normalization and a `Goal.target_date` backfill.
+
+Design detail and the alias/precision rules are in
+[STANDARD_INDICATOR_AXIS.md](STANDARD_INDICATOR_AXIS.md) §5.2. The three properties to
+remember:
+
+1. **It writes a NEW property `kpi_id` and never rewrites `kpi_type`.** `kpi_type` is the
+   raw wording from the page; `kpi_id` is the code it maps to. Overwrite the raw value and
+   a wrong mapping can never be traced back to what the report said.
+2. **Precision over recall.** Financial KPIs in VND are rejected outright via
+   `reject_units`, not force-mapped. Unmatched nodes keep `kpi_id = null`.
+3. **Every node records which rule decided**, in `kpi_id_method` — `alias_exact` is
+   curated, `fuzzy_NN` is a guess, `rejected_unit` is a deliberate refusal, `no_match` is a
+   dictionary hole. Only the last is a backlog item, and on the AAA corpus the two were
+   2,913 versus 1,368.
+
+The `Goal.target_date` backfill is a Vietnamese regex over `name + description`
+(`đến/vào/trước/tới năm 20XX`, `giai đoạn 20XX–20YY`, `by 20XX`), applied only when the
+field is empty and only for **future** years, so a year mentioned in passing cannot become
+a target. Goals with no `target_date` after the backfill are slogans, not promises.
+
+The fuzzy tier needs `rapidfuzz`, deliberately absent from `requirements.txt`; without it
+the tier is disabled with a warning and everything else still runs.
+
+Flags: `-i` · `--defs` · `--aliases` · `--fuzzy-threshold` · `--no-goals` · `--stats-out`
+· `--dry-run`
+
+---
+
+## 5. Running order and re-runs
+
+```
+graphs/ ──▶ 03 fix_triples ──▶ 03b anchor_kpi ──▶ 03c canonicalize ──▶ all_validated_triples.json
+            └──────────────── build_validated writes ONCE ─────────────┘
+```
+
+| Situation | Do this |
+|---|---|
+| Normal rebuild | `build_validated` |
+| Date rules changed only | `fix_triples --renormalize` |
+| New facility names appeared | `anchor_kpi` (it is idempotent) |
+| Alias dictionary grew | `canonicalize` |
+| Diagnosing one stage | run that stage alone, on a copy |
+
+Never run `fix_triples` alone against a file that 03b/03c have already patched unless you
+intend to lose their output.
+
+---
+
+## 6. Tests
+
+| Test | Covers |
+|---|---|
+| `test/test_esg_kg_fix_triples.py` | The real corpus (43 doc dirs / 1,370 page files) through phase 1 offline; phase 2 via a stubbed tampering LLM; `BATCH_FIX_PROMPT` pinned |
+| `test/test_step03_llm_value_guard.py` | `preserve_property_values` — behaviour *and* wiring, red-first against the unguarded version |
+| `test/test_esg_kg_anchor_kpi.py` | 03b on the real corpus with prior anchors stripped (without the strip the arm compares two empty results), plus a hub-guard arm and an idempotency arm |
+| `test/test_esg_kg_validated_block.py` | The block writes exactly once; the separate chain writes three times; a second run calls the LLM zero times |
+| `test/test_temporal_invariants.py` | Date canonicalization, temporal invariants, `source_id` parsing, `kpi_id` canonicalization |
+
+Run `test/test_temporal_invariants.py` after touching any of 03 / 03b / 03c.

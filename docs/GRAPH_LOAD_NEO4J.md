@@ -1,115 +1,170 @@
-# Graph load into Neo4j (step 5)
-
-Script: [`src/step06_load_graph_to_neo4j.py`](../src/step06_load_graph_to_neo4j.py).
-Input: `graph_output/resolved/resolved_graph.json` (step-4 output).
-Output: a property graph in a Neo4j instance (default `bolt://localhost:8687`, db `neo4j`).
-
-This step plays the role of EmeraldMind's `5-load_edgelist_graph.py` but is a **redesign,
-not a port** — the reference loads a flat edge-list and re-derives node identity at load
-time, which is wrong for our data. See the rationale below.
-
-## Why a redesign
-
-| | reference `5-load_edgelist_graph.py` | our `resolved_graph.json` |
-|---|---|---|
-| Top level | flat **list** of edges | `{"nodes":[…], "edges":[…]}` |
-| Node location | embedded in each edge by value | separate `nodes[]` array |
-| Edge → node | by value (`{class, properties}`) | by **integer index** into `nodes[]` |
-| Node dedup | the loader does it (`generate_node_key`) | **already done by step 4** |
-| Node history | none | `temporal_versions[]` |
-| Edge time | none created (bare relationship) | `temporal_metadata` on every edge |
-
-## The three things this loader gets right
-
-1. **No re-deduplication.** Entity identity is owned by step 4. A node's id is its array
-   index (`_node_key = "n{i}"`); edges are rewired from integer indices to those keys.
-   Re-running the reference's `generate_node_key` would re-key by full property JSON and
-   could split/merge differently than the resolver did.
-
-2. **Edge time is preserved.** `temporal_metadata` is flattened onto each relationship
-   (`valid_from`/`valid_to`/`recorded_at`), and edges MERGE on a deterministic `_edge_key`
-   = `sha1(subject|predicate|object|valid_from|valid_to|recorded_at)`. This matters because
-   many (subject, predicate, object) triples recur across different years (e.g. `isIn`
-   between the same pair in 2009/2011/2012/2013); a naive `MERGE (a)-[:TYPE]->(b)` would
-   collapse them into one and destroy the time series. There are no exact-duplicate edges,
-   so keying on the full tuple is safe and keeps re-runs idempotent.
-
-3. **Temporal history is faithful where the schema allows it (hybrid).** `supersedes` is
-   only legal between identical entity classes (Organization, Person, Facility, Goal,
-   Product, Regulation, Standard, Material, Certification). For nodes of those classes with
-   >1 version, each distinct version becomes its own node, chained
-   `canonical -[:supersedes]-> newest -> … -> oldest` (ordered by leading-year of
-   `valid_from`); the canonical node is the head (`is_current = true`) and is what all data
-   edges attach to. For every other class, the full `temporal_versions` list is stored as a
-   JSON-string property instead, so no schema-illegal `supersedes` edge is emitted.
-
-## Implementation notes
-
-- Every node also carries a shared `:_Entity` label. Cypher cannot parameterize a label and
-  an unlabeled `MATCH` can use no index, so a single `(:_Entity) ON (n._node_key)` index
-  serves all endpoint lookups during edge ingestion.
-- Vietnamese values need no special handling: `_cypher_safe` only sanitizes keys/labels/
-  predicates (English here); UTF-8 values are stored verbatim. The clean canonical name
-  lives on `properties.name`; OCR garble (e.g. `MÔI TRƢỜNG`) survives only inside the
-  version chain as provenance.
-- Validation is a **warning**, not a gate (the graph is already validated in step 3 and
-  resolved in step 4); pass `--strict` to abort on any unknown class/predicate.
-
-## Setup — start a Neo4j instance (one-time, recommended: Docker)
-
-The loader is a **client**; it does not start a database. For a team, the reproducible
-option is the committed [`docker-compose.yml`](../docker-compose.yml) (Enterprise image, so
-everyone shares the same `greenwashing` user + `greenwashingkg` database — Community only
-has the single `neo4j` user and default db).
+# Stage 06 — loading the resolved graph into Neo4j
 
 ```bash
-# 1. start the DB (bolt :8687, browser http://localhost:8474)
-docker compose up -d
-docker compose ps                 # wait until STATUS shows "healthy"
+docker compose up -d                       # start the instance
+python src/run.py neo4j_load --dry-run     # preview planned counts, no DB
+python src/run.py neo4j_load --clear       # wipe and load
+```
 
-# 2. one-time: create the greenwashing user + greenwashingkg database (idempotent)
+Module: `src/esg_kg/load/neo4j_load.py` · Input:
+`graph_output/resolved/resolved_graph.json` · Output: a queryable property graph
+
+No LLM. Materializes the resolved `{nodes, edges}` graph so the cross-check, the ledger,
+the Evidence View and ad-hoc Cypher can all read one source.
+
+---
+
+## 1. Setting up the instance
+
+`docker-compose.yml` runs **Neo4j 5 Enterprise** (the dev licence is free for
+non-production and academic use) so the team can share one named database and one custom
+user — Community only offers the single `neo4j` user and the default database.
+
+```bash
+docker compose up -d
+# wait for healthy, then run the one-time bootstrap:
 docker cp neo4j/init.cypher greenwashing-kg:/tmp/init.cypher
 docker exec greenwashing-kg cypher-shell -u neo4j -p nammovuivui -d system -f /tmp/init.cypher
-
-# 3. point the loader at it: copy .env.example -> .env (defaults already match)
 ```
 
-`neo4j/init.cypher` is run as the admin `neo4j` user against the `system` db; it sets
-`greenwashingkg` as the user's HOME DATABASE so the loader targets it automatically.
+| Setting | Value |
+|---|---|
+| Bolt | `bolt://localhost:8687` |
+| Browser | `http://localhost:8474` |
+| Database | `greenwashingkg` |
+| Team user | `greenwashing` (home database `greenwashingkg`, so `--database` is optional) |
 
-**Plain Community / no Docker:** start any Neo4j on bolt `:8687`, set the `neo4j`
-password to `nammovuivui`, and in `.env` set `NEO4J_USER="neo4j"` and leave
-`NEO4J_DATABASE` unset (loads into the default `neo4j` db). The `greenwashing` user and
-named database require Enterprise/Desktop.
+`neo4j/init.cypher` is idempotent: it creates the database, the user, and the role grant.
+The password in the compose file is a **local development password** — change it, and do
+not commit it, for anything beyond a local instance.
 
-## Run
+Override the connection with `NEO4J_URI` / `NEO4J_USER` / `NEO4J_PASSWORD` in `.env`, or
+with `--uri` / `--user` / `--password` / `--database`.
 
-```bash
-pip install -r requirements.txt          # adds neo4j>=5.0
-python src/step06_load_graph_to_neo4j.py --dry-run    # offline: print planned counts, no DB
-python src/step06_load_graph_to_neo4j.py --clear      # wipe + load (needs the instance running)
-```
+`neo4j_data/` is never synced with the dataset repo: a live database volume is corrupt if
+copied while running and is pinned to the image version. Rebuild it locally with this
+stage instead — one command, no LLM.
 
-Connection comes from `.env` (`NEO4J_URI` / `NEO4J_USER` / `NEO4J_PASSWORD` /
-`NEO4J_DATABASE`) or CLI flags (`--uri` / `--user` / `--password` / `--database`).
-`--no-versions` loads canonical nodes only (skips the supersedes chains).
+---
 
-## Verify after loading
+## 2. Why this is a redesign, not a port
+
+The reference implementation loads a flat edge list with nodes embedded by value, no
+temporal data, and re-derives node identity at load time. This loader's input is different
+in three ways that each change the design:
+
+1. edges reference nodes by **integer index**, not by value;
+2. entities are **already resolved** upstream;
+3. nodes and edges **carry temporal data**.
+
+Two things follow, and they are the two things this stage must not get wrong.
+
+### 2.1 Entities are not re-deduplicated
+
+Stage 05 owns identity. A node's key is its **array index**: `_node_key = "n{i}"`, and
+edges are rewired from indices to those keys. Re-deriving identity here would silently
+disagree with the resolver.
+
+This is why the append-only and node-order invariants matter so much upstream — see
+[PROVENANCE_PATCH.md](PROVENANCE_PATCH.md) §3.
+
+Every node also receives a shared label so one index serves all `_node_key` lookups:
 
 ```cypher
-// totals
-MATCH (n) RETURN count(n);
-MATCH ()-[r]->() RETURN count(r);
-
-// multi-year edge preserved (distinct years between the same pair)
-MATCH (:Organization)-[r:isIn]->() WHERE r.valid_from <> '' RETURN r.valid_from ORDER BY r.valid_from;
-
-// version chain for the AAA issuer
-MATCH p=(o:Organization {ticker:'AAA'})-[:supersedes*]->() RETURN p;
-
-// edge time present
-MATCH ()-[r:reportsKPI]->() RETURN r.valid_from LIMIT 5;
+CREATE INDEX IF NOT EXISTS FOR (n:`<SharedLabel>`) ON (n._node_key)
 ```
 
-Re-running without `--clear` must not change node/edge counts (MERGE on `_node_key` /
-`_edge_key`).
+### 2.2 Edge time is preserved
+
+`temporal_metadata` is flattened onto each relationship, and edges `MERGE` on a
+deterministic `_edge_key` that **includes the temporal fields**. This is load-bearing: the
+same pair of nodes is frequently connected in several different years, and a naive `MERGE`
+on (subject, predicate, object) would collapse them into one relationship and destroy the
+time series the whole project is built on.
+
+---
+
+## 3. Temporal node history
+
+`temporal_versions` is materialized in whichever way the schema permits:
+
+- **Classes with a legal `supersedes` self-edge** — `Organization`, `Facility`, `Person`,
+  `Goal`, `Standard`, `Product`, `Material`, `Certification`, `Regulation` — get a real
+  version-node chain:
+
+  ```
+  canonical -[:supersedes]-> newest -> … -> oldest
+  ```
+
+- **Every other class** keeps its history as a JSON-string property, so no schema-illegal
+  edge is ever emitted.
+
+`--no-versions` loads canonical nodes only, which is useful for a fast smoke check.
+
+---
+
+## 4. What the loader writes
+
+| Phase | Cypher shape |
+|---|---|
+| `setup_indexes` | one index per label on `_node_key` |
+| `clear_database` | only with `--clear` |
+| `ingest_nodes` | `MERGE (n:Label:Shared {_node_key: r._node_key}) SET n += r` in batches |
+| `ingest_data_edges` | `MATCH` both endpoints by `_node_key`, then `MERGE` the relationship on `_edge_key` |
+| `ingest_supersedes` | the version chains |
+| `print_graph_stats` | read-back counts |
+
+`build_payload()` is a pure function — it turns the resolved graph into the batched
+payloads without touching a database, which is what makes the stage testable offline.
+
+---
+
+## 5. Flags
+
+| Flag | Meaning |
+|---|---|
+| `-i` | Resolved graph (default `graph_output/resolved/resolved_graph.json`) |
+| `-s` | Schema path |
+| `--uri`, `--user`, `--password`, `--database` | Connection; env fallbacks `NEO4J_*` |
+| `--batch-size` | Rows per write transaction |
+| `--clear` | Wipe the database first |
+| `--no-versions` | Canonical nodes only, no version chains |
+| `--strict` | Fail on conditions that are otherwise warnings |
+| `--dry-run` | Compute and report the payload, touch no database |
+
+---
+
+## 6. Verifying a load
+
+```cypher
+// counts by label
+MATCH (n) RETURN labels(n)[0] AS label, count(*) ORDER BY count(*) DESC;
+
+// multi-year edges survived
+MATCH (a)-[r:reportsKPI]->(b)
+RETURN a._node_key, count(DISTINCT r.valid_from) AS years
+ORDER BY years DESC LIMIT 5;
+
+// version chains
+MATCH p = (c)-[:supersedes*]->(v) RETURN c.name, length(p) ORDER BY length(p) DESC LIMIT 5;
+```
+
+Analyst queries live in `neo4j/crosscheck_queries.cypher`.
+
+---
+
+## 7. What comes next
+
+`neo4j_load` writes the **base** graph — extracted facts only. The advisory layer
+(`assessment`, `caveats`, `llm_supports` / `llm_contradicts` edges) is written separately by
+`neo4j_sync` (08) so that an advisory opinion is never confused with an extracted fact. See
+[CLAIM_LEDGER.md](CLAIM_LEDGER.md).
+
+---
+
+## 8. Tests
+
+`python test/test_esg_kg_neo4j_load.py` — `build_payload()` as a pure function on the real
+corpus, plus an ingestion arm that compares every Cypher string and parameter dict against
+a fake session/transaction that records calls and executes nothing. No live database is
+needed, and none is touched.

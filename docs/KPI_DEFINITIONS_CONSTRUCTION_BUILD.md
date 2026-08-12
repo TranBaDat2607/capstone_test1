@@ -1,231 +1,132 @@
-# Building `kpi_definitions_construction.json`
+# The KPI vocabulary — `kpi_definitions_construction.json`
 
-This document explains, in detail, how the sector‑tailored KPI definition file
-`kpi_definitions_construction.json` (35 KPIs for **Construction / Building
-Materials / Real Estate**) is constructed from official Vietnamese regulatory
-sources by the reproducible pipeline under [`kpi_build/`](../kpi_build/).
+**Builder:** `kpi_build/` (run-once) · **Output:** `kpi_definitions_construction.json` at
+the **repo root** (not in `config/`, not in `kpi_build/`) · **35 indicators**
 
-## 1. What this file is and why it is built
+The controlled ESG indicator vocabulary for the Construction / Building Materials / Real
+Estate sector, extracted **verbatim** from official Vietnamese sources. Every record
+carries a `source` block, so any claim in the graph can be traced back to the regulation
+that defines the indicator it is measured under.
 
-`kpi_definitions_construction.json` is the **controlled vocabulary (taxonomy) of
-ESG indicators** consumed by the extraction pipeline. It is **not** the knowledge‑graph
-schema — node classes and edge labels live in `EmeraldMind/schemas/schema.json`.
-Instead, each record here defines one allowed value (and its meaning) for the
-`kpi_type` property of a `KPIObservation` node.
+Treat this as generated data. It rarely needs rebuilding.
 
-- **Design rule:** *no KPI text is hand‑invented.* Every record is derived verbatim
-  from a source document and carries a `source` block recording where it came from.
+---
 
-## 2. Source documents (provenance)
+## 1. Who consumes it
 
-| Document | Role | KPIs | ID prefix |
-|----------|------|------|-----------|
-| **Thông tư 96/2020/TT‑BTC, Phụ lục IV, Mục 6** | Mandatory ESG disclosure backbone for listed firms (cross‑sector) | 19 | `TT96-6.x.y` |
-| **Quyết định 2171/QĐ‑TTg (2021)** | Non‑fired building‑materials usage target (35–45%) | 1 | `QD2171-1` |
-| **QCVN 09:2017/BXD** | Energy‑efficient building compliance (≥ 2500 m²) | 1 | `QCVN09-1` |
-| **SSC–IFC Sustainability Reporting Guide** | 14 recommended E&S aspects (biodiversity, recycling, OHS, diversity…) | 14 | `SSCIFC-E*` / `SSCIFC-S*` |
+| Consumer | Use |
+|---|---|
+| `extract` (01) | The vocabulary in the extraction prompt; a matched KPI arrives already carrying a `TT96-*` / `SSCIFC-*` id |
+| `canonicalize` (03c) | Maps free-text `kpi_type` onto these ids as `kpi_id` |
+| `indicators` (05c) | Mints the `StandardIndicator` nodes, and reads `pillar` from here |
+| `align_claims` (05d) | The candidate indicator list for LLM topic classification |
 
-Sector specialisation comes from QĐ 2171, QCVN 09 and the SSC‑IFC aspects; Circular 96
-§6 is cross‑sector but forms the regulatory backbone. Exact URLs + sha256 hashes are
-recorded in `sources/manifest.json` and `sources/manifest_sector.json`.
+`core/paths.py` exposes it as `KPI_DEFS_PATH`; four stage files reference it.
 
-## 3. Pipeline overview
+---
 
-The build is six ordered scripts in `kpi_build/`. Stages 1–4 **download and extract
-verbatim** (no LLM, fully auditable); stages 5–6 **merge and shape** into the final schema.
+## 2. Sources and provenance
 
-```
-01_download_sources.py ─┐
-02_extract_section6.py  ─┼─► sources/extracted_section6.json ─┐
-03_download_sector_sources.py ─┐                              │
-04_extract_sector_kpis.py ─────┴─► sources/extracted_sector.json ─┤
-                                                                  ▼
-                          05_build_kpi_definitions.py ──► kpi_definitions_construction.json
-                                                                  │
-                          06_enrich_kpis.py ──────────► (rewritten in place)
-```
+| Document | Role | Indicators |
+|---|---|---|
+| **Thông tư 96/2020/TT-BTC**, Phụ lục IV, Mục 6 | The mandatory ESG disclosure backbone for listed firms | 19 (`TT96-6.x.y`) |
+| **Quyết định 2171/QĐ-TTg (2021)** | Non-fired building-materials usage target (35–45%) | 1 (`QD2171-1`) |
+| **QCVN 09:2017/BXD** | Energy-efficient building compliance (≥ 2,500 m²) | 1 (`QCVN09-1`) |
+| **SSC–IFC Sustainability Reporting Guide** | 14 recommended E&S aspects (biodiversity, recycling, OHS, diversity, …) | 14 (`SSCIFC-E*` / `SSCIFC-S*`) |
 
-| Stage | Script | What it does | Produces |
-|-------|--------|--------------|----------|
-| 1 | `01_download_sources.py` | Download Circular 96/2020 (2 mirrors) + SSC‑IFC guide | `sources/*.html/.pdf`, `manifest.json` |
-| 2 | `02_extract_section6.py` | Parse Circular 96 Annex IV §6 into mandated indicators | `sources/extracted_section6.json` |
-| 3 | `03_download_sector_sources.py` | Download QĐ 2171 + QCVN 09 (mirror fallback + content check) | `sources/*.html`, `manifest_sector.json` |
-| 4 | `04_extract_sector_kpis.py` | Extract non‑fired materials target, energy‑efficiency scope, SSC‑IFC 14 aspects | `sources/extracted_sector.json` |
-| 5 | `05_build_kpi_definitions.py` | Merge §6 + sector indicators (verbatim) into final schema | `kpi_definitions_construction.json` |
-| 6 | `06_enrich_kpis.py` | Split short `name` vs measurable `definition` (with units); keep verbatim text in `source.excerpt` | `kpi_definitions_construction.json` (rewritten) |
+Exact URLs and SHA-256 hashes are recorded in `kpi_build/sources/manifest.json` and
+`manifest_sector.json`.
 
-Helpers `_inspect_sources.py` / `_inspect_sector.py` only print located text for manual
-verification; they are **not** part of the build.
+Circular 96 §6 is **cross-sector** — it applies to every listed firm. The sector
+specialization comes from QĐ 2171, QCVN 09 and the SSC-IFC aspects, plus a single combined
+`sector` label on every record.
 
-## 4. Stage‑by‑stage detail
+---
 
-### Stage 1 — `01_download_sources.py` (download core sources)
+## 3. Record shape
 
-- Downloads three documents declared in the `SOURCES` list: the Circular 96 original
-  (Công báo), the Circular 96 Annex IV **template** (LuatMinhKhue lookup copy), and the
-  SSC‑IFC sustainability‑reporting PDF.
-- Uses **browser‑like headers** — government/legal portals reject the default
-  `python-requests` user agent with HTTP 403.
-- Each file is saved verbatim into `sources/`, and a manifest record captures the URL,
-  HTTP status, byte count and **sha256 hash** for reproducibility/auditability.
-
-> Output: `sources/TT96_2020_congbao.html`, `sources/TT96_2020_phuluc4.html`,
-> `sources/SSC_IFC_sustainability_guide.pdf`, `sources/manifest.json`.
-
-### Stage 2 — `02_extract_section6.py` (parse Circular 96 §6)
-
-The Annex IV annual‑report template lists, sub‑section by sub‑section, exactly which
-E&S indicators a listed company must disclose. This stage slices §6 out and parses every
-mandated indicator.
-
-1. **`html_to_text`** — flatten the template HTML to text (BeautifulSoup).
-2. **`slice_section6`** — cut from the §6 heading *"Báo cáo tác động liên quan đến môi
-   trường và xã hội"* up to the closing *"Lưu ý/Note"* paragraph after item 6.8.
-3. **Bilingual split** — the template interleaves `<Vietnamese>/<English>` on one line.
-   Because Vietnamese carries tone marks/special letters (`VI_CHARS`) the English
-   translation lacks, `is_vietnamese()` + `vi_indicators()` cut the Vietnamese indicator
-   out of each `/`‑separated unit.
-4. **`parse_section6`** — locate each `6.x.` header, map it to a known subsection title
-   (`SUBSECTION_TITLES`, 6.1–6.8), and emit one structured item per indicator with
-   `subsection`, `subsection_title`, `index_in_subsection`, and the Vietnamese text `vi`.
-
-> Output: `sources/extracted_section6.json` (≈19 indicators) + a `.txt` dump of the raw §6 block.
-
-### Stage 3 — `03_download_sector_sources.py` (download sector sources)
-
-- Downloads the two sector documents in `SECTOR_SOURCES`: **QĐ 2171/QĐ‑TTg** and
-  **QCVN 09:2017/BXD**.
-- Each source lists **mirror URLs in priority order**. Some legal portals return HTTP 403
-  to scripts; others return only navigation boilerplate. `fetch_first_ok()` saves the
-  first mirror that returns HTTP 200 **and** whose page text actually contains a required
-  `must_contain` needle (e.g. `"tổng số vật liệu xây"`), guaranteeing the real document
-  body was fetched rather than a stub.
-- Vietnamese text is normalised to **NFC** before the content check (some portals serve
-  NFD combining diacritics, which breaks naive string search).
-- The SSC‑IFC guide is already present from Stage 1, so it is not re‑downloaded here.
-
-> Output: `sources/QD_2171_2021.html`, `sources/QCVN_09_2017.html`, `sources/manifest_sector.json`.
-
-### Stage 4 — `04_extract_sector_kpis.py` (extract sector indicators)
-
-Extracts sector‑specific KPI content verbatim (all text NFC‑normalised):
-
-- **`extract_qd2171`** — regex‑locates the specific‑target sentence under *"b) Mục tiêu
-  cụ thể"* (the 35–40% / 40–45% non‑fired‑materials target) → one item `QD2171-1`.
-- **`extract_qcvn09`** — regex‑locates the scope sentence under *"Mục 1.1 — Phạm vi điều
-  chỉnh"* (buildings ≥ 2500 m²) → one item `QCVN09-1`.
-- **`extract_ssc_ifc_aspects`** — the SSC‑IFC guide renders the recommended aspects as a
-  two‑column table (Môi trường | Xã hội). The code slices between *"Tiết kiệm năng lượng"*
-  and *"Thông tin được công bố"*, drops the column headers, and de‑interleaves alternating
-  lines into environmental (`SSCIFC-E1..E7`) and social (`SSCIFC-S1..S7`) items.
-
-Each item carries `source_id`, `pillar`, `name`, the verbatim `vi`, and a `source` block.
-
-> Output: `sources/extracted_sector.json` (16 indicators: 1 + 1 + 14).
-
-### Stage 5 — `05_build_kpi_definitions.py` (merge into final schema)
-
-Merges Stage 2 + Stage 4 outputs into the final record schema:
-
-- **`build_circular96`** — for each §6 item, builds id `TT96-{subsection}.{index}`, a
-  short `name` (via `short_name`, which strips *"Báo cáo liên quan đến…"* prefixes),
-  a `definition` (= verbatim `vi`), the single `sector` label, a `pillar`
-  (`PILLAR_BY_SUBSECTION`: 6.1–6.5 → Môi trường, 6.6–6.7 → Xã hội, 6.8 → Quản trị), and
-  a `source` block.
-- **`build_sector`** — passes through the Stage‑4 items (QĐ 2171, QCVN 09, SSC‑IFC) into
-  the same record shape, keeping their own `source_id` as `id`.
-- **`fix`** — patches a known OCR artefact (`"Chính sách lao độngnhằm"` →
-  `"Chính sách lao động nhằm"`).
-- **Sanity assertion** — `id`s must be unique (the pipeline uses `id` as the `kpi_type`
-  token), so a duplicate aborts the build.
-
-> Output: `kpi_definitions_construction.json` (35 records). At this point `definition`
-> is the verbatim regulatory wording.
-
-### Stage 6 — `06_enrich_kpis.py` (make extraction‑ready)
-
-Regulations state *topics to disclose*, but the extractor needs *metrics to measure*.
-Several verbatim rows are too thin to drive numeric extraction (e.g. `"Tái chế"`). This
-stage attaches a curated, source‑anchored **measurable definition** to every KPI:
-
-- A hardcoded `ENRICH` map (`id → (short name, measurable definition with unit hints)`)
-  rewrites `name` and `definition`. Units reflect common ESG reporting practice
-  (tCO2e, m³, kWh, %, VND, giờ/người, số vụ…).
-- **The original verbatim text is preserved** in `source.excerpt` on first run and never
-  overwritten — so nothing extracted is lost and provenance is auditable.
-- **Idempotent:** re‑running re‑applies the map without corrupting `source.excerpt`.
-- **Coverage assertions:** every KPI `id` must have exactly one `ENRICH` entry and vice
-  versa, so the map cannot silently drift out of sync with Stage 5.
-
-> Output: `kpi_definitions_construction.json` rewritten in place — final form.
-
-## 5. Final record schema
-
-After Stage 6, each record has a short `name` label, a measurable `definition` with unit
-hints, and the verbatim regulatory text retained in `source.excerpt`:
-
-```json
+```jsonc
 {
   "id": "TT96-6.2.2",
   "name": "Tỷ lệ nguyên vật liệu tái chế",
-  "definition": "Tỷ lệ phần trăm (%) nguyên vật liệu tái chế trên tổng nguyên vật liệu đầu vào dùng để sản xuất sản phẩm, dịch vụ chính.",
+  "definition": "Tỷ lệ phần trăm (%) nguyên vật liệu tái chế trên tổng nguyên vật liệu đầu vào ...",
   "sector": ["Xây dựng - Vật liệu xây dựng - Bất động sản"],
   "pillar": "Môi trường",
   "source": {
-    "document": "Thong tu 96/2020/TT-BTC - Phu luc IV ...",
-    "section": "Mục 6.2 - Quản lý nguồn nguyên vật liệu",
-    "url": "https://luatminhkhue.vn/...",
-    "excerpt": "Báo cáo tỷ lệ phần trăm nguyên vật liệu được tái chế ..."   // verbatim
+    "document": "Thong tu 96/2020/TT-BTC - Phu luc IV ... Muc 6",
+    "section": "Mục 6.2 - ...",
+    "url": "https://...",
+    "excerpt": "Báo cáo tỷ lệ phần trăm nguyên vật liệu được tái chế ..."   // VERBATIM
   }
 }
 ```
 
-| Field | Used by `1-kpi-extraction.py`? | Meaning |
-|-------|:--:|---------|
-| `id` | ✅ | Stable token; becomes `KPIObservation.kpi_type` in the graph. Must be unique. |
-| `name` | ✅ | Short human label (injected into prompt). |
-| `definition` | ✅ | Measurable spec with unit hints (injected into prompt). |
-| `sector` | ✅ | Sector filter key (`get_sector_view`). |
-| `pillar` | ⬜ | E/S/G classification metadata (Môi trường / Xã hội / Quản trị). |
-| `source` | ⬜ | Provenance + verbatim `excerpt` for audit. |
+The split between `name` and `definition` is deliberate: `name` is a short label for
+display and matching, `definition` is a measurable specification with unit hints. **The
+exact regulatory wording is retained in `source.excerpt`**, so the curation in
+`definition` never destroys the original text.
 
-## 6. Reproducing the build
+`pillar` is one of `Môi trường` / `Xã hội` / `Quản trị`. `indicators` (05c) reads it
+directly onto the `StandardIndicator` node, and the Evidence View shows it as the claim's
+E/S/G column — which is why it comes from here rather than being inferred.
 
-```bash
-cd kpi_build
-python 01_download_sources.py
-python 02_extract_section6.py
-python 03_download_sector_sources.py
-python 04_extract_sector_kpis.py
-python 05_build_kpi_definitions.py
-python 06_enrich_kpis.py
-```
+---
 
-Dependencies: `requests`, `beautifulsoup4`, `PyMuPDF` (`fitz`).
+## 4. The build
 
-## 7. Notes & caveats
+Six sequential scripts, run from `kpi_build/`:
 
-- **NFC normalisation** is applied throughout; some legal portals serve NFD combining
-  diacritics that break naive search.
-- The bilingual Circular 96 template requires a **Vietnamese‑diacritic heuristic** to
-  split each indicator from its English translation; layout changes upstream could break
-  Stage 2 parsing.
-- Stage 6 definitions are **curated, source‑anchored** metric specs (units added per ESG
-  practice). The exact regulatory wording is retained in `source.excerpt`.
-- Some SSC‑IFC aspects overlap conceptually with §6 items (energy, GHG, water, community).
-  They are kept with distinct ids/sources as multi‑source corroboration; prune in Stage 6's
-  `ENRICH` map for a minimal set.
-- **Wiring into extraction:** for sector filtering to engage (instead of falling back to
-  "use all KPIs"), the label `"Xây dựng - Vật liệu xây dựng - Bất động sản"` must be added
-  to the `SECTORS` list in `detect_company_and_sector` in `1-kpi-extraction.py` (the
-  hardcoded list there is otherwise English‑only and never emits this sector). Per the
-  `kpi_build/README.md`, treat `EmeraldMind/` as a read‑only reference and apply that edit
-  in your own working copy:
-  ```bash
-  python <your-copy>/1-kpi-extraction.py -r <reports_dir> -k kpi_definitions_construction.json
-  ```
+| Stage | Script | Does |
+|---|---|---|
+| 1 | `01_download_sources.py` | Download Circular 96/2020 + the SSC-IFC guide |
+| 2 | `02_extract_section6.py` | Parse Circular 96 Annex IV §6 |
+| 3 | `03_download_sector_sources.py` | Download QĐ 2171 + QCVN 09 (mirror fallback + content check) |
+| 4 | `04_extract_sector_kpis.py` | Extract the non-fired materials target, the energy-efficiency scope, and the 14 SSC-IFC aspects |
+| 5 | `05_build_kpi_definitions.py` | Merge §6 + sector indicators verbatim into the final schema |
+| 6 | `06_enrich_kpis.py` | Split short `name` from measurable `definition`; keep verbatim text in `source.excerpt` |
 
-## 8. Related docs
+`_inspect_sources.py` and `_inspect_sector.py` only print located text for manual
+verification; they are not part of the build.
 
-- [`SCHEMA_EXPLAINED.md`](./SCHEMA_EXPLAINED.md) — the KG node/edge schema that consumes `kpi_type`.
-- [`kpi_build/README.md`](../kpi_build/README.md) — the build pipeline's own README.
+`kpi_build/` is one of two named exceptions to the repo's "no data files inside code
+packages" rule (the other is `gri/`). Both are run-once provenance builders that keep their
+sources beside the code, so a claim can be traced back to a page.
+
+---
+
+## 5. Extraction caveats worth knowing
+
+- **Unicode is normalized to NFC.** Some legal portals serve NFD combining diacritics,
+  which breaks naive string search.
+- **The bilingual Circular 96 template interleaves Vietnamese and English**; §6 parsing
+  uses a Vietnamese-diacritic heuristic to split each indicator from its translation.
+- **One source OCR artefact is patched** in stage 5 (`lao độngnhằm` → `lao động nhằm`).
+- **Some SSC-IFC aspects overlap conceptually with §6 items** (energy, GHG, water). They
+  are kept as separate ids rather than merged, because they come from different documents
+  with different binding force — and `standard_crosswalk.json` is where equivalences are
+  asserted deliberately.
+
+---
+
+## 6. Rebuilding
+
+Only necessary when a source document changes or a new instrument is added. Run the six
+scripts in order, then:
+
+1. `python test/test_temporal_invariants.py` — the `kpi_id` canonicalization arm reads this
+   file;
+2. `python test/test_indicator_axis.py` — the axis stage reads `pillar` and `id` from it;
+3. re-run `canonicalize` (03c) and `indicators` (05c), then `quality --label` before/after.
+
+Adding an indicator id without re-running 03c leaves it with no measurements attached.
+
+---
+
+## 7. Related
+
+- [STANDARD_INDICATOR_AXIS.md](STANDARD_INDICATOR_AXIS.md) — how the vocabulary becomes
+  graph structure
+- [GRI_SCHEMA_DOCUMENTATION.md](GRI_SCHEMA_DOCUMENTATION.md) — the GRI side and the
+  crosswalk
+- `kpi_build/README.md` — package-level usage
+- [ROADMAP.md](ROADMAP.md) §2.6 — the regulatory properties the schema still cannot express

@@ -1,185 +1,25 @@
 # Greenwashing Detection — Graph-RAG System
 
-A **Graph-RAG pipeline for detecting greenwashing in Vietnamese listed companies**
-(Construction / Building Materials / Real Estate sector). It ingests ESG statements
-from annual reports and news, classifies them, extracts numeric KPIs, and builds a
-**temporal ESG knowledge graph** so a company's *reported* ESG claims can be
-cross-checked against its *real-world* conduct — surfacing evidence and an advisory
-LLM assessment, not a greenwashing score (no ground-truth labels exist).
+A **Graph-RAG pipeline for surfacing greenwashing evidence about Vietnamese listed
+companies** (Construction / Building Materials / Real Estate). It ingests ESG statements
+from annual reports and independent news, classifies them, extracts numeric KPIs, and
+builds a **temporal ESG knowledge graph** so a company's *reported* claims can be
+cross-checked against its *real-world* conduct.
+
+The output is **evidence plus an explicitly advisory assessment — never a greenwashing
+score or label.** No ground-truth greenwashing dataset exists for Vietnamese companies, so
+claiming a verdict would imply a truth the project does not have. See
+[`docs/SYSTEM_DESIGN.md`](docs/SYSTEM_DESIGN.md) §1.1.
+
+📖 **[Documentation index →](docs/README.md)**
 
 ---
 
-## Project structure
+## Onboarding — new team member, start here
 
-```
-capstone_test1/
-├── config/                        # Schema + dictionaries — no data files here
-│   ├── schema.json                #   ~28 node classes / ~50 edge labels (source of truth)
-│   ├── company_annual_report.xlsx #   Master list of companies (ticker, name, sector, URLs)
-│   ├── kpi_type_aliases.json      #   KPI-name canonicalization aliases (step03c)
-│   ├── standards_registry.json    #   Static config: TT96/QĐ2171/QCVN09/SSC-IFC/GRI aliases
-│   ├── standard_crosswalk.json    #   TT96 → GRI equivalence rows (step05c)
-│   ├── gri_catalog.json           #   136 GRI indicator codes (built by gri/, committed)
-│   └── issuer_registry.json       #   Reporting-company alias/exclusion registry (step04 output)
-│
-├── data/                          # raw → interim → labeled → outputs (git-ignored, HF-synced)
-├── graph_output/                  # graphs/, validated/, resolved/, crosscheck/, quality/  (git-ignored, HF-synced)
-├── kpi_output/                    # Per-page KPIObservation JSON (git-ignored, HF-synced)
-├── data_version.json              # Pins the HF dataset revision this commit was built against (tracked in Git)
-│
-├── crawl_data/                    # Annual-report crawling & downloading
-│   ├── crawler.py                 #   FPT IR site crawler (nodriver / undetected Chrome)
-│   ├── crawler_news.py            #   Legacy/experimental FPT-specific news crawler (not the pipeline path)
-│   ├── download_reports.py        #   Download reports from the master xlsx (threaded, resumable)
-│   └── extract_archives.py        #   .rar/.7z extraction (shells out to UnRAR.exe / 7z.exe)
-│
-├── data_processing/               # ESG extraction & classification (packages, run with -m)
-│   ├── pdf_extractor.py           #   PyMuPDF text extraction (keeps page numbers, diacritics)
-│   ├── sentence_splitter.py       #   Vietnamese-aware sentence segmentation (underthesea)
-│   ├── prepare_sentences.py       #   Extract every sentence → JSONL (no ESG filter)
-│   ├── esg_classifier.py          #   Multi-label ViDeBERTa-v3-ESG classifier wrapper (CPU)
-│   ├── extract_esg.py             #   Labeled JSONL → trimmed ESG records for Graph-RAG
-│   └── preprocess_news.py         #   P1: normalize publish dates, drop boilerplate
-│
-├── esg_news_crawler/              # Multi-channel ESG news retrieval (conduct side)
-│   ├── run.py                     #   Orchestrator (per company: query → search → fetch → split)
-│   ├── companies.py               #   Load companies & build identity sets from xlsx
-│   ├── queries.py                 #   Build retrieval queries (identity + ESG/controversy terms)
-│   ├── fetch.py                   #   Disk-cached, rate-limited HTTP fetcher
-│   ├── extract.py                 #   trafilatura: clean HTML → title/text/date
-│   ├── normalize.py               #   Article → sentence-split JSONL (annual-report schema)
-│   ├── config.py                  #   Keyword groups, domains, defaults
-│   ├── sources/                   #   Search channels (Google News RSS, Bing, DuckDuckGo)
-│   └── README.md                  #   News-crawler design & usage
-│
-├── src/                           # esg_kg package: labeled JSONL → temporal knowledge graph
-│   ├── run.py                     #   Dispatcher — `python src/run.py <stage>` (--list shows all 15/15)
-│   ├── PIPELINE.md                #   Canonical run order + design history
-│   └── esg_kg/
-│       ├── pipeline.py            #   STAGES / BLOCKS table (single source of truth for run.py)
-│       ├── DESIGN.md              #   Refactor design doc + closeout record (§7)
-│       ├── core/                  #   Shared helpers: paths, schema, naming, dates, identity,
-│       │                          #     io_jsonl, llm (RateLimiter, OpenAI provider), graph_patch, datasync
-│       ├── kpi/                   #   extract (step01), canonicalize (step03c)
-│       ├── graph/                 #   extract_triples (step02), fix_triples (step03),
-│       │                          #     anchor_kpi (step03b), build_validated (BLOCK 03→03b→03c)
-│       ├── registry/              #   issuer (step04)
-│       ├── resolve/               #   entities (step05), provenance (step05b), indicators (step05c),
-│       │                          #     align_claims (step05d, optional LLM), build_resolved (BLOCK 05→05b→05c)
-│       ├── load/                  #   neo4j_load (step06), neo4j_sync (step08, advisory layer)
-│       ├── crosscheck/            #   claims_vs_conduct (step07 — the analytical core)
-│       └── report/                #   quality (step00, Q1–Q8), claim_ledger (step09)
-│
-├── kpi_build/                     # Run-once: builds kpi_definitions_construction.json (35 KPIs,
-│                                  #   Circular 96/2020, QĐ2171, QCVN09, SSC-IFC, verbatim + source blocks)
-├── gri/                           # Run-once: crawls 42 GRI Standards PDFs → config/gri_catalog.json
-│
-├── neo4j/                         # init.cypher (constraints) + crosscheck_queries.cypher (analyst queries)
-├── docker-compose.yml             # Neo4j on bolt://localhost:8687
-│
-├── api/                           # ESG Evidence View backend — pure stdlib http.server
-│   ├── main.py                    #   Serves REST endpoints + static frontend/ on :8000
-│   └── evidence_service.py        #   All data access — reads LIVE Neo4j (required, no mock)
-├── frontend/                      # 3-column TT96/GRI evidence view (index.html + css/ + js/) — frozen UI
-│
-├── test/                          # Plain-assert scripts (no pytest), offline/free — see CLAUDE.md
-├── notebooks/                     # Jupyter notebooks for manual validation (GPU classify, PDF extraction)
-├── docs/                          # Per-stage design docs — see "Documentation map" below
-│
-├── EmeraldMind/                   # External reference implementation — READ-ONLY, not part of this
-│                                  #   project, excluded from Git (see CLAUDE.md)
-├── requirements.txt
-└── README.md                      # (this file)
-```
-
-> **Layout principle:** code lives only in the package folders (`crawl_data/`,
-> `data_processing/`, `esg_news_crawler/`, `src/`, `kpi_build/`, `gri/`, plus the UI
-> pair `api/` + `frontend/`). Everything else is `config/` (schema + dictionaries),
-> `neo4j/` (constraints + analyst queries), or `data/` (raw → interim → labeled →
-> outputs). No data files inside code packages, with two named exceptions
-> (`kpi_build/`, `gri/`) that keep their source PDFs beside the code for traceability.
-
----
-
-## Pipeline architecture
-
-Data flows left → right; each stage's output is the next stage's input.
-
-### A. Ingestion → ESG sentences
-```
-crawl_data/download_reports.py    → data/raw/annual_report/
-data_processing.prepare_sentences → data/interim/sentences/*.jsonl (every sentence, no filter)
-   ├─ pdf_extractor.py      (PyMuPDF, page numbers + diacritics)
-   └─ sentence_splitter.py  (underthesea, VN-aware segmentation)
-ViDeBERTa-v3-ESG classifier       → data/labeled/       (multi-label E/S/G/Neutral per sentence)
-data_processing.extract_esg       → data/outputs/esg_extracted/   (Graph-RAG-ready records)
-```
-
-### B. News ingestion (parallel evidence channel — the "conduct" side)
-```
-esg_news_crawler.run  → data/outputs/news/<TICKER>.jsonl + coverage.csv
-   companies → queries → Google News RSS / Bing / DuckDuckGo → fetch → extract (trafilatura) → normalize
-ViDeBERTa-v3-ESG classifier        → data/labeled/news_labeled/
-data_processing.preprocess_news    → data/interim/news_preprocessed/  (date-normalize, drop boilerplate)
-```
-Reports are the **claim** side ("what they say"); news is the **conduct** side ("what they do").
-Both feed the same `esg_kg` graph-construction path and land in one temporal KG.
-
-> **Full-sector labeling is done — use the full-corpus files, not a per-company one.**
-> `data/labeled/classified/all_sentences_classified.jsonl` (197 companies) and
-> `data/labeled/news_labeled/all_news_sentences_classified.jsonl` (115 tickers) are the
-> current classifier output. `data/labeled/annual_labeled/` (AAA-only pilot) and the
-> `aaa_news_classified*`/`aaa_all_sentences*` files were superseded and removed from the
-> HF dataset 2026-08-02 — they duplicated AAA under a different filename convention. See
-> `CLAUDE.md` for the full story before assuming only AAA is labeled/extracted.
-
-### C. Labeled JSONL → temporal knowledge graph (`src/esg_kg`, all 15/15 stages migrated)
-
-Run via `python src/run.py <stage>` from the repo root (`--list` shows every stage):
-
-```
-quality          (step00) → graph_output/quality/          — offline Q1–Q8 diagnostics, run before/after any change
-extract          (step01) → kpi_output/                    — per-page KPIObservation extraction (Gemini/OpenAI)
-extract_triples  (step02) → graph_output/graphs/            — page text + KPIs → temporal triples/graph
-build_validated  BLOCK: fix_triples → anchor_kpi → canonicalize, writes all_validated_triples.json once
-                     fix_triples   (step03)  — repair invalid triples, canonicalize dates
-                     anchor_kpi    (step03b) — gazetteer-anchor KPIObservation → Facility (offline)
-                     canonicalize  (step03c) — assign kpi_id from the 35-indicator vocabulary
-issuer           (step04) → config/issuer_registry.json     — reporting-company alias registry (run-once)
-build_resolved   BLOCK: entities → provenance → indicators, writes resolved_graph.json once
-                     entities      (step05)  — collapse duplicate entity nodes (Stage A–D)
-                     provenance    (step05b) — stamp source_doc/source_page back onto nodes
-                     indicators    (step05c) — materialize the TT96/GRI indicator axis
-align_claims     (step05d, optional LLM) → patches resolved_graph.json — topic-align remaining claims
-neo4j_load       (step06) → Neo4j                            — load the resolved graph as a property graph
-claims_vs_conduct (step07) → graph_output/crosscheck/        — the analytical core: claim↔conduct adjudication
-neo4j_sync       (step08) → Neo4j advisory layer              — push dossiers onto claim nodes (no LLM)
-claim_ledger     (step09) → stdout + graph_output/crosscheck/*.md — per-company claim ledger (reads Neo4j only)
-```
-
-Full per-stage flags and design rationale: `src/PIPELINE.md`, `src/esg_kg/DESIGN.md`, `docs/SYSTEM_DESIGN.md`.
-
-### D. KPI vocabulary & GRI catalog (run-once provenance builders)
-```
-kpi_build/   → config/kpi_definitions_construction.json  (35 KPIs, Circular 96/2020 + QĐ2171 + QCVN09 + SSC-IFC, verbatim)
-gri/         → config/gri_catalog.json                    (136 GRI indicator codes, from 42 GRI Standards PDFs)
-```
-
-### E. ESG Evidence View UI (`api/` + `frontend/` — the demo surface)
-A pure-stdlib `http.server` (`api/main.py`) serving REST endpoints backed by
-**live Neo4j** (`api/evidence_service.py` — Neo4j is required, no mock data) plus the
-static `frontend/` at `http://localhost:8000`. Shows only claims linked to a
-`StandardIndicator` via `alignsWithIndicator`, so each card's E/S/G pillar comes from
-the graph, not a guess.
-
----
-
-## Onboarding (new team member — start here)
-
-Generated data (`data/`, `graph_output/`, `kpi_output/` — ~342 MB) is **not in Git**.
-It ships via a private Hugging Face dataset repo (`nammovuivui-capstone` org), so you do
-**not** re-run the expensive stages: LLM extraction costs money, ESG labeling needs a
-GPU, and the news crawl isn't reproducible. Four steps to a working setup:
+Generated data (`data/`, `graph_output/`, `kpi_output/`) is **not in Git**. It ships via a
+private Hugging Face dataset repo, so you do **not** re-run the expensive stages: LLM
+extraction costs money, ESG labeling needs a GPU, and the news crawl is not reproducible.
 
 ```bash
 # 1. Code + dependencies
@@ -187,115 +27,289 @@ git clone <this-repo-url> && cd capstone_test1
 pip install -r requirements.txt
 
 # 2. Secrets — never shared through Git or the dataset repo; use your OWN keys
-cp .env.example .env      # then fill in GEMINI_API_KEY (optionally OPENAI_API_KEY — see CLAUDE.md)
+cp .env.example .env          # then fill in GEMINI_API_KEY
 
-# 3. Data — lands the exact snapshot this commit was built against
-#    Ask the maintainer to invite you to the `nammovuivui-capstone` org first (private repo,
-#    HF returns 404 either way if you're not invited); a fine-grained HF token needs org scope.
-hf auth login             # or put HF_TOKEN in .env (a read token is enough)
+# 3. Data — lands the exact snapshot this commit was built against.
+#    Ask the maintainer to invite you to the `nammovuivui-capstone` org first: the repo is
+#    private and Hugging Face returns 404 (not 403) if you are not a member.
+hf auth login                  # or put HF_TOKEN in .env; a read token is enough
 python src/esg_kg/core/datasync.py pull
 
-# 4. Neo4j — rebuilt locally, NOT downloaded (a live DB volume can't be copied safely)
+# 4. Neo4j — rebuilt locally, NOT downloaded (a live DB volume cannot be copied safely)
 docker compose up -d
-python src/run.py neo4j_load --clear    # a few minutes, no LLM
+docker cp neo4j/init.cypher greenwashing-kg:/tmp/init.cypher      # one-time bootstrap
+docker exec greenwashing-kg cypher-shell -u neo4j -p nammovuivui -d system -f /tmp/init.cypher
+python src/run.py neo4j_load --clear
 ```
 
-Verify: `python src/run.py claim_ledger` should render the AAA claim ledger.
+Verify: `python src/run.py claim_ledger` renders the AAA claim ledger.
 
-**How data and code stay in sync.** `data_version.json` (tracked in Git) pins the
-dataset revision, so `git checkout <old-commit> && python src/esg_kg/core/datasync.py pull`
-restores the data that commit was built against. `python src/esg_kg/core/datasync.py status`
-shows pinned vs. local state and warns on drift.
+**How data and code stay in sync.** `data_version.json` is tracked in Git and pins the
+dataset revision, so `git checkout <old-commit>` followed by a `pull` restores the data that
+commit was built against. `datasync.py status` shows pinned versus local state.
 
-**Publishing a new snapshot** (needs `write` in the org):
+**Publishing a snapshot** (needs org `write`):
 
 ```bash
-git pull                                                # surface a pin conflict here, not on the Hub
-python src/esg_kg/core/datasync.py push --dry-run       # inspect what would go up
-python src/esg_kg/core/datasync.py push                 # needs an HF *Write* token scoped to the org
+git pull                                                # surface a pin conflict in Git, not on the Hub
+python src/esg_kg/core/datasync.py push --dry-run
+python src/esg_kg/core/datasync.py push
 git add data_version.json && git commit -m "data: refresh snapshot" && git push
 ```
 
-A push whose pin isn't committed is the failure mode to avoid: the Hub has your new
-data, `data_version.json` still points at the old revision, and the team keeps pulling
-stale data with no error. Announce the push so nobody rebuilds on a snapshot you replaced.
+> A push whose pin is not committed is **invisible**: the Hub has the new data,
+> `data_version.json` still points at the old revision, and the team keeps pulling stale
+> data with no error. Full details in [`docs/DATA_SYNC.md`](docs/DATA_SYNC.md).
 
 ---
 
 ## Quick start
 
 ```bash
-pip install -r requirements.txt
-
 # A. Annual report → labeled ESG sentences
 python -m data_processing.prepare_sentences \
     --input  "data/raw/annual_reports_sample/AAA_Baocaothuongnien_2025.pdf" \
     --output "data/interim/sentences/aaa_sentences.jsonl"
 python -m data_processing.extract_esg
 
-# B. News evidence for one company (conduct side)
+# B. News evidence for one company (the conduct side)
 python -m esg_news_crawler.run --ticker AAA --limit 1
 python -m data_processing.preprocess_news
 
 # C. Labeled JSONL → temporal knowledge graph
-python src/run.py --list                                 # every stage + status
-python src/run.py quality --label baseline                # offline Q1–Q8 snapshot
+python src/run.py --list                                  # every stage + status
+python src/run.py quality --label baseline                 # offline Q1–Q8 snapshot
 python src/run.py extract -i <labeled.jsonl>               # → kpi_output/
-python src/run.py extract_triples -i <report_labeled.jsonl>
-python src/run.py build_validated --dry-run                # then without --dry-run
-python src/run.py issuer
-python src/run.py build_resolved --dry-run                 # then without --dry-run
+python src/run.py extract_triples -i <report_labeled.jsonl>            # claim side
+python src/run.py extract_triples -i <news_preprocessed.jsonl> --source news
+python src/run.py build_validated --dry-run                 # then without --dry-run
+python src/run.py issuer                                    # run-once; hand-confirm needs_review
+python src/run.py build_resolved --dry-run                  # then without --dry-run
 docker compose up -d
 python src/run.py neo4j_load --clear
-python src/run.py claims_vs_conduct                        # → graph_output/crosscheck/ (LLM, mandatory)
+python src/run.py claims_vs_conduct                         # LLM adjudication (mandatory)
 python src/run.py neo4j_sync
 python src/run.py claim_ledger
 
 # ESG Evidence View UI (reads live Neo4j)
-python api/main.py                                         # http://localhost:8000
+python api/main.py                                          # http://localhost:8000
 ```
 
-See `CLAUDE.md`'s "Common commands" for the full flag reference (`--provider`,
-`--dry-run`, `--no-llm`, `--label`, etc.) and `src/PIPELINE.md` for stage-by-stage detail.
+Run `quality --label after-<change>` when you are done and compare the two reports. The
+stage is offline and free.
 
-The `extract_esg` output schema (one JSON object per line in
-`data/outputs/esg_extracted/esg_all_records.jsonl`):
+---
 
-```json
-{"source_file": "...", "source_pdf": "...", "page": 1, "sentence_index": 1,
- "text": "...", "labels": ["Governance"], "scores": {"Neutral": 0.08, "...": "..."}}
+## Pipeline at a glance
+
+```
+A. Reports ──▶ sentences ──▶ ESG labels ──▶ ESG records ─┐
+                                                          ├──▶ C. esg_kg ──▶ Neo4j ──▶ ledger + UI
+B. News    ──▶ articles  ──▶ ESG labels ──▶ preprocessed ─┘
 ```
 
-Sentence-level traceability (`source_pdf`, `page`, `sentence_index`) is preserved
-through every stage, so every graph node can be traced back to its source.
+Reports are the **claim** side ("what they say"); news is the **conduct** side ("what they
+do"). Both are stamped `source_type` and land in one temporal graph, which is what makes
+the comparison structural rather than circular.
+
+### The 16 stages
+
+| Stage | Id | Cost | Output |
+|---|---|---|---|
+| `quality` | 00 | free | Q1–Q8 + R1/R5/R7 report |
+| `extract` | 01 | Gemini | `kpi_output/` |
+| `extract_triples` | 02 | Gemini/DeepSeek | `graph_output/graphs/` |
+| `fix_triples` · `anchor_kpi` · `canonicalize` | 03 / 03b / 03c | Gemini (phase 2 only) | `all_validated_triples.json` |
+| **`build_validated`** | block | | 03 → 03b → 03c, written **once** |
+| `issuer` | 04 | free | `config/issuer_registry.json` |
+| `entities` · `provenance` · `indicators` | 05 / 05b / 05c | optional | `resolved_graph.json` |
+| **`build_resolved`** | block | | 05 → 05b → 05c, written **once** |
+| `align_claims` | 05d | Gemini/DeepSeek | optional indicator alignment |
+| `export_kgc` | 11 | free | separate export view |
+| `neo4j_load` | 06 | free | Neo4j base graph |
+| `claims_vs_conduct` | 07 | **mandatory LLM** | advisory dossiers |
+| `neo4j_sync` | 08 | free | Neo4j advisory layer |
+| `claim_ledger` | 09 | free | per-company ledger |
+
+**Always run the blocks.** `build_validated` and `build_resolved` exist because their
+member stages each read *and* write the same artifact — running the first alone silently
+destroys what the later ones added, including results that were paid for.
+
+---
+
+## Project structure
+
+```
+capstone_test1/
+├── config/                         # Schema + dictionaries — no data files here
+│   ├── schema.json                 #   28 node classes / 48 edge labels (source of truth)
+│   ├── company_annual_report.xlsx  #   Master company list (ticker, name, sector, URLs)
+│   ├── issuer_registry.json        #   Issuer alias/exclusion registry (stage 04, hand-confirmed)
+│   ├── standards_registry.json     #   Static config: TT96/QĐ2171/QCVN09/SSC-IFC/GRI name variants
+│   ├── kpi_type_aliases.json       #   KPI canonicalization aliases + unit rules (stage 03c)
+│   ├── standard_crosswalk.json     #   TT96 → GRI equivalence rows (stage 05c)
+│   ├── gri_catalog.json            #   136 GRI codes (built by gri/, committed)
+│   ├── degenerate_relations.json   #   Relations excluded from R1_trainable
+│   └── subsidiaries/               #   Extracted ownership tables, 108 tickers — NOT yet wired in
+│
+├── kpi_definitions_construction.json   # The 35-indicator vocabulary (built by kpi_build/)
+├── data_version.json               # Pins the HF dataset revision (tracked in Git)
+│
+├── data/                           # raw → interim → labeled → outputs   (git-ignored, HF-synced)
+├── graph_output/                   # graphs, validated, resolved, crosscheck, quality, export_kgc
+├── kpi_output/                     # per-page KPIObservation JSON
+│
+├── crawl_data/                     # Report crawling & downloading
+│   ├── download_reports.py         #   Threaded, resumable, from the master xlsx
+│   ├── extract_archives.py         #   .rar/.7z (shells out to UnRAR.exe / 7z.exe)
+│   ├── crawler.py                  #   FPT IR site crawler (nodriver)
+│   └── crawler_news.py             #   Legacy FPT-specific news crawler (not the pipeline path)
+│
+├── data_processing/                # run with -m
+│   ├── pdf_extractor.py            #   PyMuPDF — keeps page numbers and diacritics
+│   ├── sentence_splitter.py        #   underthesea, VN-aware
+│   ├── prepare_sentences.py        #   Every sentence → JSONL (no ESG filter)
+│   ├── esg_classifier.py           #   ViDeBERTa-v3-ESG wrapper (CPU)
+│   ├── extract_esg.py              #   Labeled JSONL → trimmed ESG records
+│   └── preprocess_news.py          #   Date normalization + boilerplate drop
+│
+├── esg_news_crawler/               # Multi-channel ESG news retrieval (conduct side)
+│   ├── run.py  companies.py  queries.py  fetch.py  extract.py  normalize.py  config.py
+│   └── sources/                    #   Google News RSS · Bing · DuckDuckGo
+│
+├── src/                            # The esg_kg package tree
+│   ├── run.py                      #   Dispatcher — `python src/run.py <stage>`
+│   ├── PIPELINE.md                 #   Canonical run order
+│   └── esg_kg/
+│       ├── pipeline.py             #   STAGES / BLOCKS table (single source of truth)
+│       ├── DESIGN.md               #   Refactor record
+│       ├── core/                   #   paths · schema · naming · dates · identity · io_jsonl
+│       │                           #     llm · llm_cache · graph_patch · datasync · console
+│       ├── kpi/                    #   extract (01) · canonicalize (03c)
+│       ├── graph/                  #   extract_triples (02) · fix_triples (03) · anchor_kpi (03b)
+│       │                           #     build_validated (block)
+│       ├── registry/               #   issuer (04)
+│       ├── resolve/                #   entities (05) · provenance (05b) · indicators (05c)
+│       │                           #     align_claims (05d) · build_resolved (block)
+│       ├── load/                   #   neo4j_load (06) · neo4j_sync (08)
+│       ├── crosscheck/             #   claims_vs_conduct (07)
+│       ├── export/                 #   export_kgc (11)
+│       ├── metric/                 #   hub · reasoning_readiness (R1/R5/R7)
+│       └── report/                 #   quality (00) · claim_ledger (09)
+│
+├── kpi_build/                      # Run-once: builds kpi_definitions_construction.json
+├── gri/                            # Run-once: 42 GRI PDFs → config/gri_catalog.json
+│
+├── neo4j/                          # init.cypher + crosscheck_queries.cypher
+├── docker-compose.yml              # Neo4j 5 Enterprise — bolt :8687, browser :8474
+│
+├── api/                            # ESG Evidence View backend — pure stdlib http.server
+│   ├── main.py                     #   REST endpoints + static frontend on :8000
+│   └── evidence_service.py         #   ALL data access — live Neo4j (required, no mock)
+├── frontend/                       # 3-column TT96/GRI view (index.html + css/ + js/) — frozen
+│
+├── test/                           # 38 plain-assert scripts, offline and free
+├── notebooks/                      # Jupyter notebooks for manual validation
+├── docs/                           # See docs/README.md
+└── EmeraldMind/                    # Read-only external reference — NOT part of this project
+```
+
+> **Layout principle:** code lives only in the package folders (`crawl_data/`,
+> `data_processing/`, `esg_news_crawler/`, `src/`, `kpi_build/`, `gri/`, plus the UI pair
+> `api/` + `frontend/`). Everything else is `config/`, `neo4j/`, or `data/`. No data files
+> inside code packages, with two named exceptions — `kpi_build/` and `gri/` — which are
+> run-once provenance builders that keep their sources beside the code so a claim can be
+> traced back to a page.
+
+---
+
+## Configuration
+
+Copy `.env.example` → `.env` at the repo root. Every stage loads it regardless of the
+working directory; it is git-ignored and must never be committed.
+
+```dotenv
+GEMINI_API_KEY=...              # required
+GEMINI_MODEL=gemini-2.5-flash-lite     # optional — one constant drives every LLM stage
+DEEPSEEK_API_KEY=...            # optional, for --provider deepseek
+OPENAI_API_KEY=...              # optional, for --provider-order openai
+LLM_PROVIDER=gemini             # default provider for stages that accept one
+HF_TOKEN=...                    # or use `hf auth login`
+NEO4J_URI=bolt://localhost:8687
+```
+
+Gemini is the working default. DeepSeek and OpenAI are **swappable alternatives you opt
+into**, not an automatic fallback cascade. `extract`, `fix_triples` and `entities` are
+Gemini-only, because they use Gemini-specific context caching. See
+[`docs/LLM_PROVIDERS_AND_CACHING.md`](docs/LLM_PROVIDERS_AND_CACHING.md).
+
+### Deliberately unlisted dependencies
+
+Some packages are imported lazily and left out of `requirements.txt` so a bare clone still
+runs:
+
+| Package | Used by | Without it |
+|---|---|---|
+| `torch` | `data_processing/esg_classifier.py` | Classification runs on GPU via the Kaggle notebook instead |
+| `huggingface_hub` | `core/datasync.py` | The sync tool must work before pipeline deps are installed |
+| `rapidfuzz` | `canonicalize` fuzzy tier | The tier is disabled with a warning; everything else runs |
+
+`.rar`/`.7z` extraction shells out to external **UnRAR.exe / 7z.exe** — install WinRAR and
+7-Zip separately (Windows / PowerShell host).
+
+---
+
+## Useful flags
+
+```
+--dry-run          offline preview on most stages (NOT free on claims_vs_conduct)
+--doc / --limit-docs / --all       scope a run
+--all-pages        do not restrict to ESG-labelled pages
+quality            --label <name>, --skip-slow, --max-hops, --issuer-registry
+extract_triples    --source report|news, --provider gemini|deepseek, --no-context-cache
+fix_triples        --renormalize (date pass only, no LLM)
+canonicalize       --aliases, --fuzzy-threshold, --no-goals
+entities           --no-llm (Stages A+B.1 only), --similarity-threshold, --max-llm-pairs
+indicators         --crosswalk, --no-gri, --no-align, --trust-draft-crosswalk
+align_claims       --max-llm-pairs, --provider gemini|deepseek
+export_kgc         --max-bucket-degree (default 500)
+neo4j_load         --clear, --no-versions, --database, --strict
+claims_vs_conduct  --max-llm-pairs, --provider-order, --top-k, --embed, --to-neo4j
+neo4j_sync         --clear-advisory
+claim_ledger       --review-queue, --assessment, --claim-id, --markdown
+```
 
 ---
 
 ## Testing
 
-No pytest harness — tests are plain `assert` scripts under `test/`, run offline and
-free (no LLM/DB/network), e.g.:
+No pytest harness and no linter — tests are plain `assert` scripts under `test/`, run
+offline and free (no LLM, no database, no network):
 
 ```bash
-python test/test_temporal_invariants.py
-python test/test_schema_contract.py
-python test/test_esg_kg_equivalence.py
+python test/test_schema_contract.py        # after ANY schema edit
+python test/test_temporal_invariants.py    # after touching 03/03b/03c/05/05b/05c/08
+python test/test_esg_kg_equivalence.py     # after touching a core/ helper
 ```
 
-New code follows test-first (red → green → refactor); see CLAUDE.md's "Working rule:
-Test-Driven Development" and the full `test/` file list there for what each covers.
+New code is **test-first**: red → green → refactor, with no production code landing without
+a failing test that demanded it. Full suite map in [`docs/TESTING.md`](docs/TESTING.md).
+
+Paid integration tests exist but are gated behind `RUN_LLM_INTEGRATION_TESTS=1` /
+`RUN_LLM_SYSTEM_TEST=1`. Never verify a change by re-running a paid stage.
 
 ---
 
-## Documentation map
+## Documentation
 
-Start with `docs/SYSTEM_DESIGN.md` for the end-to-end design (claims vs. conduct, the
-temporal KG, the advisory-not-a-score framing). Per-stage docs: `SCHEMA_EXPLAINED.md`,
-`TEMPORAL_KG_DESIGN.md`, `KPI_EXTRACTION_FROM_JSONL.md`, `TRIPLET_EXTRACTION_FROM_JSONL.md`,
-`TRIPLET_VALIDATION.md`, `PROVENANCE_PATCH.md`, `ENTITY_RESOLUTION.md`,
-`GRAPH_LOAD_NEO4J.md`, `CLAIM_CONDUCT_CROSSCHECK.md`, `CLAIM_LEDGER.md`,
-`ESG_EVIDENCE_VIEW.md`, `REAL_DATA_INTEGRATION_GUIDE.md`, `STANDARD_INDICATOR_AXIS.md`,
-`GRI_SCHEMA_DOCUMENTATION.md`, `KPI_DEFINITIONS_CONSTRUCTION_BUILD.md`,
-`PIPELINE_DIAGRAMS.md`, `PIPELINE_UNIFIED.md`, `PROJECT_OVERVIEW.md`. Full detail and
-the current refactor/migration history lives in `CLAUDE.md` — read that first when
-working on pipeline internals.
+Start at [`docs/README.md`](docs/README.md). The three most-read documents:
+
+- [`docs/SYSTEM_DESIGN.md`](docs/SYSTEM_DESIGN.md) — the end-to-end design and the
+  no-ground-truth constraint behind every decision
+- [`docs/SCHEMA_EXPLAINED.md`](docs/SCHEMA_EXPLAINED.md) +
+  [`docs/TEMPORAL_KG_DESIGN.md`](docs/TEMPORAL_KG_DESIGN.md) — read before touching the
+  schema
+- [`docs/ROADMAP.md`](docs/ROADMAP.md) — what is not built, and what was rejected on purpose
+
+`CLAUDE.md` holds the working rules for this codebase; `src/PIPELINE.md` and
+`src/esg_kg/DESIGN.md` hold the run order and the refactor record.

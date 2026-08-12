@@ -1,737 +1,426 @@
-# Pipeline Diagrams — Greenwashing Evidence System
+# Pipeline diagrams
 
-> This document consolidates all architectural and workflow diagrams of the
-> Graph-RAG pipeline for detecting greenwashing evidence in Vietnamese listed
-> companies. Each diagram corresponds to a distinct subsystem and is intended
-> for direct inclusion in a scientific report.
+Visual companion to [SYSTEM_DESIGN.md](SYSTEM_DESIGN.md). Every diagram here is drawn
+from the code as it exists; if a diagram and a stage disagree, the stage is right and this
+file is stale — fix it.
+
+Diagrams are Mermaid, rendered by GitHub and by most Markdown viewers. Editable
+draw.io / PlantUML sources for the presentation versions live in `diagram/`.
+
+**Contents**
+
+1. [System context](#1-system-context)
+2. [Report ingestion (channel A)](#2-report-ingestion-channel-a)
+3. [News ingestion (channel B)](#3-news-ingestion-channel-b)
+4. [Graph construction — the 16 stages](#4-graph-construction--the-16-stages)
+5. [Why blocks exist](#5-why-blocks-exist)
+6. [Entity resolution stages A–D](#6-entity-resolution-stages-ad)
+7. [The indicator axis](#7-the-indicator-axis)
+8. [Claim ↔ conduct cross-check](#8-claim--conduct-cross-check)
+9. [Schema tiers T1 / T2 / T3](#9-schema-tiers-t1--t2--t3)
+10. [Artifact and data layout](#10-artifact-and-data-layout)
+11. [End-to-end sequence](#11-end-to-end-sequence)
 
 ---
 
-## Figure 1. Overall System Architecture
-
-The system is organized into four principal modules operating on two parallel
-data channels (Report and News). Both channels share a single ESG classifier
-(ViDeBERTa-v3-ESG). The outputs converge into a single temporal knowledge
-graph stored in Neo4j.
+## 1. System context
 
 ```mermaid
----
-title: Figure 1. Overall System Architecture
----
 flowchart LR
-    subgraph Input["Input Sources"]
-        direction TB
-        AR["Annual Reports PDF"]
-        NW["Third-party News"]
-        LW["Vietnamese ESG Regulations"]
+    subgraph sources[Sources]
+        R[Annual & sustainability<br/>report PDFs]
+        N[Third-party news]
+        V[Reference vocabularies<br/>TT96 · QĐ2171 · QCVN09<br/>SSC-IFC · GRI]
     end
 
-    subgraph Module_A["Module A: Report Processing"]
-        direction TB
-        A1["Download Reports"]
-        A2["Sentence Extraction"]
-        A3["ESG Record Extraction"]
-        A1 --> A2
-        A2 ~~~ A3
+    subgraph build[Graph construction · esg_kg]
+        KG[(Temporal ESG<br/>knowledge graph)]
     end
 
-    subgraph Module_B["Module B: News Processing"]
-        direction TB
-        B1["News Crawling"]
-        B2["News Preprocessing"]
-        B1 ~~~ B2
+    subgraph serve[Presentation]
+        DB[(Neo4j<br/>base + advisory layer)]
+        L[Claim ledger<br/>Markdown / stdout]
+        UI[ESG Evidence View<br/>localhost:8000]
     end
 
-    CLF["ViDeBERTa-v3-ESG Classifier"]
+    R -->|claims: what they say| KG
+    N -->|conduct: what they do| KG
+    V -->|indicator axis| KG
+    KG --> DB --> L
+    DB --> UI
 
-    subgraph Module_D["Module D: KPI Builder"]
-        direction TB
-        D1["Regulation Extraction"]
-        D2["KPI Definition JSON"]
-        D1 --> D2
-    end
-
-    subgraph Module_C["Module C: Temporal KG Construction"]
-        direction TB
-        C1["Step 01: KPI Extraction"]
-        C2["Step 02: Triplet Extraction"]
-        C3["Step 03: Triplet Validation"]
-        C4["Step 04: Issuer Registry"]
-        C5["Step 05: Entity Resolution"]
-        C6["Step 06: Neo4j Load"]
-        C7["Step 07: Cross-check"]
-        C8["Step 08: Advisory Sync"]
-        C9["Step 09: Claim Ledger"]
-        C10["Step 10: Evaluation"]
-        C1 --> C2 --> C3 --> C4 --> C5 --> C6
-        C6 --> C7 --> C8 --> C9 --> C10
-    end
-
-    subgraph Output["Output"]
-        direction TB
-        KG["Temporal ESG Knowledge Graph"]
-        DS["Evidence Dossier per Claim"]
-        CL["Claim Ledger Report"]
-    end
-
-    AR -->|"PDF files"| A1
-    NW -->|"News URLs"| B1
-    LW -->|"Regulatory PDFs"| D1
-
-    A2 -->|"Sentences JSONL"| CLF
-    B1 -->|"News JSONL"| CLF
-    CLF -->|"Labeled report"| A3
-    CLF -->|"Labeled news"| B2
-
-    A3 -->|"Labeled report JSONL"| C1
-    B2 -->|"Preprocessed news JSONL"| C2
-    D2 -->|"35 KPI definitions"| C1
-
-    C6 -->|"Property graph"| KG
-    C7 -->|"Claim assessments"| DS
-    C9 -->|"Markdown report"| CL
+    classDef claim fill:#e8f0fe,stroke:#4285f4
+    classDef conduct fill:#fce8e6,stroke:#ea4335
+    class R claim
+    class N conduct
 ```
 
+The two channels stay distinguishable inside the graph via `source_type`, which is what
+makes the cross-check meaningful rather than circular.
+
 ---
 
-## Figure 2. Data Collection Pipeline
-
-Two ingestion channels feed the pipeline. The Report channel provides the
-claim side (what the company says), and the News channel provides the conduct
-side (what independent sources observe). Both are normalized to a common
-sentence-level schema before entering Module C.
+## 2. Report ingestion (channel A)
 
 ```mermaid
----
-title: Figure 2. Data Collection Pipeline
----
-flowchart LR
-    subgraph Report_Channel["Channel R: Reports"]
-        direction TB
-        R1["Company Report List"]
-        R2["Download Script"]
-        R3["Raw PDF Directory"]
-        R1 --> R2 --> R3
-    end
-
-    subgraph News_Channel["Channel N: News"]
-        direction TB
-        N1["Ticker list"]
-        N2["News Crawler"]
-        N3["Google News RSS"]
-        N4["Bing News"]
-        N5["DuckDuckGo"]
-        N6["Content Extractor"]
-        N7["Raw News Data"]
-        N1 --> N2
-        N2 --> N3
-        N2 --> N4
-        N2 --> N5
-        N3 --> N6
-        N4 --> N6
-        N5 --> N6
-        N6 --> N7
-    end
-
-    subgraph KPI_Channel["Channel K: Regulations"]
-        direction TB
-        K1["TT 96/2020"]
-        K2["QD 2171"]
-        K3["QCVN 09"]
-        K4["SSC-IFC Guide"]
-        K5["KPI Build Pipeline"]
-        K6["KPI Definitions"]
-        K1 --> K5
-        K2 --> K5
-        K3 --> K5
-        K4 --> K5
-        K5 --> K6
-    end
-```
-
----
-
-## Figure 3. ESG Information Extraction Pipeline
-
-Sentences from reports are extracted via PyMuPDF, split using underthesea
-(Vietnamese-aware), classified by ViDeBERTa-v3-ESG, then filtered to produce
-Graph-RAG-ready JSONL records with sentence-level provenance. Both report and
-news paths share the same ViDeBERTa-v3-ESG classifier.
-
-```mermaid
----
-title: Figure 3. ESG Information Extraction Pipeline
----
-flowchart LR
-    subgraph PDF_Extract["PDF Processing"]
-        direction TB
-        P1["PDF Document"]
-        P2["PDF Extractor\n(PyMuPDF)"]
-        S1["Sentence Splitter\n(underthesea)"]
-        S2["Sentence Records\n(with provenance)"]
-        P1 --> P2 --> S1 --> S2
-    end
-
-    subgraph Classifier["Shared ESG Classifier"]
-        direction TB
-        CLF["ViDeBERTa-v3-ESG\nE / S / G / Neutral"]
-    end
-
-    subgraph Report_Out["Report Output"]
-        direction TB
-        F1["ESG Record Extraction"]
-        F2["Graph-RAG-ready records\n(source_type = report)"]
-        F1 --> F2
-    end
-
-    subgraph News_In["News Input"]
-        direction TB
-        N1["Raw News Data"]
-    end
-
-    subgraph News_Out["News Output"]
-        direction TB
-        N3["News Preprocessor\n(date normalization)"]
-        N4["Preprocessed records\n(source_type = news)"]
-        N3 --> N4
-    end
-
-    S2 -->|"Report sentences"| CLF
-    N1 -->|"News articles"| CLF
-    CLF -->|"Labeled report"| F1
-    CLF -->|"Labeled news"| N3
-```
-
----
-
-## Figure 4. KPI Construction Pipeline
-
-The KPI vocabulary is built once from official Vietnamese ESG regulations.
-Six scripts download, parse, and enrich regulatory text into a structured
-JSON file of 35 KPI definitions, each linked to its legal source.
-
-```mermaid
----
-title: Figure 4. KPI Construction Pipeline
----
-flowchart LR
-    subgraph Sources["Regulatory Sources"]
-        direction TB
-        SRC1["Circular 96/2020/TT-BTC"]
-        SRC2["Decision 2171/QD-BTC"]
-        SRC3["QCVN 09"]
-        SRC4["SSC-IFC Handbook"]
-    end
-
-    subgraph Build_Pipeline["KPI Build Pipeline"]
-        direction TB
-        B1["Download\nGeneral Sources"]
-        B2["Extract\nGeneral ESG"]
-        B3["Download\nSector Sources"]
-        B4["Extract\nSector KPIs"]
-        B5["Build\nKPI Definitions"]
-        B6["Enrich\nKPI Definitions"]
-        B1 --> B2 --> B3 --> B4 --> B5 --> B6
-    end
-
-    subgraph KPI_Output["Output"]
-        direction TB
-        OUT["KPI Definitions\n(35 KPIs with provenance)"]
-    end
-
-    SRC1 -->|"General ESG"| B1
-    SRC2 -->|"General ESG"| B1
-    SRC3 -->|"Sector-specific"| B3
-    SRC4 -->|"Sector-specific"| B3
-    B6 -->|"Merged JSON"| OUT
-```
-
----
-
-## Figure 5. Temporal Knowledge Graph Construction
-
-Ten sequential scripts transform labeled JSONL into a temporal property graph
-in Neo4j. Each step consumes the predecessor's output. Steps 01-06 build the
-graph; steps 07-08 create the advisory layer; step 09 renders the ledger;
-step 10 evaluates.
-
-```mermaid
----
-title: Figure 5. Temporal Knowledge Graph Construction
----
-flowchart LR
-    subgraph Extraction["Information Extraction"]
-        direction TB
-        S01["Step 01: Extract KPI\nGemini 2.5 Flash"]
-        S02["Step 02: Extract Triplets\nGemini 2.5 Flash"]
-        S01 --> S02
-    end
-
-    subgraph Validation["Validation and Resolution"]
-        direction TB
-        S03["Step 03: Fix Invalid Triplets\nauto-swap + LLM repair"]
-        S04["Step 04: Build Issuer Registry\ncompany name variants"]
-        S05["Step 05: Resolve Entities\n4 stages: A B C D"]
-        S03 --> S04 --> S05
-    end
-
-    subgraph Loading["Graph Loading"]
-        direction TB
-        S06["Step 06: Load to Neo4j\nMERGE on _edge_key"]
-    end
-
-    subgraph Analysis["Cross-check and Reporting"]
-        direction TB
-        S07["Step 07: Cross-check\ncandidate retrieval + LLM"]
-        S08["Step 08: Advisory Sync\nMERGE to Neo4j"]
-        S09["Step 09: Claim Ledger\nsignal-first rendering"]
-        S10["Step 10: Evaluate\ncoverage + precision"]
-        S07 --> S08 --> S09 --> S10
-    end
-
-    S02 -->|"Raw triplets"| S03
-    S05 -->|"Resolved graph"| S06
-    S06 -->|"Neo4j loaded"| S07
-```
-
----
-
-## Figure 6. Entity Resolution Workflow
-
-Entity resolution (Step 05) proceeds in four stages, combining deterministic
-rules, Vietnamese-aware text normalization, embedding-based similarity, and
-budgeted LLM adjudication.
-
-```mermaid
----
-title: Figure 6. Entity Resolution Workflow
----
-flowchart LR
-    subgraph Input["Input"]
-        direction TB
-        IN["Validated Triples"]
-        REG["Issuer Registry"]
-    end
-
-    subgraph Stage_A["Stage A: Deterministic Merge"]
-        direction TB
-        A1["Compute identity_keys"]
-        A2["Exact-match merge"]
-        A3["Freeze issuer anchor"]
-        A1 --> A2 --> A3
-    end
-
-    subgraph Stage_B["Stage B: VN-aware Blocking"]
-        direction TB
-        B1["Normalize Vietnamese text"]
-        B2["Compute signature"]
-        B3["Generate candidate pairs"]
-        B4["Embed via gemini-embedding-001"]
-        B5["Rank by cosine similarity"]
-        B1 --> B2 --> B3 --> B4 --> B5
-    end
-
-    subgraph Stage_C["Stage C: LLM Adjudication"]
-        direction TB
-        C1["Select ambiguous pairs\n--max-llm-pairs budget"]
-        C2["Gemini 2.5 Flash\nmerge / keep-separate"]
-        C1 --> C2
-    end
-
-    subgraph Stage_D["Stage D: Consolidation"]
-        direction TB
-        D1["Apply merge decisions"]
-        D2["Rebuild edge references"]
-        D1 --> D2
-    end
-
-    subgraph ER_Output["Output"]
-        direction TB
-        OUT["Resolved Graph Data"]
-    end
-
-    IN -->|"Triples"| A1
-    REG -->|"Anchor names"| A3
-    A3 -->|"Merged entities"| B1
-    B5 -->|"Candidate pairs"| C1
-    C2 -->|"Decisions"| D1
-    D2 -->|"Final graph"| OUT
-```
-
----
-
-## Figure 7. Claim-Conduct Cross-check Workflow
-
-The cross-check (Step 07) is the analytical core. For each SustainabilityClaim,
-it retrieves conduct-side candidates, applies LLM adjudication, writes linking
-edges, and produces an evidence dossier with advisory assessment.
-
-```mermaid
----
-title: Figure 7. Claim-Conduct Cross-check Workflow
----
-flowchart LR
-    subgraph Retrieval["7a: Candidate Retrieval"]
-        direction TB
-        R1["Select SustainabilityClaim"]
-        R2["Same-issuer constraint"]
-        R3["Topic overlap\nESG category + keywords"]
-        R4["Temporal window\nconduct date >= Y-1"]
-        R5["Embedding rank\ncosine top-k"]
-        R1 --> R2 --> R3 --> R4 --> R5
-    end
-
-    subgraph Adjudication["7b: LLM Adjudication"]
-        direction TB
-        A1["Gemini 2.5 Flash\ngpt-4o-mini fallback"]
-        A2["Verdict:\nsupports / contradicts / irrelevant"]
-        A3["Confidence + rationale"]
-        A1 --> A2 --> A3
-    end
-
-    subgraph Guard["7c: Self-verification Guard"]
-        direction TB
-        G1["Check source_domain"]
-        G2{"Company-owned?"}
-        G3["Drop or flag\nindependent=false"]
-        G4["Pass through"]
-        G1 --> G2
-        G2 -->|"yes"| G3
-        G2 -->|"no"| G4
-    end
-
-    subgraph Edges["7d: Edge Writing + Signals"]
-        direction TB
-        E1["verifiedBy edge"]
-        E2["contradictedBy edge"]
-        E3["contradictedByMedia edge"]
-        SG1["Structural flag"]
-        SG2["KPI gap flag"]
-        E1 --> SG1
-        E2 --> SG1
-        E3 --> SG1
-        SG1 --> SG2
-    end
-
-    subgraph Dossier["7e: Evidence Dossier"]
-        direction TB
-        D1["Per-claim assessment"]
-        D2["appears_supported /\nappears_contradicted /\nunverified"]
-        D3["advisory = true\n+ caveats"]
-        D1 --> D2 --> D3
-    end
-
-    R5 -->|"Top-k candidates"| A1
-    A3 -->|"supports"| G1
-    G4 -->|"verified"| E1
-    A3 -->|"contradicts"| E2
-    A3 -->|"media"| E3
-    SG2 -->|"Signals"| D1
-```
-
----
-
-## Figure 8. Knowledge Graph Schema — Node Classes and Edge Labels
-
-The temporal ESG knowledge graph uses 28 node classes and 50+ directed edge
-labels. Every node carries temporal properties (valid_from, valid_to,
-is_current) and every edge carries temporal_metadata (valid_from, valid_to,
-recorded_at). Nodes are grouped by domain role.
-
-The **Standard Indicator Axis** (step05c/05d) materializes the TT96/GRI
-indicator vocabulary as first-class graph structure. StandardIndicator nodes
-serve as the JOIN POINT between a company's *claims* and its *conduct* KPIs.
-Vietnamese regulations (TT96) are linked to international standards (GRI) via
-`equivalentTo` edges, enabling cross-framework analysis.
-
-```mermaid
----
-title: Figure 8. Knowledge Graph Schema
----
 flowchart TD
-    classDef core fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000
-    classDef obs fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#000
-    classDef claim fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000
-    classDef conduct fill:#ffebee,stroke:#c62828,stroke-width:2px,color:#000
-    classDef comp fill:#f3e5f5,stroke:#6a1b9a,stroke-width:2px,color:#000
-    classDef goal fill:#e0f7fa,stroke:#006064,stroke-width:2px,color:#000
-    classDef indicator fill:#fce4ec,stroke:#880e4f,stroke-width:2px,color:#000
+    X[config/company_annual_report.xlsx] --> D[crawl_data/download_reports.py<br/>threaded · resumable]
+    D --> RAW[data/raw/annual_report/]
+    RAW --> A[extract_archives.py<br/>UnRAR.exe · 7z.exe]
+    A --> RAW
+    RAW --> P[data_processing.prepare_sentences]
 
-    subgraph Core_Entities["Core Entities"]
-        Organization:::core
-        Person:::core
-        Facility:::core
-        Product:::core
-        Material:::core
-        Location:::core
-        Country:::core
-        Community:::core
-        Authority:::core
+    subgraph P2[inside prepare_sentences]
+        PE[pdf_extractor.py<br/>PyMuPDF · keeps page numbers<br/>and Vietnamese diacritics]
+        SS[sentence_splitter.py<br/>underthesea · VN-aware]
+        PE --> SS
     end
 
-    subgraph ESG_Observations["ESG Observations"]
-        KPIObservation:::obs
-        Emission:::obs
-        Waste:::obs
-        Investment:::obs
-        Project:::obs
-    end
-
-    subgraph Indicator_Axis["Standard Indicator Axis"]
-        SI_TT96["StandardIndicator\n(TT96 / SSCIFC)"]:::indicator
-        SI_GRI["StandardIndicator\n(GRI)"]:::indicator
-        SI_TT96 <-->|"equivalentTo"| SI_GRI
-    end
-
-    subgraph Compliance["Standards and Compliance"]
-        Standard:::comp
-        Certification:::comp
-        Regulation:::comp
-    end
-
-    subgraph Goals_Initiatives["Goals and Initiatives"]
-        Initiative:::goal
-        Goal:::goal
-        ScienceBasedTarget:::goal
-        CarbonOffsetProject:::goal
-    end
-
-    subgraph Claim_Side["Claim Side"]
-        SustainabilityClaim:::claim
-        ClaimKeyword:::claim
-    end
-
-    subgraph Conduct_Side["Conduct Side"]
-        Controversy:::conduct
-        Penalty:::conduct
-        MediaReport:::conduct
-        ThirdPartyVerification:::conduct
-    end
-
-    %% Organization edges
-    Organization -->|"claims"| SustainabilityClaim
-    Organization -->|"reportsKPI"| KPIObservation
-    Organization -->|"setsGoal"| Goal
-    Organization -->|"generatesEmission"| Emission
-    Organization -->|"ownsFacility"| Facility
-    Organization -->|"adoptsStandard"| Standard
-    Organization -->|"holdsCertification"| Certification
-    Organization -->|"subjectToRegulation"| Regulation
-    Organization -->|"takesPartIn"| Initiative
-    Organization -->|"targetsScienceBased"| ScienceBasedTarget
-    Organization -->|"offsetsWith"| CarbonOffsetProject
-    Organization -->|"subjectToPenalty"| Penalty
-    Organization -->|"impactsCommunity"| Community
-    Organization -->|"locatedIn"| Location
-    Organization -->|"investsIn"| Investment
-
-    %% Claim → Indicator (alignsWithIndicator)
-    SustainabilityClaim -->|"alignsWithIndicator"| SI_TT96
-    SustainabilityClaim -->|"alignsWithIndicator"| SI_GRI
-    Goal -->|"alignsWithIndicator"| SI_TT96
-    Initiative -->|"alignsWithIndicator"| SI_TT96
-
-    %% Observation → Indicator (measuredUnder)
-    KPIObservation -->|"measuredUnder"| SI_TT96
-    Emission -->|"measuredUnder"| SI_TT96
-    Penalty -->|"measuredUnder"| SI_TT96
-
-    %% Indicator → Document (partOf)
-    SI_TT96 -->|"partOf"| Regulation
-    SI_GRI -->|"partOf"| Standard
-
-    %% Claim evidence edges
-    SustainabilityClaim -->|"verifiedBy"| ThirdPartyVerification
-    SustainabilityClaim -->|"verifiedBy"| KPIObservation
-    SustainabilityClaim -->|"contradictedBy"| Controversy
-    SustainabilityClaim -->|"contradictedByMedia"| MediaReport
-    SustainabilityClaim -->|"hasKeyword"| ClaimKeyword
-
-    Facility -->|"generatesWaste"| Waste
-    Facility -->|"locatedIn"| Location
-
-    Product -->|"usesMaterial"| Material
-    Product -->|"producedBy"| Organization
-
-    Initiative -->|"reducesEmission"| Emission
-    Initiative -->|"reducesWaste"| Waste
-
-    Penalty -->|"enforcedBy"| Authority
-    Certification -->|"issuedBy"| Authority
-    MediaReport -->|"mentionsOrganization"| Organization
-    Person -->|"worksAt"| Organization
-    Location -->|"isIn"| Country
+    P --> S[data/interim/sentences/*.jsonl<br/>EVERY sentence · no ESG filter]
+    S --> C[ViDeBERTa-v3-ESG classifier<br/>GPU: notebooks/kaggle_esg_classify.ipynb<br/>CPU: data_processing/esg_classifier.py]
+    C --> LAB[data/labeled/classified/<br/>all_sentences_classified.jsonl<br/>197 companies · 873,756 sentences<br/>303,723 esg=true]
+    LAB --> E[data_processing.extract_esg]
+    E --> OUT[data/outputs/esg_extracted/classified/]
 ```
 
+`prepare_sentences` deliberately keeps **every** sentence, not just ESG ones: page text is
+reconstructed later from all sentences on a page, while only pages containing at least one
+`esg=true` sentence are sent to the LLM.
+
 ---
 
-## Figure 9. Staged Data Flow Architecture
-
-The data pipeline follows a staged architecture: raw ingested data
-flows through interim processing, labeled classification, extracted outputs,
-and finally into graph construction artifacts.
+## 3. News ingestion (channel B)
 
 ```mermaid
+flowchart TD
+    CO[companies.py<br/>identity sets from xlsx] --> Q[queries.py<br/>identity × ESG/controversy terms]
+    Q --> SRC{sources/}
+    SRC --> G[Google News RSS]
+    SRC --> B[Bing]
+    SRC --> DD[DuckDuckGo]
+    G & B & DD --> F[fetch.py<br/>disk-cached · rate-limited]
+    F --> EX[extract.py · trafilatura<br/>title / text / date]
+    EX --> NM[normalize.py<br/>sentence-split into the<br/>annual-report schema]
+    NM --> NJ[data/outputs/news/TICKER.jsonl<br/>+ coverage.csv]
+    NJ --> CL[ViDeBERTa-v3-ESG<br/>same classifier as reports]
+    CL --> NL[data/labeled/news_labeled/<br/>115 tickers · 174,256 sentences<br/>77,229 esg=true]
+    NL --> PP[data_processing.preprocess_news]
+    PP --> PPO[data/interim/news_preprocessed/<br/>publish_date_normalized · publish_year<br/>date_uncertain · boilerplate dropped]
+```
+
+`coverage.csv` is not a by-product — it is the evidence for the coverage caveat in
+[SYSTEM_DESIGN.md](SYSTEM_DESIGN.md) §8.3.
+
 ---
-title: Figure 9. Staged Data Flow Architecture
+
+## 4. Graph construction — the 16 stages
+
+```mermaid
+flowchart TD
+    LAB[labeled JSONL<br/>reports + news] --> S01
+
+    S01[01 extract<br/>Gemini · per page]:::llm --> KPIO[kpi_output/]
+    LAB --> S02
+    KPIO --> S02[02 extract_triples<br/>Gemini or DeepSeek<br/>--source report / news]:::llm
+    S02 --> GRAPHS[graph_output/graphs/&lt;doc&gt;/pageN.json]
+
+    GRAPHS --> BV
+    subgraph BV[build_validated · BLOCK]
+        S03[03 fix_triples<br/>phase 1 validate · 1.5 dates · 2 LLM repair]:::llm
+        S03B[03b anchor_kpi<br/>offline gazetteer]:::free
+        S03C[03c canonicalize<br/>kpi_id · Goal.target_date]:::free
+        S03 --> S03B --> S03C
+    end
+    BV --> VAL[(all_validated_triples.json<br/>written ONCE)]
+
+    VAL --> S04[04 issuer<br/>run-once bootstrap]:::free
+    S04 --> REG[config/issuer_registry.json<br/>tracked · hand-confirmed]
+
+    VAL --> BR
+    REG --> BR
+    subgraph BR[build_resolved · BLOCK]
+        S05[05 entities<br/>Stage A-D]:::llm
+        S05B[05b provenance<br/>source_doc / source_page]:::free
+        S05C[05c indicators<br/>StandardIndicator axis]:::free
+        S05 --> S05B --> S05C
+    end
+    BR --> RES[(resolved_graph.json<br/>written ONCE)]
+
+    RES --> S05D[05d align_claims<br/>OPTIONAL · budgeted LLM]:::llm
+    RES --> S11[11 export_kgc<br/>separate export view]:::free
+    RES --> S06[06 neo4j_load]:::free
+    S06 --> DB[(Neo4j)]
+    RES --> S07[07 claims_vs_conduct<br/>LLM adjudication MANDATORY]:::llm
+    S07 --> DOS[crosscheck/&lt;ticker&gt;_claim_assessments.json]
+    DOS --> S08[08 neo4j_sync<br/>advisory layer · no LLM]:::free
+    S08 --> DB
+    DB --> S09[09 claim_ledger]:::free
+    DB --> UI[api/main.py · Evidence View]:::free
+
+    RES -.read-only.-> S00[00 quality<br/>Q1-Q8 · R1/R5/R7]:::free
+
+    classDef llm fill:#fff4e5,stroke:#f59e0b
+    classDef free fill:#e8f5e9,stroke:#34a853
+```
+
+Orange = costs money. Green = free, offline, re-runnable. The colour split is the reason
+blocks exist (§5) and the reason caches are scoped to paid results only.
+
 ---
+
+## 5. Why blocks exist
+
+The failure mode a block prevents:
+
+```mermaid
 flowchart LR
-    subgraph Raw["Raw Data Layer"]
+    subgraph bad[Three separate stages · the shape that bites]
         direction TB
-        RAW_AR["Raw Annual Reports"]
+        A1[03 writes the file] --> A2[03b patches it]
+        A2 --> A3[03c patches it]
+        A3 -.->|re-run 03 alone| A4[/whole file overwritten<br/>anchors gone · kpi_id gone<br/>PAID repairs gone · no warning/]
     end
 
-    subgraph Interim["Interim Data Layer"]
+    subgraph good[One block · the shape that ships]
         direction TB
-        INT_SENT["Raw Extracted Sentences"]
-        INT_NEWS["Preprocessed News"]
+        B1[03 in memory] --> B2[03b in memory] --> B3[03c in memory] --> B4[(write ONCE)]
+        B5[(paid-repair cache<br/>content-addressed)] -.-> B1
     end
 
-    subgraph Labeled["Labeled Data Layer"]
-        direction TB
-        LAB_ANN["Labeled Report Sentences"]
-        LAB_NEWS["Labeled News Sentences"]
-    end
+    bad ~~~ good
 
-    subgraph Outputs["Output Data Layer"]
-        direction TB
-        OUT_ESG["Extracted ESG Records"]
-        OUT_NEWS["Aggregated News Data"]
-    end
-
-    subgraph KPI_Out["KPI Data Layer"]
-        direction TB
-        KPI_DIR["Extracted KPI Statements"]
-    end
-
-    subgraph Graph_Out["Graph Data Layer"]
-        direction TB
-        GR_RAW["Raw Triplets"]
-        GR_VAL["Validated Triplets"]
-        GR_RES["Resolved Graph Data"]
-        GR_XCK["Cross-check Dossiers"]
-    end
-
-    subgraph Config["Configuration Layer"]
-        direction TB
-        CFG_SCH["Graph Schema"]
-        CFG_REG["Issuer Registry"]
-    end
-
-    subgraph Database["Database Layer"]
-        direction TB
-        NEO["Temporal Knowledge Graph"]
-    end
-
-    RAW_AR -->|"Sentence Extraction"| INT_SENT
-    INT_SENT -->|"Classification"| LAB_ANN
-    LAB_ANN -->|"Record Extraction"| OUT_ESG
-
-    OUT_NEWS -->|"Classification"| LAB_NEWS
-    LAB_NEWS -->|"Preprocessing"| INT_NEWS
-
-    OUT_ESG -->|"KPI Extraction"| KPI_DIR
-    KPI_DIR -->|"Triplet Extraction"| GR_RAW
-    INT_NEWS -->|"Triplet Extraction"| GR_RAW
-    GR_RAW -->|"Validation"| GR_VAL
-    GR_VAL -->|"Resolution"| GR_RES
-    GR_RES -->|"Graph Load"| NEO
-    NEO -->|"Cross-check"| GR_XCK
-
-    CFG_SCH -.- GR_RAW
-    CFG_REG -.- GR_RES
+    style A4 fill:#fce8e6,stroke:#ea4335
+    style B4 fill:#e8f5e9,stroke:#34a853
 ```
+
+The distinction that makes it safe: the **intermediate artifact** answers "how far did the
+pipeline get?" — internal state, droppable. The **cache** answers "what already cost
+money?" — not reproducible for free, so it is kept, keyed by content rather than by
+position in a batch.
 
 ---
 
-## Figure 10. End-to-End Sequence Diagram
-
-This sequence diagram traces the complete process from an analyst uploading a
-report and crawling news through to the final evidence dossier and claim
-ledger output.
+## 6. Entity resolution stages A–D
 
 ```mermaid
----
-title: Figure 10. End-to-End Sequence Diagram
----
-sequenceDiagram
-    participant Analyst
-    participant Crawl
-    participant News
-    participant Proc
-    participant BERT
-    participant S01
-    participant S02
-    participant S03
-    participant S04
-    participant S05
-    participant DB
-    participant S07
-    participant S08
-    participant S09
+flowchart TD
+    IN[all_validated_triples.json<br/>many duplicate entity mentions] --> A
 
-    rect rgb(240, 240, 255)
-    Note over Analyst,S09: Phase A - Report Ingestion
-    Analyst ->> Crawl: Target Company List
-    Crawl ->> Crawl: Download PDFs
-    Crawl -->> Proc: Raw PDF Reports
-    Proc ->> Proc: Extract text via PyMuPDF
-    Proc ->> Proc: Split sentences via underthesea
-    Proc -->> BERT: Raw Sentences
-    BERT ->> BERT: Classify E / S / G / Neutral
-    BERT -->> Proc: Labeled Sentences
-    Proc ->> Proc: Extract ESG records
-    Proc -->> S01: ESG Records
+    subgraph A[Stage A · deterministic · free]
+        A1[A.1 exact identity_keys signature]
+        A2[A.2 issuer anchor · FROZEN<br/>config/issuer_registry.json]
+        A3[A.3 standards anchor · FROZEN<br/>config/standards_registry.json]
     end
 
-    rect rgb(240, 255, 240)
-    Note over Analyst,S09: Phase B - News Ingestion
-    Analyst ->> News: Specify ticker, e.g. AAA
-    News ->> News: Query Google, Bing, DDG
-    News ->> News: Fetch and extract via trafilatura
-    News -->> BERT: Raw News Data
-    BERT ->> BERT: Classify news ESG labels
-    BERT -->> Proc: Labeled News
-    Proc ->> Proc: Normalize dates, filter boilerplate
-    Proc -->> S02: Preprocessed News
+    A --> B
+    subgraph B[Stage B · blocking]
+        B1[B.1 normalized VN signature<br/>diacritics · legal form · case]
+        B2[B.2 gemini-embedding-001 cosine<br/>batched · L2-normalized]
+        B1 --> B2
     end
 
-    rect rgb(255, 245, 238)
-    Note over Analyst,S09: Phase C - Knowledge Graph Construction
-    S01 ->> S01: Extract KPIs via Gemini 2.5 Flash
-    S01 -->> S02: KPI Statements
-    S02 ->> S02: Extract triplets from reports
-    S02 ->> S02: Extract triplets from news
-    S02 -->> S03: Raw Triplets
-    S03 ->> S03: Auto-swap, LLM repair, aggregate
-    S03 -->> S04: Validated Triplets
-    S04 ->> S04: Draft issuer name variants
-    Analyst ->> S04: Confirm needs_review entries
-    S04 -->> S05: Issuer Registry
-    S05 ->> S05: Stage A deterministic merge
-    S05 ->> S05: Stage B VN-aware blocking
-    S05 ->> S05: Stage C LLM adjudication
-    S05 ->> S05: Stage D consolidate
-    S05 -->> DB: Resolved Entities & Graph
-    DB ->> DB: Load property graph
-    end
+    B --> C[Stage C · gemini-2.5-flash<br/>adjudicate ambiguous pairs<br/>budgeted · cached]:::llm
+    C --> D[Stage D · consolidate<br/>DSU clusters → temporal_versions<br/>year-aware edge rewiring]
+    D --> OUT[(resolved_graph.json)]
 
-    rect rgb(255, 240, 245)
-    Note over Analyst,S09: Phase D - Cross-check and Output
-    S07 ->> DB: Read SustainabilityClaims
-    DB -->> S07: Claim nodes
-    S07 ->> DB: Read conduct-side nodes
-    DB -->> S07: Controversy, MediaReport, Penalty
-    S07 ->> S07: Candidate retrieval + LLM adjudication
-    S07 ->> S07: Self-verification guard
-    S07 ->> S07: Deterministic signals
-    S07 -->> S08: Assessment Dossiers
-    S08 ->> DB: MERGE advisory layer
-    S09 ->> DB: Query claim ledger data
-    DB -->> S09: Claims + evidence + assessments
-    S09 -->> Analyst: Claim Ledger Markdown
-    S09 -->> Analyst: Evidence Dossier per claim
-    end
+    NOLLM[--no-llm<br/>the usual mode today] -.skips.-> B2
+    NOLLM -.skips.-> C
 
-    Note over Analyst: Human makes final judgment. System provides evidence and advisory opinion only.
+    classDef llm fill:#fff4e5,stroke:#f59e0b
 ```
+
+The issuer cluster is frozen on purpose: it is the backbone of the whole cross-check, so
+its identity must never depend on an embedding or a model verdict.
+
+---
+
+## 7. The indicator axis
+
+```mermaid
+flowchart LR
+    REG[Regulation TT96] -.partOf.- IND
+    IND[StandardIndicator<br/>TT96-6.1.1] -->|equivalentTo| GRI[StandardIndicator<br/>GRI 305-1]
+    KPI[KPIObservation<br/>kpi_id = TT96-6.1.1] -->|measuredUnder| IND
+    EMI[Emission] -->|measuredUnder| IND
+    CLM[SustainabilityClaim] -->|alignsWithIndicator| IND
+    GOL[Goal] -->|alignsWithIndicator| IND
+    INI[Initiative] -->|alignsWithIndicator| IND
+
+    style IND fill:#e8f0fe,stroke:#4285f4,stroke-width:3px
+```
+
+`StandardIndicator` is the **join point**: a company's *claim* about an indicator and the
+conduct *KPIs* measured under it hang off one node, so the cross-check can walk two hops
+instead of guessing from token overlap. `pillar` on that node is also what gives the UI a
+claim's E/S/G column — read, never guessed.
+
+Two rules the stage will not break: it reads `kpi_id` assigned by `canonicalize` rather
+than guessing an indicator itself, and a `Penalty` with `amount == 0` is a self-reported
+"fined 0 times" boast, flagged and given **no** conduct edge.
+
+---
+
+## 8. Claim ↔ conduct cross-check
+
+```mermaid
+flowchart TD
+    RES[(resolved_graph.json)] --> POOL[Conduct pool for the issuer<br/>Controversy · Penalty · MediaReport<br/>KPIObservation · ThirdPartyVerification]
+    RES --> CLAIMS[SustainabilityClaim nodes<br/>on the issuer]
+
+    CLAIMS --> RET
+    POOL --> RET
+    subgraph RET[6a retrieval · deterministic]
+        R1[same issuer]
+        R2[VN topic overlap ≥ min-topic-overlap]
+        R3[temporal window<br/>-window-before / +window-after]
+        R4[rank · cap at --top-k]
+    end
+
+    RET --> ADJ[6b adjudicate<br/>Gemini or DeepSeek<br/>MANDATORY · no fallback<br/>--max-llm-pairs budget]:::llm
+    ADJ -->|cached by content| CACHE[(adjudication_cache.json)]
+
+    ADJ --> V{verdict}
+    V -->|supports| G{6c-guard<br/>company-owned domain?}
+    V -->|contradicts| EDGE2[contradictedBy / contradictedByMedia]
+    V -->|irrelevant| DROP[dropped]
+
+    G -->|yes| FLAG[flagged_non_independent_support<br/>never counted as support]
+    G -->|no| EDGE1[verifiedBy]
+
+    EDGE1 & EDGE2 & FLAG --> DOS[6d dossier<br/>assessment · caveats<br/>assessment_is_advisory = true]
+    DOS --> OUT[graph_output/crosscheck/]
+
+    classDef llm fill:#fff4e5,stroke:#f59e0b
+    style FLAG fill:#fce8e6,stroke:#ea4335
+```
+
+Assessment mapping: any contradiction ⇒ `appears_contradicted`; else any independent
+support ⇒ `appears_supported`; else `unverified_insufficient_evidence`. Contradiction
+outranks support in a mixed dossier, and the mixed case adds its own caveat.
+
+---
+
+## 9. Schema tiers T1 / T2 / T3
+
+```mermaid
+flowchart TD
+    subgraph T1[T1 · entities · timeless identity]
+        O[Organization]
+        F[Facility]
+        PR[Product]
+        ST[Standard / Regulation]
+    end
+    subgraph T2[T2 · events & observations · time in identity]
+        K[KPIObservation]
+        EM[Emission]
+        W[Waste]
+        CT[Controversy]
+        PN[Penalty]
+        MR[MediaReport]
+    end
+    subgraph T3[T3 · statements & reference]
+        SC[SustainabilityClaim]
+        GO[Goal]
+        SI[StandardIndicator]
+    end
+
+    O -->|reportsKPI| K
+    O -->|ownsFacility| F
+    K -->|observedAtFacility| F
+    O -->|claims| SC
+    SC -->|alignsWithIndicator| SI
+    K -->|measuredUnder| SI
+
+    style T1 fill:#e8f0fe,stroke:#4285f4
+    style T2 fill:#fce8e6,stroke:#ea4335
+    style T3 fill:#f3e8fd,stroke:#a142f4
+```
+
+The rule that follows from the tiers (P1): **never put a time field in a T1 class's
+`identity_keys`**. Observation classes legitimately carry time in their keys and are
+versioned per observation; entities are versioned only when their properties change,
+linked by `supersedes`. `quality` lints this, and `test/test_schema_contract.py` asserts
+it both ways.
+
+---
+
+## 10. Artifact and data layout
+
+```mermaid
+flowchart LR
+    subgraph git[Tracked in Git]
+        CFG[config/<br/>schema.json · registries<br/>gri_catalog · crosswalk]
+        CODE[code packages]
+        DV[data_version.json<br/>pins the HF revision]
+        NEO[neo4j/*.cypher]
+    end
+    subgraph hf[Hugging Face dataset repo · git-ignored]
+        DATA[data/<br/>raw → interim → labeled → outputs]
+        GO[graph_output/<br/>graphs · validated · resolved<br/>crosscheck · quality · export_kgc]
+        KO[kpi_output/]
+    end
+    subgraph local[Rebuilt locally · never synced]
+        ND[neo4j_data/]
+    end
+
+    DV -.pins.-> hf
+    GO -->|neo4j_load| ND
+```
+
+`data_version.json` is the hinge: it is tracked in Git, so checking out an old commit and
+pulling recovers the data that commit was built against. See [DATA_SYNC.md](DATA_SYNC.md).
+
+---
+
+## 11. End-to-end sequence
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant U as Analyst
+    participant P as esg_kg stages
+    participant L as LLM provider
+    participant N as Neo4j
+    participant W as Evidence View
+
+    U->>P: quality --label baseline
+    P-->>U: Q1-Q8 snapshot (offline)
+
+    U->>P: extract -i labeled.jsonl
+    P->>L: per-page KPI extraction (structured output)
+    L-->>P: KPIObservation records
+
+    U->>P: extract_triples --source report / news
+    P->>L: page text + KPIs + schema
+    L-->>P: temporal triples → per-page graphs
+
+    U->>P: build_validated
+    P->>L: batch-repair invalid triples (cached)
+    P-->>P: anchor KPIs, assign kpi_id
+    P-->>U: all_validated_triples.json (written once)
+
+    U->>P: build_resolved
+    P-->>P: Stage A-D, provenance, indicator axis
+    P-->>U: resolved_graph.json (written once)
+
+    U->>N: neo4j_load --clear
+    U->>P: claims_vs_conduct
+    P->>L: adjudicate (claim, evidence) pairs — mandatory
+    L-->>P: supports / contradicts / irrelevant
+    P-->>U: advisory dossiers
+
+    U->>N: neo4j_sync (free, reuses the paid dossier)
+    U->>P: claim_ledger
+    P->>N: read advisory layer
+    P-->>U: per-company ledger
+
+    U->>W: open localhost:8000
+    W->>N: live queries
+    W-->>U: 3-column TT96/GRI evidence view
+
+    U->>P: quality --label after-change
+    P-->>U: measured before/after
+```
+
+The first and last steps are the same command on purpose: every schema or pipeline change
+is expected to carry a measured before/after, and `quality` is free to run.

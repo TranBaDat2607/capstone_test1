@@ -1,330 +1,262 @@
-# `config/schema.json` — Explained
+# The graph schema — `config/schema.json`
 
-This document explains the knowledge-graph schema in `config/schema.json`: what it
-is, the design patterns it follows, every node and edge it defines, and how the
-pieces fit together to support an ESG GraphRAG system.
+**Audience:** anyone changing the schema, an extraction prompt, or a validation rule.
 
-> **Origin & context.** The schema was designed around **GRI / ESRS** (European
-> ESG reporting). The pipeline ingests Vietnamese ESG/sustainability text, classifies
-> it into E/S/G, maps it to GRI disclosures, and ultimately populates a graph shaped
-> like this. For how to adapt it to the Vietnamese regulatory reality, see the
-> companion discussion on the Vietnam study case — this file only documents what the
-> schema *currently* is.
+`config/schema.json` is the single source of truth for the knowledge graph: **28 node
+classes** and **48 distinct edge labels spread over 76 legal (source_class, target_class)
+pairs**. Extraction, validation, entity resolution, the Neo4j loader and the quality
+report all read it — nothing hardcodes a class list.
+
+The temporal reasoning behind the design is in
+[TEMPORAL_KG_DESIGN.md](TEMPORAL_KG_DESIGN.md); this file describes the artifact itself.
+
+> **After any hand-edit, run `python test/test_schema_contract.py`.** It asserts P1 in
+> both directions, that every class sits in exactly one tier, and that the indicator-axis
+> edge pairs are present. It imports the tier map from `report/quality.py` rather than
+> re-declaring it, so there is exactly one definition of the tiers in the repo.
 
 ---
 
-## 1. Top-level structure
+## 1. File shape
 
-The file is a single JSON object with two arrays:
-
-```json
+```jsonc
 {
-  "nodes": [ /* 27 node classes */ ],
-  "edges": [ /* 60+ relationship definitions */ ]
+  "nodes": [
+    { "class": "Organization",
+      "properties": ["name", "industry", "valid_from", "valid_to", "is_current"],
+      "identity_keys": ["name"] },
+    ...
+  ],
+  "edges": [
+    { "label": "usesMaterial",
+      "source_class": "Product",
+      "target_class": "Material",
+      "temporal_properties": ["valid_from", "valid_to", "recorded_at"] },
+    ...
+  ]
 }
 ```
 
-- **`nodes`** — the *entity types* (vertices) the graph can contain. Each is a
-  `class` with a list of `properties` and a list of `identity_keys`.
-- **`edges`** — the *relationship types* allowed between node classes. Each has a
-  `label`, a `source_class`, a `target_class`, and `temporal_properties`.
+Two things to notice immediately:
 
-This is a **typed property graph schema**: it constrains *which* kinds of nodes may
-exist and *which* directed relationships are legal between them.
-
-### Node definition shape
-
-```json
-{
-  "class": "Emission",
-  "properties": ["category", "scope", "amount", "unit",
-                 "valid_from", "valid_to", "is_current"],
-  "identity_keys": ["category", "scope", "valid_from"]
-}
-```
-
-- **`class`** — the node type name.
-- **`properties`** — the attributes a node of this class carries.
-- **`identity_keys`** — the subset of properties that uniquely identify a node.
-  Two extracted records with the same `identity_keys` values are treated as the
-  **same entity** and merged (deduplication / entity resolution). This is how the
-  pipeline avoids creating a new `Emission` node every time the same Scope-1 figure
-  is mentioned.
-
-### Edge definition shape
-
-```json
-{
-  "label": "generatesEmission",
-  "source_class": "Facility",
-  "target_class": "Emission",
-  "temporal_properties": ["valid_from", "valid_to", "recorded_at"]
-}
-```
-
-- **`label`** — the relationship name (the verb).
-- **`source_class` / `target_class`** — the directed endpoints; the relationship
-  goes *from* source *to* target.
-- A label can be **reused** with different endpoint pairs (e.g. `generatesEmission`
-  exists for both `Facility→Emission` and `Organization→Emission`). Each entry is a
-  separate legal relationship.
+1. **`identity_keys` is not the same as `properties`.** It is the subset used to compute a
+   stable entity id, which drives deduplication and versioning. Changing it re-clusters the
+   graph.
+2. **One `label` may appear in several `edges` entries** with different class pairs. The
+   validator treats *any* matching pair as legal, and auto-swaps a reversed direction
+   rather than rejecting it — the extractor confuses subject and object often enough that
+   silently repairing it is cheaper than discarding the triple.
 
 ---
 
-## 2. The two cross-cutting design patterns
+## 2. Node classes by tier
 
-Almost every property list ends with the same fields. Understanding these two
-patterns explains ~80% of the schema.
+Every class belongs to exactly one tier. The tier map lives in
+`src/esg_kg/report/quality.py` and is a **contract**, not a local detail.
 
-### 2.1 Bitemporal validity (edges and event nodes — see P2)
+### T1 — entities (14)
 
-At **extraction time** (step02) every node and edge carries `valid_from` /
-`valid_to` / `is_current` (nodes) and `temporal_metadata` (edges), and the step03
-validator requires them. In the **resolved graph** (step05 onward) the invariant is
-narrower, by design (principle **P2** in
-[`TEMPORAL_KG_DESIGN.md`](./TEMPORAL_KG_DESIGN.md): *time lives on statements, not
-on entities*):
+Real-world things with a timeless identity.
 
-- Every **edge** carries `temporal_metadata`:
+`Organization` · `Person` · `Facility` · `Product` · `Material` · `Location` ·
+`Country` · `Standard` · `Regulation` · `Authority` · `Community` · `ClaimKeyword` ·
+`Certification` · `StandardIndicator`
 
-  | Property      | Meaning                                                            |
-  |---------------|-------------------------------------------------------------------|
-  | `valid_from`  | When the relationship became true in the real world.              |
-  | `valid_to`    | When it ended.                                                    |
-  | `recorded_at` | When the system *learned* / ingested the fact (transaction time). |
+`Certification` sits between T1 and T3 and is deliberately treated as T1: the node is the
+*type* of certificate, and the holding period lives on the `holdsCertification` edge, not
+on the node.
 
-- **T2/T3 event & assertion nodes** (`KPIObservation`, `Emission`, `Waste`,
-  `Penalty`, `Controversy`, `MediaReport`, `ThirdPartyVerification`, `Investment`,
-  `SustainabilityClaim`, …) keep `valid_from` / `valid_to` / `is_current` as
-  **essential properties** — *when it happened* is part of what the event is.
+### T2 — events and observations (11)
 
-- **T1 identity nodes** (`Organization`, `Facility`, `Standard`, `Location`, …)
-  are **timeless**: their canonical properties carry no `valid_*`; their history
-  lives in `temporal_versions` (see §2.2) and on the temporal metadata of their
-  edges. A fact like *"AAA adopted GRI in 2021"* is the `adoptsStandard` **edge's**
-  `valid_from`, not a property (or identity) of the `Standard` node.
+Things that happened at a time. Time is part of their identity, and they are versioned per
+observation.
 
-This is a **bitemporal model**: `valid_*` tracks *real-world time* ("the company
-emitted X in 2023"), while `recorded_at` on edges tracks *knowledge time* ("we read
-this from the 2024 report"). It lets the graph answer questions like *"what did we
-believe the 2023 emissions were, as of the 2024 report vs. the 2025 restatement?"* —
-crucial when ESG figures get revised across report years.
+`KPIObservation` · `Emission` · `Waste` · `Penalty` · `Controversy` · `MediaReport` ·
+`ThirdPartyVerification` · `Investment` · `Project` · `Initiative` · `CarbonOffsetProject`
 
-### 2.2 `supersedes` — versioning over time
+### T3 — statements (3)
 
-Because facts change, the schema includes a `supersedes` edge for the classes most
-likely to be *restated or replaced*:
+Assertions someone made. One node per utterance.
 
-`Organization`, `Facility`, `Person`, `Goal`, `Standard`, `Product`, `Material`,
-`Certification`, `Regulation` (each `supersedes` its own class).
+`SustainabilityClaim` · `Goal` · `ScienceBasedTarget`
 
-When a newer version of an entity replaces an older one (a renamed company, a revised
-target, a regulation that replaces an earlier one), the new node points to the old
-one with `supersedes`, and the old one's `valid_to` / `is_current` are closed off.
-Combined with the bitemporal fields, this gives a full audit trail of how the graph's
-picture of reality evolved.
+### Reference vocabulary
 
-> **Note (P1 — identity is timeless):** for **T1 identity classes** the
-> `identity_keys` must **never** contain a temporal field (`valid_from`, `date`,
-> `year`, `validity_period`, …). Keying `Standard` by `["name", "valid_from"]`
-> (the pre-P1 design) split "GRI" into one node per report year — 310/331
-> `Standard` nodes were isolated leaves. Time-of-observation belongs in
-> `temporal_versions` / `supersedes` and on edge `temporal_metadata`, not in
-> identity. Only **T2 observation classes** (`Emission` `["category","scope","valid_from"]`,
-> `Waste`, `KPIObservation`, `Investment`) legitimately carry time in their keys,
-> because each observation *is* a time-stamped occurrence. This rule is
-> machine-checked by `src/step00_graph_quality_report.py` (Q2) for every new class.
+`StandardIndicator` is additionally marked a **reference class**. It is generated from a
+controlled vocabulary, not extracted from text, and it is high-degree *by design* — every
+KPI of a given indicator hangs off one node, which is the entire point of the join. The
+quality report therefore excludes it from the hub and path metrics, and only there:
+counting it would measure the vocabulary rather than the graph, and would make a
+before/after comparison across the indicator-axis change meaningless.
 
 ---
 
-## 3. The node classes (27)
+## 3. Identity keys
 
-The classes group naturally by ESG function. They are organised below by role.
+| Class | `identity_keys` | Why |
+|---|---|---|
+| `Organization`, `Person`, `Facility`, `Product`, `Material`, `Standard`, `Certification`, `Regulation`, `Initiative`, `Goal`, `Community`, `Country`, `Project` | `["name"]` | A name is the identity; variants are collapsed by entity resolution, not by the schema |
+| `StandardIndicator` | `["id"]` | The indicator code (`TT96-6.1.1`, `GRI 305-1`) is the identity |
+| `Location` | `["name", "country"]` | Place names repeat across countries |
+| `Authority` | `["name", "jurisdiction"]` | Same |
+| `ClaimKeyword` | `["term"]` | |
+| `SustainabilityClaim` | `["claim_id"]` | See §3.1 — this one has a history |
+| `ThirdPartyVerification`, `CarbonOffsetProject`, `ScienceBasedTarget`, `Controversy`, `Penalty`, `MediaReport` | their own `*_id` | Event identity is the event, not its description |
+| `KPIObservation` | `["kpi_type", "source_id", "year", "target_year", "baseline_year"]` | A T2 observation legitimately carries time in its key |
+| `Emission` | `["category", "scope", "valid_from"]` | Same |
+| `Waste` | `["category", "valid_from"]` | Same |
+| `Investment` | `["investor", "investee", "date"]` | Same |
 
-### 3.1 Core actors & physical assets
+**The rule (P1): never put a time field in a T1 class's `identity_keys`.** The linted set
+is `valid_from`, `valid_to`, `is_current`, `recorded_at`, `date`, `year`, `target_year`,
+`baseline_year`, `validity_period`. A T1 entity with time in its identity forks into a new
+node every year and stops being one company. T2 observations are the *inverse* case and
+must keep their time key — the schema contract test asserts both directions, so removing
+`valid_from` from `Emission` fails just as loudly as adding it to `Organization`.
 
-| Class          | Key properties                     | Identity            | Role |
-|----------------|------------------------------------|---------------------|------|
-| `Organization` | name, industry                     | name                | The central actor — a company/entity that reports, emits, owns, claims, etc. |
-| `Person`       | name, role                         | name                | Executives, authors, project leads. |
-| `Facility`     | name, type                         | name                | A physical site (plant, mine, office) owned by an Organization. |
-| `Product`      | name, description                  | name                | A good produced/sold. |
-| `Material`     | name, category, source             | name                | Inputs/raw materials used in products. |
+### 3.1 `claim_id` is derived, not invented
 
-These are the "who" and "what" of the graph. `Organization` is the hub that most
-relationships originate from.
+`SustainabilityClaim.identity_keys` is exactly `["claim_id"]`, and the stable entity id is
+hashed straight off that property. `claim_id` used to be free text the model invented per
+call, which meant re-running extraction over the same sentence could mint a different id
+and silently re-partition every already-paid cross-check dossier.
 
-### 3.2 Environmental measurements
-
-| Class            | Key properties                                | Identity                          | Role |
-|------------------|-----------------------------------------------|-----------------------------------|------|
-| `Emission`       | category, scope, amount, unit                 | category, scope, valid_from       | A GHG emission figure (Scope 1/2/3). |
-| `Waste`          | category, amount, destination                 | category, valid_from              | Waste generated and where it goes. |
-| `CarbonOffsetProject` | project_id, name, type                   | project_id                        | A project used to offset emissions. |
-| `ScienceBasedTarget`  | target_id, description, target_year, baseline_year | target_id              | A formal SBTi-style reduction target. |
-
-### 3.3 Performance & goals
-
-| Class            | Key properties                                                                 | Identity | Role |
-|------------------|--------------------------------------------------------------------------------|----------|------|
-| `KPIObservation` | kpi_type, title, value, unit, kind, direction, year, target_year, baseline_year, source_id, company | kpi_type, source_id, year, target_year, baseline_year | A single reported metric data point — the workhorse fact type. `kind`/`direction` distinguish actuals vs targets and improvement direction; `source_id` ties it to the source document. |
-| `Goal`           | name, description, target_date, metric                                          | name     | A qualitative/strategic objective. |
-| `Initiative`     | name, description, sponsor                                                      | name     | A program/action taken to improve ESG (can reduce emissions/waste, aim for certification). |
-| `Project`        | name, description, status, start_date, end_date                                | name     | A concrete project (often the object of an Investment). |
-
-`KPIObservation` is the most richly-attributed class because it is the quantitative
-backbone — it captures *the number, its unit, the year, whether it's an actual or a
-target, the baseline, and the source*. The distinction between `Goal` (narrative),
-`KPIObservation` (quantitative), and `ScienceBasedTarget` (formal target) is worth
-noting.
-
-### 3.4 Standards, compliance & governance
-
-| Class           | Key properties                              | Identity                  | Role |
-|-----------------|---------------------------------------------|---------------------------|------|
-| `Standard`      | name, description                           | name                      | A reporting/management standard the org adopts (GRI, ISO, ESRS…). Adoption period lives on the `adoptsStandard` edge. |
-| `Certification` | name, description, validity_period          | name                      | A *type* of certificate (ISO 14001, etc.). The holding period lives on the `holdsCertification` edge. |
-| `Regulation`    | name, jurisdiction, description             | name                      | A law/rule the org is subject to. |
-| `Authority`     | name, type, jurisdiction                    | name, jurisdiction        | The body that issues standards/certs or enforces penalties. |
-| `Penalty`       | penalty_id, description, amount, date       | penalty_id                | A fine/sanction imposed on an org. |
-
-### 3.5 Claims, verification & greenwashing detection
-
-This cluster is the schema's most distinctive design and is built specifically to
-**detect greenwashing** — to cross-check what a company *says* against independent
-evidence.
-
-| Class                   | Key properties                          | Identity        | Role |
-|-------------------------|-----------------------------------------|-----------------|------|
-| `SustainabilityClaim`   | claim_id, description, date, source     | claim_id        | Something the org *asserts* about its ESG performance. |
-| `ThirdPartyVerification`| verification_id, verifier, date, result | verification_id | An independent audit/assurance of a claim. |
-| `Controversy`           | controversy_id, description, date, source | controversy_id | A documented incident that may contradict a claim. |
-| `MediaReport`           | report_id, title, publisher, date       | report_id       | A news article (can support or contradict claims). |
-| `ClaimKeyword`          | term                                    | term            | A normalised keyword tag attached to a claim. |
-
-The narrative logic: an `Organization` **`claims`** a `SustainabilityClaim`, which can
-be **`verifiedBy`** a `ThirdPartyVerification` or a `KPIObservation` (corroboration),
-or **`contradictedBy`** a `Controversy` / **`contradictedByMedia`** a `MediaReport`
-(refutation). See §4.4.
-
-### 3.6 Stakeholders, geography & finance
-
-| Class        | Key properties                       | Identity          | Role |
-|--------------|--------------------------------------|-------------------|------|
-| `Community`  | name, description                    | name              | A community impacted by the org. |
-| `Location`   | name, region, country                | name, country     | A place (sub-country granularity via `region`). |
-| `Country`    | name                                 | name              | A country node. |
-| `Investment` | amount, currency, date, investor, investee | investor, investee, date | A financial flow (reified as a node so it can connect to projects). |
-
-`Investment` is a **reified relationship** — instead of a single edge "Org invests in
-Project," it's modelled as a node so it can carry amount/currency/date *and* link to
-both the investor and the funded `Project`.
+`extract_triples` now derives it deterministically from `(source_doc, page, normalized
+description, date)` — see `make_deterministic_claim_id` / `assign_deterministic_claim_ids`,
+pinned by `test/test_claim_id_deterministic.py`. Cosmetic differences in the description
+(whitespace, casing) must not change the id.
 
 ---
 
-## 4. The edges (relationships)
+## 4. Edge labels
 
-There are 60+ edge definitions. Below they are grouped by theme. (Each arrow is
-`source → target` with the edge `label`.)
+48 labels. Grouped by what they are for:
 
-### 4.1 Structure & ownership
-- `Facility —partOf→ Organization`
-- `Organization —ownsFacility→ Facility`
-- `Organization —owns→ Organization` (corporate ownership)
-- `Organization —partnersWith→ Organization`
-- `Product —producedBy→ Organization`, `Product —suppliedBy→ Organization`
-- `Product —manufacturedAt→ Facility`
-- `Product —usesMaterial→ Material`
-- `Material —sourcedFrom→ Organization`, `Material —sourcedFrom→ Location`
-- `Person —worksAt→ Organization`, `Person —involvedIn→ Product / Project / CarbonOffsetProject`
+**Corporate structure**
+`owns` · `ownsFacility` · `partOf` · `partnersWith` · `worksAt` · `ownedBy` ·
+`locatedIn` · `isIn` · `impactsCommunity`
 
-### 4.2 Environmental impact & action
-- `Facility —generatesEmission→ Emission`, `Organization —generatesEmission→ Emission`
-- `Facility —generatesWaste→ Waste`
-- `Initiative —reducesEmission→ Emission`, `Initiative —reducesWaste→ Waste`
-- `Initiative —aimsForCertification→ Certification`
-- `Organization —offsetsWith→ CarbonOffsetProject`
-- `Organization —targetsScienceBased→ ScienceBasedTarget`
-- `Organization —impactsCommunity→ Community`
+**Products and materials**
+`producedBy` · `manufacturedAt` · `usesMaterial` · `suppliedBy` · `sourcedFrom` ·
+`mentionsProduct`
 
-### 4.3 Performance, goals & standards
-- `Organization —reportsKPI→ KPIObservation`
-- `KPIObservation —observedAtFacility→ Facility`
-- `Organization —setsGoal→ Goal`
-- `Organization —takesPartIn→ Initiative`
-- `Organization —adoptsStandard→ Standard`
-- `Organization / Facility —holdsCertification→ Certification`
-- `Organization —subjectToRegulation→ Regulation`
+**Environmental facts**
+`generatesEmission` · `generatesWaste` · `reducesEmission` · `reducesWaste` ·
+`offsetsWith` · `reportsKPI` · `observedAtFacility`
 
-### 4.4 Claims & verification (the greenwashing sub-graph)
-- `Organization —claims→ SustainabilityClaim`
-- `SustainabilityClaim —verifiedBy→ ThirdPartyVerification`
-- `SustainabilityClaim —verifiedBy→ KPIObservation`  *(claim corroborated by a real metric)*
-- `SustainabilityClaim —contradictedBy→ Controversy`
-- `SustainabilityClaim —contradictedByMedia→ MediaReport`
-- `SustainabilityClaim —hasKeyword→ ClaimKeyword`
+**Claims, goals, initiatives**
+`claims` · `setsGoal` · `takesPartIn` · `targetsScienceBased` · `hasKeyword` ·
+`aimsForCertification`
 
-This is the schema's analytical payoff: a query can find claims with **no**
-`verifiedBy` edge but **with** a `contradictedBy*` edge → candidate greenwashing.
+**Standards and compliance**
+`adoptsStandard` · `holdsCertification` · `issuedBy` · `subjectToRegulation` ·
+`subjectToPenalty` · `enforcedBy`
 
-### 4.5 Compliance, penalties & authorities
-- `Organization —subjectToPenalty→ Penalty`
-- `Penalty —enforcedBy→ Authority`
-- `Certification —issuedBy→ Authority`, `Standard —issuedBy→ Authority`
+**Indicator axis** (see [STANDARD_INDICATOR_AXIS.md](STANDARD_INDICATOR_AXIS.md))
+`measuredUnder` · `alignsWithIndicator` · `equivalentTo` · `partOf`
 
-### 4.6 Media & reputation
-- `Organization —publishesReport→ MediaReport`
-- `MediaReport —reportedBy→ Person`
-- `MediaReport —mentionsOrganization→ Organization`, `MediaReport —mentionsProduct→ Product`
+**Media and evidence**
+`publishesReport` · `reportedBy` · `mentionsOrganization` · `mentionsFacility` ·
+`involvedIn` · `investsIn` · `investedIn`
 
-### 4.7 Finance
-- `Organization —investsIn→ Investment`
-- `Investment —investedIn→ Project`
-- `Project —ownedBy→ Organization`
+**Cross-check output** (written only by `claims_vs_conduct`)
+`verifiedBy` · `contradictedBy` · `contradictedByMedia`
 
-### 4.8 Geography
-- `locatedIn` from `Organization`, `Facility`, `CarbonOffsetProject`, `Community`,
-  `Project` → `Location`
-- `Location —isIn→ Country`
+**Versioning**
+`supersedes` — legal for the nine classes that can be re-stated over time
+(`Organization`, `Facility`, `Person`, `Goal`, `Standard`, `Product`, `Material`,
+`Certification`, `Regulation`).
 
-### 4.9 Versioning
-- `supersedes` (same-class → same-class) for the 9 versionable classes listed in §2.2.
+### 4.1 Labels with more than one legal pair
+
+Twelve labels are polymorphic. These are the ones to be careful with when editing:
+
+| Label | Legal pairs |
+|---|---|
+| `alignsWithIndicator` | `SustainabilityClaim` / `Goal` / `Initiative` / `Controversy` / `MediaReport` → `StandardIndicator` |
+| `measuredUnder` | `KPIObservation` / `Emission` / `Penalty` → `StandardIndicator` |
+| `partOf` | `Facility` → `Organization`; `StandardIndicator` → `Regulation` / `Standard` |
+| `locatedIn` | `Organization` / `Facility` / `CarbonOffsetProject` / `Community` / `Project` → `Location` |
+| `verifiedBy` | `SustainabilityClaim` → `ThirdPartyVerification` / `KPIObservation` |
+| `generatesEmission` | `Facility` / `Organization` → `Emission` |
+| `holdsCertification` | `Organization` / `Facility` → `Certification` |
+| `issuedBy` | `Certification` / `Standard` → `Authority` |
+| `mentionsFacility` | `MediaReport` → `Facility` / `Location` |
+| `involvedIn` | `Person` → `Product` / `CarbonOffsetProject` / `Project` |
+| `sourcedFrom` | `Material` → `Organization` / `Location` |
+| `supersedes` | nine same-class pairs |
 
 ---
 
-## 5. How a query traverses the graph (worked example)
+## 5. Temporal fields
 
-> *"Did Company X's net-zero claim hold up, and who funded the projects behind it?"*
+**At extraction** (`extract_triples`, `fix_triples`) every node carries `valid_from`,
+`valid_to`, `is_current`, and every edge carries `temporal_metadata` (`valid_from`,
+`valid_to`, `recorded_at`).
 
-1. Start at `Organization {name: "X"}`.
-2. `claims → SustainabilityClaim` (the net-zero claim).
-3. Follow `verifiedBy → ThirdPartyVerification`/`KPIObservation` (evidence for) and
-   `contradictedBy → Controversy` / `contradictedByMedia → MediaReport` (evidence against).
-4. From the org, `setsGoal → Goal` and `targetsScienceBased → ScienceBasedTarget`
-   give the stated targets; `reportsKPI → KPIObservation` gives the actuals to compare.
-5. `takesPartIn → Initiative → reducesEmission → Emission` shows the *actions*.
-6. `investsIn → Investment → investedIn → Project` shows the *money* behind those
-   actions, and `Project —locatedIn→ Location —isIn→ Country` grounds them
-   geographically.
+**In the resolved graph** (`entities` onward) time lives on **edges and on T2/T3 nodes**.
+T1 entity nodes are timeless; their history is a `temporal_versions` list, and a version
+chain with an open version has exactly one `is_current = true`.
 
-The bitemporal fields let every step be filtered to a point in time
-("…as reported in FY2023").
+Dates are canonical ISO `YYYY[-MM[-DD]]`, enforced by `fix_triples` phase 1.5. Partial
+dates are legal and common — a report gives a year, not a day.
+
+### 5.1 `date_uncertain` on news-derived observations
+
+`KPIObservation`, `Controversy`, `Penalty` and `MediaReport` carry a required boolean
+`date_uncertain`:
+
+- `false` — the article states an explicit date or period for that fact;
+- `true` — extraction had to fall back to the article's publish date as a proxy.
+
+Never silently assume the publish year. The cross-check surfaces this as a caveat on any
+dossier whose evidence includes an uncertain date, and the quality report tracks coverage
+of the field.
+
+### 5.2 `source_type`
+
+Every node and edge carries `source_type ∈ {report, news}`. This is what keeps "what they
+say" and "what they do" separable inside one graph, and it is the field the
+self-verification guard and the whole cross-check depend on.
 
 ---
 
-## 6. Quick reference: design takeaways
+## 6. Changing the schema
 
-- **Property-graph, GRI/ESRS-oriented.** Designed for EU-style ESG reporting concepts.
-- **Bitemporal by default** — every node/edge tracks real-world validity, and edges
-  also track ingestion time (`recorded_at`).
-- **Entity resolution via `identity_keys`** — the dedup contract for merging extracted
-  mentions into single entities.
-- **`supersedes` + temporal keys** give a versioned, auditable history.
-- **`KPIObservation`** is the quantitative workhorse; **`SustainabilityClaim` + verify/
-  contradict** edges are the qualitative, greenwashing-detection core.
-- **Reified relationships** (`Investment`) carry their own attributes and multi-link.
+1. **Write the test first** (repo working rule). For a schema change that usually means
+   extending `test/test_schema_contract.py`.
+2. **Measure before:** `python src/run.py quality --label before-<change>`.
+3. Edit `config/schema.json`. Prefer **additive** changes — a new property, or a new legal
+   pair for an existing label. Old nodes lacking a new property stay valid; a new class or
+   a changed `identity_keys` does not have that property.
+4. `python test/test_schema_contract.py` — the P1/tier/indicator-pair contract.
+5. `python test/test_temporal_invariants.py` — required after touching anything the
+   validation and resolution stages rely on.
+6. Rebuild, then **measure after:** `quality --label after-<change>`, and read the two
+   reports side by side.
+
+**What not to do without a plan:** changing an `identity_keys` list re-clusters entity
+resolution and renumbers the resolved node array. `neo4j_load` keys nodes by array index
+and the cross-check dossiers reference nodes by position, so a renumbering invalidates
+already-paid dossiers. This is a scheduled cost of a deliberate full re-extraction, not
+something to do in passing.
+
+**What is deliberately not in the schema:** `HubBucket`, the synthetic node minted by
+`export_kgc`. It is a dataset-construction artifact, not a T1/T2/T3 entity, and
+`config/schema.json` stays the source of truth for the real graph only. See
+[EXPORT_KGC.md](EXPORT_KGC.md).
 
 ---
 
-*Generated as a reading aid for `config/schema.json`. If the schema file changes,
-update this document to match.*
+## 7. Known gaps
+
+Recorded here so they are not rediscovered as bugs:
+
+- **`observedAtFacility` is legal only for `KPIObservation → Facility`.** News reports
+  misconduct per plant, but `Controversy`, `Penalty` and `MediaReport` have no way to
+  attach to the facility they concern. Adding those three pairs is additive and is item
+  §2.3 in [ROADMAP.md](ROADMAP.md).
+- **`Penalty → Authority` (`enforcedBy`) cannot be patched offline**, because `Penalty`
+  nodes carry no sentence-level `source_id`. New extractions get it from the prompt.
+- **`Regulation` and `Standard` cannot express binding force** — no `mandatory`, no
+  `instrument_type`, no instrument number. See [ROADMAP.md](ROADMAP.md) §2.6.

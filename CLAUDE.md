@@ -240,7 +240,7 @@ labeled/extracted" or "the sector corpus is missing," check `data/labeled/classi
 
 `crawl_data/crawler_news.py` is a separate, FPT-specific standalone news crawler (not a
 `-m` package, not wired into pipeline B above) — treat it as a legacy/experimental tool, not
-the documented news-ingestion path. See `docs/NEWS_CRAWLER_OPTIMIZATION.md` for its design.
+the documented news-ingestion path. See `docs/NEWS_INGESTION.md` §6 for its design.
 
 **C. Labeled JSONL → temporal knowledge graph (`src/esg_kg`)**
 
@@ -427,7 +427,7 @@ data is gone and **Neo4j is REQUIRED**; the query helpers raise `RuntimeError` i
 unreachable. Only claims carrying an `alignsWithIndicator` edge are shown, so each card's
 E/S/G pillar comes from the linked `StandardIndicator.pillar` rather than being guessed.
 The frontend (`index.html` + `css/style.css` + `js/app.js`) is intentionally frozen:
-per `docs/REAL_DATA_INTEGRATION_GUIDE.md`, data-source changes belong in
+per `docs/ESG_EVIDENCE_VIEW.md` §1.2, data-source changes belong in
 `evidence_service.py` only. See `docs/ESG_EVIDENCE_VIEW.md`.
 
 ## The graph schema (`config/schema.json`)
@@ -944,58 +944,75 @@ The rest of `test/` and `notebooks/` are Jupyter notebooks for manual validation
 
 ## Documentation map
 
+`docs/` was fully rewritten on 2026-08-12: every file was re-derived from the live code,
+standardised to English, and the set was reduced from 28 files to 24. **`docs/README.md` is
+the index — start there.** The map below records what each file now covers.
+
 `docs/SYSTEM_DESIGN.md` is the **final end-to-end system design** — read it first for the big
 picture: the symmetric greenwashing setup (reports = claims, independent news = conduct, both
-in one temporal KG), the new news→graph branch and claim↔conduct cross-check stage, and the
+in one temporal KG), the news→graph branch and claim↔conduct cross-check stage, and the
 deliberate "evidence + advisory LLM assessment, no greenwashing score/verdict" framing (no
-ground-truth labels exist). The rest of `docs/` holds per-stage design notes worth reading
-before modifying a stage:
-`SCHEMA_EXPLAINED.md`, `TEMPORAL_KG_DESIGN.md` (the 8 temporal-KG design principles
-P1–P8 + the Q1–Q8 quality attributes measured by step00 — read before touching the
-schema, step02 prompts, step03, or step05), `KPI_EXTRACTION_FROM_JSONL.md`, `TRIPLET_EXTRACTION_FROM_JSONL.md`,
-`TRIPLET_VALIDATION.md`, `PROVENANCE_PATCH.md` (step 5b — offline source_doc/source_page
-stamping of the resolved graph so the UI/ledger can cite report page + article title),
-`ENTITY_RESOLUTION.md` (step 4 — why it's a redesign, not a port),
-`GRAPH_LOAD_NEO4J.md` (step 5 — Neo4j load; also a redesign),
-`CLAIM_CONDUCT_CROSSCHECK.md` (step 6 — claim↔conduct cross-check, the analytical core),
-`CLAIM_LEDGER.md` (step 6b sync + step 7 — dossier → Neo4j advisory layer, then the Neo4j-only claim ledger + analyst Cypher),
-`ESG_EVIDENCE_VIEW.md` (the 3-column TT96/GRI evidence-view UI, `api/` + `frontend/` — how to run the demo),
-`REAL_DATA_INTEGRATION_GUIDE.md` (Vietnamese — the mock→live-Neo4j swap for that UI; the
-rule that only `api/evidence_service.py` changes, never the frontend),
-`ENTITY_RESOLUTION_IMPROVEMENT.md` (Vietnamese — proposal to use graph structural
-signatures to auto-resolve step-4's lexically ambiguous `needs_review` cases),
-`KPI_DEFINITIONS_CONSTRUCTION_BUILD.md`, `VIETNAM_IMPROVEMENT_PLAN.md`,
-`NEWS_CRAWLER_OPTIMIZATION.md` (Vietnamese — architecture of the standalone, FPT-specific
-`crawl_data/crawler_news.py`, not the documented `esg_news_crawler/` pipeline). The root
-`ENTITY_RESOLUTION_PLAN.md` is the step-4 engineering checklist. `README.md` (root),
-`esg_news_crawler/README.md`, `kpi_build/README.md`, and `gri/README.md` cover their
-respective subsystems.
+ground-truth labels exist). Section numbers §1.1/§6/§6.4/§8.3/§9 are cited from stage
+docstrings and are kept stable.
 
-Added with the GRI catalog (2026-07-26), describing stage C by its now-deleted `src/`
-filenames — the pipeline shape/diagrams are still accurate, but none of them mention
-`src/`/`esg_kg`'s stage names, so for the current view of stage C read
-`src/PIPELINE.md` and `esg_kg/pipeline.py` instead: `docs/PIPELINE_DIAGRAMS.md` (10 figures: architecture,
-collection, extraction, KPI, KG construction, entity resolution, cross-check, schema, data
-layout, end-to-end sequence), `docs/PIPELINE_UNIFIED.md`, `docs/PROJECT_OVERVIEW.md`,
-`docs/GRI_SCHEMA_DOCUMENTATION.md` (the shape of `gri/full_gri/json/*.json` and of
-`config/gri_catalog.json`), plus the rendered diagrams in `diagram/`.
+**Contracts — read before editing the thing they describe:**
+`SCHEMA_EXPLAINED.md` (config/schema.json itself: 28 node classes, 48 edge labels over 76
+legal pairs, identity keys, how to change it safely), `TEMPORAL_KG_DESIGN.md` (the three-tier
+node model §2, the 8 design principles P1–P8 §3, and the Q1–Q8 quality attributes plus the
+R1/R5/R7 reasoning-readiness metrics measured by `quality` §4 — read before touching the
+schema, the extract_triples prompts, fix_triples, or entities),
+`STANDARD_INDICATOR_AXIS.md` (the TT96/GRI indicator layer; §2.4/§3/§3.1/§5.2/§5.3/§5.4/§6
+are cited from stage docstrings).
 
-**Proposals, not implementations** (pre-defence-1 improvement plan — don't read them as
-descriptions of existing code): `CROSSCHECK_EXPANSION.md` (Vietnamese — the `signals`
-generator, graph-routed evidence retrieval, and the D1 finding that `kpi_gap` /
-`structural_contradiction` are currently *ghost* signals step07 never writes) and
-`BERT_NER_GRAPH_QUALITY.md` (Vietnamese — decision analysis: local CPU sentence-embeddings
-to replace the billing-blocked `gemini-embedding-001` in step05, underthesea NER for news
-anchoring; explicitly rejects fine-tuning a greenwashing classifier, since no labels exist).
-Two label-free evaluation designs, also proposals — no measurement code exists for either:
-`EVALUATION_WITHOUT_LABELS.md` (Vietnamese — how to evaluate ONE system with no ground truth:
-metamorphic relations, negative control + permutation p-value, Krippendorff α; its §8 lists
-metrics already tried and dead, read it before proposing any new one) and
-`AGENT_AB_EVALUATION.md` (Vietnamese — how to compare TWO systems before/after adding an
-agent: paired McNemar on metamorphic violations as the primary endpoint, always guarded by a
-negative-control specificity so a merely-more-lenient agent can't read as an improvement;
-covers all four candidate agent insertion points, and notes that paired stats at step02/step05
-need the `(source_pdf, page, sentence_index)` pairing key because `claim_id` is not yet
-deterministic across rebuilds — issue #2).
-`docs/SSRL_REASONING_LAYER.md` is referenced by `TEMPORAL_KG_DESIGN.md` but **is not in the
-repo** — the path-reasoning layer (steps 11–13) is unbuilt and its design doc is missing.
+**Per-stage:** `KPI_EXTRACTION_FROM_JSONL.md` (01), `TRIPLET_EXTRACTION_FROM_JSONL.md` (02 —
+also the deterministic `claim_id` derivation), `TRIPLET_VALIDATION.md` (03/03b/03c and the
+`build_validated` block), `ENTITY_RESOLUTION.md` (04 issuer registry incl. the
+graph-signature classifier, 05 entity resolution, and the `build_resolved` block — why it is
+a redesign, not a port), `PROVENANCE_PATCH.md` (05b — offline source_doc/source_page stamping
+so the UI/ledger can cite a report page or an article title), `GRAPH_LOAD_NEO4J.md` (06 —
+also a redesign), `CLAIM_CONDUCT_CROSSCHECK.md` (07 — the analytical core),
+`CLAIM_LEDGER.md` (08 advisory-layer sync + 09 ledger + analyst Cypher), `EXPORT_KGC.md`
+(11 — hub decomposition into a separate export view, never patching the resolved graph).
+
+**Subsystems:** `NEWS_INGESTION.md` (the conduct channel: `esg_news_crawler/` design,
+retrieval strategy, why `coverage.csv` is a deliverable, date normalization — and §6 covers
+the standalone FPT-specific `crawl_data/crawler_news.py`), `ESG_EVIDENCE_VIEW.md` (the
+3-column TT96/GRI UI, `api/` + `frontend/`, incl. the rule that only
+`api/evidence_service.py` ever changes), `LLM_PROVIDERS_AND_CACHING.md` (Gemini/DeepSeek/
+OpenAI, `build_llm_provider()`, RateLimiter, and the two distinct caches),
+`DATA_SYNC.md` (the HF dataset repo and the `data_version.json` pin), `TESTING.md` (the
+test-first rule and what all 38 checks cover).
+
+**Reference vocabularies:** `KPI_DEFINITIONS_CONSTRUCTION_BUILD.md` (the 35 indicators, their
+legal sources, and `kpi_build/`), `GRI_SCHEMA_DOCUMENTATION.md` (the 136 GRI codes, the
+prefix-ownership rule, and the crosswalk).
+
+**Diagrams:** `PIPELINE_DIAGRAMS.md` — 11 Mermaid figures rebuilt against the 16-stage
+`esg_kg` tree (system context, both ingestion channels, the stages, why blocks exist, entity
+resolution, the indicator axis, the cross-check, schema tiers, data layout, end-to-end
+sequence). Editable draw.io/PlantUML sources stay in `diagram/`.
+
+**Future work, not implementations** — don't read these as descriptions of existing code:
+`ROADMAP.md` (open items with their evidence, plus the *rejected* ideas and why: no trained
+greenwashing classifier since no labels exist, no NER replacement for LLM extraction, and the
+removed softmax scoring / evaluation-report stages; §2.1 records that `kpi_gap` /
+`structural_contradiction` are *ghost* signals step07 never writes; §4 lists the doc
+references in source docstrings that point at files not in the repo) and
+`SSRL_REASONING_LAYER.md` (the path-reasoning layer: why the graph is a star, the measured
+"only 20.3% of edges are trainable" finding, the self-critique showing most of the keyword
+benefit was a super-hub artifact, and the quantitative gate for deciding whether to build it;
+§2.2/§6.1 are cited from `report/quality.py`. Restored 2026-08-12 — it had been deleted by
+accident in commit `75b804c`).
+
+Four earlier proposal documents (`CROSSCHECK_EXPANSION.md`, `BERT_NER_GRAPH_QUALITY.md`,
+`ENTITY_RESOLUTION_IMPROVEMENT.md`, `VIETNAM_IMPROVEMENT_PLAN.md`) were folded into
+`ROADMAP.md`; two overview documents (`PROJECT_OVERVIEW.md`, `PIPELINE_UNIFIED.md`) were
+merged into `SYSTEM_DESIGN.md`; `REAL_DATA_INTEGRATION_GUIDE.md` was absorbed into
+`ESG_EVIDENCE_VIEW.md` (its mock→live migration is long done); and four label/evaluation
+documents (`LABELING_STRATEGY.md`, `ANNOTATION_GUIDELINE.md`, `EVALUATION_WITHOUT_LABELS.md`,
+`AGENT_AB_EVALUATION.md`) plus the root `ENTITY_RESOLUTION_PLAN.md` and
+`feedback-gri-catalog.md` were removed. Anything cited from them lives in git history.
+
+`README.md` (root), `esg_news_crawler/README.md`, `kpi_build/README.md`, and `gri/README.md`
+cover their respective subsystems; `src/PIPELINE.md` and `esg_kg/pipeline.py` remain the live
+source of truth for stage run order.
