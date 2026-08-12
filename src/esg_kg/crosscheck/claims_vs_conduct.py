@@ -109,6 +109,7 @@ from __future__ import annotations
 
 import argparse
 import concurrent.futures
+import hashlib
 import json
 import logging
 import os
@@ -446,7 +447,19 @@ class Adjudicator:
     within a single run as well as across re-runs. Only a DEFINITIVE outcome is cached —
     a real verdict, or a confirmed-unparseable reply from a provider that actually
     answered — never a pure provider failure/unavailability, so a transient 403 or a
-    not-yet-configured API key can't freeze "no verdict" into the cache forever."""
+    not-yet-configured API key can't freeze "no verdict" into the cache forever.
+
+    CACHE KEY IS SALTED WITH THE PROMPT + PROVIDER/MODEL (thesis_review.md P1, fixed
+    2026-08-13). Before this, the key was content-only — no prompt, no model, no
+    provider — so the 2026-08-07 ADJUDICATE_SYSTEM tightening (halo-reasoning guard)
+    never reached a single already-cached verdict: every pair whose (claim_text,
+    evidence_text, evidence_meta) had been seen before the prompt change kept replaying
+    the OLD prompt's answer forever. `_cache_salt` is
+    `sha256(ADJUDICATE_SYSTEM)[:12] + "|" + "<name>:<model>,..."` for the enabled
+    provider cascade, computed once at construction time and passed as the FIRST part
+    to every `cache.get`/`cache.put` call — so a byte-for-byte prompt edit, or a
+    provider/model change, changes every key and a legacy unsalted cache file (fewer
+    parts hashed) can never collide with a salted key by construction."""
 
     def __init__(self, model: str, rate_limit: int, order: List[str],
                  api_key: Optional[str] = None,
@@ -481,6 +494,12 @@ class Adjudicator:
                 logger.info(f"[{name}] not available (no key / SDK) — skipped.")
         self.enabled = bool(self.providers)
         self.cache = cache
+        # P1 fix: bind cache entries to the exact prompt + provider/model that could
+        # have produced them. Order matters (it's part of the cascade), so this is
+        # NOT sorted — a reordered --provider-order is a legitimately different run.
+        prompt_hash = hashlib.sha256(ADJUDICATE_SYSTEM.encode("utf-8")).hexdigest()[:12]
+        provider_sig = ",".join(f"{p.name}:{p.model}" for p in self.providers)
+        self._cache_salt = f"{prompt_hash}|{provider_sig}"
         if self.enabled:
             logger.info(f"Adjudicator ready: providers = {[p.name for p in self.providers]}")
         else:
@@ -490,7 +509,7 @@ class Adjudicator:
         if not self.enabled:
             return None
         if self.cache is not None:
-            cached, hit = self.cache.get(claim_text, evidence_text, evidence_meta)
+            cached, hit = self.cache.get(self._cache_salt, claim_text, evidence_text, evidence_meta)
             if hit:
                 return cached
         user = (
@@ -522,7 +541,7 @@ class Adjudicator:
         if not any(p.enabled for p in self.providers):
             self.enabled = False
         if self.cache is not None and answered:
-            self.cache.put(claim_text, evidence_text, evidence_meta, value=result)
+            self.cache.put(self._cache_salt, claim_text, evidence_text, evidence_meta, value=result)
         return result
 
     def summary(self) -> Dict[str, Any]:

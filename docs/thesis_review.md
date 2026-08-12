@@ -30,6 +30,66 @@ and `CBTT` as tickers. The thesis's "115 issuers" is **correct**; see §3.
 
 ---
 
+## 0. Status Update — P1 fixed (2026-08-13)
+
+**P1 (the cache-key bug) is fixed, TDD-verified, and re-run against all 401 pairs / 5 tickers.**
+Everything else in this review (P2–P8, and Tier 1 items 2–3) is still open as originally written.
+
+**What changed.** `Adjudicator` (`src/esg_kg/crosscheck/claims_vs_conduct.py`) now salts every
+cache key with `sha256(ADJUDICATE_SYSTEM)[:12] + "|" + "<provider>:<model>,..."`, computed once at
+construction and passed as the first part to `ContentCache.get`/`put`. Landed test-first: 3 new
+tests in `test/test_esg_kg_crosscheck.py` (`test_adjudicator_cache_salt_changes_with_prompt`,
+`test_prompt_change_forces_fresh_adjudication`, `test_legacy_unsalted_cache_entries_never_hit`),
+confirmed red before the fix, green after, no regressions elsewhere. Proved by construction (2,000
+random-triple check, 0 collisions) that a legacy unsalted key can never collide with a new salted
+key — the review's own validation bullet ("hits against the old cache drop to 0") holds exactly,
+not approximately: the real `adjudication_cache.json`'s 541 pre-fix entries are now permanently
+orphaned (dead weight, harmless) rather than silently reused.
+
+`claims_vs_conduct` was then re-run for all five tickers (401 candidate pairs, matching this
+review's count exactly):
+
+| | Before (stale cache) | After (salted cache) |
+|---|---|---|
+| `appears_supported` (claims) | 13 | **24** |
+| `appears_contradicted` (claims) | 3 | **3** — same 3 claims, confirmed by per-claim diff |
+| `unverified_insufficient_evidence` | 448 | **437** |
+| Unverified rate | 96.55% | **94.18%** |
+| Cited evidence items (supporting+contradicting, the P2 "24 pairs" population) | 24 | **43** |
+| Provider | openai | gemini |
+
+All movement is confined to **ACG** (12→23 supported claims, 3→3 contradicted, 18→36 supporting
+evidence items, 5→6 contradicting); AAA/ACC/ADP/AGG are numerically unchanged — their conduct
+pools are too thin to have had any candidate pair whose verdict could flip. Pre-fix state is
+preserved at `graph_output/crosscheck/_pre_p1_fix_backup/` (dossiers, stats, and the original
+541-entry cache) for exactly this before/after.
+
+**This is the opposite direction from what §2/P1 predicted** ("a tightened prompt pushes more
+pairs to `irrelevant`... a correct re-run will probably push the unverified rate *above* 96.55%").
+It went down instead. **Read this cautiously, not as validation of the prompt fix**: the re-run
+changed two things at once — the prompt now actually reaches the cache, *and* the provider
+switched from OpenAI to Gemini, since OpenAI has no default path in the code as it stands today
+(§ "History that must not be re-litigated" applies the same logic CLAUDE.md already states). A
+spot check of 15 flipped claims found the new `supports` verdicts evidence-grounded, not obviously
+halo reasoning — but that is not a controlled ablation, and the two confounded variables mean this
+result cannot be cited as isolating the prompt-tightening's effect. Retrieval itself did not move
+(candidate_pairs is unchanged in every ticker), so this is purely an adjudication-side shift.
+
+**Consequence for P2.** The 226-pair population the 200-pair gold annotation was drawn from
+existed *before* this fix; the pipeline now cites **43** evidence items, not 24 and not 226. The
+existing blind-annotation numbers in `docs/ANNOTATION_RESULTS.md` (26.5%/35.0% pre-fix, 86.7%
+post-fix-retrieval-only) describe the *pre-P1-fix* system and remain valid as a historical
+before/after of the retrieval fix alone — but **they do not describe today's 43-pair output**, and
+no new annotation pass has been run against it. P2's write-up should say precisely this: report
+the existing before/after (retrieval-only fix, still legitimate and still the project's best
+result), and flag that the pipeline's cited output has since changed again and is not yet
+re-labelled. Do not silently graft the old 86.7% onto the new 43-pair set.
+
+**Still open, not touched by this fix:** Tier 1 item 3 (record model id + `min_topic_overlap` in
+the stats file — the new stats files still lack it); all of P2–P8; the full Tier 2/3 roadmap.
+
+---
+
 ## 1. Executive Assessment
 
 **This is a good thesis with a serious reporting problem and one serious engineering problem, and
@@ -82,7 +142,7 @@ Ranked by (risk to defensibility × ease of remedy). IDs cross-reference the two
 methodology, B = systems, S = chair).
 
 ### P1 — The prompt half of the contamination fix never reached the reported numbers
-**Critical · [CONFIRMED] · (B1)**
+**Critical · [CONFIRMED] · (B1) · [FIXED 2026-08-13 — see §0 Status Update]**
 
 Commit `7c108f9` has three layers: issuer-scope the conduct pool, add VN-aware tokenisation with
 `min_topic_overlap=2`, and tighten `ADJUDICATE_SYSTEM` against halo reasoning. Layers 1–2 provably
@@ -592,10 +652,11 @@ that the codebase ports EmeraldMind's steps 1→3 closely.
 
 **Tier 1 — Correctness of what is reported (do first; P2's write-up depends on the P1 re-run).**
 
-1. **Salt the adjudication cache key** with `sha256(ADJUDICATE_SYSTEM)` + model id; re-run
-   `claims_vs_conduct` for the five tickers (401 pairs). Re-report 464/448/13/3 from that run.
-   *Validate:* hits against the old cache drop to 0; add a test that a one-byte prompt change
-   invalidates every entry. **2–3 h + small bounded LLM spend.**
+1. **[DONE 2026-08-13 — see §0]** ~~Salt the adjudication cache key with `sha256(ADJUDICATE_SYSTEM)`
+   + model id; re-run `claims_vs_conduct` for the five tickers (401 pairs). Re-report 464/448/13/3
+   from that run. *Validate:* hits against the old cache drop to 0; add a test that a one-byte
+   prompt change invalidates every entry.~~ New figures: 464/437/24/3 (94.18% unverified); see §0
+   for the provider-confound caveat this re-run surfaced.
 2. **Fix `anchor_kpi`'s glob** and add a 100%-failure guard that exits non-zero; re-run
    `build_validated` (offline, free). *Validate:* `raw_matches > 0`; two tests go green untouched.
    **1 h.**
@@ -660,7 +721,7 @@ The smallest set that makes the thesis defensible. Everything here is Tier 1 or 
 
 | # | Fix | Why it is non-negotiable | Effort |
 |---|---|---|---|
-| 1 | Salt the cache key and re-adjudicate the 401 pairs | Otherwise the reported verdicts are not the output of the submitted code. This is a correctness issue, not a presentation one | 2–3 h + small spend |
+| 1 | ~~Salt the cache key and re-adjudicate the 401 pairs~~ **DONE 2026-08-13 (§0)** | Otherwise the reported verdicts are not the output of the submitted code. This is a correctness issue, not a presentation one | 2–3 h + small spend |
 | 2 | Fix `anchor_kpi`'s glob + add the failure guard | A pipeline stage silently producing nothing, detected by its own tests, left standing | 1 h |
 | 3 | Add the before/after precision subsection | Closes the one gap an examiner could read as selective reporting — and it is the project's best result | 3–4 h |
 | 4 | Write Chapter 5 (Discussion + Threats) and Chapter 6 (Conclusion) | A thesis without a conclusion is structurally incomplete; also discharges three dangling references | 6–8 h |

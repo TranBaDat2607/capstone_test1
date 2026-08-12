@@ -932,6 +932,105 @@ def test_adjudication_cache_survives_across_runs():
             nw2.close()
 
 
+# --------------------------------------------------------------------------- #
+# P1 (docs/thesis_review.md): the cache key must be salted with the prompt (and
+# model), so a prompt edit can never replay a verdict produced under an OLD prompt.
+# Before this fix `ContentCache.get`/`put` were called with only
+# `(claim_text, evidence_text, evidence_meta)` — content-only, no prompt, no model —
+# so the 2026-08-07 ADJUDICATE_SYSTEM tightening never reached any cached verdict.
+# --------------------------------------------------------------------------- #
+def test_adjudicator_cache_salt_changes_with_prompt():
+    """`Adjudicator._cache_salt` must change when ADJUDICATE_SYSTEM changes by even one
+    byte — the direct, fast unit-level pin of the mechanism the two behavioural tests
+    below exercise end-to-end."""
+    stub = make_stub("always_supports")
+    original_provider = new_step07._GeminiProvider
+    original_prompt = new_step07.ADJUDICATE_SYSTEM
+    try:
+        new_step07._GeminiProvider = stub
+        a1 = new_step07.Adjudicator("gemini-2.5-flash", 60, ["gemini"])
+        salt1 = a1._cache_salt
+
+        new_step07.ADJUDICATE_SYSTEM = original_prompt + " "  # one extra byte
+        a2 = new_step07.Adjudicator("gemini-2.5-flash", 60, ["gemini"])
+        salt2 = a2._cache_salt
+
+        assert salt1 != salt2, (
+            "changing ADJUDICATE_SYSTEM by one byte must change the cache salt "
+            f"(got the same salt {salt1!r} twice)")
+    finally:
+        new_step07._GeminiProvider = original_provider
+        new_step07.ADJUDICATE_SYSTEM = original_prompt
+
+
+def test_prompt_change_forces_fresh_adjudication():
+    """A prompt edit between two runs against the SAME cache file must force a fresh
+    provider call, not replay the verdict cached under the old prompt — the exact
+    scenario P1 diagnosed (the 2026-08-07 prompt tightening silently missed every
+    reported verdict because the cache key ignored the prompt entirely)."""
+    graph = _duplicate_claim_graph()
+    original_prompt = new_step07.ADJUDICATE_SYSTEM
+    with tempfile.TemporaryDirectory(prefix="esgkg_step07_cache_salt_") as td:
+        cache_path = Path(td) / "adjudication_cache.json"
+
+        nw1, stub1, _ = run_new(graph, stub_mode="always_supports", max_llm_pairs=10,
+                                 max_workers=1, cache=cache_path)
+        nw1.close()
+        assert len(stub1.calls_seen) == 1, "sanity: first run should call the provider once"
+
+        try:
+            new_step07.ADJUDICATE_SYSTEM = original_prompt + " "  # simulate a prompt edit
+            nw2, stub2, _ = run_new(graph, stub_mode="always_supports", max_llm_pairs=10,
+                                     max_workers=1, cache=cache_path)
+            try:
+                assert len(stub2.calls_seen) == 1, (
+                    "a changed prompt must force exactly one fresh call, not replay the "
+                    f"verdict cached under the old prompt: {stub2.calls_seen}")
+            finally:
+                nw2.close()
+        finally:
+            new_step07.ADJUDICATE_SYSTEM = original_prompt
+
+
+def test_legacy_unsalted_cache_entries_never_hit():
+    """A cache file written under the OLD (pre-fix) unsalted key format —
+    `ContentCache.key(claim_text, evidence_text, evidence_meta)`, exactly what
+    `adjudication_cache.json` holds today — must never be served as a hit once the
+    salt lands. Validates P1's acceptance criterion literally: 'hits against the old
+    cache drop to 0'."""
+    graph = _duplicate_claim_graph()
+    g = new_step07.Graph(copy.deepcopy(graph))
+    claim_text = new_step07.node_text(g.nodes[1])
+    evidence_text = new_step07.node_text(g.nodes[3])
+    evidence_meta = (f"{g.cls(3)} from {new_step07.node_domain(g.nodes[3]) or 'news'}, "
+                      f"year {new_step07.node_year(g.nodes[3])}")
+
+    from esg_kg.core.llm_cache import ContentCache  # noqa: E402 (local import, test-only)
+
+    legacy_key = ContentCache.key(claim_text, evidence_text, evidence_meta)
+    stale_verdict = {"verdict": "contradicts", "confidence": 0.9,
+                      "rationale": "stale pre-fix verdict", "provider": "gemini"}
+
+    with tempfile.TemporaryDirectory(prefix="esgkg_step07_cache_salt_") as td:
+        cache_path = Path(td) / "adjudication_cache.json"
+        cache_path.write_text(
+            json.dumps({"version": 1, "entries": {legacy_key: stale_verdict}}),
+            encoding="utf-8")
+
+        nw, stub, _ = run_new(graph, stub_mode="always_supports", max_llm_pairs=10,
+                               max_workers=1, cache=cache_path)
+        try:
+            assert len(stub.calls_seen) == 1, (
+                "a legacy unsalted cache entry must never be served as a hit — the "
+                f"provider must still be called: {stub.calls_seen}")
+            d = nw.dossiers()
+            assert d[0]["assessment"] == "appears_supported", (
+                "the fresh (salted) verdict must win, not the stale legacy "
+                f"'contradicts' entry: {d[0]['assessment']}")
+        finally:
+            nw.close()
+
+
 if __name__ == "__main__":
     fns = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     for fn in fns:
