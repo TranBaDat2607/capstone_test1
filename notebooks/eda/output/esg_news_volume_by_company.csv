@@ -1,0 +1,116 @@
+ticker,company,total_sentences,esg_sentences,esg_ratio,environmental_sentences,social_sentences,governance_sentences
+HAR,CTCP Đầu tư Thương mại Bất động sản An Dương Thảo Điền,3789,2055,0.5424,880,658,424
+SC5,CTCP Xây dựng Số 5,3051,1636,0.5362,808,520,222
+BRC,CTCP Cao su Bến Thành,2671,1545,0.5784,845,341,279
+CSM,CTCP Công nghiệp Cao su Miền Nam,2699,1369,0.5072,876,338,95
+NVT,CTCP Bất động sản Du lịch Ninh Vân Bay,2713,1363,0.5024,777,334,166
+LGL,CTCP Đầu tư và Phát triển Đô thị Long Giang,2726,1358,0.4982,594,494,202
+AGG,CTCP Đầu tư và Phát triển Bất động sản An Gia,2739,1355,0.4947,807,363,117
+SHI,CTCP Quốc tế Sơn Hà,3376,1338,0.3963,725,332,235
+CCL,CTCP Đầu tư và Phát triển Đô thị Dầu khí Cửu Long,1894,1297,0.6848,1109,98,49
+DTT,CTCP Kỹ nghệ Đô Thành,1708,1174,0.6874,866,179,69
+VCA,CTCP Thép VICASA,2971,1174,0.3952,880,152,40
+GTA,CTCP Chế biến gỗ Thuận An,1800,1156,0.6422,847,241,13
+DTA,CTCP Đệ Tam,1592,1120,0.7035,897,93,88
+GVR,Tập đoàn Công nghiệp Cao su Việt Nam - CTCP,1752,1091,0.6227,835,98,110
+THG,CTCP Đầu tư và Xây dựng Tiền Giang,1914,1090,0.5695,783,209,45
+DXS,CTCP Dịch vụ Bất động sản Đất Xanh,2320,1079,0.4651,792,178,80
+C32,CTCP Đầu tư và Xây dựng 3-2,2251,1074,0.4771,838,119,77
+COM,CTCP Vật tư - Xăng Dầu,1468,1063,0.7241,788,143,80
+FIT,CTCP Tập đoàn F.I.T,1874,1013,0.5406,810,92,74
+TEG,CTCP Trường Thành Energy Group,1902,1006,0.5289,773,138,50
+PLP,CTCP Sản xuất và Công nghệ Nhựa Pha Lê,1393,954,0.6849,807,97,31
+BTP,CTCP Nhiệt điện Bà Rịa,1336,936,0.7006,635,188,88
+CRE,CTCP Bất động sản Thế Kỷ,1446,932,0.6445,556,214,115
+SAM,CTCP SAM Holdings,1905,927,0.4866,683,146,70
+MDG,CTCP Miền Đông,1535,903,0.5883,615,231,30
+HDG,CTCP Tập đoàn Hà Đô,1578,901,0.571,735,69,62
+ADP,CTCP Sơn Á Đông,1297,899,0.6931,773,77,32
+SCR,CTCP Địa ốc Sài Gòn Thương Tín,1384,865,0.625,688,104,47
+HPX,CTCP Đầu tư Hải Phát,1316,861,0.6543,643,100,67
+HII,CTCP An Tiến Industries,1331,852,0.6401,646,156,21
+TPC,CTCP Nhựa Tân Đại Hưng,2254,848,0.3762,509,253,17
+VPH,CTCP Vạn Phát Hưng,1267,793,0.6259,614,73,75
+HID,CTCP Halcom Việt Nam,1571,781,0.4971,623,78,50
+DHA,CTCP Hóa An,1381,777,0.5626,518,134,69
+FCM,CTCP Bê tông Phan Vũ Hà Nam,1680,772,0.4595,437,237,72
+AAA,CTCP Nhựa An Phát Xanh,1507,762,0.5056,660,67,22
+CTR,Tổng Công ty cổ phần Công trình Viettel,1380,757,0.5486,415,203,98
+CCI,CTCP Đầu tư Phát triển Công nghiệp Thương mại Củ Chi,1909,755,0.3955,528,85,69
+ASM,CTCP Tập đoàn Sao Mai,1512,753,0.498,588,85,48
+REE,CTCP Cơ Điện Lạnh,1665,748,0.4492,493,159,55
+BCE,CTCP Xây dựng và Giao thông Bình Dương,1752,748,0.4269,429,138,133
+OGC,CTCP Tập đoàn Đại Dương,1824,737,0.4041,413,160,99
+VCG,Tổng Công ty cổ phần Xuất nhập khẩu và Xây dựng Việt Nam,1524,722,0.4738,428,147,90
+LBM,CTCP Khoáng sản và Vật liệu Xây dựng Lâm Đồng,1474,714,0.4844,506,113,62
+TV2,CTCP Tư vấn Xây dựng Điện 2,1430,686,0.4797,343,150,125
+PDR,CTCP Phát triển Bất động sản Phát Đạt,1514,685,0.4524,410,123,109
+D2D,CTCP Phát triển Đô thị Công nghiệp số 2,1246,684,0.549,518,67,61
+TDH,CTCP Phát triển Nhà Thủ Đức,1455,670,0.4605,393,104,118
+CTI,CTCP Đầu tư Phát triển Cường Thuận IDICO,1938,670,0.3457,391,150,66
+VNE,Tổng Công ty cổ phần Xây dựng Điện Việt Nam,1282,666,0.5195,407,109,111
+PHC,CTCP Xây dựng Phục Hưng Holdings,1355,662,0.4886,347,206,63
+QCG,CTCP Quốc Cường Gia Lai,2712,658,0.2426,367,161,83
+C47,CTCP Xây dựng 47,1196,657,0.5493,457,72,90
+CRV,CTCP Tập đoàn Bất động sản CRV,1730,639,0.3694,393,125,90
+NTL,CTCP Phát triển Đô thị Từ Liêm,1236,639,0.517,442,79,72
+BMP,CTCP Nhựa Bình Minh,1378,636,0.4615,517,76,30
+NKG,CTCP Thép Nam Kim,1588,632,0.398,470,45,71
+NBB,CTCP Đầu tư Năm Bảy Bảy,1133,611,0.5393,394,88,84
+HUB,CTCP Xây lắp Thừa Thiên Huế,1162,603,0.5189,478,78,30
+DIG,Tổng Công ty cổ phần Đầu tư Phát triển Xây dựng,1216,598,0.4918,397,79,81
+ITC,CTCP Đầu tư và Kinh doanh Nhà,1052,595,0.5656,377,83,86
+KBC,Tổng Công ty Phát triển Đô thị Kinh Bắc - CTCP,1271,583,0.4587,445,79,34
+CCC,CTCP Xây dựng CDC,1116,583,0.5224,373,165,20
+ACG,CTCP Gỗ An Cường,1316,581,0.4415,484,58,21
+LHG,CTCP Long Hậu,1105,569,0.5149,410,61,68
+HPG,CTCP Tập đoàn Hòa Phát,1152,569,0.4939,408,60,71
+KDH,CTCP Đầu tư và Kinh doanh Nhà Khang Điền,1349,560,0.4151,326,111,71
+HT1,CTCP Xi Măng Vicem Hà Tiên,3090,547,0.177,402,102,21
+KSB,CTCP Khoáng sản và Xây dựng Bình Dương,1278,546,0.4272,330,132,45
+HQC,CTCP Tư vấn Thương mại Dịch vụ Địa Ốc Hoàng Quân,1689,542,0.3209,266,179,58
+CDC,CTCP Chương Dương,1144,539,0.4712,271,150,73
+NLG,CTCP Đầu tư Nam Long,1049,530,0.5052,343,109,58
+ACC,CTCP Đầu tư và Xây dựng Bình Dương ACC,1133,514,0.4537,355,88,36
+CII,CTCP Đầu tư Hạ tầng Kỹ thuật Thành phố Hồ Chí Minh,1253,513,0.4094,348,72,58
+L10,CTCP Lilama 10,996,511,0.5131,359,110,17
+UIC,CTCP Đầu tư Phát triển Nhà và Đô thị IDICO,1328,504,0.3795,318,114,42
+LM8,CTCP Lilama 18,1052,497,0.4724,346,100,39
+KOS,CTCP KOSY,2205,496,0.2249,106,285,18
+NVL,CTCP Tập đoàn Đầu tư Địa ốc No Va,1023,488,0.477,351,78,42
+HDC,CTCP Phát triển Nhà Bà Rịa - Vũng Tàu,1066,487,0.4568,386,66,18
+SRF,CTCP SEAREFICO,1349,475,0.3521,188,169,82
+SGR,CTCP Tổng CTCP Địa ốc Sài Gòn,1814,473,0.2607,248,156,45
+APH,CTCP Tập đoàn An Phát Holdings,1154,442,0.383,335,65,33
+CTD,CTCP Xây dựng Coteccons,899,415,0.4616,251,94,47
+PTL,CTCP Victory Group,861,415,0.482,321,58,20
+KHG,CTCP Tập đoàn Khải Hoàn Land,1128,412,0.3652,273,85,36
+HSG,CTCP Tập đoàn Hoa Sen,1275,408,0.32,172,158,29
+SJS,CTCP SJ Group,1698,408,0.2403,275,89,26
+VHM,CTCP Vinhomes,1235,405,0.3279,253,116,16
+EVG,CTCP Tập đoàn EverLand,2371,383,0.1615,130,188,47
+IJC,CTCP Phát triển Hạ tầng Kỹ thuật,1069,363,0.3396,230,53,52
+CKG,CTCP Tập đoàn CIC,1205,362,0.3004,123,117,82
+VPI,CTCP Phát triển Bất động sản Văn Phú,842,362,0.4299,240,87,17
+TCO,CTCP Janus Group,1711,341,0.1993,221,58,31
+TCD,CTCP Tập đoàn Xây dựng TRACODI,970,334,0.3443,185,70,53
+LGC,CTCP Đầu tư Cầu đường CII,1125,318,0.2827,140,111,44
+TTF,CTCP Tập đoàn Kỹ nghệ gỗ Trường Thành,791,316,0.3995,211,62,24
+HTI,CTCP Đầu tư Phát triển Hạ tầng IDICO,823,311,0.3779,249,38,14
+LCG,CTCP Lizen,1382,308,0.2229,60,161,52
+PC1,CTCP Tập Đoàn PC1,1197,308,0.2573,154,55,85
+BCM,Tập đoàn Đầu tư và Phát triển Công nghiệp Becamex - CTCP,799,306,0.383,139,130,20
+HMC,CTCP Kim khí Thành phố Hồ Chí Minh - VNSTEEL,994,305,0.3068,208,55,28
+FIR,CTCP Địa ốc First Real,994,304,0.3058,139,116,31
+DRH,CTCP DRH Holdings,998,286,0.2866,174,74,28
+HTN,CTCP Hưng Thịnh Incons,1034,269,0.2602,106,99,40
+FCN,CTCP FECON,982,268,0.2729,161,57,32
+VIC,Tập đoàn VINGROUP - CTCP,977,226,0.2313,141,60,20
+VGC,Tổng Công ty Viglacera - CTCP,856,225,0.2629,146,45,20
+LDG,CTCP Đầu tư LDG,1016,225,0.2215,98,61,54
+TAL,CTCP Đầu tư Bất động sản Taseco,1917,208,0.1085,110,67,21
+DC4,CTCP DICERA Holdings,1006,200,0.1988,59,73,54
+SZL,CTCP Sonadezi Long Thành,772,174,0.2254,96,58,11
+SZC,CTCP Sonadezi Châu Đức,789,171,0.2167,112,23,32
+HU1,CTCP Đầu tư và Xây dựng HUD1,737,154,0.209,48,78,18
+VRE,CTCP Vincom Retail,817,146,0.1787,85,27,32

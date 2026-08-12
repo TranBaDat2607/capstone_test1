@@ -1,0 +1,10 @@
+{
+  "description": "Streamline your tasks with an intuitive web app that automates everyday activities, saving time and boosting productivity for busy professionals.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
