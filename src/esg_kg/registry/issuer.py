@@ -56,9 +56,15 @@ import pandas as pd
 from esg_kg.core.naming import merge_preserving_edits, name_tokens, normalize_name
 from esg_kg.core.paths import REPO_ROOT
 
-# Report files are named "<TICKER>_Baocaothuongnien_<YEAR>"; the ticker is the
-# corpus issuer. We read it from KPI source_ids, which carry that stem.
-REPORT_STEM_RE = re.compile(r"^([A-Za-z0-9]{2,5})_Baocaothuongnien", re.IGNORECASE)
+# Report files are named either "<TICKER>_Baocaothuongnien_<YEAR>" (the legacy stem a
+# few of AAA's older PDFs carry) or, the current convention for every company's raw
+# annual reports (data/raw/annual_report/.../HAR_2016.pdf, ACC_2013.pdf, ...),
+# plain "<TICKER>_<YEAR>". The ticker is the corpus issuer; we read it from KPI
+# source_ids, which carry whichever stem the source PDF was named with. 2026-08-08:
+# this used to match ONLY the legacy form, so `collect_org_signals` detected just AAA
+# out of a multi-company corpus — see `build()`'s carry-forward comment below for the
+# data-loss this caused downstream.
+REPORT_STEM_RE = re.compile(r"^([A-Za-z0-9]{2,5})_(?:Baocaothuongnien|\d{4})", re.IGNORECASE)
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -403,6 +409,22 @@ def build(input_file: Path, companies_xlsx: Path, output_file: Path,
         r = registry[ticker]
         logger.info(f"  {ticker} ({official}): {len(r['aliases'])} aliases, "
                     f"{len(r['exclusions'])} exclusions, {len(r['needs_review'])} need review")
+
+    # A ticker already curated in `existing` but not rebuilt this run — this run's
+    # corpus has no KPI source_id matching REPORT_STEM_RE for it (a scoped --doc run,
+    # a company simply absent from this corpus, or an unrecognised filename stem) —
+    # must be carried forward UNCHANGED, never silently dropped. Before this,
+    # `registry` started empty and only ever gained tickers that were rebuilt, so any
+    # other ticker in `existing` vanished from the file this write — the file is
+    # TRACKED and human-edited, so that is a silent deletion of curated work, not a
+    # harmless no-op. (2026-08-08: caught live — a run against the real registry
+    # dropped ACC/ACG/ADP/AGG down to just the one ticker rebuilt that run.)
+    carried = sorted(t for t in existing if t not in registry)
+    for ticker in carried:
+        registry[ticker] = existing[ticker]
+    if carried:
+        logger.info(f"  carried forward {len(carried)} ticker(s) not rebuilt this run "
+                    f"(untouched): {carried}")
 
     output_file.parent.mkdir(parents=True, exist_ok=True)
     output_file.write_text(json.dumps(registry, indent=2, ensure_ascii=False), encoding="utf-8")

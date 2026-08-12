@@ -31,6 +31,17 @@ never spend a cent, yet they lock the exact JSON request step07 pays for.
 `temperature=0` or `response_mime_type`, the paid adjudication silently changes
 behaviour and only this arm notices.
 
+2026-08-08: TRANSIENT-ERROR RETRY (user hitting frequent 503s on gemini-2.5-flash-lite).
+`_GeminiProvider.call()` used to surface a `ServerError` (Gemini's "model overloaded,
+try again" 5xx) to the caller on the very first occurrence — with a 503 a plain retry
+almost always succeeds, so failing immediately was needlessly costly (Adjudicator counts
+it as a failure and may disable the provider after 3). The three
+`test_gemini_provider_retries_on_server_error*` / `_does_not_retry_client_error` arms
+below pin: a `ServerError` (5xx) is retried with exponential backoff up to
+`max_retries`, a `ClientError` (4xx — bad request, not-found, auth) is NEVER retried
+(retrying a 4xx just burns quota for nothing), and the backoff sleeps go through the
+same fake-clock seam as `RateLimiter` so nothing here really sleeps.
+
 Offline: no LLM, no Neo4j, no network. Needs no artifacts from `graph_output/`, so unlike
 its sibling files every arm here runs on a bare clone.
 
@@ -46,6 +57,8 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO / "src"))
+
+from google.genai import errors as genai_errors  # noqa: E402
 
 # --- new: the esg_kg package ---------------------------------------------------
 from esg_kg.core import llm as new_llm  # noqa: E402
@@ -269,6 +282,136 @@ def test_gemini_provider_survives_a_none_reply():
 
     assert out == "", f"None-reply handling diverged: {out!r}"
     print("     (text=None -> '')")
+
+
+class _StubModelsFlaky:
+    """Raises a transient ServerError `fail_times` times, then succeeds."""
+
+    def __init__(self, fail_times, text=' {"verdict": "supports"} '):
+        self.fail_times = fail_times
+        self.text = text
+        self.attempts = 0
+
+    def generate_content(self, **kwargs):
+        self.attempts += 1
+        if self.attempts <= self.fail_times:
+            raise genai_errors.ServerError(503, {"error": {"message": "overloaded", "status": "UNAVAILABLE"}})
+        return _StubGenerateContentResponse(self.text)
+
+
+class _StubModelsAlwaysServerError:
+    def __init__(self):
+        self.attempts = 0
+
+    def generate_content(self, **kwargs):
+        self.attempts += 1
+        raise genai_errors.ServerError(503, {"error": {"message": "overloaded", "status": "UNAVAILABLE"}})
+
+
+class _StubModelsClientError:
+    def __init__(self):
+        self.attempts = 0
+
+    def generate_content(self, **kwargs):
+        self.attempts += 1
+        raise genai_errors.ClientError(404, {"error": {"message": "not found", "status": "NOT_FOUND"}})
+
+
+def _gemini_provider_with_stub(models, *, max_retries=5, retry_backoff_base=1.0):
+    saved = os.environ.get("GEMINI_API_KEY")
+    os.environ["GEMINI_API_KEY"] = "not-a-real-key"
+    try:
+        p = new_llm._GeminiProvider("gemini-2.5-flash-lite", 10,
+                                     max_retries=max_retries, retry_backoff_base=retry_backoff_base)
+    finally:
+        if saved is None:
+            os.environ.pop("GEMINI_API_KEY", None)
+        else:
+            os.environ["GEMINI_API_KEY"] = saved
+    assert p.enabled is True
+    p.client = _pytypes.SimpleNamespace(models=models)
+    p.rl = _SpyLimiter([])
+    return p
+
+
+def test_gemini_provider_default_retry_config():
+    """Without an override, a provider picks up the module-level retry defaults —
+    the same 'one place, not six' shape as DEFAULT_RATE_LIMIT/DEFAULT_MODEL."""
+    p = _gemini_provider_with_stub(_StubModelsAlwaysServerError(),
+                                    max_retries=new_llm.DEFAULT_MAX_RETRIES,
+                                    retry_backoff_base=new_llm.DEFAULT_RETRY_BACKOFF_BASE)
+    assert p.max_retries == new_llm.DEFAULT_MAX_RETRIES
+    assert p.retry_backoff_base == new_llm.DEFAULT_RETRY_BACKOFF_BASE
+    print(f"     (defaults: max_retries={new_llm.DEFAULT_MAX_RETRIES}, "
+          f"backoff_base={new_llm.DEFAULT_RETRY_BACKOFF_BASE}s)")
+
+
+def test_gemini_provider_retries_on_server_error():
+    """A transient 503 (ServerError) is retried with exponential backoff instead of
+    being surfaced as a failure on the very first occurrence."""
+    models = _StubModelsFlaky(fail_times=2)
+    p = _gemini_provider_with_stub(models, max_retries=5, retry_backoff_base=1.0)
+
+    clock = FakeClock()
+    original = new_llm.time
+    new_llm.time = clock
+    try:
+        out = p.call("s", "u")
+    finally:
+        new_llm.time = original
+
+    assert out == '{"verdict": "supports"}', repr(out)
+    assert models.attempts == 3, f"expected 2 failures + 1 success, got {models.attempts} attempts"
+    assert clock.sleeps == [1.0, 2.0], f"exponential backoff schedule changed: {clock.sleeps}"
+    print("     (503 retried twice with 1.0s/2.0s backoff, then succeeded)")
+
+
+def test_gemini_provider_gives_up_after_max_retries():
+    """A ServerError that never clears must still propagate once max_retries is
+    exhausted — retry is a mitigation, not an infinite loop that hides an outage."""
+    models = _StubModelsAlwaysServerError()
+    p = _gemini_provider_with_stub(models, max_retries=3, retry_backoff_base=1.0)
+
+    clock = FakeClock()
+    original = new_llm.time
+    new_llm.time = clock
+    try:
+        try:
+            p.call("s", "u")
+        except genai_errors.ServerError:
+            pass
+        else:
+            raise AssertionError("expected ServerError to propagate after exhausting retries")
+    finally:
+        new_llm.time = original
+
+    assert models.attempts == 4, f"expected 1 initial + 3 retries = 4 attempts, got {models.attempts}"
+    assert clock.sleeps == [1.0, 2.0, 4.0], f"backoff schedule changed: {clock.sleeps}"
+    print("     (gives up and re-raises after max_retries; backoff schedule 1/2/4s)")
+
+
+def test_gemini_provider_does_not_retry_client_error():
+    """A 4xx ClientError (bad request, not-found, auth) must fail FAST, not retry —
+    retrying a client error just burns quota for an error retrying can't fix."""
+    models = _StubModelsClientError()
+    p = _gemini_provider_with_stub(models, max_retries=5, retry_backoff_base=1.0)
+
+    clock = FakeClock()
+    original = new_llm.time
+    new_llm.time = clock
+    try:
+        try:
+            p.call("s", "u")
+        except genai_errors.ClientError:
+            pass
+        else:
+            raise AssertionError("expected ClientError to propagate immediately")
+    finally:
+        new_llm.time = original
+
+    assert models.attempts == 1, f"a 4xx must not be retried, got {models.attempts} attempts"
+    assert clock.sleeps == [], f"must not sleep/backoff on a non-retryable client error: {clock.sleeps}"
+    print("     (4xx ClientError is NOT retried — fails fast)")
 
 
 # --------------------------------------------------------------------------- #

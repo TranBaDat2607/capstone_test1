@@ -209,6 +209,71 @@ def test_collect_org_signals_matches_src_on_the_real_corpus():
     print(f"     ({len(new_orgs)} org names, {len(new_tickers)} tickers, identical)")
 
 
+def test_collect_org_signals_detects_ticker_from_plain_year_filename():
+    """2026-08-08: REPORT_STEM_RE only matched the legacy `<TICKER>_Baocaothuongnien...`
+    filename (true for some of AAA's older PDFs). Every current annual report — AAA's
+    newer ones included — is named `<TICKER>_<year>.pdf` (data/raw/annual_report/.../
+    HAR_2016.pdf, ACC_2013.pdf, ...), which never matched, so `collect_org_signals`
+    silently detected ONLY AAA out of a corpus containing several companies. That single-
+    ticker detection then fed `build()`'s tickers loop directly (see the test below for
+    the data-loss consequence: a non-empty-but-incomplete detection defeats the
+    empty-set fallback). This is the source-of-truth fix: the plain `<TICKER>_YYYY`
+    convention must be detected too.
+    """
+    triples = [
+        {"subject": {"class": "KPIObservation",
+                     "properties": {"source_id": "HAR_2016.pdf_14_0", "kpi_type": "test"}},
+         "object": {"class": "Organization", "properties": {"name": "Test Co"}},
+         "predicate": "observedAtFacility"},
+    ]
+    _, _, tickers = new_issuer.collect_org_signals(triples)
+    assert "HAR" in tickers, f"plain '<TICKER>_YYYY.pdf' source_id not detected: {tickers}"
+    print("     ('HAR_2016.pdf_14_0' -> ticker 'HAR' detected)")
+
+
+def test_build_carries_forward_tickers_not_rebuilt_this_run():
+    """2026-08-08: a real run against the live registry demonstrated this deleting
+    ACC/ACG/ADP/AGG — `registry = {}` starts empty and is only populated for tickers in
+    THIS run's detected `tickers` set; anything in `existing` but not rebuilt this run
+    was silently dropped rather than carried forward, despite the "preserving human
+    edits" log line implying otherwise. Reproduced here with a synthetic OLDCO entry
+    that has no signal at all in this run's (tiny, single-ticker) corpus.
+    """
+    if not COMPANIES_FILE.exists():
+        _skip("issuer/build-carry-forward", "config/company_annual_report.xlsx absent")
+        return
+    prev = _quiet()
+    try:
+        with tempfile.TemporaryDirectory() as t1:
+            out_file = Path(t1) / "issuer_registry.json"
+            oldco_entry = {
+                "ticker": "OLDCO", "canonical_name": "A Company Not In This Run's Corpus",
+                "core_tokens": ["old", "company"], "aliases": ["Old Co"],
+                "exclusions": [], "needs_review": [],
+            }
+            out_file.write_text(json.dumps({"OLDCO": oldco_entry}, ensure_ascii=False), encoding="utf-8")
+
+            triples_file = Path(t1) / "triples.json"
+            triples_file.write_text(json.dumps([
+                {"subject": {"class": "KPIObservation",
+                             "properties": {"source_id": "AAA_2013.pdf_1_0", "kpi_type": "test"}},
+                 "object": {"class": "Organization", "properties": {"name": "AAA"}},
+                 "predicate": "observedAtFacility"},
+            ], ensure_ascii=False), encoding="utf-8")
+
+            new_issuer.build(triples_file, COMPANIES_FILE, out_file,
+                              new_issuer.DEFAULT_MIN_SUBJECT_EDGES, False, 0.8, 0.2)
+            got = json.loads(out_file.read_text(encoding="utf-8"))
+    finally:
+        _unquiet(prev)
+
+    assert "OLDCO" in got, (
+        f"OLDCO was dropped even though it wasn't rebuilt this run — "
+        f"only {sorted(got)} survived")
+    assert got["OLDCO"] == oldco_entry, "OLDCO must be carried forward UNCHANGED"
+    print(f"     (OLDCO carried forward untouched; {sorted(got)} in final registry)")
+
+
 def test_classify_for_ticker_matches_src_on_the_real_corpus():
     triples = load_triples()
     if not triples or not COMPANIES_FILE.exists():

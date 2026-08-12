@@ -3,6 +3,12 @@
 .env.*
 !.env.example
 
+# ---- Claude Code local tooling (personal, not project source) ----
+# settings.local.json has held live secrets (e.g. an Overleaf token pulled in for
+# .mcp.json's env expansion) and skills/ is a bundled third-party skill package, not
+# code authored for this project. Never commit this directory.
+.claude/
+
 # ---- Read-only external reference (NOT part of this project; see CLAUDE.md) ----
 # EmeraldMind/ is an external reference implementation with its own .git repo, a
 # ~50 MB graph_latest.json, and its own .env secrets. It must never be uploaded.

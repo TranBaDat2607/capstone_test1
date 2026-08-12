@@ -118,6 +118,24 @@ not silently enable it anywhere but ``claims_vs_conduct``'s own registry (which
 constructs providers straight from this module, not through those other stages'
 argparse). ``OPENAI_API_KEY``/``OPENAI_MODEL`` in ``.env`` configure it; unset it and
 every stage keeps using Gemini exactly as before.
+
+2026-08-08: RETRY-WITH-BACKOFF ON TRANSIENT GEMINI ERRORS. ``gemini-2.5-flash-lite``
+returns a plain 503 (``google.genai.errors.ServerError``, "model overloaded") often
+enough under load that surfacing it to the caller on the FIRST occurrence was needlessly
+costly: a caller like ``Adjudicator`` (step07) counts any exception as a failure and
+disables the provider after 3 failures with 0 successes, so a handful of transient 503s
+in a row could silently turn off Gemini for the rest of a run. ``_GeminiProvider.call()``
+now retries a ``ServerError`` (any 5xx) up to ``max_retries`` times with exponential
+backoff (``retry_backoff_base * 2**attempt`` seconds) before giving up and re-raising.
+A ``ClientError`` (4xx — bad request, not found, auth) is deliberately NEVER retried:
+those are not transient, and retrying one just burns quota waiting for an error that
+retrying cannot fix. Defaults (``DEFAULT_MAX_RETRIES=5``, ``DEFAULT_RETRY_BACKOFF_BASE=2.0``
+seconds) are read from ``GEMINI_MAX_RETRIES``/``GEMINI_RETRY_BACKOFF_SECONDS`` in
+``.env`` — same "one place, env override" shape as ``DEFAULT_MODEL`` above — and every
+``_GeminiProvider`` constructor call can still override them explicitly (used by
+``test_esg_kg_llm.py`` to test the backoff schedule without a real clock). Scoped to
+``_GeminiProvider`` only: DeepSeek/OpenAI use a different SDK-less REST shape and were
+not reported as flaky, so retrying them is a separate change, not bundled in here.
 """
 
 import hashlib
@@ -130,6 +148,7 @@ from typing import Dict, Optional
 
 import requests
 from google import genai
+from google.genai import errors as genai_errors
 from google.genai import types
 
 from esg_kg.core.paths import load_env
@@ -140,6 +159,8 @@ load_env()  # so GEMINI_MODEL below sees .env even if no stage has loaded it yet
 
 DEFAULT_RATE_LIMIT = 10  # RPM
 DEFAULT_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash-lite")
+DEFAULT_MAX_RETRIES = int(os.getenv("GEMINI_MAX_RETRIES", "5"))
+DEFAULT_RETRY_BACKOFF_BASE = float(os.getenv("GEMINI_RETRY_BACKOFF_SECONDS", "2.0"))
 DEEPSEEK_DEFAULT_MODEL = os.getenv("DEEPSEEK_MODEL", "deepseek-v4-flash")
 OPENAI_DEFAULT_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 
@@ -208,6 +229,30 @@ class _Provider:
         raise NotImplementedError
 
 
+def _call_with_retry(fn, *, max_retries: int, backoff_base: float, provider_name: str):
+    """Run `fn()`, retrying a transient `genai_errors.ServerError` (any 5xx — Gemini's
+    "model overloaded, try again" response) with exponential backoff. A `ClientError`
+    (4xx) is never retried: it isn't transient, and retrying one just burns quota on an
+    error that won't clear on its own. Re-raises the last error once `max_retries` is
+    exhausted, so this is a mitigation, not a way to silently hide an outage.
+    """
+    attempt = 0
+    while True:
+        try:
+            return fn()
+        except genai_errors.ServerError as e:
+            attempt += 1
+            if attempt > max_retries:
+                logger.error(f"[{provider_name}] giving up after {attempt - 1} retries: {e}")
+                raise
+            wait = backoff_base * (2 ** (attempt - 1))
+            logger.warning(
+                f"[{provider_name}] transient server error (attempt {attempt}/{max_retries}), "
+                f"retrying in {wait:.1f}s: {e}"
+            )
+            time.sleep(wait)
+
+
 class _GeminiProvider(_Provider):
     """Google Gemini backend (`google.genai.Client`), the single paid provider.
 
@@ -217,9 +262,13 @@ class _GeminiProvider(_Provider):
     """
     name = "gemini"
 
-    def __init__(self, model: str, rate_limit: int, api_key: Optional[str] = None) -> None:
+    def __init__(self, model: str, rate_limit: int, api_key: Optional[str] = None,
+                 max_retries: int = DEFAULT_MAX_RETRIES,
+                 retry_backoff_base: float = DEFAULT_RETRY_BACKOFF_BASE) -> None:
         super().__init__()
         self.model = model
+        self.max_retries = max_retries
+        self.retry_backoff_base = retry_backoff_base
         client = build_gemini_client(api_key)
         if client is None:
             return
@@ -229,14 +278,19 @@ class _GeminiProvider(_Provider):
 
     def call(self, system: str, user: str) -> str:
         self.rl.wait_if_needed(0)
-        resp = self.client.models.generate_content(
-            model=self.model,
-            contents=user,
-            config=types.GenerateContentConfig(
-                system_instruction=system,
-                response_mime_type="application/json",
-                temperature=0,
+        resp = _call_with_retry(
+            lambda: self.client.models.generate_content(
+                model=self.model,
+                contents=user,
+                config=types.GenerateContentConfig(
+                    system_instruction=system,
+                    response_mime_type="application/json",
+                    temperature=0,
+                ),
             ),
+            max_retries=self.max_retries,
+            backoff_base=self.retry_backoff_base,
+            provider_name=self.name,
         )
         return (resp.text or "").strip()
 

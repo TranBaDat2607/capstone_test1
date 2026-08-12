@@ -301,6 +301,14 @@
         "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
       },
       {
+        "name": "CÔNG TY CỔ PHẦN ĐẦU TƯ THƯƠNG MẠI VÀ PHÁT TRIỂN AN TƯỜNG",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN ĐẦU TƯ VÀ PHÁT TRIỂN BẤT ĐỘNG SẢN AN GIA",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
         "name": "CÔNG TY KCN KỸ THUẬT CAO AN PHÁT 1",
         "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
       },
@@ -417,6 +425,10 @@
         "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.002) and qualifier ['bai', 'khoang', 'yen']"
       },
       {
+        "name": "Công ty Cổ phần Phát triển Nhà An Gia",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
         "name": "Công ty Cổ phần Sản xuất PBAT An Phát",
         "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.001)"
       },
@@ -443,6 +455,14 @@
       {
         "name": "Công ty Cổ phần Đầu tư An Phát",
         "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.001)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư Thương mại Và Phát triển An Tường",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư và Phát triển Bất động sản An Gia",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.002)"
       },
       {
         "name": "Công ty Cổ phần đầu tư An Phát",
@@ -481,6 +501,14 @@
         "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
       },
       {
+        "name": "Công ty TNHH Phát triển Hưng An",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000) and qualifier ['hung']"
+      },
+      {
+        "name": "Công ty TNHH Quản lý và Phát triển Thiên Ân",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
         "name": "Công ty TNHH khu công nghiệp kỹ thuật cao An Phát",
         "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
       },
@@ -505,6 +533,10 @@
         "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
       },
       {
+        "name": "Ngân hàng Thương mại Cổ phần Tiên Phong",
+        "reason": "An Tiến Industries (HII) — affiliate, separate listed entity"
+      },
+      {
         "name": "Quỹ hỗ trợ và phát triển tài năng giáo dục An Phát",
         "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
       },
@@ -527,31 +559,638 @@
     "ticker": "ACC",
     "canonical_name": "Công ty Cổ phần Bê tông Becamex",
     "core_tokens": [
-      "be",
-      "tong",
-      "becamex"
+      "acc",
+      "binh",
+      "dau",
+      "duong",
+      "tu",
+      "va"
     ],
     "aliases": [
+      "20130422-ACC-BCTN 2012 -1",
       "ACC",
+      "BECAMEX ACC",
+      "Becamex ACC",
+      "Becamex Acc",
+      "CTCP Đầu tư và Xây dựng Bình Dương ACC",
+      "CÔNG TY CỔ PHẦN ACC",
+      "CÔNG TY CỔ PHẦN BECAMEX ACC",
       "CÔNG TY CỔ PHẦN BÊ TÔNG BECAMEX",
+      "CÔNG TY CỔ PHẦN BÊ TÔNG BECAMEX ACC",
+      "CÔNG TY CỔ PHẦN ĐẦU TƯ VÀ XÂY DỰNG BÌNH DƯƠNG ACC",
+      "Công ty Cổ phần ACC",
+      "Công ty Cổ phần Becamex ACC",
+      "Công ty Cổ phần Bê tông ACC",
       "Công ty Cổ phần Bê tông Becamex",
       "Công ty Cổ phần Bê tông Becamex (ACC)",
-      "Công ty Cổ phần Becamex ACC",
-      "Becamex ACC",
-      "Công ty Cổ phần ACC"
+      "Công ty Cổ phần Bê tông Becamex (Becamex ACC)",
+      "Công ty Cổ phần Bình Dương ACC",
+      "Công ty Cổ phần Xây dựng Công trình Giao thông 1 (ACC)",
+      "Công ty Cổ phần Xây dựng và Vật liệu Xây dựng ACC",
+      "Công ty Cổ phần Đầu tư Xây dựng Becamex ACC",
+      "Công ty Cổ phần Đầu tư và Xây dựng Bình Dương ACC",
+      "Tổng công ty Xây dựng công trình hàng không ACC"
     ],
     "exclusions": [
       {
+        "name": "An Phát Holdings",
+        "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
+      },
+      {
+        "name": "An Tiến Industries",
+        "reason": "An Tiến Industries (HII) — affiliate, separate listed entity"
+      },
+      {
+        "name": "CT TNHH ĐẦU TƯ BẤT ĐỘNG SẢN AN GIA PHÚ THUẬN",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CTCP An Tiến Industries",
+        "reason": "An Tiến Industries (HII) — affiliate, separate listed entity"
+      },
+      {
+        "name": "CTCP Kinh doanh và Phát triển Bình Dương TDC",
+        "reason": "shares issuer core ['binh', 'duong', 'va'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "CTCP Kinh doanh và Đầu tư Bình Dương",
+        "reason": "shares issuer core ['binh', 'dau', 'duong', 'tu', 'va'] but low graph similarity (0.010) and qualifier ['duong']"
+      },
+      {
+        "name": "CTCP Nhựa Hà Nội",
+        "reason": "Nhựa Hà Nội (NHH) — affiliate, separate listed entity"
+      },
+      {
+        "name": "CTCP Quản lý và Đầu tư Trường Giang",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CTCP TẬP ĐOÀN AN PHÁT HOLDINGS",
+        "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
+      },
+      {
+        "name": "CTCP Tập đoàn An Phát Holdings",
+        "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
+      },
+      {
+        "name": "CTCP ĐẦU TƯ XÂY DỰNG DU LỊCH PHƯỚC LỘC",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CTCP Đầu tư Bất động sản Lê Gia",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CTCP Đầu tư Thương mại Bất Động Sản An Dương Thảo Điền",
+        "reason": "shares issuer core ['dau', 'duong', 'tu'] but low graph similarity (0.007) and qualifier ['duong']"
+      },
+      {
+        "name": "CTCP Đầu tư Thương mại Bất động sản An Dương Thảo Điền",
+        "reason": "shares issuer core ['dau', 'duong', 'tu'] but low graph similarity (0.013) and qualifier ['duong']"
+      },
+      {
+        "name": "CTCP Đầu tư phát triển hạ tầng Nam Quang",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CTCP Đầu tư và Phát triển Bất động sản An Gia",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.029)"
+      },
+      {
+        "name": "CÔNG TY CP ĐẦU TƯ THƯƠNG MẠI BẤT ĐỘNG SẢN AN DƯƠNG THẢO ĐIỀN",
+        "reason": "shares issuer core ['dau', 'duong', 'tu'] but low graph similarity (0.029) and qualifier ['duong']"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN AN TIẾN INDUSTRIES",
+        "reason": "An Tiến Industries (HII) — affiliate, separate listed entity"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN NHỰA HÀ NỘI",
+        "reason": "Nhựa Hà Nội (NHH) — affiliate, separate listed entity"
+      },
+      {
         "name": "CÔNG TY CỔ PHẦN NHỰA VÀ MÔI TRƯỜNG XANH AN PHÁT",
         "reason": "different company (AAA/AAA-related), co-mentioned in ACC report text"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN TẬP ĐOÀN AN PHÁT HOLDINGS",
+        "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN ĐẦU TƯ AN PHÁT",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN ĐẦU TƯ BẤT ĐỘNG SẢN LÊ GIA",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN ĐẦU TƯ THƯƠNG MẠI BẤT ĐỘNG SẢN AN DƯƠNG THẢO ĐIỀN",
+        "reason": "shares issuer core ['dau', 'duong', 'tu'] but low graph similarity (0.014) and qualifier ['duong']"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN ĐẦU TƯ THƯƠNG MẠI VÀ PHÁT TRIỂN AN TƯỜNG",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN ĐẦU TƯ VÀ PHÁT TRIỂN BẤT ĐỘNG SẢN AN GIA",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CÔNG TY TNHH KIỂM TOÁN VÀ TƢ VẤN TÀI CHÍNH QUỐC TẾ",
+        "reason": "shares issuer core ['tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CÔNG TY TNHH KIỂM TOÁN VÀ TƯ VẤN A&C",
+        "reason": "shares issuer core ['tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CÔNG TY TNHH MTV TƯ VẤN ĐẦU TƯ VÀ PHÁT TRIỂN DECO",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CÔNG TY TNHH TƯ VẤN THIẾT KẾ - ĐẦU TƯ XÂY DỰNG MINH HOÀNG",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CÔNG TY TNHH TƯ VẤN VÀ XÂY DỰNG TRUNG AN",
+        "reason": "shares issuer core ['tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công An PCCC tỉnh Bình Dương",
+        "reason": "shares issuer core ['binh', 'duong'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "Công Ty CP Tư Vấn Và Đầu Tư Mạo Hiểm",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công Ty CP Đầu Tư & Thương Mại Long Bảo",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000) and qualifier ['bao']"
+      },
+      {
+        "name": "Công Ty CP Đầu Tư Và Phát Triển Công Nghiệp Mỹ Việt",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công Ty Cổ phần Đầu Tư và Thương Mại Long Bảo",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000) and qualifier ['bao']"
+      },
+      {
+        "name": "Công ty CP Xây dựng Giao thông Thủy lợi Bình Dương",
+        "reason": "shares issuer core ['binh', 'duong'] but low graph similarity (0.007) and qualifier ['duong']"
+      },
+      {
+        "name": "Công ty CP Đào tạo và Đầu Tư Toàn Cầu",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty CP Đầu tư & Thương mại Ascentro",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty CP Đầu tư Cao su Quảng Nam",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty CP Đầu tư và Thương mại Ascentro",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần An Phát Holdings",
+        "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
+      },
+      {
+        "name": "Công ty Cổ phần An Tiến Industries",
+        "reason": "An Tiến Industries (HII) — affiliate, separate listed entity"
+      },
+      {
+        "name": "Công ty Cổ phần An Tiến Industries (HII)",
+        "reason": "An Tiến Industries (HII) — affiliate, separate listed entity"
+      },
+      {
+        "name": "Công ty Cổ phần An phát Holdings",
+        "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
+      },
+      {
+        "name": "Công ty Cổ phần Cơ khí và khoáng sản Bình Định",
+        "reason": "shares issuer core ['binh', 'va'] but low graph similarity (0.000) and qualifier ['khoang']"
+      },
+      {
+        "name": "Công ty Cổ phần Giao Thông Thủy Lợi Bình Dương",
+        "reason": "shares issuer core ['binh', 'duong'] but low graph similarity (0.004) and qualifier ['duong']"
+      },
+      {
+        "name": "Công ty Cổ phần Khoáng sản và Xây dựng Bình Dương",
+        "reason": "shares issuer core ['binh', 'duong', 'va'] but low graph similarity (0.000) and qualifier ['duong', 'khoang']"
+      },
+      {
+        "name": "Công ty Cổ phần Kinh doanh và Phát triển Bình Dương (Becamex TDC)",
+        "reason": "shares issuer core ['binh', 'duong', 'va'] but low graph similarity (0.004) and qualifier ['duong']"
+      },
+      {
+        "name": "Công ty Cổ phần Kinh doanh và Đầu tư Bình Dương",
+        "reason": "shares issuer core ['binh', 'dau', 'duong', 'tu', 'va'] but low graph similarity (0.004) and qualifier ['duong']"
+      },
+      {
+        "name": "Công ty Cổ phần Nhựa Hà Nội",
+        "reason": "Nhựa Hà Nội (NHH) — affiliate, separate listed entity"
+      },
+      {
+        "name": "Công ty Cổ phần Nước – Môi trường Bình Dương",
+        "reason": "shares issuer core ['binh', 'duong'] but low graph similarity (0.011) and qualifier ['duong']"
+      },
+      {
+        "name": "Công ty Cổ phần Quản lý và Đầu tư Hoàng Bách",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Quản lý và Đầu tư Trường Giang",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Tập đoàn An Phát Holdings",
+        "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
       },
       {
         "name": "Công ty Cổ phần Vật liệu Xây dựng Sông Hồng",
         "reason": "different company, co-mentioned in ACC report text"
       },
       {
+        "name": "Công ty Cổ phần Xây dựng Giao thông Thủy lợi Bình Dương",
+        "reason": "shares issuer core ['binh', 'duong'] but low graph similarity (0.011) and qualifier ['duong']"
+      },
+      {
+        "name": "Công ty Cổ phần Xây dựng và Giao thông Bình Dương",
+        "reason": "shares issuer core ['binh', 'duong', 'va'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "Công ty Cổ phần Xây dựng và Giao thông Bình Dương (Becamex BCE)",
+        "reason": "shares issuer core ['binh', 'duong', 'va'] but low graph similarity (0.004) and qualifier ['duong']"
+      },
+      {
         "name": "Công ty Cổ phần Xây dựng và Kinh doanh Địa ốc Hòa Bình",
         "reason": "different company (Hoa Binh Construction), co-mentioned in ACC report text"
+      },
+      {
+        "name": "Công ty Cổ phần Đào tạo và Đầu tư Toàn Cầu",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Đào tạo và Đầu tư Toàn cầu",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư An Phát",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư Bất động sản Lê Gia",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư HFIC",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư Riland",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư Thương mại Bất Động Sản An Dương Thảo Điền",
+        "reason": "shares issuer core ['dau', 'duong', 'tu'] but low graph similarity (0.006) and qualifier ['duong']"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư Thương mại Bất động sản An Dương Thảo Điền",
+        "reason": "shares issuer core ['dau', 'duong', 'tu'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư Thương mại Và Phát triển An Tường",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư Thương mại và Bất động sản An Dương Thảo Điền",
+        "reason": "shares issuer core ['dau', 'duong', 'tu', 'va'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư Xây dựng Du lịch Phước Lộc",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư Xây dựng Ricons",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư Xây dựng Tân Bình",
+        "reason": "shares issuer core ['binh', 'dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư phát triển hạ tầng Nam Quang",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư và Phát triển Bất động sản An Gia",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.006)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư và Thương mại Ascentro",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư và Xây dựng Ricons",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư và Đầu tư Toàn cầu",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư Đầu tư Thương mại Bất động sản An Dương Thảo Điền",
+        "reason": "shares issuer core ['dau', 'duong', 'tu'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "Công ty Cổ phần đầu tư An Phát",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Nhựa Hà Nội",
+        "reason": "Nhựa Hà Nội (NHH) — affiliate, separate listed entity"
+      },
+      {
+        "name": "Công ty Quản lý Quỹ đầu tư Dynam",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH Kiểm toán và Tư vấn (A&C)",
+        "reason": "shares issuer core ['tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH Kiểm toán và Tư vấn A&C",
+        "reason": "shares issuer core ['tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH Kiểm toán và Tư vấn Tài chính Quốc tế (IFC)",
+        "reason": "shares issuer core ['tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH MTV cấp thoát nước - môi trường Bình Dương",
+        "reason": "shares issuer core ['binh', 'duong'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "Công ty TNHH Một thành viên Đầu tư G Inverst",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH Một thành viên Đầu tư G Invest",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH Phát triển Xuất nhập khẩu và Đầu tư – VIEXIM",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH Quản Lý Và Đầu tư Hoàng Long",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH Quản lý và Đầu tư Hoàng Phát",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH Thương Mại Đầu Tư Xây Dựng DKY",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH Tư vấn Đầu tư KGB",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH kiểm toán và tư vấn A&C",
+        "reason": "shares issuer core ['tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH Đầu Tư Trung và Hòa",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH Đầu tư Bất động sản An Gia Phú Thuận",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH Đầu tư NC Việt Nam",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH Đầu tư Việt và Dương",
+        "reason": "shares issuer core ['dau', 'duong', 'tu', 'va'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "Công ty TNHH Đầu tư và Phát triển Bất động sản Gia Hưng",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000) and qualifier ['hung']"
+      },
+      {
+        "name": "Công ty TNHH Đầu tư xây dựng DACINCO",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.004)"
+      },
+      {
+        "name": "Công ty cổ phần Nhựa Hà Nội",
+        "reason": "Nhựa Hà Nội (NHH) — affiliate, separate listed entity"
+      },
+      {
+        "name": "Công ty cổ phần Quản lý và Đầu tư Trường Giang",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty cổ phần kinh doanh và phát triển Bình Dương",
+        "reason": "shares issuer core ['binh', 'duong', 'va'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "Công ty cổ phần kinh doanh và phát triển Bình ương",
+        "reason": "shares issuer core ['binh', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty cổ phần tư vấn đầu tư xây dựng Việt",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty cổ phần xây dựng và giao thông Bình Dương",
+        "reason": "shares issuer core ['binh', 'duong', 'va'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "Công ty cổ phần xây dựng và giao thông Bình ương",
+        "reason": "shares issuer core ['binh', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty cổ phần Đầu tư Thương mại An Dương Thảo Điền",
+        "reason": "shares issuer core ['dau', 'duong', 'tu'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "Công ty Đầu tư & Phát triển Công Nghiệp",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.004)"
+      },
+      {
+        "name": "Công ty Đầu tư & Phát triển Công Nghiệp (Becamex IDC)",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.004)"
+      },
+      {
+        "name": "Công ty Đầu tư Tài chính Nhà nước Thành phố Hồ Chí Minh",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Dự án nhà ở thương mại tại khu dân cư ấp 5C, phường Thới Hòa, thành phố Bến Cát, tỉnh Bình Dương",
+        "reason": "shares issuer core ['binh', 'duong'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "Ngân Hàng Thương Mại Cổ Phần Ngoại thương Việt Nam – Chi nhánh Bắc Bình Dương",
+        "reason": "shares issuer core ['binh', 'duong'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "Ngân hàng TMCP Xăng dầu Petrolimex - Chi nhánh Hải Dương",
+        "reason": "shares issuer core ['dau', 'duong'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "Ngân hàng TMCP xăng dầu Petrolimex - Chi nhánh Hải Dương",
+        "reason": "shares issuer core ['dau', 'duong'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "Ngân hàng Thương mại Cổ phần Tiên Phong",
+        "reason": "An Tiến Industries (HII) — affiliate, separate listed entity"
+      },
+      {
+        "name": "Nhà đầu tư / Đối tác cung cấp vốn",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Nhà đầu tư tài chính",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Nhà đầu tư/Đối tác góp vốn/Ngân hàng - Định chế tài chính",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "PHÒNG QUAN HỆ NHÀ ĐẦU TƯ – AN GIA GROUP",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Quỹ đầu tư Alliance Bernstein",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Quỹ đầu tư Asia Frontier Capital (AFC)",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Quỹ đầu tư Việt Nam Emerging Capital",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Quỹ đầu tư Việt Nam Emerging Capital (Úc)",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Quỹ đầu tư cổ phiếu Hưng Thịnh VinaCapital",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000) and qualifier ['hung']"
+      },
+      {
+        "name": "Quỹ đầu tư cổ phiếu cổ tức năng động VinaCapital",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Sở LĐTB&XH tỉnh Bình Dương",
+        "reason": "shares issuer core ['binh', 'duong'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "Sở LĐTBXH Bình Dương",
+        "reason": "shares issuer core ['binh', 'duong'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "Trung tâm Xuất nhập khẩu và Hợp tác Đầu tư",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tập đoàn An Phát Holdings",
+        "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
+      },
+      {
+        "name": "Tổng Công Ty Đầu Tư và Phát Triển Công Nghiệp – CTCP",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.009)"
+      },
+      {
+        "name": "Tổng Công ty Đầu tư & Phát triển CN TNHH Một Thành Viên",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng Công ty Đầu tư & Phát triển Công nghiệp - TNHH MTV",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng Công ty Đầu tư & Phát triển Công nghiệp - TNHH Một Thành Viên (Becamex IDC)",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.007)"
+      },
+      {
+        "name": "Tổng Công ty Đầu tư & Phát triển Công nghiệp TNHH Một thành viên (BECAMEX IDC)",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng Công ty Đầu tư & Phát triển Công nghiệp TNHH Một thành viên (Becamex IDC)",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng Công ty Đầu tư & Phát triển Công nghiệp – TNHH MTV",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng Công ty Đầu tư và Phát triển Công Nghiệp - TNHH MTV (Becamex IDC Corp.)",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.004)"
+      },
+      {
+        "name": "Tổng Công ty Đầu tư và Phát triển Công Nghiệp - TNHH Một Thành Viên (BECAMEX IDC Corp.)",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.004)"
+      },
+      {
+        "name": "Tổng Công ty Đầu tư và Phát triển Công nghiệp - Becamex",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng Công ty Đầu tư và Phát triển Công nghiệp - CTCP",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng Công ty Đầu tư và Phát triển Công nghiệp - TNHH Một Thành Viên (Becamex Corp.)",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng Công ty Đầu tư và Phát triển Công nghiệp TNHH Một Thành Viên (Becamex IDC Corp.)",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng Công ty Đầu tư và Phát triển Công nghiệp TNHH Một Thành viên",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.004)"
+      },
+      {
+        "name": "Tổng Công ty Đầu tư và Phát triển Công nghiệp – CTCP",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng Công ty Đầu tư và Phát triển Công nghiệp – CTCP (Becamex IDC)",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng Công ty đầu tư và phát triển công nghiệp - TNHH một thành viên",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng Công ty đầu tư và phát triển công nghiệp TNHH một thành viên",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Xưởng cơ khí – Thủy lực – Nhà máy Z49 – Bộ tư lệnh Công binh",
+        "reason": "shares issuer core ['binh', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Đơn vị X49 – Bộ tư lệnh Công Binh",
+        "reason": "shares issuer core ['binh', 'tu'] but low graph similarity (0.000)"
       }
     ],
     "needs_review": []
@@ -566,31 +1205,271 @@
     ],
     "aliases": [
       "ACG",
+      "CTCP Gỗ An Cường",
+      "CÔNG TY CỔ PHẦN GỖ AN CƯỜNG",
+      "Công ty ACG",
       "Công ty Cổ phần Gỗ An Cường",
-      "An Cường",
-      "Công ty An Cường",
-      "TẬP ĐOÀN AN CƯỜNG",
-      "AN CƯỜNG",
-      "AN CUONG WOOD - WORKING JOINT STOCK COMPANY",
-      "Công ty ACG"
+      "Công ty Cổ phần Sản xuất Gỗ An Cường Đồng Nai",
+      "Công ty TNHH Sản xuất Gỗ An Cường",
+      "Công ty cổ phần Gỗ An Cường",
+      "Sản Xuất Gỗ An Cường",
+      "Sản xuất Gỗ An Cường"
     ],
-    "exclusions": [],
+    "exclusions": [
+      {
+        "name": "AN CUONG WOOD - WORKING JOINT STOCK COMPANY",
+        "reason": "shares issuer core ['an', 'cuong'] but low graph similarity (0.003)"
+      },
+      {
+        "name": "AN CƯỜNG",
+        "reason": "shares issuer core ['an', 'cuong'] but low graph similarity (0.006)"
+      },
+      {
+        "name": "An Cường",
+        "reason": "shares issuer core ['an', 'cuong'] but low graph similarity (0.035)"
+      },
+      {
+        "name": "An Cường Building Materials",
+        "reason": "shares issuer core ['an', 'cuong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "An Cường Đồng Nai",
+        "reason": "shares issuer core ['an', 'cuong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "An Phát Holdings",
+        "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
+      },
+      {
+        "name": "An Tiến Industries",
+        "reason": "An Tiến Industries (HII) — affiliate, separate listed entity"
+      },
+      {
+        "name": "CTCP An Tiến Industries",
+        "reason": "An Tiến Industries (HII) — affiliate, separate listed entity"
+      },
+      {
+        "name": "CTCP Nhựa Hà Nội",
+        "reason": "Nhựa Hà Nội (NHH) — affiliate, separate listed entity"
+      },
+      {
+        "name": "CTCP TẬP ĐOÀN AN PHÁT HOLDINGS",
+        "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
+      },
+      {
+        "name": "CTCP Tập đoàn An Phát Holdings",
+        "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
+      },
+      {
+        "name": "CTCP Vật liệu Xây dựng Công nghệ cao An Cường",
+        "reason": "shares issuer core ['an', 'cuong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN AN TIẾN INDUSTRIES",
+        "reason": "An Tiến Industries (HII) — affiliate, separate listed entity"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN NHỰA HÀ NỘI",
+        "reason": "Nhựa Hà Nội (NHH) — affiliate, separate listed entity"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN TẬP ĐOÀN AN PHÁT HOLDINGS",
+        "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN VẬT LIỆU XÂY DỰNG CÔNG NGHỆ CAO AN CƯỜNG",
+        "reason": "shares issuer core ['an', 'cuong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Các công ty con của An Cường",
+        "reason": "shares issuer core ['an', 'cuong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty An Cường",
+        "reason": "shares issuer core ['an', 'cuong'] but low graph similarity (0.001)"
+      },
+      {
+        "name": "Công ty Cổ phần An Cường",
+        "reason": "shares issuer core ['an', 'cuong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần An Phát Holdings",
+        "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
+      },
+      {
+        "name": "Công ty Cổ phần An Tiến Industries",
+        "reason": "An Tiến Industries (HII) — affiliate, separate listed entity"
+      },
+      {
+        "name": "Công ty Cổ phần An Tiến Industries (HII)",
+        "reason": "An Tiến Industries (HII) — affiliate, separate listed entity"
+      },
+      {
+        "name": "Công ty Cổ phần An phát Holdings",
+        "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
+      },
+      {
+        "name": "Công ty Cổ phần Nhựa Hà Nội",
+        "reason": "Nhựa Hà Nội (NHH) — affiliate, separate listed entity"
+      },
+      {
+        "name": "Công ty Cổ phần Tập đoàn An Phát Holdings",
+        "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
+      },
+      {
+        "name": "Công ty Cổ phần Vật liệu Xây dựng Công nghệ cao An Cường",
+        "reason": "shares issuer core ['an', 'cuong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Nhựa Hà Nội",
+        "reason": "Nhựa Hà Nội (NHH) — affiliate, separate listed entity"
+      },
+      {
+        "name": "Công ty TNHH Thương mại An Cường",
+        "reason": "shares issuer core ['an', 'cuong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty cổ phần Nhựa Hà Nội",
+        "reason": "Nhựa Hà Nội (NHH) — affiliate, separate listed entity"
+      },
+      {
+        "name": "Ngân hàng Thương mại Cổ phần Tiên Phong",
+        "reason": "An Tiến Industries (HII) — affiliate, separate listed entity"
+      },
+      {
+        "name": "TẬP ĐOÀN AN CƯỜNG",
+        "reason": "shares issuer core ['an', 'cuong'] but low graph similarity (0.001)"
+      },
+      {
+        "name": "Tập đoàn An Phát Holdings",
+        "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
+      },
+      {
+        "name": "các đối tác của An Cường",
+        "reason": "shares issuer core ['an', 'cuong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Đối tác cung cấp chính của An Cường",
+        "reason": "shares issuer core ['an', 'cuong'] but low graph similarity (0.000)"
+      }
+    ],
     "needs_review": []
   },
   "ADP": {
     "ticker": "ADP",
     "canonical_name": "Công ty Cổ phần Sơn Á Đông",
     "core_tokens": [
-      "son",
       "a",
-      "dong"
+      "dong",
+      "son"
     ],
     "aliases": [
       "ADP",
+      "CTCP Sơn Á Đông",
+      "CÔNG TY CỔ PHẦN SƠN Á ĐÔNG",
+      "Công ty ADP",
       "Công ty Cổ phần Sơn Á Đông",
-      "Sơn Á Đông"
+      "Công ty Sơn Chất Dẻo – XN Sơn Á Đông",
+      "Công ty Sơn Á Đông",
+      "Công ty TNHH TM&SX Sơn Đông Nam Á",
+      "Nhà máy Sơn Á Đông",
+      "Sơn Á Đông",
+      "Xí nghiệp Sơn Á Đông",
+      "công ty Sơn Chất Dẻo – XN Sơn Á Đông"
     ],
     "exclusions": [
+      {
+        "name": "An Phát Holdings",
+        "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
+      },
+      {
+        "name": "An Tiến Industries",
+        "reason": "An Tiến Industries (HII) — affiliate, separate listed entity"
+      },
+      {
+        "name": "CTCP An Tiến Industries",
+        "reason": "An Tiến Industries (HII) — affiliate, separate listed entity"
+      },
+      {
+        "name": "CTCP Khoáng sản Đông Á",
+        "reason": "shares issuer core ['a', 'dong'] but low graph similarity (0.000) and qualifier ['khoang']"
+      },
+      {
+        "name": "CTCP Nhựa Hà Nội",
+        "reason": "Nhựa Hà Nội (NHH) — affiliate, separate listed entity"
+      },
+      {
+        "name": "CTCP TẬP ĐOÀN AN PHÁT HOLDINGS",
+        "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
+      },
+      {
+        "name": "CTCP Tập đoàn An Phát Holdings",
+        "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN AN TIẾN INDUSTRIES",
+        "reason": "An Tiến Industries (HII) — affiliate, separate listed entity"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN KHOÁNG SẢN ĐÔNG Á",
+        "reason": "shares issuer core ['a', 'dong'] but low graph similarity (0.000) and qualifier ['khoang']"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN NHỰA HÀ NỘI",
+        "reason": "Nhựa Hà Nội (NHH) — affiliate, separate listed entity"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN TẬP ĐOÀN AN PHÁT HOLDINGS",
+        "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
+      },
+      {
+        "name": "Công ty Cổ phần An Phát Holdings",
+        "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
+      },
+      {
+        "name": "Công ty Cổ phần An Tiến Industries",
+        "reason": "An Tiến Industries (HII) — affiliate, separate listed entity"
+      },
+      {
+        "name": "Công ty Cổ phần An Tiến Industries (HII)",
+        "reason": "An Tiến Industries (HII) — affiliate, separate listed entity"
+      },
+      {
+        "name": "Công ty Cổ phần An phát Holdings",
+        "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
+      },
+      {
+        "name": "Công ty Cổ phần Nhựa Hà Nội",
+        "reason": "Nhựa Hà Nội (NHH) — affiliate, separate listed entity"
+      },
+      {
+        "name": "Công ty Cổ phần Tập đoàn An Phát Holdings",
+        "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
+      },
+      {
+        "name": "Công ty Nhựa Hà Nội",
+        "reason": "Nhựa Hà Nội (NHH) — affiliate, separate listed entity"
+      },
+      {
+        "name": "Công ty cổ phần Nhựa Hà Nội",
+        "reason": "Nhựa Hà Nội (NHH) — affiliate, separate listed entity"
+      },
+      {
+        "name": "Công ty cổ phần khoáng sản Đông Á",
+        "reason": "shares issuer core ['a', 'dong'] but low graph similarity (0.000) and qualifier ['khoang']"
+      },
+      {
+        "name": "Ngân hàng TMCP Đông Nam Á - Chi nhánh Sài Gòn",
+        "reason": "shares issuer core ['a', 'dong'] but low graph similarity (0.002)"
+      },
+      {
+        "name": "Ngân hàng Thương mại Cổ phần Tiên Phong",
+        "reason": "An Tiến Industries (HII) — affiliate, separate listed entity"
+      },
+      {
+        "name": "Tập đoàn An Phát Holdings",
+        "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
+      },
       {
         "name": "Tổng cục thống kê",
         "reason": "government statistics agency, not the issuer"
@@ -603,17 +1482,1804 @@
     "canonical_name": "Công ty Cổ phần Đầu tư và Phát triển Bất động sản An Gia",
     "core_tokens": [
       "an",
-      "gia"
+      "bat",
+      "dau",
+      "dong",
+      "gia",
+      "phat",
+      "trien",
+      "tu",
+      "va"
     ],
     "aliases": [
       "AGG",
-      "Angia Group - Tập Đoàn Bất Động Sản An Gia",
-      "Tập Đoàn Bất Động Sản An Gia",
-      "An Gia",
-      "Công ty Cổ phần Đầu tư và Phát triển Bất động sản An Gia",
-      "CÔNG TY CỔ PHẦN ĐẦU TƯ VÀ PHÁT TRIỂN BẤT ĐỘNG SẢN AN GIA"
+      "CTCP Đầu tư và Phát triển Bất động sản An Gia",
+      "CÔNG TY CỔ PHẦN ĐẦU TƯ VÀ PHÁT TRIỂN BẤT ĐỘNG SẢN AN GIA",
+      "Công ty Cổ phần Đầu tư và Phát triển Bất động sản An Gia"
     ],
-    "exclusions": [],
+    "exclusions": [
+      {
+        "name": "An Cường Đồng Nai",
+        "reason": "shares issuer core ['an', 'dong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "An Gia",
+        "reason": "shares issuer core ['an', 'gia'] but low graph similarity (0.082)"
+      },
+      {
+        "name": "An Phát",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.015)"
+      },
+      {
+        "name": "An Phát Complex",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "An Phát Holdings",
+        "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
+      },
+      {
+        "name": "An Tiến Industries",
+        "reason": "An Tiến Industries (HII) — affiliate, separate listed entity"
+      },
+      {
+        "name": "Angia Group - Tập Đoàn Bất Động Sản An Gia",
+        "reason": "shares issuer core ['an', 'bat', 'dong', 'gia'] but low graph similarity (0.032)"
+      },
+      {
+        "name": "CT TNHH ĐẦU TƯ BẤT ĐỘNG SẢN AN GIA PHÚ THUẬN",
+        "reason": "shares issuer core ['an', 'bat', 'dau', 'dong', 'gia', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CTCP AN GIA PHÚ THỊNH",
+        "reason": "shares issuer core ['an', 'gia'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CTCP An Tiến Industries",
+        "reason": "An Tiến Industries (HII) — affiliate, separate listed entity"
+      },
+      {
+        "name": "CTCP BẤT ĐỘNG SẢN GIA LINH",
+        "reason": "shares issuer core ['bat', 'dong', 'gia'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CTCP Bất động sản Gia Linh",
+        "reason": "shares issuer core ['bat', 'dong', 'gia'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CTCP Khu công nghiệp kỹ thuật cao An Phát",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CTCP Kinh doanh và Phát triển Bình Dương TDC",
+        "reason": "shares issuer core ['phat', 'trien', 'va'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "CTCP Kinh doanh và Đầu tư Bình Dương",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.019) and qualifier ['duong']"
+      },
+      {
+        "name": "CTCP Nhựa An Phát Xanh",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.020)"
+      },
+      {
+        "name": "CTCP Nhựa Hà Nội",
+        "reason": "Nhựa Hà Nội (NHH) — affiliate, separate listed entity"
+      },
+      {
+        "name": "CTCP Nhựa và Bao bì An Phát",
+        "reason": "shares issuer core ['an', 'phat', 'va'] but low graph similarity (0.000) and qualifier ['bao', 'bi']"
+      },
+      {
+        "name": "CTCP Nhựa và Khoáng sản An Phát Yên Bái",
+        "reason": "shares issuer core ['an', 'phat', 'va'] but low graph similarity (0.000) and qualifier ['bai', 'khoang', 'yen']"
+      },
+      {
+        "name": "CTCP Nhựa và Khoáng sản An Phát – Yên Bái",
+        "reason": "shares issuer core ['an', 'phat', 'va'] but low graph similarity (0.000) and qualifier ['bai', 'khoang', 'yen']"
+      },
+      {
+        "name": "CTCP Nhựa và Môi trường Xanh An Phát",
+        "reason": "shares issuer core ['an', 'phat', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CTCP Nhựa và Môi trường xanh An Phát",
+        "reason": "shares issuer core ['an', 'phat', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CTCP PHÁT TRIỂN BẤT ĐỘNG SẢN ĐĂNG DƯƠNG",
+        "reason": "shares issuer core ['bat', 'dong', 'phat', 'trien'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "CTCP PHÁT TRIỂN NHÀ VĂN PHÒNG ĐỊA CHỈ VIỆT",
+        "reason": "shares issuer core ['phat', 'trien'] but low graph similarity (0.011)"
+      },
+      {
+        "name": "CTCP Phát triển nhà G Homes",
+        "reason": "shares issuer core ['phat', 'trien'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CTCP Phát triển nhà G-Homes",
+        "reason": "shares issuer core ['phat', 'trien'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CTCP Phát triển Đô thị UDJ",
+        "reason": "shares issuer core ['phat', 'trien'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CTCP QUẢN LÝ VÀ PHÁT TRIỂN BẤT ĐỘNG SẢN HƯNG VƯỢNG",
+        "reason": "shares issuer core ['bat', 'dong', 'phat', 'trien', 'va'] but low graph similarity (0.000) and qualifier ['hung']"
+      },
+      {
+        "name": "CTCP QUẢN LÝ VÀ PHÁT TRIỂN GIA KHÁNH",
+        "reason": "shares issuer core ['gia', 'phat', 'trien', 'va'] but low graph similarity (0.011)"
+      },
+      {
+        "name": "CTCP Quản lý và Phát triển Lộc Phát",
+        "reason": "shares issuer core ['phat', 'trien', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CTCP Quản lý và Đầu tư Trường Giang",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.010)"
+      },
+      {
+        "name": "CTCP SX và TM Phương Đông",
+        "reason": "shares issuer core ['dong', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CTCP Sản xuất PBAT An Phát",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CTCP Sản xuất và Thương mại Phương Đông",
+        "reason": "shares issuer core ['dong', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CTCP TƯ VẤN HOÀNG ÂN",
+        "reason": "shares issuer core ['an', 'tu'] but low graph similarity (0.011)"
+      },
+      {
+        "name": "CTCP TẬP ĐOÀN AN PHÁT HOLDINGS",
+        "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
+      },
+      {
+        "name": "CTCP Tập đoàn An Phát Holdings",
+        "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
+      },
+      {
+        "name": "CTCP Tập đoàn Bất động sản Thắng Lợi",
+        "reason": "shares issuer core ['bat', 'dong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CTCP ĐẦU TƯ XÂY DỰNG DU LỊCH PHƯỚC LỘC",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.011)"
+      },
+      {
+        "name": "CTCP Đầu tư Bất động sản Lê Gia",
+        "reason": "shares issuer core ['bat', 'dau', 'dong', 'gia', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CTCP Đầu tư Thương mại Bất Động Sản An Dương Thảo Điền",
+        "reason": "shares issuer core ['an', 'bat', 'dau', 'dong', 'tu'] but low graph similarity (0.018) and qualifier ['duong']"
+      },
+      {
+        "name": "CTCP Đầu tư Thương mại Bất động sản An Dương Thảo Điền",
+        "reason": "shares issuer core ['an', 'bat', 'dau', 'dong', 'tu'] but low graph similarity (0.014) and qualifier ['duong']"
+      },
+      {
+        "name": "CTCP Đầu tư phát triển hạ tầng Nam Quang",
+        "reason": "shares issuer core ['dau', 'phat', 'trien', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CTCP Đầu tư và Xây dựng Bình Dương ACC",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.056) and qualifier ['duong']"
+      },
+      {
+        "name": "CÔNG TY AN PHÁT COMPLEX",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CÔNG TY CP NHỰA VÀ MÔI TRƯỜNG XANH AN PHÁT",
+        "reason": "shares issuer core ['an', 'phat', 'va'] but low graph similarity (0.040)"
+      },
+      {
+        "name": "CÔNG TY CP ĐẦU TƯ THƯƠNG MẠI BẤT ĐỘNG SẢN AN DƯƠNG THẢO ĐIỀN",
+        "reason": "shares issuer core ['an', 'bat', 'dau', 'dong', 'tu'] but low graph similarity (0.018) and qualifier ['duong']"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN AN TIẾN INDUSTRIES",
+        "reason": "An Tiến Industries (HII) — affiliate, separate listed entity"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN BÊ TÔNG LY TÂM ỨNG SUẤT TRƯỚC AN PHÁT",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN KHU CÔNG NGHIỆP KỸ THUẬT CAO AN PHÁT",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN NHỰA AN PHÁT XANH",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.011)"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN NHỰA HÀ NỘI",
+        "reason": "Nhựa Hà Nội (NHH) — affiliate, separate listed entity"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN NHỰA VÀ KHO SẢN AN PHÁT",
+        "reason": "shares issuer core ['an', 'phat', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN NHỰA VÀ KHOÁNG SẢN AN PHÁT - YÊN BÁI",
+        "reason": "shares issuer core ['an', 'phat', 'va'] but low graph similarity (0.019) and qualifier ['bai', 'khoang', 'yen']"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN NHỰA VÀ KHOÁNG SẢN AN PHÁT YÊN BÁI",
+        "reason": "shares issuer core ['an', 'phat', 'va'] but low graph similarity (0.020) and qualifier ['bai', 'khoang', 'yen']"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN NHỰA VÀ KHOÁNG SẢN AN PHÁT – YÊN BÁI",
+        "reason": "shares issuer core ['an', 'phat', 'va'] but low graph similarity (0.000) and qualifier ['bai', 'khoang', 'yen']"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN NHỰA VÀ MÔI TRƢỜNG XANH AN PHÁT",
+        "reason": "shares issuer core ['an', 'phat', 'va'] but low graph similarity (0.025)"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN NHỰA VÀ MÔI TRƯỜNG XANH AN PHÁT",
+        "reason": "shares issuer core ['an', 'phat', 'va'] but low graph similarity (0.006)"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN SẢN XUẤT PBAT AN PHÁT",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN TẬP ĐOÀN AN PHÁT HOLDINGS",
+        "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN ĐẦU TƯ AN PHÁT",
+        "reason": "shares issuer core ['an', 'dau', 'phat', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN ĐẦU TƯ BẤT ĐỘNG SẢN LÊ GIA",
+        "reason": "shares issuer core ['bat', 'dau', 'dong', 'gia', 'tu'] but low graph similarity (0.011)"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN ĐẦU TƯ THƯƠNG MẠI BẤT ĐỘNG SẢN AN DƯƠNG THẢO ĐIỀN",
+        "reason": "shares issuer core ['an', 'bat', 'dau', 'dong', 'tu'] but low graph similarity (0.039) and qualifier ['duong']"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN ĐẦU TƯ THƯƠNG MẠI VÀ PHÁT TRIỂN AN TƯỜNG",
+        "reason": "shares issuer core ['an', 'dau', 'phat', 'trien', 'tu', 'va'] but low graph similarity (0.011)"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN ĐẦU TƯ VÀ XÂY DỰNG BÌNH DƯƠNG ACC",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "CÔNG TY KCN KỸ THUẬT CAO AN PHÁT 1",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CÔNG TY TNHH KCN KỸ THUẬT CAO AN PHÁT",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.020)"
+      },
+      {
+        "name": "CÔNG TY TNHH KHU CÔNG NGHIỆP KỸ THUẬT CAO AN PHÁT",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CÔNG TY TNHH KIỂM TOÁN VÀ TƢ VẤN TÀI CHÍNH QUỐC TẾ",
+        "reason": "shares issuer core ['tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CÔNG TY TNHH KIỂM TOÁN VÀ TƯ VẤN A&C",
+        "reason": "shares issuer core ['tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CÔNG TY TNHH MTV TƯ VẤN ĐẦU TƯ VÀ PHÁT TRIỂN DECO",
+        "reason": "shares issuer core ['dau', 'phat', 'trien', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CÔNG TY TNHH QUẢN LÝ VÀ PHÁT TRIỂN TẤN LỘC",
+        "reason": "shares issuer core ['phat', 'trien', 'va'] but low graph similarity (0.011)"
+      },
+      {
+        "name": "CÔNG TY TNHH TƯ VẤN THIẾT KẾ - ĐẦU TƯ XÂY DỰNG MINH HOÀNG",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CÔNG TY TNHH TƯ VẤN VÀ XÂY DỰNG TRUNG AN",
+        "reason": "shares issuer core ['an', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công Ty CP Tư Vấn Và Đầu Tư Mạo Hiểm",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công Ty CP Đầu Tư & Thương Mại Long Bảo",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000) and qualifier ['bao']"
+      },
+      {
+        "name": "Công Ty CP Đầu Tư Và Phát Triển Công Nghiệp Mỹ Việt",
+        "reason": "shares issuer core ['dau', 'phat', 'trien', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công Ty Cổ phần Đầu Tư và Thương Mại Long Bảo",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000) and qualifier ['bao']"
+      },
+      {
+        "name": "Công Ty TNHH TM XNK Hoàng Gia Phát",
+        "reason": "shares issuer core ['gia', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty An Phát",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty An Phát Complex 1",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Bất động sản Central Hill",
+        "reason": "shares issuer core ['bat', 'dong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty CP Dịch vụ Suất ăn Công nghiệp An Phát",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty CP Dịch vụ Xăng dầu An Đông",
+        "reason": "shares issuer core ['an', 'dau', 'dong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty CP Nhựa và Khoáng sản An Phát - Yên Bái",
+        "reason": "shares issuer core ['an', 'phat', 'va'] but low graph similarity (0.000) and qualifier ['bai', 'khoang', 'yen']"
+      },
+      {
+        "name": "Công ty CP Nhựa và MTX An Phát",
+        "reason": "shares issuer core ['an', 'phat', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty CP Phát Triển Hạ Tầng Công Nghệ BSI",
+        "reason": "shares issuer core ['phat', 'trien'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty CP Phát triển nhà GHOMES",
+        "reason": "shares issuer core ['phat', 'trien'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty CP Đào tạo và Đầu Tư Toàn Cầu",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty CP Đầu tư & Thương mại Ascentro",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty CP Đầu tư Cao su Quảng Nam",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty CP Đầu tư và Thương mại Ascentro",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ Phần Phát triển nhà G Homes",
+        "reason": "shares issuer core ['phat', 'trien'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần An Gia Phú Thịnh",
+        "reason": "shares issuer core ['an', 'gia'] but low graph similarity (0.011)"
+      },
+      {
+        "name": "Công ty Cổ phần An Phát Holdings",
+        "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
+      },
+      {
+        "name": "Công ty Cổ phần An Tiến Industries",
+        "reason": "An Tiến Industries (HII) — affiliate, separate listed entity"
+      },
+      {
+        "name": "Công ty Cổ phần An Tiến Industries (HII)",
+        "reason": "An Tiến Industries (HII) — affiliate, separate listed entity"
+      },
+      {
+        "name": "Công ty Cổ phần An phát Holdings",
+        "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
+      },
+      {
+        "name": "Công ty Cổ phần Bất Động Sản Central Hill",
+        "reason": "shares issuer core ['bat', 'dong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Bất động sản Gia Linh",
+        "reason": "shares issuer core ['bat', 'dong', 'gia'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Bất động sản Westernland",
+        "reason": "shares issuer core ['bat', 'dong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Khu Công nghiệp Kỹ thuật cao An Phát",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.022)"
+      },
+      {
+        "name": "Công ty Cổ phần Khu công nghiệp Kỹ thuật cao An Phát",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Khu công nghiệp Kỹ thuật cao An Phát 1",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Kinh doanh và Phát triển Bình Dương (Becamex TDC)",
+        "reason": "shares issuer core ['phat', 'trien', 'va'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "Công ty Cổ phần Kinh doanh và Đầu tư Bình Dương",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "Công ty Cổ phần Nhựa & Môi trường xanh An Phát",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.019)"
+      },
+      {
+        "name": "Công ty Cổ phần Nhựa An Phát Xanh",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.024)"
+      },
+      {
+        "name": "Công ty Cổ phần Nhựa Hà Nội",
+        "reason": "Nhựa Hà Nội (NHH) — affiliate, separate listed entity"
+      },
+      {
+        "name": "Công ty Cổ phần Nhựa và Bao bì An Phát",
+        "reason": "shares issuer core ['an', 'phat', 'va'] but low graph similarity (0.000) and qualifier ['bao', 'bi']"
+      },
+      {
+        "name": "Công ty Cổ phần Nhựa và Khoáng Sản An Phát – Yên Bái",
+        "reason": "shares issuer core ['an', 'phat', 'va'] but low graph similarity (0.000) and qualifier ['bai', 'khoang', 'yen']"
+      },
+      {
+        "name": "Công ty Cổ phần Nhựa và Khoáng sản An Phát",
+        "reason": "shares issuer core ['an', 'phat', 'va'] but low graph similarity (0.000) and qualifier ['khoang']"
+      },
+      {
+        "name": "Công ty Cổ phần Nhựa và Khoáng sản An Phát - Yên Bái",
+        "reason": "shares issuer core ['an', 'phat', 'va'] but low graph similarity (0.000) and qualifier ['bai', 'khoang', 'yen']"
+      },
+      {
+        "name": "Công ty Cổ phần Nhựa và Khoáng sản An Phát Yên Bái",
+        "reason": "shares issuer core ['an', 'phat', 'va'] but low graph similarity (0.000) and qualifier ['bai', 'khoang', 'yen']"
+      },
+      {
+        "name": "Công ty Cổ phần Nhựa và Khoáng sản An Phát – Yên Bái",
+        "reason": "shares issuer core ['an', 'phat', 'va'] but low graph similarity (0.000) and qualifier ['bai', 'khoang', 'yen']"
+      },
+      {
+        "name": "Công ty Cổ phần Nhựa và Môi trường Xanh An Phát",
+        "reason": "shares issuer core ['an', 'phat', 'va'] but low graph similarity (0.016)"
+      },
+      {
+        "name": "Công ty Cổ phần Nhựa và Môi trường xanh An Phát",
+        "reason": "shares issuer core ['an', 'phat', 'va'] but low graph similarity (0.012)"
+      },
+      {
+        "name": "Công ty Cổ phần Phát triển Bất động sản Đăng Dương",
+        "reason": "shares issuer core ['bat', 'dong', 'phat', 'trien'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "Công ty Cổ phần Phát triển Hạ tầng Kỹ thuật (Becamex IJC)",
+        "reason": "shares issuer core ['phat', 'trien'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Phát triển Hạ tầng Kỹ thuật Becamex-Bình Phước",
+        "reason": "shares issuer core ['phat', 'trien'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Phát triển Hạ tầng kỹ thuật",
+        "reason": "shares issuer core ['phat', 'trien'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Phát triển Hạ tầng kỹ thuật Becamex – Bình Phước",
+        "reason": "shares issuer core ['phat', 'trien'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Phát triển Nhà An Gia",
+        "reason": "shares issuer core ['an', 'gia', 'phat', 'trien'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Phát triển Nhà văn phòng Địa chỉ Việt",
+        "reason": "shares issuer core ['phat', 'trien'] but low graph similarity (0.011)"
+      },
+      {
+        "name": "Công ty Cổ phần Phát triển nhà G homes",
+        "reason": "shares issuer core ['phat', 'trien'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Phát triển Đô Thị",
+        "reason": "shares issuer core ['phat', 'trien'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Phát triển Đô thị (Becamex UDJ)",
+        "reason": "shares issuer core ['phat', 'trien'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Quản Lý và Phát triển Nam Phương",
+        "reason": "shares issuer core ['phat', 'trien', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Quản lý và Phát triển Bất động sản Hưng Vượng",
+        "reason": "shares issuer core ['bat', 'dong', 'phat', 'trien', 'va'] but low graph similarity (0.000) and qualifier ['hung']"
+      },
+      {
+        "name": "Công ty Cổ phần Quản lý và Phát triển Gia Khánh",
+        "reason": "shares issuer core ['gia', 'phat', 'trien', 'va'] but low graph similarity (0.011)"
+      },
+      {
+        "name": "Công ty Cổ phần Quản lý và Đầu tư Hoàng Bách",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Quản lý và Đầu tư Trường Giang",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Sản xuất Gỗ An Cường Đồng Nai",
+        "reason": "shares issuer core ['an', 'dong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Sản xuất PBAT An Phát",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Sản xuất và Thương mại Phương Đông",
+        "reason": "shares issuer core ['dong', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Tư vấn Gia Ân",
+        "reason": "shares issuer core ['an', 'gia', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Tư vấn Hoàng Ân",
+        "reason": "shares issuer core ['an', 'tu'] but low graph similarity (0.011)"
+      },
+      {
+        "name": "Công ty Cổ phần Tập Đoàn Bất Động Sản Thắng Lợi",
+        "reason": "shares issuer core ['bat', 'dong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Tập đoàn An Phát Holdings",
+        "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
+      },
+      {
+        "name": "Công ty Cổ phần khu công nghiệp kỹ thuật cao An Phát",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.021)"
+      },
+      {
+        "name": "Công ty Cổ phần phát triển nhà G Home",
+        "reason": "shares issuer core ['phat', 'trien'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần sản xuất PBAT An Phát (PBAT)",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Đào tạo và Kinh doanh Bất động sản Âu Lạc",
+        "reason": "shares issuer core ['bat', 'dong', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Đào tạo và Đầu tư Toàn Cầu",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Đào tạo và Đầu tư Toàn cầu",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư An Phát",
+        "reason": "shares issuer core ['an', 'dau', 'phat', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư Bất động sản Lê Gia",
+        "reason": "shares issuer core ['bat', 'dau', 'dong', 'gia', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư HFIC",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư Riland",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư Thương mại Bất Động Sản An Dương Thảo Điền",
+        "reason": "shares issuer core ['an', 'bat', 'dau', 'dong', 'tu'] but low graph similarity (0.014) and qualifier ['duong']"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư Thương mại Bất động sản An Dương Thảo Điền",
+        "reason": "shares issuer core ['an', 'bat', 'dau', 'dong', 'tu'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư Thương mại Và Phát triển An Tường",
+        "reason": "shares issuer core ['an', 'dau', 'phat', 'trien', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư Thương mại và Bất động sản An Dương Thảo Điền",
+        "reason": "shares issuer core ['an', 'bat', 'dau', 'dong', 'tu', 'va'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư Xây dựng Becamex ACC",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.022)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư Xây dựng Du lịch Phước Lộc",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.011)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư Xây dựng Ricons",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.011)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư Xây dựng Tân Bình",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư phát triển hạ tầng Nam Quang",
+        "reason": "shares issuer core ['dau', 'phat', 'trien', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư và Thương mại Ascentro",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư và Xây dựng Bình Dương ACC",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.007) and qualifier ['duong']"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư và Xây dựng Ricons",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư và Đầu tư Toàn cầu",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư Đầu tư Thương mại Bất động sản An Dương Thảo Điền",
+        "reason": "shares issuer core ['an', 'bat', 'dau', 'dong', 'tu'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "Công ty Cổ phần đầu tư An Phát",
+        "reason": "shares issuer core ['an', 'dau', 'phat', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Nhựa Hà Nội",
+        "reason": "Nhựa Hà Nội (NHH) — affiliate, separate listed entity"
+      },
+      {
+        "name": "Công ty Quản lý Quỹ đầu tư Dynam",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.011)"
+      },
+      {
+        "name": "Công ty TNHH An Gia Services",
+        "reason": "shares issuer core ['an', 'gia'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH Gia Phát",
+        "reason": "shares issuer core ['gia', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH KCN Kỹ thuật cao An Phát",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH Khu Công nghiệp Kỹ thuật cao An Phát",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH Khu công nghiệp Kỹ thuật cao An Phát",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH Kiểm toán và Tư vấn (A&C)",
+        "reason": "shares issuer core ['tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH Kiểm toán và Tư vấn A&C",
+        "reason": "shares issuer core ['tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH Kiểm toán và Tư vấn Tài chính Quốc tế (IFC)",
+        "reason": "shares issuer core ['tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH Một thành viên Đầu tư G Inverst",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH Một thành viên Đầu tư G Invest",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH Phát triển Hưng An",
+        "reason": "shares issuer core ['an', 'phat', 'trien'] but low graph similarity (0.000) and qualifier ['hung']"
+      },
+      {
+        "name": "Công ty TNHH Phát triển Xuất nhập khẩu và Đầu tư – VIEXIM",
+        "reason": "shares issuer core ['dau', 'phat', 'trien', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH Quản Lý Và Đầu tư Hoàng Long",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH Quản lý và Phát triển Thiên Ân",
+        "reason": "shares issuer core ['an', 'phat', 'trien', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH Quản lý và Đầu tư Hoàng Phát",
+        "reason": "shares issuer core ['dau', 'phat', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH Thương Mại Đầu Tư Xây Dựng DKY",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH Tư vấn Đầu tư KGB",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH kiểm toán và tư vấn A&C",
+        "reason": "shares issuer core ['tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH kỹ thuật Đồng Thuận Phát",
+        "reason": "shares issuer core ['dong', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH Đầu Tư Trung và Hòa",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH Đầu tư Bất động sản An Gia Phú Thuận",
+        "reason": "shares issuer core ['an', 'bat', 'dau', 'dong', 'gia', 'tu'] but low graph similarity (0.011)"
+      },
+      {
+        "name": "Công ty TNHH Đầu tư NC Việt Nam",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH Đầu tư Việt và Dương",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "Công ty TNHH Đầu tư và Phát triển Bất động sản Gia Hưng",
+        "reason": "shares issuer core ['bat', 'dau', 'dong', 'gia', 'phat', 'trien', 'tu', 'va'] but low graph similarity (0.000) and qualifier ['hung']"
+      },
+      {
+        "name": "Công ty TNHH Đầu tư xây dựng DACINCO",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty con của Nhựa An Phát Xanh",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty cổ phần Nhựa Hà Nội",
+        "reason": "Nhựa Hà Nội (NHH) — affiliate, separate listed entity"
+      },
+      {
+        "name": "Công ty cổ phần Nhựa và Khoáng sản An Phát – Yên Bái",
+        "reason": "shares issuer core ['an', 'phat', 'va'] but low graph similarity (0.000) and qualifier ['bai', 'khoang', 'yen']"
+      },
+      {
+        "name": "Công ty cổ phần Nhựa và Môi trường Xanh An Phát",
+        "reason": "shares issuer core ['an', 'phat', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty cổ phần Nhựa và Môi trường xanh An Phát",
+        "reason": "shares issuer core ['an', 'phat', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty cổ phần Quản lý và Đầu tư Trường Giang",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.021)"
+      },
+      {
+        "name": "Công ty cổ phần Tập đoàn Bất động sản Thắng Lợi",
+        "reason": "shares issuer core ['bat', 'dong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty cổ phần kinh doanh và phát triển Bình Dương",
+        "reason": "shares issuer core ['phat', 'trien', 'va'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "Công ty cổ phần kinh doanh và phát triển Bình ương",
+        "reason": "shares issuer core ['phat', 'trien', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty cổ phần nhựa và khoáng sản An Phát- Yên Bái",
+        "reason": "shares issuer core ['an', 'phat', 'va'] but low graph similarity (0.022) and qualifier ['bai', 'khoang', 'yen']"
+      },
+      {
+        "name": "Công ty cổ phần nhựa và khóang sản An Phát- Yên Bái",
+        "reason": "shares issuer core ['an', 'phat', 'va'] but low graph similarity (0.000) and qualifier ['bai', 'khoang', 'yen']"
+      },
+      {
+        "name": "Công ty cổ phần phát triển hạ tầng kỹ thuật",
+        "reason": "shares issuer core ['phat', 'trien'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty cổ phần phát triển đô thị",
+        "reason": "shares issuer core ['phat', 'trien'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty cổ phần tư vấn đầu tư xây dựng Việt",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty cổ phần Đầu tư Thương mại An Dương Thảo Điền",
+        "reason": "shares issuer core ['an', 'dau', 'tu'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "Công ty Đầu tư & Phát triển Công Nghiệp",
+        "reason": "shares issuer core ['dau', 'phat', 'trien', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Đầu tư & Phát triển Công Nghiệp (Becamex IDC)",
+        "reason": "shares issuer core ['dau', 'phat', 'trien', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Đầu tư Tài chính Nhà nước Thành phố Hồ Chí Minh",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Hiệp Hội Môi giới Bất Động sản Việt Nam",
+        "reason": "shares issuer core ['bat', 'dong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Hiệp hội Bất động sản Việt Nam",
+        "reason": "shares issuer core ['bat', 'dong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Hội Môi giới bất động sản Việt Nam",
+        "reason": "shares issuer core ['bat', 'dong'] but low graph similarity (0.022)"
+      },
+      {
+        "name": "Khu công nghiệp An Phát Complex",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Ngân hàng Thương mại Cổ phần Tiên Phong",
+        "reason": "An Tiến Industries (HII) — affiliate, separate listed entity"
+      },
+      {
+        "name": "Nhà An Gia",
+        "reason": "shares issuer core ['an', 'gia'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Nhà đầu tư / Đối tác cung cấp vốn",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Nhà đầu tư tài chính",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Nhà đầu tư/Đối tác góp vốn/Ngân hàng - Định chế tài chính",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Nhựa An Phát Xanh",
+        "reason": "shares issuer core ['an', 'phat'] but low graph similarity (0.018)"
+      },
+      {
+        "name": "PHÒNG QUAN HỆ NHÀ ĐẦU TƯ – AN GIA GROUP",
+        "reason": "shares issuer core ['an', 'dau', 'gia', 'tu'] but low graph similarity (0.011)"
+      },
+      {
+        "name": "Quỹ đầu tư Alliance Bernstein",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Quỹ đầu tư Asia Frontier Capital (AFC)",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Quỹ đầu tư Việt Nam Emerging Capital",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Quỹ đầu tư Việt Nam Emerging Capital (Úc)",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Quỹ đầu tư cổ phiếu Hưng Thịnh VinaCapital",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000) and qualifier ['hung']"
+      },
+      {
+        "name": "Quỹ đầu tư cổ phiếu cổ tức năng động VinaCapital",
+        "reason": "shares issuer core ['dau', 'dong', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Trung tâm Xuất nhập khẩu và Hợp tác Đầu tư",
+        "reason": "shares issuer core ['dau', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tập Đoàn Bất Động Sản An Gia",
+        "reason": "shares issuer core ['an', 'bat', 'dong', 'gia'] but low graph similarity (0.034)"
+      },
+      {
+        "name": "Tập đoàn An Phát Holdings",
+        "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
+      },
+      {
+        "name": "Tập đoàn Dầu khí Đa quốc gia Shell Việt Nam",
+        "reason": "shares issuer core ['dau', 'gia'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng Công Ty Đầu Tư và Phát Triển Công Nghiệp – CTCP",
+        "reason": "shares issuer core ['dau', 'phat', 'trien', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng Công ty Đầu tư & Phát triển CN TNHH Một Thành Viên",
+        "reason": "shares issuer core ['dau', 'phat', 'trien', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng Công ty Đầu tư & Phát triển Công nghiệp - TNHH MTV",
+        "reason": "shares issuer core ['dau', 'phat', 'trien', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng Công ty Đầu tư & Phát triển Công nghiệp - TNHH Một Thành Viên (Becamex IDC)",
+        "reason": "shares issuer core ['dau', 'phat', 'trien', 'tu'] but low graph similarity (0.022)"
+      },
+      {
+        "name": "Tổng Công ty Đầu tư & Phát triển Công nghiệp TNHH Một thành viên (BECAMEX IDC)",
+        "reason": "shares issuer core ['dau', 'phat', 'trien', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng Công ty Đầu tư & Phát triển Công nghiệp TNHH Một thành viên (Becamex IDC)",
+        "reason": "shares issuer core ['dau', 'phat', 'trien', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng Công ty Đầu tư & Phát triển Công nghiệp – TNHH MTV",
+        "reason": "shares issuer core ['dau', 'phat', 'trien', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng Công ty Đầu tư và Phát triển Công Nghiệp - TNHH MTV (Becamex IDC Corp.)",
+        "reason": "shares issuer core ['dau', 'phat', 'trien', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng Công ty Đầu tư và Phát triển Công Nghiệp - TNHH Một Thành Viên (BECAMEX IDC Corp.)",
+        "reason": "shares issuer core ['dau', 'phat', 'trien', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng Công ty Đầu tư và Phát triển Công nghiệp - Becamex",
+        "reason": "shares issuer core ['dau', 'phat', 'trien', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng Công ty Đầu tư và Phát triển Công nghiệp - CTCP",
+        "reason": "shares issuer core ['dau', 'phat', 'trien', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng Công ty Đầu tư và Phát triển Công nghiệp - TNHH Một Thành Viên (Becamex Corp.)",
+        "reason": "shares issuer core ['dau', 'phat', 'trien', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng Công ty Đầu tư và Phát triển Công nghiệp TNHH Một Thành Viên (Becamex IDC Corp.)",
+        "reason": "shares issuer core ['dau', 'phat', 'trien', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng Công ty Đầu tư và Phát triển Công nghiệp TNHH Một Thành viên",
+        "reason": "shares issuer core ['dau', 'phat', 'trien', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng Công ty Đầu tư và Phát triển Công nghiệp – CTCP",
+        "reason": "shares issuer core ['dau', 'phat', 'trien', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng Công ty Đầu tư và Phát triển Công nghiệp – CTCP (Becamex IDC)",
+        "reason": "shares issuer core ['dau', 'phat', 'trien', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng Công ty đầu tư và phát triển công nghiệp - TNHH một thành viên",
+        "reason": "shares issuer core ['dau', 'phat', 'trien', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng Công ty đầu tư và phát triển công nghiệp TNHH một thành viên",
+        "reason": "shares issuer core ['dau', 'phat', 'trien', 'tu', 'va'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng công ty Cổ phần Xây dựng và Vật liệu Xây dựng An Phát",
+        "reason": "shares issuer core ['an', 'phat', 'va'] but low graph similarity (0.000)"
+      }
+    ],
     "needs_review": []
+  },
+  "HAR": {
+    "ticker": "HAR",
+    "canonical_name": "CTCP Đầu tư Thương mại Bất động sản An Dương Thảo Điền",
+    "core_tokens": [
+      "an",
+      "bat",
+      "dau",
+      "dien",
+      "dong",
+      "duong",
+      "mai",
+      "thao",
+      "thuong",
+      "tu"
+    ],
+    "aliases": [
+      "HAR"
+    ],
+    "exclusions": [
+      {
+        "name": "AN DƯƠNG THẢO ĐIỀN",
+        "reason": "shares issuer core ['an', 'dien', 'duong', 'thao'] but low graph similarity (0.024) and qualifier ['duong']"
+      },
+      {
+        "name": "An Cường Đồng Nai",
+        "reason": "shares issuer core ['an', 'dong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "An Dương Thảo Điền",
+        "reason": "shares issuer core ['an', 'dien', 'duong', 'thao'] but low graph similarity (0.027) and qualifier ['duong']"
+      },
+      {
+        "name": "An Phát Holdings",
+        "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
+      },
+      {
+        "name": "An Tiến Industries",
+        "reason": "An Tiến Industries (HII) — affiliate, separate listed entity"
+      },
+      {
+        "name": "Angia Group - Tập Đoàn Bất Động Sản An Gia",
+        "reason": "shares issuer core ['an', 'bat', 'dong'] but low graph similarity (0.016)"
+      },
+      {
+        "name": "CT TNHH ĐẦU TƯ BẤT ĐỘNG SẢN AN GIA PHÚ THUẬN",
+        "reason": "shares issuer core ['an', 'bat', 'dau', 'dong', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CTCP An Tiến Industries",
+        "reason": "An Tiến Industries (HII) — affiliate, separate listed entity"
+      },
+      {
+        "name": "CTCP BẤT ĐỘNG SẢN GIA LINH",
+        "reason": "shares issuer core ['bat', 'dong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CTCP Bất động sản Gia Linh",
+        "reason": "shares issuer core ['bat', 'dong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CTCP Kinh doanh và Đầu tư Bình Dương",
+        "reason": "shares issuer core ['dau', 'duong', 'tu'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "CTCP Nhựa Hà Nội",
+        "reason": "Nhựa Hà Nội (NHH) — affiliate, separate listed entity"
+      },
+      {
+        "name": "CTCP PHÁT TRIỂN BẤT ĐỘNG SẢN ĐĂNG DƯƠNG",
+        "reason": "shares issuer core ['bat', 'dong', 'duong'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "CTCP QUẢN LÝ VÀ PHÁT TRIỂN BẤT ĐỘNG SẢN HƯNG VƯỢNG",
+        "reason": "shares issuer core ['bat', 'dong'] but low graph similarity (0.000) and qualifier ['hung']"
+      },
+      {
+        "name": "CTCP Quản lý và Đầu tư Trường Giang",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CTCP Sản xuất và Thương mại Phương Đông",
+        "reason": "shares issuer core ['dong', 'mai', 'thuong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CTCP TƯ VẤN HOÀNG ÂN",
+        "reason": "shares issuer core ['an', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CTCP TẬP ĐOÀN AN PHÁT HOLDINGS",
+        "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
+      },
+      {
+        "name": "CTCP Tập đoàn An Phát Holdings",
+        "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
+      },
+      {
+        "name": "CTCP Tập đoàn Bất động sản Thắng Lợi",
+        "reason": "shares issuer core ['bat', 'dong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CTCP ĐT TM BĐS An Dương Thảo Điền",
+        "reason": "shares issuer core ['an', 'dien', 'duong', 'thao'] but low graph similarity (0.004) and qualifier ['duong']"
+      },
+      {
+        "name": "CTCP ĐẦU TƯ XÂY DỰNG DU LỊCH PHƯỚC LỘC",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CTCP Đầu tư Bất động sản Lê Gia",
+        "reason": "shares issuer core ['bat', 'dau', 'dong', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CTCP Đầu tư Thương mại Bất Động Sản An Dương Thảo Điền",
+        "reason": "shares issuer core ['an', 'bat', 'dau', 'dien', 'dong', 'duong', 'mai', 'thao', 'thuong', 'tu'] but low graph similarity (0.029) and qualifier ['duong']"
+      },
+      {
+        "name": "CTCP Đầu tư Thương mại Bất động sản An Dương Thảo Điền",
+        "reason": "shares issuer core ['an', 'bat', 'dau', 'dien', 'dong', 'duong', 'mai', 'thao', 'thuong', 'tu'] but low graph similarity (0.065) and qualifier ['duong']"
+      },
+      {
+        "name": "CTCP Đầu tư phát triển hạ tầng Nam Quang",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CTCP Đầu tư và Phát triển Bất động sản An Gia",
+        "reason": "shares issuer core ['an', 'bat', 'dau', 'dong', 'tu'] but low graph similarity (0.004)"
+      },
+      {
+        "name": "CTCP Đầu tư và Xây dựng Bình Dương ACC",
+        "reason": "shares issuer core ['dau', 'duong', 'tu'] but low graph similarity (0.006) and qualifier ['duong']"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN AN DƯƠNG",
+        "reason": "shares issuer core ['an', 'duong'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN AN TIẾN INDUSTRIES",
+        "reason": "An Tiến Industries (HII) — affiliate, separate listed entity"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN NHỰA HÀ NỘI",
+        "reason": "Nhựa Hà Nội (NHH) — affiliate, separate listed entity"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN TẬP ĐOÀN AN PHÁT HOLDINGS",
+        "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN ĐẦU TƯ AN PHÁT",
+        "reason": "shares issuer core ['an', 'dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN ĐẦU TƯ BẤT ĐỘNG SẢN LÊ GIA",
+        "reason": "shares issuer core ['bat', 'dau', 'dong', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN ĐẦU TƯ THƯƠNG MẠI BẤT ĐỘNG SẢN AN DƯƠNG THẢO ĐIỀN",
+        "reason": "shares issuer core ['an', 'bat', 'dau', 'dien', 'dong', 'duong', 'mai', 'thao', 'thuong', 'tu'] but low graph similarity (0.021) and qualifier ['duong']"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN ĐẦU TƯ THƯƠNG MẠI VÀ PHÁT TRIỂN AN TƯỜNG",
+        "reason": "shares issuer core ['an', 'dau', 'mai', 'thuong', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN ĐẦU TƯ VÀ PHÁT TRIỂN BẤT ĐỘNG SẢN AN GIA",
+        "reason": "shares issuer core ['an', 'bat', 'dau', 'dong', 'tu'] but low graph similarity (0.003)"
+      },
+      {
+        "name": "CÔNG TY CỔ PHẦN ĐẦU TƯ VÀ XÂY DỰNG BÌNH DƯƠNG ACC",
+        "reason": "shares issuer core ['dau', 'duong', 'tu'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "CÔNG TY TNHH MTV TƯ VẤN ĐẦU TƯ VÀ PHÁT TRIỂN DECO",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CÔNG TY TNHH THƯƠNG MẠI NGHỆ THUẬT",
+        "reason": "shares issuer core ['mai', 'thuong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CÔNG TY TNHH TƯ VẤN THIẾT KẾ - ĐẦU TƯ XÂY DỰNG MINH HOÀNG",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "CÔNG TY TNHH TƯ VẤN VÀ XÂY DỰNG TRUNG AN",
+        "reason": "shares issuer core ['an', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Các công ty con trong lĩnh vực sản xuất và thương mại nguyên vật liệu ngành nhựa, vận tải",
+        "reason": "shares issuer core ['mai', 'thuong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công An PCCC tỉnh Bình Dương",
+        "reason": "shares issuer core ['an', 'duong'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "Công Ty CP An Dương Thảo Điền",
+        "reason": "shares issuer core ['an', 'dien', 'duong', 'thao'] but low graph similarity (0.004) and qualifier ['duong']"
+      },
+      {
+        "name": "Công Ty CP Tư Vấn Và Đầu Tư Mạo Hiểm",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.001)"
+      },
+      {
+        "name": "Công Ty CP Đầu Tư & Thương Mại Long Bảo",
+        "reason": "shares issuer core ['dau', 'mai', 'thuong', 'tu'] but low graph similarity (0.001) and qualifier ['bao']"
+      },
+      {
+        "name": "Công Ty CP Đầu Tư Và Phát Triển Công Nghiệp Mỹ Việt",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.001)"
+      },
+      {
+        "name": "Công Ty Cổ phần Đầu Tư và Thương Mại Long Bảo",
+        "reason": "shares issuer core ['dau', 'mai', 'thuong', 'tu'] but low graph similarity (0.001) and qualifier ['bao']"
+      },
+      {
+        "name": "Công an tỉnh Hải Dương",
+        "reason": "shares issuer core ['an', 'duong'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "Công ty An Dương Thảo Điền",
+        "reason": "shares issuer core ['an', 'dien', 'duong', 'thao'] but low graph similarity (0.021) and qualifier ['duong']"
+      },
+      {
+        "name": "Công ty Bất động sản Central Hill",
+        "reason": "shares issuer core ['bat', 'dong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty CP An Dương Thảo Điền",
+        "reason": "shares issuer core ['an', 'dien', 'duong', 'thao'] but low graph similarity (0.003) and qualifier ['duong']"
+      },
+      {
+        "name": "Công ty CP Dịch vụ Xăng dầu An Đông",
+        "reason": "shares issuer core ['an', 'dau', 'dong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty CP Đào tạo và Đầu Tư Toàn Cầu",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.001)"
+      },
+      {
+        "name": "Công ty CP Đầu tư & Thương mại Ascentro",
+        "reason": "shares issuer core ['dau', 'mai', 'thuong', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty CP Đầu tư Cao su Quảng Nam",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.001)"
+      },
+      {
+        "name": "Công ty CP Đầu tư và Thương mại Ascentro",
+        "reason": "shares issuer core ['dau', 'mai', 'thuong', 'tu'] but low graph similarity (0.003)"
+      },
+      {
+        "name": "Công ty Cổ phần An Phát Holdings",
+        "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
+      },
+      {
+        "name": "Công ty Cổ phần An Tiến Industries",
+        "reason": "An Tiến Industries (HII) — affiliate, separate listed entity"
+      },
+      {
+        "name": "Công ty Cổ phần An Tiến Industries (HII)",
+        "reason": "An Tiến Industries (HII) — affiliate, separate listed entity"
+      },
+      {
+        "name": "Công ty Cổ phần An phát Holdings",
+        "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
+      },
+      {
+        "name": "Công ty Cổ phần Bất Động Sản Central Hill",
+        "reason": "shares issuer core ['bat', 'dong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Bất động sản Gia Linh",
+        "reason": "shares issuer core ['bat', 'dong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Bất động sản Westernland",
+        "reason": "shares issuer core ['bat', 'dong'] but low graph similarity (0.003)"
+      },
+      {
+        "name": "Công ty Cổ phần Kinh doanh và Đầu tư Bình Dương",
+        "reason": "shares issuer core ['dau', 'duong', 'tu'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "Công ty Cổ phần Nhựa Hà Nội",
+        "reason": "Nhựa Hà Nội (NHH) — affiliate, separate listed entity"
+      },
+      {
+        "name": "Công ty Cổ phần Phát triển Bất động sản Đăng Dương",
+        "reason": "shares issuer core ['bat', 'dong', 'duong'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "Công ty Cổ phần Quản lý và Phát triển Bất động sản Hưng Vượng",
+        "reason": "shares issuer core ['bat', 'dong'] but low graph similarity (0.000) and qualifier ['hung']"
+      },
+      {
+        "name": "Công ty Cổ phần Quản lý và Đầu tư Hoàng Bách",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Quản lý và Đầu tư Trường Giang",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.001)"
+      },
+      {
+        "name": "Công ty Cổ phần Sản xuất Gỗ An Cường Đồng Nai",
+        "reason": "shares issuer core ['an', 'dong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Sản xuất và Thương mại Phương Đông",
+        "reason": "shares issuer core ['dong', 'mai', 'thuong'] but low graph similarity (0.001)"
+      },
+      {
+        "name": "Công ty Cổ phần Thương mại và Xuất nhập khẩu Ái Linh",
+        "reason": "shares issuer core ['mai', 'thuong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Tư vấn Gia Ân",
+        "reason": "shares issuer core ['an', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Tư vấn Hoàng Ân",
+        "reason": "shares issuer core ['an', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Tập Đoàn Bất Động Sản Thắng Lợi",
+        "reason": "shares issuer core ['bat', 'dong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Tập đoàn An Phát Holdings",
+        "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
+      },
+      {
+        "name": "Công ty Cổ phần Đào tạo và Kinh doanh Bất động sản Âu Lạc",
+        "reason": "shares issuer core ['bat', 'dong'] but low graph similarity (0.001)"
+      },
+      {
+        "name": "Công ty Cổ phần Đào tạo và Đầu tư Toàn Cầu",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.001)"
+      },
+      {
+        "name": "Công ty Cổ phần Đào tạo và Đầu tư Toàn cầu",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư An Phát",
+        "reason": "shares issuer core ['an', 'dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư Bất động sản Lê Gia",
+        "reason": "shares issuer core ['bat', 'dau', 'dong', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư HFIC",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.003)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư Riland",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư Thương mại Bất Động Sản An Dương Thảo Điền",
+        "reason": "shares issuer core ['an', 'bat', 'dau', 'dien', 'dong', 'duong', 'mai', 'thao', 'thuong', 'tu'] but low graph similarity (0.073) and qualifier ['duong']"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư Thương mại Bất động sản An Dương Thảo Điền",
+        "reason": "shares issuer core ['an', 'bat', 'dau', 'dien', 'dong', 'duong', 'mai', 'thao', 'thuong', 'tu'] but low graph similarity (0.058) and qualifier ['duong']"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư Thương mại Và Phát triển An Tường",
+        "reason": "shares issuer core ['an', 'dau', 'mai', 'thuong', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư Thương mại và Bất động sản An Dương Thảo Điền",
+        "reason": "shares issuer core ['an', 'bat', 'dau', 'dien', 'dong', 'duong', 'mai', 'thao', 'thuong', 'tu'] but low graph similarity (0.003) and qualifier ['duong']"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư Xây dựng Becamex ACC",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.003)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư Xây dựng Du lịch Phước Lộc",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư Xây dựng Ricons",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư Xây dựng Tân Bình",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư phát triển hạ tầng Nam Quang",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư và Phát triển Bất động sản An Gia",
+        "reason": "shares issuer core ['an', 'bat', 'dau', 'dong', 'tu'] but low graph similarity (0.003)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư và Thương mại Ascentro",
+        "reason": "shares issuer core ['dau', 'mai', 'thuong', 'tu'] but low graph similarity (0.001)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư và Xây dựng Bình Dương ACC",
+        "reason": "shares issuer core ['dau', 'duong', 'tu'] but low graph similarity (0.005) and qualifier ['duong']"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư và Xây dựng Ricons",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư và Đầu tư Toàn cầu",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.001)"
+      },
+      {
+        "name": "Công ty Cổ phần Đầu tư Đầu tư Thương mại Bất động sản An Dương Thảo Điền",
+        "reason": "shares issuer core ['an', 'bat', 'dau', 'dien', 'dong', 'duong', 'mai', 'thao', 'thuong', 'tu'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "Công ty Cổ phần đầu tư An Phát",
+        "reason": "shares issuer core ['an', 'dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Nhựa Hà Nội",
+        "reason": "Nhựa Hà Nội (NHH) — affiliate, separate listed entity"
+      },
+      {
+        "name": "Công ty Quản lý Quỹ đầu tư Dynam",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH Miền Đông Thảo",
+        "reason": "shares issuer core ['dong', 'thao'] but low graph similarity (0.001)"
+      },
+      {
+        "name": "Công ty TNHH Miền Đồng Thảo",
+        "reason": "shares issuer core ['dong', 'thao'] but low graph similarity (0.001)"
+      },
+      {
+        "name": "Công ty TNHH Một thành viên Đầu tư G Inverst",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH Một thành viên Đầu tư G Invest",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.001)"
+      },
+      {
+        "name": "Công ty TNHH Phát triển Xuất nhập khẩu và Đầu tư – VIEXIM",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH Quản Lý Và Đầu tư Hoàng Long",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH Quản lý và Đầu tư Hoàng Phát",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH Thương Mại Đầu Tư Xây Dựng DKY",
+        "reason": "shares issuer core ['dau', 'mai', 'thuong', 'tu'] but low graph similarity (0.001)"
+      },
+      {
+        "name": "Công ty TNHH Thương mại & Xây dựng Long Sơn",
+        "reason": "shares issuer core ['mai', 'thuong'] but low graph similarity (0.001)"
+      },
+      {
+        "name": "Công ty TNHH Thương mại An Cường",
+        "reason": "shares issuer core ['an', 'mai', 'thuong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH Thương mại Xây dựng Sản xuất Hoàng Hà",
+        "reason": "shares issuer core ['mai', 'thuong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH Thương mại và Du lịch Hàng Thảo",
+        "reason": "shares issuer core ['mai', 'thao', 'thuong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH Thương mại và Du lịch Hằng Thảo",
+        "reason": "shares issuer core ['mai', 'thao', 'thuong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH Thương mại và Xây dựng Long Sơn",
+        "reason": "shares issuer core ['mai', 'thuong'] but low graph similarity (0.001)"
+      },
+      {
+        "name": "Công ty TNHH Tư vấn Đầu tư KGB",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH Xây dựng Kinh doanh Dịch vụ Thương mại Đông Nam",
+        "reason": "shares issuer core ['dong', 'mai', 'thuong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH sản xuất thương mại Tân Quốc Hưng",
+        "reason": "shares issuer core ['mai', 'thuong'] but low graph similarity (0.000) and qualifier ['hung']"
+      },
+      {
+        "name": "Công ty TNHH thương mại dịch vụ xây dựng Lộc Hoàng Gia",
+        "reason": "shares issuer core ['mai', 'thuong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH xây dựng thương mại dịch vụ xuất nhập khẩu Tân Hừng Phát",
+        "reason": "shares issuer core ['mai', 'thuong'] but low graph similarity (0.000) and qualifier ['hung']"
+      },
+      {
+        "name": "Công ty TNHH Đầu Tư Trung và Hòa",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH Đầu tư Bất động sản An Gia Phú Thuận",
+        "reason": "shares issuer core ['an', 'bat', 'dau', 'dong', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH Đầu tư NC Việt Nam",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty TNHH Đầu tư Việt và Dương",
+        "reason": "shares issuer core ['dau', 'duong', 'tu'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "Công ty TNHH Đầu tư và Phát triển Bất động sản Gia Hưng",
+        "reason": "shares issuer core ['bat', 'dau', 'dong', 'tu'] but low graph similarity (0.000) and qualifier ['hung']"
+      },
+      {
+        "name": "Công ty TNHH Đầu tư xây dựng DACINCO",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty cổ phần Du lịch và Thương mại Vinacomin",
+        "reason": "shares issuer core ['mai', 'thuong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty cổ phần Du lịch và Thương mại – Vinacomin",
+        "reason": "shares issuer core ['mai', 'thuong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty cổ phần Nhựa Hà Nội",
+        "reason": "Nhựa Hà Nội (NHH) — affiliate, separate listed entity"
+      },
+      {
+        "name": "Công ty cổ phần Quản lý và Đầu tư Trường Giang",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty cổ phần Tập đoàn Bất động sản Thắng Lợi",
+        "reason": "shares issuer core ['bat', 'dong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty cổ phần chứng khoán Thương mại và Công nghiệp Việt Nam",
+        "reason": "shares issuer core ['mai', 'thuong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty cổ phần tư vấn đầu tư xây dựng Việt",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty cổ phần Đầu tư Thương mại An Dương Thảo Điền",
+        "reason": "shares issuer core ['an', 'dau', 'dien', 'duong', 'mai', 'thao', 'thuong', 'tu'] but low graph similarity (0.005) and qualifier ['duong']"
+      },
+      {
+        "name": "Công ty Đầu tư & Phát triển Công Nghiệp",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Đầu tư & Phát triển Công Nghiệp (Becamex IDC)",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Công ty Đầu tư Tài chính Nhà nước Thành phố Hồ Chí Minh",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.004)"
+      },
+      {
+        "name": "Dự án nhà ở thương mại tại khu dân cư ấp 5C, phường Thới Hòa, thành phố Bến Cát, tỉnh Bình Dương",
+        "reason": "shares issuer core ['an', 'duong', 'mai', 'thuong'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "Hiệp Hội Môi giới Bất Động sản Việt Nam",
+        "reason": "shares issuer core ['bat', 'dong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Hiệp hội Bất động sản Việt Nam",
+        "reason": "shares issuer core ['bat', 'dong'] but low graph similarity (0.001)"
+      },
+      {
+        "name": "Hội Môi giới bất động sản Việt Nam",
+        "reason": "shares issuer core ['bat', 'dong'] but low graph similarity (0.004)"
+      },
+      {
+        "name": "Ngân Hàng TMCP Công Thương Việt Nam - Chi Nhánh Đồng Nai",
+        "reason": "shares issuer core ['dong', 'thuong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Ngân Hàng TMCP Công Thương Việt Nam - Chi nhánh Đồng Nai",
+        "reason": "shares issuer core ['dong', 'thuong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Ngân Hàng Thương Mại Cổ Phần Ngoại thương Việt Nam – Chi nhánh Bắc Bình Dương",
+        "reason": "shares issuer core ['duong', 'mai', 'thuong'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "Ngân hàng TMCP Công thương - Chi nhánh Hải Dương",
+        "reason": "shares issuer core ['duong', 'thuong'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "Ngân hàng TMCP Công thương Việt Nam - Chi nhánh Hải Dương",
+        "reason": "shares issuer core ['duong', 'thuong'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "Ngân hàng TMCP Kỹ thương Việt Nam - CN Hải Dương",
+        "reason": "shares issuer core ['duong', 'thuong'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "Ngân hàng TMCP Ngoại thương - Chi nhánh Hải Dương",
+        "reason": "shares issuer core ['duong', 'thuong'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "Ngân hàng TMCP Xăng dầu Petrolimex - Chi nhánh Hải Dương",
+        "reason": "shares issuer core ['dau', 'duong'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "Ngân hàng TMCP xăng dầu Petrolimex - Chi nhánh Hải Dương",
+        "reason": "shares issuer core ['dau', 'duong'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "Ngân hàng Thương Mại Cổ phần Bảo Việt",
+        "reason": "shares issuer core ['mai', 'thuong'] but low graph similarity (0.000) and qualifier ['bao']"
+      },
+      {
+        "name": "Ngân hàng Thương mại Cổ phần Ngoại Thương Việt Nam",
+        "reason": "shares issuer core ['mai', 'thuong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Ngân hàng Thương mại Cổ phần Quân đội",
+        "reason": "shares issuer core ['mai', 'thuong'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Ngân hàng Thương mại Cổ phần Tiên Phong",
+        "reason": "An Tiến Industries (HII) — affiliate, separate listed entity"
+      },
+      {
+        "name": "Ngân hàng Thương mại cổ phần Quân đội - Chi nhánh Hải Dương",
+        "reason": "shares issuer core ['duong', 'mai', 'thuong'] but low graph similarity (0.000) and qualifier ['duong']"
+      },
+      {
+        "name": "Nhà đầu tư / Đối tác cung cấp vốn",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Nhà đầu tư tài chính",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Nhà đầu tư/Đối tác góp vốn/Ngân hàng - Định chế tài chính",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "PHÒNG QUAN HỆ NHÀ ĐẦU TƯ – AN GIA GROUP",
+        "reason": "shares issuer core ['an', 'dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Quỹ đầu tư Alliance Bernstein",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Quỹ đầu tư Asia Frontier Capital (AFC)",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Quỹ đầu tư Việt Nam Emerging Capital",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.001)"
+      },
+      {
+        "name": "Quỹ đầu tư Việt Nam Emerging Capital (Úc)",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.001)"
+      },
+      {
+        "name": "Quỹ đầu tư cổ phiếu Hưng Thịnh VinaCapital",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000) and qualifier ['hung']"
+      },
+      {
+        "name": "Quỹ đầu tư cổ phiếu cổ tức năng động VinaCapital",
+        "reason": "shares issuer core ['dau', 'dong', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Trung tâm Xuất nhập khẩu và Hợp tác Đầu tư",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tập Đoàn Bất Động Sản An Gia",
+        "reason": "shares issuer core ['an', 'bat', 'dong'] but low graph similarity (0.006)"
+      },
+      {
+        "name": "Tập đoàn An Phát Holdings",
+        "reason": "An Phát Holdings — parent group (ticker APH), a separate listed entity"
+      },
+      {
+        "name": "Tổng Công Ty Đầu Tư và Phát Triển Công Nghiệp – CTCP",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng Công ty Đầu tư & Phát triển CN TNHH Một Thành Viên",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng Công ty Đầu tư & Phát triển Công nghiệp - TNHH MTV",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng Công ty Đầu tư & Phát triển Công nghiệp - TNHH Một Thành Viên (Becamex IDC)",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.003)"
+      },
+      {
+        "name": "Tổng Công ty Đầu tư & Phát triển Công nghiệp TNHH Một thành viên (BECAMEX IDC)",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng Công ty Đầu tư & Phát triển Công nghiệp TNHH Một thành viên (Becamex IDC)",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng Công ty Đầu tư & Phát triển Công nghiệp – TNHH MTV",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng Công ty Đầu tư và Phát triển Công Nghiệp - TNHH MTV (Becamex IDC Corp.)",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng Công ty Đầu tư và Phát triển Công Nghiệp - TNHH Một Thành Viên (BECAMEX IDC Corp.)",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng Công ty Đầu tư và Phát triển Công nghiệp - Becamex",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng Công ty Đầu tư và Phát triển Công nghiệp - CTCP",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng Công ty Đầu tư và Phát triển Công nghiệp - TNHH Một Thành Viên (Becamex Corp.)",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng Công ty Đầu tư và Phát triển Công nghiệp TNHH Một Thành Viên (Becamex IDC Corp.)",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng Công ty Đầu tư và Phát triển Công nghiệp TNHH Một Thành viên",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng Công ty Đầu tư và Phát triển Công nghiệp – CTCP",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng Công ty Đầu tư và Phát triển Công nghiệp – CTCP (Becamex IDC)",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng Công ty đầu tư và phát triển công nghiệp - TNHH một thành viên",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "Tổng Công ty đầu tư và phát triển công nghiệp TNHH một thành viên",
+        "reason": "shares issuer core ['dau', 'tu'] but low graph similarity (0.000)"
+      },
+      {
+        "name": "các công ty con trong lĩnh vực sản xuất và thương mại nguyên vật liệu ngành nhựa, vận tải",
+        "reason": "shares issuer core ['mai', 'thuong'] but low graph similarity (0.000)"
+      }
+    ],
+    "needs_review": [
+      {
+        "name": "CÔNG TY CP ĐẦU TƯ THƯƠNG MẠI BẤT ĐỘNG SẢN AN DƯƠNG THẢO ĐIỀN",
+        "reason": "shares issuer core ['an', 'bat', 'dau', 'dien', 'dong', 'duong', 'mai', 'thao', 'thuong', 'tu'] and intermediate graph similarity (0.255) with qualifier ['duong']",
+        "subject_edges": 164,
+        "suggest": "exclude"
+      }
+    ]
   }
 }
