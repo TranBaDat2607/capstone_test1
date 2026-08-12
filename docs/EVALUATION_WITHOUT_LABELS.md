@@ -16,6 +16,16 @@
 > nguồn gốc của mọi thứ dưới đây) · [`TEMPORAL_KG_DESIGN.md`](./TEMPORAL_KG_DESIGN.md) §4
 > (Q1–Q8 — đo chất lượng **đồ thị**; tài liệu này đo chất lượng **kết quả**, hai tầng khác nhau)
 > · [`CLAIM_CONDUCT_CROSSCHECK.md`](./CLAIM_CONDUCT_CROSSCHECK.md) (đối tượng được đo)
+>
+> **CẬP NHẬT 2026-08-08 — tiền đề "không có nhãn nào" nay cần nói chính xác hơn.**
+> Đã tồn tại một tập nhãn người thật: **220 cặp `(claim, evidence)`, hai người chấm độc lập,
+> Cohen's κ = 0,714** (`sheetA.xlsx` / `sheetB.xlsx`, theo sổ tay đã freeze
+> [`ANNOTATION_GUIDELINE.md`](./ANNOTATION_GUIDELINE.md); kết quả ở
+> [`ANNOTATION_RESULTS.md`](./ANNOTATION_RESULTS.md)). Điều này **không** làm file này hết
+> giá trị, vì tập đó là mẫu các **dự đoán dương** của hệ: nó cho **precision**, còn recall,
+> prevalence và toàn bộ phần hệ thống nằm ngoài 220 cặp thì vẫn phải đo theo khung không-nhãn
+> dưới đây. Cách nói đúng từ nay: *"không có tập greenwashing có nhãn ở quy mô corpus; có một
+> tập gold 220 cặp ở tầng link"* — đừng lặp lại "không có nhãn nào" một cách không điều kiện.
 
 ---
 
