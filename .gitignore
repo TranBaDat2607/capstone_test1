@@ -41,6 +41,17 @@ test_data/
 # Resume/progress metadata written by upload_large_folder in src/esg_kg/core/datasync.py push.
 .cache/
 
+# ---- LaTeX build byproducts (capstone_report/build.ps1 regenerates these) ----
+capstone_report/*.aux
+capstone_report/*.bbl
+capstone_report/*.blg
+capstone_report/*.lof
+capstone_report/*.log
+capstone_report/*.lot
+capstone_report/*.toc
+capstone_report/*.out
+capstone_report/*.synctex.gz
+
 # ---- IDE / OS ----
 .idea/
 .vscode/
