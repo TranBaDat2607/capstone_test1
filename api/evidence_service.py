@@ -8,7 +8,11 @@ from the linked `StandardIndicator.pillar` — never guessed.
 Columns:
   - verified     ← claims with assessment == "appears_supported"
   - contradicted ← claims with assessment == "appears_contradicted"
-  - missing      ← deferred (kept empty for now)
+  - missing      ← indicator-aligned claims the company DID disclose, but whose
+                   assessment is "unverified_insufficient_evidence" (no independent
+                   conduct-side evidence was found to cross-check them). This is NOT a
+                   disclosure-omission check — it never looks at indicators the company
+                   never mentioned at all; see get_evidence()'s "missing" bucket.
 
 Neo4j is REQUIRED. If it is unreachable, the query helpers raise RuntimeError with a
 clear message (start it with `docker compose up -d` and run step06/step08).

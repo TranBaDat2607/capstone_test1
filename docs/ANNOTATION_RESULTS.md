@@ -1,10 +1,21 @@
 # Kết quả gán nhãn mù — độ đồng thuận và precision của adjudicator
 
-> **NGUỒN CHUẨN LÀ `evalu/` TRÊN NHÁNH `wip/gri-parser-and-eval`**, không phải file này.
+> **NGUỒN CHUẨN LÀ `evalu/`** (nay đã ở trong repo này, không còn phải kéo riêng từ nhánh
+> `wip/gri-parser-and-eval` — xem commit `bb7093b`), không phải file này.
 > `evalu/annotation.py` (dựng phiếu + `score()`), `evalu/iaa.py` (độ đồng thuận),
 > `evalu/ANNOTATION_PROTOCOL.md` (protocol, cố định trước khi nhìn kết quả).
-> File này chỉ tóm tắt số đã chạy ra và ghi lại các bẫy diễn giải. **Đừng tự tính lại bằng
-> tay** — bản tự dựng lại đầu tiên đã sai đúng ba chỗ, ghi ở §6.
+> File này chỉ tóm tắt số đã chạy ra trên phiên **226/200-cặp gốc** và ghi lại các
+> bẫy diễn giải. **Đừng tự tính lại bằng tay** — bản tự dựng lại đầu tiên đã sai đúng ba
+> chỗ, ghi ở §6.
+>
+> ⚠️ **2026-08-13 (issue #17):** `sheetA.xlsx`/`sheetB.xlsx`/`sheetC.xlsx` đã bị xoá khỏi
+> working tree — luận văn nay chỉ báo cáo phiên chấm **43-cặp mới nhất** (dossier hiện tại,
+> sau bản vá P1 2026-08-13), không còn dùng số của phiên 226/200-cặp này nữa. Số liệu
+> BÊN DƯỚI vẫn là **bản ghi lịch sử đúng, không đổi** — chỉ là ba file nguồn không còn nằm
+> sẵn trên working tree. Khôi phục nếu cần: `git show bb7093b:sheetA.xlsx > sheetA.xlsx`
+> (tương tự cho `sheetB.xlsx`/`sheetC.xlsx`). Phiên 43-cặp mới có nguồn tái tạo riêng:
+> `sheetA_43pairs_filled.xlsx` / `sheetB_43pairs_filled.xlsx` + `evalu/score_census_43.py`.
+> `notebooks/eda/annotation_agreement.py` đã bị xoá cùng đợt này — xem §6.
 >
 > ```bash
 > python evalu/run_evaluation.py --score-annotation evalu/out/annotation/sheet_A.json \
@@ -106,6 +117,12 @@ Cần biết khi lập kế hoạch: hồ sơ **sau khi vá** hiện chỉ còn 
 trích dẫn (so với 226 trước khi vá). Hệ sau khi vá dè dặt hơn rất nhiều — nên một phiên
 chấm census sau khi vá sẽ chỉ có ~24 dòng, không phải 226.
 
+> **Cập nhật 2026-08-13:** một bản vá riêng (P1, salt cache key) đưa số cặp trích dẫn lên
+> **43** (37 supporting + 6 contradicting), không phải 24. Phiên census 43-cặp đó đã được
+> chấm mù thật (không phải dự đoán như đoạn trên) — kết quả nằm trong
+> `capstone_report/main.tex` §4.4, tái tạo bằng `evalu/score_census_43.py`, không phải ở
+> file này.
+
 ---
 
 ## 5. Cái tập nhãn này KHÔNG chấm điểm được
@@ -134,5 +151,7 @@ Bài học: **repo có sẵn package đánh giá thì đọc nó trước khi t�
 tạo được phần dễ (khớp gần đúng precision theo loại: 7,0% vs 6,2%) nhưng bỏ sót cặp bẫy,
 ngưỡng huỷ phiên, và đúng chỉ số mà protocol yêu cầu.
 
-`notebooks/eda/annotation_agreement.py` là bản tự dựng đó, giữ lại vì `evalu/` chưa merge
-vào `main` — nhưng khi đã merge thì dùng `evalu/`, không dùng nó.
+`notebooks/eda/annotation_agreement.py` là bản tự dựng đó, giữ lại vì lúc viết `evalu/`
+chưa merge vào `main`. `evalu/` nay đã có sẵn trong repo và là công cụ dùng thật
+(`evalu/score_census_43.py` cho phiên 43-cặp) — file tự dựng đã bị xoá 2026-08-13, đúng
+kế hoạch ghi ở trên.

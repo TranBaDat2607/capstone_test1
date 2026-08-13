@@ -11,7 +11,7 @@ Tài liệu này mô tả chi tiết thiết kế, kiến trúc, tính năng gia
 ### 3 Cột Xác thực chính:
 1. ✅ **Những điều công ty đã thực hiện đúng**: Tuyên bố của công ty được xác nhận bởi đơn vị độc lập (PwC, SGS, Bộ/Sở TN&MT...).
 2. ❌ **Những điều công ty nói nhưng thực tế khác**: Tuyên bố của công ty bị phát hiện mâu thuẫn hoặc vi phạm thực tế.
-3. ⚠️ **Những điều bắt buộc phải công bố nhưng bị bỏ qua**: Các chỉ tiêu TT96/GRI bắt buộc khai báo nhưng bị doanh nghiệp ẩn đi hoặc không đề cập.
+3. ⚠️ **Những điều đã công bố nhưng chưa được xác minh độc lập**: Tuyên bố của công ty đã gắn với một chỉ tiêu TT96/GRI nhưng hệ thống chưa tìm được bằng chứng độc lập (tin tức, kết luận cơ quan...) để đối chiếu (`assessment = unverified_insufficient_evidence`). **Đây không phải là kiểm tra bỏ sót công bố** — cột này không xét các chỉ tiêu mà công ty chưa từng đề cập; nó chỉ hiển thị các tuyên bố đã công bố nhưng chưa đối chiếu được (xem `api/evidence_service.py::get_evidence`).
 
 ---
 

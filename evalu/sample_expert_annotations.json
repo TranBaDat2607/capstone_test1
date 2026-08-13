@@ -1,0 +1,42 @@
+[
+  {
+    "dossier_id": "claim_vnm_2023_001",
+    "claim_text": "Vinamilk cam kết giảm 15% lượng phát thải khí nhà kính vào năm 2025.",
+    "ratings": {
+      "auditor": {"grounding_precision": 5, "adjudication_quality": 5, "provenance_transparency": 5, "decision_utility": 5, "label": "appears_supported"},
+      "esg_specialist": {"grounding_precision": 5, "adjudication_quality": 4, "provenance_transparency": 5, "decision_utility": 4, "label": "appears_supported"},
+      "ceo": {"grounding_precision": 4, "adjudication_quality": 4, "provenance_transparency": 5, "decision_utility": 5, "label": "appears_supported"},
+      "hrd": {"grounding_precision": 4, "adjudication_quality": 4, "provenance_transparency": 4, "decision_utility": 4, "label": "appears_supported"}
+    }
+  },
+  {
+    "dossier_id": "claim_vnm_2023_002",
+    "claim_text": "Doanh nghiệp hoàn toàn không bị xử phạt vi phạm hành chính về môi trường.",
+    "ratings": {
+      "auditor": {"grounding_precision": 1, "adjudication_quality": 2, "provenance_transparency": 4, "decision_utility": 2, "label": "appears_contradicted"},
+      "esg_specialist": {"grounding_precision": 2, "adjudication_quality": 2, "provenance_transparency": 4, "decision_utility": 3, "label": "appears_contradicted"},
+      "ceo": {"grounding_precision": 4, "adjudication_quality": 4, "provenance_transparency": 5, "decision_utility": 4, "label": "appears_supported"},
+      "hrd": {"grounding_precision": 3, "adjudication_quality": 3, "provenance_transparency": 4, "decision_utility": 3, "label": "unverified_insufficient_evidence"}
+    }
+  },
+  {
+    "dossier_id": "claim_hpg_2023_003",
+    "claim_text": "Hòa Phát hoàn thành lắp đặt hệ thống lọc bụi tĩnh điện tại 100% nhà máy.",
+    "ratings": {
+      "auditor": {"grounding_precision": 4, "adjudication_quality": 4, "provenance_transparency": 5, "decision_utility": 4, "label": "appears_supported"},
+      "esg_specialist": {"grounding_precision": 5, "adjudication_quality": 4, "provenance_transparency": 5, "decision_utility": 4, "label": "appears_supported"},
+      "ceo": {"grounding_precision": 4, "adjudication_quality": 5, "provenance_transparency": 5, "decision_utility": 5, "label": "appears_supported"},
+      "hrd": {"grounding_precision": 4, "adjudication_quality": 4, "provenance_transparency": 4, "decision_utility": 4, "label": "appears_supported"}
+    }
+  },
+  {
+    "dossier_id": "claim_vic_2023_004",
+    "claim_text": "Vingroup chuyển đổi 100% xe buýt nội bộ sang xe điện VinFast.",
+    "ratings": {
+      "auditor": {"grounding_precision": 5, "adjudication_quality": 5, "provenance_transparency": 5, "decision_utility": 5, "label": "appears_supported"},
+      "esg_specialist": {"grounding_precision": 5, "adjudication_quality": 5, "provenance_transparency": 5, "decision_utility": 4, "label": "appears_supported"},
+      "ceo": {"grounding_precision": 5, "adjudication_quality": 4, "provenance_transparency": 5, "decision_utility": 5, "label": "appears_supported"},
+      "hrd": {"grounding_precision": 4, "adjudication_quality": 4, "provenance_transparency": 5, "decision_utility": 4, "label": "appears_supported"}
+    }
+  }
+]

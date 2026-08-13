@@ -1,0 +1,462 @@
+{
+  "schema": "evalu.report/v1",
+  "generated_at": "2026-08-07T03:56:28+00:00",
+  "framework": "Khung Đánh giá Toàn diện cho Hệ thống Graph-RAG Phát hiện Greenwashing Không Nhãn",
+  "context": {
+    "Từ vựng ESG neo được (M1.1)": "409 cụm từ",
+    "Số câu đã quét (báo cáo)": "873,756",
+    "Số câu đã quét (tin tức)": "174,256",
+    "Đồ thị đã phân giải": "10,634 node / 14,744 cạnh",
+    "Bộ ba đã kiểm định": "14,500",
+    "Hồ sơ đối soát": "464 claim / 5 mã CK",
+    "Mã chứng khoán": "AAA, ACC, ACG, ADP, AGG",
+    "Thời gian chạy": "57.5s"
+  },
+  "component_metrics": [
+    {
+      "metric_id": "M1.1r",
+      "module": "1. Thu thập & Phân loại ESG",
+      "name": "ESG Signal-to-Noise Ratio — báo cáo",
+      "value": 0.5034060640781238,
+      "pct": "50.34%",
+      "numerator": 152896,
+      "denominator": 303723,
+      "target": "cao hơn = ít câu tiếp thị chung chung lọt qua bộ phân loại",
+      "passed": null,
+      "higher_is_better": true,
+      "details": {
+        "lexicon_terms": 409
+      }
+    },
+    {
+      "metric_id": "M1.2r",
+      "module": "1. Thu thập & Phân loại ESG",
+      "name": "Paragraph Source Provenance Rate — báo cáo",
+      "value": 1.0,
+      "pct": "100.00%",
+      "numerator": 873756,
+      "denominator": 873756,
+      "target": "100%",
+      "passed": true,
+      "higher_is_better": true,
+      "details": {
+        "missing_by_field": {}
+      }
+    },
+    {
+      "metric_id": "M1.1n",
+      "module": "1. Thu thập & Phân loại ESG",
+      "name": "ESG Signal-to-Noise Ratio — tin tức",
+      "value": 0.620401662587888,
+      "pct": "62.04%",
+      "numerator": 47913,
+      "denominator": 77229,
+      "target": "cao hơn = ít câu tiếp thị chung chung lọt qua bộ phân loại",
+      "passed": null,
+      "higher_is_better": true,
+      "details": {
+        "lexicon_terms": 409
+      }
+    },
+    {
+      "metric_id": "M1.2n",
+      "module": "1. Thu thập & Phân loại ESG",
+      "name": "Paragraph Source Provenance Rate — tin tức",
+      "value": 1.0,
+      "pct": "100.00%",
+      "numerator": 174256,
+      "denominator": 174256,
+      "target": "100%",
+      "passed": true,
+      "higher_is_better": true,
+      "details": {
+        "missing_by_field": {}
+      }
+    },
+    {
+      "metric_id": "M2.1",
+      "module": "2. Trích xuất Triplet & KPI",
+      "name": "Temporal Metadata Completeness",
+      "value": 0.9301725250613088,
+      "pct": "93.02%",
+      "numerator": 21620,
+      "denominator": 23243,
+      "target": "100%",
+      "passed": false,
+      "higher_is_better": true,
+      "details": {
+        "edges_total": 14744,
+        "edges_complete": 14227,
+        "nodes_total": 8499,
+        "nodes_complete": 7393,
+        "edge_gaps_by_predicate": {
+          "alignsWithIndicator": 413,
+          "partOf": 43,
+          "worksAt": 30,
+          "equivalentTo": 26,
+          "reportsKPI": 2,
+          "subjectToRegulation": 1,
+          "investsIn": 1,
+          "adoptsStandard": 1
+        },
+        "node_gaps_by_class": {
+          "Goal": 511,
+          "Initiative": 429,
+          "Project": 163,
+          "KPIObservation": 2,
+          "Investment": 1
+        },
+        "note": "Mẫu số lấy theo config/schema.json: mọi edge spec đều khai temporal_properties và mọi lớp T2/T3 đều khai valid_from. Phần hụt vì thế là sai lệch thật so với hợp đồng schema, không phải giả định của phép đo."
+      }
+    },
+    {
+      "metric_id": "M2.2",
+      "module": "2. Trích xuất Triplet & KPI",
+      "name": "Schema Compliance Rate",
+      "value": 1.0,
+      "pct": "100.00%",
+      "numerator": 14744,
+      "denominator": 14744,
+      "target": "100% (0 vi phạm)",
+      "passed": true,
+      "higher_is_better": true,
+      "details": {
+        "violations": [],
+        "violations_total": 0,
+        "by_reason": {}
+      }
+    },
+    {
+      "metric_id": "M2.3",
+      "module": "2. Trích xuất Triplet & KPI",
+      "name": "Value Preservation Guard",
+      "value": 1.0,
+      "pct": "100.00%",
+      "numerator": 6426,
+      "denominator": 6426,
+      "target": "100% (LLM không được sửa giá trị/đơn vị)",
+      "passed": true,
+      "higher_is_better": true,
+      "details": {
+        "violations": [],
+        "violations_total": 0,
+        "guarded_fields_seen": 12646,
+        "guarded_field_names": [
+          "value",
+          "unit",
+          "amount",
+          "quantity",
+          "target_value"
+        ],
+        "by_reason": {},
+        "match_stats": {
+          "before_nodes": 21212,
+          "after_nodes": 10462,
+          "matched": 10427,
+          "only_before": 10785,
+          "only_after": 35
+        },
+        "note": "So khớp theo stable_id giữa graph_output/graphs/*(trước sửa) và all_validated_triples.json (sau sửa). Node chỉ xuất hiện một phía được báo riêng ở match_stats thay vì bỏ qua âm thầm."
+      }
+    },
+    {
+      "metric_id": "M3.1",
+      "module": "3. Phân giải Thực thể",
+      "name": "Timeless Identity Violation Rate",
+      "value": 0.0,
+      "pct": "0.00%",
+      "numerator": 0,
+      "denominator": 14,
+      "target": "0 vi phạm",
+      "passed": true,
+      "higher_is_better": false,
+      "details": {
+        "violations": [],
+        "t1_classes_checked": 14
+      }
+    },
+    {
+      "metric_id": "M3.2",
+      "module": "3. Phân giải Thực thể",
+      "name": "Oversimplification & Cluster Conciseness",
+      "value": 0.00468384074941452,
+      "pct": "0.47%",
+      "numerator": 10,
+      "denominator": 2135,
+      "target": "thấp hơn = ít thực thể trùng còn sót sau hợp nhất",
+      "passed": null,
+      "higher_is_better": false,
+      "details": {
+        "t1_nodes": 2135,
+        "residual_duplicates": 10,
+        "clusters": [
+          {
+            "class": "Location",
+            "signature": "an dong",
+            "size": 3,
+            "node_indexes": [
+              901,
+              2055,
+              2598
+            ]
+          },
+          {
+            "class": "Location",
+            "signature": "yen bai",
+            "size": 2,
+            "node_indexes": [
+              563,
+              2730
+            ]
+          },
+          {
+            "class": "Location",
+            "signature": "lo cn11 cn12",
+            "size": 2,
+            "node_indexes": [
+              711,
+              2616
+            ]
+          },
+          {
+            "class": "Location",
+            "signature": "so 18 duong phong dinh cang phuong ben thuy thanh pho vinh tinh nghe an",
+            "size": 2,
+            "node_indexes": [
+              851,
+              1143
+            ]
+          },
+          {
+            "class": "Location",
+            "signature": "my",
+            "size": 2,
+            "node_indexes": [
+              3003,
+              5323
+            ]
+          },
+          {
+            "class": "Location",
+            "signature": "da nang",
+            "size": 2,
+            "node_indexes": [
+              6560,
+              6667
+            ]
+          },
+          {
+            "class": "Location",
+            "signature": "phnom penh",
+            "size": 2,
+            "node_indexes": [
+              6628,
+              8086
+            ]
+          },
+          {
+            "class": "Authority",
+            "signature": "singapore",
+            "size": 2,
+            "node_indexes": [
+              6956,
+              7621
+            ]
+          },
+          {
+            "class": "Location",
+            "signature": "thanh pho ho chi minh",
+            "size": 2,
+            "node_indexes": [
+              7406,
+              7444
+            ]
+          }
+        ],
+        "clusters_total": 9
+      }
+    },
+    {
+      "metric_id": "M4.1",
+      "module": "4. Ánh xạ Trục Chỉ tiêu",
+      "name": "Standard Indicator Alignment Coverage",
+      "value": 0.5052779732582688,
+      "pct": "50.53%",
+      "numerator": 718,
+      "denominator": 1421,
+      "target": "cao hơn = độ phủ TT96/GRI tốt hơn",
+      "passed": null,
+      "higher_is_better": true,
+      "details": {
+        "by_class": {
+          "Goal": {
+            "aligned": 248,
+            "total": 511
+          },
+          "Initiative": {
+            "aligned": 171,
+            "total": 429
+          },
+          "SustainabilityClaim": {
+            "aligned": 299,
+            "total": 481
+          }
+        }
+      }
+    },
+    {
+      "metric_id": "M4.2",
+      "module": "4. Ánh xạ Trục Chỉ tiêu",
+      "name": "Zero-Report Self-Praise Exclusion",
+      "value": 1.0,
+      "pct": "100.00%",
+      "numerator": 1,
+      "denominator": 1,
+      "target": "100%",
+      "passed": true,
+      "higher_is_better": true,
+      "details": {
+        "violations": [],
+        "violations_total": 0,
+        "by_reason": {}
+      }
+    },
+    {
+      "metric_id": "M5.1",
+      "module": "5. Đối soát Chéo",
+      "name": "Evidence Asymmetry & Abstention Rate",
+      "value": 0.7349137931034483,
+      "pct": "73.49%",
+      "numerator": 341,
+      "denominator": 464,
+      "target": "mô tả độ mỏng của kho bằng chứng — không phải chỉ tiêu cần tối ưu",
+      "passed": null,
+      "higher_is_better": false,
+      "details": {
+        "by_assessment": {
+          "unverified_insufficient_evidence": 341,
+          "appears_contradicted": 72,
+          "appears_supported": 51
+        }
+      }
+    },
+    {
+      "metric_id": "M5.2",
+      "module": "5. Đối soát Chéo",
+      "name": "Self-Verification Exclusion Rate",
+      "value": 0.0,
+      "pct": "0.00%",
+      "numerator": 0,
+      "denominator": 99,
+      "target": "bằng chứng xác nhận phải đến từ nguồn độc lập",
+      "passed": null,
+      "higher_is_better": false,
+      "details": {
+        "kept_independent": 99,
+        "flagged_own_domain": 0,
+        "top_domains": []
+      }
+    }
+  ],
+  "expert_rubric": {
+    "schema": "evalu.rubric/v1",
+    "scale": {
+      "min": 1,
+      "max": 5,
+      "anchors": {
+        "1": "Unacceptable",
+        "3": "Acceptable / Moderate",
+        "5": "Excellent / Production-Ready"
+      }
+    },
+    "panels": {
+      "ceo": {
+        "label": "Tổng Giám đốc (CEO / C-Suite)",
+        "focus": "Chiến lược: rủi ro uy tín, rủi ro pháp lý, giá trị hỗ trợ ra quyết định",
+        "weight_on": [
+          "decision_utility"
+        ]
+      },
+      "hrd": {
+        "label": "Giám đốc Nhân sự (HRD)",
+        "focus": "Trụ cột S và một phần G: an toàn lao động, bình đẳng giới, đào tạo, an sinh",
+        "weight_on": [
+          "decision_utility"
+        ]
+      },
+      "esg_audit": {
+        "label": "Chuyên gia Kiểm toán & ESG",
+        "focus": "Kỹ thuật pháp lý: ánh xạ TT96/GRI, provenance cấp trang/câu, logic đối soát",
+        "weight_on": [
+          "grounding",
+          "adjudication",
+          "provenance"
+        ]
+      }
+    },
+    "dimensions": [
+      {
+        "key": "grounding",
+        "name_vi": "Độ chính xác Căn cứ",
+        "name_en": "Fact-Checking Precision & Grounding",
+        "anchor_1": "Tuyên bố/bằng chứng bị suy diễn sai lệch hoàn toàn so với văn bản gốc; xuất hiện ảo giác (hallucination).",
+        "anchor_3": "Trích xuất đúng nội dung chính nhưng sót ngữ cảnh điều kiện hoặc làm tròn con số sai lệch nhẹ.",
+        "anchor_5": "Chính xác tuyệt đối từng con số, đơn vị tính, mốc thời gian và ngữ cảnh điều kiện từ tài liệu gốc."
+      },
+      {
+        "key": "adjudication",
+        "name_vi": "Chất lượng Đối soát Chéo",
+        "name_en": "Adjudication Quality",
+        "anchor_1": "Đánh giá tư vấn sai bối cảnh (ví dụ gán appears_supported cho hai thông tin mâu thuẫn).",
+        "anchor_3": "Phân loại đúng hướng nhưng giải thích còn chung chung, thiếu chiều sâu lập luận.",
+        "anchor_5": "Lập luận sắc bén, chỉ rõ khoảng cách giữa Tuyên bố (T3) và Hành vi (T2), phân biệt rõ dữ liệu lịch sử và mục tiêu."
+      },
+      {
+        "key": "provenance",
+        "name_vi": "Minh bạch Nguồn gốc",
+        "name_en": "Provenance Transparency",
+        "anchor_1": "Không thể truy xuất trích dẫn; link nguồn hỏng hoặc trỏ sai tài liệu/trang.",
+        "anchor_3": "Trỏ đúng tài liệu nhưng lệch toạ độ trang hoặc đoạn văn.",
+        "anchor_5": "Chính xác tuyệt đối tên tài liệu, số trang, số câu và URL gốc."
+      },
+      {
+        "key": "decision_utility",
+        "name_vi": "Giá trị Hỗ trợ Ra Quyết định",
+        "name_en": "Decision Utility",
+        "anchor_1": "Hồ sơ gây nhiễu, khiến người quản lý tốn thêm thời gian đọc lại tài liệu thô.",
+        "anchor_3": "Tổng hợp thông tin cơ bản, rút ngắn 30-50% thời gian đọc hiểu nhưng vẫn cần kiểm tra thủ công.",
+        "anchor_5": "Hồ sơ sắc nét, làm nổi bật ngay các điểm mâu thuẫn cốt lõi; rút ngắn đáng kể thời gian thẩm định."
+      }
+    ],
+    "panel_weights": {
+      "grounding": {
+        "esg_audit": 2.0,
+        "ceo": 1.0,
+        "hrd": 1.0
+      },
+      "adjudication": {
+        "esg_audit": 2.0,
+        "ceo": 1.0,
+        "hrd": 1.0
+      },
+      "provenance": {
+        "esg_audit": 2.0,
+        "ceo": 1.0,
+        "hrd": 1.0
+      },
+      "decision_utility": {
+        "esg_audit": 1.0,
+        "ceo": 2.0,
+        "hrd": 2.0
+      }
+    },
+    "disagreement_spread": 2,
+    "iaa": {
+      "headline": "gwet_ac2",
+      "why": "Phân bố nhãn lệch mạnh về unverified_insufficient_evidence khiến chance-agreement của Kappa tiệm cận 1 và hệ số sụp về 0 (prevalence paradox). Gwet neo chance theo prevalence nên bền vững.",
+      "threshold": 0.61,
+      "threshold_source": "Landis & Koch — substantial agreement"
+    }
+  },
+  "expert_evaluation": null
+}
