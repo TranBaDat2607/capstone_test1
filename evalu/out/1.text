@@ -1,0 +1,8 @@
+Ba con số đổi so với bản cũ: M5.1 73,49% → 96,55%; M5.2 mẫu số 99 → 19; NC.1/NC.2 28,76% FAIL → 100% PASS (cross_feed = 0).
+
+Ba điều phải nói rõ:
+1. M1.1r / M1.2r = KHÔNG ĐO ĐƯỢC — data/labeled/classified/all_sentences_classified.jsonl (~380 MB) không có trên đĩa, lần datasync pull gần nhất chưa xong. Báo cáo ghi thẳng lý do thay vì bỏ dòng hay điền 0. Pull xong chạy lại là có số.
+2. M2.3 = 100% nhưng mẫu số 6.426 → 500 vì graph_output/graphs/ mới có 275/3.957 file trang. Báo cáo in kèm match_stats để không đọc nhầm.
+3. Hai test có sẵn đang FAIL, không do tôi (thay đổi của tôi chỉ thêm file mới): test_evalu_metrics.py chết vì ZeroDivisionError — oracle của nó chia 0/(0+0) sau khi step 07 chạy lại làm AAA hết bằng chứng ủng hộ; test_evalu_export_docx.py import parse_blocks không tồn tại trong export_docx.py. test_evalu_retrieval.py thì segfault (thiếu torch). Muốn tôi sửa thì nói.
+
+Đã cài python-docx vào .venv (dep tuỳ chọn theo §4.4) để xuất được .docx. Code mới đi kèm test: test/test_evalu_run_report.py — 147/147 pass, trong đó có arm khoá đúng cái bẫy _ticker từng làm NC.1 báo 0% trên dữ liệu sạch, và guard "không chỉ số nào được hiện số mà thiếu công thức". docs/PROJECT_OVERVIEW.md §2.1, §12.5, §13.2, §13.3, §16.1(e), §16.9 đã sửa theo artifact mới. Chưa commit gì.

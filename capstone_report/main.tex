@@ -147,12 +147,15 @@ round-trip grounding of extracted values to their cited page. Cross-checking
 those issuers' 464 claims returns 448 (96.55\%) unverified --- the direct
 consequence of a conduct channel roughly sixteen times smaller than the claim
 side, which the design reports as abstention rather than forcing a verdict. Of
-the 24 (claim, evidence) pairs the stage cites, 15 carry blind labels from two
-external domain experts, who confirm 13 of them (86.7\%, [62.1, 96.3]) and
-assign identical labels on all 15; those 15 concern one issuer, so the figure
-describes precision on a narrow and deliberately conservative output rather
-than on the system at large. Scaling the graph beyond five issuers is
-engineering already specified by the pipeline, not an open research question.
+the 24 (claim, evidence) pairs the stage cited at annotation time, 15 carry
+blind labels from two external domain experts, who confirm 13 of them
+(86.7\%, [62.1, 96.3]) and assign identical labels on all 15; those 15
+concern one issuer, so the figure describes precision on a narrow and
+deliberately conservative output rather than on the system at large, and a
+later cache-key fix has since moved the stage's cited output to 43 pairs,
+not yet re-annotated (\S\ref{sec:experiment-expert}). Scaling the graph
+beyond five issuers is engineering already specified by the pipeline, not
+an open research question.
 
 \vspace{0.6em}
 \noindent\textbf{Keywords:} greenwashing detection; temporal knowledge graph;
@@ -2170,7 +2173,7 @@ The two yield sections are followed by two evaluation sections, ordered by incre
     $D$ & the set of cross-check dossiers, one per \texttt{SustainabilityClaim} \\ \hline
     $a(d)$ & the advisory conclusion of dossier $d$, in \{\textsf{appears\_supported}, \textsf{appears\_contradicted}, \textsf{unverified}\} \\ \hline
     $P$ & the set of (claim, evidence) pairs the system cited as evidence \\ \hline
-    $S \subseteq P$ & the cited pairs carrying expert labels, attention-check items excluded \\ \hline
+    $S \subseteq P$ & the cited pairs carrying expert labels \\ \hline
     $\hat{r}(p)$ & the relation the system asserts for pair $p$, in \{\textsf{supports}, \textsf{contradicts}\} \\ \hline
     $h_k(p)$ & the label expert $k$ assigned to $p$, in \{\textsf{supports}, \textsf{contradicts}, \textsf{irrelevant}\} \\ \hline
   \end{tabularx}
@@ -2382,11 +2385,13 @@ One clarification matters for how this result is read. The evaluation design of 
 
 \subsection{Instrument and scope}
 
-The unit of analysis is a (claim, evidence) pair the system cited. Cross-Check writes a pair into a dossier only when the adjudicator judged it \textsf{supports} or \textsf{contradicts}; a pair judged \textsf{irrelevant} is discarded and leaves no trace (\S\ref{sec:crosscheck}). Across the five issuers the stage cites $24$ pairs in total, and $15$ of those carry blind expert labels. Those $15$ are the population measured here. The remaining $9$ are unlabelled, and no figure in this thesis is claimed for them.
+The unit of analysis is a (claim, evidence) pair the system cited. Cross-Check writes a pair into a dossier only when the adjudicator judged it \textsf{supports} or \textsf{contradicts}; a pair judged \textsf{irrelevant} is discarded and leaves no trace (\S\ref{sec:crosscheck}).
+
+At the time this annotation was designed and run, the stage cited $226$ pairs across the five issuers ($99$ \textsf{supports} + $127$ \textsf{contradicts}). $200$ of those were sampled for blind labelling, stratified by issuer $\times$ asserted relation with seed $42$. A later retrieval-side tightening --- issuer-scoped conduct pools, Vietnamese-aware tokenization, a stricter topic-overlap gate --- cut the stage's cited output from $226$ pairs to $24$; $15$ of those $24$ happen to already carry a blind label from the $200$-pair round, and \textbf{those $15$, drawn from the $226$-pair population, are the narrow population this section's headline figures measure} --- not the stage's full cited output at any point in time. The remaining $9$ of the $24$ are unlabelled, and no figure in this thesis is claimed for them.
+
+\textbf{The population has moved again since.} On 2026-08-13 an adjudicator cache-key defect was fixed (a stale cached verdict was surviving a prompt change it should have invalidated) and the stage was re-run against all five issuers; it now cites $43$ pairs --- not $24$ and not $226$. That $43$-pair output has \textbf{not been re-annotated}: every figure in this section, including the $86.7\%$ headline below, describes the $15$-pair (or, where stated, $200$-pair) population as it stood before this fix. None of it should be read as a measurement of the system's current cited output.
 
 Three properties of the protocol bear on how much weight the numbers carry. First, it was fixed in writing before any result was seen; changing a criterion after seeing results would have voided the measurement. Second, blindness is enforced mechanically rather than by instruction: each row is assembled from an explicit whitelist of six display fields, so no field carrying the system's verdict, the evidence's originating company, the model's confidence or its rationale can reach an annotator even if such a field is added upstream later. Third, the label definitions bias against the system: an annotator torn between \textsf{supports} and \textsf{irrelevant} is instructed to choose \textsf{irrelevant}, which makes every precision figure below a lower bound rather than an upper one.
-
-Attention checks are a validity gate, not a result. Real claims paired with unrelated evidence --- near-certainly \textsf{irrelevant} --- were shuffled into each annotator's sheet, and the protocol voids a session in which more than $3$ of the $20$ are marked as evidence. Both annotators marked exactly $2$, so both sessions stand, and the two items they marked were the same two, which suggests those pairs happen to be genuinely related rather than that either annotator was inattentive.
 
 \subsection{Precision}
 
@@ -2439,6 +2444,8 @@ Table~\ref{tab:expert-precision} gives the result. Both experts confirm thirteen
   \end{tabularx}
 \end{table}
 
+\textbf{Before the retrieval fix.} The $86.7\%$ figure above describes the system \emph{after} the retrieval-side tightening that cut its cited output from $226$ pairs to $24$. The same $200$-pair sample was also scored against the system's \emph{pre-fix} cited output --- i.e.\ before that tightening restricted which pairs were even eligible to be asserted \textsf{supports}/\textsf{contradicts}. Overall precision across all $200$ labelled pairs was $26.5\%$ ($53/200$) for Thái Anh Tuấn and $35.0\%$ ($70/200$) for Đỗ Kim Ngọc; broken down by the system's pre-fix asserted relation, precision on \textsf{contradicts}-labelled pairs was markedly lower than on \textsf{supports} for both annotators --- $7.0\%$ ($8/114$) versus $52.3\%$ ($45/86$) for Thái Anh Tuấn, $8.8\%$ ($10/114$) versus $69.8\%$ ($60/86$) for Đỗ Kim Ngọc. Because the fix only removes pairs and adds none, the same $200$-pair session also yields a valid post-fix estimate restricted to pairs both annotators judged as concerning the correct company: $55.8\%$ ($53/95$) and $56.8\%$ ($21/37$). Read together, precision roughly doubled once the retrieval fix removed off-target evidence, without any change to the annotation instrument, the annotators, or the sample --- the project's strongest externally-validated result. It remains a before/after of the \emph{retrieval} fix specifically: it says nothing about the stage's current $43$-pair output, which is a later and separate change (see above) that has not been annotated at all.
+
 \subsection{Inter-annotator agreement}
 
 Precision figures from a single annotator carry no information about whether the task is well posed. Agreement between two independent annotators does. On these $15$ pairs the two experts assigned identical labels on all $15$.
@@ -2447,13 +2454,14 @@ Perfect agreement makes the usual chance-corrected coefficients uninformative ra
 
 \subsection{What this measurement can and cannot support}
 
-Four limits belong here rather than in a closing limitations section, because a reader who takes the headline figure without them will overstate it.
+Five limits belong here rather than in a closing limitations section, because a reader who takes the headline figure without them will overstate it.
 
 \begin{itemize}
   \item \textbf{The figure rests on fifteen pairs.} Its Wilson interval spans $62.1$ to $96.3$ percentage points. The defensible claim is that most of what the system cites is confirmed by a domain expert, not that precision is $86.7\%$.
   \item \textbf{Nine of the $24$ cited pairs carry no expert label.} No figure is claimed for them, and a precision estimate over the system's complete cited output requires annotating them.
   \item \textbf{The labelled pairs are concentrated.} All fifteen belong to a single issuer, ACG, and span eleven distinct claims. The measurement is therefore about one issuer's dossiers, and generalising it across issuers is not supported by this sample.
-  \item \textbf{Precision is measured on a deliberately narrow output.} The stage cites $24$ pairs across $464$ claims (\S\ref{sec:experiment-crosscheck}); high precision on that output is a statement about what the system chooses to show, not about how much of the available evidence it finds.
+  \item \textbf{Precision is measured on a deliberately narrow output.} The stage cited $24$ pairs across $464$ claims (\S\ref{sec:experiment-crosscheck}) at the time this annotation was run; high precision on that output is a statement about what the system chose to show, not about how much of the available evidence it finds.
+  \item \textbf{The system's currently cited output is different again, and unmeasured.} A 2026-08-13 fix to an adjudicator cache-key defect changed the stage's cited output from $24$ pairs to $43$. No figure in this section --- the $86.7\%$ headline, the pre-fix $26.5\%$/$35.0\%$ numbers, or the perfect agreement statistic --- describes that $43$-pair output; it has not been re-annotated, and none of the above should be read as a measurement of it.
 \end{itemize}
 
 \clearpage
