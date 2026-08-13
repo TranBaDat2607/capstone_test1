@@ -567,7 +567,7 @@ python src/run.py claim_ledger --review-queue --markdown           #   contradic
 python api/main.py                                                         # 3-column TT96/GRI evidence view at http://localhost:8000
 
 # Report + offline analysis (no LLM, no network, no Neo4j)
-python notebooks/eda/annotation_agreement.py                                # regenerates docs/ANNOTATION_RESULTS.md's numbers
+python evalu/score_census_43.py                                             # regenerates the 43-pair census numbers in capstone_report/main.tex S4.4
 python notebooks/eda/news_volume_by_company.py                              # -> notebooks/eda/output/*.csv + *.png
 powershell -ExecutionPolicy Bypass -File capstone_report/build.ps1          # -> capstone_report/main.pdf (MiKTeX)
 
@@ -685,15 +685,25 @@ improvement; note its "`claim_id` is not yet deterministic" caveat is now **out 
 (Vietnamese — an unimplemented experiment design whose §4 numbers are illustrative
 fabrications; NOT the real `ragtest/` + `test3/` comparison).
 
-**`docs/ANNOTATION_RESULTS.md` is NOT a proposal — it is measured, reproducible output**
+**`docs/ANNOTATION_RESULTS.md` is NOT a proposal — it is measured, historical output**
 (Vietnamese): kappa = 0.714 between the two annotators of `sheetA`/`sheetB`, the adjudicator's
-pre-fix precision, and the two joins that are valid versus the one that is not. Its numbers
-regenerate offline with `python notebooks/eda/annotation_agreement.py` (no LLM, no network) —
-never re-derive them by hand, and prefer `evalu/`'s own code on `wip/gri-parser-and-eval` where
-the two disagree (that script cannot see the 20 decoys, so it reports over 220 where the
-protocol reports over 200). Its frozen input is `docs/ANNOTATION_GUIDELINE.md`: once labelling
-has begun that guideline **must not be edited** — editing it invalidates every comparison; bump
-to v1.1 and re-label instead — which is why results live in a separate file.
+pre-fix precision on that 226/200-pair round, and the two joins that are valid versus the one
+that is not. Its frozen input is `docs/ANNOTATION_GUIDELINE.md`: once labelling has begun that
+guideline **must not be edited** — editing it invalidates every comparison; bump to v1.1 and
+re-label instead — which is why results live in a separate file. **`evalu/` is now IN this repo**
+(ported from `wip/gri-parser-and-eval` in `bb7093b`, 2026-08-13, closing issue #17), not a
+branch you need to fetch separately, and is the canonical annotation tooling —
+`evalu/annotation.py` (`score()`), `evalu/iaa.py` (agreement). `notebooks/eda/annotation_agreement.py`,
+the temporary self-built stand-in kept only until `evalu/` merged, was deleted the same sitting;
+its regeneration command is gone with it. **`sheetA.xlsx`/`sheetB.xlsx`/`sheetC.xlsx` were
+deleted from the working tree in the same commit** — `docs/ANNOTATION_RESULTS.md`'s numbers do
+not change (still the correct historical record of that round) but are no longer regenerable
+without first recovering those three files from git history (`git show bb7093b:sheetA.xlsx`).
+The *current* cited population is a separate, later 43-pair census (37 supports + 6
+contradicts, superseding the 226→24 history `docs/thesis_review.md` issue #17 tracked),
+labelled in `sheetA_43pairs_filled.xlsx`/`sheetB_43pairs_filled.xlsx` and reproduced by
+`python evalu/score_census_43.py` — that script, not `annotation_agreement.py`, is what backs
+`capstone_report/main.tex` §4.4 now.
 
 `docs/SSRL_REASONING_LAYER.md` is referenced by `TEMPORAL_KG_DESIGN.md` but **is not in the
 repo** — the path-reasoning layer (steps 11-13) is unbuilt and its design doc is missing.

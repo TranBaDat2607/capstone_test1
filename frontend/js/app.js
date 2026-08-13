@@ -259,7 +259,7 @@ function renderColumn(containerEl, items, type) {
         </div>
         <div class="verify-box box-missing" style="margin-top: 12px;">
           <div class="verify-title">
-            <span class="verify-icon">ℹ</span> ${escapeHtml(item.note || 'Lưu ý công bố')}
+            <span class="verify-icon">ℹ</span> ${escapeHtml(item.note || 'Lưu ý xác minh')}
           </div>
         </div>
       `;
