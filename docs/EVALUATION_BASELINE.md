@@ -20,12 +20,51 @@ indicator alignment     718 / 1,421 claim-like nodes (50.53%)
 past the snapshot, the snapshot wins for reporting purposes — re-pin or re-run
 deliberately, do not silently quote newer numbers into a document built on the old ones.
 
+**2026-08-14 deliberate partial re-pin — issue #20 / P5 fix (`anchor_kpi` stale glob).**
+`anchor_kpi` (step03b) was silently producing zero output since the 2026-08-02 corpus
+swap (glob still pointed at the deleted `annual_labeled/` pilot dir). Fixed and
+`build_validated`/`build_resolved` re-run, both offline/no-LLM. This changes the
+**resolved graph size only** — verified node-by-node/edge-by-edge that nothing else in
+this block moved:
+
+```
+resolved graph          10,624 nodes / 15,130 edges     (was 10,634 / 14,744)
+validated triples       14,500 kept / 807 unfixable      (unchanged — fix_triples output, upstream of the anchor patch)
+cross-check dossiers    464 claims across exactly 5 issuers: AAA ACC ACG ADP AGG
+                        448 unverified (96.55%) / 13 supported / 3 contradicted   (unchanged — verified below)
+indicator alignment     718 / 1,421 claim-like nodes (50.53%)                     (unchanged — verified below)
+```
+
+Why the dossier/indicator-alignment numbers do NOT need re-pinning: the 481
+`SustainabilityClaim` nodes' `claim_id` set is byte-identical before/after (deterministic
+IDs, unaffected by facility-anchor edges); `Controversy`/`MediaReport`/`Penalty` node
+counts are unchanged (0/127/11); the 5 frozen issuer clusters are unchanged; and
+`claims_vs_conduct`'s retrieval (issuer scope + VN topic overlap + indicator-axis join)
+never reads `Facility`/`observedAtFacility` at all. The 718/1,421 and 299/481
+`alignsWithIndicator` coverage figures were recomputed on the new graph and are
+identical. The paid step07 dossiers were therefore **not** re-run — there is nothing in
+their inputs that changed.
+
+Only the graph-size figures above (and `capstone_report/main.tex`'s Table
+`tab:resolve-yield`, $M_{2.2}$, the abstract, and the Ch.4 aggregate summary) were
+updated to match. `docs/thesis_review.md`'s P5 finding is now fixed; GitHub issue #20
+can be closed once this file and the report are committed together.
+
+**Separately noted, NOT part of this re-pin:** re-deriving $M_{2.1}$ (Temporal Metadata
+Completeness) via `evalu/evalu_pipeline_metrics.py` today gives 14,616/15,130 (96.60%),
+not a clean function of the 21,620/23,243 (93.02%) figure printed in `main.tex` — the
+denominator (23,243) does not equal any edge count this graph has ever had, old or new,
+so that mismatch predates this fix and is not attributable to it. Left untouched here;
+worth its own investigation before anyone quotes $M_{2.1}$ again.
+
 Three points that have already caused a wrong conclusion once, recorded so they don't again:
 
 - **HAR is NOT a sixth issuer. The baseline is five.** `har_claim_assessments.json` /
   `har_crosscheck_stats.json` were moved to `graph_output/crosscheck/_excluded/` on
   2026-08-08. They are not merely out of scope, they are *stale*: their
-  `claim_node_index` values (10,804+) are out of range for the 10,634-node graph, the
+  `claim_node_index` values (10,804+) are out of range for the resolved graph (10,634
+  nodes at the time of this check; still out of range against the 10,624-node graph
+  after the 2026-08-14 P5 re-pin above), the
   stats file's issuer `node_index` 10561 lands on an unrelated AGG `Penalty`, and the
   resolved graph contains zero nodes with a `HAR`-prefixed `source_doc`. See that
   folder's `README.md`. `config/issuer_registry.json` keeps its HAR entry deliberately —

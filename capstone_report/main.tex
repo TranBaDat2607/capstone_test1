@@ -144,7 +144,7 @@ ESG-classified (873,756 sentences); alongside it, 4,582 news documents were
 retrieved --- 3,797 of them distinct articles once cross-ticker duplicates are
 removed --- from 716 Vietnamese online outlets. Both stand as a resource in
 their own right. The framework itself was then instantiated end to end on
-five issuers, yielding a resolved graph of 10,634 nodes and 14,744 edges with
+five issuers, yielding a resolved graph of 10,624 nodes and 15,130 edges with
 100\% schema compliance and 97.78\% round-trip grounding of extracted values
 to their cited page. Cross-checking those issuers' 464 claims returns 448
 (96.55\%) unverified --- the direct consequence of a conduct channel roughly
@@ -2239,12 +2239,12 @@ Table~\ref{tab:validate-yield} records that only one KPI occurrence in five is m
     \multicolumn{1}{c|}{\textbf{Value}} \\ \hline
     Raw graph, pre-resolution & 13,770 nodes \\ \hline
     After identity-key + frozen-anchor merge (Stage A) & 11,049 nodes \\ \hline
-    \textbf{Resolved graph (full block, no-LLM mode)} & \textbf{10,608 nodes / 12,726 edges} \\ \hline
-    -- node reduction & 3,162 (23.0\%) \\ \hline
+    \textbf{Resolved graph (full block, no-LLM mode)} & \textbf{10,598 nodes / 13,112 edges} \\ \hline
+    -- node reduction & 3,172 (23.0\%) \\ \hline
     Indicator axis added (\S\ref{sec:entity-resolution}) & +26 nodes / +2,018 edges \\ \hline
     -- \texttt{measuredUnder} / \texttt{alignsWithIndicator} & 1,300 / 649 \\ \hline
     -- \texttt{partOf} / \texttt{equivalentTo} & 43 / 26 \\ \hline
-    \textbf{Final graph} & \textbf{10,634 nodes / 14,744 edges} \\ \hline
+    \textbf{Final graph} & \textbf{10,624 nodes / 15,130 edges} \\ \hline
     Claim/Goal/Initiative with $\geq$1 \texttt{alignsWithIndicator} edge & 718 / 1,421 (50.5\%) \\ \hline
     -- \texttt{SustainabilityClaim} alone & 299 / 481 (62.2\%) \\ \hline
   \end{tabularx}
@@ -2359,7 +2359,7 @@ On the corpus reported here this evaluates to $3{,}912/4{,}001=97.78\%$. That is
     $M_{1.1r}$ & ESG signal-to-noise, report channel & \multicolumn{2}{c|}{\textit{not measurable}} \\ \hline
     $M_{1.2r}$ & Source provenance rate, report channel & \multicolumn{2}{c|}{\textit{not measurable}} \\ \hline
     $M_{2.1}$ & Temporal metadata completeness & 93.02\% & 21,620 / 23,243 \\ \hline
-    $M_{2.2}$ & Schema compliance rate & 100.00\% & 14,744 / 14,744 \\ \hline
+    $M_{2.2}$ & Schema compliance rate & 100.00\% & 15,130 / 15,130 \\ \hline
     $M_{2.3}$ & Value-preservation guard & 100.00\% & 500 / 500 \\ \hline
     $M_{3.1}$ & Timeless-identity violation rate & 0.00\% & 0 / 14 \\ \hline
     $M_{3.2}$ & Cluster conciseness & 0.47\% & 10 / 2,135 \\ \hline
@@ -2535,7 +2535,7 @@ A second aggregate belongs beside the first. The dual-standard indicator axis (\
 
 This thesis set out to test whether a temporal knowledge graph, fed by two structurally independent evidence channels, could make greenwashing in Vietnamese real-estate, construction and building-materials disclosure checkable rather than merely readable. The Delmas--Burbano definition of greenwashing --- the intersection of what a company says and how it behaves --- fixes the requirement directly: a system with access to only the company's own reports cannot in principle observe that intersection, whatever its architecture. This thesis builds the independent half deliberately, keeps it distinguishable from the claim half by a source-type stamp rather than fusing the two into one undifferentiated pool, and carries validity time and sentence-level provenance through every stage so a claim made in one year can be checked against conduct observed in another and traced back to the exact page it came from.
 
-Instantiated end to end on five issuers, the system produces a schema-compliant, well-provenanced knowledge graph (10,634 nodes, 14,744 edges, 100\% schema compliance, 97.78\% round-trip KPI grounding) and, on the claims and evidence it actually cites, is confirmed by two independent domain experts working blind roughly two-thirds of the time, with near-perfect agreement between them. Both of those are genuine, externally-checkable results. Read against the aggregate stated in \S\ref{sec:discussion-aggregate-base}, however, they describe a narrow slice of the system's total output --- 16 of 464 claims verdicted, concentrated overwhelmingly in one issuer, retrieved by lexical overlap rather than the graph-native indicator-axis join this design also specifies --- and the honest summary of this project is that the engineering and the schema are sound, the label-free evaluation instrument correctly detects a real regression and its repair, and the external validation is genuinely positive on what it covers; what remains unproven is that any of this generalises past a conduct channel roughly sixteen times smaller than the claim side it is meant to check.
+Instantiated end to end on five issuers, the system produces a schema-compliant, well-provenanced knowledge graph (10,624 nodes, 15,130 edges, 100\% schema compliance, 97.78\% round-trip KPI grounding) and, on the claims and evidence it actually cites, is confirmed by two independent domain experts working blind roughly two-thirds of the time, with near-perfect agreement between them. Both of those are genuine, externally-checkable results. Read against the aggregate stated in \S\ref{sec:discussion-aggregate-base}, however, they describe a narrow slice of the system's total output --- 16 of 464 claims verdicted, concentrated overwhelmingly in one issuer, retrieved by lexical overlap rather than the graph-native indicator-axis join this design also specifies --- and the honest summary of this project is that the engineering and the schema are sound, the label-free evaluation instrument correctly detects a real regression and its repair, and the external validation is genuinely positive on what it covers; what remains unproven is that any of this generalises past a conduct channel roughly sixteen times smaller than the claim side it is meant to check.
 
 \textbf{What follows directly from that gap.} The single highest-leverage next step is not a new model or a new schema: it is more independent conduct evidence, since every quantity in \S\ref{sec:discussion-aggregate-base} is a downstream consequence of how thin that channel currently is. Three further items are already specified by the design and require no new research: wiring the graph-native indicator-axis retrieval tier so it is actually consulted rather than only measured as coverage; driving the self-verification guard and its stopword list from \texttt{config/issuer\_registry.json} per issuer rather than leaving it populated for one; and scaling report and news ingestion from five issuers to the full 115-issuer, sector-wide corpus this thesis already built and classified. None of these three is an open research question --- each is an engineering task against an existing, tested design.
 

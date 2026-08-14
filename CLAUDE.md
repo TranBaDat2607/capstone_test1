@@ -202,7 +202,13 @@ The five points that have actually been re-derived wrongly:
   464 dossiers across exactly five issuers (AAA ACC ACG ADP AGG), 2026-08-08T04:24:57Z. HAR is
   not a sixth issuer, and Table 4.3's `openai` provider caption is a correct historical record,
   not a stale reference. Never silently quote newer numbers into a document built on the old
-  ones. Reasons and the full figure set: `docs/EVALUATION_BASELINE.md`.
+  ones. Reasons and the full figure set: `docs/EVALUATION_BASELINE.md`. **Superseded on the
+  graph-size figures only** by the 2026-08-14 issue #20 (P5) fix — `anchor_kpi`'s stale glob
+  meant it had been silently producing zero output since the 2026-08-02 corpus swap; fixed,
+  and `build_validated`/`build_resolved` re-run offline. Resolved graph is now **10,624 nodes
+  / 15,130 edges**. The 464-dossier / 718-alignment figures are unchanged and verified
+  unaffected (see `docs/EVALUATION_BASELINE.md`'s 2026-08-14 addendum for why) — do not
+  re-derive them from a fresher run either.
 - **`GRAPH_IMPROVEMENT_PLAN.md` no longer exists** (deleted from `main` in `66d1704`), yet
   `export_kgc` and five test files still cite its section labels (A1, A2/A3, B1, B4, C1,
   C2/B2) as their spec. Recover it with `git show 66d1704^:GRAPH_IMPROVEMENT_PLAN.md` instead
@@ -505,6 +511,11 @@ cross-check dossiers    464 claims across exactly 5 issuers: AAA ACC ACG ADP AGG
                         448 unverified (96.55%) / 13 supported / 3 contradicted
 indicator alignment     718 / 1,421 claim-like nodes (50.53%)
 ```
+
+**2026-08-14: the resolved-graph line above is superseded** by the issue #20 (P5) fix to
+`anchor_kpi`'s stale glob — see `docs/EVALUATION_BASELINE.md`'s dated addendum for the
+new figures (10,624 / 15,130) and why every other line in this block was verified
+unaffected and left as-is.
 
 **Never "correct" these against a fresher run on disk** — if a stage's output has moved past
 the snapshot, the snapshot still wins for reporting purposes; re-pin or re-run deliberately.

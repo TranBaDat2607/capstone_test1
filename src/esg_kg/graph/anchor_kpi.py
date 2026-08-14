@@ -44,6 +44,7 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import sys
 from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any, Dict, List, Set, Tuple
@@ -60,7 +61,7 @@ DEFAULT_TRIPLES = REPO_ROOT / "graph_output" / "validated" / "all_validated_trip
 DEFAULT_SCHEMA = REPO_ROOT / "config" / "schema.json"
 DEFAULT_STATS_OUT = REPO_ROOT / "graph_output" / "validated" / "anchor_patch_stats.json"
 DEFAULT_SENTENCE_GLOBS = [
-    "data/labeled/annual_labeled/*.jsonl",
+    "data/labeled/classified/*.jsonl",
     "data/labeled/news_labeled/*.jsonl",
     "data/interim/news_preprocessed/*.jsonl",
 ]
@@ -262,6 +263,14 @@ def main() -> None:
     new_triples, stats = build_patch(triples, sentences, schema, args.max_per_facility)
 
     logger.info("Anchor patch stats:\n" + json.dumps(stats, indent=2, ensure_ascii=False))
+    if stats["kpi_observations"] > 0 and \
+            stats["kpi_without_resolvable_sentence"] == stats["kpi_observations"]:
+        logger.error(
+            "100%% of KPI observations failed sentence resolution (0/%d resolvable) — "
+            "this is never a legitimate outcome, it means --sentences points at the wrong "
+            "corpus. Check the globs against what's actually on disk under data/labeled/.",
+            stats["kpi_observations"])
+        sys.exit(1)
     if not new_triples:
         logger.info("No new anchor triples to add.")
         return
