@@ -139,20 +139,30 @@ greenwashing score is emitted, because no ground-truth label exists against
 which one could be validated.
 
 Two scopes are reported separately. A sector-wide corpus of 1,416 annual-report
-filings from 115 listed issuers and 4,537 independent news articles was crawled
-and ESG-classified, and stands as a resource in its own right. The framework
-itself was then instantiated end to end on five issuers, yielding a resolved
-graph of 10,634 nodes and 14,744 edges with 100\% schema compliance and 97.78\%
-round-trip grounding of extracted values to their cited page. Cross-checking
-those issuers' 464 claims returns 448 (96.55\%) unverified --- the direct
-consequence of a conduct channel roughly sixteen times smaller than the claim
-side, which the design reports as abstention rather than forcing a verdict. Of
-the 43 (claim, evidence) pairs the stage currently cites, every pair carries
-blind labels from two external domain experts, who confirm 27 (62.8\%,
-[47.9, 75.6]) and 28 (65.1\%, [50.2, 77.6]) of them respectively and disagree
-with one another on only one pair (\S\ref{sec:experiment-expert}). Scaling the graph
-beyond five issuers is engineering already specified by the pipeline, not
-an open research question.
+filings from 115 listed issuers was crawled, of which 1,216 were parsed and
+ESG-classified (873,756 sentences); alongside it, 4,582 news documents were
+retrieved --- 3,797 of them distinct articles once cross-ticker duplicates are
+removed --- from 716 Vietnamese online outlets. Both stand as a resource in
+their own right. The framework itself was then instantiated end to end on
+five issuers, yielding a resolved graph of 10,634 nodes and 14,744 edges with
+100\% schema compliance and 97.78\% round-trip grounding of extracted values
+to their cited page. Cross-checking those issuers' 464 claims returns 448
+(96.55\%) unverified --- the direct consequence of a conduct channel roughly
+sixteen times smaller than the claim side, which the design reports as
+abstention rather than forcing a verdict. Only 16 of the 464 claims (3.4\%)
+receive any supported/contradicted verdict at all, and every one of them
+belongs to a single issuer, ACG; the graph-native indicator-axis retrieval
+path contributed none of the 401 adjudicated pairs, so retrieval in the
+system as evaluated here is Vietnamese token overlap with a temporal window,
+not yet the graph-structured join the design also specifies
+(\S\ref{sec:discussion-aggregate-base}). Of the 43 (claim, evidence) pairs
+the stage currently cites, every pair carries blind labels from two external
+domain experts, who confirm 27 (62.8\%, [47.9, 75.6]) and 28 (65.1\%,
+[50.2, 77.6]) of them respectively and disagree with one another on only one
+pair (\S\ref{sec:experiment-expert}) --- a result concentrated in the same
+issuer, ACG (42 of the 43 pairs), rather than general across the five.
+Scaling the graph beyond five issuers is engineering already specified by
+the pipeline, not an open research question.
 
 \vspace{0.6em}
 \noindent\textbf{Keywords:} greenwashing detection; temporal knowledge graph;
@@ -265,17 +275,18 @@ The main contributions of this thesis are as follows.
 \begin{enumerate}
     \item A Vietnamese ESG disclosure corpus for greenwashing analysis, built from the annual-report filings of 115 listed companies in the real-estate, construction and building-materials sectors --- 94.8\% filed on the Ho Chi Minh Stock Exchange (HOSE), the remainder on HNX and UPCoM --- comprising 1{,}416 documents.
 
-    \item An independent conduct channel, the property that distinguishes the proposed system from disclosure-only greenwashing detection: 4{,}537 articles from 662 Vietnamese online outlets, ingested into the same schema and identity space as the reports but kept separable at query time by a \texttt{source\_type} stamp carried on every node and edge. Claims and conduct can therefore be compared without either being able to masquerade as the other.
+    \item An independent conduct channel, the property that distinguishes the proposed system from disclosure-only greenwashing detection: 3{,}797 distinct articles (4{,}582 documents crawled, before cross-ticker de-duplication) from 716 Vietnamese online outlets, ingested into the same schema and identity space as the reports but kept separable at query time by a \texttt{source\_type} stamp carried on every node and edge. Claims and conduct can therefore be compared without either being able to masquerade as the other.
 
     \item A temporal ESG knowledge-graph schema adapted to Vietnamese regulatory and linguistic norms --- 28 node classes and 48 edge labels declared over 76 legal class pairs --- governed by eight explicit design principles and a machine-checkable invariant set. The rule that entity identity must be timeless, and the T1/T2/T3 tier partition, are enforced by an offline linter rather than by convention, so a violation fails a test instead of surviving review.
 
     \item A dual-standard indicator axis unifying Circular 96/2020/TT-BTC with the GRI Standards through a confirmed-only crosswalk, materialised as graph structure so that a Vietnamese-vocabulary disclosure and its international equivalent resolve to one node.
 
-    \item A label-free evaluation instrument that makes design changes measurable in a domain with no ground truth, demonstrated on three controlled before/after ablations.
+    \item A label-free evaluation instrument --- temporal-invariant linting, schema-compliance checking and a retrieval negative control, none of which need a ground-truth label to run --- demonstrated on a controlled before/after: the negative control's same-company evidence-attribution check (\S\ref{sec:experiment-internal}) moved from 28.76\% (failing) to 100\% (passing, zero cross-feed citations) once the adjudication-cache defect of \S\ref{sec:crosscheck} was fixed, showing the instrument can detect a real regression and its repair without any label existing for the underlying task.
 
     \item A documented and defended negative design decision: the pipeline classifies each claim--evidence pair as \emph{supports}, \emph{contradicts} or \emph{irrelevant}, and each claim as \emph{contradicted}, \emph{supported} or \emph{unverified} --- insufficient evidence, but it never emits a greenwashing score or verdict, because no label exists against which such a score could be validated.
 \end{enumerate}
 \chapter{Data}
+\label{ch:data}
 \section{Dataset Overview}
 Progress in evidence-based greenwashing analysis requires a corpus meeting three conditions at once, and no existing public dataset meets all three. It must be Vietnamese, since the disclosures the regulation obliges companies to make are written in Vietnamese and framed in a national regulatory vocabulary; it must be temporally deep, since the phenomenon under study is a discrepancy between a statement made in one year and conduct observed in another, which a single-year snapshot cannot express; and it must contain two structurally independent channels, since a corpus of company-authored reports alone can support consistency checking but not verification.
 
@@ -462,8 +473,8 @@ thường niên}, annual report), the language and \emph{two distinct year field
 acquisition index needs is recoverable from the address alone, without
 opening the document. The two year fields are not the same quantity, taken up
 below. The cost of this route is a dependency on a single third-party host
-that is not the authoritative publisher of the filings --- a limitation this
-thesis's Discussion chapter returns to.
+that is not the authoritative publisher of the filings --- a limitation
+returned to in \S\ref{sec:discussion-threats}.
 
 
 \textbf{Acquisition is a crawl, and the crawl produces an index.} Discovery is
@@ -546,9 +557,10 @@ which iterates over text runs in coordinate order, normalises to Unicode NFC
 so Vietnamese diacritics survive, and attaches the page number to every
 block. This is deliberate against the layout-aware parser used for the
 standards corpus (\S\ref{sec:reference-corpus}): what this channel needs is
-an exact page number per sentence, not table reconstruction, and the
-trade-off between the two strategies is quantified in an ablation later in
-this thesis.
+an exact page number per sentence, not table reconstruction, and that
+trade-off is a design choice argued for here rather than quantified by a
+head-to-head ablation against the layout-aware parser, which this thesis
+does not run.
 
 \textbf{Vietnamese-aware sentence segmentation.} Sentences are segmented with
 underthesea, an open-source Vietnamese NLP toolkit\footnote{\url{https://github.com/undertheseanlp/underthesea}},
@@ -580,7 +592,7 @@ happens anywhere in the pipeline, and the annotation stage simply runs
 inference at a maximum sequence length of 256 tokens. Building a labelled
 Vietnamese ESG training set was outside the project's budget, a deliberate
 scope decision with a consequence stated in \S\ref{sec:eda-labels} and
-revisited in this thesis's Discussion chapter: the checkpoint was fitted to
+revisited in \S\ref{sec:discussion-threats}: the checkpoint was fitted to
 someone else's data distribution, so its behaviour on this corpus is an
 empirical question rather than a given.
 
@@ -775,8 +787,8 @@ Because this corpus changes only when the standards themselves change, both
 paths are built once, committed to version control alongside the source
 PDFs and their SHA-256 digests, and treated thereafter as generated data.
 How the two vocabularies join into the graph's indicator axis is described
-in the Methodology chapter, and its yield is measured in an ablation later
-in this thesis.
+in the Methodology chapter, and its yield is measured directly as coverage
+later in this thesis (\S\ref{sec:experiment-yield}), not by an ablation.
 
 
 \subsection{Final packaging and distribution}
@@ -789,8 +801,8 @@ and crawl channel for news). Generated data is distributed through a
 dataset repository rather than Git; the pushed revision is pinned in a
 version file that \textit{is} tracked in Git, so a checkout recovers the
 data that went with that code --- which is what makes the before/after
-ablations reported later in this thesis reproducible rather than merely
-asserted.
+negative-control check reported later in this thesis (\S\ref{sec:experiment-internal})
+reproducible rather than merely asserted.
 \section{Exploratory Data Analysis}
 \label{sec:eda}
 
@@ -1049,8 +1061,20 @@ evidence available.
   \end{tabularx}
 \end{table}
 
+Table~\ref{tab:conduct-channel} is a snapshot of one crawl, taken when this
+chapter's exploratory analysis was run, and is internally consistent on its
+own terms ($4{,}537\times36.2\approx164{,}036$). The corpus continued to grow
+after that snapshot: by the time Chapter~\ref{ch:experiment} measures the
+same channel, the news side carries 174,256 sentences on disk, not 164,036,
+and a raw document count of 4,537 counts several re-crawled URLs under more
+than one ticker --- 785 of 4,582 crawled documents (17.1\%) share a URL with
+another ticker's feed. Retrieval-independence figures cited elsewhere in
+this thesis (the Abstract, Contribution 2) therefore use the
+de-duplicated, later count --- 3{,}797 distinct articles (4{,}582 documents
+crawled) from 716 outlets --- rather than this table's 4,537/662, which is
+reported here as-measured rather than restated to match.
 
-\textbf{Independence is structurally sound.} Figure~\ref{fig:conduct-channel}(a) shows the twelve most frequent domains: the 4,537 articles come from 662
+\textbf{Independence is structurally sound.} Figure~\ref{fig:conduct-channel}(a) shows the twelve most frequent domains from this snapshot: the 4,537 articles come from 662
 distinct domains, and the three largest --- \texttt{tinnhanhchungkhoan.vn},
 \texttt{baodautu.vn}, \texttt{tapchicongthuong.vn} --- account for only
 12.1\% of the corpus. This fragmented source distribution is the channel's
@@ -1064,7 +1088,7 @@ back-ends (Table~\ref{tab:conduct-channel}), one provider supplies roughly
 three-quarters of the corpus, far more than the three-back-end design --- a
 hedge against single-provider ranking bias --- was meant to allow. This is a
 limitation of the corpus as built, not of the design, and is recorded as
-such in the Discussion chapter.
+such in \S\ref{sec:discussion-threats}.
 
 \textbf{Severe recency skew.} Figure~\ref{fig:conduct-channel}(b) shows the
 distribution of stated publication year: 3,103 of 4,507 dated articles
@@ -1987,7 +2011,7 @@ Both tiers respect the same asymmetric temporal window --- evidence may predate 
 
 \textbf{Adjudication.} Each admitted pair is judged independently by a large language model instructed to read exactly one claim and one piece of conduct evidence and return one of \textsf{supports}, \textsf{contradicts} or \textsf{irrelevant} with a confidence score and a Vietnamese-language rationale --- never translated, so a human reviewer checking the system's reasoning against the original report or article reads the same language throughout. The instruction is deliberately narrow about what counts as a contradiction: a generic adverse event does not, by itself, contradict a claim about an unrelated specific topic, a rule tightened after a real case where a stock-manipulation penalty was read by an earlier prompt as also undermining an unrelated governance claim. \texttt{Adjudicator} keeps its own small provider registry rather than calling the shared kernel factory the rest of the pipeline uses, since this class is stage logic rather than kernel: the registry currently offers \texttt{gemini} (the default), \texttt{deepseek}, and \texttt{openai} --- the last still present in the adjudicator's registry at the time of writing, even though the OpenAI path was withdrawn from the extraction-side stages once the project returned to paying only for Gemini, a discrepancy this thesis notes rather than silently resolves. \texttt{--provider-order} accepts a comma list and will genuinely cascade across providers, but a single active provider is the intended and normal use; an unrecognised name is logged and skipped rather than aborting the run, and a provider failing three consecutive times with no prior success is permanently disabled for the rest of it. Every reply is checked against the literal set of three verdict strings before anything downstream trusts it --- a defensive guard added after a real bug where a syntactically valid but wrongly-shaped JSON reply, such as a bare \texttt{"[]"}, parsed successfully and then crashed the code that assumed a dictionary in return. Adjudications are cached by the exact claim and evidence text sent, not by which nodes produced them, so a boilerplate sentence repeated verbatim across several report years is billed once rather than per occurrence, and a cache entry is written only for a reply actually returned, never for a provider that could not be reached.
 
-\textbf{The self-verification guard.} A \textsf{supports} verdict is not written back to the graph unconditionally. Before it becomes a \texttt{verifiedBy} edge, the evidence's source domain is checked against a curated list of the issuer's own web properties; a match --- \texttt{aaa.com.vn}, \texttt{anphatholdings.vn} and a handful of others for the issuer this chapter reports on --- drops the edge while keeping the evidence record itself visible in the dossier, marked not independent and carrying the reason it was dropped. The guard applies only on the \textsf{supports} branch; there is no equivalent check on \textsf{contradicts}, since a company website corroborating its own claim is exactly the self-verification this thesis's conduct channel exists to rule out (\S\ref{sec:problem-definition}), while a company website contradicting its own claim carries no comparable risk.
+\textbf{The self-verification guard.} A \textsf{supports} verdict is not written back to the graph unconditionally. Before it becomes a \texttt{verifiedBy} edge, the evidence's source domain is checked against a curated list of the issuer's own web properties; a match --- \texttt{aaa.com.vn}, \texttt{anphatholdings.vn} and a handful of others for the issuer this chapter reports on --- drops the edge while keeping the evidence record itself visible in the dossier, marked not independent and carrying the reason it was dropped. The guard applies only on the \textsf{supports} branch; there is no equivalent check on \textsf{contradicts}, since a company website corroborating its own claim is exactly the self-verification this thesis's conduct channel exists to rule out (\S\ref{sec:problem-definition}), while a company website contradicting its own claim carries no comparable risk. \textbf{The curated list itself is populated for this issuer only.} Across all five issuers evaluated in Chapter~\ref{ch:experiment}, zero \textsf{supports} edges have ever been dropped by this guard --- every cited item so far comes from a third-party outlet (\texttt{cafef.vn}, \texttt{baodautu.vn}, \texttt{mekongasean.vn} and similar) rather than a company-owned domain, so the guard has not yet been exercised for the four issuers besides the one it was written against, and would not currently fire even if one of them cited its own domain (\S\ref{sec:discussion-threats}).
 
 \textbf{Assessment aggregation.} A claim's final status follows the priority the formal definition already fixed: if any admitted candidate was adjudicated \textsf{contradicts}, the claim is \textsf{appears\_contradicted}, unconditionally, regardless of how much independent support exists alongside it; only in the absence of any contradiction does independently-sourced support --- support that survived the self-verification guard --- promote a claim to \textsf{appears\_supported}; everything else falls to \textsf{unverified\_insufficient\_evidence}. That fallback is not one situation but several, distinguished only by the caveat text attached rather than a separate label, since all mean the same thing operationally: no conduct pool existed for the issuer at all; a conduct pool existed but nothing retrieved was topically related to this claim; candidates were retrieved but the run's LLM budget or providers could not adjudicate all of them; or candidates were adjudicated and every one came back \textsf{irrelevant}. Every dossier also carries a standing caveat that the assessment is advisory and no ground-truth greenwashing label exists to validate it against (\S\ref{sec:problem-definition}), and a further caveat whenever any evidence used has an uncertain date (\S\ref{sec:conduct-channel}).
 
@@ -2226,7 +2250,9 @@ Table~\ref{tab:validate-yield} records that only one KPI occurrence in five is m
   \end{tabularx}
 \end{table}
 
-As Table~\ref{tab:resolve-yield} shows, Entity Resolution's deterministic pass alone --- identity-key equality plus the two frozen anchors, no embedding or LLM call --- removes 23.0\% of raw nodes; \texttt{--no-llm} is the operating mode recorded throughout this thesis (\S\ref{sec:entity-resolution}), so this reduction is what Stage A and the anchors deliver on their own, with Stage B/C's embedding-and-adjudication pass still dormant on top of it. The indicator axis reaches just over half of every claim-like node (\texttt{SustainabilityClaim}, \texttt{Goal}, \texttt{Initiative} together) and 62.2\% of \texttt{SustainabilityClaim} specifically --- the narrower, higher figure is expected, since a \texttt{SustainabilityClaim} is extracted from report prose that more often names a concrete, indicator-shaped topic than a \texttt{Goal} or \texttt{Initiative} does. This coverage is what the retrieval-side indicator-axis tier in \S\ref{sec:experiment-crosscheck} draws on: a claim with no \texttt{alignsWithIndicator} edge can still be reached by token overlap, but only an aligned claim can be reached by the graph join that bypasses it.
+As Table~\ref{tab:resolve-yield} shows, Entity Resolution's deterministic pass alone --- identity-key equality plus the two frozen anchors, no embedding or LLM call --- removes 23.0\% of raw nodes; \texttt{--no-llm} is the operating mode recorded throughout this thesis (\S\ref{sec:entity-resolution}), so this reduction is what Stage A and the anchors deliver on their own, with Stage B/C's embedding-and-adjudication pass still dormant on top of it. The indicator axis reaches just over half of every claim-like node (\texttt{SustainabilityClaim}, \texttt{Goal}, \texttt{Initiative} together) and 62.2\% of \texttt{SustainabilityClaim} specifically --- the narrower, higher figure is expected, since a \texttt{SustainabilityClaim} is extracted from report prose that more often names a concrete, indicator-shaped topic than a \texttt{Goal} or \texttt{Initiative} does. This coverage is a static structural property of the resolved graph, available in principle to a graph-native join; whether the retrieval-side indicator-axis tier in \S\ref{sec:experiment-crosscheck} actually draws on it in a given run is a separate, empirical question, taken up there rather than assumed here.
+
+\textbf{The 649 and 718 above are not the same population, and do not have to reconcile 1:1.} \texttt{alignsWithIndicator} edges accumulate across runs of this append-only pass rather than being rebuilt from a clean graph each time (\S\ref{sec:entity-resolution}): 649 is the number this specific recorded run \emph{created}, read from its own stage statistics, while 718 --- and the resolved graph's 807 \texttt{alignsWithIndicator} edges on disk that back it --- is the \emph{cumulative} count on the graph as loaded, which includes edges written by earlier runs still present in the file. Both figures are individually faithful to their source; a reader should not expect 718 nodes to be reachable from only 649 edges, since the two are drawn from different points in the graph's accumulation history, not from one snapshot.
 
 \section{Claim--Conduct Cross-Check Results}
 \label{sec:experiment-crosscheck}
@@ -2316,7 +2342,10 @@ On the corpus reported here this evaluates to $3{,}912/4{,}001=97.78\%$. That is
     resolved graph and the cross-check output. Two rows are reported as not
     measurable rather than omitted or filled with zero: the full-corpus
     sentence-level artefact they need was not present when the evaluation
-    was run.}
+    was run. $M_{4.1}$'s numerator (718) is a cumulative count against the
+    append-only \texttt{alignsWithIndicator} edge set, not the 649 edges
+    Table~\ref{tab:resolve-yield} records this run as having created ---
+    see the reconciliation note there.}
   \label{tab:internal-controls}
   \begin{tabularx}{\linewidth}{|L{0.52}|L{1.90}|R{0.68}|R{0.90}|}
     \hline
@@ -2347,7 +2376,9 @@ The final control in this section is the only one designed so the system can los
 \[
 \mathrm{lift}(T)=\frac{\Pr[\text{evidence cited for } T \text{ originates in } T\text{'s feed}]}{\Pr[\text{a uniformly drawn conduct item originates in } T\text{'s feed}]}
 \]
-A lift near $1$ means the null cannot be rejected, and no downstream conclusion may then be read as specific to the company named in it; a lift of $2$ or more is taken as genuine company signal. On the cited output measured here the control passes outright: all $24$ cited pairs draw on the examined issuer's own feed, with zero cross-feed citations. That $100\%$ rests on $24$ items, so its Wilson lower bound is $86.2\%$, not $100\%$ --- and it is bought by citing narrowly: $24$ pairs across $464$ claims. It is a statement about attribution discipline, not about coverage.
+A lift near $1$ means the null cannot be rejected, and no downstream conclusion may then be read as specific to the company named in it; a lift of $2$ or more is taken as genuine company signal. On the cited output measured here the control passes outright: all $24$ cited pairs draw on the examined issuer's own feed, with zero cross-feed citations. That $100\%$ rests on $24$ items, so its Wilson lower bound is $86.2\%$, not $100\%$ --- and it is bought by citing narrowly: $24$ pairs across $464$ claims. It is a statement about attribution discipline, not about coverage. (The cited population has since grown to $43$ pairs under the same fix, \S\ref{sec:experiment-expert}; the negative control has not been re-run at that scale, so $86.2\%$ remains the reported lower bound rather than a recomputed $43$-pair figure.)
+
+\textbf{This same-company control is also the one controlled before/after this thesis reports.} Before the adjudication-cache defect of \S\ref{sec:crosscheck} was fixed --- the cache key omitted the prompt, so a re-run silently replayed pre-fix verdicts rather than recomputing them --- the identical check, run against the $226$-pair population that predated the fix, failed outright: $28.76\%$ same-company attribution ($65/226$), no better than the corpus-wide base rate. After the fix, the same check on the fix's immediate output passed outright, as reported above. Both runs use the identical statistic and threshold; only the system state changed between them, and the same-company evidence rate is exactly the property the fix targeted, so this is a genuine before/after rather than an incidental change. It is also, on inspection, the only one of the three ablations \S\ref{sec:contribution} originally claimed that was ever actually run: no time-window or layout-parser ablation exists in this thesis (\S\ref{sec:cleaning}, \S\ref{sec:reference-corpus}), and the indicator-axis join's contribution is reported as a yield (\S\ref{sec:experiment-yield}), not as a before/after comparison.
 
 \section{Expert Annotation: Precision and Agreement}
 \label{sec:experiment-expert}
@@ -2456,6 +2487,59 @@ Four limits belong here rather than in a closing limitations section, because a 
   \item \textbf{The labelled pairs are concentrated in one issuer.} $42$ of the $43$ pairs belong to ACG and the remaining one to AGG, spanning $27$ distinct claims. The measurement is predominantly about one issuer's dossiers, and generalising it across issuers is not supported by this sample.
   \item \textbf{Precision is measured on a narrow slice of the system's output.} The stage cites $43$ pairs across $464$ claims (\S\ref{sec:experiment-crosscheck}), so high precision on this output is a statement about what the system chose to show, not about how much of the available evidence it finds; \S\ref{sec:experiment-expert} above establishes that this instrument cannot measure recall at all.
 \end{itemize}
+
+\chapter{Discussion and Threats to Validity}
+\label{ch:discussion}
+
+Chapter~\ref{ch:experiment} reported what the pipeline produced; this chapter reads those results together, states plainly what the strongest one can and cannot support, and names the threats a reader should weigh before trusting any of it beyond this corpus.
+
+\section{Reading the Results Together}
+\label{sec:discussion-synthesis}
+
+Three findings from Chapter~\ref{ch:experiment} are strongest read jointly rather than in the sections that reported them separately. First, the internal controls (\S\ref{sec:experiment-internal}) show a system that is structurally sound --- 100\% schema compliance, 97.78\% round-trip grounding, a negative control that correctly failed before a real defect was fixed and correctly passed after --- but structural soundness is a necessary condition, not evidence that any individual verdict is correct. Second, the external result (\S\ref{sec:experiment-expert}) is the only evidence in this thesis that does not merely check the system against its own design: two independent domain experts, working blind, confirm roughly two-thirds of what the system currently cites and agree with each other on all but one of 43 pairs. Third, both of those results are computed on a small, retrieval-limited slice of the system's total output, not on its full claim population --- the reconciliation of that fact is the subject of \S\ref{sec:discussion-aggregate-base} below, because omitting it is precisely the failure mode a reader of this thesis should be guarded against.
+
+\section{The Aggregate Evaluation Base}
+\label{sec:discussion-aggregate-base}
+
+Every component of the number below is disclosed somewhere in Chapter~\ref{ch:experiment}; this section is the one place they are added up. Of the 464 claims cross-checked across all five issuers, only 16 (3.4\%) ever receive a \textsf{supported} or \textsf{contradicted} verdict at all (\S\ref{sec:experiment-crosscheck}) --- the remaining 96.55\% abstain as \texttt{unverified\_insufficient\_evidence}, which the design treats as a first-class, honest outcome rather than a failure to force. All 16 verdicts, and 42 of the 43 (claim, evidence) pairs blind-labelled by the two external experts (\S\ref{sec:experiment-expert}), belong to a single issuer, ACG; three of the five issuers evaluated --- AAA, ACC, ADP --- return no supported or contradicted assessment whatsoever. The strongest empirical result this thesis reports is therefore a measurement of one issuer's dossiers, not a general property of the system across the five it was run against, and should be read as such.
+
+A second aggregate belongs beside the first. The dual-standard indicator axis (\S\ref{sec:entity-resolution}) is the one retrieval path in this design that is genuinely graph-native: a claim reaches conduct evidence through a 2-hop structural join, \textsf{claim} \texttt{--alignsWithIndicator-->} \textsf{Indicator} \texttt{<--measuredUnder--} \textsf{conduct evidence}, rather than through lexical overlap. Across all 401 (claim, evidence) pairs adjudicated for all five issuers, that path contributed \textbf{zero} of the pairs the system ultimately cited --- every cited pair, in every issuer, carries \texttt{retrieval\_tier = token\_overlap}. The cause is structural rather than a bug: news-side KPI observations are overwhelmingly reported in a financial unit (VND), and canonicalisation deliberately rejects an out-of-scope unit rather than force-mapping it (\S\ref{sec:experiment-yield}), so a conduct-side observation almost never acquires the \texttt{measuredUnder} edge the join needs, however well the claim side is aligned. The indicator axis therefore contributes schema, identity resolution, temporality and provenance to this system --- all real, and all measured in Chapter~\ref{ch:experiment} --- but not retrieval, in the run reported here. Retrieval in the reported system is Vietnamese token overlap with a temporal window; any reading of this thesis that treats claim--conduct matching as graph-structured retrieval overstates what actually ran, and should be corrected against this paragraph.
+
+\section{Threats to Validity}
+\label{sec:discussion-threats}
+
+\textbf{LLM non-determinism.} Every prompted stage in this pipeline (extraction, repair, entity adjudication, claim--conduct adjudication) runs its LLM calls at \texttt{temperature=0}, and prompts are pinned byte-for-byte and guarded by tests specifically so a reworded prompt cannot silently change every downstream verdict. Neither control eliminates non-determinism outright: a hosted API is not contractually guaranteed to return a bit-identical completion for an identical request, no seed parameter is exposed to pin generation further, and the model identifier behind an API name can change server-side between runs without a corresponding change on this project's side. A re-run of this pipeline against the same input corpus is therefore expected to reproduce the same *shape* of output --- schema-compliant, similarly distributed across supports/contradicts/irrelevant --- but individual verdicts are not guaranteed to be bit-identical, and this thesis does not measure how much they vary.
+
+\textbf{An LLM adjudicates evidence an LLM also extracted.} The triples a claim and its candidate conduct evidence are built from, and the verdict that compares them, are both produced by prompted language models drawn from the same small set of provider families (Gemini, DeepSeek). This is not named as a threat anywhere else in this thesis. A shared failure mode --- a systematic misreading of a Vietnamese idiom, a consistent blind spot in how a particular KPI phrasing is parsed --- could in principle look self-consistent to an adjudicator built the same way as the extractor, in a way it would not to a genuinely independent reader. The blind expert annotation of \S\ref{sec:experiment-expert} is the direct mitigation for this specific risk, which is exactly why it is treated as the strongest result in this thesis rather than the internal controls; but that annotation covers 43 pairs concentrated in one issuer (\S\ref{sec:discussion-aggregate-base}), so the mitigation's own coverage is as narrow as the risk is broad.
+
+\textbf{The evaluation base is narrow, on both of its strongest legs.} \S\ref{sec:discussion-aggregate-base} above states this precisely: 16 of 464 claims verdicted, 42 of 43 blind-labelled pairs belonging to one issuer, and a graph-native retrieval path that fired zero times out of 401 adjudicated pairs. No claim in this thesis about precision or agreement should be read as established across the five issuers evaluated, still less across the sector the underlying corpus covers.
+
+\textbf{The annotation population changed size during this project, and that history is not restated in Chapter~\ref{ch:experiment}.} An earlier annotation round labelled 200 real pairs (plus 20 attention-check decoys) sampled from a 226-pair population, and found 26.5\%/35.0\% overall precision by the two annotators, with as few as 6--9\% agreement on the \textsf{contradicts} branch specifically. That round predated a fix to the adjudication cache (\S\ref{sec:crosscheck}) whose key had omitted the prompt, so a re-run had been silently replaying pre-fix verdicts; fixing it and re-running collapsed the cited population from 226 to 24 pairs, and a subsequent full re-run against the corrected cache grew it again to the 43-pair census Chapter~\ref{ch:experiment} reports. By deliberate decision, \S\ref{sec:experiment-expert} reports only the current 43-pair census rather than this trajectory, on the grounds that the 226- and 24-pair populations no longer describe the system as it stands; the full historical numbers remain on record in \texttt{docs/ANNOTATION\_RESULTS.md} for a reader who wants the before/after rather than only the after.
+
+\textbf{News recency and outlet bias.} 68.8\% of dated articles in the conduct corpus were published in 2025 or 2026, against a claim side spanning fifteen years (\S\ref{sec:eda-conduct}), so a claim made early in that span has essentially no contemporaneous conduct evidence and is checked, if at all, against much later conduct --- the asymmetric retrieval window in \S\ref{sec:crosscheck} is a direct response to this, not a design preference. Separately, one of the three search back-ends supplies roughly three-quarters of the corpus rather than the three-way balance the multi-back-end design was meant to produce (\S\ref{sec:eda-conduct}), so the conduct channel's topic and outlet mix is closer to what one ranking algorithm surfaces than to an unbiased sample of Vietnamese business news.
+
+\textbf{The ESG classifier's precision on this corpus is not independently measured.} ViDeBERTa-v3-ESG is applied as a published checkpoint, not fine-tuned or evaluated against a held-out Vietnamese label set (\S\ref{sec:not-dataset}), because building one was outside this project's budget. Its behaviour on this corpus --- fitted, as every such checkpoint is, to a training distribution assembled elsewhere --- is therefore an empirical question this thesis does not close; every downstream stage inherits whatever precision and recall the classifier actually has on Vietnamese construction-sector disclosure, silently.
+
+\textbf{The graph-native indicator-axis retrieval path has not yet fired.} Restated from \S\ref{sec:discussion-aggregate-base}: zero of 401 adjudicated pairs, across all five issuers, were retrieved through the \texttt{alignsWithIndicator}/\texttt{measuredUnder} structural join rather than lexical token overlap, for the structural reason given there (financial-unit KPIs on the conduct side are rejected by canonicalisation, not mapped). The schema and the join both exist and are exercised in the wrong direction --- alignment coverage, not retrieval --- so this is a real capability gap in the evaluated system, not a documentation gap.
+
+\textbf{The self-verification (independence) guard has been exercised for one issuer only.} \S\ref{sec:crosscheck} drops a \textsf{supports} verdict back to a non-independent, dossier-visible flag whenever its evidence's source domain matches a curated list of the issuer's own web properties; that list is currently populated for the issuer this thesis's Methodology chapter worked through in detail, and has never dropped an edge for any of the other four issuers, because every cited item for those four so far originates from a third-party outlet. The guard would not currently fire even if one of those four issuers' own domains appeared in a future conduct pool, since the curated list has no entry for them. The risk is latent, not realised, in the corpus this thesis evaluates --- but Contribution 2's independence claim (\S\ref{sec:contribution}) is currently enforced structurally, by the \texttt{source\_type} channel separation, which is real and does hold for all five issuers, rather than by this domain-level guard, which does not yet.
+
+\textbf{A crawl-only acquisition route creates a single point of failure.} Report PDFs are located through one third-party disclosure mirror rather than fetched directly from each issuer or from the State Securities Commission, so acquisition inherits whatever that mirror's own coverage, naming conventions and uptime happen to be; the two-year-field naming inconsistency documented in Chapter~\ref{ch:data} traces to exactly this dependency.
+
+\textbf{The report-side extraction pipeline is a positional parser, not a layout-aware one, and this is an argued design choice rather than a measured one.} \S\ref{sec:cleaning} exact-page-anchors every sentence at the cost of table reconstruction; the longest artefact this produces is a single 11,827-character text run that is a flattened table, not a sentence. No ablation in this thesis quantifies how much information --- or how much noise --- this trade-off costs against the layout-aware parser used for the much smaller reference corpus (\S\ref{sec:reference-corpus}); the choice is defended qualitatively, not empirically.
+
+\textbf{The resolved graph accumulates indicator-axis edges across runs rather than being rebuilt identically.} \S\ref{sec:experiment-yield} already reconciles the resulting 649-versus-718 figures in Table~\ref{tab:resolve-yield}; the underlying cause --- an append-only pass that protects previously-paid cross-check dossiers from being invalidated by a later re-run, at the cost of the graph not being exactly reproducible from a clean rebuild --- is a deliberate trade-off (\S\ref{sec:entity-resolution}), not an oversight, but it does mean a reader comparing two runs of this pipeline byte-for-byte should not expect an exact match on this edge population.
+
+\chapter{Conclusion}
+\label{ch:conclusion}
+
+This thesis set out to test whether a temporal knowledge graph, fed by two structurally independent evidence channels, could make greenwashing in Vietnamese real-estate, construction and building-materials disclosure checkable rather than merely readable. The Delmas--Burbano definition of greenwashing --- the intersection of what a company says and how it behaves --- fixes the requirement directly: a system with access to only the company's own reports cannot in principle observe that intersection, whatever its architecture. This thesis builds the independent half deliberately, keeps it distinguishable from the claim half by a source-type stamp rather than fusing the two into one undifferentiated pool, and carries validity time and sentence-level provenance through every stage so a claim made in one year can be checked against conduct observed in another and traced back to the exact page it came from.
+
+Instantiated end to end on five issuers, the system produces a schema-compliant, well-provenanced knowledge graph (10,634 nodes, 14,744 edges, 100\% schema compliance, 97.78\% round-trip KPI grounding) and, on the claims and evidence it actually cites, is confirmed by two independent domain experts working blind roughly two-thirds of the time, with near-perfect agreement between them. Both of those are genuine, externally-checkable results. Read against the aggregate stated in \S\ref{sec:discussion-aggregate-base}, however, they describe a narrow slice of the system's total output --- 16 of 464 claims verdicted, concentrated overwhelmingly in one issuer, retrieved by lexical overlap rather than the graph-native indicator-axis join this design also specifies --- and the honest summary of this project is that the engineering and the schema are sound, the label-free evaluation instrument correctly detects a real regression and its repair, and the external validation is genuinely positive on what it covers; what remains unproven is that any of this generalises past a conduct channel roughly sixteen times smaller than the claim side it is meant to check.
+
+\textbf{What follows directly from that gap.} The single highest-leverage next step is not a new model or a new schema: it is more independent conduct evidence, since every quantity in \S\ref{sec:discussion-aggregate-base} is a downstream consequence of how thin that channel currently is. Three further items are already specified by the design and require no new research: wiring the graph-native indicator-axis retrieval tier so it is actually consulted rather than only measured as coverage; driving the self-verification guard and its stopword list from \texttt{config/issuer\_registry.json} per issuer rather than leaving it populated for one; and scaling report and news ingestion from five issuers to the full 115-issuer, sector-wide corpus this thesis already built and classified. None of these three is an open research question --- each is an engineering task against an existing, tested design.
+
+\textbf{What the project got right and would not change.} Returning \textsf{unverified} as a first-class outcome, rather than forcing every claim to a verdict, is the correct response to a conduct channel this thin, and is more honest than the alternative of a confident wrong answer. Refusing to emit a greenwashing score or label, in the total absence of ground truth for this or any Vietnamese corpus, is the same discipline applied one level up, and it is what makes the label-free evaluation instrument in this thesis --- rather than a spurious accuracy number --- the right kind of evidence to have built. A system that says less, but says it traceably and only when it can, is the contribution this thesis makes to a problem that has so far mostly been approached the other way.
 
 \clearpage
 \appendix
