@@ -892,7 +892,6 @@ can answer.
     Total sentences & 873,756 & 100\% of corpus \\ \hline
     \textbf{Classified ESG-relevant} (\texttt{esg} flag) & \textbf{303,723} & \textbf{34.8\% of corpus} \\ \hline
     \textbf{Carrying $\geq$1 pillar label} & \textbf{282,195} & \textbf{32.3\% of corpus} \\ \hline
-    Carrying no pillar label & 591,561 & 67.7\% of corpus \\ \hline
     - Governance & 136,585 & 48.4\% of labelled \\ \hline
     - Social & 76,232 & 27.0\% of labelled \\ \hline
     - Environmental & 70,896 & 25.1\% of labelled \\ \hline
@@ -1182,7 +1181,7 @@ is explicit rather than implied.
     to send to an expensive extractor, and it is never treated as evidence in
     its own right (\S\ref{sec:extraction}).
 
-  \item 79.5\% of extracted KPI occurrences fall outside the controlled
+  \item 79.5\% of extracted KPI observations fall outside the controlled
     vocabulary, and units are written 189 different ways, a KPI-yield result
     reported in the Experiment chapter. Canonicalisation is therefore a
     separate offline stage that writes a \textit{new} property instead of
@@ -2080,7 +2079,6 @@ The two yield sections are followed by two evaluation sections, ordered by incre
     \multicolumn{1}{|c|}{\textbf{Symbol}} &
     \multicolumn{1}{c|}{\textbf{Meaning}} \\ \hline
     $G=(V,E)$ & the resolved knowledge graph: node set $V$, directed labelled edge set $E$ \\ \hline
-    $V_{T1}$ & timeless entity nodes (\texttt{Organization}, \texttt{Facility}, \ldots) \\ \hline
     $V_{T2\cup T3}$ & event and observation nodes (\texttt{KPIObservation}, \texttt{Penalty}, \ldots) \\ \hline
     $\Sigma$ & the set of legal triples (predicate, source class, target class) declared by the schema \\ \hline
     $\tau(e)$ & the temporal metadata carried by edge $e$ \\ \hline
@@ -2109,7 +2107,7 @@ The two yield sections are followed by two evaluation sections, ordered by incre
     \multicolumn{1}{c|}{\textbf{Value}} \\ \hline
     Triples kept (validated, including batch-repaired) & 14,500 \\ \hline
     Triples dropped (unfixable after repair) & 807 (5.3\%) \\ \hline
-    KPI occurrences considered by canonicalisation & 7,324 \\ \hline
+    Distinct \texttt{KPIObservation} nodes considered by canonicalisation & 7,127 \\ \hline
     \textbf{Mapped to the 35-indicator vocabulary} & \textbf{1,464 (20.5\%)} \\ \hline
     Rejected / left unmapped & 5,663 (79.5\%) \\ \hline
     -- rejected for an out-of-scope unit (e.g.\ VND) & 3,094 (54.6\% of rejected) \\ \hline
@@ -2117,7 +2115,7 @@ The two yield sections are followed by two evaluation sections, ordered by incre
   \end{tabularx}
 \end{table}
 
-Table~\ref{tab:validate-yield} records that only one KPI occurrence in five is mapped onto the controlled 35-indicator vocabulary; read alone, that looks like a low yield. It is not a matching failure so much as the matching gate refusing to guess: canonicalisation's own design rule is precision over recall, rejecting an ambiguous case rather than force-mapping it (\S\ref{sec:validate-normalize}), and the single largest rejection reason --- 3,094 of the 5,663 unmapped occurrences, 54.6\% of all rejections --- is exactly the case the rule was written for, a value reported in a financial unit (VND, tỷ đồng) that the regulatory indicator vocabulary has no legal place for, not a KPI the extractor misread. The other structural driver is unit inconsistency at the source: units are written 189 distinct raw ways before normalisation (\textit{tỷ đồng} vs \textit{ty dong} vs \textit{VND}, \textit{tấn/năm} vs \textit{tấn}, a bare \textit{\%} vs \textit{percent}) --- an expected consequence of extracting from unedited natural-language report and news text rather than a structured filing, and precisely why canonicalisation writes \texttt{kpi\_id} as a new property alongside the raw one instead of overwriting it (\S\ref{sec:validate-normalize}): a rejected occurrence stays fully readable, just outside the axis this thesis measures against.
+Table~\ref{tab:validate-yield} records that only one KPI observation in five is mapped onto the controlled 35-indicator vocabulary; read alone, that looks like a low yield. Two populations sit behind that ratio and are worth separating: canonicalisation patches every one of the 7,324 \texttt{KPIObservation} occurrences it walks, but tallies a mapping decision once per \emph{distinct} node, so the 7,127 in the table --- not the occurrence count --- is the denominator every percentage below it is taken over. It is not a matching failure so much as the matching gate refusing to guess: canonicalisation's own design rule is precision over recall, rejecting an ambiguous case rather than force-mapping it (\S\ref{sec:validate-normalize}), and the single largest rejection reason --- 3,094 of the 5,663 unmapped nodes, 54.6\% of all rejections --- is exactly the case the rule was written for, a value reported in a financial unit (VND, tỷ đồng) that the regulatory indicator vocabulary has no legal place for, not a KPI the extractor misread. The other structural driver is unit inconsistency at the source: units are written 189 distinct raw ways before normalisation (\textit{tỷ đồng} vs \textit{ty dong} vs \textit{VND}, \textit{tấn/năm} vs \textit{tấn}, a bare \textit{\%} vs \textit{percent}) --- an expected consequence of extracting from unedited natural-language report and news text rather than a structured filing, and precisely why canonicalisation writes \texttt{kpi\_id} as a new property alongside the raw one instead of overwriting it (\S\ref{sec:validate-normalize}): a rejected occurrence stays fully readable, just outside the axis this thesis measures against.
 
 \begin{table}[htbp]
   \centering \small
@@ -2189,19 +2187,35 @@ As Table~\ref{tab:resolve-yield} shows, Entity Resolution's deterministic pass a
     assessments from the same 2022 dividend event, read in opposite
     directions by the same independent evidence.}
   \label{tab:crosscheck-acg-pair}
-  \begin{tabularx}{\linewidth}{|L{0.55}|L{1.55}|L{0.42}|L{1.28}|}
+  % Factors must sum to the column count (4): the Claim and Assessment columns
+  % have to clear their widest unbreakable \texttt token (claim_e81c... and
+  % contradicted), so the two prose columns give up the width for them.
+  \begin{tabularx}{\linewidth}{|L{0.70}|L{1.28}|L{0.68}|L{1.34}|}
     \hline
     \rowcolor{hdrbg}
     \multicolumn{1}{|c|}{\textbf{Claim}} &
     \multicolumn{1}{c|}{\textbf{Text (Vietnamese, verbatim)}} &
     \multicolumn{1}{c|}{\textbf{Assessment}} &
     \multicolumn{1}{c|}{\textbf{Independent evidence}} \\ \hline
-    \texttt{claim\_e81c\ldots} & ``Nghị quyết của ĐHĐCĐ số 09-2022/NQ-GAC\ldots thông qua phương án chia cổ tức năm 2021, Kế hoạch chi trả cổ tức năm 2022.'' & \texttt{appears\_\allowbreak supported} & cafef.vn: a 50\% stock dividend, 43.82M shares, 438 tỷ đồng face value --- the resolution's own numbers, corroborated \\ \hline
+    \texttt{claim\_e81c\ldots} & ``Nghị quyết của ĐHĐCĐ số 09-2022/NQ-GAC\ldots{} thông qua phương án chia cổ tức năm 2021, Kế hoạch chi trả cổ tức năm 2022.'' & \texttt{appears\_\allowbreak supported} & cafef.vn: a 50\% stock dividend, 43.82M shares, 438 tỷ đồng face value --- the resolution's own numbers, corroborated \\ \hline
     \texttt{claim\_1a45\ldots} & ``Công ty không trả cổ tức bằng phương thức `Script dividend'.'' & \texttt{appears\_\allowbreak contradicted} & The same 50\% stock-dividend issuance (cafef.vn KPI observation and MediaReport) read by the adjudicator as exactly the payment method the claim denies using \\ \hline
   \end{tabularx}
 \end{table}
 
-Table~\ref{tab:crosscheck-acg-pair} is worth reading as a pair, not two isolated rows: the same underlying event --- a 50\% stock dividend ACG's own AGM resolution describes in one part of the report --- independently supports one claim and, elsewhere in the same report, contradicts another that denies using that payment method by its English accounting name. The system did not need to be told these two claims were related; retrieval found the same conduct evidence for both from token overlap alone, and adjudication read the relationship in each pair independently and reached opposite, evidence-consistent verdicts. Whether ``Script dividend'' names a distinct instrument from the stock dividend the resolution describes, or the second claim is simply imprecise, is a question this thesis's advisory framing (\S\ref{sec:problem-definition}) deliberately leaves to a human reader with the two source pages open --- the system's contribution is surfacing the tension and citing exactly what it is built from, not adjudicating it further. Every assessment in both tables carries the same standing caveat this thesis has applied throughout: advisory only, against no ground-truth label (\S\ref{sec:problem-definition}).
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{fig_acg_subgraph.png}
+  \caption[The ACG dividend cross-check, as stored in the graph]{The two
+    assessments of Table~\ref{tab:crosscheck-acg-pair} as the graph actually
+    stores them, read from the running Neo4j instance. \texttt{n8535} (50\%)
+    and \texttt{n8536} (438 tỷ đồng) each carry both an \texttt{llm\_supports}
+    \emph{and} an \texttt{llm\_contradicts} edge --- one event, cited in
+    opposite directions. Fills follow Neo4j Browser's colour-by-label
+    convention; relationship colour and layout are this figure's own.}
+  \label{fig:acg-subgraph}
+\end{figure}
+
+Table~\ref{tab:crosscheck-acg-pair} is worth reading as a pair, not two isolated rows, and Figure~\ref{fig:acg-subgraph} shows why by displaying the same two assessments as the graph actually stores them: the same underlying event --- a 50\% stock dividend ACG's own AGM resolution describes in one part of the report --- independently supports one claim and, elsewhere in the same report, contradicts another that denies using that payment method by its English accounting name. The system did not need to be told these two claims were related; retrieval found the same conduct evidence for both from token overlap alone, and adjudication read the relationship in each pair independently and reached opposite, evidence-consistent verdicts. Whether ``Script dividend'' names a distinct instrument from the stock dividend the resolution describes, or the second claim is simply imprecise, is a question this thesis's advisory framing (\S\ref{sec:problem-definition}) deliberately leaves to a human reader with the two source pages open --- the system's contribution is surfacing the tension and citing exactly what it is built from, not adjudicating it further. Every assessment in both tables carries the same standing caveat this thesis has applied throughout: advisory only, against no ground-truth label (\S\ref{sec:problem-definition}).
 
 \section{Internal Quality Controls}
 \label{sec:experiment-internal}
