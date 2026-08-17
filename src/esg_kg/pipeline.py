@@ -31,6 +31,12 @@ STAGES = [
      "offline; hub-cluster decomposition for an SSRL export view ONLY — never patches "
      "resolved_graph.json/Neo4j (P6 boundary); this is only the hub-decomposition piece "
      "of the future SSRL step11, not its full design; run after build_resolved"),
+    ("12",  "step12_replay_adjudication_cache",    "esg_kg.export.replay_adjudications",
+     "offline, NO LLM (cannot construct a provider by design); recomputes step07's cache "
+     "keys to recover (claim, evidence, verdict) rows from the ALREADY-PAID adjudication "
+     "caches. Read-only derived artifact, same P6 boundary as 11. Needs the graph the "
+     "verdicts were paid on — the pre-P5 backup, not today's resolved_graph.json — and "
+     "keeps the two prompt generations (pre/post the 2026-08-13 salt fix) apart"),
 ]
 
 # Three stages that were never ported and have NO row here — all REMOVED outright, not

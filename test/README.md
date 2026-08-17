@@ -428,6 +428,32 @@ python test/test_export_kgc.py             # esg_kg.export.export_kgc (GRAPH_IMP
                                            # after the stage runs — the whole point of the
                                            # export-only design. Run after touching export_kgc
                                            # or metric/hub.py.
+python test/test_replay_adjudications.py   # esg_kg.export.replay_adjudications — the offline
+                                           # replay that recovers (claim, evidence, verdict) rows
+                                           # from the ALREADY-PAID adjudication caches, which
+                                           # store only sha256(parts) -> verdict and none of the
+                                           # text. The headline arm drives the REAL Adjudicator
+                                           # (stubbed under _GeminiProvider) to write a genuine
+                                           # cache entry, then asserts the replay recovers it —
+                                           # so if step07 ever changes how it builds a cache key,
+                                           # it fails HERE instead of silently yielding an empty
+                                           # training set. An AST walk pins that the module never
+                                           # imports or calls a provider: the tool's whole value
+                                           # is that a cache MISS costs nothing, which an
+                                           # instrumented step07 run cannot promise. Also pins
+                                           # the evidence_meta f-string (hashed content — a
+                                           # reword zeroes recovery), that the two prompt
+                                           # generations either side of the 2026-08-13 salt fix
+                                           # are recovered but never merged, and that duplicate-
+                                           # text node pairs share one paid entry. Real-corpus
+                                           # arm (skips without the HF snapshot) replays the same
+                                           # caches against BOTH today's resolved_graph.json and
+                                           # the pre-P5 backup and asserts byte-identical rows —
+                                           # the issue-#20 reorder breaks index-keyed recovery
+                                           # (0% from the dossiers' node_index) but must not
+                                           # touch a text-keyed one. Run after touching
+                                           # replay_adjudications, or step07's node_text /
+                                           # evidence_meta / cache-key derivation.
 python test/test_claim_id_deterministic.py # GitHub issue #2 / plan item C1 — deterministic
                                            # `claim_id`. SustainabilityClaim's identity_keys is
                                            # exactly ["claim_id"] and get_stable_entity_id hashes
