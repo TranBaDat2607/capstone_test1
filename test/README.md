@@ -454,6 +454,25 @@ python test/test_replay_adjudications.py   # esg_kg.export.replay_adjudications 
                                            # touch a text-keyed one. Run after touching
                                            # replay_adjudications, or step07's node_text /
                                            # evidence_meta / cache-key derivation.
+python test/test_readjudicate_legacy.py    # esg_kg.crosscheck.readjudicate — the PAID, targeted
+                                           # re-adjudication of legacy-prompt pairs under the
+                                           # current prompt. Covered for free by stubbing
+                                           # _GeminiProvider. Pins that a new verdict lands on
+                                           # the CURRENT salt (so replay reads it back as
+                                           # prompt_generation=current and step07 later gets it
+                                           # free), that pre-existing entries survive the append
+                                           # and a .pre_readjudicate.bak is taken first (the file
+                                           # is worth thousands of paid calls and
+                                           # ContentCache.save() is not atomic), that a re-run is
+                                           # free, and that --dry-run/--limit bound the spend.
+                                           # The regression arm that earned its place: when
+                                           # Adjudicator disables a provider mid-run (3 failures,
+                                           # 0 successes — a 429 burst under high --max-workers),
+                                           # the never-asked pairs must be reported as not_asked
+                                           # and the run must exit non-zero. The first real run
+                                           # reported 177 "unusable replies" when it had asked
+                                           # about 5. Run after touching readjudicate or
+                                           # Adjudicator's failure/disable handling.
 python test/test_claim_id_deterministic.py # GitHub issue #2 / plan item C1 — deterministic
                                            # `claim_id`. SustainabilityClaim's identity_keys is
                                            # exactly ["claim_id"] and get_stable_entity_id hashes

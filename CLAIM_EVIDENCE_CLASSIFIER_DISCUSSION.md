@@ -283,7 +283,62 @@ Open question this raises for §5: the honest silver set for stage 2 is ~217 cur
 pairs, and only 42 of them carry a current-prompt label. Re-adjudicating the legacy pairs
 under the current prompt is the obvious fix and is NOT free — it is ~3.5k paid calls, or a
 targeted ~200 for the non-`irrelevant` ones, which is cheap and would remove the (b) problem
-outright. Decide that before training anything.
+outright. **Done — see §6c.**
+
+---
+
+## 6c. RESOLVED 2026-08-17 — the legacy labels were re-adjudicated, and most were wrong
+
+`src/esg_kg/crosscheck/readjudicate.py` (stage `13`) asked the CURRENT prompt about all
+**182** legacy pairs that were non-`irrelevant` and had no current verdict. 182/182 answered.
+Cost: 182 Gemini `gemini-2.5-flash` calls, appended to `adjudication_cache.json` under the
+current salt — so a later `claims_vs_conduct` run gets them free.
+
+**104 of 182 labels changed (57%).** The transition table:
+
+| legacy → current | n |
+|---|---|
+| contradicts → **irrelevant** | **81** |
+| supports → supports | 58 |
+| contradicts → contradicts | 20 |
+| supports → irrelevant | 14 |
+| contradicts → supports | 3 |
+| supports → contradicts | 1 |
+| (mixed-provider legacy pairs) | 5 |
+
+That single 81 is the halo-reasoning bug the 2026-08-07 prompt tightening was written to
+kill, measured: the old prompt read an unrelated adverse event as contradicting a claim on a
+different topic. **Only 20 of 104 legacy `contradicts` survive as `contradicts`.**
+
+### What the training set actually looks like now
+
+Deduped on text, current-prompt preferred, legacy as fallback:
+
+```
+stage 1   relevant    124   vs   irrelevant  3,396
+stage 2   supports     96   vs   contradicts    28      <- 124/124 current-prompt labelled
+```
+
+**Stage 2 is now single-generation — no mixed labels at all.** That was the point. But the
+price is that §3's "the one place the data shape is actually favourable" (154/127) **is no
+longer true**: contradicts collapsed from 110 to **28**, and stage 2 is now both small and
+3.4:1 imbalanced.
+
+Consequences to carry into §5, replacing §3's optimism:
+
+- Training on the pre-fix silver set would have taught the model the halo-reasoning bug on
+  **81 of its 110** contradiction examples. Doing this first was not optional.
+- 28 silver contradicts + 6 gold contradicts is a thin basis for anything. The two-stage
+  split still stands, but stage 2 is now the *scarce* stage, not the comfortable one —
+  consider merging it into a single relevance-first model with a weak polarity head, or
+  budgeting real human labels specifically for contradictions.
+- Stage 1 is unaffected and still has ~3.5k labels; the §4 finding (errors are relevance
+  errors) is if anything strengthened — the current prompt moved 95 pairs INTO `irrelevant`
+  and only 4 out of it.
+- Caveat that must be stated in any writeup: only the non-`irrelevant` legacy pairs were
+  re-adjudicated. The 2,992 legacy `irrelevant` labels were NOT re-checked, so stage 1's
+  negative class is still pre-fix-prompt. The bias direction is known (the new prompt is
+  stricter, so it would mostly confirm them) but it is not measured.
 
 ---
 

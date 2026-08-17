@@ -37,6 +37,12 @@ STAGES = [
      "caches. Read-only derived artifact, same P6 boundary as 11. Needs the graph the "
      "verdicts were paid on — the pre-P5 backup, not today's resolved_graph.json — and "
      "keeps the two prompt generations (pre/post the 2026-08-13 salt fix) apart"),
+    ("13",  "step13_readjudicate_legacy_pairs",    "esg_kg.crosscheck.readjudicate",
+     "PAID LLM; re-asks the CURRENT prompt about the legacy-prompt pairs stage 12 found "
+     "non-irrelevant and uncovered, so a distillation set is single-generation. Delegates "
+     "to step07's own Adjudicator (prompt/parse/cache-key unchanged) and appends to the "
+     "adjudication cache under the current salt, so step07 later gets them free. "
+     "--dry-run / --limit; a re-run is free (all cache hits)"),
 ]
 
 # Three stages that were never ported and have NO row here — all REMOVED outright, not
