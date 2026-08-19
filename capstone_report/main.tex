@@ -14,6 +14,13 @@
 % sans-serif default, to match the reference thesis's presentation style.
 \addtokomafont{disposition}{\normalfont\bfseries}
 
+% No gap between a heading number and its title at any level (e.g.
+% "1.Project Introduction", "1.1.Problem and Motivation") rather than
+% KOMA's default wide separator.
+\renewcommand*{\chapterformat}{\thechapter\autodot}
+\renewcommand*{\sectionformat}{\thesection\autodot}
+\renewcommand*{\subsectionformat}{\thesubsection\autodot}
+
 % Drop KOMA's own trailing period after a figure/table number (e.g. "2.4.")
 % so it doesn't collide with the caption package's colon separator and
 % print as "Table 2.4.:" -- leaves a clean "Table 2.4:".
