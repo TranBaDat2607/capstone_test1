@@ -14,6 +14,32 @@
 % sans-serif default, to match the reference thesis's presentation style.
 \addtokomafont{disposition}{\normalfont\bfseries}
 
+% Drop KOMA's own trailing period after a figure/table number (e.g. "2.4.")
+% so it doesn't collide with the caption package's colon separator and
+% print as "Table 2.4.:" -- leaves a clean "Table 2.4:".
+\renewcommand*{\figureformat}{\figurename~\thefigure}
+\renewcommand*{\tableformat}{\tablename~\thetable}
+
+% Let pages end early instead of stretching to fill the full page height:
+% stops ugly, uneven gaps opening up between a figure and a table stacked
+% on the same page with no body text between them.
+\raggedbottom
+
+% A page holding mostly floats (a figure immediately followed by a table,
+% with little running text) is treated by LaTeX as a "float page", which
+% separates stacked floats with infinitely stretchable glue by default --
+% that is what was opening up the large gap between them. Cap it to a
+% fixed, modest separation instead.
+\makeatletter
+\setlength{\@fpsep}{12pt}
+\makeatother
+
+% Discourage a paragraph's last line (or a table/figure caption) from being
+% left stranded alone at the top of the next page.
+\clubpenalty=10000
+\widowpenalty=10000
+\displaywidowpenalty=10000
+
 \usepackage[paperheight=29.7cm,paperwidth=21cm,
             left=3cm,right=2cm,top=2cm,bottom=2.5cm]{geometry}
 
@@ -2360,6 +2386,10 @@ Finally, the report-side extraction pipeline is a positional parser, not a layou
 
 \chapter{Conclusion}
 \label{ch:conclusion}
+% Pull the chapter's last two lines back onto this page rather than
+% leaving them stranded alone on an otherwise-blank page before the
+% Appendix's forced page break.
+\enlargethispage{2\baselineskip}
 
 This thesis set out to test whether a temporal knowledge graph, fed by two structurally independent evidence channels, could make greenwashing in Vietnamese real-estate, construction and building-materials disclosure checkable rather than merely readable. The Delmas--Burbano definition of greenwashing, the intersection of what a company says and how it behaves, fixes the requirement directly: a system with access to only the company's own reports cannot in principle observe that intersection, whatever its architecture. This thesis builds the independent half deliberately, keeps it distinguishable from the claim half by a source-type stamp rather than fusing the two into one undifferentiated pool, and carries validity time and sentence-level provenance through every stage so a claim made in one year can be checked against conduct observed in another and traced back to the exact page it came from.
 
