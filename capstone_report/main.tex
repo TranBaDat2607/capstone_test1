@@ -385,7 +385,7 @@ This thesis makes the following contributions.
 
     \item A dual-standard indicator axis unifying Circular 96/2020/TT-BTC with the GRI Standards through a confirmed-only crosswalk, materialised as graph structure so that a Vietnamese-vocabulary disclosure and its international equivalent resolve to one node.
 
-    \item A label-free evaluation instrument, none of whose checks need a ground-truth label to run, demonstrated on three controlled before/after ablations: for instance, the negative control's same-company evidence-attribution check (\S\ref{sec:experiment-internal}) moved from 28.76\% (failing) to 100\% (passing, zero cross-feed citations) once the adjudication-cache defect of \S\ref{sec:crosscheck} was fixed, showing the instrument can detect a real regression and its repair without any label existing for the underlying task.
+    \item A label-free evaluation instrument, none of whose checks need a ground-truth label to run, demonstrated on three controlled before/after ablations: for instance, the negative control's same-company evidence-attribution check (Section~\ref{sec:experiment-internal}) moved from 28.76\% (failing) to 100\% (passing, zero cross-feed citations) once the adjudication-cache defect of Section~\ref{sec:crosscheck} was fixed, showing the instrument can detect a real regression and its repair without any label existing for the underlying task.
 
     \item A documented and defended negative design decision. The pipeline classifies each claim--evidence pair as \emph{supports}, \emph{contradicts} or \emph{irrelevant}, and each claim as \emph{contradicted}, \emph{supported} or \emph{unverified} due to insufficient evidence, but it never emits a greenwashing score or verdict, because no label exists against which such a score could be validated.
 \end{enumerate}
@@ -445,47 +445,47 @@ The dataset has two parts, and how each is acquired differs enough to keep them 
 
 Table~\ref{tab:dataset} shows the corpus separating breadth from depth. The raw pool and the labelled sentence corpus span all 115 issuers across the sector. End-to-end graph construction and cross-check, in contrast, run in depth on a single issuer with a fifteen-year time series. This is a deliberate trade-off, and its consequence for the strength of the claims made here is taken up later in this thesis.
 \label{sec:not-dataset}
-Two boundaries keep the evaluation in Chapter 4 non-circular. First, the KPI records, the extracted triples and the resolved knowledge graph are outputs of the system under study. They were not handed to it as input data; they are produced by the stages described in Chapter 3 and reported as results in the Experiment chapter, so they are not listed here as corpus components. Second, there is no train/validation/test split, because no component of the system is trained. The ESG classifier is a published checkpoint applied as released (\S\ref{sec:annotation}), and every other stage is a rule, an offline algorithm, or a prompted model used without gradient updates. The labelled sample a proper classifier evaluation would require does not yet exist and is recorded as an outstanding item.
+Two boundaries keep the evaluation in Chapter 4 non-circular. First, the KPI records, the extracted triples and the resolved knowledge graph are outputs of the system under study. They were not handed to it as input data; they are produced by the stages described in Chapter 3 and reported as results in the Experiment chapter, so they are not listed here as corpus components. Second, there is no train/validation/test split, because no component of the system is trained. The ESG classifier is a published checkpoint applied as released (Section~\ref{sec:annotation}), and every other stage is a rule, an offline algorithm, or a prompted model used without gradient updates. The labelled sample a proper classifier evaluation would require does not yet exist and is recorded as an outstanding item.
 \section{Data Construction Pipeline}
 \subsection{Pipeline Overview}
 
 This chapter's data construction runs as three independent pipelines. A report pipeline downloads published annual-report PDFs and linearises them into sentences. A news pipeline queries three independent search back-ends and extracts article bodies into the same sentence schema, so both channels can later share one identity space while staying distinguishable by a source-type stamp. The two run separately and converge through one shared ESG classifier (Figure~\ref{fig:pipeline-overview}, drawn once since it is the same weights applied to each), then diverge again into the claim corpus and the conduct corpus that feed graph construction (Chapter~3).
 
-A third pipeline runs on its own schedule and does not depend on the first two. A pair of run-once paths turns published regulatory and GRI text into the controlled vocabulary: a 35-indicator KPI vocabulary and a 136-code GRI catalogue (Figure~\ref{fig:reference-corpus}, \S\ref{sec:reference-corpus}), consumed downstream by KPI extraction and the indicator axis. The traceability guarantee that runs through all three pipelines (each record keyed by source pdf, page and sentence index, \S\ref{sec:record-schema}) holds throughout and is not re-derived per stage.
+A third pipeline runs on its own schedule and does not depend on the first two. A pair of run-once paths turns published regulatory and GRI text into the controlled vocabulary: a 35-indicator KPI vocabulary and a 136-code GRI catalogue (Figure~\ref{fig:reference-corpus}, Section~\ref{sec:reference-corpus}), consumed downstream by KPI extraction and the indicator axis. The traceability guarantee that runs through all three pipelines (each record keyed by source pdf, page and sentence index, Section~\ref{sec:record-schema}) holds throughout and is not re-derived per stage.
 \subsection{Public data sources and the raw data pool}
 \label{sec:raw-data-pool}
 
 \begin{figure}[H]
   \centering
-  \resizebox{0.85\linewidth}{!}{%
+  \resizebox{0.97\linewidth}{!}{%
   \begin{tikzpicture}[
     every node/.style={font=\sffamily},
     source/.style={rectangle, draw=pipsourceline, fill=pipsourcefill, rounded corners=2pt,
                    minimum width=3.3cm, minimum height=1.1cm, align=center,
-                   font=\sffamily\footnotesize, line width=0.8pt},
+                   font=\sffamily\small, line width=0.8pt},
     block/.style ={rectangle, draw=pipnodeline, fill=pipnodefill, rounded corners=2pt,
                    minimum width=3.3cm, minimum height=1.1cm, align=center,
-                   font=\sffamily\footnotesize, line width=0.8pt},
+                   font=\sffamily\small, line width=0.8pt},
     cfg/.style   ={rectangle, draw=pipconfigline, fill=pipconfigfill, rounded corners=2pt,
                    minimum width=3.3cm, minimum height=1.1cm, align=center,
-                   font=\sffamily\footnotesize, line width=0.8pt},
+                   font=\sffamily\small, line width=0.8pt},
     model/.style ={rectangle, draw=pipmodelline, fill=pipmodelfill, rounded corners=3pt,
                    minimum width=3.6cm, minimum height=1.6cm, align=center,
-                   font=\sffamily\footnotesize, line width=1.6pt},
+                   font=\sffamily\small, line width=1.6pt},
     final/.style ={rectangle, draw=pipcontrib, fill=pipoutfill, rounded corners=2pt,
                    minimum width=3.7cm, minimum height=1.3cm, align=center,
-                   font=\sffamily\footnotesize, line width=2.0pt},
+                   font=\sffamily\small, line width=2.0pt},
     inter/.style ={rectangle, draw=pipmuteline, fill=pipmutefill, rounded corners=2pt,
                    minimum width=2.9cm, minimum height=0.95cm, align=center,
-                   font=\sffamily\tiny, line width=0.5pt, text=pipinksoft},
+                   font=\sffamily\scriptsize, line width=0.5pt, text=pipinksoft},
     tag/.style   ={rectangle, draw=pipframeline, fill=pipdpanelfill, rounded corners=2pt,
                    minimum width=3.5cm, minimum height=1.0cm, align=center,
-                   font=\sffamily\scriptsize\itshape, text=pipinksoft, line width=0.6pt},
+                   font=\sffamily\footnotesize\itshape, text=pipinksoft, line width=0.6pt},
     flow/.style={-{Latex[length=2.2mm, width=1.6mm]}, color=pipinksoft, line width=0.8pt},
     flowd/.style={flow, dashed},
-    lbl/.style={font=\sffamily\scriptsize, color=pipinksoft},
-    lblt/.style={font=\sffamily\scriptsize\itshape, color=pipinksoft},
-    lane/.style={font=\sffamily\bfseries\small, color=pipink},
+    lbl/.style={font=\sffamily\footnotesize, color=pipinksoft},
+    lblt/.style={font=\sffamily\footnotesize\itshape, color=pipinksoft},
+    lane/.style={font=\sffamily\bfseries\normalsize, color=pipink},
   ]
 
 
@@ -495,24 +495,24 @@ A third pipeline runs on its own schedule and does not depend on the first two. 
   \draw[fill=pipdpanelfill, draw=none] (9.2,-1.15) rectangle (16.0,1.15);
   \draw[pipframeline, line width=0.7pt, rounded corners=4pt] (-2.1,1.15) rectangle (24.3,3.55);
   \draw[pipframeline, line width=0.7pt, rounded corners=4pt] (-2.1,-3.55) rectangle (24.3,-1.15);
-  \node[anchor=north west, font=\sffamily\bfseries\scriptsize, color=pipsourceline] at (-1.95,3.40) {REPORT CHANNEL};
-  \node[anchor=north west, font=\sffamily\bfseries\scriptsize, color=pipsourceline] at (-1.95,-1.32) {NEWS CHANNEL};
+  \node[anchor=north west, font=\sffamily\bfseries\small, color=pipsourceline] at (-1.95,3.40) {REPORT CHANNEL};
+  \node[anchor=north west, font=\sffamily\bfseries\small, color=pipsourceline] at (-1.95,-1.32) {NEWS CHANNEL};
 
   \node[source] (A0) at (0,2.3)
-    {\textcolor{pipsourceline}{\faIcon{file-alt}}~\textbf{Annual Reports}\\[1pt]\scriptsize PDF filings};
+    {\textcolor{pipsourceline}{\faIcon{file-alt}}~\textbf{Annual Reports}\\[1pt]\footnotesize PDF filings};
   \node[inter]  (A1) at (3.9,2.3)
     {\textcolor{pipinksoft}{\faFolderOpen}~Report Corpus\\[1pt]raw PDF documents};
   \node[inter]  (A2) at (7.8,2.3)
     {\textcolor{pipinksoft}{\faAlignLeft}~Unlabeled Sentences\\[1pt]report channel};
   \node[model]  (CLS) at (12.6,0)
-    {\textcolor{pipmodelline}{\faRobot}~\textbf{\large ESG Classifier}\\[3pt]\footnotesize ViDeBERTa-v3 \textit{(pretrained model)}\\[2pt]\tiny multi-label: E / S / G / Neutral};
+    {\textcolor{pipmodelline}{\faRobot}~\textbf{\Large ESG Classifier}\\[3pt]\small ViDeBERTa-v3 \textit{(pretrained model)}\\[2pt]\footnotesize multi-label: E / S / G / Neutral};
   \node[inter]  (A4) at (17.4,2.3)
     {\textcolor{pipinksoft}{\faTags}~ESG-Labeled Sentences\\[1pt]report channel};
   \node[final]  (A5) at (21.3,2.3)
     {\pitag{CLAIM SIDE}\\[2pt]\textcolor{pipcontrib}{\faFileContract}~\textbf{ESG Claim Corpus}};
 
   \node[source] (B0) at (0,-2.3)
-    {\textcolor{pipsourceline}{\faNewspaper}~\textbf{News Articles}\\[1pt]\scriptsize search engines \& RSS};
+    {\textcolor{pipsourceline}{\faNewspaper}~\textbf{News Articles}\\[1pt]\footnotesize search engines \& RSS};
   \node[inter]  (B1) at (3.9,-2.3)
     {\textcolor{pipinksoft}{\faGlobe}~Crawl, Extract \& Normalize};
   \node[inter]  (B2) at (7.8,-2.3)
@@ -547,9 +547,9 @@ A third pipeline runs on its own schedule and does not depend on the first two. 
 
 Vietnamese listed companies must file an annual report with the exchange they are listed on, which then publishes the filing. The corpus is therefore built from exchange disclosure filings, not from company websites. A filing is the document the issuer is legally answerable for, it is archived at a stable location, and it is available uniformly for every ticker. An investor-relations page, by comparison, is voluntary and inconsistently maintained.
 
-In practice the filings come from VietStock's static mirror of the disclosure archive, not from each exchange's own portal. That mirror exposes the complete filing history of every ticker under one stable, machine-readable URL scheme. The scheme encodes the exchange, the document class (BCTN, \textit{báo cáo thường niên}, annual report), the language, and two distinct year fields, one on the directory and one in the file name, so every field the acquisition index needs is recoverable from the address alone. The two year fields are not the same quantity, a point taken up below. The cost of this route is a dependency on a single third-party host that is not the authoritative publisher of the filings, a limitation returned to in \S\ref{sec:discussion-threats}.
+In practice the filings come from VietStock's static mirror of the disclosure archive, not from each exchange's own portal. That mirror exposes the complete filing history of every ticker under one stable, machine-readable URL scheme. The scheme encodes the exchange, the document class (BCTN, \textit{báo cáo thường niên}, annual report), the language, and two distinct year fields, one on the directory and one in the file name, so every field the acquisition index needs is recoverable from the address alone. The two year fields are not the same quantity, a point taken up below. The cost of this route is a dependency on a single third-party host that is not the authoritative publisher of the filings, a limitation returned to in Section~\ref{sec:discussion-threats}.
 
-Acquisition is a crawl, and the crawl produces an index. Discovery is kept separate from download. A crawl over the sector's ticker list resolves each issuer's filing history into one row per document, and that index, \texttt{config/company\_annual\_report.xlsx}, sheet \textit{Xây dựng - VLXD - BĐS}, carries the ticker, the issuer's legal name, the document class, the filing year and the direct file URL for all 1,357 filings across 115 issuers, all served from a single host. Keeping the index as a materialised artifact instead of re-resolving URLs at download time makes the acquisition auditable and repeatable. The same index is reused as the issuer list for the news channel (\S\ref{sec:conduct-channel}) and for the issuer-identity registry.
+Acquisition is a crawl, and the crawl produces an index. Discovery is kept separate from download. A crawl over the sector's ticker list resolves each issuer's filing history into one row per document, and that index, \texttt{config/company\_annual\_report.xlsx}, sheet \textit{Xây dựng - VLXD - BĐS}, carries the ticker, the issuer's legal name, the document class, the filing year and the direct file URL for all 1,357 filings across 115 issuers, all served from a single host. Keeping the index as a materialised artifact instead of re-resolving URLs at download time makes the acquisition auditable and repeatable. The same index is reused as the issuer list for the news channel (Section~\ref{sec:conduct-channel}) and for the issuer-identity registry.
 \begin{table}[htbp]
   \centering \small
   \caption[The acquisition index]{The acquisition index, measured from
@@ -571,7 +571,7 @@ Acquisition is a crawl, and the crawl produces an index. Discovery is kept separ
 
 Table~\ref{tab:acquisition-index} settles three things that matter downstream. The corpus is overwhelmingly HOSE, at 94.8\% of filings, with 51 HNX and 7 UPCoM rows present because a few issuers moved venue during the period covered; any statement about \textit{listed Vietnamese companies} in this thesis should be read as a statement about HOSE-listed ones. Every indexed document is an annual report, so the ESG content analysed here is ESG content as it appears \textit{inside} a general-purpose annual report, a materially thinner genre than a standalone sustainability report. And 7.1\% of filings arrive as \texttt{.zip} or \texttt{.rar} archives instead of a plain PDF, which is why extracting \texttt{.rar} and \texttt{.7z} containers is a required step of the downloader.
 
-There is one naming caveat that affects every temporal figure in this thesis. The year in a downloaded file's name is the \emph{filing} year, and for 95.5\% of rows it is exactly one greater than the \emph{fiscal} year the report covers: a report on financial year 2024 is filed in spring 2025. The two are not interchangeable, and this thesis uses \textit{filing year} wherever a year is read off a file name, labelling it as such. The distinction shifts the whole temporal axis by one year, and it is why the compliance discontinuity discussed in \S\ref{sec:temporal-coverage} shows up in the 2021 filings, not the 2020 ones.
+There is one naming caveat that affects every temporal figure in this thesis. The year in a downloaded file's name is the \emph{filing} year, and for 95.5\% of rows it is exactly one greater than the \emph{fiscal} year the report covers: a report on financial year 2024 is filed in spring 2025. The two are not interchangeable, and this thesis uses \textit{filing year} wherever a year is read off a file name, labelling it as such. The distinction shifts the whole temporal axis by one year, and it is why the compliance discontinuity discussed in Section~\ref{sec:temporal-coverage} shows up in the 2021 filings, not the 2020 ones.
 
 After download and unpacking, the raw pool holds 1,416 PDF files for 115 companies, totalling 16.93~GB at a mean of 12.0~MB per file and 12.3 documents per company, spanning filing years 2011--2026. The file count exceeds the 1,357 indexed filings because an unpacked archive frequently contains several PDFs, typically a report split into chapters. No filtering by
 content is applied at this stage. Selection happens later, at the sentence
@@ -583,20 +583,20 @@ are generated from the same issuer index and issued against three
 independent back-ends: Google News RSS, Bing and DuckDuckGo. Article bodies
 are then fetched, cached and extracted with trafilatura. Using three
 back-ends instead of one is meant to hedge against any single provider's
-ranking bias; \S\ref{sec:eda-conduct} reports how unevenly the three
+ranking bias; Section~\ref{sec:eda-conduct} reports how unevenly the three
 actually contributed.
 
 \subsection{Cleaning, parsing and sentence segmentation}
 \label{sec:cleaning}
 
-Three cleaning operations are applied, in this order.
+Three cleaning operations are applied, in this order:
 
 The first is text extraction with page anchoring. Report PDFs are converted with a
 positional text extractor, PyMuPDF\footnote{\url{https://pymupdf.readthedocs.io/}},
 which iterates over text runs in coordinate order, normalises to Unicode NFC
 so Vietnamese diacritics survive, and attaches the page number to every
 block. This choice is deliberately different from the layout-aware parser used
-for the standards corpus (\S\ref{sec:reference-corpus}), because what this
+for the standards corpus (Section~\ref{sec:reference-corpus}), because what this
 channel needs is an exact page number per sentence, not table reconstruction;
 that trade-off is argued for here rather than quantified by a head-to-head
 ablation against the layout-aware parser, which this thesis does not run.
@@ -616,7 +616,7 @@ surviving sentence is exactly 25 characters, the floor itself, so page
 furniture such as folio numbers and running headers never reaches the
 classifier. The cost is that a genuinely short disclosure, a bare table
 cell containing a figure, is lost along with it. That is one reason quantitative values
-are extracted separately by the KPI-extraction stage (\S\ref{sec:extraction})
+are extracted separately by the KPI-extraction stage (Section~\ref{sec:extraction})
 instead of being expected to survive as sentences.
 \subsection{Annotation: multi-label ESG classification}
 \label{sec:annotation}
@@ -630,8 +630,8 @@ The model is applied as published. No training
 happens anywhere in the pipeline; the annotation stage simply runs
 inference at a maximum sequence length of 256 tokens. Building a labelled
 Vietnamese ESG training set was outside the project's budget, a deliberate
-scope decision with a consequence stated in \S\ref{sec:eda-labels} and
-revisited in \S\ref{sec:discussion-threats}: the checkpoint was fitted to
+scope decision with a consequence stated in Section~\ref{sec:eda-labels} and
+revisited in Section~\ref{sec:discussion-threats}: the checkpoint was fitted to
 someone else's data distribution, so how it behaves on this corpus is an
 empirical question, not a given.
 
@@ -648,16 +648,16 @@ matters. A pillar tag is attached when that pillar's sigmoid score reaches
 score falling below 0.5. The second rule stays robust to a signal that splits
 across pillars: a sentence scoring 0.3/0.3/0.3 on E/S/G is not neutral
 even though no single pillar clears 0.45. It also means the two fields can
-and do disagree in both directions, a gap \S\ref{sec:eda-labels} measures.
+and do disagree in both directions, a gap Section~\ref{sec:eda-labels} measures.
 The model emits the full probability vector alongside both fields, which is
 what makes that measurement, and the confidence analysis in
-\S\ref{sec:eda-sentence}, possible at all.
+Section~\ref{sec:eda-sentence}, possible at all.
 
 The same checkpoint, thresholds and code path are applied to both channels.
 This is a correctness requirement more than a convenience: if reports and news
 were labelled by different models, any measured difference between the
 channels, such as the pillar inversion reported in
-\S\ref{sec:eda-asymmetry}, would be confounded by the difference between
+Section~\ref{sec:eda-asymmetry}, would be confounded by the difference between
 the annotators.
 \subsection{The independent conduct channel}
 \label{sec:conduct-channel}
@@ -673,7 +673,7 @@ explicit date or period for the fact it reports, the system falls back to
 the publication date as a proxy, but it has to mark that fact
 \texttt{date\_uncertain = true}. The flag travels with the evidence into the
 final dossier as an explicit caveat; the system never silently assumes a
-year. \S\ref{sec:eda-conduct} shows why this matters: a measurable
+year. Section~\ref{sec:eda-conduct} shows why this matters: a measurable
 fraction of crawled articles carry publication dates that are clearly parser
 artefacts.
 
@@ -827,7 +827,7 @@ paths are built once, committed to version control alongside the source
 PDFs and their SHA-256 digests, and treated thereafter as generated data.
 How the two vocabularies join into the graph's indicator axis is described
 in the Methodology chapter, and its yield is measured directly as coverage
-later in this thesis (\S\ref{sec:experiment-yield}), not by an ablation.
+later in this thesis (Section~\ref{sec:experiment-yield}), not by an ablation.
 
 
 \subsection{Final packaging and distribution}
@@ -840,7 +840,7 @@ and crawl channel for news). Generated data is distributed through a
 dataset repository instead of Git; the pushed revision is pinned in a
 version file that \textit{is} tracked in Git, so a checkout recovers the
 data that went with that code. This is what makes the before/after
-negative-control check reported later in this thesis (\S\ref{sec:experiment-internal})
+negative-control check reported later in this thesis (Section~\ref{sec:experiment-internal})
 reproducible instead of merely asserted.
 \section{Exploratory Data Analysis}
 \label{sec:eda}
@@ -856,7 +856,7 @@ from disk.
 The scope is the data only: raw filings, derived sentences, ESG
 annotation, temporal spread, conduct-channel composition. What the pipeline
 subsequently produces from it, such as KPI records, triples and the
-resolved graph, is a result and not an input (\S\ref{sec:not-dataset});
+resolved graph, is a result and not an input (Section~\ref{sec:not-dataset});
 it is measured later, in the Experiment chapter.
 
 
@@ -898,7 +898,7 @@ Figure~\ref{fig:sentence-properties}(a) shows the resulting length
 distribution. The mean sentence length is 196 characters and the longest is
 11,827, which is not really a sentence at all but a table flattened into one
 text run by the positional extractor, the clearest single artefact of the
-extraction choice discussed in \S\ref{sec:cleaning}.
+extraction choice discussed in Section~\ref{sec:cleaning}.
 
 Figure~\ref{fig:sentence-properties}(b) is the more consequential view. The
 distribution of the highest pillar probability is strongly bimodal, with
@@ -908,7 +908,7 @@ correctness are two different things and the two should not be conflated.
 What the distribution does constrain is this: the 0.5 threshold is not
 cutting through a dense region, so small threshold changes will not move the
 label counts much. It says nothing about whether the confident decisions are
-right, which only the evaluation table requested in \S\ref{sec:annotation}
+right, which only the evaluation table requested in Section~\ref{sec:annotation}
 can answer.
 
 
@@ -951,7 +951,7 @@ Table~\ref{tab:esg-annotation} supports four observations, and the last two of t
 qualify the annotation quality.
 
 The two annotation rules disagree measurably.
-\S\ref{sec:annotation} explains that a pillar tag needs a sigmoid score of
+Section~\ref{sec:annotation} explains that a pillar tag needs a sigmoid score of
 0.45, while the \texttt{esg} flag is set by the Neutral score falling below
 0.5, and these different tests diverge in both directions on this corpus:
 30,783 sentences (10.1\% of the ESG set) are flagged ESG-relevant with no
@@ -961,7 +961,7 @@ signal that splits across pillars, the second for a sentence that is
 confidently neutral yet mentions one pillar in passing. But the two
 fields should never be used interchangeably. The pipeline respects this: page
 selection for the expensive extraction stage keys on the \texttt{esg} flag
-(\S\ref{sec:extraction}), while the evidence interface's pillar columns are
+(Section~\ref{sec:extraction}), while the evidence interface's pillar columns are
 read from the indicator axis instead of these labels, as described in the
 Evidence View UI design later in this thesis.
 
@@ -972,7 +972,7 @@ report is structured: board composition, shareholder structure, internal
 control and related-party transactions are mandatory, lengthy sections, while
 environmental disclosure is comparatively short. The downstream effect is
 direct. The claim side of the graph ends up governance-heavy while the conduct
-side, as \S\ref{sec:eda-asymmetry} shows, is environmental-heavy, so the two
+side, as Section~\ref{sec:eda-asymmetry} shows, is environmental-heavy, so the two
 channels do not measure the same thing in the same proportion.
 
 The multi-label formulation, meanwhile, is barely exercised in practice. Panel (b) of
@@ -1004,10 +1004,10 @@ of 303,723 is negligible in total. But it establishes the
 mechanism. A company name, slogan or department title can trigger a
 pillar label on lexical grounds alone, and there is no particular reason that
 mechanism is confined to one issuer's name. Quantifying its full extent requires the
-labelled evaluation set requested in \S\ref{sec:annotation}. Until then, the
+labelled evaluation set requested in Section~\ref{sec:annotation}. Until then, the
 ESG rate reported here should be read as an upper bound on ESG-relevant
 content, and the downstream stages are designed on that assumption.
-\S\ref{sec:extraction} describes the response: the extraction stage never
+Section~\ref{sec:extraction} describes the response: the extraction stage never
 treats an ESG label as evidence of anything, only as a cost-saving filter
 over which pages are worth sending to an expensive model.
 
@@ -1060,7 +1060,7 @@ independent of the mandate, a gradual compliance ramp-up instead of
 immediate adoption, or drift in the vocabulary the classifier keys on with
 no real change in underlying content. The third would just be a measurement
 artefact dressed up as a finding, and it cannot be excluded without the
-evaluation set of \S\ref{sec:annotation}. The claim made here is restricted to what
+evaluation set of Section~\ref{sec:annotation}. The claim made here is restricted to what
 the data supports: ESG-classified content grows as a share of the corpus
 over time, and that growth is not attributable to the 2020 mandate on the
 evidence available.
@@ -1115,7 +1115,7 @@ back-ends in Table~\ref{tab:conduct-channel}, one provider supplies roughly
 three-quarters of the corpus, far more than the three-back-end design (a
 hedge against single-provider ranking bias) was meant to allow. This is a
 limitation of the corpus as built, and it is recorded as such in
-\S\ref{sec:discussion-threats}.
+Section~\ref{sec:discussion-threats}.
 
 A third issue shows up in Figure~\ref{fig:conduct-channel}(b): the
 distribution of stated publication year is heavily skewed toward the
@@ -1123,7 +1123,7 @@ present. 2,594 of 3,771 dated articles
 (68.8\%) were published in 2025 or 2026, so the conduct channel is
 concentrated in the last two years while the claim channel spans fifteen.
 This time asymmetry, layered on top of the volume asymmetry documented in
-\S\ref{sec:eda-asymmetry}, is the direct cause of the asymmetric
+Section~\ref{sec:eda-asymmetry}, is the direct cause of the asymmetric
 retrieval-window design in the Methodology chapter's cross-check stage. A
 claim made in 2012 has essentially no contemporaneous conduct evidence, so
 the window has to look forward, and far.
@@ -1134,7 +1134,7 @@ financial news about currently-listed issuers. One value alone, 2002,
 accounts for 150 of the 220, which looks like a template default, not a real
 date. These are extraction failures, not old articles, and they are
 left in the corpus, uncorrected but flagged, since the \texttt{date\_uncertain}
-contract of \S\ref{sec:conduct-channel} exists precisely to carry this
+contract of Section~\ref{sec:conduct-channel} exists precisely to carry this
 uncertainty forward to the reader instead of hiding it. This measurement is
 the empirical justification for that contract: without it, roughly one
 article in seventeen would contribute a fabricated year to a temporal
@@ -1204,31 +1204,31 @@ is explicit rather than implied.
 \begin{enumerate}
   \item The conduct channel is roughly 15.8$\times$ smaller than the
     claim channel and inverted in pillar composition
-    (\S\ref{sec:eda-asymmetry}). The system therefore has to be able to return
+    (Section~\ref{sec:eda-asymmetry}). The system therefore has to be able to return
     \textit{``not verifiable''} as a first-class outcome instead of forcing a
     verdict, which is why the cross-check emits three assessments, one of which
     is \texttt{unverified\_insufficient\_evidence}
-    (\S\ref{sec:problem-definition}).
+    (Section~\ref{sec:problem-definition}).
 
   \item The conduct channel is concentrated in the last two years while
-    claims span fifteen (\S\ref{sec:eda-conduct}). The retrieval
+    claims span fifteen (Section~\ref{sec:eda-conduct}). The retrieval
     window is deliberately asymmetric as a result, one year backward and
     fifty forward, a design specified in the Methodology chapter's
     cross-check stage.
 
   \item 5.8\% of articles carry an implausible publication date
-    (\S\ref{sec:eda-conduct}). The \texttt{date\_uncertain} flag
+    (Section~\ref{sec:eda-conduct}). The \texttt{date\_uncertain} flag
     is mandatory on news-derived observations because of this, and it is
     propagated into every dossier as a visible caveat
-    (\S\ref{sec:conduct-channel}), a contract
+    (Section~\ref{sec:conduct-channel}), a contract
     honoured throughout the cross-check stage described in the Methodology
     chapter.
 
   \item The ESG classifier's 34.8\% positive rate is an upper bound,
-    with a demonstrated lexical failure mode (\S\ref{sec:eda-labels}).
+    with a demonstrated lexical failure mode (Section~\ref{sec:eda-labels}).
     The ESG label is used only as a cost filter over which pages
     to send to an expensive extractor, and it is never treated as evidence in
-    its own right (\S\ref{sec:extraction}).
+    its own right (Section~\ref{sec:extraction}).
 
   \item 79.5\% of extracted KPI observations fall outside the controlled
     vocabulary, and units are written 189 different ways, a KPI-yield result
@@ -1638,7 +1638,7 @@ Every triple recovered from extraction is first checked against the graph schema
 
 Triples that fail this structural check are batched and sent to a large language model with one instruction this stage is built around: correct the shape of a triple (its class, predicate, or temporal fields), but never alter any other property value. That instruction is enforced in code, not only in the prompt. Every property the model returns is discarded and replaced with the corresponding value from the original triple, except the handful of fields it was explicitly asked to repair, and every attempted change outside that set is counted rather than silently applied. This guard is necessary rather than merely cautious, because schema validation alone cannot catch the failure mode it prevents: a repair that quietly translated a Vietnamese organisation's name into English would still pass every structural check, then split what should be one entity into two once identity resolution runs, since name matching treats a Vietnamese spelling and its English translation as different keys. Repairs are cached by the content of the triple, not its position in a batch, so a later re-run over the same invalid triples never pays for the same correction twice and reproduces a past failure exactly rather than asking the model again.
 
-A worked example shows what the guard enforces in practice. On page 5 of AAA's 2013 annual report, triple extraction reads a line from an organisational chart and emits an edge from the reporting organisation to one of its departments using the predicate \texttt{hasManagementStructure}, which is not one of the 76 legal (label, source class, target class) combinations the schema declares (\S\ref{sec:contribution}), so structural validation flags it and routes it to Phase 2. Table~\ref{tab:repair-guard-example} shows what the batch repair returns for it, and what the guard keeps or discards.
+A worked example shows what the guard enforces in practice. On page 5 of AAA's 2013 annual report, triple extraction reads a line from an organisational chart and emits an edge from the reporting organisation to one of its departments using the predicate \texttt{hasManagementStructure}, which is not one of the 76 legal (label, source class, target class) combinations the schema declares (Section~\ref{sec:contribution}), so structural validation flags it and routes it to Phase 2. Table~\ref{tab:repair-guard-example} shows what the batch repair returns for it, and what the guard keeps or discards.
 
 \begin{table}[htbp]
   \centering \small
@@ -1788,14 +1788,14 @@ A worked example shows the issuer anchor collapsing a real spelling history. The
 
 What survives the first pass is textually distinct but may still name the same entity under a spelling, capitalisation or diacritic difference the issuer registry does not list. The next merge instead compares a normalized signature (lowercased, diacritics stripped, corporate-form boilerplate such as ``Công ty Cổ phần'' or ``TNHH'' removed), so two spellings of one name collapse without any model call, and a further pass folds in a signature whose non-empty fields are merely a subset of another's, instead of requiring an exact match on every field. Only what remains ambiguous after these free passes is handed to an embedding-blocking step (cosine similarity under \texttt{gemini-embedding-001}) and an LLM adjudication step over the resulting candidate pairs (\texttt{gemini-2.5-flash}); these are the only two steps in this block that cost money. Both currently run under \texttt{--no-llm}: 6{,}261 raw entity mentions resolve to 3{,}202 canonical entities, a 48.9\% reduction, from the free deterministic and Vietnamese-aware passes alone, with zero LLM comparisons made. A final consolidation step then folds each surviving cluster into one canonical node, keeping every distinct raw mention as a \texttt{temporal\_versions} entry rather than discarding it, so the merge above is auditable by inspection even though it is not reversible in the data. Entity resolution's net effect on the graph's overall node count is a reduction from 13{,}770 to 10{,}598 (23.0\%), observation nodes included.
 
-A claim or observation node is only as useful as the page a reader can open to check it, and extraction (\S\ref{sec:extraction}) does not always have enough context on a single page to self-stamp that link with certainty. This offline pass closes the gap: for every node in the schema's nine provenance-bearing classes it tries, in order, a parseable \texttt{source\_id}, an exact \texttt{source\_id} index lookup, a recomputed stable identifier, and finally a coarser page-token match against the per-page graphs extraction wrote, stopping at the first tier that succeeds and stamping \texttt{source\_doc}/\texttt{source\_page} (plus \texttt{article\_title}/\texttt{url}/\texttt{domain} for a news document) from wherever it lands. It never reorders a node, since Graph Load keys Neo4j nodes by array position. In this run, every one of 7{,}287 provenance-bearing nodes, across eight of those nine classes (no \texttt{Controversy} node exists in this corpus), already carried \texttt{source\_doc}/\texttt{source\_page} at extraction time, so nothing was patched, and each was logged as \texttt{already\_stamped} rather than skipped silently. The pass exists as a safety net for an extraction run that predates self-stamping, not because the current corpus needs it.
+A claim or observation node is only as useful as the page a reader can open to check it, and extraction (Section~\ref{sec:extraction}) does not always have enough context on a single page to self-stamp that link with certainty. This offline pass closes the gap: for every node in the schema's nine provenance-bearing classes it tries, in order, a parseable \texttt{source\_id}, an exact \texttt{source\_id} index lookup, a recomputed stable identifier, and finally a coarser page-token match against the per-page graphs extraction wrote, stopping at the first tier that succeeds and stamping \texttt{source\_doc}/\texttt{source\_page} (plus \texttt{article\_title}/\texttt{url}/\texttt{domain} for a news document) from wherever it lands. It never reorders a node, since Graph Load keys Neo4j nodes by array position. In this run, every one of 7{,}287 provenance-bearing nodes, across eight of those nine classes (no \texttt{Controversy} node exists in this corpus), already carried \texttt{source\_doc}/\texttt{source\_page} at extraction time, so nothing was patched, and each was logged as \texttt{already\_stamped} rather than skipped silently. The pass exists as a safety net for an extraction run that predates self-stamping, not because the current corpus needs it.
 
 \section{Indicator Axis}
 \label{sec:indicator-axis}
 
-The last pass appends a shared axis on top of the now-identity-resolved, now-cited graph: a \texttt{StandardIndicator} node per regulatory indicator, a \texttt{measuredUnder} edge from a KPI observation to the indicator its \texttt{kpi\_id} (\S\ref{sec:validate-normalize}) already names (never guessed here), an \texttt{equivalentTo} edge between a TT96 indicator and its GRI counterpart where the hand-confirmed crosswalk carries a confirmed row, and an \texttt{alignsWithIndicator} edge from a Claim, Goal or Initiative to the indicator its text discusses, resolved by a longest-matching-phrase keyword tier. This run adds 26 nodes (16 TT96/QCVN/SSCIFC indicators, 8 GRI indicators, 2 reference-document nodes) and 2{,}018 edges (1{,}300 \texttt{measuredUnder}, 649 \texttt{alignsWithIndicator}, 43 \texttt{partOf}, 26 \texttt{equivalentTo}) to the 10{,}598-node, 13{,}112-edge graph that entity resolution and provenance leave it. The pass is append-only, so the existing node/edge prefix stays untouched and a dossier computed against an earlier graph version stays valid. It also restamps every \texttt{StandardIndicator}'s pillar from the file entitled to say so (the Vietnamese vocabulary's own definitions, or the GRI catalog for a GRI indicator), 71 restamps here, never guessed from the indicator's own text, since the Evidence View UI reads that property directly for a claim's E/S/G column. One guard sits inside this pass rather than earlier: a \texttt{Penalty} node whose \texttt{amount} is 0 is flagged \texttt{self\_reported\_zero} and given no \texttt{measuredUnder} edge, the same self-reporting asymmetry already flagged for the compliance KPI in Table~\ref{tab:extraction-example} (\S\ref{sec:extraction}), now guarded here on the conduct-edge side too.
+The last pass appends a shared axis on top of the now-identity-resolved, now-cited graph: a \texttt{StandardIndicator} node per regulatory indicator, a \texttt{measuredUnder} edge from a KPI observation to the indicator its \texttt{kpi\_id} (Section~\ref{sec:validate-normalize}) already names (never guessed here), an \texttt{equivalentTo} edge between a TT96 indicator and its GRI counterpart where the hand-confirmed crosswalk carries a confirmed row, and an \texttt{alignsWithIndicator} edge from a Claim, Goal or Initiative to the indicator its text discusses, resolved by a longest-matching-phrase keyword tier. This run adds 26 nodes (16 TT96/QCVN/SSCIFC indicators, 8 GRI indicators, 2 reference-document nodes) and 2{,}018 edges (1{,}300 \texttt{measuredUnder}, 649 \texttt{alignsWithIndicator}, 43 \texttt{partOf}, 26 \texttt{equivalentTo}) to the 10{,}598-node, 13{,}112-edge graph that entity resolution and provenance leave it. The pass is append-only, so the existing node/edge prefix stays untouched and a dossier computed against an earlier graph version stays valid. It also restamps every \texttt{StandardIndicator}'s pillar from the file entitled to say so (the Vietnamese vocabulary's own definitions, or the GRI catalog for a GRI indicator), 71 restamps here, never guessed from the indicator's own text, since the Evidence View UI reads that property directly for a claim's E/S/G column. One guard sits inside this pass rather than earlier: a \texttt{Penalty} node whose \texttt{amount} is 0 is flagged \texttt{self\_reported\_zero} and given no \texttt{measuredUnder} edge, the same self-reporting asymmetry already flagged for the compliance KPI in Table~\ref{tab:extraction-example} (Section~\ref{sec:extraction}), now guarded here on the conduct-edge side too.
 
-A worked example shows what the guard withholds. On page 65 of AAA's 2024 annual report, extraction (\S\ref{sec:extraction}) reads the line \emph{``Số lần bị xử phạt vi phạm: 0''} (number of times penalised: 0) and produces a \texttt{Penalty} node with \texttt{amount = 0}, exactly as it is entitled to. This pass adds the flag and stops there. Table~\ref{tab:self-reported-zero-example} shows the node before and after.
+A worked example shows what the guard withholds. On page 65 of AAA's 2024 annual report, extraction (Section~\ref{sec:extraction}) reads the line \emph{``Số lần bị xử phạt vi phạm: 0''} (number of times penalised: 0) and produces a \texttt{Penalty} node with \texttt{amount = 0}, exactly as it is entitled to. This pass adds the flag and stops there. Table~\ref{tab:self-reported-zero-example} shows the node before and after.
 
 \begin{table}[htbp]
   \centering \small
@@ -1888,12 +1888,12 @@ Every edge's \texttt{temporal\_metadata} is flattened onto the Neo4j relationshi
 
 \texttt{supersedes} is declared in the schema (Chapter~1) as a same-class self-edge, legal for only nine of the resolved graph's classes: Organization, Person, Facility, Goal, Product, Regulation, Standard, Material and Certification. For a node of one of those nine classes with more than one \texttt{temporal\_versions} entry, this stage materialises the full history as a chain of its own nodes, newest first, headed by the canonical node (\texttt{is\_current = true}) and linked \texttt{canonical -[:supersedes]-> newest -> ... -> oldest}. For every other class, the version list is kept as a single JSON-string property on the one node instead, since minting a \texttt{supersedes} edge there would be schema-illegal. The choice is made per class by consulting the same schema every other stage validates against, not by a convention this stage invents on its own, so a run's Organization node with 74 raw mentions merged (Table~\ref{tab:entity-resolution-example}) materialises as 74 chained version nodes, while a class outside the nine keeps its history as a single property instead.
 
-Every node's class and every edge's predicate is checked against the schema a second time during ingestion, which is cheap insurance against a regression upstream rather than a repeat of validation already done; on the corpus this chapter reports on, that check raised no warnings. Because every write is a \texttt{MERGE} keyed on \texttt{\_node\_key} or \texttt{\_edge\_key}, re-running the loader against an unchanged \texttt{resolved\_graph.json} changes nothing. This Base Graph is what the next stage queries: \S\ref{sec:crosscheck} retrieves, for every \texttt{SustainabilityClaim} this graph now holds, the conduct-side evidence sharing its resolved issuer and temporally compatible with it, and adjudicates each pair the way \S\ref{sec:problem-definition} already defined.
+Every node's class and every edge's predicate is checked against the schema a second time during ingestion, which is cheap insurance against a regression upstream rather than a repeat of validation already done; on the corpus this chapter reports on, that check raised no warnings. Because every write is a \texttt{MERGE} keyed on \texttt{\_node\_key} or \texttt{\_edge\_key}, re-running the loader against an unchanged \texttt{resolved\_graph.json} changes nothing. This Base Graph is what the next stage queries: Section~\ref{sec:crosscheck} retrieves, for every \texttt{SustainabilityClaim} this graph now holds, the conduct-side evidence sharing its resolved issuer and temporally compatible with it, and adjudicates each pair the way Section~\ref{sec:problem-definition} already defined.
 
 \section{Claim--Conduct Cross-Check}
 \label{sec:crosscheck}
 
-This section is where the formal adjudication $f: C \times E \rightarrow \{\textsf{supports}, \textsf{contradicts}, \textsf{irrelevant}\}$ and the claim-level aggregate $g(c)$ defined in \S\ref{sec:problem-definition} stop being notation and become code, the one stage where the claim side and conduct side are actually brought into contact. Consistent with this thesis's decision never to emit a greenwashing score (\S\ref{sec:contribution}), the stage writes only these three categorical assessments, never a continuous score.
+This section is where the formal adjudication $f: C \times E \rightarrow \{\textsf{supports}, \textsf{contradicts}, \textsf{irrelevant}\}$ and the claim-level aggregate $g(c)$ defined in Section~\ref{sec:problem-definition} stop being notation and become code, the one stage where the claim side and conduct side are actually brought into contact. Consistent with this thesis's decision never to emit a greenwashing score (Section~\ref{sec:contribution}), the stage writes only these three categorical assessments, never a continuous score.
 
 \begin{figure}[H]
   \centering
@@ -1970,20 +1970,20 @@ This section is where the formal adjudication $f: C \times E \rightarrow \{\text
 
 For a claim $c$ belonging to issuer $o_c$, the candidate pool is first restricted to the graph's news-derived observation classes (\texttt{Controversy}, \texttt{Penalty}, \texttt{MediaReport}, \texttt{KPIObservation}, \texttt{ThirdPartyVerification}) stamped to the same issuer. Two independent tiers then decide which same-issuer candidates are worth sending to an LLM at all. The token-overlap tier Vietnamese-word-tokenises both claim and candidate, normalises and stopword-filters the result, and admits a candidate only if at least two whole tokens are shared. The indicator-axis tier instead joins a claim to conduct through the graph rather than through text, claim \textit{alignsWithIndicator} \texttt{StandardIndicator} \textit{measuredUnder} conduct, so a claim can reach evidence sharing no literal vocabulary with it at all; indicator-tier candidates bypass the token gate entirely and are scored with a fixed boost large enough to always outrank a plain token match once candidates are ranked.
 
-Both tiers respect the same asymmetric temporal window: evidence may predate a claim's year by at most one year but postdate it by up to fifty, unless the evidence's own date is flagged uncertain, in which case the window is not enforced at all. The asymmetry follows directly from the conduct channel being far more recent than the claim side (\S\ref{sec:eda-conduct}); the window has to look forward, and far, rather than back. Per claim, surviving candidates are capped to the eight highest-scoring; across all claims in a run, the pooled candidate pairs are ranked once more and only a fixed budget, 400 pairs for the runs this chapter reports (raised from the code's 300-pair default), is actually sent to the LLM, so a run over an issuer with many claims degrades by adjudicating its strongest-signal pairs first rather than failing outright.
+Both tiers respect the same asymmetric temporal window: evidence may predate a claim's year by at most one year but postdate it by up to fifty, unless the evidence's own date is flagged uncertain, in which case the window is not enforced at all. The asymmetry follows directly from the conduct channel being far more recent than the claim side (Section~\ref{sec:eda-conduct}); the window has to look forward, and far, rather than back. Per claim, surviving candidates are capped to the eight highest-scoring; across all claims in a run, the pooled candidate pairs are ranked once more and only a fixed budget, 400 pairs for the runs this chapter reports (raised from the code's 300-pair default), is actually sent to the LLM, so a run over an issuer with many claims degrades by adjudicating its strongest-signal pairs first rather than failing outright.
 
 Each admitted pair is then judged independently by a large language model instructed to read exactly one claim and one piece of conduct evidence and return one of \textsf{supports}, \textsf{contradicts} or \textsf{irrelevant} with a confidence score and a rationale.
 
-A \textsf{supports} verdict is not written back to the graph unconditionally, however. Before it becomes a \texttt{verifiedBy} edge, the evidence's source domain is checked against a curated list of the issuer's own web properties; a match drops the edge while keeping the evidence record itself visible in the dossier, marked not independent and carrying the reason it was dropped. This self-verification guard applies only on the \textsf{supports} branch: a company website corroborating its own claim is exactly the self-verification this thesis's conduct channel exists to rule out (\S\ref{sec:problem-definition}), while a company website contradicting its own claim carries no comparable risk.
+A \textsf{supports} verdict is not written back to the graph unconditionally, however. Before it becomes a \texttt{verifiedBy} edge, the evidence's source domain is checked against a curated list of the issuer's own web properties; a match drops the edge while keeping the evidence record itself visible in the dossier, marked not independent and carrying the reason it was dropped. This self-verification guard applies only on the \textsf{supports} branch: a company website corroborating its own claim is exactly the self-verification this thesis's conduct channel exists to rule out (Section~\ref{sec:problem-definition}), while a company website contradicting its own claim carries no comparable risk.
 
-A claim's final status follows the priority the formal definition already fixed. If any admitted candidate was adjudicated \textsf{contradicts}, the claim is \textsf{appears\_contradicted} unconditionally, regardless of how much independent support exists alongside it. Only in the absence of any contradiction does independently-sourced support, support that survived the self-verification guard, promote a claim to \textsf{appears\_supported}. Everything else falls to \textsf{unverified\_insufficient\_evidence}, whether because no conduct pool existed, nothing retrieved was topically related, the run's budget could not reach every candidate, or every adjudicated candidate came back \textsf{irrelevant}. Every dossier also carries a standing caveat that the assessment is advisory and that no ground-truth greenwashing label exists to validate it against (\S\ref{sec:problem-definition}), plus a further caveat whenever any evidence used has an uncertain date.
+A claim's final status follows the priority the formal definition already fixed. If any admitted candidate was adjudicated \textsf{contradicts}, the claim is \textsf{appears\_contradicted} unconditionally, regardless of how much independent support exists alongside it. Only in the absence of any contradiction does independently-sourced support, support that survived the self-verification guard, promote a claim to \textsf{appears\_supported}. Everything else falls to \textsf{unverified\_insufficient\_evidence}, whether because no conduct pool existed, nothing retrieved was topically related, the run's budget could not reach every candidate, or every adjudicated candidate came back \textsf{irrelevant}. Every dossier also carries a standing caveat that the assessment is advisory and that no ground-truth greenwashing label exists to validate it against (Section~\ref{sec:problem-definition}), plus a further caveat whenever any evidence used has an uncertain date.
 
 For every claim, one dossier records its assessment, its supporting and contradicting evidence (each with its retrieval tier, source, date, confidence and rationale), and its caveats. Graph edges are written alongside the dossier but only where the schema permits them: \texttt{verifiedBy} toward independently-supporting evidence, and \texttt{contradictedBy} or \texttt{contradictedByMedia} depending on the contradicting evidence's own class, so a verdict the schema has no legal place for stays dossier-only instead of being forced into the graph. Cross-Check leaves every result advisory and every edge it wrote gated by schema legality; it never asserts a graph-native fact on the strength of an LLM's opinion alone. Advisory Sync is the next stage's task: it takes exactly what this stage already paid to compute and folds it into Neo4j as a layer a reader can query, without spending another token.
 
 \section{Advisory Sync}
 \label{sec:advisory-sync}
 
-Everything Claim--Conduct Cross-Check writes is still local: a dossier file per issuer and a JSON list of proposed edges, neither queryable until they reach Neo4j. Advisory Sync closes that gap with no further LLM inference, materialising the dossier Cross-Check already computed into the Base Graph \S\ref{sec:graph-load} already built, as a layer a reader can tell apart from that base graph at a glance. The schema declares no legal edge from a \texttt{SustainabilityClaim} directly to a \texttt{KPIObservation}, so a claim a self-reported KPI number appears to contradict has nowhere to be written into the base graph itself; Advisory Sync's evidence edges are the one place that contradiction becomes a graph-native fact.
+Everything Claim--Conduct Cross-Check writes is still local: a dossier file per issuer and a JSON list of proposed edges, neither queryable until they reach Neo4j. Advisory Sync closes that gap with no further LLM inference, materialising the dossier Cross-Check already computed into the Base Graph Section~\ref{sec:graph-load} already built, as a layer a reader can tell apart from that base graph at a glance. The schema declares no legal edge from a \texttt{SustainabilityClaim} directly to a \texttt{KPIObservation}, so a claim a self-reported KPI number appears to contradict has nowhere to be written into the base graph itself; Advisory Sync's evidence edges are the one place that contradiction becomes a graph-native fact.
 
 \begin{figure}[H]
   \centering
@@ -2050,9 +2050,9 @@ Everything Claim--Conduct Cross-Check writes is still local: a dossier file per 
 
 A dossier was written against whatever the resolved graph looked like when Cross-Check ran; by the time Advisory Sync runs, entity resolution may have re-run and shifted every array index. Trusting the dossier's recorded node index directly would silently bind an assessment to the wrong node after such a shift, so this stage instead resolves every claim and every evidence node against a fresh index built from the current graph.
 
-The categorical \texttt{assessment} and its \texttt{caveats} list from \S\ref{sec:crosscheck} are then set directly on the existing \texttt{SustainabilityClaim} node, alongside a flag marking the whole block advisory, so a query can always tell what this stage concluded apart from what the base graph asserts.
+The categorical \texttt{assessment} and its \texttt{caveats} list from Section~\ref{sec:crosscheck} are then set directly on the existing \texttt{SustainabilityClaim} node, alongside a flag marking the whole block advisory, so a query can always tell what this stage concluded apart from what the base graph asserts.
 
-Every piece of evidence in a dossier becomes one of three edge types depending on its role. Independently-sourced support becomes \texttt{llm\_supports}. Contradicting evidence of any class becomes \texttt{llm\_contradicts}, including, as above, a claim--\texttt{KPIObservation} contradiction the base schema has no legal edge for, so this is the one channel where that specific contradiction becomes a graph-native fact rather than a sentence buried in a dossier file. Support the self-verification guard already flagged as non-independent (\S\ref{sec:crosscheck}) becomes its own distinct edge, \texttt{llm\_flagged\_support}, so a reader can still see what a company-owned source claimed without it ever being mistaken for independent corroboration.
+Every piece of evidence in a dossier becomes one of three edge types depending on its role. Independently-sourced support becomes \texttt{llm\_supports}. Contradicting evidence of any class becomes \texttt{llm\_contradicts}, including, as above, a claim--\texttt{KPIObservation} contradiction the base schema has no legal edge for, so this is the one channel where that specific contradiction becomes a graph-native fact rather than a sentence buried in a dossier file. Support the self-verification guard already flagged as non-independent (Section~\ref{sec:crosscheck}) becomes its own distinct edge, \texttt{llm\_flagged\_support}, so a reader can still see what a company-owned source claimed without it ever being mistaken for independent corroboration.
 
 Each edge is keyed for \texttt{MERGE} by the resolved claim key, the resolved evidence key and its role together, and every write is a scoped delete of this stage's own past output followed by a fresh \texttt{MERGE}, so re-running a sync against an unchanged dossier reproduces the same graph instead of accumulating duplicate edges.
 
@@ -2061,18 +2061,18 @@ What Advisory Sync writes is what the claim ledger and the Evidence View UI both
 \chapter{Experiments and Results}
 \label{ch:experiment}
 
-Chapter~\ref{ch:methodology} specified what each stage does; this chapter reports what running them actually produced. The boundary fixed in \S\ref{sec:not-dataset} still holds: the KPI records, the validated triples and the resolved graph are outputs of the system under study, not corpus components, and they are measured here for the first time rather than assumed. No component of the pipeline is trained, so there is no accuracy metric computed against a held-out split; every number below is a yield, coverage or agreement statistic computed on the pipeline's own output, read directly from the stage-level statistics files each offline stage already writes as a side effect of running (\S\ref{sec:validate-normalize}, \S\ref{sec:entity-resolution}, \S\ref{sec:indicator-axis}). Two scopes are reported separately because the pipeline itself runs at two different scopes: \S\ref{sec:experiment-yield} covers the full sector corpus Extraction and Validate \& Normalize have processed to date; \S\ref{sec:experiment-crosscheck} covers Claim--Conduct Cross-Check, which is issuer-scoped by construction (\S\ref{sec:crosscheck}) and has so far been run to completion for five issuers, AAA, ACC, ACG, ADP, AGG, rather than one.
+Chapter~\ref{ch:methodology} specified what each stage does; this chapter reports what running them actually produced. The boundary fixed in Section~\ref{sec:not-dataset} still holds: the KPI records, the validated triples and the resolved graph are outputs of the system under study, not corpus components, and they are measured here for the first time rather than assumed. No component of the pipeline is trained, so there is no accuracy metric computed against a held-out split; every number below is a yield, coverage or agreement statistic computed on the pipeline's own output, read directly from the stage-level statistics files each offline stage already writes as a side effect of running (Section~\ref{sec:validate-normalize}, Section~\ref{sec:entity-resolution}, Section~\ref{sec:indicator-axis}). Two scopes are reported separately because the pipeline itself runs at two different scopes: Section~\ref{sec:experiment-yield} covers the full sector corpus Extraction and Validate \& Normalize have processed to date; Section~\ref{sec:experiment-crosscheck} covers Claim--Conduct Cross-Check, which is issuer-scoped by construction (Section~\ref{sec:crosscheck}) and has so far been run to completion for five issuers, AAA, ACC, ACG, ADP, AGG, rather than one.
 
 Methodology's own worked example used a single issuer, AAA, to keep the mechanism legible; this chapter is where that illustration is widened into a result.
 
-The two yield sections are followed by two evaluation sections, ordered by increasing evidential strength. \S\ref{sec:experiment-internal} reports internal quality controls, which compare the system against its own design and are therefore a necessary condition rather than evidence of correctness. \S\ref{sec:experiment-expert} reports the strongest result available: a blind annotation of the system's cited evidence by two independent domain experts, giving a precision figure and an agreement figure. Every quantity reported in those two sections is defined by an explicit formula before its value is given, and every proportion computed on a finite sample is accompanied by a $95\%$ confidence interval. Table~\ref{tab:experiment-notation} fixes the notation those formulas use.
+The two yield sections are followed by two evaluation sections, ordered by increasing evidential strength. Section~\ref{sec:experiment-internal} reports internal quality controls, which compare the system against its own design and are therefore a necessary condition rather than evidence of correctness. Section~\ref{sec:experiment-expert} reports the strongest result available: a blind annotation of the system's cited evidence by two independent domain experts, giving a precision figure and an agreement figure. Every quantity reported in those two sections is defined by an explicit formula before its value is given, and every proportion computed on a finite sample is accompanied by a $95\%$ confidence interval. Table~\ref{tab:experiment-notation} fixes the notation those formulas use.
 
 \begin{table}[htbp]
   \centering \small
   \caption[Notation used in this chapter]{Notation used throughout this
     chapter. The first block describes the graph and the cross-check output;
     the second describes the expert-annotation instrument of
-    \S\ref{sec:experiment-expert}.}
+    Section~\ref{sec:experiment-expert}.}
   \label{tab:experiment-notation}
   \begin{tabularx}{\linewidth}{|L{0.42}|L{1.58}|}
     \hline
@@ -2116,7 +2116,7 @@ The two yield sections are followed by two evaluation sections, ordered by incre
   \end{tabularx}
 \end{table}
 
-Table~\ref{tab:validate-yield} shows only one KPI observation in five mapped onto the controlled 35-indicator vocabulary. Read alone, that looks like a low yield, but it is not simply an extraction failure. Canonicalisation tallies a mapping decision once per \emph{distinct} \texttt{KPIObservation} node rather than per occurrence patched (7,324 occurrences map onto the 7,127 distinct nodes in the table, the denominator every percentage below is taken over), and its design rule favors precision over recall: an ambiguous case is rejected rather than force-mapped (\S\ref{sec:validate-normalize}). The single largest rejection reason, 3,094 of the 5,663 unmapped nodes (54.6\% of all rejections), is exactly the case the rule targets: a value reported in a financial unit (VND, tỷ đồng) the regulatory indicator vocabulary has no legal place for, not a KPI the extractor misread. The other structural driver is unit inconsistency at the source: units are written 189 distinct raw ways before normalisation, an expected consequence of extracting from unedited natural-language text rather than a structured filing, which is why a rejected occurrence stays fully readable instead of being silently overwritten.
+Table~\ref{tab:validate-yield} shows only one KPI observation in five mapped onto the controlled 35-indicator vocabulary. Read alone, that looks like a low yield, but it is not simply an extraction failure. Canonicalisation tallies a mapping decision once per \emph{distinct} \texttt{KPIObservation} node rather than per occurrence patched (7,324 occurrences map onto the 7,127 distinct nodes in the table, the denominator every percentage below is taken over), and its design rule favors precision over recall: an ambiguous case is rejected rather than force-mapped (Section~\ref{sec:validate-normalize}). The single largest rejection reason, 3,094 of the 5,663 unmapped nodes (54.6\% of all rejections), is exactly the case the rule targets: a value reported in a financial unit (VND, tỷ đồng) the regulatory indicator vocabulary has no legal place for, not a KPI the extractor misread. The other structural driver is unit inconsistency at the source: units are written 189 distinct raw ways before normalisation, an expected consequence of extracting from unedited natural-language text rather than a structured filing, which is why a rejected occurrence stays fully readable instead of being silently overwritten.
 
 \begin{table}[htbp]
   \centering \small
@@ -2138,7 +2138,7 @@ Table~\ref{tab:validate-yield} shows only one KPI observation in five mapped ont
     -- cumulative entity clusters after Stage B.1b + Stage D & 3,202 clusters \\ \hline
     \textbf{Resolved graph (full block, no-LLM mode)} & \textbf{10,598 nodes / 13,112 edges} \\ \hline
     -- node reduction & 3,172 (23.0\%) \\ \hline
-    Indicator axis added, this recorded run (\S\ref{sec:indicator-axis}) & +26 nodes / +2,018 edges \\ \hline
+    Indicator axis added, this recorded run (Section~\ref{sec:indicator-axis}) & +26 nodes / +2,018 edges \\ \hline
     -- \texttt{measuredUnder} created this run & 1,300 \\ \hline
     -- \texttt{alignsWithIndicator} created this run & 649 \\ \hline
     -- \texttt{partOf} / \texttt{equivalentTo} created this run & 43 / 26 \\ \hline
@@ -2149,16 +2149,16 @@ Table~\ref{tab:validate-yield} shows only one KPI observation in five mapped ont
   \end{tabularx}
 \end{table}
 
-As Table~\ref{tab:resolve-yield} shows, the 23.0\% node reduction (13,770 $\to$ 10,598) is the product of the complete deterministic, no-LLM Entity Resolution path, not of Stage A.1 alone. Stage A.1's identity-key equality rule, which merges exact-duplicate entities \emph{and} observations since a fact patched twice under an identical signature is still one fact, takes the corpus from 13,770 to 11,049 nodes by itself, before either frozen anchor runs. Every stage after A.1 operates on the entity population alone: the 7,509 observation nodes are not candidates for merging under the frozen anchors, Stage B.1/B.1b, or Stage D. The issuer anchor folds 618 \texttt{Organization} mentions into 5 canonical clusters and the standards anchor applies the same frozen-registry mechanism to \texttt{Standard}/\texttt{Regulation} mentions; both are operation-level merge counts, not separate graph-size checkpoints, since no total-node snapshot was recorded between Stage A and Stage B.1. What \emph{is} recorded is the entity population's own count: 6,261 raw entity nodes, none yet merged; 3,244 entity clusters once Stage A (A.1--A.3) and Stage B.1's offline VN-aware normalized-signature merge have all been applied cumulatively; and 3,202 final entity clusters after Stage B.1b's subsumption merge and Stage D's consolidation. \texttt{--no-llm} (recorded throughout this thesis, \S\ref{sec:entity-resolution}) only skips Stage B.2's embedding blocking and Stage C's LLM adjudication (\texttt{llm\_comparisons} = \texttt{llm\_matches} = 0 in this run); Stage A.1, both frozen anchors, and Stage B.1/B.1b all run regardless, and together with Stage D they are what the 23.0\% figure reflects.
+As Table~\ref{tab:resolve-yield} shows, the 23.0\% node reduction (13,770 $\to$ 10,598) is the product of the complete deterministic, no-LLM Entity Resolution path, not of Stage A.1 alone. Stage A.1's identity-key equality rule, which merges exact-duplicate entities \emph{and} observations since a fact patched twice under an identical signature is still one fact, takes the corpus from 13,770 to 11,049 nodes by itself, before either frozen anchor runs. Every stage after A.1 operates on the entity population alone: the 7,509 observation nodes are not candidates for merging under the frozen anchors, Stage B.1/B.1b, or Stage D. The issuer anchor folds 618 \texttt{Organization} mentions into 5 canonical clusters and the standards anchor applies the same frozen-registry mechanism to \texttt{Standard}/\texttt{Regulation} mentions; both are operation-level merge counts, not separate graph-size checkpoints, since no total-node snapshot was recorded between Stage A and Stage B.1. What \emph{is} recorded is the entity population's own count: 6,261 raw entity nodes, none yet merged; 3,244 entity clusters once Stage A (A.1--A.3) and Stage B.1's offline VN-aware normalized-signature merge have all been applied cumulatively; and 3,202 final entity clusters after Stage B.1b's subsumption merge and Stage D's consolidation. \texttt{--no-llm} (recorded throughout this thesis, Section~\ref{sec:entity-resolution}) only skips Stage B.2's embedding blocking and Stage C's LLM adjudication (\texttt{llm\_comparisons} = \texttt{llm\_matches} = 0 in this run); Stage A.1, both frozen anchors, and Stage B.1/B.1b all run regardless, and together with Stage D they are what the 23.0\% figure reflects.
 
-The indicator axis reaches just over half of every claim-like node in the persisted graph: 718 of the 1,421 \texttt{SustainabilityClaim}/\texttt{Goal}/\texttt{Initiative} nodes (50.5\%) carry at least one \texttt{alignsWithIndicator} edge, and 299 of 481 \texttt{SustainabilityClaim} nodes alone (62.2\%). The narrower, higher figure is expected, since a \texttt{SustainabilityClaim} more often names a concrete, indicator-shaped topic than a \texttt{Goal} or \texttt{Initiative} does. This is a structural property of the graph as persisted, available in principle to a graph-native join; whether the retrieval-side indicator-axis tier in \S\ref{sec:experiment-crosscheck} actually draws on it in a given run is a separate, empirical question, taken up there rather than assumed here.
+The indicator axis reaches just over half of every claim-like node in the persisted graph: 718 of the 1,421 \texttt{SustainabilityClaim}/\texttt{Goal}/\texttt{Initiative} nodes (50.5\%) carry at least one \texttt{alignsWithIndicator} edge, and 299 of 481 \texttt{SustainabilityClaim} nodes alone (62.2\%). The narrower, higher figure is expected, since a \texttt{SustainabilityClaim} more often names a concrete, indicator-shaped topic than a \texttt{Goal} or \texttt{Initiative} does. This is a structural property of the graph as persisted, available in principle to a graph-native join; whether the retrieval-side indicator-axis tier in Section~\ref{sec:experiment-crosscheck} actually draws on it in a given run is a separate, empirical question, taken up there rather than assumed here.
 
-The 649, 718 and 807 figures in Table~\ref{tab:resolve-yield} need not reconcile 1:1. \texttt{alignsWithIndicator} edges accumulate across runs of this append-only pass instead of being rebuilt from a clean graph each time (\S\ref{sec:indicator-axis}), so the three figures answer different questions: 649 is what this specific recorded run \emph{created}; 807 is the \emph{cumulative} edge count on the persisted graph, including edges written by earlier runs still present in the file; and 718 is how many distinct claim-like \emph{nodes} those cumulative edges reach, which need not divide evenly into 807 since one node can carry more than one aligned edge. All three are individually faithful to their own source, drawn from different points in the graph's accumulation history rather than one snapshot.
+The 649, 718 and 807 figures in Table~\ref{tab:resolve-yield} need not reconcile 1:1. \texttt{alignsWithIndicator} edges accumulate across runs of this append-only pass instead of being rebuilt from a clean graph each time (Section~\ref{sec:indicator-axis}), so the three figures answer different questions: 649 is what this specific recorded run \emph{created}; 807 is the \emph{cumulative} edge count on the persisted graph, including edges written by earlier runs still present in the file; and 718 is how many distinct claim-like \emph{nodes} those cumulative edges reach, which need not divide evenly into 807 since one node can carry more than one aligned edge. All three are individually faithful to their own source, drawn from different points in the graph's accumulation history rather than one snapshot.
 
 \section{Claim--Conduct Cross-Check Results}
 \label{sec:experiment-crosscheck}
 
-\S\ref{sec:eda-asymmetry} already fixed the constraint every result below is read against: for the issuer analysed end to end in Chapter~\ref{ch:methodology}, there is roughly one piece of independent conduct evidence for every sixteen ESG-labelled sentences on the claim side. This section reports what Claim--Conduct Cross-Check actually returned once that constraint met real retrieval and adjudication, for every issuer the stage has been run against to date.
+Section~\ref{sec:eda-asymmetry} already fixed the constraint every result below is read against: for the issuer analysed end to end in Chapter~\ref{ch:methodology}, there is roughly one piece of independent conduct evidence for every sixteen ESG-labelled sentences on the claim side. This section reports what Claim--Conduct Cross-Check actually returned once that constraint met real retrieval and adjudication, for every issuer the stage has been run against to date.
 
 \begin{table}[htbp]
   \centering \small
@@ -2187,9 +2187,9 @@ The 649, 718 and 807 figures in Table~\ref{tab:resolve-yield} need not reconcile
   \end{tabularx}
 \end{table}
 
-The asymmetry's signature holds at every issuer in Table~\ref{tab:crosscheck-five-issuers}: 448 of 464 claims (96.6\%) land on \textit{unverified}, and three of the five issuers, AAA, ACC, ADP, return \textit{no} supported or contradicted assessment at all. This is the same structural result \S\ref{sec:eda-asymmetry} and \S\ref{sec:crosscheck} already predict, now shown to hold across issuers rather than resting on one. A conduct pool sixteen times smaller than the claim side, concentrated in the last two years while claims span fifteen (\S\ref{sec:eda-conduct}), leaves most claims with nothing topically related to check them against, and the system reports that absence as \texttt{unverified\_insufficient\_evidence} rather than forcing a verdict, the first-class outcome \S\ref{sec:eda-implications} names as the design's direct response to the asymmetry. Sixteen schema-legal \texttt{verifiedBy}/\texttt{contradictedBy} edges are written back into the graph from this run: fifteen for ACG, one for AGG (\S\ref{sec:advisory-sync}).
+The asymmetry's signature holds at every issuer in Table~\ref{tab:crosscheck-five-issuers}: 448 of 464 claims (96.6\%) land on \textit{unverified}, and three of the five issuers, AAA, ACC, ADP, return \textit{no} supported or contradicted assessment at all. This is the same structural result Section~\ref{sec:eda-asymmetry} and Section~\ref{sec:crosscheck} already predict, now shown to hold across issuers rather than resting on one. A conduct pool sixteen times smaller than the claim side, concentrated in the last two years while claims span fifteen (Section~\ref{sec:eda-conduct}), leaves most claims with nothing topically related to check them against, and the system reports that absence as \texttt{unverified\_insufficient\_evidence} rather than forcing a verdict, the first-class outcome Section~\ref{sec:eda-implications} names as the design's direct response to the asymmetry. Sixteen schema-legal \texttt{verifiedBy}/\texttt{contradictedBy} edges are written back into the graph from this run: fifteen for ACG, one for AGG (Section~\ref{sec:advisory-sync}).
 
-ACG is the exception, and the same table shows why. Fifteen of the sixteen \texttt{appears\_supported}\allowbreak/\allowbreak\texttt{appears\_contradicted} assessments in this run belong to ACG, whose conduct pool (190) is both the largest of the five in absolute terms and, at 1.19 candidates retrieved per claim, the densest relative to its own claim count, nearly double AAA's 0.64. Signal, then, tracks conduct-pool depth and density rather than claim volume: AGG and ADP have claim counts of the same order as AAA's, but conduct pools of only 29 and 3 respectively, and together account for only the sixteenth assessment (AGG's single supported claim, with ADP returning none). Where the independent evidence channel is thin, as it is everywhere in this corpus (\S\ref{sec:eda-asymmetry}), it is exactly the issuer with the deepest conduct pool that this design is positioned to say something about.
+ACG is the exception, and the same table shows why. Fifteen of the sixteen \texttt{appears\_supported}\allowbreak/\allowbreak\texttt{appears\_contradicted} assessments in this run belong to ACG, whose conduct pool (190) is both the largest of the five in absolute terms and, at 1.19 candidates retrieved per claim, the densest relative to its own claim count, nearly double AAA's 0.64. Signal, then, tracks conduct-pool depth and density rather than claim volume: AGG and ADP have claim counts of the same order as AAA's, but conduct pools of only 29 and 3 respectively, and together account for only the sixteenth assessment (AGG's single supported claim, with ADP returning none). Where the independent evidence channel is thin, as it is everywhere in this corpus (Section~\ref{sec:eda-asymmetry}), it is exactly the issuer with the deepest conduct pool that this design is positioned to say something about.
 
 \begin{table}[htbp]
   \centering \small
@@ -2212,12 +2212,12 @@ ACG is the exception, and the same table shows why. Fifteen of the sixteen \text
   \end{tabularx}
 \end{table}
 
-Table~\ref{tab:crosscheck-acg-pair} is worth reading as a pair rather than as two isolated rows. The same underlying event, a 50\% stock dividend ACG's own AGM resolution describes in one part of the report, confirmed against the running Neo4j instance where both conduct nodes carry both an \texttt{llm\_supports} \emph{and} an \texttt{llm\_contradicts} edge, independently supports one claim and, elsewhere in the same report, contradicts another that denies using that payment method by its English accounting name. The system did not need to be told these two claims were related; retrieval found the same conduct evidence for both from token overlap alone, and adjudication read the relationship in each pair independently and reached opposite, evidence-consistent verdicts. Whether ``Script dividend'' names a distinct instrument from the stock dividend the resolution describes, or the second claim is simply imprecise, is a question this thesis's advisory framing (\S\ref{sec:problem-definition}) deliberately leaves to a human reader with the two source pages open; the system's contribution is surfacing the tension and citing exactly what it is built from, not adjudicating it further. Every assessment in both tables carries the same standing caveat this thesis has applied throughout: advisory only, against no ground-truth label (\S\ref{sec:problem-definition}).
+Table~\ref{tab:crosscheck-acg-pair} is worth reading as a pair rather than as two isolated rows. The same underlying event, a 50\% stock dividend ACG's own AGM resolution describes in one part of the report, confirmed against the running Neo4j instance where both conduct nodes carry both an \texttt{llm\_supports} \emph{and} an \texttt{llm\_contradicts} edge, independently supports one claim and, elsewhere in the same report, contradicts another that denies using that payment method by its English accounting name. The system did not need to be told these two claims were related; retrieval found the same conduct evidence for both from token overlap alone, and adjudication read the relationship in each pair independently and reached opposite, evidence-consistent verdicts. Whether ``Script dividend'' names a distinct instrument from the stock dividend the resolution describes, or the second claim is simply imprecise, is a question this thesis's advisory framing (Section~\ref{sec:problem-definition}) deliberately leaves to a human reader with the two source pages open; the system's contribution is surfacing the tension and citing exactly what it is built from, not adjudicating it further. Every assessment in both tables carries the same standing caveat this thesis has applied throughout: advisory only, against no ground-truth label (Section~\ref{sec:problem-definition}).
 
 \section{Internal Quality Controls}
 \label{sec:experiment-internal}
 
-Every control below but one compares the system against \textit{its own design}, not against the world (a schema-compliance rate, for instance, is computed by the same schema the validator enforces), so none of them can fail in an interesting way; treat them as a necessary rather than sufficient condition, and read \S\ref{sec:experiment-expert} for the external evidence.
+Every control below but one compares the system against \textit{its own design}, not against the world (a schema-compliance rate, for instance, is computed by the same schema the validator enforces), so none of them can fail in an interesting way; treat them as a necessary rather than sufficient condition, and read Section~\ref{sec:experiment-expert} for the external evidence.
 
 Briefly, what each measures: $M_{2.1}$ (temporal completeness) is the share of the graph's non-entity population, edges $E$ plus event/observation nodes $V_{T2\cup T3}$, carrying a usable temporal record (a complete $\tau(e)$ on an edge, a start date on a node; an open \textsf{valid\_to} counts as present, not missing, so the metric never rewards inventing an end date). $M_{2.2}$ (schema compliance) is the share of edges whose (predicate, source class, target class) triple is schema-legal ($\Sigma$). $M_{5.1}$ (abstention rate) is the share of dossiers $d \in D$ resolving to $a(d)=\textsf{unverified}$.
 
@@ -2229,7 +2229,7 @@ One control is not self-referential, and it is the strongest positive result in 
     resolved graph and the cross-check output. Two rows are not measurable:
     the full-corpus sentence-level artefact they need was not present when
     this evaluation ran. $M_{4.1}$'s numerator (718) is the cumulative
-    count from Table~\ref{tab:resolve-yield} (\S\ref{sec:experiment-yield}),
+    count from Table~\ref{tab:resolve-yield} (Section~\ref{sec:experiment-yield}),
     not this run's own 649.}
   \label{tab:internal-controls}
   \begin{tabularx}{\linewidth}{|L{0.52}|L{1.90}|R{0.68}|R{0.90}|}
@@ -2257,11 +2257,11 @@ One control is not self-referential, and it is the strongest positive result in 
 
 Of Table~\ref{tab:internal-controls}'s controls, only $M_{2.1}$ misses its target: $93.02\%$ against $100\%$, meaning roughly one edge or event node in fourteen carries no usable start date and is invisible to any time-bounded query. Since every greenwashing question is time-bounded, a 2021 commitment read against 2023 conduct, this is the section's main structural limitation, not a cosmetic shortfall.
 
-The final control is the only one built so the system can lose. Rather than checking the system against its own design, it tests the null hypothesis that cited evidence for issuer $T$ is no more likely to come from $T$'s own crawled feed than that feed's overall share of the conduct pool would predict (lift $\approx 1$); a lift of $2$ or more is read as genuine company-specific attribution. On the cited output measured here it passes outright: all $24$ cited pairs draw solely on the examined issuer's own feed, zero cross-feed citations, though that $100\%$ rests on only $24$ items, giving a Wilson lower bound of $86.2\%$, a statement about attribution discipline on a narrow slice of the $464$ claims, not about coverage. (The cited population has since grown to $43$ pairs, \S\ref{sec:experiment-expert}; the control has not been re-run at that scale.)
+The final control is the only one built so the system can lose. Rather than checking the system against its own design, it tests the null hypothesis that cited evidence for issuer $T$ is no more likely to come from $T$'s own crawled feed than that feed's overall share of the conduct pool would predict (lift $\approx 1$); a lift of $2$ or more is read as genuine company-specific attribution. On the cited output measured here it passes outright: all $24$ cited pairs draw solely on the examined issuer's own feed, zero cross-feed citations, though that $100\%$ rests on only $24$ items, giving a Wilson lower bound of $86.2\%$, a statement about attribution discipline on a narrow slice of the $464$ claims, not about coverage. (The cited population has since grown to $43$ pairs, Section~\ref{sec:experiment-expert}; the control has not been re-run at that scale.)
 
-This is also the thesis's one controlled before/after. The identical check, run on the $226$-pair population that predated a 2026-08-07 adjudication-cache fix (\S\ref{sec:crosscheck}), had failed outright at $28.76\%$ ($65/226$), no better than base rate. But the fix bundled more than the cache key: it also issuer-scoped conduct retrieval, added a topic-overlap gate, and tightened the adjudication prompt, and the pre-fix run itself was adjudicated by OpenAI, a provider removed before the fix landed. The comparison is therefore diagnostic, showing that a real regression was caught and repaired, rather than a fully isolated, single-variable ablation.
+This is also the thesis's one controlled before/after. The identical check, run on the $226$-pair population that predated a 2026-08-07 adjudication-cache fix (Section~\ref{sec:crosscheck}), had failed outright at $28.76\%$ ($65/226$), no better than base rate. But the fix bundled more than the cache key: it also issuer-scoped conduct retrieval, added a topic-overlap gate, and tightened the adjudication prompt, and the pre-fix run itself was adjudicated by OpenAI, a provider removed before the fix landed. The comparison is therefore diagnostic, showing that a real regression was caught and repaired, rather than a fully isolated, single-variable ablation.
 
-Together, these controls establish structural, provenance and retrieval sanity, that the graph is well-formed and its citations are genuine, while \S\ref{sec:experiment-expert} supplies the external, semantic evaluation of whether the verdicts built on top of them are actually correct.
+Together, these controls establish structural, provenance and retrieval sanity, that the graph is well-formed and its citations are genuine, while Section~\ref{sec:experiment-expert} supplies the external, semantic evaluation of whether the verdicts built on top of them are actually correct.
 
 \section{Expert Annotation: Precision and Agreement}
 \label{sec:experiment-expert}
@@ -2277,7 +2277,7 @@ One clarification matters for how this result is read. The evaluation design of 
 
 \subsection{Instrument and scope}
 
-The unit of analysis is a (claim, evidence) pair the system cited. Cross-Check writes a pair into a dossier only when the adjudicator judged it \textsf{supports} or \textsf{contradicts}; a pair judged \textsf{irrelevant} is discarded and leaves no trace (\S\ref{sec:crosscheck}).
+The unit of analysis is a (claim, evidence) pair the system cited. Cross-Check writes a pair into a dossier only when the adjudicator judged it \textsf{supports} or \textsf{contradicts}; a pair judged \textsf{irrelevant} is discarded and leaves no trace (Section~\ref{sec:crosscheck}).
 
 The stage's cited output currently comprises $43$ (claim, evidence) pairs across the five issuers ($37$ \textsf{supports} + $6$ \textsf{contradicts}), spanning $27$ distinct claims and two issuers (ACG, $42$ pairs; AGG, $1$ pair). This was cross-checked directly against the Neo4j advisory layer the system serves from: every one of the $43$ pairs matches an \texttt{llm\_supports}/\texttt{llm\_contradicts} edge one for one, with the same asserted relation, so the population labelled below is exactly what the running system currently cites, not a stale or offline copy of it. Every one of the $43$ pairs was blind-labelled by both experts; this is a census of the stage's complete current cited output, not a sample of it.
 
@@ -2349,7 +2349,7 @@ Four limits belong here rather than in a closing limitations section, because a 
   \item The figure rests on forty-three pairs, six of them on the \textsf{contradicts} branch. The overall Wilson intervals span roughly $48$ to $78$ percentage points, and the \textsf{contradicts} interval alone spans $43.6$ to $97.0$ on $n=6$. The defensible claim is that roughly two-thirds of what the system currently cites is confirmed by a domain expert, not a single point estimate read to three significant figures.
   \item The company-attribution check is incomplete for this population. Both experts recorded whether the evidence concerns the correct issuer only for the $19$ pairs carried over from an earlier annotation round, leaving it blank on the $24$ pairs newly labelled here. A same-company-restricted precision estimate, the natural complement to Table~\ref{tab:expert-precision}, is therefore not available for the stage's complete current output.
   \item The labelled pairs are concentrated in one issuer. $42$ of the $43$ pairs belong to ACG and the remaining one to AGG, spanning $27$ distinct claims. The measurement is predominantly about one issuer's dossiers, and generalising it across issuers is not supported by this sample.
-  \item Precision is measured on a narrow slice of the system's output. The stage cites $43$ pairs across $464$ claims (\S\ref{sec:experiment-crosscheck}), so high precision on this output is a statement about what the system chose to show, not about how much of the available evidence it finds; \S\ref{sec:experiment-expert} above establishes that this instrument cannot measure recall at all.
+  \item Precision is measured on a narrow slice of the system's output. The stage cites $43$ pairs across $464$ claims (Section~\ref{sec:experiment-crosscheck}), so high precision on this output is a statement about what the system chose to show, not about how much of the available evidence it finds; Section~\ref{sec:experiment-expert} above establishes that this instrument cannot measure recall at all.
 \end{itemize}
 
 \chapter{Discussion and Threats to Validity}
@@ -2360,35 +2360,35 @@ Chapter~\ref{ch:experiment} reported what the pipeline produced; this chapter re
 \section{Reading the Results Together}
 \label{sec:discussion-synthesis}
 
-Three findings from Chapter~\ref{ch:experiment} are strongest read jointly rather than in the sections that reported them separately. First, the internal controls (\S\ref{sec:experiment-internal}) show a system that is structurally sound: 100\% schema compliance, 97.78\% round-trip grounding, a negative control that correctly failed before a real defect was fixed and correctly passed after. But structural soundness is a necessary condition, not evidence that any individual verdict is correct. Second, the external result (\S\ref{sec:experiment-expert}) is the only evidence in this thesis that does not merely check the system against its own design: two independent domain experts, working blind, confirm roughly two-thirds of what the system currently cites and agree with each other on all but one of 43 pairs. Third, both of those results are computed on a small, retrieval-limited slice of the system's total output, not on its full claim population. The reconciliation of that fact is the subject of \S\ref{sec:discussion-aggregate-base} below, because omitting it is precisely the failure mode a reader of this thesis should be guarded against.
+Three findings from Chapter~\ref{ch:experiment} are strongest read jointly rather than in the sections that reported them separately. First, the internal controls (Section~\ref{sec:experiment-internal}) show a system that is structurally sound: 100\% schema compliance, 97.78\% round-trip grounding, a negative control that correctly failed before a real defect was fixed and correctly passed after. But structural soundness is a necessary condition, not evidence that any individual verdict is correct. Second, the external result (Section~\ref{sec:experiment-expert}) is the only evidence in this thesis that does not merely check the system against its own design: two independent domain experts, working blind, confirm roughly two-thirds of what the system currently cites and agree with each other on all but one of 43 pairs. Third, both of those results are computed on a small, retrieval-limited slice of the system's total output, not on its full claim population. The reconciliation of that fact is the subject of Section~\ref{sec:discussion-aggregate-base} below, because omitting it is precisely the failure mode a reader of this thesis should be guarded against.
 
 \section{The Aggregate Evaluation Base}
 \label{sec:discussion-aggregate-base}
 
-Every component of the number below is disclosed somewhere in Chapter~\ref{ch:experiment}; this section is the one place they are added up. Of the 464 claims cross-checked across all five issuers, only 16 (3.4\%) ever receive a \textsf{supported} or \textsf{contradicted} verdict at all (\S\ref{sec:experiment-crosscheck}); the remaining 96.55\% abstain as \texttt{unverified\_insufficient\_evidence}, which the design treats as a first-class, honest outcome rather than a failure to force. Fifteen of those 16 verdicts belong to ACG, the remaining one to AGG; three of the five issuers evaluated, AAA, ACC, ADP, return no supported or contradicted assessment whatsoever. This 16-verdict count is the frozen evaluation-baseline snapshot (\S\ref{sec:experiment-crosscheck}); the 43 (claim, evidence) pairs the two external experts blind-labelled (\S\ref{sec:experiment-expert}) are a later, separately-frozen census, taken after the adjudication-cache fix grew the cited population further, and span 27 distinct claims (42 pairs from ACG, 1 from AGG) rather than 16. The two counts describe the same growing population at different points, not a contradiction. The strongest empirical result this thesis reports is therefore a measurement of one issuer's dossiers, not a general property of the system across the five it was run against, and should be read as such.
+Every component of the number below is disclosed somewhere in Chapter~\ref{ch:experiment}; this section is the one place they are added up. Of the 464 claims cross-checked across all five issuers, only 16 (3.4\%) ever receive a \textsf{supported} or \textsf{contradicted} verdict at all (Section~\ref{sec:experiment-crosscheck}); the remaining 96.55\% abstain as \texttt{unverified\_insufficient\_evidence}, which the design treats as a first-class, honest outcome rather than a failure to force. Fifteen of those 16 verdicts belong to ACG, the remaining one to AGG; three of the five issuers evaluated, AAA, ACC, ADP, return no supported or contradicted assessment whatsoever. This 16-verdict count is the frozen evaluation-baseline snapshot (Section~\ref{sec:experiment-crosscheck}); the 43 (claim, evidence) pairs the two external experts blind-labelled (Section~\ref{sec:experiment-expert}) are a later, separately-frozen census, taken after the adjudication-cache fix grew the cited population further, and span 27 distinct claims (42 pairs from ACG, 1 from AGG) rather than 16. The two counts describe the same growing population at different points, not a contradiction. The strongest empirical result this thesis reports is therefore a measurement of one issuer's dossiers, not a general property of the system across the five it was run against, and should be read as such.
 
-A second aggregate belongs beside the first. The dual-standard indicator axis (\S\ref{sec:indicator-axis}) is the one retrieval path in this design that is genuinely graph-native: a claim reaches conduct evidence through a 2-hop structural join, \textsf{claim} \texttt{--alignsWithIndicator-->} \textsf{Indicator} \texttt{<--measuredUnder--} \textsf{conduct evidence}, rather than through lexical overlap. Across all 401 (claim, evidence) pairs adjudicated for all five issuers, that path contributed \textbf{zero} of the pairs the system ultimately cited; every cited pair, in every issuer, carries \texttt{retrieval\_tier = token\_overlap}. The cause is structural rather than a bug: news-side KPI observations are overwhelmingly reported in a financial unit (VND), and canonicalisation deliberately rejects an out-of-scope unit rather than force-mapping it (\S\ref{sec:experiment-yield}), so a conduct-side observation almost never acquires the \texttt{measuredUnder} edge the join needs, however well the claim side is aligned. The indicator axis therefore contributes schema, identity resolution, temporality and provenance to this system, all real, and all measured in Chapter~\ref{ch:experiment}, but not retrieval, in the run reported here. Retrieval in the reported system is Vietnamese token overlap with a temporal window; any reading of this thesis that treats claim--conduct matching as graph-structured retrieval overstates what actually ran, and should be corrected against this paragraph.
+A second aggregate belongs beside the first. The dual-standard indicator axis (Section~\ref{sec:indicator-axis}) is the one retrieval path in this design that is genuinely graph-native: a claim reaches conduct evidence through a 2-hop structural join, \textsf{claim} \texttt{--alignsWithIndicator-->} \textsf{Indicator} \texttt{<--measuredUnder--} \textsf{conduct evidence}, rather than through lexical overlap. Across all 401 (claim, evidence) pairs adjudicated for all five issuers, that path contributed \textbf{zero} of the pairs the system ultimately cited; every cited pair, in every issuer, carries \texttt{retrieval\_tier = token\_overlap}. The cause is structural rather than a bug: news-side KPI observations are overwhelmingly reported in a financial unit (VND), and canonicalisation deliberately rejects an out-of-scope unit rather than force-mapping it (Section~\ref{sec:experiment-yield}), so a conduct-side observation almost never acquires the \texttt{measuredUnder} edge the join needs, however well the claim side is aligned. The indicator axis therefore contributes schema, identity resolution, temporality and provenance to this system, all real, and all measured in Chapter~\ref{ch:experiment}, but not retrieval, in the run reported here. Retrieval in the reported system is Vietnamese token overlap with a temporal window; any reading of this thesis that treats claim--conduct matching as graph-structured retrieval overstates what actually ran, and should be corrected against this paragraph.
 
 \section{Threats to Validity}
 \label{sec:discussion-threats}
 
 LLM calls in this pipeline are non-deterministic in a way no control here fully closes. Every prompted stage (extraction, repair, entity adjudication, claim--conduct adjudication) runs at \texttt{temperature=0}, and prompts are pinned byte-for-byte and guarded by tests specifically so a reworded prompt cannot silently change every downstream verdict. Neither control eliminates non-determinism outright: a hosted API is not contractually guaranteed to return a bit-identical completion for an identical request, no seed parameter is exposed to pin generation further, and the model identifier behind an API name can change server-side between runs without a corresponding change on this project's side. A re-run of this pipeline against the same input corpus is therefore expected to reproduce the same \emph{shape} of output, schema-compliant, similarly distributed across supports/contradicts/irrelevant, but individual verdicts are not guaranteed to be bit-identical, and this thesis does not measure how much they vary.
 
-The triples a claim and its candidate conduct evidence are built from, and the verdict that compares them, are both produced by prompted language models drawn from the same small set of provider families (Gemini, DeepSeek); an LLM, in other words, adjudicates evidence an LLM also extracted, and this is not named as a threat anywhere else in this thesis. A shared failure mode, a systematic misreading of a Vietnamese idiom, a consistent blind spot in how a particular KPI phrasing is parsed, could in principle look self-consistent to an adjudicator built the same way as the extractor, in a way it would not to a genuinely independent reader. The blind expert annotation of \S\ref{sec:experiment-expert} is the direct mitigation for this specific risk, which is exactly why it is treated as the strongest result in this thesis rather than the internal controls; but that annotation covers 43 pairs concentrated in one issuer (\S\ref{sec:discussion-aggregate-base}), so the mitigation's own coverage is as narrow as the risk is broad.
+The triples a claim and its candidate conduct evidence are built from, and the verdict that compares them, are both produced by prompted language models drawn from the same small set of provider families (Gemini, DeepSeek); an LLM, in other words, adjudicates evidence an LLM also extracted, and this is not named as a threat anywhere else in this thesis. A shared failure mode, a systematic misreading of a Vietnamese idiom, a consistent blind spot in how a particular KPI phrasing is parsed, could in principle look self-consistent to an adjudicator built the same way as the extractor, in a way it would not to a genuinely independent reader. The blind expert annotation of Section~\ref{sec:experiment-expert} is the direct mitigation for this specific risk, which is exactly why it is treated as the strongest result in this thesis rather than the internal controls; but that annotation covers 43 pairs concentrated in one issuer (Section~\ref{sec:discussion-aggregate-base}), so the mitigation's own coverage is as narrow as the risk is broad.
 
-Three threats are stated in full elsewhere in this thesis and are recorded here only so this list is complete. The evaluation base is narrow on both of its strongest legs, and the graph-native indicator-axis retrieval path fired zero times out of 401 adjudicated pairs; \S\ref{sec:discussion-aggregate-base} states both precisely and gives the structural cause of the second, and neither should be read off this list alone. Separately, the resolved graph accumulates indicator-axis edges across runs rather than being rebuilt identically, since an append-only pass protects previously-paid cross-check dossiers from being invalidated by a later re-run, at the cost of the graph not being exactly reproducible from a clean rebuild (\S\ref{sec:indicator-axis}); \S\ref{sec:experiment-yield} reconciles the resulting 649-versus-718-versus-807 figures in Table~\ref{tab:resolve-yield}. Taken together, they mean no claim in this thesis about precision or agreement should be read as established across the five issuers evaluated, still less across the sector the underlying corpus covers.
+Three threats are stated in full elsewhere in this thesis and are recorded here only so this list is complete. The evaluation base is narrow on both of its strongest legs, and the graph-native indicator-axis retrieval path fired zero times out of 401 adjudicated pairs; Section~\ref{sec:discussion-aggregate-base} states both precisely and gives the structural cause of the second, and neither should be read off this list alone. Separately, the resolved graph accumulates indicator-axis edges across runs rather than being rebuilt identically, since an append-only pass protects previously-paid cross-check dossiers from being invalidated by a later re-run, at the cost of the graph not being exactly reproducible from a clean rebuild (Section~\ref{sec:indicator-axis}); Section~\ref{sec:experiment-yield} reconciles the resulting 649-versus-718-versus-807 figures in Table~\ref{tab:resolve-yield}. Taken together, they mean no claim in this thesis about precision or agreement should be read as established across the five issuers evaluated, still less across the sector the underlying corpus covers.
 
-The annotation population also changed size during this project, and that history is not restated in Chapter~\ref{ch:experiment}. An earlier annotation round labelled 200 real pairs (plus 20 attention-check decoys) sampled from a 226-pair population, and found 26.5\%/35.0\% overall precision by the two annotators, with precision as low as 7.0\%/8.8\% on the \textsf{contradicts} branch specifically. That round predated a fix to the adjudication cache (\S\ref{sec:crosscheck}) whose key had omitted the prompt, so a re-run had been silently replaying pre-fix verdicts; fixing it and re-running collapsed the cited population from 226 to 24 pairs, and a subsequent full re-run against the corrected cache grew it again to the 43-pair census Chapter~\ref{ch:experiment} reports. By deliberate decision, \S\ref{sec:experiment-expert} reports only the current 43-pair census rather than this trajectory, on the grounds that the 226- and 24-pair populations no longer describe the system as it stands; the full historical numbers remain on record in \texttt{docs/ANNOTATION\_RESULTS.md} for a reader who wants the before/after rather than only the after.
+The annotation population also changed size during this project, and that history is not restated in Chapter~\ref{ch:experiment}. An earlier annotation round labelled 200 real pairs (plus 20 attention-check decoys) sampled from a 226-pair population, and found 26.5\%/35.0\% overall precision by the two annotators, with precision as low as 7.0\%/8.8\% on the \textsf{contradicts} branch specifically. That round predated a fix to the adjudication cache (Section~\ref{sec:crosscheck}) whose key had omitted the prompt, so a re-run had been silently replaying pre-fix verdicts; fixing it and re-running collapsed the cited population from 226 to 24 pairs, and a subsequent full re-run against the corrected cache grew it again to the 43-pair census Chapter~\ref{ch:experiment} reports. By deliberate decision, Section~\ref{sec:experiment-expert} reports only the current 43-pair census rather than this trajectory, on the grounds that the 226- and 24-pair populations no longer describe the system as it stands; the full historical numbers remain on record in \texttt{docs/ANNOTATION\_RESULTS.md} for a reader who wants the before/after rather than only the after.
 
-News recency and outlet bias are a further, related pair of limits. 68.8\% of dated articles in the conduct corpus were published in 2025 or 2026, against a claim side spanning fifteen years (\S\ref{sec:eda-conduct}), so a claim made early in that span has essentially no contemporaneous conduct evidence and is checked, if at all, against much later conduct; the asymmetric retrieval window in \S\ref{sec:crosscheck} is a direct response to this, not a design preference. Separately, one of the three search back-ends supplies roughly three-quarters of the corpus rather than the three-way balance the multi-back-end design was meant to produce (\S\ref{sec:eda-conduct}), so the conduct channel's topic and outlet mix is closer to what one ranking algorithm surfaces than to an unbiased sample of Vietnamese business news.
+News recency and outlet bias are a further, related pair of limits. 68.8\% of dated articles in the conduct corpus were published in 2025 or 2026, against a claim side spanning fifteen years (Section~\ref{sec:eda-conduct}), so a claim made early in that span has essentially no contemporaneous conduct evidence and is checked, if at all, against much later conduct; the asymmetric retrieval window in Section~\ref{sec:crosscheck} is a direct response to this, not a design preference. Separately, one of the three search back-ends supplies roughly three-quarters of the corpus rather than the three-way balance the multi-back-end design was meant to produce (Section~\ref{sec:eda-conduct}), so the conduct channel's topic and outlet mix is closer to what one ranking algorithm surfaces than to an unbiased sample of Vietnamese business news.
 
-The ESG classifier's precision on this corpus is also not independently measured. ViDeBERTa-v3-ESG is applied as a published checkpoint, not fine-tuned or evaluated against a held-out Vietnamese label set (\S\ref{sec:not-dataset}), because building one was outside this project's budget. Its behaviour on this corpus, fitted, as every such checkpoint is, to a training distribution assembled elsewhere, is therefore an empirical question this thesis does not close; every downstream stage inherits whatever precision and recall the classifier actually has on Vietnamese construction-sector disclosure, silently.
+The ESG classifier's precision on this corpus is also not independently measured. ViDeBERTa-v3-ESG is applied as a published checkpoint, not fine-tuned or evaluated against a held-out Vietnamese label set (Section~\ref{sec:not-dataset}), because building one was outside this project's budget. Its behaviour on this corpus, fitted, as every such checkpoint is, to a training distribution assembled elsewhere, is therefore an empirical question this thesis does not close; every downstream stage inherits whatever precision and recall the classifier actually has on Vietnamese construction-sector disclosure, silently.
 
-The self-verification (independence) guard, too, has been exercised for one issuer only. \S\ref{sec:crosscheck} drops a \textsf{supports} verdict back to a non-independent, dossier-visible flag whenever its evidence's source domain matches a curated list of the issuer's own web properties; that list is currently populated for the issuer this thesis's Methodology chapter worked through in detail, and it has never dropped an edge for any of the other four issuers, because every cited item for those four so far originates from a third-party outlet. The guard would not currently fire even if one of those four issuers' own domains appeared in a future conduct pool, since the curated list has no entry for them. The risk is latent, not realised, in the corpus this thesis evaluates. Contribution 2's independence claim (\S\ref{sec:contribution}) is currently enforced structurally instead, by the \texttt{source\_type} channel separation, which is real and does hold for all five issuers, rather than by this domain-level guard, which does not yet.
+The self-verification (independence) guard, too, has been exercised for one issuer only. Section~\ref{sec:crosscheck} drops a \textsf{supports} verdict back to a non-independent, dossier-visible flag whenever its evidence's source domain matches a curated list of the issuer's own web properties; that list is currently populated for the issuer this thesis's Methodology chapter worked through in detail, and it has never dropped an edge for any of the other four issuers, because every cited item for those four so far originates from a third-party outlet. The guard would not currently fire even if one of those four issuers' own domains appeared in a future conduct pool, since the curated list has no entry for them. The risk is latent, not realised, in the corpus this thesis evaluates. Contribution 2's independence claim (Section~\ref{sec:contribution}) is currently enforced structurally instead, by the \texttt{source\_type} channel separation, which is real and does hold for all five issuers, rather than by this domain-level guard, which does not yet.
 
 A crawl-only acquisition route creates a single point of failure, too. Report PDFs are located through one third-party disclosure mirror rather than fetched directly from each issuer or from the State Securities Commission, so acquisition inherits whatever that mirror's own coverage, naming conventions and uptime happen to be; the two-year-field naming inconsistency documented in Chapter~\ref{ch:data} traces to exactly this dependency.
 
-Finally, the report-side extraction pipeline is a positional parser, not a layout-aware one, and this remains an argued design choice rather than a measured one. \S\ref{sec:cleaning} exact-page-anchors every sentence at the cost of table reconstruction; the longest artefact this produces is a single 11,827-character text run that is a flattened table, not a sentence. No ablation in this thesis quantifies how much information, or how much noise, this trade-off costs against the layout-aware parser used for the much smaller reference corpus (\S\ref{sec:reference-corpus}); the choice is defended qualitatively, not empirically.
+Finally, the report-side extraction pipeline is a positional parser, not a layout-aware one, and this remains an argued design choice rather than a measured one. Section~\ref{sec:cleaning} exact-page-anchors every sentence at the cost of table reconstruction; the longest artefact this produces is a single 11,827-character text run that is a flattened table, not a sentence. No ablation in this thesis quantifies how much information, or how much noise, this trade-off costs against the layout-aware parser used for the much smaller reference corpus (Section~\ref{sec:reference-corpus}); the choice is defended qualitatively, not empirically.
 
 \chapter{Conclusion}
 \label{ch:conclusion}
@@ -2397,20 +2397,20 @@ Finally, the report-side extraction pipeline is a positional parser, not a layou
 % Appendix's forced page break.
 \enlargethispage{2\baselineskip}
 
-This thesis set out to test whether a temporal knowledge graph, fed by two structurally independent evidence channels, could make greenwashing in Vietnamese real-estate, construction and building-materials disclosure checkable rather than merely readable. The Delmas--Burbano definition of greenwashing, the intersection of what a company says and how it behaves, fixes the requirement directly: a system with access to only the company's own reports cannot in principle observe that intersection, whatever its architecture. This thesis builds the independent half deliberately, keeps it distinguishable from the claim half by a source-type stamp rather than fusing the two into one undifferentiated pool, and carries validity time and sentence-level provenance through every stage so a claim made in one year can be checked against conduct observed in another and traced back to the exact page it came from.
+This thesis tested whether a temporal knowledge graph fed by two structurally independent evidence channels, company reports and external news, can make greenwashing in Vietnamese real-estate, construction and building-materials disclosure checkable instead of merely readable. Greenwashing, in the sense Delmas and Burbano define it, sits at the gap between what a company says and how it behaves, so a system reading only company reports cannot observe that gap regardless of its architecture. The system keeps the two channels distinguishable through a source-type stamp and carries validity time and page-level provenance through every stage, so a claim made in one year can be checked against conduct observed in another and traced back to the page it came from.
 
-Instantiated end to end on five issuers, the system produces a schema-compliant, well-provenanced knowledge graph (10,624 nodes, 15,130 edges, 100\% schema compliance, 97.78\% round-trip KPI grounding) and, on the claims and evidence it actually cites, is confirmed by two independent domain experts working blind roughly two-thirds of the time, with near-perfect agreement between them. Both of those are genuine, externally-checkable results. Read against the aggregate stated in \S\ref{sec:discussion-aggregate-base}, however, they describe a narrow slice of the system's total output: 16 of 464 claims verdicted, concentrated overwhelmingly in one issuer, retrieved by lexical overlap rather than the graph-native indicator-axis join this design also specifies. The honest summary of this project is that the engineering and the schema are sound, the label-free evaluation instrument correctly detects a real regression and its repair, and the external validation is genuinely positive on what it covers; what remains unproven is that any of this generalises past a conduct channel roughly sixteen times smaller than the claim side it is meant to check.
+Run end to end on five issuers, the pipeline produced a schema-compliant, well-provenanced graph of 10,624 nodes and 15,130 edges, with 100\% schema compliance and 97.78\% round-trip KPI grounding. Two domain experts working independently and blind to the system's verdicts confirmed its output roughly two-thirds of the time, with near-perfect agreement between them. Both results are genuine, but they cover a narrow slice of the total output: only 16 of 464 claims received a verdict, almost all from a single issuer, and retrieval relied on lexical overlap instead of the graph-native indicator-axis join the design also specifies. The remaining gap sits not in the engineering or the schema, which hold up, but in how much independent conduct evidence the system currently has to check claims against.
 
-What follows directly from that gap is not a new model or a new schema: it is more independent conduct evidence, since every quantity in \S\ref{sec:discussion-aggregate-base} is a downstream consequence of how thin that channel currently is. Three further items are already specified by the design and require no new research: wiring the graph-native indicator-axis retrieval tier so it is actually consulted rather than only measured as coverage; driving the self-verification guard and its stopword list from \texttt{config/issuer\_registry.json} per issuer rather than leaving it populated for one; and scaling report and news ingestion from five issuers to the full 115-issuer, sector-wide corpus this thesis already built and classified. None of these three is an open research question; each is an engineering task against an existing, tested design.
+Closing that gap needs more conduct evidence, not a new model or schema. Three steps are already specified by the existing design and need no new research: activating the graph-native indicator-axis retrieval tier instead of only measuring its coverage; driving the self-verification guard from \texttt{config/issuer\_registry.json} so it covers every issuer instead of one; and scaling ingestion from five issuers to the full 115-issuer, sector-wide corpus already built and classified.
 
-What the project got right, and would not change, is the opposite kind of decision. Returning \textsf{unverified} as a first-class outcome, rather than forcing every claim to a verdict, is the correct response to a conduct channel this thin, and is more honest than the alternative of a confident wrong answer. Refusing to emit a greenwashing score or label, in the total absence of ground truth for this or any Vietnamese corpus, is the same discipline applied one level up, and it is what makes the label-free evaluation instrument in this thesis, rather than a spurious accuracy number, the right kind of evidence to have built. A system that says less, but says it traceably and only when it can, is the contribution this thesis makes to a problem that has so far mostly been approached the other way.
+One design choice is worth keeping regardless of scale. Returning \textsf{unverified} as a first-class outcome, instead of forcing every claim to a verdict, suits a conduct channel this thin. Withholding a greenwashing score, given that no ground truth exists for this or any Vietnamese corpus, applies the same caution one level higher, and is what this thesis contributes to a problem usually approached the other way around.
 
 \clearpage
 \appendix
 \chapter{Full Record Schema}
 \label{app:record-schema}
 
-Table~\ref{tab:record-schema-full} lists every field of the labelled sentence corpus record schema (\S\ref{sec:record-schema}). The first seven fields --- the five core fields shown in Table~\ref{tab:record-schema}, plus \texttt{scores} and \texttt{esg} from the ESG classifier --- are present in both channels; the remaining eight, from \texttt{ticker}/\texttt{company} onward, exist only in the news channel.
+Table~\ref{tab:record-schema-full} lists every field of the labelled sentence corpus record schema (Section~\ref{sec:record-schema}). The first seven fields --- the five core fields shown in Table~\ref{tab:record-schema}, plus \texttt{scores} and \texttt{esg} from the ESG classifier --- are present in both channels; the remaining eight, from \texttt{ticker}/\texttt{company} onward, exist only in the news channel.
 
 \begin{table}[htbp]
   \centering \small
@@ -2429,7 +2429,7 @@ Table~\ref{tab:record-schema-full} lists every field of the labelled sentence co
     \texttt{text} & string & The sentence, verbatim, NFC-normalised \\ \hline
     \texttt{labels} & list & Pillars whose score reaches the tag threshold; may be empty or hold several \\ \hline
     \texttt{scores} & object & Four sigmoid scores: Neutral, Environmental, Social, Governance \\ \hline
-    \texttt{esg} & bool & Binary ESG relevance, decided by the Neutral score (\S\ref{sec:annotation}) \\ \hline
+    \texttt{esg} & bool & Binary ESG relevance, decided by the Neutral score (Section~\ref{sec:annotation}) \\ \hline
     \texttt{ticker}, \texttt{company} & string & Issuer the article was retrieved for \\ \hline
     \texttt{url}, \texttt{source\_domain}, \texttt{title} & string & Article location, publisher and headline \\ \hline
     \texttt{publish\_date}, \texttt{date\_crawled} & date & Stated publication date; retrieval timestamp \\ \hline
