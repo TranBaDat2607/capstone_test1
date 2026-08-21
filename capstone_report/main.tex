@@ -6,9 +6,13 @@
 \usepackage{microtype}
 \usepackage{indentfirst}
 
-% One blank line's worth of space between every paragraph, throughout the
-% whole document, on top of the existing first-line indent.
-\setlength{\parskip}{\baselineskip}
+% Standard academic paragraph spacing: rely on the first-line indent
+% (indentfirst, above) to mark a new paragraph, with no extra vertical
+% gap on top of it -- LaTeX's own default, matching the reference thesis's
+% presentation style. (Previously \parskip was set to a full \baselineskip,
+% which stacked a whole blank line on top of the indent and made paragraph
+% breaks read as far apart -- supervisor feedback.)
+\setlength{\parskip}{0pt}
 
 % Headings in the same serif face as the body text (Times-like), not KOMA's
 % sans-serif default, to match the reference thesis's presentation style.
@@ -26,6 +30,14 @@
 % print as "Table 2.4.:" -- leaves a clean "Table 2.4:".
 \renewcommand*{\figureformat}{\figurename~\thefigure}
 \renewcommand*{\tableformat}{\tablename~\thetable}
+
+% Supervisor feedback: figure/table numbers should not carry the chapter
+% number (no "Table 3.1", "Figure 2.4") -- just a plain running count
+% ("Table 1", "Figure 1", ...) across the whole document, with no reset
+% at chapter boundaries.
+\usepackage{chngcntr}
+\counterwithout{figure}{chapter}
+\counterwithout{table}{chapter}
 
 % Let pages end early instead of stretching to fill the full page height:
 % stops ugly, uneven gaps opening up between a figure and a table stacked
@@ -160,7 +172,6 @@ Hoa Lac campus - FPT University \\
 \chapter*{Acknowledgement}
 \addcontentsline{toc}{chapter}{Acknowledgement}
 \begingroup
-\setlength{\parskip}{\baselineskip}
 We would like to express our deepest appreciation to our supervisor, Dr. Tran Van Ha, whose mentorship and expert advice shaped this work at every stage and held it to the standard of technical rigour we hope it now meets.
 
 We are especially indebted to the two senior industry practitioners who agreed to label the system's cited evidence under a blind annotation protocol. Neither took part in designing the system or the annotation instrument, and their independent judgement supplies the strongest empirical result reported in this thesis. Without their time and their expertise, this work would have had no external point of reference at all.
@@ -174,45 +185,36 @@ Lastly, we owe a great deal of thanks to our families and friends. Their patienc
 \chapter*{Abstract}
 \addcontentsline{toc}{chapter}{Abstract}
 
-Greenwashing is by definition a gap between what a company says and how it
-behaves, yet existing NLP systems for detecting it read only the company's own
-reports, carry no explicit notion of time, and are built for English-language
-Western disclosure. This thesis constructs a temporal ESG knowledge graph for
-Vietnamese real-estate, construction and building-materials issuers. The graph
-carries two independent evidence channels, claims extracted from annual
-reports and conduct evidence extracted from independent news, held in one
-schema and one identity space but kept separable by a source-type stamp, with
-sentence-level provenance preserved end to end and a dual-standard axis
-linking Circular 96/2020/TT-BTC to the GRI Standards. Each claim is
-adjudicated against the conduct evidence retrieved for it as supported,
-contradicted or unverified. No greenwashing score is emitted, since no
-ground-truth label exists against which one could be validated.
-
-Two scopes are reported separately. A sector-wide corpus of 1,416 annual-report
-filings from 115 listed issuers was crawled, of which 1,216 were parsed and
-ESG-classified (873,756 sentences), alongside 3,797 distinct news articles from
-716 Vietnamese online outlets; both stand as a resource in their own right. The
-framework itself was then instantiated end to end on five issuers, yielding a
-resolved graph of 10,624 nodes and 15,130 edges at 100\% schema compliance and
-97.78\% round-trip grounding of extracted values to their cited page.
-Cross-checking those issuers' 464 claims returns 448 (96.55\%) unverified, the
-direct consequence of a conduct channel roughly sixteen times smaller than the
-claim side, a shortfall the design reports as abstention instead of forcing a
-verdict. Only 16 of the 464 claims receive a supported or contradicted verdict
-at all, and all but one of them belong to a single issuer, ACG. The graph-native
-indicator-axis path contributed none of the 401 adjudicated pairs, so
-retrieval in the system as evaluated here is Vietnamese token overlap with a
-temporal window; it is not yet the graph-structured join the design also
-specifies. Of the 43 (claim, evidence) pairs the system currently cites, every
-one carries blind labels from two external domain experts, who confirm
-62.8\% and 65.1\% of them respectively and disagree with one another on a
-single pair. That result is concentrated in the same issuer, and should not be
-read as general across all five. Scaling the graph beyond five issuers is
-engineering already specified by the pipeline, not an open research question.
+Greenwashing is a gap between what a company says about its environmental and
+social practices and how it behaves, yet detecting it requires evidence a
+company's own reports cannot supply. Existing detection systems read only
+those reports, carry no explicit notion of time, and are built for
+English-language, Western disclosure rather than the Vietnamese market. This
+thesis closes that gap by constructing a temporal ESG knowledge graph for
+Vietnamese real-estate, construction and building-materials issuers, holding
+two evidence channels together --- claims extracted from annual reports and
+conduct evidence extracted from independent news --- and adjudicating each
+claim against its retrieved conduct evidence as supported, contradicted, or
+unverified; no single greenwashing score is produced, since no ground-truth
+label exists to validate one against. The approach was evaluated on a
+sector-wide corpus of 1,416 annual-report filings from 115 listed issuers
+(1,216 parsed and ESG-classified, 873,756 sentences) and 3,797 news articles
+from 716 Vietnamese outlets, then instantiated end to end on five issuers
+into a resolved graph of 10,624 nodes and 15,130 edges. Cross-checking those
+issuers' 464 claims leaves 448 (96.55\%) unverified, a direct consequence of
+conduct evidence roughly sixteen times smaller than claim evidence, reported
+as an explicit abstention rather than a forced verdict; only 16 claims
+receive a verdict, nearly all from a single issuer, An Cường Wood JSC (ticker
+ACG), and two external domain experts working blind confirm 62.8\% and
+65.1\% of the 43 cited evidence pairs. Retrieval in the evaluated system is
+token overlap within a temporal window rather than the graph-structured join
+the design also specifies, so this result is a proof of concept concentrated
+in one issuer; scaling to the full corpus is engineering already specified
+by the pipeline, not an open research question.
 
 \vspace{0.6em}
 \noindent\textbf{Keywords:} greenwashing detection; temporal knowledge graph;
-ESG disclosure; Vietnamese NLP; claim verification; label-free evaluation.
+ESG disclosure; claim verification; label-free evaluation.
 
 \clearpage
 \phantomsection
@@ -306,6 +308,11 @@ VLXD & \textit{Vật liệu xây dựng} (building materials) \\ \hline
 VN & Vietnam / Vietnamese \\ \hline
 VND & Vietnamese Dong \\ \hline
 \end{longtable}
+% The longtable environment above silently steps the `table` counter once
+% even though it carries no \caption (no number is ever printed for it) --
+% cancel that phantom increment so the first real table below is numbered
+% 1, not 2.
+\addtocounter{table}{-1}
 \end{center}
 \endgroup
 
@@ -340,12 +347,6 @@ Lyon and Maxwell~\cite{lyon2011greenwash} formalised greenwashing as the strateg
 
 The Delmas--Burbano definition matters here because it more or less dictates an architecture. If greenwashing is the intersection of what a company says and how it behaves, a system with access to only one side cannot in principle observe it. The related work below is assessed against that requirement, family by family.
 
-\subsection{NLP for ESG and sustainability report analysis}
-
-Early work on extracting sustainability information from corporate disclosures relied on keyword dictionaries and term-frequency methods, with limited ability to handle contextual nuance. Transformer-based models changed this. ClimateBERT~\cite{webersinke2022climatebert}, pretrained on over two million climate-related paragraphs, became a foundational tool for classifying climate-relevant content, and domain-specific models such as FinBERT-ESG and ESG-BERT extended this across the E/S/G dimensions.\footnote{FinBERT-ESG and ESG-BERT are publicly released checkpoints in active use (Hugging Face: \texttt{yiyanghkust/finbert-esg}, \texttt{nbroad/ESG-BERT}), but neither has a stable peer-reviewed paper to cite as of this writing; they are named here as artefacts, not as citable studies.}
-
-Beyond classification, NLP has been applied to topic detection, specificity and readability scoring, question answering over climate reports, and structured data extraction from ESG documents with LLMs. Schimanski et al.~\cite{schimanski2023nature} extracted nature-related topics such as water, forests and biodiversity from annual and sustainability reports, showing that fine-grained domain analysis is feasible on corporate reporting corpora. This body of work establishes that NLP can surface meaningful sustainability signals from complex annual-report text, and it is the methodological foundation greenwashing-detection approaches build on.
-
 \subsection{Automated greenwashing detection}
 
 Automated greenwashing detection has attracted growing attention as mandatory disclosure has expanded globally. Gorovaia et al.~\cite{gorovaia2025identifying} found that companies with environmental violations produce longer, more positively worded, less readable CSR reports, consistent with obscuring poor performance through narrative complexity. Bingler et al.~\cite{bingler2022cheap} reached a related conclusion, showing that TCFD-supporting firms produce climate disclosures that are structurally compliant but substantively vague. Both studies infer greenwashing from properties of the text alone.
@@ -356,11 +357,9 @@ Read against the Delmas--Burbano criterion, these fall into roughly three groups
 
 A further constraint matters for how this thesis is evaluated. The first comprehensive NLP survey on greenwashing detection~\cite{calamai2025detecting}, reviewing 61 studies, identified three persistent challenges: no standardised definition, scarce reliably labelled data, and poor generalisation of English/Western-trained models to other contexts. The first is why this work returns advisory evidence rather than a classification, with a label-free evaluation protocol; the second is why it targets the Vietnamese regulatory environment directly.
 
-\subsection{Retrieval-augmented generation and knowledge-graph-augmented approaches}
+\subsection{Knowledge-graph-augmented greenwashing detection}
 
 The most directly relevant precedent is EmeraldMind, the first end-to-end knowledge-graph-augmented RAG pipeline for greenwashing detection. It builds two evidence stores, EmeraldGraph (a knowledge graph of company-specific ESG entities and relationships extracted from ESG reports) and EmeraldDB (a vectorised document store), retrieves supporting or contradicting evidence from both for a given claim, and passes it to an LLM that classifies the claim as greenwashing, not greenwashing, or abstains when evidence is inconclusive, with a natural-language justification. It achieves competitive accuracy and markedly better explanation quality than vanilla LLM baselines, without fine-tuning.
-
-Related RAG work in the ESG domain includes ESGReveal~\cite{zou2023esgreveal}, which applies RAG to structured ESG data extraction, and ChatClimate~\cite{vaghefi2023chatclimate}, which grounds climate question answering in the IPCC's Sixth Assessment Report rather than any single company's disclosures. More broadly, knowledge-graph integration has been shown to improve claim-verification accuracy by supplying structured background knowledge an LLM cannot reliably retrieve from parametric memory alone.
 
 Two properties bound what this line of work can do, and both are addressed directly here. Its evidence stores are built entirely from the company's own reports, so retrieval returns only what the company said elsewhere in its own documents. That is a strong consistency check, but by the Delmas--Burbano criterion it is still only the communication half of the intersection. The representation is also atemporal: published ESG knowledge graphs, EmeraldGraph included, model entities and relations without validity intervals, so they cannot express that a company committed to X in 2021 and acted contrary to X in 2024, which is the exact shape of the phenomenon under study. The temporal-database literature distinguishes valid time (when a fact holds) from transaction time (when it was recorded), and temporal-KG work extends entity representations with validity intervals and version chains~\cite{hogan2021knowledge}, but that line has not yet been combined with corporate disclosure analysis.
 
