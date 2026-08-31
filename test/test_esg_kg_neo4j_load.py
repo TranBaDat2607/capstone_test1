@@ -240,7 +240,7 @@ def _run_with_stub(module, args_ns: argparse.Namespace):
         try:
             if args_ns.clear:
                 module.clear_database(driver)
-            module.setup_indexes(driver, args_ns.payload["labels"])
+            module.setup_indexes(driver)
             module.ingest_nodes(driver, args_ns.payload["nodes_by_label"], args_ns.batch_size)
             module.ingest_data_edges(driver, args_ns.payload["edges_by_pred"], args_ns.batch_size)
             module.ingest_supersedes(driver, args_ns.payload["supersedes_edges"], args_ns.batch_size)

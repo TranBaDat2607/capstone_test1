@@ -32,13 +32,16 @@ from typing import Any, Dict, List
 
 EVALU_DIR = Path(__file__).resolve().parent
 REPO_ROOT = EVALU_DIR.parent
-sys.path.insert(0, str(EVALU_DIR))
+# Put the REPO ROOT on the path (not evalu/ itself), so these are absolute package
+# imports like every other module here uses -- and so `python -m evalu.run_evaluation`
+# works as well as `python evalu/run_evaluation.py`. Matches evalu/build_census_43.py.
+sys.path.insert(0, str(REPO_ROOT))
 
-from evalu_pipeline_metrics import PipelineEvaluator  # noqa: E402
-from evalu_labelfree import LabelFreeEvaluator  # noqa: E402
-from evalu_grounding import GroundingEvaluator  # noqa: E402
-from evalu_iaa_engine import IAAEngine  # noqa: E402
-from evalu_likert_rubric import LikertRubricEvaluator  # noqa: E402
+from evalu.evalu_pipeline_metrics import PipelineEvaluator  # noqa: E402
+from evalu.evalu_labelfree import LabelFreeEvaluator  # noqa: E402
+from evalu.evalu_grounding import GroundingEvaluator  # noqa: E402
+from evalu.evalu_iaa_engine import IAAEngine  # noqa: E402
+from evalu.evalu_likert_rubric import LikertRubricEvaluator  # noqa: E402
 
 ANNOTATIONS = EVALU_DIR / "sample_expert_annotations.json"
 REPORT_JSON = EVALU_DIR / "evaluation_report.json"

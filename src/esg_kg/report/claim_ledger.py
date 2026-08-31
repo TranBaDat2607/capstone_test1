@@ -56,7 +56,7 @@ DEFAULT_OUT_DIR = REPO_ROOT / "graph_output" / "crosscheck"   # markdown output 
 # Neo4j defaults — match esg_kg.load.neo4j_load + the sync.
 NEO4J_URI_DEFAULT = "bolt://localhost:8687"
 NEO4J_USER_DEFAULT = "greenwashing"
-NEO4J_PASSWORD_DEFAULT = "nammovuivui"
+NEO4J_PASSWORD_DEFAULT = "changeme"
 
 # Conduct-side classes counted for the coverage header (mirrors the crosscheck conduct pool).
 CONDUCT_CLASSES = ["Controversy", "Penalty", "MediaReport", "KPIObservation", "ThirdPartyVerification"]

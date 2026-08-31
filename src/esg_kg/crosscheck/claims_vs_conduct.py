@@ -850,7 +850,7 @@ def _write_back_neo4j(new_edges: List[Dict[str, Any]], args: argparse.Namespace)
     load_dotenv(REPO_ROOT / ".env")
     uri = os.getenv("NEO4J_URI", "bolt://localhost:8687")
     user = os.getenv("NEO4J_USER", "greenwashing")
-    pwd = os.getenv("NEO4J_PASSWORD", "nammovuivui")
+    pwd = os.getenv("NEO4J_PASSWORD", "changeme")
     driver = GraphDatabase.driver(uri, auth=(user, pwd))
     written = 0
     with driver.session(database=args.database) as sess:

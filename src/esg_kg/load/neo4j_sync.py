@@ -89,7 +89,7 @@ FALLBACK_WARN_RATIO = 0.05
 # Neo4j defaults — match esg_kg.load.neo4j_load + the crosscheck write-back.
 NEO4J_URI_DEFAULT = "bolt://localhost:8687"
 NEO4J_USER_DEFAULT = "greenwashing"
-NEO4J_PASSWORD_DEFAULT = "nammovuivui"
+NEO4J_PASSWORD_DEFAULT = "changeme"
 SHARED_LABEL = "_Entity"
 
 # Advisory relationship types (namespaced; never confused with extracted edges).

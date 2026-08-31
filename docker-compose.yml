@@ -8,14 +8,15 @@
 #   docker compose up -d
 #   # wait until healthy (docker compose ps), then:
 #   docker cp neo4j/init.cypher greenwashing-kg:/tmp/init.cypher
-#   docker exec greenwashing-kg cypher-shell -u neo4j -p nammovuivui -d system -f /tmp/init.cypher
+#   docker exec greenwashing-kg cypher-shell -u neo4j -p "$NEO4J_PASSWORD" -d system -f /tmp/init.cypher
 #
 # Then load the graph:
 #   python src/run.py neo4j_load --clear
 #
 # Browser UI: http://localhost:8474  (bolt: bolt://localhost:8687)
-# NOTE: `nammovuivui` is a LOCAL DEV password — change it (and don't commit it) for
-# anything beyond local development.
+# NOTE: the password comes from NEO4J_PASSWORD in your .env (git-ignored) and falls back
+# to `changeme` for a throwaway local instance. Do not commit a real password here, and do
+# not expose this container to a network: it binds to localhost for local development only.
 
 services:
   neo4j:
@@ -25,7 +26,7 @@ services:
     environment:
       - NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
       # Initial admin password for the built-in `neo4j` user (used to run init.cypher).
-      - NEO4J_AUTH=neo4j/nammovuivui
+      - NEO4J_AUTH=neo4j/${NEO4J_PASSWORD:-changeme}
       # Uncomment to enable APOC (handy for KG queries/exports):
       # - NEO4J_PLUGINS=["apoc"]
     ports:
@@ -34,7 +35,7 @@ services:
     volumes:
       - ./neo4j_data:/data   # persists the database across restarts (gitignored)
     healthcheck:
-      test: ["CMD-SHELL", "cypher-shell -u neo4j -p nammovuivui 'RETURN 1' || exit 1"]
+      test: ["CMD-SHELL", "cypher-shell -u neo4j -p ${NEO4J_PASSWORD:-changeme} 'RETURN 1' || exit 1"]
       interval: 10s
       timeout: 10s
       retries: 20
