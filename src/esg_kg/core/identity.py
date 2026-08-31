@@ -34,10 +34,6 @@ old tree must keep running and cannot import from here).
 
 from typing import Any, Dict, List, Optional, Tuple
 
-# Claim + evidence classes that get page-level provenance stamped at extraction time
-# (docs/PROVENANCE_PATCH.md). T1 entities (Organization, Person, ...) are deliberately
-# excluded: they recur on dozens of pages and get merged in step05, so a single stamped
-# page would be misleading.
 PROVENANCE_CLASSES = {"SustainabilityClaim", "KPIObservation", "MediaReport", "Controversy",
                       "Penalty", "ThirdPartyVerification", "Emission", "Waste", "Certification"}
 

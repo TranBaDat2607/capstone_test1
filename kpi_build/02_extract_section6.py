@@ -45,8 +45,6 @@ SUBSECTION_TITLES = {
     "6.8": "Hoạt động thị trường vốn xanh",
 }
 
-# Vietnamese-specific letters (lowercase + uppercase). A token that contains any
-# of these is treated as Vietnamese rather than part of the English translation.
 VI_CHARS = set(
     "ăâđêôơưĂÂĐÊÔƠƯ"
     "áàảãạấầẩẫậắằẳẵặéèẻẽẹếềểễệíìỉĩịóòỏõọốồổỗộớờởỡợúùủũụứừửữựýỳỷỹỵ"
@@ -68,17 +66,16 @@ def slice_section6(text: str) -> str:
     if start < 0:
         raise SystemExit("Could not locate Section 6 in the template HTML.")
     tail = text[start:]
-    # Section 6 closes with the "Luu y/Note:" paragraph that follows item 6.8.
     end_match = re.search(r"L[ưu]+\s*ý\s*/\s*Note", tail)
     if not end_match:
-        end_match = re.search(r"\n\s*III\.\s", tail)  # fallback: next Roman part
+        end_match = re.search(r"\n\s*III\.\s", tail)
     end = end_match.start() if end_match else min(len(tail), 5000)
     return tail[:end]
 
 
 def normalize(block: str) -> str:
     one = re.sub(r"\s+", " ", block).strip()
-    one = re.sub(r"6\.\s*(\d)\s*\.", r"6.\1.", one)  # rejoin "6. 3 ." -> "6.3."
+    one = re.sub(r"6\.\s*(\d)\s*\.", r"6.\1.", one)
     return one
 
 
@@ -92,7 +89,7 @@ def vi_tail(piece: str) -> str:
 
 
 def clean(seg: str) -> str:
-    seg = re.sub(r"^[a-eA-E]\)\s*", "", seg.strip())   # drop "a) " markers
+    seg = re.sub(r"^[a-eA-E]\)\s*", "", seg.strip())
     seg = seg.strip(" .;:- ")
     return re.sub(r"\s+", " ", seg)
 
@@ -103,11 +100,11 @@ def vi_indicators(body: str) -> list[str]:
     out: list[str] = []
     for i, piece in enumerate(pieces):
         if i == 0:
-            cand = piece                       # text before first slash = VN
+            cand = piece
         elif i == len(pieces) - 1:
-            continue                           # trailing English after last slash
+            continue
         else:
-            cand = vi_tail(piece)              # 'EN_prev VN_next' -> VN_next
+            cand = vi_tail(piece)
         cand = clean(cand)
         if len(cand) >= 5 and is_vietnamese(cand) and not cand.startswith("("):
             out.append(cand)
@@ -122,8 +119,6 @@ def parse_section6(block: str) -> list[dict]:
         code = f"6.{h.group(1)}"
         seg = one[h.end(): headers[idx + 1].start() if idx + 1 < len(headers) else len(one)]
 
-        # Strip the sub-section title: cut at the first "a)" if items are lettered,
-        # else at the first ":" (title delimiter), else keep the whole segment.
         m_letter = re.search(r"\sa\)\s", seg)
         if m_letter:
             body = seg[m_letter.start():]

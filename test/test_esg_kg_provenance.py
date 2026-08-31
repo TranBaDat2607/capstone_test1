@@ -91,18 +91,12 @@ def page_indexes():
     return _cache["idx"]
 
 
-# --------------------------------------------------------------------------- #
-# Pure helpers — these run even on a bare clone.
-# --------------------------------------------------------------------------- #
 def test_provenance_module_constants_match_src():
-    # the paths must be the REAL ones, not a temp dir the new tree invented
     assert new_prov.DEFAULT_RESOLVED == RESOLVED_FILE
     assert new_prov.DEFAULT_GRAPHS_DIR == GRAPHS_DIR
     assert new_prov.DEFAULT_SCHEMA == SCHEMA_FILE
 
 
-# Hand-picked to hit every RETURN PATH of parse_page_token, including the guard that
-# hands canonical '<src>_<page>_<idx>' ids to parse_source_id instead.
 PAGE_TOKEN_CASES = [
     "AAA_Baocaothuongnien_page12_LNST_DTT_2010",   # match -> ('AAA_Baocaothuongnien', 12)
     "AAA_page3_x",                                  # match -> ('AAA', 3)
@@ -117,8 +111,6 @@ PAGE_TOKEN_CASES = [
 
 
 def test_provenance_parse_page_token_matches_src():
-    # not vacuous: both the matching and the None path really fire, and the
-    # source_id guard really takes precedence over the token regex
     matched = [s for s in PAGE_TOKEN_CASES if new_prov.parse_page_token(s) is not None]
     assert len(matched) == 3, f"expected 3 token matches, got {matched}"
     assert new_prov.parse_page_token("AAA_Baocaothuongnien_page12_x") == \
@@ -127,7 +119,6 @@ def test_provenance_parse_page_token_matches_src():
 
 
 def test_provenance_node_year_context_matches_src():
-    # not vacuous, and the documented precedence really is year > target_year > date
     assert new_prov.node_year_context({"year": 2019, "target_year": 2030}) == 2019
     assert new_prov.node_year_context({"target_year": 2030, "date": "2021"}) == 2030
     assert new_prov.node_year_context({"year": "1899"}) is None
@@ -145,20 +136,15 @@ PROP_DICT_CASES = [
 
 
 def test_provenance_prop_dicts_matches_src():
-    # not vacuous: canonical comes FIRST and a props-less version is dropped, not None-ed
     assert new_prov._prop_dicts(PROP_DICT_CASES[3]) == [{"a": 1}, {"b": 2}, {"c": 3}]
     assert new_prov._prop_dicts(PROP_DICT_CASES[4]) == [{"a": 1}]
 
 
 def test_provenance_choose_primary_matches_src():
-    # not vacuous: the year tier really overrides the lexicographic tie-break
     assert new_prov.choose_primary({("AAA_2018", 1), ("AAA_2019", 9)}, 2019) == ("AAA_2019", 9)
     assert new_prov.choose_primary({("AAA_2018", 1), ("AAA_2019", 9)}, 2020) == ("AAA_2018", 1)
 
 
-# --------------------------------------------------------------------------- #
-# Real-artifact arms.
-# --------------------------------------------------------------------------- #
 def test_provenance_build_page_indexes_matches_src_on_the_real_pages():
     if not GRAPHS_DIR.is_dir():
         _skip("provenance/build_page_indexes", "graph_output/graphs absent (data_sync pull)")
@@ -174,7 +160,6 @@ def test_provenance_load_news_article_meta_matches_src():
     if not new_m:
         _skip("provenance/load_news_article_meta", "no news JSONL on disk (data_sync pull)")
         return
-    # not vacuous: the rows really carried titles, not just empty placeholder dicts
     assert any(v["article_title"] for v in new_m.values()), "no article_title in any row"
     print(f"     ({len(new_m)} news docs with article metadata)")
 
@@ -198,7 +183,6 @@ def test_provenance_candidate_locations_matches_src_on_the_real_graph():
         got = new_prov.candidate_locations(node, stable_idx, source_idx, ikm, report_docs)
         tiers[got[1]] = tiers.get(got[1], 0) + 1
 
-    # not vacuous: real nodes were matched, and MORE THAN ONE tier actually fired
     assert n > 0, "no provenance-class nodes in the graph"
     matched = {k: v for k, v in tiers.items() if k is not None}
     assert len(matched) >= 2, f"only one tier exercised: {tiers}"
@@ -254,7 +238,6 @@ def test_provenance_stamp_graph_matches_src_on_the_real_graph():
         return
     g_new, s_new = _stamp(graph)
 
-    # not vacuous: real nodes were stamped, through more than one tier
     stamped = sum(c.get("stamped", 0) for c in s_new["per_class"].values())
     assert stamped > 0, s_new
     assert len(s_new["per_method"]) >= 2, s_new["per_method"]
@@ -283,7 +266,6 @@ def test_provenance_stamp_graph_matches_src_on_the_stripped_graph():
     g_new, s_new = _stamp(stripped)
     g_live, s_live = _stamp(graph)
 
-    # the point of the arm: re-stamping from scratch reproduces the patched file exactly
     assert s_new == s_live, (f"stripping changed the outcome — the stage reads its own "
                              f"output:\n  stripped={s_new}\n  live={s_live}")
     assert g_new == g_live, "stripped rebuild differs from the live re-stamp"
@@ -343,7 +325,6 @@ def test_provenance_extraction_stamped_nodes_are_skipped():
     g_new = copy.deepcopy(graph)
     s_new = new_prov.stamp_graph(g_new, {}, {}, {}, ikm, [])
 
-    # the branch really fired, and the skip is SELECTIVE rather than a blanket no-op
     assert s_new["per_class"][cls]["already_stamped"] == 1, s_new
     assert g_new["nodes"][0]["properties"]["source_doc"] == "KEEP_ME", "extraction stamp overwritten"
     assert g_new["nodes"][1]["properties"]["source_doc"] == "SOMEDOC", g_new["nodes"][1]

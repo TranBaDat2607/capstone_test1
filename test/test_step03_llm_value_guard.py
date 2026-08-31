@@ -93,9 +93,6 @@ def _triple(subj_props=None, obj_props=None, predicate="ownsFacility"):
     }
 
 
-# --------------------------------------------------------------------------- #
-# 1. Behaviour
-# --------------------------------------------------------------------------- #
 def test_translated_vietnamese_name_is_restored():
     """The issue-#6 case: the model returns an English translation."""
     original = _triple()
@@ -239,9 +236,6 @@ def test_malformed_original_does_not_crash():
         assert isinstance(guarded, dict), f"guard returned {type(guarded)} for {bad!r}"
 
 
-# --------------------------------------------------------------------------- #
-# 2. Wiring — a guard nothing calls is as broken as no guard.
-# --------------------------------------------------------------------------- #
 def test_process_all_files_applies_the_guard():
     """Drive the real phase-2 path with a stubbed LLM that tampers with a name."""
     schema = json.loads((REPO_ROOT / "config" / "schema.json").read_text(encoding="utf-8"))

@@ -46,9 +46,6 @@ sys.path.insert(0, str(REPO / "src"))
 from esg_kg.core import llm_cache  # noqa: E402
 
 
-# --------------------------------------------------------------------------- #
-# 1. Content-addressed key.
-# --------------------------------------------------------------------------- #
 def test_key_ignores_dict_key_order_but_not_content():
     a = {"subject": "AAA", "predicate": "reportsKPI", "value": 12.5}
     a_reordered = {"value": 12.5, "predicate": "reportsKPI", "subject": "AAA"}
@@ -72,9 +69,6 @@ def test_key_supports_multi_part_business_keys():
     assert k1 != k3, "changing one part of a multi-part key must change the hash"
 
 
-# --------------------------------------------------------------------------- #
-# 2. get/put roundtrip (in-memory, no path).
-# --------------------------------------------------------------------------- #
 def test_get_put_roundtrip_in_memory():
     cache = llm_cache.ContentCache()
     value, hit = cache.get("claim text", "evidence text", "meta")
@@ -89,9 +83,6 @@ def test_get_put_roundtrip_in_memory():
     assert hit is False, "different content must miss"
 
 
-# --------------------------------------------------------------------------- #
-# 3. Persistence: dirty-gated save, disk load, corrupt-file recovery.
-# --------------------------------------------------------------------------- #
 def test_save_is_dirty_gated():
     with tempfile.TemporaryDirectory(prefix="esgkg_llmcache_") as td:
         path = Path(td) / "cache.json"
@@ -130,16 +121,11 @@ def test_corrupt_cache_file_recovers_to_empty():
         value, hit = cache.get("anything")
         assert hit is False
         assert value is None
-        # and it must still be usable going forward
         cache.put("anything", value="ok")
         value, hit = cache.get("anything")
         assert hit is True and value == "ok"
 
 
-# --------------------------------------------------------------------------- #
-# 4. The headline acceptance criterion (issue #9): identical content in the SAME
-#    run reaches the underlying (paid) call exactly once.
-# --------------------------------------------------------------------------- #
 def test_identical_content_calls_the_underlying_llm_once_per_run():
     cache = llm_cache.ContentCache()
     calls = []

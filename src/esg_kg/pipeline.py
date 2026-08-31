@@ -33,38 +33,7 @@ STAGES = [
      "of the future SSRL step11, not its full design; run after build_resolved"),
 ]
 
-# Three stages that were never ported and have NO row here — all REMOVED outright, not
-# merely unported, so there is nothing left for a STAGES row to point at:
-#   step10 (P6 evaluation report) — removed 2026-07-28: the project dropped this style of
-#     measurement (coverage/case-study/ablation without ground truth) as a deliverable
-#     outright, no replacement mechanism. DESIGN.md §4.3, PIPELINE.md §4.
-#   step04b (standards-registry reseed) — removed 2026-07-29 with `src/`: it read step05's
-#     output while step05 read its output (a cycle), and the scan earned nothing (every
-#     alias was a hardcoded seed). config/standards_registry.json stays static config;
-#     step00's `standards_registry_audit` is what replaced its coverage-checking role.
-#     Rebuilding it from scratch now means hand-editing the JSON, not running a script.
-#   step07b (softmax evidence-balance scores) — removed 2026-07-29 with `src/`: nothing on
-#     the delivered UI surface ever read `assessment_scores`/`score_components`; the
-#     categorical `assessment` from step07 was always the primary output
-#     (docs/SYSTEM_DESIGN.md §1.1 — no ground truth exists for a greenwashing probability).
 
-# --------------------------------------------------------------------------- #
-# BLOCKS — several stages collapsed into ONE unit that writes its artifact once.
-#
-# Each entry: (name, module, member step ids, note).
-#
-# A block is NOT a stage: it has no `old_step` label of its own, and its member stages
-# stay individually runnable, which is why it lives in its own table instead of as a
-# STAGES row. Blocks were `esg_kg`'s redesign against `src/`'s three-separate-stages
-# shape while `src/` still existed (Model A, now historical — DESIGN.md §7).
-#
-# The rule that produces a block (DESIGN.md §5.7): when N stages each read AND write
-# the same artifact, they are not N stages, they are one. The intermediate file is
-# internal state that leaked into being a contract, and re-running the first stage
-# silently destroys what the later ones added — including results that were paid for.
-#
-# Member stages stay individually runnable. A block ADDS an entry point; it never
-# removes the per-stage ones, or the ability to diagnose one stage alone goes too.
 BLOCKS = [
     ("build_validated", "esg_kg.graph.build_validated", ("03", "03b", "03c"),
      "03 -> 03b -> 03c in memory, writing all_validated_triples.json ONCE; phase-2 "
@@ -76,5 +45,3 @@ BLOCKS = [
      "stage, unchanged (DESIGN.md §5.7)"),
 ]
 
-# data_sync is a utility, not a pipeline stage: esg_kg.core.datasync
-# (moved from src/data_sync.py 2026-07-29, the last file blocking src/ deletion)

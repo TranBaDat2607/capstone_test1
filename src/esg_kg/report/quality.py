@@ -55,19 +55,12 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Tuple
 
-# The src/ original borrowed these from three sibling step files (step01, step03,
-# step04) — the step->step coupling this refactor exists to remove. They now come
-# from the shared kernel, so this stage depends on no other stage.
 from esg_kg.core.console import ensure_utf8_stdout
 from esg_kg.core.dates import ISO_DATE_RE, date_start_key, normalize_date_string
 from esg_kg.core.naming import normalize_name
 from esg_kg.core.paths import QUALITY_DIR, REPO_ROOT, RESOLVED_DIR, SCHEMA_PATH
 from esg_kg.core.schema import load_schema_sets
 
-# GRAPH_IMPROVEMENT_PLAN.md Group A: hub-cluster identification (A1) and
-# reasoning-readiness metrics (A2/A3) — new, not a stage, so importing them
-# does not reintroduce the step->step coupling the refactor removed (see the
-# module docstring above and esg_kg/metric/__init__.py).
 from esg_kg.metric.hub import (
     compute_hub_clusters,
     fallback_single_node_cluster,
@@ -89,29 +82,16 @@ logger = logging.getLogger(__name__)
 DEFAULT_GRAPH = RESOLVED_DIR / "resolved_graph.json"
 DEFAULT_SCHEMA = SCHEMA_PATH
 DEFAULT_OUT_DIR = QUALITY_DIR
-DEFAULT_MAX_HOPS = 4  # for Q7(d) claim→conduct search
+DEFAULT_MAX_HOPS = 4
 DEFAULT_STANDARDS_REGISTRY = REPO_ROOT / "config" / "standards_registry.json"
 DEFAULT_ISSUER_REGISTRY = REPO_ROOT / "config" / "issuer_registry.json"
 
-# --------------------------------------------------------------------------- #
-# The three node tiers (TEMPORAL_KG_DESIGN.md §2). T1 identity is timeless (P1);
-# T2 events own their valid_from (P2); T3 assertions get one node per utterance.
-# Certification sits between T1/T3 and is treated as T1 (type-of-certificate);
-# the holding period lives on the holdsCertification edge.
-# --------------------------------------------------------------------------- #
 T1_CLASSES = {
     "Organization", "Person", "Facility", "Product", "Material", "Location",
     "Country", "Standard", "Regulation", "Authority", "Community",
     "ClaimKeyword", "Certification", "StandardIndicator",
 }
 
-# Reference nodes are a controlled vocabulary generated from
-# kpi_definitions_construction.json (step05c) — NOT entities extracted from text.
-# They are deliberately high-degree by design: every KPI of a given indicator hangs
-# off one node, which is the whole point of the join (docs/STANDARD_INDICATOR_AXIS.md
-# §3). Counting them in the Q7 hub/path metrics would measure the vocabulary rather
-# than the graph, and would make a before/after comparison across the indicator-axis
-# change meaningless — so they are excluded there (and only there).
 REFERENCE_CLASSES = {"StandardIndicator"}
 T2_CLASSES = {
     "KPIObservation", "Emission", "Waste", "Penalty", "Controversy",
@@ -120,16 +100,11 @@ T2_CLASSES = {
 }
 T3_CLASSES = {"SustainabilityClaim", "Goal", "ScienceBasedTarget"}
 
-# Fields that must never appear in a T1 class's identity_keys (P1: identity is
-# timeless — new classes are linted against this, not just the four fixed ones).
 TEMPORAL_IDENTITY_FIELDS = {
     "valid_from", "valid_to", "is_current", "recorded_at", "date", "year",
     "target_year", "baseline_year", "validity_period",
 }
 
-# Edge labels that carry structural (non-star, non-keyword) information — the
-# walkable backbone of SSRL_REASONING_LAYER.md §2.2/§6.1. A claim→conduct path
-# counts for Q7(d) only if it uses at least one of these.
 STRUCTURAL_EDGES = {
     "observedAtFacility", "locatedIn", "ownsFacility", "isIn", "partnersWith",
     "producedBy", "holdsCertification", "worksAt", "partOf", "owns",
@@ -139,14 +114,9 @@ STRUCTURAL_EDGES = {
 
 CONDUCT_CLASSES = {"Controversy", "Penalty", "MediaReport"}
 
-# Broken-PDF-extraction indicators seen in real names ("MÔI TRƢỜNG": Ơ-horn
-# came out as U+01A2/U+01A3; U+FFFD is the generic replacement char).
 BROKEN_CHARS = {"Ƣ", "ƣ", "�"}
 
 
-# --------------------------------------------------------------------------- #
-# Small accessors.
-# --------------------------------------------------------------------------- #
 def node_name(node: Dict[str, Any]) -> str:
     p = node.get("properties", {})
     for k in ("name", "term", "title", "claim_id", "description"):
@@ -171,9 +141,6 @@ def pct(part: int, whole: int) -> float:
     return round(part / whole * 100, 1) if whole else 0.0
 
 
-# --------------------------------------------------------------------------- #
-# Q1 — accuracy (machine-checkable slice).
-# --------------------------------------------------------------------------- #
 def q1_accuracy(nodes: List[Dict[str, Any]]) -> Dict[str, Any]:
     non_nfc = broken = 0
     examples: List[str] = []
@@ -198,9 +165,6 @@ def q1_accuracy(nodes: List[Dict[str, Any]]) -> Dict[str, Any]:
     }
 
 
-# --------------------------------------------------------------------------- #
-# Q2 — consistency: schema-legal edges + P4 temporal invariants + P1 lint.
-# --------------------------------------------------------------------------- #
 def q2_consistency(nodes: List[Dict[str, Any]], edges: List[Dict[str, Any]],
                    schema: Dict[str, Any]) -> Dict[str, Any]:
     _, _, edge_directions = load_schema_sets(schema)
@@ -213,12 +177,11 @@ def q2_consistency(nodes: List[Dict[str, Any]], edges: List[Dict[str, Any]],
         if not pairs or not any(s == s_cls and t == o_cls for s, t in pairs):
             illegal_edges += 1
 
-    # P4 invariant scan
-    bad_date_format = 0          # date present but not canonical ISO
-    from_after_to = 0            # valid_from > valid_to (both parseable)
-    multi_current_chains = 0     # temporal_versions with != exactly-one is_current
-    format_split_versions = 0    # version pairs identical up to date spelling
-    missing_date_uncertain = 0   # news T2 node without the required bool
+    bad_date_format = 0
+    from_after_to = 0
+    multi_current_chains = 0
+    format_split_versions = 0
+    missing_date_uncertain = 0
 
     def check_range(vf: Any, vt: Any) -> int:
         kf, kt = date_start_key(vf), date_start_key(vt)
@@ -250,14 +213,11 @@ def q2_consistency(nodes: List[Dict[str, Any]], edges: List[Dict[str, Any]],
         if versions:
             n_current = sum(1 for v in versions if v.get("is_current") is True)
             n_open = sum(1 for v in versions if v.get("valid_to") in (None, ""))
-            # P4: at most one current version; a chain with an open version must
-            # have exactly one. An all-closed chain legitimately has none.
             if n_current > 1 or (n_current == 0 and n_open > 0):
                 multi_current_chains += 1
             seen: Dict[Tuple, int] = {}
             for v in versions:
                 vp = v.get("properties", {})
-                # mirror step05's version signature: name with term/title fallbacks
                 label = str(vp.get("name") or node_name({"properties": vp}))
                 key = (date_start_key(v.get("valid_from")), date_start_key(v.get("valid_to")), label)
                 seen[key] = seen.get(key, 0) + 1
@@ -266,7 +226,6 @@ def q2_consistency(nodes: List[Dict[str, Any]], edges: List[Dict[str, Any]],
                 bad_date_format += check_format(v.get("valid_from"), v.get("valid_to"))
                 from_after_to += check_range(v.get("valid_from"), v.get("valid_to"))
 
-    # P1 lint on the schema itself: T1 identity must be timeless.
     t1_identity_violations = []
     for n in schema.get("nodes", []):
         if n["class"] in T1_CLASSES:
@@ -289,23 +248,6 @@ def q2_consistency(nodes: List[Dict[str, Any]], edges: List[Dict[str, Any]],
     }
 
 
-# --------------------------------------------------------------------------- #
-# Standards-registry audit — Standard/Regulation mentions the frozen registry
-# does not cover yet.
-#
-# This was step04b's graph scan. It moved here (2026-07-26) because step04b read
-# graph_output/resolved/resolved_graph.json — step05's OUTPUT — while step05 reads
-# the registry step04b writes: a dependency cycle that made the stage unrunnable on
-# a bare clone. The registry is static config now, nothing regenerates it, and the
-# only thing the scan ever produced was this to-review list. A to-review list is a
-# diagnostic, and diagnostics are what step00 is.
-#
-# `match_patterns` (carried into the registry from step04b's SEEDS) is what keeps
-# this readable: the graph holds ~432 Standard/Regulation nodes and only the five
-# reference documents are in scope, so a mention is reported only when it LOOKS LIKE
-# one of them. Without the patterns the section would be ~420 lines of accounting
-# standards and ISO certificates, which trains people to skip it.
-# --------------------------------------------------------------------------- #
 DEFAULT_MIN_DEGREE = 2
 
 
@@ -327,7 +269,6 @@ def standards_registry_audit(nodes: List[Dict[str, Any]], edges: List[Dict[str, 
         degree[e["subject"]] += 1
         degree[e["object"]] += 1
 
-    # distinct normalized name -> display name, class, summed degree
     mentions: Dict[str, Dict[str, Any]] = {}
     for i, n in enumerate(nodes):
         if n.get("class") not in ("Standard", "Regulation"):
@@ -361,10 +302,10 @@ def standards_registry_audit(nodes: List[Dict[str, Any]], edges: List[Dict[str, 
                 claimed.add(norm)
                 continue
             if norm in excluded or any(h in norm for h in hints):
-                claimed.add(norm)          # a human already ruled on this one
+                claimed.add(norm)
                 continue
             if not any(p.search(m["name"]) or p.search(norm) for p in patterns):
-                continue                   # not this document; another key may still claim it
+                continue
             claimed.add(norm)
             uncovered.append({
                 "name": m["name"], "normalized": norm, "class": m["class"],
@@ -384,9 +325,6 @@ def standards_registry_audit(nodes: List[Dict[str, Any]], edges: List[Dict[str, 
     }
 
 
-# --------------------------------------------------------------------------- #
-# Q3 — conciseness: one T1 entity = one node.
-# --------------------------------------------------------------------------- #
 def q3_conciseness(nodes: List[Dict[str, Any]]) -> Dict[str, Any]:
     per_class: Dict[str, Counter] = defaultdict(Counter)
     for nd in nodes:
@@ -408,9 +346,6 @@ def q3_conciseness(nodes: List[Dict[str, Any]]) -> Dict[str, Any]:
     return {"per_class": dup_summary, "total_surplus_duplicate_t1_nodes": total_surplus}
 
 
-# --------------------------------------------------------------------------- #
-# Q4 / Q8 — conduct-side completeness and independence.
-# --------------------------------------------------------------------------- #
 def q4_completeness(nodes: List[Dict[str, Any]]) -> Dict[str, Any]:
     counts = Counter(nd["class"] for nd in nodes if nd.get("class") in CONDUCT_CLASSES)
     news_kpis = sum(1 for nd in nodes
@@ -440,9 +375,6 @@ def q8_independence(nodes: List[Dict[str, Any]]) -> Dict[str, Any]:
     }
 
 
-# --------------------------------------------------------------------------- #
-# Q5 / Q6 — timeliness and provenance.
-# --------------------------------------------------------------------------- #
 def q5_timeliness(nodes: List[Dict[str, Any]], edges: List[Dict[str, Any]]) -> Dict[str, Any]:
     edges_with_from = sum(1 for e in edges if (e.get("temporal_metadata") or {}).get("valid_from"))
     t2_nodes = [nd for nd in nodes if nd.get("class") in T2_CLASSES]
@@ -473,9 +405,6 @@ def q6_provenance(nodes: List[Dict[str, Any]]) -> Dict[str, Any]:
     }
 
 
-# --------------------------------------------------------------------------- #
-# Q7 — traversability (the reasoning-readiness attribute this thesis defines).
-# --------------------------------------------------------------------------- #
 def q7_traversability(nodes: List[Dict[str, Any]], edges: List[Dict[str, Any]],
                       max_hops: int, skip_slow: bool,
                       issuer_registry: Optional[Dict[str, Any]] = None,
@@ -484,9 +413,9 @@ def q7_traversability(nodes: List[Dict[str, Any]], edges: List[Dict[str, Any]],
     degenerate_relations = degenerate_relations or set()
 
     n = len(nodes)
-    adj: List[List[Tuple[int, str]]] = [[] for _ in range(n)]  # undirected, labeled
-    pair_count: Counter = Counter()        # parallel edges per node pair (any label)
-    pair_label_count: Counter = Counter()  # parallel edges per (pair, label)
+    adj: List[List[Tuple[int, str]]] = [[] for _ in range(n)]
+    pair_count: Counter = Counter()
+    pair_label_count: Counter = Counter()
     for e in edges:
         s, o, lbl = e["subject"], e["object"], e["predicate"]
         adj[s].append((o, lbl))
@@ -499,11 +428,6 @@ def q7_traversability(nodes: List[Dict[str, Any]], edges: List[Dict[str, Any]],
     leaves = sum(1 for d in degrees if d == 1)
     isolated = sum(1 for d in degrees if d == 0)
 
-    # The hub is a SET of issuer clusters (GRAPH_IMPROVEMENT_PLAN.md A1) — not a single
-    # node. Registry-matched Organization nodes are grouped by ticker; if the registry is
-    # empty or matches nothing in this graph, fall back to the OLD behaviour (the single
-    # globally highest-degree node, excluding reference vocabulary) so hub-dependent
-    # metrics still get a sane, non-empty exclusion set.
     hub_candidates = [i for i in range(n) if nodes[i].get("class") not in REFERENCE_CLASSES]
     alias_index = load_issuer_alias_index(issuer_registry)
     hub_clusters = compute_hub_clusters(nodes, degrees, alias_index, node_name)
@@ -518,7 +442,6 @@ def q7_traversability(nodes: List[Dict[str, Any]], edges: List[Dict[str, Any]],
     r5_max_hub_degree = max((c["degree"] for c in hub_clusters.values()), default=0)
     reference_idx = {i for i, nd in enumerate(nodes) if nd.get("class") in REFERENCE_CLASSES}
 
-    # (e) % T2 nodes with degree >= 2, per class
     t2_anchoring: Dict[str, Any] = {}
     t2_total = t2_anchored = 0
     per_cls: Dict[str, List[int]] = defaultdict(list)
@@ -557,9 +480,6 @@ def q7_traversability(nodes: List[Dict[str, Any]], edges: List[Dict[str, Any]],
         result["note"] = "(c)/(d)/R1/R1'/R7 skipped via --skip-slow"
         return result
 
-    # (c) % edges still answerable <= 3 hops after masking that FACT — masking
-    # (s, r, o) also masks its parallel same-relation duplicates (multi-year
-    # edges), so an alternate route must use a different relation or a longer path.
     answerable = 0
     per_rel_total: Counter = Counter()
     per_rel_ok: Counter = Counter()
@@ -569,9 +489,9 @@ def q7_traversability(nodes: List[Dict[str, Any]], edges: List[Dict[str, Any]],
         pair = (min(s, o), max(s, o))
         masked_here = pair_label_count[(pair[0], pair[1], lbl)]
         if degrees[s] <= masked_here or degrees[o] <= masked_here:
-            continue  # masking the fact orphans an endpoint -> unanswerable
+            continue
         if pair_count[pair] > masked_here:
-            answerable += 1  # direct edge of a DIFFERENT relation survives (1-hop path)
+            answerable += 1
             per_rel_ok[lbl] += 1
             continue
         banned = (s, o)
@@ -604,27 +524,11 @@ def q7_traversability(nodes: List[Dict[str, Any]], edges: List[Dict[str, Any]],
         for rel, tot in sorted(per_rel_total.items(), key=lambda kv: -kv[1])
     }
 
-    # (d) % claims that reach a conduct node via a path with >= 1 structural edge,
-    # EXCLUDING every node in every issuer's hub cluster (A1 — not just the single
-    # globally highest-degree node; see the module-level comment above `hubs`).
-    # Rationale (SSRL doc §2.1, proposal P5): every node is 2 hops from every other
-    # node through a ~9.5k-degree issuer, so through-hub reachability is saturated and
-    # carries zero discriminating information — the walker can even bounce
-    # claim→hub→Facility→hub→conduct and launder a "structural" flag. With more than
-    # one issuer, a path routed through a DIFFERENT company's hub is exactly as
-    # uninformative, which is why the whole hub SET is barred, not just the max.
-    # Only hub-free structural paths measure real alternate routes; pure-keyword
-    # paths never count (hasKeyword is not structural). Reference vocabulary nodes
-    # are barred for the same reason as the issuer hub: every claim and every KPI of
-    # an indicator hangs off one StandardIndicator, so routing through it would flag
-    # "structural path" for pairs that share nothing but a topic. Barring them keeps
-    # Q7(d) comparable before/after the indicator axis is added.
     barred = barred_hub | reference_idx
     claim_idx = [i for i, nd in enumerate(nodes) if nd.get("class") == "SustainabilityClaim"]
     conduct_idx = {i for i, nd in enumerate(nodes) if is_conduct(nd)}
     reached = 0
     for c in claim_idx:
-        # state = (node, has_structural_edge_so_far)
         start = (c, False)
         seen = {start}
         frontier = [start]
@@ -634,7 +538,7 @@ def q7_traversability(nodes: List[Dict[str, Any]], edges: List[Dict[str, Any]],
             for u, flag in frontier:
                 for v, lbl in adj[u]:
                     if v in barred:
-                        continue  # issuer hub + reference vocabulary excluded from (d) paths
+                        continue
                     nf = flag or (lbl in STRUCTURAL_EDGES)
                     if v in conduct_idx and nf:
                         ok = True
@@ -656,10 +560,6 @@ def q7_traversability(nodes: List[Dict[str, Any]], edges: List[Dict[str, Any]],
     result["d_definition"] = ("hub-free path <= max_hops with >=1 structural edge; "
                               f"excluded hub clusters = {sorted(hub_clusters)}")
 
-    # R1 / R1' / R7 / R1_trainable (GRAPH_IMPROVEMENT_PLAN.md A2/A3) — reasoning-
-    # readiness measurements gating the later scaling/agent-layer groups. Same cost
-    # class as (c)/(d) above (bounded-depth traversal per edge/node), which is why
-    # they live in this skip_slow-gated tail rather than the cheap block above.
     r1_pct, _r1_ok, r1_total = r1_reachability(edges, adj, hops=R1_HOPS)
     r1p_pct, _r1p_ok, r1p_total = r1_reachability(edges, adj, hops=R1_HOPS, barred=barred)
     r1t_pct, _r1t_ok, r1t_total = r1_reachability(
@@ -676,9 +576,6 @@ def q7_traversability(nodes: List[Dict[str, Any]], edges: List[Dict[str, Any]],
     return result
 
 
-# --------------------------------------------------------------------------- #
-# Report rendering.
-# --------------------------------------------------------------------------- #
 def render_markdown(report: Dict[str, Any]) -> str:
     q = report
     lines = [
@@ -771,7 +668,7 @@ def render_markdown(report: Dict[str, Any]) -> str:
 
 
 def main() -> None:
-    ensure_utf8_stdout()  # before the report echo can hit a cp1252 console
+    ensure_utf8_stdout()
     p = argparse.ArgumentParser(description="Step 0 — offline Q1–Q8 quality report for the resolved graph.")
     p.add_argument("-g", "--graph", type=Path, default=DEFAULT_GRAPH)
     p.add_argument("-s", "--schema", type=Path, default=DEFAULT_SCHEMA)

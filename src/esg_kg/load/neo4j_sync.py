@@ -82,17 +82,13 @@ logger = logging.getLogger(__name__)
 DEFAULT_CROSSCHECK_DIR = REPO_ROOT / "graph_output" / "crosscheck"
 DEFAULT_RESOLVED = REPO_ROOT / "graph_output" / "resolved" / "resolved_graph.json"
 
-# Above this share of positionally-resolved rows the dossier is probably out of phase
-# with the graph (e.g. step05 was re-run after the dossier was written) — warn loudly.
 FALLBACK_WARN_RATIO = 0.05
 
-# Neo4j defaults — match esg_kg.load.neo4j_load + the crosscheck write-back.
 NEO4J_URI_DEFAULT = "bolt://localhost:8687"
 NEO4J_USER_DEFAULT = "greenwashing"
 NEO4J_PASSWORD_DEFAULT = "changeme"
 SHARED_LABEL = "_Entity"
 
-# Advisory relationship types (namespaced; never confused with extracted edges).
 ROLE_REL = {
     "support": "llm_supports",
     "contradict": "llm_contradicts",
@@ -142,9 +138,6 @@ def resolve_claim(d: Dict[str, Any], by_claim_id: Dict[str, str]) -> Tuple[Optio
 
 
 def resolve_evidence(ev: Dict[str, Any], by_text: Dict[Tuple[str, str], str]) -> Tuple[Optional[str], str]:
-    # Evidence nodes are conduct (MediaReport/KPIObservation/Penalty/Controversy), which have no
-    # single stable id in the dossier — so match on the unambiguous (class, node_text) key, then
-    # fall back to the recorded array position for older dossiers.
     key = (ev.get("class") or "", (ev.get("text") or "")[:400])
     if key[1] and key in by_text:
         return by_text[key], "text"
@@ -178,8 +171,6 @@ def build_rows(dossiers: List[Dict[str, Any]], ticker: str,
             "struct": bool(sig.get("structural_contradiction")),
             "kpi_gap": sig.get("kpi_gap") not in (None, {}),
             "ticker": ticker.upper(),
-            # step07b evidence-balance scores; None (SET → null) removes the property,
-            # so an un-enriched dossier cleanly clears any stale scores.
             "score_contradicted": scores.get("contradicted"),
             "score_supported": scores.get("supported"),
             "score_abstain": scores.get("abstain"),
@@ -207,10 +198,7 @@ def build_rows(dossiers: List[Dict[str, Any]], ticker: str,
                                           (False if role == "flagged" else None)),
                     "date_uncertain": bool(ev.get("date_uncertain")),
                 }
-                # Neo4j drops null-valued keys on SET += ; strip them so the map is clean.
                 props = {k: v for k, v in props.items() if v is not None}
-                # _adv_key is derived from the RESOLVED keys, so it stays stable across a
-                # re-sync as long as resolution stays stable (MERGE identity).
                 edges[ROLE_REL[role]].append({
                     "ck": ck, "ek": ek, "akey": f"{ck}-{role}-{ek}", "props": props,
                 })
@@ -274,14 +262,6 @@ def run(args: argparse.Namespace) -> None:
         with driver.session(database=database) as s:
             if args.clear_advisory:
                 logger.info("Clearing prior advisory layer …")
-                # Bug fixed 2026-08-07: this used to be a BLANKET
-                # `MATCH ()-[r]->() WHERE r.llm_suggested = true DELETE r` — no ticker
-                # filter at all, so syncing ticker B with --clear-advisory silently wiped
-                # ticker A's just-written advisory edges too. Scope it to exactly this
-                # dossier's claim node keys — the same scoping the non-clear-advisory
-                # branch already uses below (`cks`) — so --clear-advisory only ever
-                # touches THIS ticker's own advisory layer, matching its own docstring
-                # ("...before writing [it] for this ticker").
                 cks = [r["ck"] for r in claim_rows]
                 cleared = s.run(
                     f"MATCH (c:`{SHARED_LABEL}`)-[r]->() "
@@ -296,7 +276,6 @@ def run(args: argparse.Namespace) -> None:
                       f"c.score_disagrees_with_assessment",
                       t=args.ticker.upper())
 
-            # 1) claim-node advisory properties
             claim_q = (
                 f"UNWIND $rows AS r "
                 f"MATCH (c:`{SHARED_LABEL}` {{_node_key: r.ck}}) "
@@ -312,11 +291,6 @@ def run(args: argparse.Namespace) -> None:
             logger.info(f"Claim props set on {res.counters.properties_set} properties "
                         f"({len(claim_rows)} claims).")
 
-            # 2a) drop this run's claims' existing advisory edges before re-writing them.
-            # _adv_key changed format (positional → resolved keys) and can change across a
-            # step05 re-run, so MERGE-on-_adv_key alone would leave stale/duplicate edges
-            # (possibly bound to the wrong node). Scoped-clearing the claims we are about to
-            # write makes every sync idempotent without needing --clear-advisory.
             if not args.clear_advisory:
                 cks = [r["ck"] for r in claim_rows]
                 cleared = s.run(
@@ -326,7 +300,6 @@ def run(args: argparse.Namespace) -> None:
                 logger.info(f"Cleared {cleared.counters.relationships_deleted} prior advisory "
                             f"edge(s) on {len(cks)} re-synced claim(s).")
 
-            # 2b) advisory evidence edges, one MERGE per rel type
             for rel, rows in edges.items():
                 if not rows:
                     continue

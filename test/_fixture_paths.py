@@ -36,7 +36,6 @@ REPO = Path(__file__).resolve().parents[1]
 
 FIXTURE_DIR = REPO / "test" / "fixtures"
 
-#: artifact name -> (real path, fixture path)
 _ARTIFACTS = {
     "validated": (
         REPO / "graph_output" / "validated" / "all_validated_triples.json",

@@ -68,7 +68,7 @@ class ContentCache:
                 raw = json.loads(path.read_text(encoding="utf-8"))
                 self.entries = raw.get("entries", {}) if isinstance(raw, dict) else {}
                 logger.info(f"Cache: {len(self.entries)} entrie(s) from {path}")
-            except Exception as exc:  # a corrupt cache must never stop the pipeline
+            except Exception as exc:
                 logger.warning(f"Cache at {path} unreadable ({exc}); starting empty")
                 self.entries = {}
 

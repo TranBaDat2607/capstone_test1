@@ -45,7 +45,6 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO / "src"))
 
-# --- new: the esg_kg package -----------------------------------------------------
 from esg_kg.load import neo4j_load as new_step06  # noqa: E402
 from esg_kg.core.schema import load_schema_sets  # noqa: E402
 
@@ -54,10 +53,6 @@ from _fixture_paths import resolve_artifact, skip_if_fixture, tag  # noqa: E402
 
 RESOLVED_FILE = REPO / "graph_output" / "resolved" / "resolved_graph.json"
 
-# Corpus arms READ from here: the real artifact when the HF snapshot is pulled,
-# otherwise the committed synthetic fixture (test/fixtures/) so the arm runs on a
-# bare clone instead of silently skipping. The canonical constant above stays put
-# because wiring assertions compare the stage's own DEFAULT_* against it.
 RESOLVED_DATA, RESOLVED_IS_FIXTURE = resolve_artifact("resolved")
 
 
@@ -74,12 +69,6 @@ def _schema_sets():
     return load_schema_sets(schema)
 
 
-# --------------------------------------------------------------------------- #
-# Synthetic resolved graph covering the three node shapes build_payload branches on:
-#   n0 Organization  - plain node, no temporal_versions
-#   n1 Organization  - supersedes class, >1 versions -> materialized version chain
-#   n2 KPIObservation- NOT a supersedes class, >1 versions -> kept as a JSON blob
-# --------------------------------------------------------------------------- #
 def _mini_graph():
     return {
         "nodes": [
@@ -120,11 +109,8 @@ def test_build_payload_matches_both_trees_with_versions():
 
     payload = new_step06.build_payload(graph, schema_sets, include_versions=True)
 
-    # sanity: fixture actually exercises the supersedes-materialization branch
-    # (2 distinct versions for n1 -> 2 version nodes + 2 chained supersedes edges)
     assert payload["counts"]["version_nodes"] == 2
     assert len(payload["supersedes_edges"]) == 2
-    # and the non-supersedes class kept its history as a JSON blob, not a version node
     kpi_nodes = payload["nodes_by_label"]["KPIObservation"]
     assert len(kpi_nodes) == 1
     assert "temporal_versions" in kpi_nodes[0]
@@ -140,13 +126,6 @@ def test_build_payload_no_versions_flag_matches_both_trees():
     assert payload["supersedes_edges"] == []
 
 
-# --------------------------------------------------------------------------- #
-# Fake Neo4j driver — records every (query, params) whether it arrives via a bare
-# session.run() or via session.execute_write(lambda tx: tx.run(...).consume()).
-# Read-back calls (print_graph_stats) are also supported: iteration yields nothing,
-# .single() returns a zeroed fake record, so the call is recorded without needing a
-# real database to answer it.
-# --------------------------------------------------------------------------- #
 class _FakeRecord(dict):
     def __getitem__(self, key):
         return dict.get(self, key, 0)

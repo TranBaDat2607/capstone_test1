@@ -113,14 +113,9 @@ DEFAULT_INPUT = REPO_ROOT / "data" / "labeled" / "annual_labeled" / "labeled_ann
 DEFAULT_SCHEMA = REPO_ROOT / "config" / "schema.json"
 DEFAULT_KPI_DIR = REPO_ROOT / "kpi_output"
 DEFAULT_OUT_DIR = REPO_ROOT / "graph_output"
-# DEFAULT_MODEL comes from esg_kg.core.llm (GEMINI_MODEL env var, default
-# gemini-2.5-flash-lite) — see that module's docstring.
 DEFAULT_MAX_WORKERS = 4
 
 
-# --------------------------------------------------------------------------- #
-# Gemini config + prompt template (verbatim; carries the issue-#6 language fix).
-# --------------------------------------------------------------------------- #
 JSON_ONLY_SYSTEM_INSTRUCTION = "Return *only* valid JSON - no prose."
 
 CFG_JSON = types.GenerateContentConfig(
@@ -252,9 +247,6 @@ TEMPORAL_GRAPH_PROMPT_TEMPLATE = (
 )
 
 
-# News-oriented variant (SYSTEM_DESIGN §5.2). Same ontology, temporal rules and output
-# format as the report template, but framed so the model treats the text as THIRD-PARTY
-# news ABOUT the company (conduct side), not a statement BY the company (claim side).
 NEWS_GRAPH_PROMPT_TEMPLATE = (
     "You are an ESG temporal knowledge-graph extractor working on a THIRD-PARTY NEWS ARTICLE.\n\n"
     "## CONTEXT - THIS IS INDEPENDENT NEWS, NOT THE COMPANY'S OWN REPORT\n"
@@ -440,9 +432,6 @@ def build_page_prompt(schema: Dict[str, Any], page_text: str, page_no: int,
     return f"{header}\n\n{body}"
 
 
-# --------------------------------------------------------------------------- #
-# JSON cleaning / recovery (verbatim).
-# --------------------------------------------------------------------------- #
 def _response_to_text(resp) -> str:
     if isinstance(resp, genai.types.GenerateContentResponse):
         buf: List[str] = []
@@ -536,42 +525,17 @@ def _validate_extraction_format(data: Any, schema: Dict[str, Any]) -> bool:
     return valid_count > 0
 
 
-# --------------------------------------------------------------------------- #
-# Deterministic claim_id (GRAPH_IMPROVEMENT_PLAN.md C1 / GitHub issue #2).
-#
-# SustainabilityClaim's identity_keys is exactly ["claim_id"] (config/schema.json), and
-# get_stable_entity_id hashes a node's identity straight off that property value. Left
-# to the LLM (the prompt only says to leave the ids' VALUE as-is, never how to build
-# one), claim_id is free text the model invents per call - re-running this stage over
-# the identical source sentence can mint a different id and silently re-partition every
-# already-paid crosscheck dossier (DESIGN.md Sec1.1: claim resolution in
-# load/neo4j_sync.py is 100% stable_id tier, no fallback). Deriving it instead from
-# (source_doc, page, normalized description) makes it a pure function of content +
-# provenance, so identical input always reproduces the identical id regardless of what
-# the LLM would have called it.
 def _normalize_claim_text(text: str) -> str:
     """Case/whitespace-insensitive so trivial LLM formatting drift (extra spaces,
     trailing whitespace, casing) never changes the derived claim_id."""
     return re.sub(r"\s+", " ", (text or "").strip().lower())
 
 
-# --- Sentence-position anchoring (GRAPH_IMPROVEMENT_PLAN.md follow-up to C1) -------- #
-# `description` (used above) is still LLM output: a re-run that re-transcribes the same
-# source sentence slightly differently (truncation point, punctuation, mild paraphrase)
-# still changes the hash. This layer anchors to the page's real, LLM-independent JSONL
-# sentence row(s) instead, when a confident match can be found, falling back to the
-# description-text hash above otherwise. Verified on the real corpus (1,217 claims):
-# hashing on sentence_index alone (even with date) produced 40 real collisions - one
-# sentence enumerating several distinct facts for the same year - so the anchor is
-# (sentence_index, start_token_offset) pairs, not sentence_index alone; that gave 0
-# collisions. 360/1,217 real claims get a confident anchor; the rest (including all
-# historical pre-"issue #6" English-description claims, which can't token-match against
-# Vietnamese rows) fall back to the text hash - i.e. this is strictly additive.
 _CLAIM_MATCH_TOKEN_RE = re.compile(r"\w+", re.UNICODE)
 
-MIN_CLAIM_DESC_TOKENS_FOR_MATCH = 4   # below this: too generic/risky, go straight to fallback
-CLAIM_MATCH_OVERLAP_THRESHOLD = 0.7   # longest-common-run / min(|desc|,|row|) a row must clear
-MAX_CLAIM_MATCHED_ROWS = 3            # more distinct rows than this => ambiguous, distrust it
+MIN_CLAIM_DESC_TOKENS_FOR_MATCH = 4
+CLAIM_MATCH_OVERLAP_THRESHOLD = 0.7
+MAX_CLAIM_MATCHED_ROWS = 3
 
 
 def _claim_match_tokens(text: str) -> List[str]:
@@ -690,9 +654,6 @@ def assign_deterministic_claim_ids(triples: List[Dict[str, Any]], source_doc: st
     return triples
 
 
-# --------------------------------------------------------------------------- #
-# Triple list -> graph (verbatim).
-# --------------------------------------------------------------------------- #
 OBSERVATION_CLASSES = {"KPIObservation", "Emission", "Waste"}
 
 
@@ -773,10 +734,6 @@ def stamp_provenance(graph: Dict[str, Any], doc_stem: str, page: int, source: st
     return graph
 
 
-# --------------------------------------------------------------------------- #
-# I/O adapters: page text from JSONL, KPIs from kpi_output/.
-# Page numbering is 1-based throughout (matches step 1's page_NNN_kpis.json).
-# --------------------------------------------------------------------------- #
 def pages_for_doc(jsonl_pages: Dict[int, List[Tuple[int, str, bool]]]) -> List[Dict[str, Any]]:
     out = []
     for page_num in sorted(jsonl_pages.keys()):
@@ -862,9 +819,6 @@ def load_news_doc_meta(path: Path) -> Dict[str, Dict[str, Any]]:
     return meta
 
 
-# --------------------------------------------------------------------------- #
-# LLM call (verbatim semantics, simplified for a single client).
-# --------------------------------------------------------------------------- #
 def call_llm(prompt: str, client: Any, client_idx: int,
              rate_limiter: RateLimiter, schema: Dict[str, Any], model: str,
              retries: int = 3, cached_content: Optional[str] = None,
@@ -884,12 +838,6 @@ def call_llm(prompt: str, client: Any, client_idx: int,
     last_error: Optional[Exception] = None
     last_raw = ""
     rate_limit_failures = 0
-    # issue #11 follow-up (2026-08-05): the Gemini API rejects cached_content combined
-    # with system_instruction in the SAME call ("CachedContent can not be used with
-    # GenerateContent request setting system_instruction, tools or tool_config") — so
-    # once cached, JSON_ONLY_SYSTEM_INSTRUCTION must NOT be resent here; it is instead
-    # baked into the cache itself at creation (see process_document's get_or_create
-    # call, system_instruction=JSON_ONLY_SYSTEM_INSTRUCTION).
     cfg = CFG_JSON if cached_content is None else types.GenerateContentConfig(
         temperature=0,
         response_mime_type="application/json",
@@ -929,9 +877,6 @@ def call_llm(prompt: str, client: Any, client_idx: int,
     return [], last_raw, False
 
 
-# --------------------------------------------------------------------------- #
-# Per-page processing.
-# --------------------------------------------------------------------------- #
 def process_page(page_info: Dict[str, Any], page_kpis: List[Dict[str, Any]],
                  client: Any, client_idx: int, rate_limiter: RateLimiter,
                  schema: Dict[str, Any], model: str, esg_only: bool,
@@ -964,22 +909,12 @@ def process_page(page_info: Dict[str, Any], page_kpis: List[Dict[str, Any]],
         return p_no, True, False
 
     logger.info(f"-> Processing page {p_no} with client {client_idx}")
-    # cache_name is only ever set by process_document when a Gemini ctx_cache is active,
-    # which never happens together with `provider` in practice (DeepSeek has no cache
-    # equivalent) — `provider is None` here is belt-and-braces so a provider run always
-    # takes the full-prompt branch below even if a stale cache_name were passed in.
     if cache_name is not None and provider is None:
         prompt = build_page_body(page_text, p_no, page_kpis)
     else:
         prompt = build_page_prompt(schema, page_text, p_no, page_kpis, company=company, year=year,
                                    source=source, article_meta=article_meta)
 
-    # call_llm already retries internally on both exceptions AND unparseable JSON
-    # (its own `retries` param, with backoff) — a second retry loop used to live here,
-    # re-invoking call_llm from scratch on the identical prompt whenever it came back
-    # empty/malformed. That doubled the paid calls on a persistently-failing page
-    # (2 outer attempts x 2 inner attempts = up to 4 real generate_content calls for
-    # one page). One call_llm invocation now owns the whole retry budget.
     parsed, raw, rate_limited = call_llm(prompt, client, client_idx, rate_limiter,
                                          schema, model, retries=3, cached_content=cache_name,
                                          provider=provider)
@@ -1051,9 +986,6 @@ def process_page(page_info: Dict[str, Any], page_kpis: List[Dict[str, Any]],
     return p_no, False, False
 
 
-# --------------------------------------------------------------------------- #
-# Per-document driver.
-# --------------------------------------------------------------------------- #
 def process_document(source_pdf: str, jsonl_pages: Dict[int, List[Tuple[int, str, bool]]],
                      kpi_dir: Path, out_dir: Path, schema: Dict[str, Any], model: str,
                      client: Any, rate_limiter: RateLimiter,
@@ -1063,9 +995,6 @@ def process_document(source_pdf: str, jsonl_pages: Dict[int, List[Tuple[int, str
                      provider: Optional[_Provider] = None,
                      ) -> Tuple[int, int]:
     if source == "news":
-        # news source_pdf is an id like "AAA__vietstock.vn__<hash>" (no .pdf); do NOT
-        # os.path.splitext it - that would strip ".vn__<hash>" and collapse every article
-        # from one domain into a single dir. Company/year come from the article metadata.
         pdf_stem = source_pdf
         meta = doc_meta or {}
         company = meta.get("company") or meta.get("ticker") or source_pdf
@@ -1094,9 +1023,6 @@ def process_document(source_pdf: str, jsonl_pages: Dict[int, List[Tuple[int, str
     cache_name: Optional[str] = None
     if ctx_cache is not None and pages and provider is None:
         header = build_document_header(schema, company, year, source=source, article_meta=article_meta)
-        # JSON_ONLY_SYSTEM_INSTRUCTION is constant across every call this stage makes,
-        # so it is baked into the cache itself (system_instruction=) rather than sent
-        # per-call — see call_llm's cfg for why it can no longer be sent per-call at all.
         cache_name = ctx_cache.get_or_create(
             header, rate_limiter, system_instruction=JSON_ONLY_SYSTEM_INSTRUCTION,
         )
@@ -1137,9 +1063,6 @@ def process_document(source_pdf: str, jsonl_pages: Dict[int, List[Tuple[int, str
     return success, failed
 
 
-# --------------------------------------------------------------------------- #
-# Offline preview (no LLM, no writes) - verify --source/meta/prompt for free.
-# --------------------------------------------------------------------------- #
 def dry_run_preview(selected: List[str], docs: Dict[str, Any], schema: Dict[str, Any],
                     esg_only: bool, source: str, news_meta: Dict[str, Dict[str, Any]],
                     kpi_dir: Path) -> None:
@@ -1182,9 +1105,6 @@ def dry_run_preview(selected: List[str], docs: Dict[str, Any], schema: Dict[str,
         print()
 
 
-# --------------------------------------------------------------------------- #
-# CLI.
-# --------------------------------------------------------------------------- #
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="Extract temporal ESG graphs from labeled JSONL + KPI dir using Gemini"
@@ -1239,7 +1159,6 @@ def main() -> None:
     if not selected:
         return
 
-    # news: per-article metadata (company/year/domain/title) alongside the page text.
     news_meta = load_news_doc_meta(args.input) if args.source == "news" else {}
     esg_only = not args.all_pages
 

@@ -122,7 +122,6 @@ def test_full_llm_chain_via_run_py_cli():
         issuer_out = tmp / "issuer_registry.json"
         resolved_out = tmp / "resolved"
 
-        # --- step01: extract (real LLM via CLI, gemini default) ------------------
         proc = _run(["extract", "--doc", "BBB_Baocaothuongnien_2024",
                     "-i", str(REPORT_INPUT), "-o", str(kpi_out)], env)
         _assert_ok(proc, "extract")
@@ -130,7 +129,6 @@ def test_full_llm_chain_via_run_py_cli():
         assert len(kpi_files) == 4, f"expected 4 page file(s), got {len(kpi_files)}"
         print(f"PASS extract (gemini) via CLI: {len(kpi_files)} page file(s) written")
 
-        # --- step02: extract_triples (report + news, real LLM via CLI) -----------
         proc = _run(["extract_triples", "--doc", "BBB_Baocaothuongnien_2024",
                     "-i", str(REPORT_INPUT), "--kpi-dir", str(kpi_out),
                     "-o", str(graphs_out), "--source", "report"], env)
@@ -145,7 +143,6 @@ def test_full_llm_chain_via_run_py_cli():
         assert len(graph_files) == 5, f"expected 5 page graph file(s) (4 report + 1 news), got {len(graph_files)}"
         print(f"PASS extract_triples (gemini) via CLI: {len(graph_files)} page graph file(s) (report + news)")
 
-        # --- build_validated block (03 -> 03b -> 03c), real LLM phase-2 via CLI ---
         proc = _run(["build_validated", "-i", str(graphs_out / "graphs"), "-o", str(validated_out),
                     "--cache", str(validated_out / "phase2_repairs.json")], env)
         _assert_ok(proc, "build_validated")
@@ -155,7 +152,6 @@ def test_full_llm_chain_via_run_py_cli():
         assert len(triples) > 0, "build_validated produced zero triples"
         print(f"PASS build_validated (gemini) via CLI: {len(triples)} triple(s)")
 
-        # --- step04: issuer registry draft (offline; scratch xlsx) ---------------
         companies_xlsx = _make_companies_xlsx(tmp)
         proc = _run(["issuer", "-i", str(validated_file), "--companies", str(companies_xlsx),
                     "-o", str(issuer_out)], env)
@@ -164,9 +160,6 @@ def test_full_llm_chain_via_run_py_cli():
         assert "BBB" in registry, f"step04 did not draft a BBB entry via CLI — keys: {sorted(registry)}"
         print(f"PASS issuer via CLI: drafted {sorted(registry)}")
 
-        # --- build_resolved block (05 -> 05b -> 05c) ------------------------------
-        # --no-llm matches step05's actual production default today (embeddings
-        # dormant per CLAUDE.md) — this system test does not exercise Stage B/C.
         proc = _run(["build_resolved", "-i", str(validated_file), "-o", str(resolved_out),
                     "--graphs-dir", str(graphs_out / "graphs"), "--registry", str(issuer_out),
                     "--no-llm"], env)
@@ -178,14 +171,12 @@ def test_full_llm_chain_via_run_py_cli():
         print(f"PASS build_resolved (gemini) via CLI: {len(resolved['nodes'])} node(s) / "
               f"{len(resolved['edges'])} edge(s)")
 
-        # --- step05d: align_claims (real LLM via CLI) -----------------------------
         align_stats_out = tmp / "indicator_align_llm_stats.json"
         proc = _run(["align_claims", "-i", str(resolved_file), "--max-llm-pairs", "5",
                     "--stats-out", str(align_stats_out)], env)
         _assert_ok(proc, "align_claims")
         print(f"PASS align_claims (gemini) via CLI: {align_stats_out.exists()}")
 
-        # --- step07: claims_vs_conduct (real LLM, mandatory, via CLI) ------------
         dossier_dir = tmp / "crosscheck"
         proc = _run(["claims_vs_conduct", "-i", str(resolved_file), "-o", str(dossier_dir),
                     "--ticker", "BBB", "--max-llm-pairs", "5"], env)
@@ -193,7 +184,6 @@ def test_full_llm_chain_via_run_py_cli():
         dossier_files = list(dossier_dir.glob("*_claim_assessments.json"))
         print(f"PASS claims_vs_conduct (gemini) via CLI: wrote {[f.name for f in dossier_files]}")
 
-        # --- steps 06/08/09: Neo4j-dependent, skip-gated on a live connection ----
         if not _neo4j_reachable():
             print("SKIP steps 06/08/09 (neo4j_load/neo4j_sync/claim_ledger) — Neo4j "
                   "unreachable (Docker Desktop not running). Known gap for this run, "

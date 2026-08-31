@@ -15,7 +15,6 @@ import hashlib
 import sys
 from pathlib import Path
 
-# Make the sibling data_processing package importable when run from anywhere.
 _ROOT = Path(__file__).resolve().parent.parent
 if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
@@ -61,7 +60,6 @@ def article_to_records(
     company_mentioned = _mentions(company, text_lower)
     matched = sorted({t for t in query_terms if t.lower() in text_lower})
 
-    # Headline first, then body sentences — all through the report splitter.
     units: list[str] = []
     if article.title:
         units.append(article.title.strip())

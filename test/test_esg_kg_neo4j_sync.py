@@ -62,7 +62,6 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO / "src"))
 
-# --- new: the esg_kg package -----------------------------------------------------
 from esg_kg.load import neo4j_sync as new_step08  # noqa: E402
 from esg_kg.crosscheck import claims_vs_conduct as new_crosscheck  # noqa: E402
 
@@ -77,9 +76,6 @@ def _skip(name: str, why: str) -> None:
     print(f"SKIP {name} — {why}")
 
 
-# --------------------------------------------------------------------------- #
-# The stub Neo4j driver. Records every query + param dict; executes nothing.
-# --------------------------------------------------------------------------- #
 class _FakeCounters:
     def __init__(self, n):
         self.properties_set = n
@@ -169,9 +165,6 @@ def _ns(**kw) -> argparse.Namespace:
     return argparse.Namespace(**base)
 
 
-# --------------------------------------------------------------------------- #
-# node_text trap
-# --------------------------------------------------------------------------- #
 def test_node_text_is_the_crosscheck_one():
     assert new_step08.node_text is new_crosscheck.node_text, (
         "esg_kg.load.neo4j_sync.node_text must be the NODE-dispatching function from "
@@ -181,9 +174,6 @@ def test_node_text_is_the_crosscheck_one():
     )
 
 
-# --------------------------------------------------------------------------- #
-# Pure-function equivalence: build_key_index / resolve_claim / resolve_evidence / build_rows
-# --------------------------------------------------------------------------- #
 def _mini_graph():
     return {"nodes": [
         {"class": "SustainabilityClaim", "properties": {"claim_id": "c1", "description": "d1"}},
@@ -231,16 +221,12 @@ def test_build_key_index_and_rows_match_both_trees():
 
     rows, edges, how = new_step08.build_rows(dossiers, "aaa", by_claim, by_text)
 
-    # sanity on the resolution mix itself, so the fixture is proven to exercise what it claims
     assert how["claim_stable_id"] == 1
     assert how["claim_positional"] == 1
     assert how["claim_unresolved"] == 1
     assert how["evidence_text"] == 1
 
 
-# --------------------------------------------------------------------------- #
-# End-to-end run() equivalence via the fake Neo4j driver — synthetic fixture
-# --------------------------------------------------------------------------- #
 def test_run_end_to_end_synthetic_both_trees_send_identical_neo4j_calls(tmp_path=None):
     import json
     import tempfile
@@ -272,7 +258,6 @@ def test_run_clear_advisory_both_trees_send_identical_neo4j_calls():
             new_step08, _ns(input=dossier_file, resolved=graph_file, clear_advisory=True))
 
         assert len(calls) > 0
-        # the clear-advisory branch adds 2 queries up front that the default run lacks
         assert "DELETE r" in calls[0][0]
 
 
@@ -355,9 +340,6 @@ def test_no_dossier_file_exits_both_trees():
         assert e.code == 1
 
 
-# --------------------------------------------------------------------------- #
-# Real corpus: 1,093 real dossiers x the real 10,425-node resolved graph
-# --------------------------------------------------------------------------- #
 def test_real_corpus_both_trees_send_identical_neo4j_calls():
     if not DOSSIER_FILE.exists() or not RESOLVED_FILE.exists():
         _skip("test_real_corpus_both_trees_send_identical_neo4j_calls",
@@ -369,13 +351,6 @@ def test_real_corpus_both_trees_send_identical_neo4j_calls():
     calls, driver_calls = _run_with_stub(new_step08, _ns())
 
     assert len(driver_calls) > 0
-    # claim props (always) + scoped clear (always, since default clear_advisory=False) is
-    # the floor; edge-type calls (>=1 more) only fire if AAA's dossier actually has any
-    # supports/contradicts. 2026-08-07: AAA's real dossier was re-adjudicated with the
-    # issuer-scope + VN-tokenizer + tightened-prompt fixes and now legitimately has ZERO
-    # supports/contradicts (far more conservative, correctly so) — >=3 was true only
-    # because AAA used to have at least one; asserting >=2 is the part that's actually
-    # invariant regardless of what today's real adjudication verdicts happen to be.
     assert len(calls) >= 2, \
         f"expected >=2 real Neo4j calls (claim props + scoped clear), got {len(calls)}"
 

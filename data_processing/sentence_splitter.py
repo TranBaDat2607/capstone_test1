@@ -16,8 +16,6 @@ try:
         return _ut_sent_tokenize(text)
 
 except ImportError:  # pragma: no cover - fallback only
-    # Regex fallback: split on .!? followed by space + uppercase or newline.
-    # Won't handle Vietnamese abbreviations correctly, but better than nothing.
     _SENT_END_RE = re.compile(r"(?<=[.!?])\s+(?=[A-ZÀ-ỹ])|\n{2,}")
 
     def _split(text: str) -> list[str]:
@@ -26,11 +24,9 @@ except ImportError:  # pragma: no cover - fallback only
 
 _BULLET_RE = re.compile(r"^[\s•·\-–—*●▪►]+")
 _PAGE_NUM_RE = re.compile(r"^\s*\d+\s*$")
-# TOC line: contains a long run of dots (dot leaders to page numbers).
 _TOC_RE = re.compile(r"\.{6,}")
-# Looks like a mostly-numeric / table-row fragment.
 _NUMERIC_NOISE_RE = re.compile(r"^[\d\s.,()%/\-+]+$")
-_MIN_LEN = 25  # chars; drop short fragments
+_MIN_LEN = 25
 _MIN_WORDS = 4
 
 

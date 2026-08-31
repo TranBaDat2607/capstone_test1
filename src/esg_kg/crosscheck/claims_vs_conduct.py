@@ -142,45 +142,29 @@ logger = logging.getLogger(__name__)
 DEFAULT_INPUT = REPO_ROOT / "graph_output" / "resolved" / "resolved_graph.json"
 DEFAULT_SCHEMA = REPO_ROOT / "config" / "schema.json"
 DEFAULT_OUT_DIR = REPO_ROOT / "graph_output" / "crosscheck"
-# DEFAULT_MODEL comes from esg_kg.core.llm (GEMINI_MODEL env var, default
-# gemini-2.5-flash-lite) — see that module's docstring.
 DEFAULT_PROVIDER_ORDER = "gemini"
 DEFAULT_RATE_LIMIT = 10
 DEFAULT_MAX_LLM_PAIRS = 300
 DEFAULT_TOP_K = 8
-DEFAULT_WINDOW_BEFORE = 1     # conduct may predate the claim year by at most this
-DEFAULT_WINDOW_AFTER = 50     # ...and may follow it by "any" plausible number of years
-DEFAULT_MIN_TOPIC_OVERLAP = 2  # a single shared token is too weak a retrieval signal on
-                                # its own (even VN-aware, a lone shared word can still be
-                                # coincidental) — require at least 2. Indicator-axis pairs
-                                # (tier="indicator") bypass this gate entirely by design.
-DEFAULT_CACHE = DEFAULT_OUT_DIR / "adjudication_cache.json"  # issue #9: per-issuer, keyed
-                                                               # by (claim_text, evidence_text,
-                                                               # evidence_meta) content
+DEFAULT_WINDOW_BEFORE = 1
+DEFAULT_WINDOW_AFTER = 50
+DEFAULT_MIN_TOPIC_OVERLAP = 2
+DEFAULT_CACHE = DEFAULT_OUT_DIR / "adjudication_cache.json"
 
-# Conduct-side node classes (the "doing"). Claims are the "saying" (SustainabilityClaim).
 CONDUCT_CLASSES = {"Controversy", "Penalty", "MediaReport", "KPIObservation", "ThirdPartyVerification"}
 
-# How a verdict + evidence class maps to a schema-legal claim edge. Pairs are checked
-# against config/schema.json at runtime; anything not legal stays dossier-only.
-SUPPORT_EDGE = "verifiedBy"                      # SustainabilityClaim -> {ThirdPartyVerification, KPIObservation}
-CONTRADICT_EDGE = {                              # SustainabilityClaim -> ...
+SUPPORT_EDGE = "verifiedBy"
+CONTRADICT_EDGE = {
     "Controversy": "contradictedBy",
     "MediaReport": "contradictedByMedia",
 }
 
-# Self-verification guard (§6.4): the issuer's own domains must never "verify" its own
-# claims. POC inline list + an issuer-token heuristic (a domain containing a core issuer
-# token is treated as company-owned). Safe-failure direction: a miss only inflates
-# support, never fabricates a contradiction.
 COMPANY_DOMAINS = {
     "anphatholdings.vn", "aneco.com.vn", "anphatbioplastics.com", "anphat.vn",
     "aaa.com.vn", "aaa.com", "aaplastic.vn",
 }
 ISSUER_DOMAIN_TOKENS = {"anphat", "aneco", "aaplastic"}
 
-# Tokens that must not drive topic overlap: generic + the issuer's own name (all conduct
-# is about the issuer, so name tokens would match everything and mean nothing).
 STOPWORDS: Set[str] = {
     "cong", "ty", "co", "phan", "tnhh", "tap", "doan", "aaa", "an", "phat", "xanh",
     "nhua", "green", "plastic", "plastics", "environment", "moi", "truong", "va",
@@ -188,14 +172,6 @@ STOPWORDS: Set[str] = {
     "bao", "cao", "report", "nien", "thuong", "ve", "la", "den", "cho", "khi",
 }
 
-# Tightened 2026-08-07 (Layer 2 of the ACG/AGG contamination fix): production rationale
-# text was generalizing from ONE adverse event to the company's ENTIRE trustworthiness —
-# e.g. "the company was fined for stock manipulation, therefore it likely didn't really
-# appoint an independent vote-counter either" — a halo inference the old wording's own
-# example ("a green/responsible claim vs a penalty... in the same period") invited. The
-# retrieval-side fix (issuer scoping + VN-aware topic tokens) removes the WRONG-COMPANY
-# case; this prompt change targets the remaining SAME-COMPANY-but-different-topic case,
-# which retrieval alone cannot rule out.
 ADJUDICATE_SYSTEM = (
     "You assess greenwashing evidence for a Vietnamese ESG knowledge graph. You are given "
     "ONE ESG claim a company made in its own report, and ONE piece of independent evidence "
@@ -226,9 +202,6 @@ ADJUDICATE_SYSTEM = (
 )
 
 
-# --------------------------------------------------------------------------- #
-# Node helpers.
-# --------------------------------------------------------------------------- #
 def props(node: Dict[str, Any]) -> Dict[str, Any]:
     return node.get("properties", {}) or {}
 
@@ -297,11 +270,10 @@ def date_uncertain(node: Dict[str, Any]) -> bool:
     p = props(node)
     if p.get("date_uncertain") in (True, "true", "True"):
         return True
-    # A bare "YYYY-01-01" is the preprocessor's placeholder for an unknown day/month.
     return bool(re.fullmatch(r"(19|20)\d{2}-01-01", str(p.get("date", "") or "")))
 
 
-_word_tokenize = None  # lazy-bound on first call, see _vn_segments
+_word_tokenize = None
 
 
 def _vn_segments(text: str) -> List[str]:
@@ -358,15 +330,12 @@ def is_company_domain(domain: str) -> bool:
     return any(tok in d for tok in ISSUER_DOMAIN_TOKENS)
 
 
-# --------------------------------------------------------------------------- #
-# Graph indexing.
-# --------------------------------------------------------------------------- #
 class Graph:
     def __init__(self, data: Dict[str, Any]):
         self.nodes: List[Dict[str, Any]] = data["nodes"]
         self.edges: List[Dict[str, Any]] = data["edges"]
-        self.out: Dict[int, List[Tuple[str, int]]] = defaultdict(list)   # subj -> [(pred, obj)]
-        self.inc: Dict[int, List[Tuple[str, int]]] = defaultdict(list)   # obj  -> [(pred, subj)]
+        self.out: Dict[int, List[Tuple[str, int]]] = defaultdict(list)
+        self.inc: Dict[int, List[Tuple[str, int]]] = defaultdict(list)
         for e in self.edges:
             s, o, pr = e.get("subject"), e.get("object"), e.get("predicate")
             if isinstance(s, int) and isinstance(o, int) and pr:
@@ -382,7 +351,6 @@ def find_issuer(g: Graph, ticker: str) -> Optional[int]:
              if n.get("class") == "Organization" and str(props(n).get("ticker", "")).upper() == ticker.upper()]
     if not cands:
         return None
-    # the resolved issuer anchor is the most-connected Organization (usually index 0)
     return max(cands, key=lambda i: len(g.out[i]) + len(g.inc[i]))
 
 
@@ -399,13 +367,6 @@ def claim_keywords(g: Graph) -> Dict[int, Set[str]]:
     return kw
 
 
-# --------------------------------------------------------------------------- #
-# LLM adjudication (single provider: Gemini).
-#
-# Does the SAME narrow, grounded 3-way task regardless of provider. A provider that
-# fails 3x with no success (e.g. a 403 billing block) is disabled, so the run still
-# finishes (with whatever calls already succeeded) rather than hanging.
-# --------------------------------------------------------------------------- #
 def _parse_verdict(raw: str) -> Optional[Dict[str, Any]]:
     """Parse a provider's JSON reply into {verdict, confidence, rationale} or None."""
     if not raw:
@@ -420,10 +381,6 @@ def _parse_verdict(raw: str) -> Optional[Dict[str, Any]]:
             out = json.loads(m.group(0))
         except Exception:
             return None
-    # Valid JSON of the wrong SHAPE ('[]', '"txt"', '42') must be refused like any other
-    # unusable reply. Without this the `.get` below raised AttributeError, and since that
-    # call sits inside Adjudicator.adjudicate's own try/except, it was misfiled as a
-    # provider *failure* instead of an unusable-reply no-op.
     if not isinstance(out, dict):
         return None
     if out.get("verdict") not in ("supports", "contradicts", "irrelevant"):
@@ -464,21 +421,11 @@ class Adjudicator:
     def __init__(self, model: str, rate_limit: int, order: List[str],
                  api_key: Optional[str] = None,
                  cache: Optional[ContentCache] = None) -> None:
-        # override=True so the repo .env is authoritative — a stale shell GEMINI_API_KEY
-        # must not shadow the key the user edits in .env. Only applies when
-        # api_key is not explicitly given (a one-off override).
         if api_key is None:
             load_dotenv(REPO_ROOT / ".env", override=True)
-        # `model or <provider's own default>`, never the caller's raw `model`: with
-        # a single positional argument shared across the whole registry, a Gemini
-        # model id passed for `--provider-order deepseek` would otherwise be sent
-        # straight to DeepSeek's API (see core.llm.build_llm_provider's docstring).
         registry = {
             "gemini": lambda: _GeminiProvider(model or DEFAULT_MODEL, rate_limit, api_key=api_key),
             "deepseek": lambda: _DeepSeekProvider(model or DEEPSEEK_DEFAULT_MODEL, rate_limit, api_key=api_key),
-            # 2026-08-06: re-added at the user's explicit request, opt-in via
-            # --provider-order openai — see core/llm.py's docstring for why this
-            # isn't a repeat of the 2026-08-04 OpenAI removal.
             "openai": lambda: _OpenAIProvider(model or OPENAI_DEFAULT_MODEL, rate_limit, api_key=api_key),
         }
         self.providers: List[_Provider] = []
@@ -494,9 +441,6 @@ class Adjudicator:
                 logger.info(f"[{name}] not available (no key / SDK) — skipped.")
         self.enabled = bool(self.providers)
         self.cache = cache
-        # P1 fix: bind cache entries to the exact prompt + provider/model that could
-        # have produced them. Order matters (it's part of the cascade), so this is
-        # NOT sorted — a reordered --provider-order is a legitimately different run.
         prompt_hash = hashlib.sha256(ADJUDICATE_SYSTEM.encode("utf-8")).hexdigest()[:12]
         provider_sig = ",".join(f"{p.name}:{p.model}" for p in self.providers)
         self._cache_salt = f"{prompt_hash}|{provider_sig}"
@@ -518,7 +462,7 @@ class Adjudicator:
             "Return only JSON: verdict (supports|contradicts|irrelevant), confidence (0-1), rationale."
         )
         result: Optional[Dict[str, Any]] = None
-        answered = False  # a provider returned WITHOUT raising, i.e. gave a real reply
+        answered = False
         for p in self.providers:
             if not p.enabled:
                 continue
@@ -530,14 +474,14 @@ class Adjudicator:
                 if out is not None:
                     out["provider"] = p.name
                     result = out
-                break  # this provider answered; don't cascade further
+                break
             except Exception as e:
                 p.failures += 1
                 logger.warning(f"[{p.name}] adjudication failed ({e}).")
                 if p.failures >= 3 and p.calls == 0:
                     logger.error(f"[{p.name}] 3 failures with 0 successes — disabling; falling back to next provider.")
                     p.enabled = False
-                continue  # try the next provider for this same pair
+                continue
         if not any(p.enabled for p in self.providers):
             self.enabled = False
         if self.cache is not None and answered:
@@ -550,9 +494,6 @@ class Adjudicator:
                                "calls_ok": p.calls, "failures": p.failures} for p in self.providers]}
 
 
-# --------------------------------------------------------------------------- #
-# Driver.
-# --------------------------------------------------------------------------- #
 def run(args: argparse.Namespace) -> None:
     data = json.loads(args.input.read_text(encoding="utf-8"))
     g = Graph(data)
@@ -569,20 +510,11 @@ def run(args: argparse.Namespace) -> None:
     logger.info(f"Issuer '{args.ticker}' = node #{issuer_idx} "
                 f"({props(g.nodes[issuer_idx]).get('name')})")
 
-    # ---- claims on the issuer ----
     claim_idxs = [o for (pr, o) in g.out[issuer_idx] if pr == "claims" and g.cls(o) == "SustainabilityClaim"]
     claim_idxs = sorted(set(claim_idxs))
     kw = claim_keywords(g)
     logger.info(f"{len(claim_idxs)} SustainabilityClaims linked to the issuer")
 
-    # ---- conduct pool (independent = news, SAME ISSUER only) ----
-    # §6a always documented "same issuer + VN topic overlap + temporal window" but the
-    # issuer half was never enforced — the pool spanned every ticker's crawled news, so a
-    # generic topic-token collision (e.g. "phieu" shared between "phiếu bầu"/ballot and
-    # "cổ phiếu"/stock once "cổ" is stripped as a stopword) could pull another company's
-    # penalty into this issuer's dossier. Scope by source_doc's "<TICKER>__" prefix now;
-    # a node with no parseable source_doc (synthetic fixtures, non-crawler sources) is
-    # kept rather than dropped — see node_ticker's docstring.
     ticker_u = args.ticker.upper()
     conduct = [i for i, n in enumerate(g.nodes)
                if n.get("class") in CONDUCT_CLASSES and props(n).get("source_type") == "news"
@@ -591,14 +523,8 @@ def run(args: argparse.Namespace) -> None:
     logger.info(f"Conduct pool (source_type=news, issuer={ticker_u}): "
                 f"{len(conduct)} nodes {dict(conduct_by_cls)}")
 
-    # pre-tokenize the conduct pool once
     ctok = {i: topic_tokens(node_text(g.nodes[i])) for i in conduct}
 
-    # ---- indicator-axis index (tier-1 retrieval, docs/STANDARD_INDICATOR_AXIS.md §6) ----
-    # A claim and a conduct node that hang off the SAME StandardIndicator are almost always
-    # topically relevant to each other — the LLM then only has to decide supports/contradicts,
-    # not relevance. This turns retrieval from a global token overlap into a 2-hop graph join:
-    #   claim --alignsWithIndicator--> (StandardIndicator) <--measuredUnder-- conduct(news)
     ind_conduct: Dict[int, List[int]] = defaultdict(list)
     for si in conduct:
         for pred, obj in g.out.get(si, []):
@@ -613,13 +539,9 @@ def run(args: argparse.Namespace) -> None:
     logger.info(f"Indicator axis: {n_indicator_links} claim→indicator link(s); "
                 f"{sum(len(v) for v in ind_conduct.values())} indicator←conduct(news) link(s)")
 
-    # Score boost so an indicator-joined pair always outranks a token-overlap pair for the LLM
-    # budget (all_pairs is sorted by score descending at :447). It is deliberately large.
     INDICATOR_BOOST = 1000
     tier_of: Dict[Tuple[int, int], str] = {}
 
-    # LLM adjudication is mandatory — no deterministic fallback. Abort up front if no
-    # provider is available so the run never silently degrades into a weaker mode.
     cache_path = getattr(args, "cache", None)
     cache = ContentCache(cache_path) if cache_path else None
     adjud = Adjudicator(args.model, args.rate_limit, args.provider_order, cache=cache)
@@ -629,14 +551,13 @@ def run(args: argparse.Namespace) -> None:
                      "aborting: this pipeline requires LLM adjudication.")
         return
 
-    # ---- 6a retrieval: candidate conduct per claim (deterministic, cheap) ----
     min_overlap = getattr(args, "min_topic_overlap", DEFAULT_MIN_TOPIC_OVERLAP)
     cand_of: Dict[int, List[int]] = {}
-    all_pairs: List[Tuple[int, int, int]] = []  # (overlap, claim_idx, conduct_idx)
+    all_pairs: List[Tuple[int, int, int]] = []
     for ci in claim_idxs:
         ctoks = topic_tokens(node_text(g.nodes[ci]), kw.get(ci))
         cyear = node_year(g.nodes[ci])
-        scored: List[Tuple[int, int, int]] = []  # (overlap, recency, conduct_idx)
+        scored: List[Tuple[int, int, int]] = []
         for xi in conduct:
             overlap = len(ctoks & ctok[xi])
             if overlap < min_overlap:
@@ -647,14 +568,10 @@ def run(args: argparse.Namespace) -> None:
                     continue
             scored.append((overlap, xyear or 0, xi))
 
-        # Tier 1: inject indicator-joined conduct with a boosted score. These bypass the
-        # token-overlap gate (a claim and a KPI on the same indicator can share zero tokens —
-        # "giảm phát thải" vs "12.450 tCO2e") but keep the temporal window unless date-uncertain.
         token_xis = {xi for _, _, xi in scored}
         for si in claim_inds.get(ci, []):
             for xi in ind_conduct.get(si, []):
                 if xi in token_xis:
-                    # already a token candidate — promote it to tier-1 priority
                     scored = [(ov + INDICATOR_BOOST if x == xi else ov, y, x) for ov, y, x in scored]
                 else:
                     xyear = node_year(g.nodes[xi])
@@ -672,7 +589,6 @@ def run(args: argparse.Namespace) -> None:
     claims_with_cands = sum(1 for ci in claim_idxs if cand_of[ci])
     pairs_total = len(all_pairs)
 
-    # ---- 6b adjudication: highest-overlap pairs first, up to the budget, concurrent ----
     verdicts: Dict[Tuple[int, int], Dict[str, Any]] = {}
     llm_pairs = 0
     if pairs_total:
@@ -696,7 +612,6 @@ def run(args: argparse.Namespace) -> None:
     adjudicated_pairs = set(verdicts.keys())
     budget_hit = pairs_total > args.max_llm_pairs
 
-    # ---- 6c assembly per claim ----
     dossiers: List[Dict[str, Any]] = []
     new_edges: List[Dict[str, Any]] = []
     assess_hist: Counter = Counter()
@@ -716,7 +631,7 @@ def run(args: argparse.Namespace) -> None:
                 continue
             adjudicated_here = True
             v = verdict["verdict"]
-            if v not in ("supports", "contradicts"):   # irrelevant → adjudicated, no edge
+            if v not in ("supports", "contradicts"):
                 continue
             conf, why, prov = verdict["confidence"], verdict.get("rationale", ""), verdict.get("provider")
             xnode = g.nodes[xi]
@@ -730,17 +645,16 @@ def run(args: argparse.Namespace) -> None:
                   "retrieval_tier": tier_of.get((ci, xi), "token_overlap")}
 
             if v == "supports":
-                # self-verification guard: the issuer's own domain cannot verify its claim
                 if is_company_domain(domain):
                     ev["independent"] = False
                     ev["guard"] = "dropped: company-owned domain cannot self-verify"
-                    supporting.append(ev)  # visible, but never counted toward appears_supported
+                    supporting.append(ev)
                     continue
                 ev["independent"] = True
                 supporting.append(ev)
                 if legal(SUPPORT_EDGE, "SustainabilityClaim", xcls):
                     new_edges.append(_mk_edge(ci, SUPPORT_EDGE, xi, v, conf, why, src_type, prov, True))
-            else:  # contradicts
+            else:
                 contradicting.append(ev)
                 label = CONTRADICT_EDGE.get(xcls)
                 if label and legal(label, "SustainabilityClaim", xcls):
@@ -748,7 +662,6 @@ def run(args: argparse.Namespace) -> None:
 
         indep_support = [e for e in supporting if e.get("independent")]
 
-        # ---- 6d assessment (LLM evidence links only) ----
         if contradicting:
             assessment = "appears_contradicted"
         elif indep_support:
@@ -784,7 +697,6 @@ def run(args: argparse.Namespace) -> None:
             "caveats": caveats,
         })
 
-    # ---- stats ----
     stats = {
         "issuer": {"ticker": args.ticker, "node_index": issuer_idx,
                    "name": props(g.nodes[issuer_idx]).get("name")},

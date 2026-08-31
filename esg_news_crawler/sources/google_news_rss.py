@@ -27,7 +27,6 @@ def _decode_google_url(url: str, ua: str) -> str:
     """Resolve a news.google.com/rss/articles/... link to the real article URL."""
     if "news.google.com" not in url:
         return url
-    # Primary: batchexecute
     try:
         r = requests.get(url, headers={"User-Agent": ua}, timeout=10)
         r.raise_for_status()
@@ -49,7 +48,6 @@ def _decode_google_url(url: str, ua: str) -> str:
     except Exception as e:
         log.debug("batchexecute decode failed: %s", e)
 
-    # Fallback: base64 inside /articles/<blob>
     m = re.search(r"/articles/([^?&]+)", url)
     if m:
         enc = m.group(1)

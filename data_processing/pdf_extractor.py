@@ -12,12 +12,12 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterator
 
-import fitz  # PyMuPDF
+import fitz
 
 
 @dataclass
 class PageText:
-    page_number: int  # 1-indexed
+    page_number: int
     text: str
 
 
@@ -29,11 +29,8 @@ _SOFT_HYPHEN = "­"
 def _clean_page_text(raw: str) -> str:
     text = unicodedata.normalize("NFC", raw)
     text = text.replace(_SOFT_HYPHEN, "")
-    # Join words broken by a hyphen at end-of-line: "phát-\ntriển" -> "pháttriển"
     text = re.sub(r"-\n(?=\w)", "", text)
-    # Collapse horizontal whitespace
     text = _WS_RE.sub(" ", text)
-    # Collapse 3+ blank lines to 2
     text = _MULTI_NL_RE.sub("\n\n", text)
     return text.strip()
 

@@ -21,7 +21,6 @@ from urllib.parse import urljoin, quote, urlparse
 import httpx
 from bs4 import BeautifulSoup
 
-# Config
 BASE_DIR = Path(__file__).resolve().parent.parent / "data" / "raw" / "crawl_data_news"
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger("fpt_crawler")
@@ -33,7 +32,7 @@ TIMEOUT = 20
 MAX_PAGES_PER_KEYWORD = 3
 MAX_ARTICLES_PER_SOURCE = 80
 MIN_CONTENT_LENGTH = 100
-MAX_CONCURRENT = 8  # Số request đồng thời tối đa
+MAX_CONCURRENT = 8
 
 CRAWL_YEARS = list(range(2010, 2027))
 IS_TEST_MODE = False
@@ -49,36 +48,27 @@ USER_AGENTS = [
 ]
 
 SEARCH_KEYWORDS = [
-    # Tập đoàn
     "FPT", "Tập đoàn FPT",
-    # Công ty con trực tiếp
     "FPT Software", "FPT Telecom", "FPT IS", "FPT Information System",
     "FPT Education", "FPT Online", "FPT Investment",
     "FPT Smart Cloud", "FPT Digital",
-    # Công ty con cấp 2
     "FPT Semiconductor", 
     "FPT University", "FPT Polytechnic", "FUNiX",
     "Đại học FPT", "Cao đẳng FPT",
-    # Công ty liên kết
     "FPT Retail", "FPT Shop", "FPT Long Châu",
     "Synnex FPT", "FPT Securities", "FPT Capital",
     "FPT HOMA", "FPT Play", "F.Studio",
-    # Nhân vật chủ chốt
     "Trương Gia Bình",
 ]
 
-# ThreadPoolExecutor cho CPU-bound tasks & File I/O
 cpu_executor = ThreadPoolExecutor(max_workers=4)
 
-# Global counters & locks cho File Save O(1)
 article_counters = {}
 article_counters_lock = threading.Lock()
 
-# Google block status tracking
 google_blocked = False
 google_blocked_lock = threading.Lock()
 
-# URL Normalization helper
 def normalize_url(url: str) -> str:
     """Chuẩn hóa URL để loại bỏ query params thừa, hash tags, vv."""
     if not url:
@@ -91,7 +81,6 @@ def normalize_url(url: str) -> str:
         query = parsed.query
     return f"{parsed.scheme}://{parsed.netloc}{path}{'?' + query if query else ''}"
 
-# Helper Classes cho Cải tiến
 class DomainRateLimiter:
     def __init__(self):
         self.limits = {
@@ -199,7 +188,6 @@ class ContentValidator:
         
         html_lower = html_str.lower()
         
-        # 1. Check title for captcha/error/just a moment
         title_match = re.search(r"<title>(.*?)</title>", html_lower)
         if title_match:
             title_text = title_match.group(1).strip()
@@ -212,7 +200,6 @@ class ContentValidator:
                 if pattern in title_text:
                     return False, f"Title indicates captcha/block: {title_text}"
 
-        # 2. Check title for server errors
         error_patterns = [
             r"<title>403 forbidden", r"<title>404 not found", 
             r"<title>502 bad gateway", r"<title>503 service temporarily unavailable",
@@ -273,12 +260,10 @@ class CrawlMetrics:
                 f"Speed: {pages_per_sec:.2f} pages/sec | Avg Latency: {avg_latency:.2f}s"
             )
 
-# Khởi tạo global helpers
 limiter = DomainRateLimiter()
 cache = ResponseCache(BASE_DIR)
 metrics = CrawlMetrics()
 
-# Giữ nguyên semaphore để tương thích
 semaphore: asyncio.Semaphore | None = None
 
 def _random_headers() -> dict:
@@ -302,20 +287,15 @@ def _random_delay():
     """Random delay giữa các request."""
     return random.uniform(REQUEST_DELAY_MIN, REQUEST_DELAY_MAX)
 
-# TEXT CLEANING
 def clean_text(s: str) -> str:
     """Decode HTML entities & normalize unicode."""
     if not s:
         return ""
-    # Decode HTML entities: &#7912; -> unicode char, &amp; -> &, ...
     s = html.unescape(s)
-    # Normalize unicode (NFC = composed form, chuẩn cho tiếng Việt)
     s = unicodedata.normalize("NFC", s)
-    # Loại bỏ ký tự điều khiển thừa
     s = re.sub(r'[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]', '', s)
     return s.strip()
 
-# ASYNC HTTP CLIENT
 async def safe_get(client: httpx.AsyncClient, url: str, cache_ttl: float = 604800.0) -> httpx.Response | None:
     """GET với retry, exponential backoff, xử lý 429, cache, rate limit và validation."""
     cached_val = cache.get(url, cache_ttl)
@@ -405,8 +385,6 @@ def is_fpt_related(title: str, content: str) -> bool:
     ])
 
 
-# DATE UTILITIES
-
 def normalize_date(raw: str) -> str:
     if not raw:
         return ""
@@ -449,13 +427,10 @@ def get_year(date_str: str, url: str) -> str:
     return str(datetime.now().year)
 
 
-# METADATA EXTRACTION
-
 def extract_metadata(html_str: str, url: str) -> dict:
     soup = BeautifulSoup(html_str, "lxml")
     title, date_str, author = "", "", ""
 
-    # Meta tags
     og = soup.find("meta", property="og:title")
     if og and og.get("content"):
         t = clean_text(og["content"])
@@ -473,7 +448,6 @@ def extract_metadata(html_str: str, url: str) -> dict:
                               "thanhnien.vn", "tuoitre.vn", "vietnamnet.vn"):
             author = v
 
-    # LD+JSON
     for script in soup.find_all("script", type="application/ld+json"):
         try:
             data = json.loads(script.string or "")
@@ -494,7 +468,6 @@ def extract_metadata(html_str: str, url: str) -> dict:
         except (json.JSONDecodeError, TypeError, AttributeError):
             pass
 
-    # CSS selectors
     if not title:
         for sel in ["h1.title-detail", "h1.article-title", "h1.detail__title",
                      "h1.content-detail-title", "h1"]:
@@ -525,7 +498,6 @@ def extract_metadata(html_str: str, url: str) -> dict:
                 author = clean_text(tag.get_text(strip=True))
                 break
 
-    # URL patterns
     if not date_str:
         m = re.search(r"-(\d{4})(\d{2})(\d{2})\d{6,}\.htm", url)
         if m:
@@ -535,7 +507,6 @@ def extract_metadata(html_str: str, url: str) -> dict:
             if m:
                 date_str = f"20{m.group(1)}-{m.group(2)}-{m.group(3)}"
 
-    # Thử newspaper4k cho metadata bị thiếu
     if not title or not author:
         try:
             from newspaper import Article
@@ -552,10 +523,7 @@ def extract_metadata(html_str: str, url: str) -> dict:
     return {"title": title, "date": date_str, "author": author}
 
 
-# CONTENT EXTRACTION
-
 def extract_content(html_str: str) -> str:
-    # Phương pháp 1: trafilatura (tốt nhất cho text extraction)
     try:
         import trafilatura
         text = trafilatura.extract(
@@ -567,7 +535,6 @@ def extract_content(html_str: str) -> str:
     except Exception:
         pass
 
-    # Phương pháp 2: newspaper4k
     try:
         from newspaper import Article
         art = Article("", language="vi")
@@ -578,7 +545,6 @@ def extract_content(html_str: str) -> str:
     except Exception:
         pass
 
-    # Phương pháp 3: BeautifulSoup CSS selectors (fallback cuối)
     soup = BeautifulSoup(html_str, "lxml")
     for sel in ["article.fck_detail p.Normal", "div.detail__content p",
                  "div.singular-content p", "div.maincontent p",
@@ -589,8 +555,6 @@ def extract_content(html_str: str) -> str:
             return clean_text("\n".join(parts))
     return ""
 
-
-# ARTICLE EXTRACTION
 
 def _detect_source(url: str) -> str:
     for k, v in {"vnexpress": "VnExpress", "tuoitre": "Tuổi Trẻ",
@@ -633,9 +597,8 @@ def fetch_with_playwright_in_thread(url: str) -> str | None:
                 viewport={"width": 1280, "height": 800}
             )
             page = ctx.new_page()
-            # Set timeout to 15 seconds
             page.goto(url, wait_until="domcontentloaded", timeout=15000)
-            page.wait_for_timeout(2000) # Give it 2 seconds to load JS elements/captcha bypass
+            page.wait_for_timeout(2000)
             html_content = page.content()
             ctx.close()
             browser.close()
@@ -652,7 +615,6 @@ async def fetch_and_build(client: httpx.AsyncClient, url: str) -> dict | None:
         if article:
             return article
 
-    # Fallback to Playwright if httpx failed/captcha page was returned
     if "thanhnien.vn" in url or "tuoitre.vn" in url or "vietnamnet.vn" in url:
         logger.info(f"  [Fallback Triggered] Retrying with Playwright for {url[:60]}...")
         html_str = await loop.run_in_executor(cpu_executor, fetch_with_playwright_in_thread, url)
@@ -665,8 +627,6 @@ async def fetch_and_build(client: httpx.AsyncClient, url: str) -> dict | None:
                 logger.warning(f"  Playwright content validation failed: {reason}")
     return None
 
-
-# SEARCH FUNCTIONS (ASYNC)
 
 async def search_vnexpress(client: httpx.AsyncClient, keyword: str, year: int = None) -> list[str]:
     urls = []
@@ -838,7 +798,6 @@ def run_vietnamnet_search_in_thread(keywords: list[str]) -> list[str]:
                     try:
                         url = f"https://vietnamnet.vn/tim-kiem?q={quote(kw)}&page={pg}"
                         page.goto(url, wait_until="domcontentloaded", timeout=20000)
-                        # Chờ selector kết quả xuất hiện
                         try:
                             page.wait_for_selector(".horizontalPost, .verticalPost, h3", timeout=10000)
                         except Exception:
@@ -881,7 +840,6 @@ async def search_vietnamnet_rss(client: httpx.AsyncClient) -> list[str]:
         try:
             r = await safe_get(client, feed, cache_ttl=3600.0)
             if r and r.status_code == 200:
-                # Dùng lxml-xml hoặc xml parser nếu bs4 hỗ trợ, hoặc lxml thông thường
                 soup = BeautifulSoup(r.text, "lxml")
                 for item in soup.find_all("item"):
                     link = item.find("link")
@@ -930,8 +888,6 @@ async def search_google_site(client: httpx.AsyncClient, site_domain: str,
     return urls
 
 
-# FILE SAVE
-
 def save_article(article: dict, year: str, source_key: str) -> Path:
     year_dir = BASE_DIR / year
     year_dir.mkdir(parents=True, exist_ok=True)
@@ -955,8 +911,6 @@ def save_article(article: dict, year: str, source_key: str) -> Path:
     return filepath
 
 
-# CRAWL LOGIC (ASYNC)
-
 async def crawl_batch(client: httpx.AsyncClient, urls: list[str],
                        source_key: str, stats: dict):
     """Crawl 1 batch URLs song song."""
@@ -974,7 +928,6 @@ async def crawl_batch(client: httpx.AsyncClient, urls: list[str],
             continue
         article = result
         year = get_year(article["published_date"], url)
-        # Ghi file thông qua ThreadPool
         fp = await loop.run_in_executor(cpu_executor, save_article, article, year, source_key)
         logger.info(f"    {year}/{fp.name} | {article['title'][:50]} | {article['published_date']}")
         stats["success"] += 1
@@ -991,7 +944,6 @@ async def crawl_with_httpx(client: httpx.AsyncClient, source_key: str, name: str
 
     all_urls = set()
 
-    # Search nội bộ
     if use_year:
         for year in CRAWL_YEARS:
             for kw in SEARCH_KEYWORDS:
@@ -1010,7 +962,6 @@ async def crawl_with_httpx(client: httpx.AsyncClient, source_key: str, name: str
                 all_urls.add(normalize_url(f))
             await asyncio.sleep(_random_delay())
 
-    # Google Search bổ sung cho năm cũ (2010-2019)
     if use_google_old and not IS_TEST_MODE:
         domain = {"vnexpress": "vnexpress.net", "tuoitre": "tuoitre.vn",
                   "vietnamnet": "vietnamnet.vn"}.get(source_key)
@@ -1023,14 +974,13 @@ async def crawl_with_httpx(client: httpx.AsyncClient, source_key: str, name: str
                     for f in found:
                         all_urls.add(normalize_url(f))
                     logger.info(f"     Added +{len(all_urls) - before} URL mới")
-                    await asyncio.sleep(4.0 + random.random() * 2)  # Google rate limit
+                    await asyncio.sleep(4.0 + random.random() * 2)
 
     url_list = list(all_urls)[:MAX_ARTICLES_PER_SOURCE]
     logger.info(f"   Tổng: {len(all_urls)} unique -> crawl {len(url_list)}")
 
     stats = {"total": len(url_list), "success": 0, "failed": 0, "skipped": 0, "by_year": {}}
 
-    # Crawl song song theo batch
     batch_size = MAX_CONCURRENT
     for i in range(0, len(url_list), batch_size):
         batch = url_list[i:i + batch_size]
@@ -1050,11 +1000,9 @@ async def crawl_thanhnien(client: httpx.AsyncClient) -> dict:
     stats = {"total": 0, "success": 0, "failed": 0, "skipped": 0, "by_year": {}}
 
     loop = asyncio.get_running_loop()
-    # Chạy playwright search trong background thread pool
     found_urls = await loop.run_in_executor(cpu_executor, run_all_thanhnien_search_in_thread, SEARCH_KEYWORDS)
     all_urls = set(normalize_url(f) for f in found_urls)
 
-    # Google bổ sung bài cũ
     if not IS_TEST_MODE:
         for year in range(2010, 2020):
             for kw in ["FPT", "FPT Software"]:
@@ -1070,7 +1018,6 @@ async def crawl_thanhnien(client: httpx.AsyncClient) -> dict:
     stats["total"] = len(url_list)
     logger.info(f"   Tổng: {len(all_urls)} unique -> crawl {len(url_list)}")
 
-    # Extract bằng httpx async (song song)
     batch_size = MAX_CONCURRENT
     for i in range(0, len(url_list), batch_size):
         batch = url_list[i:i + batch_size]
@@ -1090,11 +1037,9 @@ async def crawl_tuoitre(client: httpx.AsyncClient) -> dict:
     stats = {"total": 0, "success": 0, "failed": 0, "skipped": 0, "by_year": {}}
 
     loop = asyncio.get_running_loop()
-    # Chạy playwright search trong background thread pool
     found_urls = await loop.run_in_executor(cpu_executor, run_tuoitre_search_in_thread, SEARCH_KEYWORDS)
     all_urls = set(normalize_url(f) for f in found_urls)
 
-    # Google bổ sung bài cũ
     if not IS_TEST_MODE:
         for year in range(2010, 2020):
             for kw in ["FPT", "FPT Software"]:
@@ -1110,7 +1055,6 @@ async def crawl_tuoitre(client: httpx.AsyncClient) -> dict:
     stats["total"] = len(url_list)
     logger.info(f"   Tổng: {len(all_urls)} unique -> crawl {len(url_list)}")
 
-    # Extract bằng httpx async (song song)
     batch_size = MAX_CONCURRENT
     for i in range(0, len(url_list), batch_size):
         batch = url_list[i:i + batch_size]
@@ -1131,18 +1075,15 @@ async def crawl_vietnamnet(client: httpx.AsyncClient) -> dict:
 
     loop = asyncio.get_running_loop()
     
-    # 1. RSS
     rss_urls = await search_vietnamnet_rss(client)
     all_urls = set(normalize_url(f) for f in rss_urls)
     logger.info(f"   VietnamNet RSS: Found {len(all_urls)} URL")
     
-    # 2. Playwright Search
     found_urls = await loop.run_in_executor(cpu_executor, run_vietnamnet_search_in_thread, SEARCH_KEYWORDS)
     for f in found_urls:
         all_urls.add(normalize_url(f))
     logger.info(f"   VietnamNet Playwright Search: Total unique now {len(all_urls)} URL")
 
-    # 3. Google bổ sung bài cũ
     if not IS_TEST_MODE:
         for year in range(2010, 2020):
             for kw in ["FPT", "FPT Software"]:
@@ -1158,7 +1099,6 @@ async def crawl_vietnamnet(client: httpx.AsyncClient) -> dict:
     stats["total"] = len(url_list)
     logger.info(f"   Tổng: {len(all_urls)} unique -> crawl {len(url_list)}")
 
-    # Extract bằng httpx async (song song)
     batch_size = MAX_CONCURRENT
     for i in range(0, len(url_list), batch_size):
         batch = url_list[i:i + batch_size]
@@ -1168,8 +1108,6 @@ async def crawl_vietnamnet(client: httpx.AsyncClient) -> dict:
 
     return stats
 
-
-# MAIN
 
 def clean_old_data():
     for item in BASE_DIR.iterdir():
@@ -1207,14 +1145,12 @@ async def main():
 
     total_stats = {"sources": {}, "total_articles": 0}
 
-    # Định cấu hình limits cho connection pool của httpx để tối ưu hóa throughput
     limits = httpx.Limits(
         max_connections=100,
         max_keepalive_connections=50,
         keepalive_expiry=30.0
     )
 
-    # Chạy định kỳ log progress metrics sau mỗi 10 giây
     stop_logging = threading.Event()
     def periodic_metrics_log():
         while not stop_logging.is_set():
@@ -1225,7 +1161,6 @@ async def main():
     metrics_thread.start()
 
     async with httpx.AsyncClient(http2=True, verify=True, limits=limits) as client:
-        # Định nghĩa các worker chạy song song
         async def worker_vnexpress():
             try:
                 s = await crawl_with_httpx(client, "vnexpress", "VnExpress",
@@ -1259,7 +1194,6 @@ async def main():
                 logger.error(f"   VietnamNet: {e}")
                 return "vietnamnet", {"error": str(e)}
 
-        # Chạy đồng thời 4 worker nguồn báo
         results = await asyncio.gather(
             worker_vnexpress(),
             worker_tuoitre(),
@@ -1272,11 +1206,9 @@ async def main():
             if "error" not in s:
                 total_stats["total_articles"] += s["success"]
 
-    # Dừng metrics logging thread
     stop_logging.set()
     metrics.log_progress()
 
-    # Summary
     logger.info("\n" + "=" * 60)
     logger.info("   KẾT QUẢ CRAWL")
     logger.info("=" * 60)
@@ -1296,7 +1228,6 @@ async def main():
     for y in sorted(all_years):
         logger.info(f"    {y}: {all_years[y]} bài")
 
-    # Tạo thư mục lưu raw nếu chưa tồn tại
     BASE_DIR.mkdir(parents=True, exist_ok=True)
     with open(BASE_DIR / "crawl_summary.json", "w", encoding="utf-8") as f:
         json.dump(total_stats, f, ensure_ascii=False, indent=2)

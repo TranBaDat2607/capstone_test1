@@ -56,14 +56,6 @@ import pandas as pd
 from esg_kg.core.naming import merge_preserving_edits, name_tokens, normalize_name
 from esg_kg.core.paths import REPO_ROOT
 
-# Report files are named either "<TICKER>_Baocaothuongnien_<YEAR>" (the legacy stem a
-# few of AAA's older PDFs carry) or, the current convention for every company's raw
-# annual reports (data/raw/annual_report/.../HAR_2016.pdf, ACC_2013.pdf, ...),
-# plain "<TICKER>_<YEAR>". The ticker is the corpus issuer; we read it from KPI
-# source_ids, which carry whichever stem the source PDF was named with. 2026-08-08:
-# this used to match ONLY the legacy form, so `collect_org_signals` detected just AAA
-# out of a multi-company corpus — see `build()`'s carry-forward comment below for the
-# data-loss this caused downstream.
 REPORT_STEM_RE = re.compile(r"^([A-Za-z0-9]{2,5})_(?:Baocaothuongnien|\d{4})", re.IGNORECASE)
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -74,8 +66,6 @@ DEFAULT_COMPANIES = REPO_ROOT / "config" / "company_annual_report.xlsx"
 DEFAULT_OUTPUT = REPO_ROOT / "config" / "issuer_registry.json"
 DEFAULT_MIN_SUBJECT_EDGES = 10
 
-# Predicates whose *subject* is the company the report is about. A name that is
-# frequently the subject of these is almost certainly the issuer.
 ISSUER_PREDICATES = {
     "reportsKPI", "claims", "setsGoal", "ownsFacility", "holdsCertification",
     "subjectToRegulation", "adoptsStandard", "takesPartIn", "generatesEmission",
@@ -83,30 +73,22 @@ ISSUER_PREDICATES = {
     "impactsCommunity", "publishesReport", "locatedIn",
 }
 
-# Pure industry/filler tokens dropped when deriving an issuer's distinctive core.
 GENERIC_TOKENS = {
     "nhua", "plastic", "vat", "lieu", "xay", "dung", "material", "materials",
     "industry", "industries", "viet", "nam", "vietnam", "san", "xuat", "the", "and",
 }
 
-# Tokens that mark a *different* entity in the same corporate family (parent /
-# subsidiary). A name carrying one of these is routed to review, not auto-merged.
 QUALIFIER_TOKENS = {
     "holdings", "yen", "bai", "khoang", "bao", "bi", "tien", "noi", "vinh",
     "thakhek", "hung", "anh", "duong",
 }
 
-# Known-separate entities seeded straight into exclusions (normalized substring -> note).
-# Keys are specific normalized forms so they match the company, not any org that merely
-# contains a common place name (e.g. "ha noi" would wrongly catch every Hanoi bank).
 EXCLUDE_SEED = {
     "an phat holdings": "An Phát Holdings — parent group (ticker APH), a separate listed entity",
     "an tien": "An Tiến Industries (HII) — affiliate, separate listed entity",
     "nhua ha noi": "Nhựa Hà Nội (NHH) — affiliate, separate listed entity",
 }
 
-# Weights assigned to different relation types for Weighted Jaccard Similarity.
-# Strong identifying relations (e.g. penalties, certifications, KPIs) have higher weights.
 RELATION_WEIGHTS: Dict[str, float] = {
     "subjectToPenalty": 3.0,
     "holdsCertification": 2.5,
@@ -126,7 +108,6 @@ RELATION_WEIGHTS: Dict[str, float] = {
     "publishesReport": 1.0,
 }
 
-# Global cache for Graph Signatures of all Organization nodes to optimize performance.
 _SIGNATURES_CACHE: Dict[str, Set[Tuple[str, str]]] = {}
 
 
@@ -142,13 +123,11 @@ def get_node_identifier(node: Any) -> str:
     props = node.get("properties", {})
     if not props:
         return ""
-    # Select the first available identifying property from the list
     for key in ["name", "kpi_type", "title", "category", "claim_id", "verification_id", "project_id", "target_id", "controversy_id", "penalty_id", "report_id", "term"]:
         if key in props and props[key] is not None:
             val = str(props[key]).strip()
             if val:
                 return val
-    # Fallback to any non-empty property value
     for val in props.values():
         if val is not None:
             val_str = str(val).strip()
@@ -170,7 +149,6 @@ def build_signatures_cache(triples: List[Dict[str, Any]]) -> None:
 
         pred_str = str(pred).strip()
 
-        # Check if subject is our target Organization
         if isinstance(subj, dict) and subj.get("class") == "Organization":
             subj_name = str(subj.get("properties", {}).get("name", "")).strip()
             if subj_name:
@@ -178,7 +156,6 @@ def build_signatures_cache(triples: List[Dict[str, Any]]) -> None:
                 if obj_val:
                     _SIGNATURES_CACHE.setdefault(subj_name, set()).add((pred_str, obj_val))
 
-        # Check if object is our target Organization
         if isinstance(obj, dict) and obj.get("class") == "Organization":
             obj_name = str(obj.get("properties", {}).get("name", "")).strip()
             if obj_name:
@@ -205,7 +182,6 @@ def graph_similarity(sig_a: Set[Tuple[str, str]], sig_b: Set[Tuple[str, str]]) -
 
     def get_weight(item: Tuple[str, str]) -> float:
         pred = item[0]
-        # Remove direction indicator if present
         clean_pred = pred.replace("<-", "")
         return RELATION_WEIGHTS.get(clean_pred, 1.0)
 
@@ -217,9 +193,6 @@ def graph_similarity(sig_a: Set[Tuple[str, str]], sig_b: Set[Tuple[str, str]]) -
     return intersection_weight / union_weight
 
 
-# --------------------------------------------------------------------------- #
-# Data loading.
-# --------------------------------------------------------------------------- #
 def load_ticker_official_names(xlsx: Path) -> Dict[str, str]:
     df = pd.read_excel(xlsx)
     df = df[["Mã CK", "Tên công ty"]].dropna(subset=["Mã CK"])
@@ -249,7 +222,6 @@ def collect_org_signals(triples: List[Dict[str, Any]]
             nm = str(subj.get("properties", {}).get("name", "")).strip()
             if nm:
                 subj_counts[nm] += 1
-        # ticker from KPI provenance: source_id carries the "<TICKER>_Baocaothuongnien" stem
         for side in (subj, obj):
             if isinstance(side, dict) and side.get("class") == "KPIObservation":
                 sid = side.get("properties", {}).get("source_id")
@@ -259,20 +231,16 @@ def collect_org_signals(triples: List[Dict[str, Any]]
     return subj_counts, org_names, tickers
 
 
-# --------------------------------------------------------------------------- #
-# Classification.
-# --------------------------------------------------------------------------- #
 def classify_for_ticker(ticker: str, official_name: str, org_names: Set[str],
                         subj_counts: Counter, min_subject_edges: int,
                         triples: List[Dict[str, Any]],
                         graph_sim_upper: float, graph_sim_lower: float) -> Dict[str, Any]:
-    core = issuer_core_tokens(official_name)          # e.g. {an, phat, xanh}
+    core = issuer_core_tokens(official_name)
     ticker_l = ticker.lower()
     aliases: List[str] = []
     exclusions: List[Dict[str, str]] = []
     needs_review: List[Dict[str, Any]] = []
 
-    # Build composite issuer signature from official name and absolute high-confidence aliases to prevent error propagation
     issuer_signature: Set[Tuple[str, str]] = set()
     issuer_signature.update(compute_graph_signature(official_name, triples))
 
@@ -282,12 +250,10 @@ def classify_for_ticker(ticker: str, official_name: str, org_names: Set[str],
         if not norm_name:
             continue
 
-        # Check if seeded as exclusion (do not use for issuer signature)
         seed_note = next((note for sub, note in EXCLUDE_SEED.items() if sub in norm_name), None)
         if seed_note:
             continue
 
-        # Match only absolute high confidence anchors: exact ticker or exact official name match when normalized
         if norm_name == ticker_l or norm_name == norm_official:
             issuer_signature.update(compute_graph_signature(name, triples))
 
@@ -300,26 +266,21 @@ def classify_for_ticker(ticker: str, official_name: str, org_names: Set[str],
         shared = core & toks
         quals = toks & QUALIFIER_TOKENS
 
-        # 0) seeded known-separate entities -> exclusions
         seed_note = next((note for sub, note in EXCLUDE_SEED.items() if sub in norm), None)
         if seed_note:
             exclusions.append({"name": name, "reason": seed_note})
             continue
 
-        # 1) ticker shorthand ("AAA", "AAA Group", "AAA Corporation") -> alias
         if ticker_l in toks:
             aliases.append(name)
             continue
 
-        # 2) confident variant: carries the full distinctive core, no competing qualifier
         if core and core.issubset(toks) and not quals:
             aliases.append(name)
             continue
 
-        # 3) shares the surname core (>=2 core tokens) -> ambiguous, evaluate using graph similarity
         if len(shared) >= 2:
             if not issuer_signature:
-                # Fallback to the original lexical/structural logic if no issuer signature is available
                 if quals:
                     reason = f"shares issuer core {sorted(shared)} but qualifier {sorted(quals)} → likely related-but-separate entity (no issuer signature)"
                     suggest = "exclude"
@@ -350,7 +311,6 @@ def classify_for_ticker(ticker: str, official_name: str, org_names: Set[str],
                     needs_review.append({"name": name, "reason": reason,
                                          "subject_edges": edges, "suggest": suggest})
 
-    # de-dup, keep most structurally-central aliases first
     aliases = sorted(set(aliases), key=lambda n: (-int(subj_counts.get(n, 0)), n))
     needs_review.sort(key=lambda r: (-r["subject_edges"], r["name"]))
     return {
@@ -363,23 +323,14 @@ def classify_for_ticker(ticker: str, official_name: str, org_names: Set[str],
     }
 
 
-# --------------------------------------------------------------------------- #
-# Build (merge_preserving_edits is imported from esg_kg.core.naming).
-# --------------------------------------------------------------------------- #
 def build(input_file: Path, companies_xlsx: Path, output_file: Path,
           min_subject_edges: int, force: bool,
           graph_sim_upper: float, graph_sim_lower: float) -> None:
-    # step03 / build_validated always write all_validated_triples.json as a flat
-    # List[dict] (step03:545,622), and step05 reads that same file with no format
-    # sniffing at all — so this is the one contract, not one of several possible ones.
-    # (DESIGN.md §5.2: the old {nodes,edges}-sniffing branch was dead code — removed
-    # in BOTH trees when step04 migrated, per §5.3.)
     data = json.loads(input_file.read_text(encoding="utf-8"))
     triples = data
 
     logger.info(f"Loaded {len(triples)} validated triples from {input_file.name}")
 
-    # Initialize the global signatures cache for performance optimization
     build_signatures_cache(triples)
 
     ticker_names = load_ticker_official_names(companies_xlsx)
@@ -410,15 +361,6 @@ def build(input_file: Path, companies_xlsx: Path, output_file: Path,
         logger.info(f"  {ticker} ({official}): {len(r['aliases'])} aliases, "
                     f"{len(r['exclusions'])} exclusions, {len(r['needs_review'])} need review")
 
-    # A ticker already curated in `existing` but not rebuilt this run — this run's
-    # corpus has no KPI source_id matching REPORT_STEM_RE for it (a scoped --doc run,
-    # a company simply absent from this corpus, or an unrecognised filename stem) —
-    # must be carried forward UNCHANGED, never silently dropped. Before this,
-    # `registry` started empty and only ever gained tickers that were rebuilt, so any
-    # other ticker in `existing` vanished from the file this write — the file is
-    # TRACKED and human-edited, so that is a silent deletion of curated work, not a
-    # harmless no-op. (2026-08-08: caught live — a run against the real registry
-    # dropped ACC/ACG/ADP/AGG down to just the one ticker rebuilt that run.)
     carried = sorted(t for t in existing if t not in registry)
     for ticker in carried:
         registry[ticker] = existing[ticker]

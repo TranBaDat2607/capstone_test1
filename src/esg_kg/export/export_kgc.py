@@ -55,7 +55,7 @@ logger = logging.getLogger(__name__)
 
 DEFAULT_INPUT = RESOLVED_DIR / "resolved_graph.json"
 DEFAULT_ISSUER_REGISTRY = CONFIG_DIR / "issuer_registry.json"
-DEFAULT_MAX_BUCKET_DEGREE = 500  # matches the R5 gate in docs/TEMPORAL_KG_DESIGN.md
+DEFAULT_MAX_BUCKET_DEGREE = 500
 DEFAULT_OUTPUT_DIR = GRAPH_OUTPUT_DIR / "export_kgc"
 DEFAULT_OUTPUT = DEFAULT_OUTPUT_DIR / "export_graph.json"
 DEFAULT_STATS_OUT = DEFAULT_OUTPUT_DIR / "export_kgc_stats.json"
@@ -111,7 +111,7 @@ def decompose_hub_clusters(
     new_nodes: List[Dict[str, Any]] = list(nodes)
     new_edges: List[Dict[str, Any]] = []
     bucket_index: Dict[Tuple[str, str, str], int] = {}
-    hub_bucket_pairs: set = set()  # (hub_node_index, bucket_node_index)
+    hub_bucket_pairs: set = set()
 
     def get_or_create_bucket(ticker: str, year: str, predicate: str) -> int:
         key = (ticker, year, predicate)

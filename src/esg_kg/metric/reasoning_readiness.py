@@ -95,7 +95,7 @@ def r1_reachability(edges: List[Dict[str, Any]], adj: List[List[Tuple[int, str]]
             continue
         s, o = e["subject"], e["object"]
         if s in barred or o in barred:
-            continue  # a barred endpoint can't be meaningfully tested for reachability
+            continue
         total += 1
         if _masked_bfs_reachable(adj, s, o, hops, barred, (s, o)):
             ok += 1

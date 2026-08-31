@@ -71,15 +71,9 @@ logging.getLogger("google_genai.models").setLevel(logging.WARNING)
 DEFAULT_INPUT_DIR = REPO_ROOT / "graph_output" / "graphs"
 DEFAULT_SCHEMA = REPO_ROOT / "config" / "schema.json"
 DEFAULT_OUT_DIR = REPO_ROOT / "graph_output" / "validated"
-# DEFAULT_MODEL comes from esg_kg.core.llm (GEMINI_MODEL env var, default
-# gemini-2.5-flash-lite) — see that module's docstring.
 DEFAULT_BATCH_SIZE = 25
 DEFAULT_RATE_LIMIT = 10
 
-# --------------------------------------------------------------------------- #
-# File loading: handle both graph format (step-2 page{N}.json) and raw
-# triple-array format (step-2 page{N}_bugged.json).
-# --------------------------------------------------------------------------- #
 def load_triples_from_file(file_path: pathlib.Path) -> Tuple[List[Dict[str, Any]], str]:
     try:
         data = json.loads(file_path.read_text(encoding="utf-8"))
@@ -135,10 +129,6 @@ def load_triples_from_file(file_path: pathlib.Path) -> Tuple[List[Dict[str, Any]
         return [], "error"
 
 
-# --------------------------------------------------------------------------- #
-# Offline direction fix: if (subj.class, obj.class) is not a legal pair for
-# this predicate but (obj.class, subj.class) is, swap them.
-# --------------------------------------------------------------------------- #
 def fix_direction(triple: Dict[str, Any],
                   edge_directions: Dict[str, List[Tuple[str, str]]]) -> Tuple[Dict[str, Any], bool]:
     pred = triple.get("predicate")
@@ -161,9 +151,6 @@ def fix_direction(triple: Dict[str, Any],
         return fixed, True
     return triple, False
 
-# --------------------------------------------------------------------------- #
-# Phase 1: per-file offline processing.
-# --------------------------------------------------------------------------- #
 def process_file_offline(file_path: pathlib.Path, entity_classes: Set[str],
                          edge_labels: Set[str], edge_directions: Dict[str, List[Tuple[str, str]]]
                          ) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]], Dict[str, int], str]:
@@ -196,17 +183,6 @@ def process_file_offline(file_path: pathlib.Path, entity_classes: Set[str],
     return valid, invalid, stats, format_type
 
 
-# --------------------------------------------------------------------------- #
-# Phase 1.5 (offline): P4 temporal-invariant enforcement.
-# Bitemporal integrity is a hard, machine-checked constraint (TEMPORAL_KG_DESIGN
-# P4), not a convention:
-#   * every date value is canonicalized to ISO YYYY[-MM[-DD]] (so "2011" vs
-#     "2011-01-01" can never again split one fact into two temporal versions);
-#   * valid_from > valid_to is flagged (never silently swapped);
-#   * T2 news nodes (KPIObservation/Controversy/Penalty/MediaReport with
-#     source_type=news) must carry a boolean date_uncertain — a missing flag is
-#     set to true (the conservative "this date is a proxy" reading) and counted.
-# --------------------------------------------------------------------------- #
 NEWS_DATE_UNCERTAIN_CLASSES = {"KPIObservation", "Controversy", "Penalty", "MediaReport"}
 _NODE_DATE_PROPS = ("valid_from", "valid_to", "date")
 _EDGE_DATE_PROPS = ("valid_from", "valid_to", "recorded_at")
@@ -265,9 +241,6 @@ def enforce_temporal_invariants(triples: List[Dict[str, Any]]) -> Dict[str, int]
     return stats
 
 
-# --------------------------------------------------------------------------- #
-# Phase 2: LLM repair (verbatim prompt from EmeraldMind step 3).
-# --------------------------------------------------------------------------- #
 BATCH_FIX_PROMPT = (
     "You are fixing invalid ESG knowledge graph triples to match a schema.\n\n"
     "## VALIDATION RULES\n"
@@ -324,9 +297,6 @@ def extract_json_from_response(response_text: str) -> List[Any]:
     return []
 
 
-# The only property values phase 2 is authorised to write. They are exactly the
-# ones BATCH_FIX_PROMPT asks the model to add ("All nodes MUST have: valid_from,
-# valid_to, is_current"); `temporal_metadata` is handled at triple level.
 MUTABLE_NODE_PROPS = ("valid_from", "valid_to", "is_current")
 
 
@@ -368,10 +338,10 @@ def preserve_property_values(original: Any, repaired: Dict[str, Any]) -> Tuple[D
             if k in new_props:
                 merged[k] = new_props[k]
 
-        for k, v in new_props.items():        # changed or invented
+        for k, v in new_props.items():
             if k not in MUTABLE_NODE_PROPS and (k not in orig_props or orig_props[k] != v):
                 blocked += 1
-        for k in orig_props:                  # dropped
+        for k in orig_props:
             if k not in MUTABLE_NODE_PROPS and k not in new_props:
                 blocked += 1
 
@@ -409,9 +379,6 @@ def fix_batch_with_llm(batch: List[Dict[str, Any]], schema: Dict[str, Any],
         )
         fixed = extract_json_from_response(response.text or "")
         if isinstance(fixed, list):
-            # Keep positions aligned with the input batch (null = unfixable). The
-            # caller maps each repair back to its original by index, so we must NOT
-            # filter out the Nones here.
             return fixed
         return []
     except Exception as e:
@@ -419,9 +386,6 @@ def fix_batch_with_llm(batch: List[Dict[str, Any]], schema: Dict[str, Any],
         return []
 
 
-# --------------------------------------------------------------------------- #
-# Phases 1-3 driver.
-# --------------------------------------------------------------------------- #
 def run_phases(input_dir: pathlib.Path, out_dir: pathlib.Path, schema: Dict[str, Any],
                entity_classes: Set[str], edge_labels: Set[str],
                edge_directions: Dict[str, List[Tuple[str, str]]],
@@ -456,7 +420,6 @@ def run_phases(input_dir: pathlib.Path, out_dir: pathlib.Path, schema: Dict[str,
     """
     graph_files = list(input_dir.rglob("page*.json"))
 
-    # Defensive: skip anything that lives inside our own out_dir.
     try:
         out_resolved = out_dir.resolve()
     except Exception:
@@ -508,9 +471,6 @@ def run_phases(input_dir: pathlib.Path, out_dir: pathlib.Path, schema: Dict[str,
     if all_invalid and not dry_run:
         call_llm = llm or fix_batch_with_llm
 
-        # A repair that has already been paid for is looked up first. Positions are kept
-        # by index throughout, because the prompt returns repairs positionally aligned
-        # with the batch it was given.
         repaired_by_idx: Dict[int, Any] = {}
         if repairs is not None:
             for idx, original in enumerate(all_invalid):
@@ -546,18 +506,11 @@ def run_phases(input_dir: pathlib.Path, out_dir: pathlib.Path, schema: Dict[str,
                         repairs.put(all_invalid[idx], value)
                 logger.info(f"  Batch result: {returned} returned")
 
-        # Guard + validate every repair (cached or fresh) in input order. Marking the
-        # original `_fixed` lets the unfixable set be the exact complement — no value
-        # comparison, no double-counting the ones we successfully repaired.
         blocked_values = 0
         for idx, original in enumerate(all_invalid):
             repaired_triple = repaired_by_idx.get(idx)
             if repaired_triple is None or not isinstance(repaired_triple, dict):
                 continue
-            # Take back every value the model was not authorised to write, BEFORE
-            # validating: what we validate must be what we keep. Applied on the way OUT
-            # of the cache too, so the cache stores the paid artifact and the guard stays
-            # our own code — improving the guard re-applies to cached repairs.
             repaired_triple, n_blocked = preserve_property_values(original, repaired_triple)
             blocked_values += n_blocked
             is_valid, _ = validate_triple(repaired_triple, entity_classes, edge_labels, edge_directions)
@@ -578,9 +531,6 @@ def run_phases(input_dir: pathlib.Path, out_dir: pathlib.Path, schema: Dict[str,
     elif all_invalid and dry_run:
         logger.info(f"\n=== Phase 2: SKIPPED (--dry-run) — would have sent {len(all_invalid)} invalid triples ===")
 
-    # Invalid triples whose positionally-aligned repair re-validated were tagged
-    # `_fixed` above, so the unfixable set is exactly the untagged remainder. (The
-    # repaired forms already live in all_valid; the originals must not be re-listed.)
     unfixable = [t for t in all_invalid if not t.get("_fixed")]
 
     logger.info("\n=== Phase 1.5: P4 temporal-invariant enforcement ===")
@@ -657,11 +607,6 @@ def process_all_files(input_dir: pathlib.Path, out_dir: pathlib.Path, schema: Di
     log_summary(all_valid, unfixable, summary)
 
 
-# --------------------------------------------------------------------------- #
-# Renormalize-only mode: apply the P4 phase to an already-aggregated
-# all_validated_triples.json. The step-2 LLM extraction results are a frozen,
-# paid-for asset — this lets P4 land on them without re-running phase 2.
-# --------------------------------------------------------------------------- #
 def renormalize_existing(out_dir: pathlib.Path, entity_classes: Set[str], edge_labels: Set[str],
                          edge_directions: Dict[str, List[Tuple[str, str]]]) -> None:
     in_file = out_dir / "all_validated_triples.json"
@@ -690,9 +635,6 @@ def renormalize_existing(out_dir: pathlib.Path, entity_classes: Set[str], edge_l
     )
 
 
-# --------------------------------------------------------------------------- #
-# CLI.
-# --------------------------------------------------------------------------- #
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="Validate + fix ESG temporal-graph triples (step 2 output) against the schema."

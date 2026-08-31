@@ -15,7 +15,6 @@ from pathlib import Path
 import openpyxl
 
 
-# Prefixes/suffixes that carry no search signal — stripped to get a short name.
 _PREFIXES = [
     "Tổng Công ty cổ phần ",
     "Tổng công ty cổ phần ",
@@ -69,7 +68,6 @@ class Company:
             return True
         if s.replace("-", "").replace(" ", "").isdigit():
             return True
-        # one short word, no proper-noun signal
         words = s.split()
         if len(words) == 1 and len(s) <= 6:
             return True
@@ -97,7 +95,7 @@ def load_companies(xlsx_path: str | Path) -> list[Company]:
     return companies
 
 
-if __name__ == "__main__":  # quick smoke test
+if __name__ == "__main__":
     import sys
     path = sys.argv[1] if len(sys.argv) > 1 else "company_annual_report.xlsx"
     cs = load_companies(path)

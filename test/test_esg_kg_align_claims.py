@@ -86,7 +86,6 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO / "src"))
 
-# --- esg_kg package --------------------------------------------------------
 from esg_kg.core import graph_patch as core_graph_patch  # noqa: E402
 from esg_kg.core import llm as core_llm  # noqa: E402
 from esg_kg.core import schema as core_schema  # noqa: E402
@@ -99,10 +98,6 @@ from _fixture_paths import resolve_artifact, skip_if_fixture, tag  # noqa: E402
 
 RESOLVED_FILE = REPO / "graph_output" / "resolved" / "resolved_graph.json"
 
-# Corpus arms READ from here: the real artifact when the HF snapshot is pulled,
-# otherwise the committed synthetic fixture (test/fixtures/) so the arm runs on a
-# bare clone instead of silently skipping. The canonical constant above stays put
-# because wiring assertions compare the stage's own DEFAULT_* against it.
 RESOLVED_DATA, RESOLVED_IS_FIXTURE = resolve_artifact("resolved")
 
 
@@ -118,10 +113,6 @@ def load_defs() -> list:
     return json.loads(DEFS_FILE.read_text(encoding="utf-8"))
 
 
-# --------------------------------------------------------------------------- #
-# The stub provider. Deterministic from the prompt, so BOTH trees see the same
-# replies for the same nodes — that is what makes the comparison meaningful.
-# --------------------------------------------------------------------------- #
 def make_stub(valid_ids: list, mode: str = "mixed"):
     """Return a class with `_GeminiProvider`/`_DeepSeekProvider(model, rate_limit)`'s interface.
 
@@ -210,16 +201,11 @@ def run_new(graph: dict, defs: list = None, stub_mode: str = "mixed", **override
     handler = _LogCatcher()
     new_05d.logger.addHandler(handler)
     try:
-        # Stub the FACTORY, not a provider class: since 2026-08-06 the stage picks
-        # gemini/deepseek via `build_llm_provider(provider, model, rate_limit)`, so
-        # that is the one seam to replace regardless of which provider is requested.
         new_05d.build_llm_provider = lambda provider, model, rate_limit: stub_cls(model, rate_limit)
         new_05d.run(ws.args(**overrides))
     finally:
         new_05d.build_llm_provider = original
         new_05d.logger.removeHandler(handler)
-    # The final log line echoes the workspace's mkdtemp path — mask it so a rerun's
-    # comparison against fixed strings (e.g. "unaligned") is not sensitive to it.
     logs = [m.replace(str(ws.dir), "<WS>") for m in handler.messages]
     return ws, stub_cls, logs
 
@@ -254,9 +240,6 @@ def real_graph():
     return graph, removed
 
 
-# --------------------------------------------------------------------------- #
-# 1. Module surface: constants, and that the new tree IMPORTS the kernel
-# --------------------------------------------------------------------------- #
 def test_constants_match():
     """Concrete expected values (esg_kg/resolve/align_claims.py), not a cross-tree diff."""
     assert new_05d.ALIGN_CLASSES == ("SustainabilityClaim", "Goal", "Initiative")
@@ -265,9 +248,6 @@ def test_constants_match():
     assert new_05d.DEFAULT_SCHEMA == REPO / "config" / "schema.json"
     assert new_05d.DEFAULT_STATS_OUT == REPO / "graph_output" / "resolved" / "indicator_align_llm_stats.json"
 
-    # The SYSTEM prompt is PAID BEHAVIOUR, not style: reword it and the stage still "works"
-    # while every classification changes. Pinned byte-for-byte, like BATCH_FIX_PROMPT in the
-    # 03 slice.
     assert new_05d.SYSTEM == (
         "You classify a Vietnamese company ESG statement against a fixed list of disclosure "
         "indicators (Circular 96/2020/TT-BTC and the SSC-IFC ESG guide). Choose the ONE indicator "
@@ -285,9 +265,6 @@ def test_new_tree_imports_the_kernel_rather_than_recopying():
     assert new_05d.load_schema_sets is core_schema.load_schema_sets, "load_schema_sets re-copied"
 
 
-# --------------------------------------------------------------------------- #
-# 2. Pure helpers
-# --------------------------------------------------------------------------- #
 def test_build_prompt_matches():
     """Independent claim: every prompt is well-formed, and the 600-char cap is exact."""
     defs = load_defs()
@@ -298,7 +275,6 @@ def test_build_prompt_matches():
         assert "INDICATORS:" in prompt and "STATEMENT:" in prompt, f"prompt malformed for {text[:30]!r}"
         assert text[:600] in prompt, f"prompt dropped the statement for {text[:30]!r}"
 
-    # the 600-char truncation is behaviour: it caps what each classification costs
     long_prompt = new_05d.build_prompt("z" * 5000, defs)
     assert "z" * 600 in long_prompt and "z" * 601 not in long_prompt, "truncation moved off 600"
 
@@ -377,15 +353,11 @@ def test_parse_reply_rejects_non_object_json():
     for raw in ("[]", '"just a string"', "42", "null", "true"):
         assert new_05d.parse_reply(raw, {"TT96-6.1.1"}) is None, f"mishandled {raw!r}"
 
-    # the fix must not have made the parser lenient about anything else
     assert new_05d.parse_reply('{"indicator_id": "TT96-6.1.1"}', {"TT96-6.1.1"}) == "TT96-6.1.1"
     assert new_05d.parse_reply('[{"indicator_id": "TT96-6.1.1"}]', {"TT96-6.1.1"}) is None, \
         "a LIST wrapping a good object must still be refused, not unwrapped"
 
 
-# --------------------------------------------------------------------------- #
-# 3. Stage runs — real corpus
-# --------------------------------------------------------------------------- #
 def test_dry_run_writes_nothing():
     graph, _ = real_graph()
     if graph is None:
@@ -406,17 +378,12 @@ def test_full_run_on_real_graph():
     graph, removed = real_graph()
     if graph is None:
         return _skip("test_full_run_on_real_graph", "resolved_graph.json not present")
-    # Tier B: asserts real corpus scale (>100 candidates, a 60-adjudication
-    # budget fully spent, the 'none' branch firing). The synthetic fixture is
-    # deliberately tiny and cannot satisfy that honestly; weakening the
-    # thresholds would turn the headline arm into a decorative one.
     if RESOLVED_IS_FIXTURE:
         return _skip("test_full_run_on_real_graph", skip_if_fixture(True))
     budget = 60
     nw, nstub, _ = run_new(graph, max_llm_pairs=budget)
     try:
         s = nw.stats
-        # NON-VACUITY: this arm must actually adjudicate and actually write edges.
         assert s["candidates"] > 100, f"suspiciously few candidates: {s}"
         assert s["adjudicated"] == budget, f"budget not honoured: {s}"
         assert s["edges_added"] > 0, f"no edges written — arm is vacuous: {s}"
@@ -457,9 +424,6 @@ def test_run_is_append_only_and_preserves_node_order():
         nw.close()
 
 
-# --------------------------------------------------------------------------- #
-# 4. Live branches the real data never reaches — synthetic fixtures
-# --------------------------------------------------------------------------- #
 def _tiny_graph():
     """3 alignable nodes + 2 indicator nodes, small enough that a budget covers every candidate."""
     return {
@@ -496,7 +460,6 @@ def test_rerun_skips_what_it_already_aligned():
         first = nw.stats
         assert first["edges_added"] > 0, f"fixture never wrote an edge — arm is vacuous: {first}"
 
-        # feed run 1's OUTPUT back in
         nw2, _, _ = run_new(nw.graph, defs=defs, max_llm_pairs=50)
         try:
             assert nw2.stats["edges_added"] == 0, f"re-run duplicated edges: {nw2.stats}"

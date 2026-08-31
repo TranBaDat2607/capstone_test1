@@ -47,7 +47,6 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[1]
 TEST_DIR = REPO / "test"
 
-#: file -> env var that must be set for it to do anything but no-op.
 PAID_TESTS = {
     "test_esg_kg_integration_llm.py": "RUN_LLM_INTEGRATION_TESTS",
     "test_esg_kg_system_llm.py": "RUN_LLM_SYSTEM_TEST",

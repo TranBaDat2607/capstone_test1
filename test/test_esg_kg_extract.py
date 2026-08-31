@@ -87,9 +87,6 @@ class _LogCatcher(logging.Handler):
         self.messages.append(record.getMessage())
 
 
-# --------------------------------------------------------------------------- #
-# Part A — core/io_jsonl.py: the 5 pure helpers
-# --------------------------------------------------------------------------- #
 def test_new_tree_imports_the_kernel_rather_than_recopying():
     """A migrated stage must USE core/, not carry its own copy — otherwise the two drift."""
     assert new_extract.load_pages_from_jsonl is core_io_jsonl.load_pages_from_jsonl
@@ -109,7 +106,6 @@ def test_load_pages_from_jsonl_real_corpus():
     total_pages = 0
     for src in new_docs:
         for page, rows in new_docs[src].items():
-            # each page's rows must round-trip through the two dependent pure helpers
             text = core_io_jsonl.build_page_text(rows)
             assert isinstance(text, str)
             assert isinstance(core_io_jsonl.page_has_esg(rows), bool)
@@ -118,9 +114,6 @@ def test_load_pages_from_jsonl_real_corpus():
     print(f"  (loaded {len(new_docs)} document(s) / {total_pages} page(s) from the real corpus)")
 
 
-# --------------------------------------------------------------------------- #
-# Part B — module surface: paid-request-shape constants stay stage-local
-# --------------------------------------------------------------------------- #
 def test_kpi_schema_has_the_shape_the_paid_request_depends_on():
     """`KPI_SCHEMA` IS the paid request contract: a silently-dropped field still "works"
     while Gemini stops returning it. Pinned directly (no old-tree oracle needed — this is
@@ -141,15 +134,11 @@ def test_build_prompt_is_deterministic_and_carries_the_kpi_defs():
     assert "TT96-1" in user and "TT96-2" in user, "KPI definitions must reach the prompt"
     assert "AAA" in system
     assert "Công ty đã giảm phát thải 20%" in user
-    # deterministic: same inputs -> byte-identical prompt
     system2, user2 = new_ex._build_prompt(
         "Công ty đã giảm phát thải 20% trong năm 2023.", "AAA", new_extract.SECTOR, 5, "AAA_2023.pdf")
     assert (system, user) == (system2, user2)
 
 
-# --------------------------------------------------------------------------- #
-# Part C — the paid path, driven by a stub over google.genai.Client
-# --------------------------------------------------------------------------- #
 class _FakeFinishReason:
     def __init__(self, name):
         self.name = name
@@ -256,15 +245,11 @@ def test_extract_page_survives_all_stub_response_shapes():
             out = new_ex.extract_page(text, "AAA", new_extract.SECTOR, i, "doc.pdf")
             assert isinstance(out, list), f"extract_page must return a list, got {type(out)!r}"
 
-        # pin the paid-request shape itself (CARE REQUIRED, same as core/llm.py's arm)
         assert len(new_ex.client.calls_seen) == len(texts)
         for call in new_ex.client.calls_seen:
             assert call["temperature"] == 0
             assert call["response_mime_type"] == "application/json"
             assert call["response_schema"] == new_extract.KPI_SCHEMA
-            # cached_content and system_instruction can never both be set (Gemini's
-            # API rejects that combination outright) -- when cached, the instructions
-            # must travel via contents instead, never silently dropped.
             if call["cached_content"] is not None:
                 assert call["system_instruction"] is None, (
                     "cached_content and system_instruction must never both be set"
@@ -304,11 +289,9 @@ def test_process_document_skips_non_esg_pages_and_is_idempotent():
         assert page3 == [], "empty-text page must write an empty list without calling the client"
         assert new_total == len(page1), "process_document's return total must match page 1's KPI count"
 
-        # non-ESG page (2) and empty-text page (3) must never have reached the client
         assert len(new_ex.client.calls_seen) == 1, \
             f"expected exactly 1 LLM call (page 1 only), got {len(new_ex.client.calls_seen)}"
 
-        # idempotency: re-running with the same out_dir must not call the client again
         calls_before = len(new_ex.client.calls_seen)
         new_ex.process_document("AAA_2023.pdf", pages, new_out, esg_only=True, max_workers=1)
         assert len(new_ex.client.calls_seen) == calls_before, "re-run re-called the client"
@@ -316,12 +299,6 @@ def test_process_document_skips_non_esg_pages_and_is_idempotent():
         shutil.rmtree(tmp, ignore_errors=True)
 
 
-# --------------------------------------------------------------------------- #
-# Part D — Gemini explicit context caching for KPI_DEFINITIONS (issue #11): the
-# widest-scope cache of the three stages — ONE cache for the whole run (created in
-# __init__, before any document is processed), reused across every page of every
-# document this extractor handles.
-# --------------------------------------------------------------------------- #
 def test_cache_created_once_in_init_and_reused_across_documents_and_pages():
     tmp = Path(tempfile.mkdtemp(prefix="esgkg_01_cache_"))
     try:
@@ -338,7 +315,6 @@ def test_cache_created_once_in_init_and_reused_across_documents_and_pages():
         new_ex.process_document("AAA_2023.pdf", pages_doc_a, tmp / "out", esg_only=True, max_workers=1)
         new_ex.process_document("BBB_2024.pdf", pages_doc_b, tmp / "out", esg_only=True, max_workers=1)
 
-        # still exactly 1 — no NEW cache was created for the second document/page.
         assert len(new_ex.client.caches.calls) == 1, (
             "a second document must reuse the SAME cache, not create a new one "
             f"(got {len(new_ex.client.caches.calls)} caches.create() calls)"
@@ -350,20 +326,10 @@ def test_cache_created_once_in_init_and_reused_across_documents_and_pages():
             assert "KPI_DEFINITIONS" not in c["contents"], (
                 "the cached KPI_DEFINITIONS block must NOT be resent inline once cached_content is set"
             )
-            # The real Gemini API rejects a generate_content call that sets BOTH
-            # cached_content and system_instruction (400 INVALID_ARGUMENT:
-            # "CachedContent can not be used with GenerateContent request setting
-            # system_instruction, tools or tool_config") — the stub above does not
-            # enforce this, so this assertion is the only thing standing between a
-            # green test suite and every real page call failing. Verified live
-            # 2026-08-05: --limit-docs 2 against the real API returned this exact
-            # error on all 55/55 pages before the fix below.
             assert c["system_instruction"] is None, (
                 "cached_content and system_instruction must never both be set on one "
                 "generate_content call -- Gemini's API rejects that combination outright"
             )
-            # the page-specific instructions must still reach the model somehow once
-            # they can no longer travel via system_instruction.
             assert "ESG-KPI-EXTRACTOR-V2" in c["contents"], (
                 "when cached, the extraction instructions must be folded into contents "
                 "instead of silently dropped"
@@ -412,17 +378,6 @@ def test_use_context_cache_false_never_touches_caches_api():
         shutil.rmtree(tmp, ignore_errors=True)
 
 
-# --------------------------------------------------------------------------- #
-# Part D.1 — self-healing when the KPI_DEFINITIONS cache expires mid-run (found
-# during a 2026-08-05 audit: the cache's TTL, core/llm.py, default 3600s, is fixed
-# for the process's lifetime, but this is the widest-scope cache of the three
-# issue-#11 stages -- one cache for the WHOLE run -- and a full-sector --all
-# extraction over the current corpus can easily outlive an hour. Before this fix,
-# extract_page had no try/except of its own: an expired cache made generate_content
-# raise, the page was marked failed by the caller and its output never written --
-# silently losing every remaining page for the rest of the run, recoverable only by
-# killing and restarting the whole command.
-# --------------------------------------------------------------------------- #
 class _FlakyCacheModels(_FakeModels):
     """Fails the FIRST call that carries `cached_content` with a Gemini-style
     'CachedContent not found' error (simulating TTL expiry mid-run); every call
@@ -471,20 +426,12 @@ def test_extract_page_self_heals_once_when_cached_content_expires_midrun():
         )
         assert isinstance(out, list), "the page must still succeed, not raise or get lost"
 
-        # Exactly 2 caches.create() calls: the one at __init__ time, plus ONE
-        # self-heal recreation -- not 1 (would mean the failure was swallowed with
-        # no real recovery, i.e. the stale name was reused and would fail again on
-        # every subsequent page) and not more (would mean recreation happens on
-        # every call instead of once, defeating the whole point of caching).
         assert len(new_ex.client.caches.calls) == 2, (
             f"expected exactly 2 caches.create() calls (init + 1 self-heal), "
             f"got {len(new_ex.client.caches.calls)}"
         )
         assert new_ex.cache_name != first_cache_name, "cache_name must be replaced by the self-heal"
 
-        # the failed call is a raised exception, never recorded in calls_seen; only
-        # the successful retry is -- and it must carry the NEW cache name, not the
-        # stale one that just failed.
         cached_calls = [c for c in new_ex.client.calls_seen if c["cached_content"] is not None]
         assert len(cached_calls) == 1
         assert cached_calls[0]["cached_content"] == new_ex.cache_name
@@ -543,15 +490,6 @@ def test_context_cache_invalidate_forces_a_fresh_create_on_next_get_or_create():
     name3 = ctx_cache.get_or_create("static content")
     assert len(fake_client.caches.calls) == 2, "after invalidate, get_or_create must create a NEW cache"
     assert name3 != name1, "the stub hands out a fresh cachedContents/stub-N each create() call"
-
-
-# 2026-08-04: Part E (renumbered from the original "Part D" once issue #11 claimed
-# that letter above), the additive OpenAI path (`--provider openai`, added 2026-07-29:
-# `test_extract_page_openai_provider_parses_and_normalizes` /
-# `test_kpi_extractor_openai_accepts_explicit_key_and_base_url_override` /
-# `test_extract_page_gemini_default_unaffected_by_provider_arg`) was removed outright —
-# `KPIExtractor` no longer takes a `provider=`/`openai_*` argument at all, it is
-# gemini-only again, no fallback. The Gemini path is already covered by the arms above.
 
 
 if __name__ == "__main__":

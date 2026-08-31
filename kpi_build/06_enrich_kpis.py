@@ -24,11 +24,7 @@ import pathlib
 HERE = pathlib.Path(__file__).resolve().parent
 OUT = HERE.parent / "kpi_definitions_construction.json"
 
-# id -> (short name label, measurable definition with unit/normalisation hints).
-# Definitions are grounded in the source indicator/aspect; units reflect common
-# ESG reporting practice (tCO2e, m3, kWh, %, VND, giờ/người, số vụ ...).
 ENRICH = {
-    # ---- Circular 96/2020 - Section 6 (Moi truong) ----
     "TT96-6.1.1": ("Tổng phát thải khí nhà kính (Scope 1 + Scope 2)",
                    "Tổng lượng phát thải khí nhà kính trực tiếp (Scope 1) và gián tiếp (Scope 2) trong kỳ báo cáo, quy đổi tấn CO2 tương đương (tCO2e)."),
     "TT96-6.1.2": ("Mức giảm phát thải khí nhà kính từ các sáng kiến",
@@ -51,7 +47,6 @@ ENRICH = {
                    "Số lần bị xử phạt do không tuân thủ pháp luật, quy định về bảo vệ môi trường trong kỳ (số lần)."),
     "TT96-6.5.2": ("Tổng tiền phạt vi phạm môi trường",
                    "Tổng số tiền bị xử phạt do không tuân thủ pháp luật, quy định về môi trường trong kỳ (VND)."),
-    # ---- Circular 96/2020 - Section 6 (Xa hoi) ----
     "TT96-6.6.1": ("Số lượng lao động và mức lương trung bình",
                    "Tổng số lao động (người) và mức lương/thu nhập trung bình của người lao động trong kỳ (VND/người/tháng)."),
     "TT96-6.6.2": ("Tỷ lệ lao động được bảo đảm an toàn, sức khỏe, phúc lợi",
@@ -66,10 +61,8 @@ ENRICH = {
                    "Số lượng chương trình, hoạt động đầu tư và phát triển cộng đồng địa phương thực hiện trong kỳ (số chương trình)."),
     "TT96-6.7.2": ("Giá trị đầu tư, đóng góp cho cộng đồng",
                    "Tổng giá trị đầu tư, đóng góp và hỗ trợ tài chính cho cộng đồng địa phương trong kỳ (VND)."),
-    # ---- Circular 96/2020 - Section 6 (Quan tri) ----
     "TT96-6.8.1": ("Huy động vốn xanh",
                    "Giá trị vốn huy động qua thị trường vốn xanh (trái phiếu xanh, tín dụng xanh) theo hướng dẫn của UBCKNN trong kỳ (VND)."),
-    # ---- Sector-specific ----
     "QD2171-1": ("Tỷ lệ sử dụng vật liệu xây không nung (VLXKN)",
                  "Tỷ lệ phần trăm (%) vật liệu xây không nung trên tổng vật liệu xây sử dụng (mục tiêu quốc gia 35-40% năm 2025, 40-45% năm 2030 theo QĐ 2171/QĐ-TTg)."),
     "QCVN09-1": ("Tỷ lệ công trình tuân thủ QCVN 09:2017/BXD",
@@ -115,7 +108,6 @@ def main() -> None:
 
     changed = 0
     for k in kpis:
-        # Preserve the verbatim source text once.
         k.setdefault("source", {})
         if "excerpt" not in k["source"]:
             k["source"]["excerpt"] = k["definition"]

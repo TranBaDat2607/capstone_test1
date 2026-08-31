@@ -14,7 +14,7 @@ SRC = HERE / "sources"
 
 def html_text(name: str) -> str:
     t = BeautifulSoup((SRC / name).read_bytes(), "html.parser").get_text("\n")
-    t = unicodedata.normalize("NFC", t)  # lawnet serves NFD combining diacritics
+    t = unicodedata.normalize("NFC", t)
     return re.sub(r"\n{2,}", "\n", t)
 
 
@@ -35,7 +35,6 @@ def main():
     dump(qd, "tổng số vật liệu xây", 400, 500, "QD 2171 - objectives")
 
     guide = unicodedata.normalize("NFC", pdf_text("SSC_IFC_sustainability_guide.pdf"))
-    # The actual aspect list is the *second* occurrence (first is the table of contents)
     first = guide.find("Khía cạnh hoạt động kinh doanh")
     second = guide.find("Khía cạnh hoạt động kinh doanh", first + 1)
     print("\n" + "=" * 88, "\nSSC-IFC guide - aspect section at", second)

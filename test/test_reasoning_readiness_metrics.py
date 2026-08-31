@@ -49,47 +49,6 @@ def _edge_dicts(edges: List[Tuple[int, int, str]]) -> List[Dict[str, Any]]:
     return [{"subject": s, "object": o, "predicate": lbl} for s, o, lbl in edges]
 
 
-# --------------------------------------------------------------------------- #
-# A hand-computable graph (6 nodes, 7 edges) exercising every branch:
-#
-#   0 --ownsFacility--- 1 --locatedIn--- 2 --ownsFacility--- 3   (3 is a leaf/pocket)
-#   |                                    |
-#   +-------partnersWith-----------------+
-#   0 --ownsFacility--- 4 --observedAtFacility--- 2
-#   0 --reportsKPI----- 5                                        (5 is a leaf)
-#
-# Degrees: 0:4  1:2  2:4  3:1  4:2  5:1
-#
-# e1=(0,1,ownsFacility)        e2=(1,2,locatedIn)    e3=(0,2,partnersWith)
-# e4=(2,3,ownsFacility)        e5=(4,2,observedAtFacility)
-# e6=(4,0,ownsFacility)        e7=(0,5,reportsKPI)
-#
-# Hand-derivation (masked-BFS, hops=3, barred=set()):
-#   e1(0,1): mask(0,1) -> 0 -[partnersWith]-> 2 -[locatedIn]-> 1   FOUND (2 hops)
-#   e2(1,2): mask(1,2) -> 1 -[ownsFacility]-> 0 -[partnersWith]-> 2 FOUND (2 hops)
-#   e3(0,2): mask(0,2) -> 0 -[ownsFacility]-> 1 -[locatedIn]-> 2   FOUND (2 hops)
-#   e4(2,3): mask(2,3) -> node 3 has NO other edge                NOT FOUND (isolated pocket)
-#   e5(4,2): mask(4,2) -> 4 -[ownsFacility]-> 0 -[partnersWith]-> 2 FOUND (2 hops, via hub 0)
-#   e6(4,0): mask(4,0) -> 4 -[observedAtFacility]-> 2 -[partnersWith]-> 0 FOUND (2 hops)
-#   e7(0,5): mask(0,5) -> node 5 has NO other edge                NOT FOUND (isolated pocket)
-#
-#   R1 (barred=set())          : ok=5 (e1,e2,e3,e5,e6), total=7 -> 71.4%
-#   R1' (barred={0})           : edges touching node 0 (e1,e3,e6,e7) dropped from the
-#                                 denominator entirely (an endpoint is barred) -> only
-#                                 e2, e4, e5 remain as candidates (total=3). Re-run masked-BFS
-#                                 with node 0 unwalkable:
-#                                   e2(1,2): mask(1,2), barred={0} -> 1's only other edge
-#                                     goes to 0, which is barred -> NOT FOUND
-#                                   e4(2,3): unchanged, still NOT FOUND
-#                                   e5(4,2): mask(4,2), barred={0} -> 4's only other edge
-#                                     goes to 0, which is barred -> NOT FOUND
-#                                 ok=0, total=3 -> 0.0%. This is the hub-routing case the
-#                                 plan calls out: e5 is reachable via R1 (through hub 0) but
-#                                 NOT via R1' (hub barred) — same bug §1.3 describes for Q7(d).
-#   R1_trainable (excluded={"reportsKPI"}) : e7 dropped from the denominator (not because
-#                                 of reachability, but because the relation itself is
-#                                 excluded) -> total=6, ok=5 (same 5 as plain R1) -> 83.3%
-# --------------------------------------------------------------------------- #
 def hand_graph() -> Tuple[List[Tuple[int, int, str]], List[List[Tuple[int, str]]]]:
     raw_edges = [
         (0, 1, "ownsFacility"),   # e1
@@ -149,17 +108,6 @@ def test_r1_reachability_on_empty_edges_is_zero_not_a_crash():
     assert (pct, ok, total) == (0.0, 0, 0)
 
 
-# --------------------------------------------------------------------------- #
-# R7: two disjoint families of independent length-3 chains
-#   main:  60 copies of  A --relA--> B --relB--> C --relC--> D   (fresh nodes each copy)
-#   minor: 10 copies of  A --relX--> B --relY--> C --relZ--> D   (fresh nodes each copy)
-#
-# Each chain contributes exactly one occurrence of (relA,relB,relC) [walked from
-# its A end] and one of (relC,relB,relA) [walked from its D end] — verified by
-# hand for a single chain in the module docstring's r7_metapaths note. So:
-#   support(relA,relB,relC) == support(relC,relB,relA) == 60   (>= min_support=50 -> kept)
-#   support(relX,relY,relZ) == support(relZ,relY,relX) == 10   (<  min_support=50 -> dropped)
-# --------------------------------------------------------------------------- #
 def chain_family_graph(n_main: int, n_minor: int) -> List[List[Tuple[int, str]]]:
     edges: List[Tuple[int, int, str]] = []
     next_node = 0
@@ -199,8 +147,6 @@ def test_r7_metapaths_hub_free_excludes_barred_start_and_intermediate_nodes():
     unbarred_result = rr.r7_metapaths(adj, barred=frozenset(), min_support=1)
     by_key_barred = {tuple(m["metapath"]): m["support"] for m in barred_result}
     by_key_unbarred = {tuple(m["metapath"]): m["support"] for m in unbarred_result}
-    # node 0 only ever appears as the START of one chain's (relA,relB,relC) walk,
-    # so barring it must drop exactly one occurrence from that metapath's support.
     assert by_key_barred[("relA", "relB", "relC")] == by_key_unbarred[("relA", "relB", "relC")] - 1
 
 
@@ -208,9 +154,6 @@ def test_r7_metapaths_on_empty_adj_is_empty_not_a_crash():
     assert rr.r7_metapaths([]) == []
 
 
-# --------------------------------------------------------------------------- #
-# A3: config/degenerate_relations.json loader
-# --------------------------------------------------------------------------- #
 def test_load_degenerate_relations_missing_file_returns_empty_set():
     missing = REPO / "config" / "does_not_exist_degenerate_relations.json"
     assert not missing.exists()

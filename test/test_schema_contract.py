@@ -44,9 +44,6 @@ def identity_keys(node: dict) -> list:
     return node.get("identity_keys", ["name"])
 
 
-# --------------------------------------------------------------------------- #
-# Tier map — the precondition for every other check in this file.
-# --------------------------------------------------------------------------- #
 def test_every_class_is_assigned_to_exactly_one_tier():
     """A class missing from the tier map escapes step00's P1 lint without a word.
 
@@ -62,15 +59,11 @@ def test_every_class_is_assigned_to_exactly_one_tier():
             f"exactly one of T1/T2/T3 (see esg_kg/report/quality.py)"
         )
 
-    # and the tier map must not name classes the schema does not define
     for name, group in tiers.items():
         unknown = sorted(group - set(BY_CLASS))
         assert not unknown, f"{name} names classes absent from schema.json: {unknown}"
 
 
-# --------------------------------------------------------------------------- #
-# P1 — identity is timeless (docs/TEMPORAL_KG_DESIGN.md)
-# --------------------------------------------------------------------------- #
 def test_t1_identity_keys_are_timeless():
     """P1 as a build gate, not just a metric step00 reports after the fact."""
     for cls in sorted(T1_CLASSES):
@@ -94,9 +87,6 @@ def test_observation_classes_keep_time_in_identity():
         )
 
 
-# --------------------------------------------------------------------------- #
-# Internal consistency
-# --------------------------------------------------------------------------- #
 def test_identity_keys_reference_declared_properties():
     """An identity key that is not a declared property can never be populated, so the
     stable id silently degrades to the same value for every node of that class."""
@@ -125,18 +115,12 @@ def test_edge_endpoints_are_declared_classes():
                 assert cls in BY_CLASS, f"edge {e['label']}: {role}={cls!r} is not a schema class"
 
 
-# --------------------------------------------------------------------------- #
-# Indicator axis (docs/STANDARD_INDICATOR_AXIS.md §3.1–3.2)
-# --------------------------------------------------------------------------- #
 def test_standard_indicator_class_contract():
     assert "StandardIndicator" in BY_CLASS, "StandardIndicator class is missing"
     node = BY_CLASS["StandardIndicator"]
-    # identity is the indicator code — timeless, single-key, so step05c's ensure_node
-    # is idempotent across runs
     assert identity_keys(node) == ["id"], identity_keys(node)
     for prop in ("id", "name", "definition", "pillar", "section", "source_document"):
         assert prop in node["properties"], f"StandardIndicator missing property {prop!r}"
-    # it is a reference vocabulary, deliberately excluded from the Q7 hub metrics
     assert "StandardIndicator" in REFERENCE_CLASSES
 
 

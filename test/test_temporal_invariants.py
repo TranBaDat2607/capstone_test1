@@ -36,13 +36,11 @@ def test_normalize_date_string():
     assert normalize_date_string("05/2023") == ("2023-05", True)
     assert normalize_date_string("2023.05.31") == ("2023-05-31", True)
     assert normalize_date_string("2024-08-14T10:00:00") == ("2024-08-14", True)
-    # unparseable spellings are returned unchanged and flagged, never invented
     assert normalize_date_string("Q2 2023") == ("Q2 2023", False)
     assert normalize_date_string("2023-13-01") == ("2023-13-01", False)
 
 
 def test_date_start_key():
-    # the P4 bug: "2011" and "2011-01-01" are the SAME start instant
     assert date_start_key("2011") == date_start_key("2011-01-01") == "2011-01-01"
     assert date_start_key("2011-03") == "2011-03-01"
     assert date_start_key("garbage") is None
@@ -70,10 +68,8 @@ def test_enforce_temporal_invariants():
     assert subj["valid_from"] == "2020-01"
     assert obj["date"] == "2024-08-14"
     assert tm["valid_from"] == "2024-08-14"
-    # news T2 node without the required bool gets the conservative default
     assert obj["date_uncertain"] is True
     assert stats["date_uncertain_defaulted"] == 1
-    # valid_from (2024-08-14) > valid_to (2023) is flagged, not rewritten
     assert stats["valid_from_after_valid_to"] == 1
     assert obj["valid_to"] == "2023"
 
@@ -85,7 +81,6 @@ def _org(name, valid_from, is_current=True, valid_to=None):
 
 
 def test_consolidate_version_dedup_and_is_current():
-    # Two spellings of the same start instant -> ONE version (the observed AAA bug)
     nodes = [_org("X", "2011"), _org("X", "2011-01-01")]
     dsu = DSU(2)
     dsu.union(0, 1)
@@ -93,7 +88,6 @@ def test_consolidate_version_dedup_and_is_current():
     (node,) = resolved["nodes"]
     assert len(node["temporal_versions"]) == 1
 
-    # Distinct years both claiming is_current=true -> exactly one survives (latest open)
     nodes = [_org("Y", "2011"), _org("Y", "2020")]
     dsu = DSU(2)
     dsu.union(0, 1)
@@ -105,7 +99,6 @@ def test_consolidate_version_dedup_and_is_current():
     assert len(current) == 1
     assert current[0]["valid_from"] == "2020"
 
-    # All-closed chain legitimately keeps zero current versions
     nodes = [_org("Z", "2011", is_current=False, valid_to="2015"),
              _org("Z", "2016", is_current=False, valid_to="2019")]
     dsu = DSU(2)
@@ -122,9 +115,6 @@ def test_parse_source_id():
     assert parse_source_id(None) is None
 
 
-# --------------------------------------------------------------------------- #
-# Provenance patch (step05b, docs/PROVENANCE_PATCH.md).
-# --------------------------------------------------------------------------- #
 IDKEYS = {"SustainabilityClaim": ["claim_id"], "KPIObservation": ["kpi_type", "year"],
           "Organization": ["name"]}
 
@@ -133,7 +123,6 @@ def test_parse_page_token():
     assert parse_page_token("AAA_Baocaothuongnien_page12_LNST_DTT_2010") == \
         ("AAA_Baocaothuongnien", 12)
     assert parse_page_token("AAA_Baocaothuongnien_page7") == ("AAA_Baocaothuongnien", 7)
-    # ids in the canonical <src>_<page>_<idx> form belong to parse_source_id, not here
     assert parse_page_token("AAA_Baocaothuongnien_2011.pdf_10_1") is None
     assert parse_page_token("no_token_here") is None
     assert parse_page_token(None) is None
@@ -141,11 +130,8 @@ def test_parse_page_token():
 
 def test_choose_primary():
     cands = {("AAA_Baocaothuongnien_2011", 5), ("AAA_Baocaothuongnien_2020", 3)}
-    # year context wins over lexicographic order
     assert choose_primary(cands, 2020) == ("AAA_Baocaothuongnien_2020", 3)
-    # no year context -> lexicographically smallest doc
     assert choose_primary(cands, None) == ("AAA_Baocaothuongnien_2011", 5)
-    # same doc, several pages -> smallest page
     assert choose_primary({("D_2011", 9), ("D_2011", 2)}, None) == ("D_2011", 2)
 
 
@@ -153,32 +139,27 @@ def test_candidate_locations_tiers():
     stable_idx = {"SustainabilityClaim|c1": {("DOC_2011", 4)}}
     source_idx = {"weird_llm_id": {("DOC_2012", 7)}}
 
-    # tier 1: a parseable source_id wins even when other indexes disagree
     node = {"class": "SustainabilityClaim",
             "properties": {"claim_id": "c1", "source_id": "DOC_2011.pdf_10_1"}}
     assert candidate_locations(node, stable_idx, source_idx, IDKEYS, []) == \
         ({("DOC_2011", 10)}, "source_id")
 
-    # tier 2: exact raw source_id lookup
     node = {"class": "KPIObservation",
             "properties": {"kpi_type": "x", "year": 2012, "source_id": "weird_llm_id"}}
     assert candidate_locations(node, stable_idx, source_idx, IDKEYS, []) == \
         ({("DOC_2012", 7)}, "source_id_index")
 
-    # tier 3: recomputed stable_id, reachable via a temporal_versions member too
     node = {"class": "SustainabilityClaim", "properties": {"claim_id": "other"},
             "temporal_versions": [{"properties": {"claim_id": "C1"}}]}  # case-insensitive
     assert candidate_locations(node, stable_idx, source_idx, IDKEYS, []) == \
         ({("DOC_2011", 4)}, "stable_id_index")
 
-    # tier 4: _pageNN_ token + unique year-matching doc dir
     node = {"class": "KPIObservation",
             "properties": {"kpi_type": "y", "year": 2010,
                            "source_id": "DOC_page12_LNST_2010"}}
     assert candidate_locations(node, {}, {}, IDKEYS, ["DOC_2010", "DOC_2011"]) == \
         ({("DOC_2010", 12)}, "page_token")
 
-    # nothing matches -> unstamped
     node = {"class": "SustainabilityClaim", "properties": {"claim_id": "nope"}}
     assert candidate_locations(node, stable_idx, source_idx, IDKEYS, []) == (set(), None)
 
@@ -203,7 +184,6 @@ def test_stamp_graph():
     before = [n["class"] for n in graph["nodes"]]
     stats = stamp_graph(graph, stable_idx, source_idx, news_meta, idkeys, ["DOC_2011", "DOC_2020"])
 
-    # node array untouched (order + count are load-bearing for step06/_node_key)
     assert [n["class"] for n in graph["nodes"]] == before
 
     n0, n1, n2, n3, n4 = (n["properties"] for n in graph["nodes"])
@@ -241,9 +221,6 @@ def test_step02_stamp_provenance():
     assert "article_title" not in kpi
 
 
-# --------------------------------------------------------------------------- #
-# Indicator axis: step03c canonicalization + step05c linking + step08 stable-id.
-# --------------------------------------------------------------------------- #
 import json  # noqa: E402
 
 from esg_kg.kpi.canonicalize import (  # noqa: E402
@@ -266,13 +243,10 @@ _SCHEMA_SETS = load_schema_sets(json.loads((REPO / "config" / "schema.json").rea
 
 def test_step03c_matcher_rejects_financial_and_keeps_kpi_type():
     m = Matcher(_DEFS, _ALIASES)
-    # a genuine ESG alias maps
     ind, method = m.match("Male employees", "người")
     assert ind == "SSCIFC-S6", (ind, method)
-    # a financial KPI in VND is rejected, never force-mapped onto an indicator
     ind, method = m.match("Lợi nhuận sau thuế", "tỷ đồng")
     assert ind is None and method == "rejected_unit", (ind, method)
-    # an already-standard code is passed through unchanged (never re-derived)
     assert "TT96-6.6.1" in {d["id"] for d in _DEFS}
 
 
@@ -304,17 +278,13 @@ def test_step03c_stamps_the_rule_that_decided_each_kpi_id():
         assert "kpi_id_method" in p, f"no kpi_id_method stamped on {p.get('title')!r}"
 
     assert got[0]["kpi_id"] and got[0]["kpi_id_method"] == "alias_exact", got[0]
-    # a code step01 already emitted is passed through, and says so
     assert got[1]["kpi_id"] == "TT96-6.6.1" and got[1]["kpi_id_method"] == "kpi_type", got[1]
 
-    # THE POINT: both of these end up kpi_id=None, but they mean opposite things —
-    # one is a deliberate refusal (financial KPI), the other a gap in the alias file.
     assert got[2]["kpi_id"] is None and got[2]["kpi_id_method"] == "rejected_unit", got[2]
     assert got[3]["kpi_id"] is None and got[3]["kpi_id_method"] == "no_match", got[3]
     assert got[2]["kpi_id_method"] != got[3]["kpi_id_method"], \
         "refused and failed are indistinguishable on the node"
 
-    # identity is untouched: kpi_type is in identity_keys, so stamping must not disturb it
     assert "kpi_type" not in got[0], "stamping invented a kpi_type where step01 emitted none"
     assert got[1]["kpi_type"] == "TT96-6.6.1", "stamping rewrote kpi_type (breaks node order)"
 
@@ -349,7 +319,6 @@ def test_step03c_goal_backfill_future_only():
 
 
 def _mini_graph():
-    # KPIObservation already carrying a canonical kpi_id + a self-reported-zero Penalty
     return {"nodes": [
         {"class": "KPIObservation", "properties": {"kpi_id": "TT96-6.1.1", "title": "GHG",
                                                     "valid_from": "2020"}},
@@ -365,19 +334,14 @@ def test_step05c_add_edge_direction_and_idempotency():
     si = {"class": "StandardIndicator", "properties": {"id": "TT96-6.1.1", "name": "GHG"}}
     idx, created = gp.ensure_node(si)
     assert created
-    # ensure_node is idempotent — same identity does not duplicate
     idx2, created2 = gp.ensure_node(dict(si))
     assert idx2 == idx and not created2
-    # legal measuredUnder direction is accepted
     assert gp.add_edge(0, "measuredUnder", idx, {"valid_from": "2020", "valid_to": None,
                                                  "recorded_at": "2026-01-01"})
-    # re-adding the same edge is a no-op (dedup)
     assert not gp.add_edge(0, "measuredUnder", idx, {"valid_from": "2020", "valid_to": None,
                                                      "recorded_at": "2026-01-01"})
-    # illegal direction (StandardIndicator -measuredUnder-> KPIObservation) is rejected
     assert not gp.add_edge(idx, "measuredUnder", 0, {"valid_from": None, "valid_to": None,
                                                      "recorded_at": "2026-01-01"})
-    # append-only: the two original nodes are untouched in place
     assert [n["class"] for n in g["nodes"][:2]] == ["KPIObservation", "Penalty"]
 
 
@@ -385,22 +349,12 @@ def test_step05c_doc_key_and_keyword_tier():
     assert doc_key_for("TT96-6.1.1") == ("TT96", "Regulation")
     assert doc_key_for("SSCIFC-E2") == ("SSCIFC", "Standard")
     assert doc_key_for("GRI 305-1") is None
-    # The catalog is passed in now rather than read from a module global, so this
-    # helper-level check runs against the KEYWORDS table alone -- no 152 KB of GRI
-    # titles leaking in and changing which phrase wins.
     kw = build_keyword_index(_DEFS, {})
-    # unambiguous keyword resolves
     assert match_keyword("Chúng tôi giảm phát thải khí nhà kính", kw) == "TT96-6.1.1"
-    # generic text resolves to nothing (no false alignment)
     assert match_keyword("Công ty phát triển bền vững", kw) is None
 
 
 def test_step05_standards_anchor_fixes_class_and_relabels_edge():
-    # The SSC-IFC bug, reproduced: a document mention gets extracted with the wrong class
-    # (here "Regulation" for what the registry says is a "Standard"). consolidate() must let
-    # the registry's `kind` — not whichever member "wins" by prop_completeness — decide the
-    # merged node's class, and must relabel any subjectToRegulation edge pointing at it to
-    # adoptsStandard so the pipeline never regenerates the illegal-edge bug on a fresh run.
     nodes = [
         {"class": "Organization", "properties": {"name": "AAA"}},
         {"class": "Regulation", "properties": {"name": "SSC-IFC Guide", "jurisdiction": "Vietnam"}},
@@ -424,11 +378,9 @@ def test_step08_stable_id_survives_reorder():
         {"class": "MediaReport", "properties": {"report_id": "r1", "title": "Bài báo độc lập X"}},
     ], "edges": []}
     by_claim, by_text = build_key_index(graph)
-    # claim resolves by its stable claim_id, not by array position
     dossier = {"claim_id": "c1", "claim_node_index": 999}
     ck, how = resolve_claim(dossier, by_claim)
     assert ck == "n0" and how == "stable_id"
-    # evidence resolves by (class, text) when node_index is stale
     ev = {"class": "MediaReport", "text": "Bài báo độc lập X", "node_index": 999}
     ek, how = resolve_evidence(ev, by_text)
     assert ek == "n1" and how == "text"

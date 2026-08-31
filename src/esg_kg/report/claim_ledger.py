@@ -51,14 +51,12 @@ from esg_kg.core.paths import REPO_ROOT
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
-DEFAULT_OUT_DIR = REPO_ROOT / "graph_output" / "crosscheck"   # markdown output location only
+DEFAULT_OUT_DIR = REPO_ROOT / "graph_output" / "crosscheck"
 
-# Neo4j defaults — match esg_kg.load.neo4j_load + the sync.
 NEO4J_URI_DEFAULT = "bolt://localhost:8687"
 NEO4J_USER_DEFAULT = "greenwashing"
 NEO4J_PASSWORD_DEFAULT = "changeme"
 
-# Conduct-side classes counted for the coverage header (mirrors the crosscheck conduct pool).
 CONDUCT_CLASSES = ["Controversy", "Penalty", "MediaReport", "KPIObservation", "ThirdPartyVerification"]
 COVERAGE_CAVEAT = ("Thin independent conduct — absence of contradiction is NOT exoneration "
                    "(docs/SYSTEM_DESIGN.md §8.3).")
@@ -73,7 +71,6 @@ ASSESSMENT_LABEL = {
     "appears_supported": "appears_supported",
     "unverified_insufficient_evidence": "unverified/insufficient",
 }
-# advisory edge role -> dossier evidence bucket
 ROLE_BUCKET = {
     "support": "supporting_evidence",
     "contradict": "contradicting_evidence",
@@ -81,10 +78,9 @@ ROLE_BUCKET = {
 }
 
 
-# --------------------------------------------------------------------------- helpers
 def _force_utf8_stdout() -> None:
     try:
-        sys.stdout.reconfigure(encoding="utf-8")  # py3.7+, Windows PowerShell needs this
+        sys.stdout.reconfigure(encoding="utf-8")
     except Exception:
         pass
 
@@ -122,7 +118,6 @@ def _sort_key(d: Dict[str, Any]):
     return (order, -conf, -int(year) if str(year).lstrip("-").isdigit() else 0)
 
 
-# --------------------------------------------------------------------------- Neo4j read
 def connect(args: argparse.Namespace):
     try:
         from neo4j import GraphDatabase
@@ -175,7 +170,6 @@ def load_from_neo4j(driver, database: Optional[str], ticker: str):
             "       x.date AS date, x.confidence AS confidence, x.rationale AS rationale, "
             "       x.provider AS provider, x.independent AS independent, "
             "       x.date_uncertain AS date_uncertain, "
-            # provenance lives on the evidence node itself (step05b patch / step02 stamp)
             "       e.source_doc AS e_source_doc, e.source_page AS e_source_page, "
             "       e.article_title AS e_article_title",
             t=t))
@@ -188,7 +182,6 @@ def load_from_neo4j(driver, database: Optional[str], ticker: str):
                 classes=CONDUCT_CLASSES):
             conduct_pool[row["cls"]] = row["c"]
 
-    # Assemble dossier-shaped dicts.
     dossiers: Dict[str, Dict[str, Any]] = {}
     for r in claim_rows:
         dossiers[r["key"]] = {
@@ -198,7 +191,6 @@ def load_from_neo4j(driver, database: Optional[str], ticker: str):
             "flagged_non_independent_support": [],
             "signals": {"structural_contradiction": bool(r["struct"]), "kpi_gap": bool(r["kpi_gap"])},
             "caveats": list(r["caveats"] or []),
-            # step07b evidence-balance scores (docs/SOFTMAX_SCORING.md); absent pre-enrichment.
             "assessment_scores": ({"contradicted": r["score_c"], "supported": r["score_s"],
                                    "abstain": r["score_a"]} if r["score_c"] is not None else None),
             "score_disagrees_with_assessment": bool(r["score_dis"]),
@@ -222,7 +214,6 @@ def load_from_neo4j(driver, database: Optional[str], ticker: str):
     return issuer_name, list(dossiers.values()), conduct_pool
 
 
-# --------------------------------------------------------------------------- rendering
 def build_header(ticker: str, name: str, dossiers: List[Dict[str, Any]],
                  conduct_pool: Dict[str, int]) -> Dict[str, Any]:
     counts = {k: 0 for k in ASSESSMENT_ORDER}
@@ -387,7 +378,6 @@ def _entry_markdown(d: Dict[str, Any], maxlen: int) -> List[str]:
     return md
 
 
-# --------------------------------------------------------------------------- main
 def run(args: argparse.Namespace) -> None:
     driver, database = connect(args)
     try:
@@ -466,7 +456,7 @@ def main() -> None:
     p.add_argument("--database", default=None, help="Neo4j database (default env NEO4J_DATABASE).")
     args = p.parse_args()
     if args.claim_id:
-        args.maxlen = max(args.maxlen, 100000)  # never truncate a single-claim view
+        args.maxlen = max(args.maxlen, 100000)
     run(args)
 
 

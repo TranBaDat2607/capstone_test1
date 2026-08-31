@@ -147,8 +147,6 @@ def build_catalog(json_dir: str = JSON_DIR,
 
     gri_to_tt96 = load_crosswalk_mappings(crosswalk_path)
 
-    # Pass 1 - index every extracted standard. One standard_id can appear in several
-    # files because it ships several versions, so keep them all, in filename order.
     docs_in_order: List[Dict[str, Any]] = []
     by_standard: Dict[str, List[Dict[str, Any]]] = {}
     for filepath in json_files:
@@ -162,8 +160,6 @@ def build_catalog(json_dir: str = JSON_DIR,
     known = set(by_standard)
     catalog: Dict[str, Any] = {}
 
-    # Pass 2 - a standard describes only the disclosures it owns. A foreign listing
-    # (GRI 11 re-stating GRI 404-1) is skipped so it cannot claim the provenance.
     for std_data in docs_in_order:
         sid = (std_data.get("standard_id") or "").strip()
         for d in std_data.get("disclosures", []):
@@ -173,8 +169,6 @@ def build_catalog(json_dir: str = JSON_DIR,
             catalog[key] = _entry(key, d, std_data, _versions_of(by_standard[sid]),
                                   gri_to_tt96.get(key))
 
-    # Pass 3 - orphans: nothing extracted declares the owning standard, so the first
-    # sighting stands. Better a disclosure with approximate provenance than none.
     for std_data in docs_in_order:
         sid = (std_data.get("standard_id") or "").strip()
         for d in std_data.get("disclosures", []):

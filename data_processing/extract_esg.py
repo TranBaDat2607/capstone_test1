@@ -25,9 +25,8 @@ import glob
 import os
 from collections import defaultdict
 
-# ---- config ---------------------------------------------------------------
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-INPUT_DIR = os.path.join(REPO_ROOT, "data", "labeled")            # folder of *.jsonl (searched recursively)
+INPUT_DIR = os.path.join(REPO_ROOT, "data", "labeled")
 OUT_DIR = os.path.join(REPO_ROOT, "data", "outputs", "esg_extracted")
 ESG_CATEGORIES = ("Environmental", "Social", "Governance")
 
@@ -35,13 +34,13 @@ ESG_CATEGORIES = ("Environmental", "Social", "Governance")
 def make_record(obj, source_file):
     """Trim a raw labeled object down to the fields useful for GraphRAG."""
     return {
-        "source_file": source_file,           # which labeled file it came from
-        "source_pdf": obj.get("source_pdf"),  # source document / article id
+        "source_file": source_file,
+        "source_pdf": obj.get("source_pdf"),
         "page": obj.get("page"),
         "sentence_index": obj.get("sentence_index"),
         "text": obj.get("text"),
-        "labels": obj.get("labels"),          # assigned ESG categories
-        "scores": obj.get("scores"),          # classifier probabilities (optional)
+        "labels": obj.get("labels"),
+        "scores": obj.get("scores"),
     }
 
 
@@ -58,16 +57,14 @@ def main(input_dir=INPUT_DIR, out_dir=OUT_DIR):
     per_file_counts = {}
     label_counts = defaultdict(int)
 
-    # every *.jsonl under input_dir, including nested subfolders
     input_files = sorted(glob.glob(os.path.join(input_dir, "**", "*.jsonl"), recursive=True))
     if not input_files:
         print(f"No .jsonl found under {input_dir}")
         return
 
     for path in input_files:
-        # mirror the input subfolder layout under out_dir, and append _extracted to the name
-        rel = os.path.relpath(path, input_dir)                       # e.g. news_labeled/aaa_news_classified.jsonl
-        stem, ext = os.path.splitext(rel)                           # ("news_labeled/aaa_news_classified", ".jsonl")
+        rel = os.path.relpath(path, input_dir)
+        stem, ext = os.path.splitext(rel)
         per_file_out = os.path.join(out_dir, stem + "_extracted" + ext)
         os.makedirs(os.path.dirname(per_file_out), exist_ok=True)
         kept = 0
@@ -92,20 +89,17 @@ def main(input_dir=INPUT_DIR, out_dir=OUT_DIR):
         per_file_counts[rel] = kept
         print(f"wrote {per_file_out}  ({kept} records)")
 
-    # merged JSONL — easiest single input for a downstream schema/graph step
     merged_path = os.path.join(out_dir, "esg_all_records.jsonl")
     with open(merged_path, "w", encoding="utf-8") as f:
         for rec in all_records:
             f.write(json.dumps(rec, ensure_ascii=False) + "\n")
     print(f"wrote {merged_path}  ({len(all_records)} records)")
 
-    # grouped by source document — convenient for per-doc graph building
     grouped_path = os.path.join(out_dir, "esg_by_document.json")
     with open(grouped_path, "w", encoding="utf-8") as f:
         json.dump(by_document, f, ensure_ascii=False, indent=2)
     print(f"wrote {grouped_path}  ({len(by_document)} documents)")
 
-    # stats
     stats = {
         "total_esg_records": len(all_records),
         "documents": len(by_document),

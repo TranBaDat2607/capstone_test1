@@ -54,9 +54,6 @@ sys.path.insert(0, str(REPO / "src"))
 
 OUT_DIR = Path(__file__).resolve().parent
 
-# Two synthetic issuers. The tickers are real Vietnamese listing codes because
-# REPORT_STEM_RE parses the ticker back out of source_id, but every name, figure
-# and sentence below is invented.
 AAA, ACC = "AAA", "ACC"
 
 
@@ -74,11 +71,6 @@ def _src(ticker, year, page, sent):
     return f"{ticker}_{year}_p{page:02d}_s{sent:02d}"
 
 
-# --------------------------------------------------------------------------- #
-# Entities. Kept as builders so the two artifacts stay consistent with each
-# other: the resolved graph is the same world with time moved onto the edges.
-# --------------------------------------------------------------------------- #
-
 ORG = {
     AAA: {"name": "Công ty Cổ phần Vật liệu Xanh Alpha", "ticker": AAA},
     ACC: {"name": "Công ty Cổ phần Bê tông Chí Công", "ticker": ACC},
@@ -88,10 +80,6 @@ FACILITY = {
     ACC: {"name": "Trạm trộn Chí Công Miền Bắc"},
 }
 
-# StandardIndicator axis: one TT96 environmental indicator, its GRI equivalent,
-# and one TT96 social indicator. Pillars use the Vietnamese vocabulary that
-# config/gri_catalog.json and kpi_definitions_construction.json actually carry,
-# because the Evidence View reads StandardIndicator.pillar directly.
 INDICATORS = [
     {"indicator_id": "TT96-6.1.1", "name": "Tổng phát thải khí nhà kính (Scope 1 + Scope 2)",
      "pillar": "Môi trường"},
@@ -123,7 +111,6 @@ def build_validated_triples():
             _tm("2019-01-01"))
 
         for year in (2023, 2024):
-            # One environmental KPI per issuer per year.
             kpi = {
                 "kpi_type": "Phát thải khí nhà kính",
                 "kpi_id": "TT96-6.1.1",
@@ -148,8 +135,6 @@ def build_validated_triples():
                 {**INDICATORS[0], **_t("2020-01-01")},
                 _tm(f"{year}-01-01", f"{year}-12-31"))
 
-        # One claim per issuer, with a deterministic claim_id derived from its
-        # source sentence the way assign_deterministic_claim_ids does.
         claim = {
             "claim_id": f"claim_{ticker.lower()}_2024_p07_s11",
             "claim_text": ("Chúng tôi cam kết giảm phát thải khí nhà kính 30% vào năm 2030."
@@ -167,7 +152,6 @@ def build_validated_triples():
             {**INDICATORS[0 if ticker == AAA else 2], **_t("2020-01-01")},
             _tm("2024-01-01"))
 
-    # A goal (claim-like, feeds the indicator alignment arms).
     goal = {"name": "Giảm phát thải khí nhà kính 30% vào năm 2030", "target_date": "2030-12-31",
             "source_id": _src(AAA, 2024, 7, 12), **_t("2024-01-01")}
     org_aaa = {**ORG[AAA], **_t("2019-01-01")}
@@ -181,7 +165,6 @@ def build_validated_triples():
                          "properties": {**INDICATORS[0], **_t("2020-01-01")}},
               "temporal_metadata": _tm("2024-01-01")})
 
-    # Emission, so measuredUnder has a non-KPI source class too.
     emission = {"scope": "Scope 1", "value": 1250.5, "unit": "tCO2e",
                 "source_id": _src(AAA, 2024, 13, 2), "source_type": "report",
                 **_t("2024-01-01", "2024-12-31")}
@@ -195,8 +178,6 @@ def build_validated_triples():
                          "properties": {**INDICATORS[1], **_t("2020-01-01")}},
               "temporal_metadata": _tm("2024-01-01", "2024-12-31")})
 
-    # Indicator axis wiring: TT96 indicators sit under a Regulation, the GRI one
-    # under a Standard, and the two GHG indicators are equivalent.
     reg = {"name": "Thông tư 96/2020/TT-BTC", **_t("2020-01-01")}
     std = {"name": "GRI Standards", **_t("2016-01-01")}
     for ind in (INDICATORS[0], INDICATORS[2]):
@@ -221,8 +202,6 @@ def build_validated_triples():
               "object": {"class": "Standard", "properties": std},
               "temporal_metadata": _tm("2022-01-01")})
 
-    # Conduct side: a news MediaReport with an uncertain date (the publish-date
-    # proxy case) and a Penalty against the second issuer.
     org_acc = {**ORG[ACC], **_t("2019-01-01")}
     media = {"title": "Trạm trộn bị phản ánh gây bụi tại khu dân cư",
              "url": "https://example.invalid/news/1", "domain": "example.invalid",
@@ -247,9 +226,6 @@ def build_validated_triples():
               "object": {"class": "Penalty", "properties": penalty},
               "temporal_metadata": _tm("2024-05-10")})
 
-    # amount == 0 is a self-reported "we were fined 0 times" statement, not an
-    # observed sanction. indicators flags it self_reported_zero and emits no
-    # conduct edge; the axis test asserts at least one such node exists.
     penalty_zero = {"reason": "Không bị xử phạt vi phạm môi trường trong năm",
                     "amount": 0, "currency": "VND",
                     "source_id": _src(AAA, 2024, 21, 4), "source_type": "report",
@@ -259,16 +235,12 @@ def build_validated_triples():
               "object": {"class": "Penalty", "properties": penalty_zero},
               "temporal_metadata": _tm("2024-01-01", "2024-12-31")})
 
-    # A deliberately GENERIC facility name. anchor_kpi's gazetteer drops names in
-    # GENERIC_NAMES ("nha may san xuat"), so this is what makes the gate
-    # observable: raw Facility names outnumber surviving gazetteer entries.
     T.append({"subject": {"class": "Organization", "properties": org_aaa},
               "predicate": "ownsFacility",
               "object": {"class": "Facility",
                          "properties": {"name": "Nhà máy sản xuất", **_t("2019-01-01")}},
               "temporal_metadata": _tm("2019-01-01")})
 
-    # A superseded Certification pair -> P4 version-chain coverage.
     cert_old = {"name": "ISO 14001", "issuer": "Bureau Veritas",
                 **_t("2019-01-01", "2022-12-31", is_current=False)}
     cert_new = {"name": "ISO 14001", "issuer": "Bureau Veritas",
@@ -295,7 +267,6 @@ def build_resolved_graph():
         edges.append({"subject": s, "predicate": pred, "object": o,
                       "temporal_metadata": tm})
 
-    # --- T1 entities: NO valid_from/valid_to/is_current on the node itself. ---
     i_org = {t: node("Organization", dict(ORG[t])) for t in (AAA, ACC)}
     i_fac = {t: node("Facility", dict(FACILITY[t])) for t in (AAA, ACC)}
     i_fac_generic = node("Facility", {"name": "Nhà máy sản xuất"})
@@ -305,7 +276,6 @@ def build_resolved_graph():
     i_std = node("Standard", {"name": "GRI Standards"})
     i_ind = [node("StandardIndicator", dict(ind)) for ind in INDICATORS]
 
-    # A T1 entity WITH history: exactly one open version is_current=true (P4).
     i_cert = node(
         "Certification", {"name": "ISO 14001", "issuer": "Bureau Veritas"},
         versions=[
@@ -317,7 +287,6 @@ def build_resolved_graph():
                             "valid_to": None, "is_current": True}},
         ])
 
-    # --- T2/T3 observations: time stays ON the node. ---
     i_kpi = {}
     for ticker in (AAA, ACC):
         for year in (2023, 2024):
@@ -367,7 +336,6 @@ def build_resolved_graph():
                              "source_id": "news_acc_2024_0002", "source_type": "news",
                              "date_uncertain": False, **_t("2024-05-10")})
 
-    # --- Edges (time lives here for T1-to-T1 relationships). ---
     for t in (AAA, ACC):
         edge(i_org[t], "ownsFacility", i_fac[t], _tm("2019-01-01"))
         if t == AAA:
@@ -399,10 +367,6 @@ def build_resolved_graph():
 
     return {"nodes": nodes, "edges": edges}
 
-
-# --------------------------------------------------------------------------- #
-# Self-validation: a fixture the real pipeline would reject is worse than none.
-# --------------------------------------------------------------------------- #
 
 def validate(triples, graph) -> int:
     from esg_kg.core.schema import load_schema_sets, validate_triple

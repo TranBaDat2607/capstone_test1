@@ -32,7 +32,6 @@ MIME_TYPES = {
 
 
 class ESGEvidenceHandler(BaseHTTPRequestHandler):
-
     def log_message(self, format, *args):
         pass
 
@@ -42,7 +41,6 @@ class ESGEvidenceHandler(BaseHTTPRequestHandler):
         self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Content-Length", str(len(body)))
         self.send_header("Access-Control-Allow-Origin", "*")
-        # Prevent browser caching of API responses
         self.send_header("Cache-Control", "no-cache, no-store, must-revalidate")
         self.send_header("Pragma", "no-cache")
         self.send_header("Expires", "0")
@@ -74,14 +72,12 @@ class ESGEvidenceHandler(BaseHTTPRequestHandler):
         path = parsed.path
         query = urllib.parse.parse_qs(parsed.query)
 
-        # API: /api/companies
         if path == "/api/companies":
             q_val = query.get("q", [""])[0]
             companies = get_companies(q_val)
             self.send_json(companies)
             return
 
-        # API: /api/evidence/{ticker}?year=2022
         if path.startswith("/api/evidence/"):
             ticker = path.split("/api/evidence/")[1].strip()
             year_val = query.get("year", [None])[0]
@@ -89,19 +85,16 @@ class ESGEvidenceHandler(BaseHTTPRequestHandler):
             self.send_json(evidence)
             return
 
-        # Static assets: /static/... -> frontend/...
         if path.startswith("/static/"):
             rel_path = path[len("/static/"):]
             file_path = FRONTEND_DIR / rel_path
             self.send_file(file_path)
             return
 
-        # Root or index.html
         if path in ("/", "/index.html"):
             self.send_file(FRONTEND_DIR / "index.html")
             return
 
-        # Fallback to static file lookup
         target_file = FRONTEND_DIR / path.lstrip("/")
         if target_file.is_file():
             self.send_file(target_file)

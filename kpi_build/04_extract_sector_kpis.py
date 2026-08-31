@@ -41,7 +41,6 @@ def squash(s: str) -> str:
     return re.sub(r"\s+", " ", s).strip(" .;:")
 
 
-# --------------------------------------------------------------------------- #
 def extract_qd2171() -> list[dict]:
     text = html_text("QD_2171_2021.html")
     doc = {
@@ -50,8 +49,6 @@ def extract_qd2171() -> list[dict]:
         "url": "https://hethongphapluat.com/quyet-dinh-2171-qd-ttg-nam-2021-phe-duyet-chuong-trinh-phat-trien-vat-lieu-xay-khong-nung-tai-viet-nam-den-nam-2030-do-thu-tuong-chinh-phu-ban-hanh/dieu-1",
         "section": "Điều 1.b - Mục tiêu cụ thể",
     }
-    # Specific-target sentence (under "b) Mục tiêu cụ thể"):
-    # "... đạt tỷ lệ: 35 - 40% vào năm 2025, 40 - 45% vào năm 2030 ... theo quy định"
     m = re.search(r"(Đẩy mạnh sản xuất và sử dụng vật liệu xây không nung thay thế "
                   r"một phần gạch đất sét nung đạt tỷ lệ:.*?theo quy định)",
                   text, flags=re.S)
@@ -66,7 +63,6 @@ def extract_qd2171() -> list[dict]:
     }]
 
 
-# --------------------------------------------------------------------------- #
 def extract_qcvn09() -> list[dict]:
     text = html_text("QCVN_09_2017.html")
     doc = {
@@ -88,7 +84,6 @@ def extract_qcvn09() -> list[dict]:
     }]
 
 
-# --------------------------------------------------------------------------- #
 def extract_ssc_ifc_aspects() -> list[dict]:
     guide = pdf_text("SSC_IFC_sustainability_guide.pdf")
     doc = {
@@ -96,15 +91,13 @@ def extract_ssc_ifc_aspects() -> list[dict]:
         "url": "https://ssc.gov.vn/ (SSC IFC Huong dan lap Bao cao Phat trien ben vung.pdf)",
         "section": "Mục 5 - Khía cạnh hoạt động kinh doanh được đề cập trong Báo cáo bền vững",
     }
-    # The aspect list is a two-column table (Moi truong | Xa hoi) rendered as
-    # alternating lines between the "Moi truong / Xa hoi" header and the next paragraph.
     start = guide.find("Tiết kiệm năng lượng")
     end = guide.find("Thông tin được công bố", start)
     if start < 0 or end < 0:
         raise SystemExit("SSC-IFC: could not locate the aspect list.")
     lines = [ln.strip() for ln in guide[start:end].splitlines() if ln.strip()]
     lines = [ln for ln in lines if ln not in ("Môi trường", "Xã hội")]
-    env, soc = lines[0::2], lines[1::2]  # alternating E, S
+    env, soc = lines[0::2], lines[1::2]
 
     items = []
     for i, vi in enumerate(env, 1):

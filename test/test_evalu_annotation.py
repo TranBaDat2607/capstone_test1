@@ -57,7 +57,6 @@ def _dossiers():
     ]
 
 
-# ------------------------------------------------------------------ sampling
 def test_collect_pairs_only_takes_cited_evidence():
     pairs = collect_pairs(_dossiers(), _nodes())
     assert len(pairs) == 3, len(pairs)          # the unverified dossier contributes none
@@ -73,7 +72,6 @@ def test_sample_is_deterministic_for_a_seed():
     c = sample_pairs(pairs, n=2, seed=7)
     assert [x["pair_id"] for x in a] == [x["pair_id"] for x in b]
     assert len(a) == 2
-    # a different seed is allowed to differ; what matters is reproducibility
     assert isinstance(c, list)
 
 
@@ -90,7 +88,6 @@ def test_sample_is_stratified_across_verdict_kinds():
     assert len(kinds) == 2, f"both verdict kinds must appear, got {kinds}"
 
 
-# ------------------------------------------------------------------ blindness
 LEAKY_KEYS = {"assessment", "system_kind", "system_verdict", "evidence_ticker",
               "source_doc", "confidence", "rationale", "retrieval_tier",
               "same_company_auto"}
@@ -103,7 +100,6 @@ def test_sheet_is_blind():
     for item in sheet["items"]:
         leaked = LEAKY_KEYS & set(item)
         assert not leaked, f"sheet leaks {leaked}"
-        # the claim's own company IS shown — the annotator must judge attribution
         assert item["claim_company"]
         assert item["claim_text"] and item["evidence_text"]
         assert item["relation"] is None and item["about_claim_company"] is None
@@ -115,11 +111,9 @@ def test_decoys_are_indistinguishable_from_real_items():
     assert len(sheet["items"]) == 5
     keysets = {frozenset(i.keys()) for i in sheet["items"]}
     assert len(keysets) == 1, "a decoy must not be identifiable by its shape"
-    # the answer key lives in the sheet metadata, not on the item
     assert len(sheet["_decoy_ids"]) == 2
 
 
-# ------------------------------------------------------------------- scoring
 def _pid_by_evidence(sheet, needle):
     """build_sheet shuffles, so items must be located by content, not position."""
     for item in sheet["items"]:
@@ -185,7 +179,6 @@ def test_score_reports_precision_on_the_post_fix_subset():
     sheet = build_sheet(pairs, decoys=0, seed=1)
     res = score(sheet, _standard_annotation(sheet))
     post = res["precision"]["same_company_only"]
-    # only the first pair survives a company filter, and it was judged correct
     assert post["n"] == 1 and post["correct"] == 1
 
 

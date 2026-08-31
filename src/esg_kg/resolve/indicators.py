@@ -84,14 +84,12 @@ DEFAULT_CROSSWALK = REPO_ROOT / "config" / "standard_crosswalk.json"
 DEFAULT_SCHEMA = REPO_ROOT / "config" / "schema.json"
 DEFAULT_STATS_OUT = REPO_ROOT / "graph_output" / "resolved" / "indicator_axis_stats.json"
 
-# indicator id prefix → (registry doc key, class it should be `partOf`)
 DOC_OF_PREFIX = [
     ("TT96-", ("TT96", "Regulation")),
     ("QD2171", ("QD2171", "Regulation")),
     ("QCVN09", ("QCVN09", "Standard")),
     ("SSCIFC-", ("SSCIFC", "Standard")),
 ]
-# fallback document names when the registry has not been built / a doc has no mention yet
 DOC_CANONICAL = {
     "TT96": "Thông tư 96/2020/TT-BTC",
     "QD2171": "Quyết định 2171/QĐ-BXD",
@@ -108,7 +106,6 @@ def doc_key_for(indicator_id: str) -> Optional[Tuple[str, str]]:
     return None
 
 
-# --------------------------------------------------------------------------- #
 def make_indicator_node(d: Dict[str, Any]) -> Dict[str, Any]:
     src = d.get("source") or {}
     return {"class": "StandardIndicator",
@@ -221,7 +218,6 @@ def link_indicator_axis(graph: Dict[str, Any], defs: List[Dict[str, Any]],
                              "measured_by_indicator": Counter(), "aligned_by_indicator": Counter(),
                              "penalty_self_reported_zero": 0, "unmapped_kpi_ids": Counter()}
 
-    # 1) indicator nodes + partOf → document node
     ind_idx: Dict[str, int] = {}
     for d in defs:
         node = make_indicator_node(d)
@@ -234,8 +230,6 @@ def link_indicator_axis(graph: Dict[str, Any], defs: List[Dict[str, Any]],
         if dk:
             dockey, kind = dk
             canonical = DOC_CANONICAL.get(dockey, dockey)
-            # `find` can legitimately return index 0, so test `is None` explicitly rather
-            # than `a or b` (0 is falsy — it would skip a real match at node 0).
             doc_i = gp.find("Regulation", canonical)
             if doc_i is None:
                 doc_i = gp.find("Standard", canonical)
@@ -248,7 +242,6 @@ def link_indicator_axis(graph: Dict[str, Any], defs: List[Dict[str, Any]],
 
     valid_ids = set(ind_idx)
 
-    # 2) measuredUnder from KPIObservation.kpi_id
     for i, n in enumerate(gp.nodes[:gp.n_nodes0]):
         cls = n.get("class")
         p = n.get("properties") or {}
@@ -263,7 +256,6 @@ def link_indicator_axis(graph: Dict[str, Any], defs: List[Dict[str, Any]],
                 stats["created_edges"]["measuredUnder"] += 1
                 stats["measured_by_indicator"][kid] += 1
         elif cls == "Emission":
-            # Emission is a GHG observation → TT96-6.1.1 (Scope 1+2 total).
             tgt = ind_idx.get("TT96-6.1.1")
             if tgt is not None and gp.add_edge(i, "measuredUnder", tgt, temporal_md(p)):
                 stats["created_edges"]["measuredUnder"] += 1
@@ -272,7 +264,6 @@ def link_indicator_axis(graph: Dict[str, Any], defs: List[Dict[str, Any]],
             amount = p.get("amount")
             pid = str(p.get("penalty_id") or "")
             if (amount in (0, 0.0)) or pid.endswith("_0times") or "_0times" in pid:
-                # self-reported "fined 0 times" — a compliance CLAIM, not conduct evidence
                 p["self_reported_zero"] = True
                 stats["penalty_self_reported_zero"] += 1
                 continue
@@ -282,7 +273,6 @@ def link_indicator_axis(graph: Dict[str, Any], defs: List[Dict[str, Any]],
                 stats["created_edges"]["measuredUnder"] += 1
                 stats["measured_by_indicator"][pen_ind] += 1
 
-    # 3) equivalentTo TT96 → GRI (confirmed crosswalk rows only)
     if not no_gri:
         for row in crosswalk.get("confirmed", []):
             confirmed = row.get("status") == "confirmed" or trust_draft_crosswalk
@@ -296,7 +286,6 @@ def link_indicator_axis(graph: Dict[str, Any], defs: List[Dict[str, Any]],
                 gidx, gcreated = gp.ensure_node(make_gri_node(gri, gname, catalog))
                 if gcreated:
                     stats["created_nodes"]["StandardIndicator(GRI)"] += 1
-                    # a GRI code is part of the GRI standard
                     doc_i = gp.find("Standard", DOC_CANONICAL["GRI"])
                     if doc_i is None:
                         doc_i, _ = gp.ensure_node(
@@ -308,7 +297,6 @@ def link_indicator_axis(graph: Dict[str, Any], defs: List[Dict[str, Any]],
                                extra={"confidence": row.get("confidence")}):
                     stats["created_edges"]["equivalentTo"] += 1
 
-    # 4) alignsWithIndicator (keyword tier) for Claim/Goal/Initiative
     if not no_align:
         kw = build_keyword_index(defs, catalog)
         for i, n in enumerate(gp.nodes[:gp.n_nodes0]):
@@ -333,15 +321,10 @@ def link_indicator_axis(graph: Dict[str, Any], defs: List[Dict[str, Any]],
                         stats["created_edges"]["alignsWithIndicator"] += 1
                         stats["aligned_by_indicator"][hit] += 1
 
-    # 5) pillar: correct every indicator node from the authority that owns it. Runs BEFORE
-    # assert_append_only() and before the --dry-run return, so the invariant guards it and
-    # --dry-run reports it. (It used to sit after both, unguarded and unreported.)
     pillar_changes = restamp_pillars(graph["nodes"], pillar_authority(defs, catalog))
 
     added_nodes = len(gp.nodes) - gp.n_nodes0
     added_edges = len(gp.edges) - gp.n_edges0
-    # invariant: existing prefix is the same objects in the same order (properties may be
-    # mutated in place, e.g. self_reported_zero on a Penalty, or a corrected pillar).
     gp.assert_append_only()
 
     def _c(counter):
@@ -399,11 +382,7 @@ def run(args: argparse.Namespace) -> None:
                 f"Next: python src/step06_load_graph_to_neo4j.py --clear")
 
 
-# --------------------------------------------------------------------------- #
-# Keyword tier — unambiguous only (one candidate indicator or nothing).
-# --------------------------------------------------------------------------- #
 KEYWORDS: Dict[str, List[str]] = {
-    # Environmental (Môi trường)
     "TT96-6.1.1": ["phát thải khí nhà kính", "khí nhà kính", "ghg", "co2", "carbon", "phát thải", "scope 1", "scope 2", "kiểm kê khí nhà kính"],
     "TT96-6.3.1": ["tiêu thụ năng lượng", "tiêu thụ điện", "năng lượng", "điện năng", "energy consumption", "tiêu thụ nhiên liệu", "xăng dầu"],
     "TT96-6.3.2": ["tiết kiệm năng lượng", "tiết kiệm điện", "tái tạo", "năng lượng mặt trời", "energy saving", "hiệu quả năng lượng", "xanh hóa"],
@@ -413,7 +392,6 @@ KEYWORDS: Dict[str, List[str]] = {
     "GRI 301-1": ["nguyên vật liệu", "nguyên liệu", "bao bì", "hạt nhựa", "nhựa tái chế", "nhựa sinh học", "vật liệu hạt"],
     "GRI 305-5": ["giảm phát thải", "giảm khí nhà kính", "giảm co2", "cắt giảm phát thải"],
 
-    # Social (Xã hội)
     "TT96-6.6.1": ["tỷ lệ lao động", "người lao động", "chính sách nhân sự", "chế độ đãi ngộ", "môi trường làm việc", "thu nhập trung bình", "tiền lương"],
     "TT96-6.6.3": ["đào tạo nhân viên", "đào tạo lao động", "bồi dưỡng", "huấn luyện", "employee training", "đào tạo chuyên môn", "nâng cao tay nghề", "khóa đào tạo"],
     "TT96-6.6.4": ["giờ đào tạo", "training hours"],
@@ -424,7 +402,6 @@ KEYWORDS: Dict[str, List[str]] = {
     "GRI 401-1": ["tuyển dụng", "nhân sự mới", "tỷ lệ nghỉ việc", "biến động lao động"],
     "GRI 403-6": ["chăm sóc sức khỏe", "khám sức khỏe", "bảo hiểm y tế", "phúc lợi lao động", "bảo hiểm xã hội"],
 
-    # Governance (Quản trị)
     "GRI 2-1": ["cơ cấu tổ chức", "thông tin tổ chức", "mô hình doanh nghiệp", "công ty mẹ", "công ty con"],
     "GRI 2-9": ["hội đồng quản trị", "hđqt", "ban điều hành", "ban giám đốc", "thành viên hđqt", "cơ cấu quản trị", "nữ hđqt", "độc lập hđqt"],
     "GRI 2-12": ["vai trò của hđqt", "quản trị công ty", "giám sát chiến lược", "chiến lược esg", "ủy ban quản trị"],
@@ -441,7 +418,6 @@ KEYWORDS: Dict[str, List[str]] = {
 
 def build_keyword_index(defs: List[Dict[str, Any]], catalog: Dict[str, Any]) -> Dict[str, List[str]]:
     kw_index = {k: [p.lower() for p in v] for k, v in KEYWORDS.items()}
-    # Add items from gri_catalog
     for code, info in catalog.items():
         if code not in kw_index:
             title_vi = info.get("title_vi", "").lower()

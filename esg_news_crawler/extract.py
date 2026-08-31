@@ -20,7 +20,7 @@ class Article:
     url: str
     title: str
     text: str
-    date: str          # 'YYYY-MM-DD' or '' if unknown
+    date: str
     sitename: str
     author: str = ""
 
@@ -37,7 +37,7 @@ def extract_article(url: str, html: str) -> Article | None:
             with_metadata=True,
             include_comments=False,
             include_tables=False,
-            favor_recall=True,          # sparse domains: keep more text
+            favor_recall=True,
             deduplicate=True,
         )
     except Exception as e:

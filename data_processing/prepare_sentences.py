@@ -36,8 +36,8 @@ from .sentence_splitter import split_sentences
 @dataclass
 class Sentence:
     source_pdf: str
-    page: int          # 1-based
-    sentence_index: int  # 1-based, within the page
+    page: int
+    sentence_index: int
     text: str
 
 
@@ -73,7 +73,6 @@ def write_jsonl(rows: list[Sentence], out_path: Path) -> None:
 
 def write_csv(rows: list[Sentence], out_path: Path) -> None:
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    # utf-8-sig so the Vietnamese text opens cleanly in Excel.
     with open(out_path, "w", encoding="utf-8-sig", newline="") as f:
         w = csv.DictWriter(f, fieldnames=["source_pdf", "page", "sentence_index", "text"])
         w.writeheader()

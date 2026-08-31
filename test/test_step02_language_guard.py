@@ -42,12 +42,9 @@ from esg_kg.graph.extract_triples import (  # noqa: E402
     build_page_prompt,
 )
 
-# Reuse the same VN/EN fixture pair step03's guard test already established,
-# for one consistent example across the repo rather than inventing a new one.
 VN_NAME = "CÔNG TY CỔ PHẦN NHỰA VÀ MÔI TRƯỜNG XANH AN PHÁT"
 EN_NAME = "An Phat Green Environment and Plastic Joint Stock Company"
 
-# Directive text the OUTPUT LANGUAGE section must contain in both templates.
 REQUIRED_DIRECTIVE_SNIPPETS = (
     "## OUTPUT LANGUAGE",
     "VIETNAMESE",
@@ -56,7 +53,6 @@ REQUIRED_DIRECTIVE_SNIPPETS = (
     "Do NOT strip diacritics",
 )
 
-# The exclusion clause: what the language rule does NOT apply to.
 REQUIRED_EXCLUSION_SNIPPETS = (
     "does NOT apply to",
     "ISO",
@@ -66,15 +62,12 @@ REQUIRED_EXCLUSION_SNIPPETS = (
     "unit",
 )
 
-# The old worked-example strings the fix must remove from the report template.
 OLD_REPORT_NAMES = ("Acme Corp", "Acme Hanoi Plant")
 NEW_REPORT_NAMES = (
     "Công ty Cổ phần Vật liệu Xây dựng Sông Hồng",
     "Nhà máy Sông Hồng Hà Nội",
 )
 
-# The old worked-example strings (translated OR diacritic-stripped) the fix
-# must remove from the news template.
 OLD_NEWS_STRINGS = (
     "CTCP Nhua An Phat Xanh",
     "Khai sai thue, Nhua An Phat Xanh bi xu ly hon 1,7 ty dong",
@@ -93,9 +86,6 @@ def _load_schema():
     return json.loads((REPO_ROOT / "config" / "schema.json").read_text(encoding="utf-8"))
 
 
-# --------------------------------------------------------------------------- #
-# 1. The directive itself is present in both templates.
-# --------------------------------------------------------------------------- #
 def test_report_template_states_the_vietnamese_output_rule():
     for snippet in REQUIRED_DIRECTIVE_SNIPPETS:
         assert snippet in TEMPORAL_GRAPH_PROMPT_TEMPLATE, (
@@ -114,9 +104,6 @@ def test_news_template_states_the_vietnamese_output_rule():
             f"news prompt is missing the exclusion clause {snippet!r}")
 
 
-# --------------------------------------------------------------------------- #
-# 2. The worked examples no longer model the drift they were causing.
-# --------------------------------------------------------------------------- #
 def test_report_template_worked_example_uses_vietnamese_names():
     for old in OLD_REPORT_NAMES:
         assert old not in TEMPORAL_GRAPH_PROMPT_TEMPLATE, (
@@ -135,9 +122,6 @@ def test_news_template_worked_examples_are_fully_diacritic():
             f"news prompt's worked example should use {new!r}")
 
 
-# --------------------------------------------------------------------------- #
-# 3. The directive survives .format() and reaches the real per-page prompt.
-# --------------------------------------------------------------------------- #
 def test_build_page_prompt_report_carries_the_language_rule():
     schema = _load_schema()
     prompt = build_page_prompt(

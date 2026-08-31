@@ -53,7 +53,6 @@ import zlib
 REPO = pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO / "src"))
 
-# --- the block --------------------------------------------------------------------
 from esg_kg.resolve import build_resolved  # noqa: E402
 from esg_kg.resolve import entities as new_entities  # noqa: E402
 
@@ -115,9 +114,6 @@ def run_block(out_dir: pathlib.Path, **kw) -> dict:
     return stats
 
 
-# --------------------------------------------------------------------------- #
-# 1. The block produces a complete, correctly-assembled graph on the real corpus.
-# --------------------------------------------------------------------------- #
 def test_block_produces_a_complete_resolved_graph_on_the_real_corpus():
     if not have_corpus():
         return _skip("block real corpus", "graph_output/{validated,graphs}/ not present")
@@ -141,9 +137,6 @@ def test_block_produces_a_complete_resolved_graph_on_the_real_corpus():
           f"{stamped} provenance-stamped, {axis_edges} axis edges)")
 
 
-# --------------------------------------------------------------------------- #
-# 2. The design property being ADDED: one write, no intermediate state.
-# --------------------------------------------------------------------------- #
 def _record_writes():
     calls = []
     real = pathlib.Path.write_text
@@ -173,9 +166,6 @@ def test_block_writes_the_artifact_exactly_once():
     print(f"     (writes: {calls})")
 
 
-# --------------------------------------------------------------------------- #
-# 3. The paid-result cache (Stage C only) — the thing the block must NOT swallow.
-# --------------------------------------------------------------------------- #
 class _FakeEmbedding:
     def __init__(self, values):
         self.values = values
@@ -277,10 +267,6 @@ def test_adjudication_cache_is_reused_and_the_rerun_is_free():
     print(f"     (run 1 called generate_content {len(generate_calls_1)}x, run 2 called it 0x)")
 
 
-# --------------------------------------------------------------------------- #
-# 4. 05d compatibility smoke-check: the block's output must still satisfy the
-#    next (unchanged, optional) stage in the chain.
-# --------------------------------------------------------------------------- #
 def test_align_claims_runs_against_the_blocks_output_without_error():
     if not have_corpus():
         return _skip("05d smoke-check", "graph_output/{validated,graphs}/ not present")
@@ -293,9 +279,6 @@ def test_align_claims_runs_against_the_blocks_output_without_error():
             run_block(out_dir)
             log = _LogCatcher()
             align_claims.logger.addHandler(log)
-            # _quiet() raised the ROOT level to ERROR, which also raises the effective
-            # level align_claims.logger inherits — override it locally so its INFO
-            # messages still reach our handler.
             align_claims.logger.setLevel(logging.INFO)
             try:
                 args = align_claims.argparse.Namespace(

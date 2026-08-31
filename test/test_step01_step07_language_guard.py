@@ -42,8 +42,6 @@ sys.path.insert(0, str(REPO_ROOT / "src"))
 from esg_kg.kpi.extract import KPIExtractor, SECTOR  # noqa: E402
 from esg_kg.crosscheck.claims_vs_conduct import ADJUDICATE_SYSTEM  # noqa: E402
 
-# Directive text the OUTPUT LANGUAGE section must contain, same vocabulary as issue #6's
-# extract_triples fix, for one consistent phrasing across the repo.
 REQUIRED_DIRECTIVE_SNIPPETS = (
     "OUTPUT LANGUAGE",
     "VIETNAMESE",
@@ -56,10 +54,6 @@ REQUIRED_DIRECTIVE_SNIPPETS = (
 def _build_extract_system_prompt() -> str:
     ex = KPIExtractor.__new__(KPIExtractor)
     ex.kpi_defs = [{"id": "TT96-1", "definition": "d1"}]
-    # set defensively for forward-compatibility with the Gemini context-caching feature
-    # (issue #11, feat/llm-context-caching): once merged, _build_prompt reads
-    # self.cache_name/self.defs_text instead of computing `defs` inline. Harmless no-op
-    # on this branch alone, where _build_prompt doesn't reference them yet.
     ex.defs_text = "\n".join(f"{d['id']}: {d.get('definition', '')}" for d in ex.kpi_defs)
     ex.cache_name = None
     system, _user = ex._build_prompt(
@@ -67,9 +61,6 @@ def _build_extract_system_prompt() -> str:
     return system
 
 
-# --------------------------------------------------------------------------- #
-# 1. kpi.extract's system prompt states the rule and exempts structural fields.
-# --------------------------------------------------------------------------- #
 def test_kpi_extract_system_prompt_states_the_vietnamese_output_rule():
     system = _build_extract_system_prompt()
     for snippet in REQUIRED_DIRECTIVE_SNIPPETS:
@@ -96,10 +87,6 @@ def test_kpi_extract_system_prompt_covers_the_other_fallback_title():
     )
 
 
-# --------------------------------------------------------------------------- #
-# 2. claims_vs_conduct's ADJUDICATE_SYSTEM states the rule for `rationale` and
-#    exempts the structural verdict/confidence fields.
-# --------------------------------------------------------------------------- #
 def test_adjudicate_system_states_the_vietnamese_output_rule():
     for snippet in REQUIRED_DIRECTIVE_SNIPPETS:
         assert snippet in ADJUDICATE_SYSTEM, (

@@ -61,7 +61,6 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO / "src"))
 
-# --- new: the esg_kg package -----------------------------------------------------
 from esg_kg.resolve import entities as new_entities  # noqa: E402
 
 SCHEMA_FILE = REPO / "config" / "schema.json"
@@ -98,10 +97,6 @@ def load_schema() -> dict:
     return _cache["schema"]
 
 
-# --------------------------------------------------------------------------- #
-# Part B — the real corpus, Stage A/B.1/D only (no_llm=True — today's real
-# operating mode per CLAUDE.md: "Gemini is currently billing-blocked").
-# --------------------------------------------------------------------------- #
 def test_resolve_graph_matches_src_on_the_real_corpus_no_llm():
     if not DEFAULT_INPUT.exists():
         return _skip("real corpus no_llm", f"{DEFAULT_INPUT} not present (bare clone)")
@@ -124,10 +119,6 @@ def test_resolve_graph_matches_src_on_the_real_corpus_no_llm():
           f"no_llm=True)")
 
 
-# --------------------------------------------------------------------------- #
-# Part C — the paid path (Stage B embeddings + Stage C adjudication), driven by
-# a stub over google.genai.Client, on a synthetic near-duplicate-org fixture.
-# --------------------------------------------------------------------------- #
 class _FakeEmbedding:
     def __init__(self, values):
         self.values = values
@@ -204,7 +195,6 @@ def test_paid_path_matches_across_trees_on_a_synthetic_fixture():
         _unquiet(prev)
 
     assert new_stats["stages"]["llm_comparisons"] > 0, "arm is vacuous: Stage C never ran"
-    # the two orgs merged into one resolved entity via Stage B.2/C
     org_names = {n["properties"]["name"] for n in new_resolved["nodes"] if n["class"] == "Organization"}
     assert len(org_names) == 1, f"expected the near-duplicate orgs to merge, got {org_names}"
     print(f"     (llm_comparisons={new_stats['stages']['llm_comparisons']}, "
@@ -266,17 +256,6 @@ def test_adjudication_cache_is_reused_on_a_rerun():
           f"run 2 called it 0x)")
 
 
-# --------------------------------------------------------------------------- #
-# Stage A.2 issuer anchor with a MULTI-TICKER registry (2026-08-06 bug).
-# Found when config/issuer_registry.json grew from 1 ticker (AAA, the original
-# pilot) to 5: Stage A.2 collected every Organization node matching ANY alias in
-# the WHOLE registry into `issuer_members`, then unioned issuer_members[0..] into
-# ONE cluster — silently merging every registered company's issuer Organization
-# into a single node once the registry held more than one ticker. Live symptom:
-# after adding ACC/ACG/ADP/AGG, `resolved_graph.json` had exactly ONE Organization
-# node carrying a `ticker` property (tagged "ACC", absorbing AAA's node too) instead
-# of five. This fixture reproduces it with two clearly distinct issuers.
-# --------------------------------------------------------------------------- #
 def _two_ticker_registry_fixture(tmp_path: Path) -> Path:
     registry = {
         "AAA": {
@@ -348,16 +327,6 @@ def test_issuer_anchor_does_not_merge_across_different_tickers():
     tickers = {n["properties"].get("ticker") for n in orgs}
     assert tickers == {"AAA", "ACC"}, f"expected each node tagged with its OWN ticker, got {tickers}"
     print("     (AAA and ACC stay separate, each tagged with its own ticker)")
-
-
-# 2026-08-04: the additive OpenAI path for Stage B/C (added 2026-07-29,
-# `test_openai_paid_path_resolves_the_near_duplicate_org` /
-# `test_openai_and_gemini_clients_are_not_confused`) was removed outright along with
-# `_OpenAIProvider`/`_OpenAIEmbeddingProvider` themselves — no OpenAI fallback anywhere
-# in this project any more. The Gemini paid path is already covered above by
-# `test_paid_path_matches_across_trees_on_a_synthetic_fixture` and
-# `test_adjudication_cache_is_reused_on_a_rerun` (Stage B/C driven by a stubbed
-# `google.genai.Client`).
 
 
 if __name__ == "__main__":

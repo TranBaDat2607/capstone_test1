@@ -58,12 +58,6 @@ CORE_FILE = REPO / "src" / "esg_kg" / "core" / "console.py"
 HELPER = "ensure_utf8_stdout"
 
 
-# --------------------------------------------------------------------------- #
-# Test doubles. A real Windows console cannot be summoned on demand and the
-# host's own encoding must not decide whether this passes, so the stream is
-# faked and `sys.platform` is patched — both branches of the gate get exercised
-# on every platform.
-# --------------------------------------------------------------------------- #
 class RecordingStdout:
     """Stands in for a console stream, recording how it was reconfigured."""
 
@@ -136,9 +130,6 @@ def _main_of(path: Path):
     return tree, fn
 
 
-# --------------------------------------------------------------------------- #
-# 1. Behaviour
-# --------------------------------------------------------------------------- #
 def test_on_win32_stdout_is_reconfigured_to_utf8():
     """The whole point: a cp1252 console must be switched to utf-8."""
     fn = _load_helper()
@@ -172,9 +163,6 @@ def test_a_reconfigure_that_raises_is_swallowed():
     assert out.calls == [{"encoding": "utf-8"}], "never attempted"
 
 
-# --------------------------------------------------------------------------- #
-# 2. Wiring — the part that would have caught the original bug
-# --------------------------------------------------------------------------- #
 def test_main_calls_the_helper():
     """The stage entrypoint must actually call it.
 

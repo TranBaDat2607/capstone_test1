@@ -48,7 +48,6 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO / "src"))
 
-# --- the esg_kg package -----------------------------------------------------------
 from esg_kg.report import claim_ledger as new_step09  # noqa: E402
 
 _skips: list = []
@@ -59,11 +58,6 @@ def _skip(name: str, why: str) -> None:
     print(f"SKIP {name} — {why}")
 
 
-# --------------------------------------------------------------------------- #
-# Fake Neo4j driver that RETURNS REAL DATA (unlike the write-only stages' fakes) —
-# a queue of canned row-sets consumed in call order, since load_from_neo4j() issues
-# its reads in a fixed sequence: name -> claims -> edges -> conduct pool.
-# --------------------------------------------------------------------------- #
 class _FakeRecord(dict):
     def __getitem__(self, key):
         return dict.get(self, key)
@@ -183,10 +177,6 @@ def test_load_from_neo4j_builds_dossiers_from_the_canned_rows():
     assert len(by_id["AAA_SC_002"]["supporting_evidence"]) == 1
 
 
-# --------------------------------------------------------------------------- #
-# run() end-to-end via a monkeypatched connect() — captures stdout + optional
-# markdown file, compares byte-for-byte between the two trees.
-# --------------------------------------------------------------------------- #
 def _ns(**kw) -> argparse.Namespace:
     base = dict(ticker="AAA", assessment=None, review_queue=False, claim_id=None,
                 limit=None, maxlen=300, markdown=None,

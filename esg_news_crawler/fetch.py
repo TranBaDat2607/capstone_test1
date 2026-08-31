@@ -113,7 +113,6 @@ class Fetcher:
                     except OSError:
                         pass
                 return r.url, content, r.status_code
-            # other 4xx/5xx — don't hammer, give up on this URL
             break
 
         return url, None, last_status

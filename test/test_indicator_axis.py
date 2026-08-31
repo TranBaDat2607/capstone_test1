@@ -32,16 +32,10 @@ DEFS_PATH = REPO / "kpi_definitions_construction.json"
 ALIASES_PATH = REPO / "config" / "kpi_type_aliases.json"
 
 _ALL_DEFS = json.loads(DEFS_PATH.read_text(encoding="utf-8"))
-# TT96-6.6.3 earns its place: it is a SOCIAL indicator ("Tỷ lệ lao động được đào tạo")
-# whose code contains the substring "6.3", so the old environmental branch claimed it.
-# Without it in the fixture the pillar test passes vacuously -- TT96-6.1.1 is one the
-# broken heuristic happened to get right.
 DEFS = [d for d in _ALL_DEFS
         if d["id"] in ("TT96-6.1.1", "TT96-6.5.1", "TT96-6.5.2", "TT96-6.6.3")]
 assert len(DEFS) == 4, "fixture expects these four indicators to exist in the definitions"
 
-# The authority for a TT96 pillar is the definitions file, never a guess. Read it rather
-# than hardcoding, so the fixture cannot drift away from the vocabulary it is testing.
 DEFS_PILLAR = {d["id"]: d.get("pillar") for d in DEFS}
 assert all(DEFS_PILLAR.values()), f"definitions must carry a pillar: {DEFS_PILLAR}"
 
@@ -189,21 +183,6 @@ class Workspace:
         shutil.rmtree(self.dir, ignore_errors=True)
 
 
-# --------------------------------------------------------------------------- #
-# Pillar: read from the authority, never guessed from the shape of the code.
-#
-# The stage used to end with a loop that overwrote `pillar` on EVERY
-# StandardIndicator from a substring chain -- `any(k in code for k in ("6.1",
-# "6.2", ...))` for environmental, `("6.6", "6.7")` for social, else "Quản trị".
-# "TT96-6.6.1" contains BOTH "6.6" and "6.1", and the environmental branch is
-# tested first, so all five TT96-6.6.* labour indicators (headcount, worker
-# safety, training, training hours, skills) were relabelled Môi trường. Measured
-# on the live graph: 7 of 65 indicator nodes wrong, 288 edges pointing at them,
-# and the Evidence View filing worker-safety claims under Environment.
-#
-# The loop also sat AFTER gp.assert_append_only() and AFTER the --dry-run return,
-# so no invariant guarded it and --dry-run under-reported what the stage would do.
-# --------------------------------------------------------------------------- #
 def test_pillar_is_restamped_from_the_authority():
     """A stale pillar on a pre-existing node is corrected from the definitions.
 
@@ -244,9 +223,6 @@ def test_restamp_touches_only_pillar_and_only_standard_indicator():
         node = indicator_by_id(after, "TT96-6.6.3")
         assert node["name"] == "Tên gốc phải giữ", "restamp rewrote a property other than pillar"
         assert node["source_document"] == "Thông tư 96", "restamp rewrote source_document"
-        # Other classes keep every property they arrived with. Stage-level additions are
-        # allowed -- step05c legitimately stamps self_reported_zero on a Penalty -- so the
-        # rule is "nothing existing changed", matching the append-only test below.
         for i, original in enumerate(before["nodes"]):
             if original["class"] == "StandardIndicator":
                 continue
@@ -286,9 +262,6 @@ def indicator_id_at(graph: dict, idx: int):
     return props(graph["nodes"][idx]).get("id")
 
 
-# --------------------------------------------------------------------------- #
-# The rule that keeps the signal from flipping sign (§5.3 step 5)
-# --------------------------------------------------------------------------- #
 def test_self_reported_zero_penalty_gets_no_conduct_edge():
     """"Fined 0 times" is a company boasting, not evidence against it.
 
@@ -323,9 +296,6 @@ def test_real_penalty_does_get_a_conduct_edge():
         ws.close()
 
 
-# --------------------------------------------------------------------------- #
-# The step03c / step05c boundary
-# --------------------------------------------------------------------------- #
 def test_measured_under_reads_kpi_id_and_never_guesses_from_kpi_type():
     """step05c consumes the canonical kpi_id step03c assigned; it must not re-derive
     an indicator from raw kpi_type. Keeping the boundary sharp is what makes a bad
@@ -333,10 +303,8 @@ def test_measured_under_reads_kpi_id_and_never_guesses_from_kpi_type():
     ws = Workspace()
     try:
         g = ws.run()
-        # node 0 carries kpi_id -> linked
         linked = edges_of(g, "measuredUnder", source_idx=0)
         assert len(linked) == 1 and indicator_id_at(g, linked[0]["object"]) == "TT96-6.1.1"
-        # node 1 carries the same code in kpi_type only -> NOT linked
         assert edges_of(g, "measuredUnder", source_idx=1) == [], \
             "step05c must not infer an indicator from kpi_type"
     finally:
@@ -371,9 +339,6 @@ def test_step03c_assigns_kpi_id_without_ever_rewriting_kpi_type():
     assert p["kpi_id"] == "SSCIFC-S6", p
 
 
-# --------------------------------------------------------------------------- #
-# The human-review gate on the GRI crosswalk
-# --------------------------------------------------------------------------- #
 def test_gri_edges_only_come_from_confirmed_crosswalk_rows():
     """Every row in config/standard_crosswalk.json is still needs_review, so this gate
     is the only thing keeping unreviewed mappings out of the base graph."""
@@ -406,9 +371,6 @@ def test_no_gri_skips_the_axis_entirely():
         ws.close()
 
 
-# --------------------------------------------------------------------------- #
-# Stage-level invariants the dossiers depend on
-# --------------------------------------------------------------------------- #
 def test_stage_is_append_only_and_preserves_node_order():
     """step06 keys Neo4j nodes by array index and the step07 dossiers reference nodes
     by node_index, so a reorder silently corrupts the paid advisory layer. The existing
@@ -423,7 +385,6 @@ def test_stage_is_append_only_and_preserves_node_order():
         for i, original in enumerate(before):
             assert after[i]["class"] == original["class"], f"node {i} changed class"
             for k, v in props(original).items():
-                # step05c may ADD properties (self_reported_zero) but never change one
                 assert props(after[i])[k] == v, f"node {i} property {k!r} was mutated"
     finally:
         ws.close()

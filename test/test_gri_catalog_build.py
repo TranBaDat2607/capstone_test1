@@ -44,9 +44,6 @@ sys.path.insert(0, str(REPO / "gri"))  # gri/ has no __init__.py; it is a flat s
 import build_gri_catalog as bgc  # noqa: E402
 
 
-# --------------------------------------------------------------------------- #
-# Fixtures — shaped like the real gri/full_gri/json/*.json files.
-# --------------------------------------------------------------------------- #
 def standard(std_id, pillar, title_en, disclosures, year=2016, pdf=None):
     return {
         "standard_id": std_id,
@@ -120,9 +117,6 @@ def default_standards():
     }
 
 
-# --------------------------------------------------------------------------- #
-# 1. Attribution
-# --------------------------------------------------------------------------- #
 def test_standard_of_picks_the_owning_standard():
     known = {"GRI 2", "GRI 101", "GRI 404", "GRI 305", "GRI 3"}
     assert bgc.standard_of("GRI 2-27", known) == "GRI 2"
@@ -193,9 +187,6 @@ def test_multiple_versions_of_one_standard_are_merged():
         ws.close()
 
 
-# --------------------------------------------------------------------------- #
-# 2. Pillar
-# --------------------------------------------------------------------------- #
 def test_pillar_comes_from_the_source_not_a_substring_guess():
     """GRI 101 is Biodiversity — Environmental. The substring chain said Quản trị."""
     ws = Workspace()
@@ -231,9 +222,6 @@ def test_every_pillar_is_one_of_the_three_labels():
         ws.close()
 
 
-# --------------------------------------------------------------------------- #
-# 3. Injectability — the test above cannot exist without it
-# --------------------------------------------------------------------------- #
 def test_build_writes_only_to_the_given_out_path():
     """build_catalog() used to write the real config/gri_catalog.json unconditionally,
     which is why it had no tests. Paths must be injectable."""

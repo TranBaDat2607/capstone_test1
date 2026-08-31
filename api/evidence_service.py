@@ -33,7 +33,6 @@ NEO4J_URI_DEFAULT = "bolt://localhost:8687"
 NEO4J_USER_DEFAULT = "greenwashing"
 NEO4J_PASSWORD_DEFAULT = "changeme"
 
-# pillar string (on StandardIndicator) → UI tab key
 PILLARS = [
     ("environment", "Môi trường", "🌿"),
     ("social", "Xã hội", "👥"),
@@ -41,9 +40,6 @@ PILLARS = [
 ]
 
 
-# --------------------------------------------------------------------------- #
-# Neo4j connection (lazy, cached) — same defaults/env as step09.
-# --------------------------------------------------------------------------- #
 _driver = None
 
 
@@ -53,8 +49,6 @@ def _get_driver():
         uri = os.getenv("NEO4J_URI", NEO4J_URI_DEFAULT)
         user = os.getenv("NEO4J_USER", NEO4J_USER_DEFAULT)
         pwd = os.getenv("NEO4J_PASSWORD", NEO4J_PASSWORD_DEFAULT)
-        # notifications_min_severity=OFF silences harmless "relationship type does not
-        # exist" warnings for equivalentTo (no GRI crosswalk edges loaded yet).
         drv = GraphDatabase.driver(uri, auth=(user, pwd), notifications_min_severity="OFF")
         try:
             drv.verify_connectivity()
@@ -92,16 +86,6 @@ def _pillar_key(pillar: Any) -> str:
     return "environment"
 
 
-# 2026-08-07: EXPERIMENTAL relaxation, at the user's explicit request ("nới lỏng điều kiện,
-# cho hiện mâu thuẫn") — surface appears_supported/appears_contradicted claims that have NO
-# alignsWithIndicator edge (previously invisible in this view entirely, e.g. ACG's 3 real
-# dividend/revenue contradictions). This REINTRODUCES pillar guessing that the module
-# docstring above deliberately avoided ("each card's pillar comes precisely from the linked
-# StandardIndicator.pillar — never guessed") — there is no indicator to read a pillar from
-# for these claims, so the pillar below is a keyword guess over the claim's OWN text, and
-# every such card is stamped standard_id="NGOÀI-KHUNG" so the UI can visibly flag it as
-# unclassified rather than silently presenting a guess as if it were as reliable as an
-# indicator-backed pillar.
 _FALLBACK_PILLAR_KEYWORDS = {
     "environment": ["môi trường", "khí thải", "nước thải", "chất thải", "rác thải",
                      "năng lượng", "phát thải", "khí nhà kính", "tái chế", "ô nhiễm"],
@@ -118,12 +102,9 @@ def _fallback_pillar_from_text(claim_text: str) -> str:
     for pillar, keywords in _FALLBACK_PILLAR_KEYWORDS.items():
         if any(kw in t for kw in keywords):
             return pillar
-    return "governance"  # default bucket when no keyword matches
+    return "governance"
 
 
-# --------------------------------------------------------------------------- #
-# Cypher
-# --------------------------------------------------------------------------- #
 _Q_TICKERS = """
 MATCH (c:SustainabilityClaim)-[:alignsWithIndicator]->(:StandardIndicator)
 WHERE c.crosscheck_ticker IS NOT NULL
@@ -138,11 +119,6 @@ MATCH (c:SustainabilityClaim {crosscheck_ticker:$t})-[:alignsWithIndicator]->(:S
 RETURN DISTINCT c.date AS date
 """
 
-# 2026-08-07: OPTIONAL MATCH + a WHERE that also admits verified/contradicted claims with
-# NO alignsWithIndicator edge — see _fallback_pillar_from_text above for why. Claims that
-# are neither indicator-aligned NOR verified/contradicted are still excluded (unindicated
-# "missing"/neutral claims stay out, or the "missing" column would explode from a handful
-# to hundreds of un-triaged rows — not what was asked for).
 _Q_CLAIMS = """
 MATCH (c:SustainabilityClaim {crosscheck_ticker:$t})
 WHERE (c)-[:alignsWithIndicator]->(:StandardIndicator)
@@ -164,9 +140,6 @@ RETURN c._node_key AS key, x.role AS role, x.provider AS provider,
 """
 
 
-# --------------------------------------------------------------------------- #
-# Company registry (real, from Neo4j)
-# --------------------------------------------------------------------------- #
 def _available_years(ticker: str) -> List[str]:
     years = sorted(
         {y for r in _run(_Q_YEARS, t=ticker) if (y := _year_of(r.get("date")))},
@@ -175,7 +148,6 @@ def _available_years(ticker: str) -> List[str]:
     if not years:
         return []
     year_range = f"{years[-1]} - {years[0]}" if len(years) > 1 else years[0]
-    # combined range first, then each individual year (matches the UI's year selector)
     return ([year_range] + years) if len(years) > 1 else years
 
 
@@ -203,9 +175,6 @@ def get_companies(query: str = "") -> List[Dict[str, Any]]:
     return [c for c in companies if q in c["ticker"].lower() or q in c["name"].lower()]
 
 
-# --------------------------------------------------------------------------- #
-# Evidence (3-column view)
-# --------------------------------------------------------------------------- #
 def _pick_evidence(evid_rows: List[Dict[str, Any]], want_role: str) -> Dict[str, str]:
     """Choose the first evidence row matching the role; build verifier/finding."""
     row = next((e for e in evid_rows if e.get("role") == want_role), None)
@@ -221,17 +190,15 @@ def get_evidence(ticker: str, selected_year: Optional[str] = None) -> Dict[str, 
     t = ticker.upper()
     comp = get_company_info(t)
 
-    # evidence edges grouped per claim key
     evid_by_key: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
     for e in _run(_Q_EVIDENCE, t=t):
         evid_by_key[e["key"]].append(e)
 
-    # empty pillar buckets
     buckets: Dict[str, Dict[str, List[Dict[str, Any]]]] = {
         key: {"verified": [], "contradicted": [], "missing": []} for key, _, _ in PILLARS
     }
 
-    seen_keys = set()  # a claim may align to >1 indicator; keep the first
+    seen_keys = set()
     for row in _run(_Q_CLAIMS, t=t):
         key = row["key"]
         if key in seen_keys:
@@ -247,8 +214,6 @@ def get_evidence(ticker: str, selected_year: Optional[str] = None) -> Dict[str, 
             std_id = row["standard_id"]
             std_name = row.get("standard_name") or "Chỉ tiêu ESG"
         else:
-            # relaxed match (2026-08-07): no StandardIndicator to read a pillar from —
-            # keyword-guessed from the claim's own text, visibly flagged as such.
             pillar_key = _fallback_pillar_from_text(row.get("claim_text"))
             std_id = "NGOÀI-KHUNG"
             std_name = "Chưa gắn chỉ tiêu chuẩn hóa (pillar suy luận từ nội dung claim)"
@@ -269,8 +234,6 @@ def get_evidence(ticker: str, selected_year: Optional[str] = None) -> Dict[str, 
                 "verification": _pick_evidence(evid_by_key.get(key, []), role),
             })
         else:
-            # unverified aligned claim → ⚠️ column: company disclosed this indicator but
-            # no independent evidence was found to cross-check it.
             buckets[pillar_key]["missing"].append({
                 "year": year,
                 "standard_id": std_id,
@@ -280,7 +243,6 @@ def get_evidence(ticker: str, selected_year: Optional[str] = None) -> Dict[str, 
                 "note": "Chưa tìm thấy bằng chứng độc lập để đối chiếu tuyên bố này (unverified).",
             })
 
-    # year filter (reuse the demo's semantics: range / "all" → no filter)
     def filter_by_year(items: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         if not selected_year or " - " in selected_year or selected_year == comp.get("year_range"):
             return items

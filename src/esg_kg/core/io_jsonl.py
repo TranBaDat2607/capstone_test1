@@ -96,7 +96,6 @@ def select_documents(docs: "collections.OrderedDict", args) -> List[str]:
         return names
     if args.limit_docs:
         return names[: args.limit_docs]
-    # Default: cheap first run — just the first document.
     logger.info("No scope flag given; defaulting to the first document. Use --all / --limit-docs / --doc.")
     return names[:1]
 

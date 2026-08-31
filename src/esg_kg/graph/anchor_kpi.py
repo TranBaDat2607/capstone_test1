@@ -65,12 +65,9 @@ DEFAULT_SENTENCE_GLOBS = [
     "data/labeled/news_labeled/*.jsonl",
     "data/interim/news_preprocessed/*.jsonl",
 ]
-# Degree governance (P5): a gazetteer name that anchors half the corpus is a
-# generic term, not a plant — refuse to mint a synthetic hub.
 DEFAULT_MAX_PER_FACILITY = 150
 MIN_NAME_CHARS = 10
 MIN_NAME_TOKENS = 2
-# Generic Vietnamese facility heads that survive the length gate but name nothing.
 GENERIC_NAMES = {
     "nha may san xuat", "khu cong nghiep", "trung tam san xuat",
     "nha may che bien", "cum cong nghiep", "cac nha may san xuat",
@@ -78,9 +75,6 @@ GENERIC_NAMES = {
 }
 
 
-# --------------------------------------------------------------------------- #
-# Corpus sentences.
-# --------------------------------------------------------------------------- #
 def load_sentences(globs: List[str]) -> Dict[Tuple[str, int, int], str]:
     """(source_pdf, page, sentence_index) -> raw sentence text."""
     out: Dict[Tuple[str, int, int], str] = {}
@@ -105,17 +99,14 @@ def load_sentences(globs: List[str]) -> Dict[Tuple[str, int, int], str]:
     return out
 
 
-# --------------------------------------------------------------------------- #
-# Graph inventory.
-# --------------------------------------------------------------------------- #
 def prop_richness(props: Dict[str, Any]) -> int:
     return sum(1 for v in props.values() if v not in (None, ""))
 
 
 def collect_inventory(triples: List[Dict[str, Any]]) -> Tuple[
-        Dict[str, Dict[str, Any]],           # facility normalized name -> representative node
-        Dict[str, Dict[str, Any]],           # kpi occurrence key -> {"node", "recorded_at"}
-        Set[Tuple[str, str]]]:               # existing (kpi key, facility norm) anchors
+        Dict[str, Dict[str, Any]],
+        Dict[str, Dict[str, Any]],
+        Set[Tuple[str, str]]]:
     facilities: Dict[str, Dict[str, Any]] = {}
     kpis: Dict[str, Dict[str, Any]] = {}
     anchored: Set[Tuple[str, str]] = set()
@@ -160,9 +151,6 @@ def collect_inventory(triples: List[Dict[str, Any]]) -> Tuple[
     return facilities, kpis, anchored
 
 
-# --------------------------------------------------------------------------- #
-# Matching + patch construction.
-# --------------------------------------------------------------------------- #
 def build_patch(triples: List[Dict[str, Any]], sentences: Dict[Tuple[str, int, int], str],
                 schema: Dict[str, Any], max_per_facility: int
                 ) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
@@ -173,7 +161,7 @@ def build_patch(triples: List[Dict[str, Any]], sentences: Dict[Tuple[str, int, i
         return json.dumps(
             {k: props.get(k) for k in sorted(props)}, ensure_ascii=False, sort_keys=True)
 
-    candidates: List[Tuple[str, str]] = []  # (kpi key, facility norm)
+    candidates: List[Tuple[str, str]] = []
     per_facility: Counter = Counter()
     no_sentence = 0
     for k, info in kpis.items():
@@ -184,8 +172,6 @@ def build_patch(triples: List[Dict[str, Any]], sentences: Dict[Tuple[str, int, i
             continue
         norm_sentence = f" {normalize_name(sentences[loc])} "
         matched = [f for f in facilities if f" {f} " in norm_sentence]
-        # Keep only maximal matches: "lo cn11 cn12" inside
-        # "lo cn11 cn12 cum cong nghiep an dong" names the same place.
         matched = [f for f in matched
                    if not any(g != f and f" {f} " in f" {g} " for g in matched)]
         for fnorm in matched:

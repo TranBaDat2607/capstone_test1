@@ -53,7 +53,6 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO / "src"))
 
-# --- new: the esg_kg package -------------------------------------------------------
 from esg_kg.core import io_jsonl as core_io_jsonl  # noqa: E402
 from esg_kg.core import llm as core_llm  # noqa: E402
 from esg_kg.core import schema as core_schema  # noqa: E402
@@ -79,9 +78,6 @@ class _LogCatcher(logging.Handler):
         self.messages.append(record.getMessage())
 
 
-# --------------------------------------------------------------------------- #
-# Part A — kernel reuse: identity + real-corpus, all offline/free.
-# --------------------------------------------------------------------------- #
 def test_new_tree_imports_the_kernel_rather_than_recopying():
     assert new_mod.load_pages_from_jsonl is core_io_jsonl.load_pages_from_jsonl
     assert new_mod.build_page_text is core_io_jsonl.build_page_text
@@ -103,9 +99,6 @@ def test_schema_sets_replaced_by_load_schema_sets():
     assert new_edges, "arm is vacuous: load_schema_sets returned no edge labels"
 
 
-# --------------------------------------------------------------------------- #
-# Part B — module surface: constants, prompt templates, pure helpers.
-# --------------------------------------------------------------------------- #
 def test_cfg_json_matches():
     assert new_mod.CFG_JSON.temperature == 0, new_mod.CFG_JSON.temperature
     assert new_mod.CFG_JSON.response_mime_type == "application/json", new_mod.CFG_JSON.response_mime_type
@@ -147,11 +140,6 @@ def test_document_header_is_identical_across_pages_of_one_document_but_differs_b
     assert h_page1 != h_other_year, "different year must produce a different header"
 
 
-# --------------------------------------------------------------------------- #
-# Part C — the paid path, driven by a fake client passed directly (no
-# monkeypatch needed: call_llm/process_page/process_document all take `client`
-# as a plain parameter).
-# --------------------------------------------------------------------------- #
 LEGAL_TRIPLE_JSON = json.dumps([{
     "subject": {"class": "Organization", "properties": {
         "name": "CÔNG TY TEST", "valid_from": "2023-01-01", "valid_to": None, "is_current": True}},
@@ -305,8 +293,6 @@ def test_process_page_with_a_provider_always_sends_the_full_prompt():
         assert len(new_client.calls_seen) == 0, "provider path must never touch the Gemini client"
         assert len(provider.calls_seen) == 1
         sent_user = provider.calls_seen[0]["user"]
-        # build_page_body (the cache-only body) has no "## KNOWLEDGE GRAPH SCHEMA" header;
-        # build_page_prompt (the full prompt) does — this is the observable difference.
         assert "KNOWLEDGE GRAPH SCHEMA" in sent_user, \
             "process_page sent the cache-only body instead of the full prompt"
     finally:
@@ -337,15 +323,8 @@ def test_process_page_skips_non_esg_pages_and_is_idempotent_on_rerun():
                                      esg_only=True, pdf_stem="doc", dbg_pdf_dir=new_dbg, g_pdf_dir=new_g,
                                      company="AAA", year=2024, source=source, article_meta=article_meta)
 
-            # page 2 (not ESG) and page 3 (empty text) must never reach the client — only
-            # page 1 can, so at least one call happened but the arm is not vacuous.
             assert len(new_client.calls_seen) > 0, f"[{source}] arm is vacuous: no client call happened"
 
-            # Re-run page 1. `out_file.exists()` skip only fires if page 1's CRC-selected
-            # response shape happened to succeed on the first pass (a losing shape leaves no
-            # out_file, so a legitimate retry is expected) — that depends on the prompt's
-            # hash, which this test does not control. So the property checked is
-            # conditional: IF page1.json already exists, a re-run must not call the client.
             new_before = len(new_client.calls_seen)
             new_mod.process_page(pages[0], [], new_client, 0, new_rl, SCHEMA, "gemini-2.5-flash",
                                  esg_only=True, pdf_stem="doc", dbg_pdf_dir=new_dbg, g_pdf_dir=new_g,
@@ -384,17 +363,9 @@ def test_process_document_creates_one_cache_and_reuses_it_across_every_page():
         assert len(new_client.caches.calls) == 1, (
             f"expected exactly 1 caches.create() for one document, got {len(new_client.caches.calls)}"
         )
-        # the constant system instruction must be baked into the cache itself, not
-        # left off entirely -- see call_llm's cfg for why it can no longer be sent
-        # per-call once cached.
         assert new_client.caches.calls[0]["system_instruction"] == new_mod.JSON_ONLY_SYSTEM_INSTRUCTION, (
             "the cache must carry JSON_ONLY_SYSTEM_INSTRUCTION so it isn't silently dropped"
         )
-        # >= 3, not ==: a page whose CRC-selected fake response is malformed/empty
-        # retries (call_llm's own retries=2, process_page's own retry loop), so one
-        # document's 3 pages can produce more than 3 generate_content calls — the
-        # property under test is that EVERY one of them shares the one cache, not the
-        # exact count.
         assert len(new_client.calls_seen) >= 3, "arm is vacuous: not all 3 pages reached the client"
         cache_names = {c["cached_content"] for c in new_client.calls_seen}
         assert cache_names == {"cachedContents/stub-1"}, (
@@ -405,12 +376,6 @@ def test_process_document_creates_one_cache_and_reuses_it_across_every_page():
             assert header not in c["contents"], (
                 "the cached header must NOT be resent inline once cached_content is set"
             )
-            # The real Gemini API rejects a generate_content call that sets BOTH
-            # cached_content and system_instruction ("CachedContent can not be used
-            # with GenerateContent request setting system_instruction, tools or
-            # tool_config") — verified live 2026-08-05, every page 400'd on this
-            # exact error before the fix. The stub client doesn't enforce it, so this
-            # assertion is what stands between a green suite and a broken paid call.
             assert c["system_instruction"] is None, (
                 "cached_content and system_instruction must never both be set on one "
                 "generate_content call"
@@ -476,15 +441,6 @@ def main():
         print(f"{len(_skips)} arm(s) skipped (missing local artifacts):")
         for s in _skips:
             print(f"  - {s}")
-
-
-# 2026-08-04: the additive OpenAI path (`--provider openai`, added 2026-07-29:
-# test_call_llm_openai_provider_unwraps_triples_object /
-# test_call_llm_openai_provider_accepts_bare_array_too /
-# test_call_llm_openai_provider_bad_json_does_not_crash /
-# test_call_llm_gemini_default_unaffected_by_provider_arg) was removed outright —
-# `call_llm` no longer takes a `provider=` argument at all, it is gemini-only again,
-# no fallback. The Gemini path is already covered by the arms above.
 
 
 if __name__ == "__main__":

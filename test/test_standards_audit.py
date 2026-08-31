@@ -36,8 +36,6 @@ sys.path.insert(0, str(REPO / "src"))
 
 from esg_kg.report import quality as new_quality  # noqa: E402
 
-# A registry shaped like config/standards_registry.json after the move: the match patterns
-# and exclude hints that used to live in step04b's SEEDS now ride along in the config.
 REGISTRY = {
     "GRI": {
         "canonical_name": "GRI Standards",

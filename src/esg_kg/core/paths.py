@@ -50,16 +50,13 @@ def _resolve_repo_root() -> Path:
     return _find_repo_root(Path(__file__).resolve())
 
 
-# --- The one anchor -----------------------------------------------------------
 REPO_ROOT: Path = _resolve_repo_root()
 
-# --- Top-level directories ----------------------------------------------------
 CONFIG_DIR: Path = REPO_ROOT / "config"
 DATA_DIR: Path = REPO_ROOT / "data"
 KPI_OUTPUT_DIR: Path = REPO_ROOT / "kpi_output"
 GRAPH_OUTPUT_DIR: Path = REPO_ROOT / "graph_output"
 
-# --- graph_output/ subtrees (each used by several stages) ---------------------
 GRAPHS_DIR: Path = GRAPH_OUTPUT_DIR / "graphs"
 VALIDATED_DIR: Path = GRAPH_OUTPUT_DIR / "validated"
 RESOLVED_DIR: Path = GRAPH_OUTPUT_DIR / "resolved"
@@ -67,9 +64,8 @@ CROSSCHECK_DIR: Path = GRAPH_OUTPUT_DIR / "crosscheck"
 QUALITY_DIR: Path = GRAPH_OUTPUT_DIR / "quality"
 EVALUATION_DIR: Path = GRAPH_OUTPUT_DIR / "evaluation"
 
-# --- Shared file constants (identical across many stages) ---------------------
-SCHEMA_PATH: Path = CONFIG_DIR / "schema.json"                       # 8 stage files
-KPI_DEFS_PATH: Path = REPO_ROOT / "kpi_definitions_construction.json"  # 4 stage files
+SCHEMA_PATH: Path = CONFIG_DIR / "schema.json"
+KPI_DEFS_PATH: Path = REPO_ROOT / "kpi_definitions_construction.json"
 DATA_VERSION_FILE: Path = REPO_ROOT / "data_version.json"
 ENV_FILE: Path = REPO_ROOT / ".env"
 ENV_EXAMPLE_FILE: Path = REPO_ROOT / ".env.example"

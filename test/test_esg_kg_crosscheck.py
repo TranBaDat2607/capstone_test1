@@ -88,7 +88,6 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO / "src"))
 
-# --- the esg_kg package -----------------------------------------------------------
 from esg_kg.core import llm as core_llm  # noqa: E402
 from esg_kg.core import naming as core_naming  # noqa: E402
 from esg_kg.core import paths as core_paths  # noqa: E402
@@ -107,10 +106,6 @@ def _skip(name: str, why: str) -> None:
     print(f"SKIP {name} — {why}")
 
 
-# --------------------------------------------------------------------------- #
-# The stub provider. Deterministic from the adjudication prompt, so BOTH trees
-# see the same replies for the same (claim, evidence) pair.
-# --------------------------------------------------------------------------- #
 def make_stub(mode: str = "mixed"):
     """Return a class with `_GeminiProvider(model, rate_limit)`'s interface.
 
@@ -238,9 +233,6 @@ def real_graph():
     return json.loads(RESOLVED_FILE.read_text(encoding="utf-8"))
 
 
-# --------------------------------------------------------------------------- #
-# 1. Module surface: constants, and that the new tree IMPORTS the kernel
-# --------------------------------------------------------------------------- #
 EXPECTED_ADJUDICATE_SYSTEM = (
     "You assess greenwashing evidence for a Vietnamese ESG knowledge graph. You are given "
     "ONE ESG claim a company made in its own report, and ONE piece of independent evidence "
@@ -276,8 +268,6 @@ def test_constants_match():
     assert new_step07.DEFAULT_INPUT == REPO / "graph_output" / "resolved" / "resolved_graph.json"
     assert new_step07.DEFAULT_SCHEMA == SCHEMA_FILE
     assert new_step07.DEFAULT_OUT_DIR == REPO / "graph_output" / "crosscheck"
-    # DEFAULT_MODEL is re-exported from core.llm (env-driven, GEMINI_MODEL); pin its
-    # value there instead of duplicating the fallback string here.
     assert new_step07.DEFAULT_MODEL == core_llm.DEFAULT_MODEL
     assert new_step07.DEFAULT_PROVIDER_ORDER == "gemini"
     assert new_step07.DEFAULT_RATE_LIMIT == 10
@@ -304,9 +294,6 @@ def test_constants_match():
         "bao", "cao", "report", "nien", "thuong", "ve", "la", "den", "cho", "khi",
     }
 
-    # ADJUDICATE_SYSTEM is PAID BEHAVIOUR, not prose: reword it and the stage still "works"
-    # while every verdict changes. Byte-for-byte pin against a hardcoded literal, like SYSTEM
-    # in the align_claims slice.
     assert new_step07.ADJUDICATE_SYSTEM == EXPECTED_ADJUDICATE_SYSTEM, \
         "the paid ADJUDICATE_SYSTEM prompt was reworded"
 
@@ -329,9 +316,6 @@ def test_new_tree_has_no_dead_ratelimiter_import():
         "RateLimiter should not be imported directly into the migrated stage"
 
 
-# --------------------------------------------------------------------------- #
-# 2. Pure helpers
-# --------------------------------------------------------------------------- #
 def test_props_matches():
     cases = [
         ({"properties": {"a": 1}}, {"a": 1}),
@@ -369,7 +353,6 @@ def test_node_text_is_not_align_claims_node_text():
     assert new_step07.node_text(node) == "giảm phát thải"
     assert new_step07.node_text is not new_align_claims.node_text, \
         "step07's node_text was merged with align_claims'"
-    # feeding step07's node shape to align_claims' node_text must NOT behave the same way
     assert new_align_claims.node_text(node) == "", \
         "align_claims' node_text accepted a full node — it takes a properties dict"
 
@@ -438,10 +421,8 @@ def test_topic_tokens_matches():
              ("Green Plastics environment report 2023", {"aaa"})]
     for text, extra in cases:
         assert new_step07.topic_tokens(text, extra) == expected(text, extra)
-    # non-vacuity: the Vietnamese case must actually surface real topic words, not stopwords
     assert new_step07.topic_tokens(cases[0][0], None), \
         "fixture stopped producing any topic token"
-    # "Công ty" (both words boilerplate) must still be dropped, same as the old unigram rule
     assert "cong ty" not in new_step07.topic_tokens(cases[0][0], None)
 
 
@@ -459,7 +440,6 @@ def test_topic_tokens_avoids_vn_homograph_collision():
         "Công ty đã bổ nhiệm một bên độc lập kiểm đếm phiếu bầu tại ĐHĐCĐ")
     stock = new_step07.topic_tokens("Phạt tiền vì thao túng cổ phiếu AGG")
     assert not (ballot & stock), f"unexpected shared token(s): {ballot & stock}"
-    # sanity: a genuinely similar sentence about the SAME topic still overlaps plenty
     same_topic = new_step07.topic_tokens(
         "AAA công bố đã bổ nhiệm bên độc lập kiểm phiếu bầu ĐHĐCĐ")
     assert len(ballot & same_topic) >= new_step07.DEFAULT_MIN_TOPIC_OVERLAP
@@ -580,16 +560,12 @@ def test_parse_verdict_rejects_non_object_json_in_BOTH_trees():
     for raw in ("[]", '"just a string"', "42", "null", "true"):
         assert new_step07._parse_verdict(raw) is None, f"mishandled {raw!r}"
 
-    # the fix must not have made the parser lenient about anything else
     ok = '{"verdict": "supports", "confidence": 0.5}'
     assert new_step07._parse_verdict(ok)["verdict"] == "supports"
     assert new_step07._parse_verdict('[{"verdict": "supports"}]') is None, \
         "a LIST wrapping a good object must still be refused, not unwrapped"
 
 
-# --------------------------------------------------------------------------- #
-# 3. Graph indexing (pure, real corpus if available, else a tiny synthetic graph)
-# --------------------------------------------------------------------------- #
 def _tiny_indexing_graph():
     return {
         "nodes": [
@@ -633,7 +609,6 @@ def test_find_issuer_and_claim_keywords_match():
     assert new_step07.find_issuer(g, "NOSUCHTICKER") is None
 
     kw = new_step07.claim_keywords(g)
-    # kw is exactly the ClaimKeyword terms reachable via hasKeyword, recomputed independently
     expected_kw = defaultdict(set)
     for e in data["edges"]:
         if e.get("predicate") == "hasKeyword":
@@ -645,9 +620,6 @@ def test_find_issuer_and_claim_keywords_match():
     assert dict(kw) == dict(expected_kw)
 
 
-# --------------------------------------------------------------------------- #
-# 4. Stage runs — real corpus (the headline arm)
-# --------------------------------------------------------------------------- #
 def test_full_run_on_real_graph_matches():
     """The headline arm: the whole paid retrieval + adjudication + dossier path on the
     real graph, stub LLM."""
@@ -658,7 +630,6 @@ def test_full_run_on_real_graph_matches():
     nw, nstub, nlogs = run_new(graph, max_llm_pairs=budget)
     try:
         s = nw.stats()
-        # NON-VACUITY: this arm must actually retrieve, adjudicate, and write edges/dossiers.
         assert s["claims"] > 100, f"suspiciously few claims: {s}"
         assert s["retrieval"]["candidate_pairs"] > 0, f"no candidate pairs retrieved: {s}"
         assert s["llm"]["pairs_adjudicated"] == budget, f"budget not honoured: {s}"
@@ -705,9 +676,6 @@ def test_missing_issuer_is_reported_not_crashed():
         nw.close()
 
 
-# --------------------------------------------------------------------------- #
-# 5. Live branches the real data may not reach cleanly — synthetic fixtures
-# --------------------------------------------------------------------------- #
 def _guard_graph():
     """One claim, one company-owned-domain MediaReport that topically overlaps it — the
     self-verification guard (§6.4) must drop the 'independent' support, never fabricate a
@@ -820,7 +788,6 @@ def test_assessment_mapping_matches_when_evidence_is_mixed():
     finally:
         nw.close()
 
-    # flip the verdict deterministically to confirm contradiction wins over support
     nw2, _, _ = run_new(graph, stub_mode="always_contradicts", max_llm_pairs=10)
     try:
         d2 = nw2.dossiers()[0]
@@ -932,13 +899,6 @@ def test_adjudication_cache_survives_across_runs():
             nw2.close()
 
 
-# --------------------------------------------------------------------------- #
-# P1 (docs/proposals/thesis_review.md): the cache key must be salted with the prompt (and
-# model), so a prompt edit can never replay a verdict produced under an OLD prompt.
-# Before this fix `ContentCache.get`/`put` were called with only
-# `(claim_text, evidence_text, evidence_meta)` — content-only, no prompt, no model —
-# so the 2026-08-07 ADJUDICATE_SYSTEM tightening never reached any cached verdict.
-# --------------------------------------------------------------------------- #
 def test_adjudicator_cache_salt_changes_with_prompt():
     """`Adjudicator._cache_salt` must change when ADJUDICATE_SYSTEM changes by even one
     byte — the direct, fast unit-level pin of the mechanism the two behavioural tests

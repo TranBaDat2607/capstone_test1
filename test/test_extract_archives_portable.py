@@ -45,8 +45,6 @@ sys.path.insert(0, str(REPO))
 
 MODULE_PATH = REPO / "crawl_data" / "extract_archives.py"
 
-# Drive-letter prefixes that must never appear as a *default*. Kept as separate
-# fragments so this file does not itself trip a future "no absolute paths" grep.
 _FOREIGN_ROOT = "B:" + chr(92)
 
 
@@ -57,10 +55,6 @@ def _module():
 
     return importlib.reload(mod)
 
-
-# --------------------------------------------------------------------------- #
-# 1. Defaults live in the repo, and the CLI can override them.
-# --------------------------------------------------------------------------- #
 
 def test_default_root_and_log_are_inside_the_repo():
     mod = _module()
@@ -94,10 +88,6 @@ def test_cli_exposes_root_log_and_workers():
     assert Path(args.log) == Path("/tmp/out.csv")
     assert args.workers == 2
 
-
-# --------------------------------------------------------------------------- #
-# 2. Archiver lookup is a three-tier fallback, not a fixed path.
-# --------------------------------------------------------------------------- #
 
 def test_resolve_archiver_prefers_an_explicit_path(tmp_file=None):
     mod = _module()
@@ -142,10 +132,6 @@ def test_windows_install_paths_are_a_last_tier_not_the_value():
     for dead in ("UNRAR_EXE = Path(", "SEVENZIP_EXE = Path("):
         assert dead not in src, f"{dead!r} is still a fixed module-level constant"
 
-
-# --------------------------------------------------------------------------- #
-# 3. Path joining is not Windows-only.
-# --------------------------------------------------------------------------- #
 
 def test_destination_is_joined_with_os_sep():
     src = MODULE_PATH.read_text(encoding="utf-8")
