@@ -1,0 +1,35 @@
+# Minimal project metadata. This is deliberately NOT a packaging conversion:
+# the pipeline is run from the repo root via `python src/run.py <stage>` and
+# `python -m <package>`, not installed. The value here is a declared Python
+# floor and machine-readable metadata for the public repo.
+
+[project]
+name = "greenwashing-graph-rag"
+version = "1.0.0"
+description = "Graph-RAG pipeline for detecting greenwashing in Vietnamese listed companies using a temporal ESG knowledge graph"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+authors = [
+    { name = "Tran Ba Dat" },
+    { name = "Cam Vu Ngoc Thach" },
+    { name = "Do Ha Phuong" },
+    { name = "Hoang Quoc Tuan" },
+]
+keywords = ["esg", "greenwashing", "knowledge-graph", "graph-rag", "nlp", "vietnamese"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Natural Language :: Vietnamese",
+]
+
+[project.urls]
+Repository = "https://github.com/TranBaDat2607/capstone_test1"
+
+# requires-python floor rationale: the codebase uses PEP 604 `X | Y` union
+# syntax (e.g. data_processing/prepare_sentences.py, esg_news_crawler/fetch.py),
+# which is a syntax error before 3.10. CI and the documented dev environment
+# use 3.11.
