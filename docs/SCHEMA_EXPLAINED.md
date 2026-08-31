@@ -133,7 +133,7 @@ picture of reality evolved.
 > identity. Only **T2 observation classes** (`Emission` `["category","scope","valid_from"]`,
 > `Waste`, `KPIObservation`, `Investment`) legitimately carry time in their keys,
 > because each observation *is* a time-stamped occurrence. This rule is
-> machine-checked by `src/step00_graph_quality_report.py` (Q2) for every new class.
+> machine-checked by `run.py quality` (`src/esg_kg/report/quality.py`) (Q2) for every new class.
 
 ---
 

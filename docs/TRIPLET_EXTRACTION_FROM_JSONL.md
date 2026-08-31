@@ -1,9 +1,9 @@
 # Triplet extraction from labeled JSONL — purpose, reason and logic
 
-Script: [`src/step02_extract_triplet_from_jsonl.py`](../src/step02_extract_triplet_from_jsonl.py)
+Script: [`src/esg_kg/graph/extract_triples.py`](../src/esg_kg/graph/extract_triples.py)
 
 This step turns the per-page KPI JSONs produced by
-[`step01_extract_kpi_from_jsonl.py`](../src/step01_extract_kpi_from_jsonl.py) (plus the original
+[`step01_extract_kpi_from_jsonl.py`](../src/esg_kg/kpi/extract.py) (plus the original
 sentence-level labeled JSONL, used to reconstruct page text) into a **temporal ESG
 knowledge graph** — one `page{N}.json` file per page, holding the `nodes` / `edges`
 of a small subgraph extracted from that page.
@@ -160,7 +160,7 @@ from disk and the LLM is not called for it.
 ### 3.1 Reuse step-1 helpers — page text reconstruction
 
 The script imports four helpers directly from
-[`step01_extract_kpi_from_jsonl`](../src/step01_extract_kpi_from_jsonl.py) (both files live in
+[`step01_extract_kpi_from_jsonl`](../src/esg_kg/kpi/extract.py) (both files live in
 `src/`, so Python adds that to `sys.path` automatically when you run the script):
 
 - `load_pages_from_jsonl(path)` — groups the JSONL into
@@ -378,22 +378,22 @@ won't have the structured KPI block) but you'll get worse results.
 
 ```bash
 # Default: just the first document (cheap smoke test)
-python src/step02_extract_triplet_from_jsonl.py
+python src/run.py extract_triples
 
 # A specific document (substring match against source_pdf)
-python src/step02_extract_triplet_from_jsonl.py --doc AAA_Baocaothuongnien_2011
+python src/run.py extract_triples --doc AAA_Baocaothuongnien_2011
 
 # First N documents
-python src/step02_extract_triplet_from_jsonl.py --limit-docs 3
+python src/run.py extract_triples --limit-docs 3
 
 # Everything
-python src/step02_extract_triplet_from_jsonl.py --all
+python src/run.py extract_triples --all
 
 # Recall sweep — run every non-empty page, not just ESG-tagged ones
-python src/step02_extract_triplet_from_jsonl.py --all --all-pages
+python src/run.py extract_triples --all --all-pages
 
 # Resume after a rate-limit interruption — same command, missing pages refill
-python src/step02_extract_triplet_from_jsonl.py --all
+python src/run.py extract_triples --all
 ```
 
 ### Flags

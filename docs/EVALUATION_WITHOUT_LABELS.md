@@ -497,4 +497,4 @@ Nếu chỉ đủ thời gian cho một việc: **làm mục 2**. Nếu đủ ch
 - `SOFTMAX_SCORING.md` — `assessment_scores` **không phải** xác suất greenwashing.
   ⚠ File này hiện **không có trong working tree** (bị xoá kèm các sửa đổi chưa commit,
   2026-07-28); bản trong `git HEAD` khôi phục được bằng
-  `git checkout HEAD -- docs/SOFTMAX_SCORING.md`
+  `git show a64aeb5^:docs/SOFTMAX_SCORING.md`  (file đã bị xoá khỏi repo, không còn ở HEAD)

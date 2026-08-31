@@ -111,7 +111,7 @@ compatible (node cũ thiếu property mới vẫn hợp lệ) và đo được b
 
 ### 4.1 Canonical hóa KPI (khóa join cho `kpi_gap`) — sửa D4 — **quan trọng nhất**
 
-- **Script offline mới `src/step03c_canonicalize_kpis.py`** (NO LLM): map `kpi_type`/
+- **Script offline mới `run.py canonicalize` (`src/esg_kg/kpi/canonicalize.py`)** (NO LLM): map `kpi_type`/
   `title` của mọi KPIObservation (cả 2 phía) về vocabulary 35 KPI trong
   `kpi_definitions_construction.json` bằng alias tiếng Việt + rapidfuzz; ghi thêm
   properties: `kpi_id` (canonical), `unit_normalized`, `value_normalized`

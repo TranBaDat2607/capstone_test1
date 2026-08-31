@@ -64,13 +64,13 @@ just the cross-cutting lessons worth carrying into future work on this codebase:
 
 ## 2. LLM provider history — Gemini, the OpenAI window, DeepSeek
 
-Read this before proposing any new provider, and especially before re-adding an OpenAI path:
-it records both why that path existed and why removing it was deliberate rather than an
-oversight. The *current* policy — Gemini default, DeepSeek as an opt-in swap, no cascade —
-lives in `CLAUDE.md`.
+Read this before proposing any new provider, and especially before widening the OpenAI path:
+it records both why that path existed, why removing it was deliberate rather than an
+oversight, and the narrow terms on which it later came back. The *current* policy — Gemini
+default, DeepSeek and OpenAI as opt-in swaps, no cascade — lives in `CLAUDE.md`.
 
-- **Gemini is the default paid LLM provider; DeepSeek V4 Flash is a swappable
-  alternative for the stages built against the provider-agnostic `_Provider`
+- **Gemini is the default paid LLM provider; DeepSeek V4 Flash and OpenAI are swappable
+  alternatives for the stages built against the provider-agnostic `_Provider`
   contract — there is no automatic fallback cascade between them.**
   2026-07-27 through 2026-08-04 the code ran on OpenAI instead (`--provider openai` on
   `extract`/`extract_triples`/`fix_triples`/`entities`, and OpenAI as the sole provider
@@ -89,6 +89,18 @@ lives in `CLAUDE.md`.
   `LLM_PROVIDER` env var); `claims_vs_conduct`'s `Adjudicator` keeps its own registry
   (`--provider-order`, e.g. `deepseek` alone, or a comma list if a cascade is ever
   wanted) since that class is stage logic, not kernel — see `core/llm.py`'s docstring.
+  **2026-08-06 — OpenAI re-added, opt-in, `claims_vs_conduct` ONLY.** At the maintainer's
+  explicit request, `_OpenAIProvider` is back in `core/llm.py` (`:349`), registered in
+  `_PROVIDER_CLASSES`/`_PROVIDER_DEFAULT_MODELS` and reachable only through
+  `claims_vs_conduct --provider-order openai`, configured by `OPENAI_API_KEY` /
+  `OPENAI_MODEL`. This is deliberately NOT a repeat of the 2026-07-27..08-04 episode: that
+  was a forced migration while Gemini was billing-blocked, this is a swap you opt into,
+  exactly like DeepSeek. It follows the same "OpenAI-compatible REST via `requests`, no SDK"
+  shape, so the `openai` package is still not a dependency of this project. No other stage
+  has an OpenAI path — `extract`, `fix_triples` and `entities` remain Gemini-only. Anything
+  claiming "there is no OpenAI path" or "nothing reads `OPENAI_API_KEY`" predates this and
+  is wrong; those statements were corrected in `CLAUDE.md` during the public-release cleanup.
+
   Also on 2026-08-06, `extract_triples` gained its own `--provider deepseek` (same
   `build_llm_provider()` factory, called directly from its `main()`): when a provider is
   set, `client`/`cached_content` are ignored and `call_llm` calls `provider.call(...)`

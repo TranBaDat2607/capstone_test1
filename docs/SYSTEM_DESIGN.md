@@ -185,7 +185,7 @@ but with a `contradictedBy*` edge is a candidate for analyst review.** The cross
 
 ### 4.2 Entity resolution already treats both sides correctly
 
-`src/step05_resolve_entities.py` already lists the claim/conduct classes in `OBSERVATION_CLASSES`:
+`run.py entities` (`src/esg_kg/resolve/entities.py`) already lists the claim/conduct classes in `OBSERVATION_CLASSES`:
 
 ```python
 OBSERVATION_CLASSES = {
@@ -267,14 +267,14 @@ flowchart TD
 | Ingest R | `data_processing.prepare_sentences` → ViDeBERTa → `data_processing.extract_esg` | none | Reports → labeled JSONL (claim side) |
 | Ingest N | `esg_news_crawler.run` → ViDeBERTa | none | News → labeled JSONL |
 | **Pre-N** | `data_processing.preprocess_news` | **new (done, P1)** | Date normalization (§7) + existing boilerplate filters (§8); **no** domain routing / policy file. Adds `publish_date_normalized` / `publish_year` / `date_uncertain`; `data/labeled/news_labeled/` → `data/interim/news_preprocessed/` |
-| 1 | `src/step01_extract_kpi_from_jsonl.py` | none | Typed `KPIObservation`s from reports (and optionally news, for observed numbers) |
-| 2 | `src/step02_extract_triplet_from_jsonl.py` | **`--source` mode + news prompt** | Page → triples; stamps `source_type`; news mode biases to conduct classes (§6.1) |
-| 3 | `src/step03_fix_invalid_triplets.py` | none | Schema-validate / repair triples from **both** channels |
-| 4 | `src/step05_resolve_entities.py` | none | Collapse duplicates; **issuer anchor unifies report+news onto one AAA node** |
-| 5 | `src/step06_load_graph_to_neo4j.py` | none | Load property graph; provenance props carried through |
-| **6** | **`src/step07_crosscheck_claims_vs_conduct.py`** | **new (done, P4)** | **Link claims ↔ conduct; write `verifiedBy`/`contradictedBy*`; produce advisory assessments** ([`CLAIM_CONDUCT_CROSSCHECK.md`](./CLAIM_CONDUCT_CROSSCHECK.md)) |
-| **6b** | **`src/step08_sync_crosscheck_to_neo4j.py`** | **new (done, P5)** | Push the Step-6 dossiers into Neo4j as an advisory layer (no LLM) so Step 7 reads from the graph ([`CLAIM_LEDGER.md`](./CLAIM_LEDGER.md)) |
-| **7** | **`src/step09_report_claim_ledger.py` + Cypher** | **new (done, P5)** | Render the per-company claim ledger **from Neo4j only** ([`CLAIM_LEDGER.md`](./CLAIM_LEDGER.md)) |
+| 1 | `run.py extract` (`src/esg_kg/kpi/extract.py`) | none | Typed `KPIObservation`s from reports (and optionally news, for observed numbers) |
+| 2 | `run.py extract_triples` (`src/esg_kg/graph/extract_triples.py`) | **`--source` mode + news prompt** | Page → triples; stamps `source_type`; news mode biases to conduct classes (§6.1) |
+| 3 | `run.py fix_triples` (`src/esg_kg/graph/fix_triples.py`) | none | Schema-validate / repair triples from **both** channels |
+| 4 | `run.py entities` (`src/esg_kg/resolve/entities.py`) | none | Collapse duplicates; **issuer anchor unifies report+news onto one AAA node** |
+| 5 | `run.py neo4j_load` (`src/esg_kg/load/neo4j_load.py`) | none | Load property graph; provenance props carried through |
+| **6** | **`run.py claims_vs_conduct` (`src/esg_kg/crosscheck/claims_vs_conduct.py`)** | **new (done, P4)** | **Link claims ↔ conduct; write `verifiedBy`/`contradictedBy*`; produce advisory assessments** ([`CLAIM_CONDUCT_CROSSCHECK.md`](./CLAIM_CONDUCT_CROSSCHECK.md)) |
+| **6b** | **`run.py neo4j_sync` (`src/esg_kg/load/neo4j_sync.py`)** | **new (done, P5)** | Push the Step-6 dossiers into Neo4j as an advisory layer (no LLM) so Step 7 reads from the graph ([`CLAIM_LEDGER.md`](./CLAIM_LEDGER.md)) |
+| **7** | **`run.py claim_ledger` (`src/esg_kg/report/claim_ledger.py`) + Cypher** | **new (done, P5)** | Render the per-company claim ledger **from Neo4j only** ([`CLAIM_LEDGER.md`](./CLAIM_LEDGER.md)) |
 
 Steps 1–5 are documented in their own files
 ([`KPI_EXTRACTION_FROM_JSONL.md`](./KPI_EXTRACTION_FROM_JSONL.md),
@@ -308,7 +308,7 @@ resumability, ESG-only gating, and validation are unchanged.
 
 ## 6. The cross-check stage (Step 6) — the analytical core
 
-New script: **`src/step07_crosscheck_claims_vs_conduct.py`**. It runs *after* the graph is built and
+New script: **`run.py claims_vs_conduct` (`src/esg_kg/crosscheck/claims_vs_conduct.py`)**. It runs *after* the graph is built and
 resolved. It reads the resolved graph (`graph_output/resolved/resolved_graph.json`) and/or
 Neo4j, and for **each `SustainabilityClaim` on the issuer** performs a **hybrid** analysis
 (locked decision 1). It is the in-KG reinterpretation of EmeraldMind's `7-classify.py`
@@ -327,7 +327,7 @@ support or contradict it, using cheap filters first, then embeddings:
 3. **Temporal window** — the candidate's effective date is within the claim's window (§7).
 4. **Embedding rank** — remaining candidates are ranked by `gemini-embedding-001` cosine
    similarity to the claim text (reuse the embedding + `RateLimiter` infrastructure from
-   `src/step05_resolve_entities.py`, Stage B.2). Keep the top-`k` above a threshold.
+   `run.py entities` (`src/esg_kg/resolve/entities.py`), Stage B.2). Keep the top-`k` above a threshold.
 
 This mirrors EmeraldMind's retrieval (`retrieve_evidence`) but the corpus is *conduct nodes in
 the KG*, and the query is *a claim node in the KG*.
@@ -514,7 +514,7 @@ reads absence-of-evidence as evidence-of-absence.
 
 ### 9.1 The per-company claim ledger (Step 7)
 
-`src/step09_report_claim_ledger.py` renders, for a company, every `SustainabilityClaim` with its
+`run.py claim_ledger` (`src/esg_kg/report/claim_ledger.py`) renders, for a company, every `SustainabilityClaim` with its
 linked evidence and advisory assessment, plus a header summary:
 
 ```
@@ -595,9 +595,9 @@ minimum new code.
 | **P1 — News preprocess** ✅ | `data_processing/preprocess_news.py` — date-normalization step (§7.1) + reuse existing boilerplate filters; **no routing, no policy file**. Output → `data/interim/news_preprocessed/<stem>_preprocessed.jsonl` | crawler fields; `data_processing` conventions | news JSONL gains normalized dates + `date_uncertain` flags (AAA: 1054 → 701 kept, 353 boilerplate dropped, 174 uncertain) |
 | **P2 — Step 2 `--source`** ✅ done | `news` mode + news prompt in `step02_extract_triplet_from_jsonl.py`; stamps `source_type=news`; adds `--dry-run`; source-aware doc stem (news ids aren't `os.path.splitext`-ed) | `build_page_text`, `load_pages_from_jsonl`, `RateLimiter`, `triple_list_to_graph`, validation | input = P1 output `…/news_preprocessed/…_preprocessed.jsonl`. Live AAA run (30 docs, 16 non-empty): **290 nodes / 302 edges, 100% `source_type=news`**; 16 `MediaReport` + 20 `mentionsOrganization`. Reversed/hallucinated edges quarantined to `_bugged.json` for Step 3; empty `[]` extraction on 1 off-topic page. (No `Penalty`/`Controversy` in this crawl set — mostly company PR restating the report; handled at Step 6.) |
 | **P3 — Rebuild graph** ✅ | run steps 1→5 over both channels | all of steps 1–5 unchanged | Resolved graph has one AAA node with report **and** news neighbors; provenance intact. Loaded to Neo4j (`bolt://localhost:8687`, ~13,110 nodes); step 4 ran `--no-llm` (embeddings billing-blocked, no GPU). Downstream P4/P5/P6 all read from this graph. |
-| **P4 — Step 6 cross-check** ✅ | `src/step07_crosscheck_claims_vs_conduct.py` (retrieve + adjudicate + self-verification guard + structural + KPI + dossier) | `RateLimiter`, `load_schema_sets`, `normalize_name`/`name_tokens`, structured-output pattern | Offline-first + **multi-provider LLM cascade** (`--provider-order`, default `gemini,openai`): primary `gemini-2.5-flash`, fallback OpenAI `gpt-4o-mini`; globally relevance-ranked + concurrent (`--max-workers`). Gemini project is billing-blocked (flash **and** embeddings 403), so the full AAA run ran on `gpt-4o-mini`: **3113 pairs, 0 failures → 1093 dossiers, 125 edges** (123 `verifiedBy` + 2 `contradictedByMedia`), **66 appears_supported / 22 appears_contradicted / 1005 unverified**; self-verification guard dropped 18 company-domain supports. Real gaps found (e.g. "ensures revenue growth" vs observed −42.3%; "recycled materials" vs 80–85% imported). `--dry-run`/`--no-llm`/`--to-neo4j` supported |
-| **P5 — Step 6b sync + Step 7 present** ✅ | `src/step08_sync_crosscheck_to_neo4j.py` (dossier → Neo4j advisory layer, no LLM) + `src/step09_report_claim_ledger.py` (renders **from Neo4j only**; console + `--markdown`; `--review-queue` / `--assessment` / `--claim-id`) + `neo4j/crosscheck_queries.cypher` | Step-5 Neo4j `:_Entity`/`_node_key`/`NEO4J_*` conventions; reuses the paid P4 dossier; no LLM, no new deps | Sync writes 6558 claim props + 182 advisory edges (140 `llm_supports` + 24 `llm_contradicts` + 18 `llm_flagged_support`). Ledger renders 1093 claims (**66 supported / 22 contradicted / 1005 unverified**) from Neo4j; worked examples fire (`AAA_SC_001` −42.3 %; recycled-materials vs 80–85 % imported; bonus-system support); `--review-queue` = 14. `llm_*` edges carry the KPI contradictions the base schema can't (no `Claim→KPIObservation` edge). ESG category not stored on claims (shows year+source); tax-penalty case needs the article re-extracted (`CLAIM_CONDUCT_CROSSCHECK.md` §6/§8) |
-| **P6 — Evaluate** ✅ | `src/step10_evaluate.py` (coverage + case studies + ablation → **Vietnamese** report) + `config/evaluation/ablation_cases.json` (30-case gold set) + [`EVALUATION.md`](./EVALUATION.md) | reuses `Adjudicator.adjudicate` from `step07_crosscheck_claims_vs_conduct`; offline artifacts (dossiers, `coverage.csv`), no Neo4j | Offline-first; the only paid work is a **30-case, cost-capped, cached** OpenAI ablation (`gpt-4o-mini`, ~30 calls). Renders `graph_output/evaluation/aaa_evaluation_report.md` (VN): coverage (AAA 40 articles/1054 sentences; 124 conduct nodes; 66/22/1005 split; 115-company sector context), 3 narrated case studies + the tax-penalty known-gap, link-precision **methodology**, and ablation — baseline **73.3%** vs LLM **76.7%** agreement on the gold set (LLM catches all numeric contradictions, over-reaches on the 5 hard `irrelevant` cases = §12 failure mode); corpus structural-only 22/0 vs +LLM 22/66, guard demoted 18. `--coverage`/`--case-studies`/`--ablation`/`--no-llm` supported |
+| **P4 — Step 6 cross-check** ✅ | `run.py claims_vs_conduct` (`src/esg_kg/crosscheck/claims_vs_conduct.py`) (retrieve + adjudicate + self-verification guard + structural + KPI + dossier) | `RateLimiter`, `load_schema_sets`, `normalize_name`/`name_tokens`, structured-output pattern | Offline-first + **multi-provider LLM cascade** (`--provider-order`, default `gemini,openai`): primary `gemini-2.5-flash`, fallback OpenAI `gpt-4o-mini`; globally relevance-ranked + concurrent (`--max-workers`). Gemini project is billing-blocked (flash **and** embeddings 403), so the full AAA run ran on `gpt-4o-mini`: **3113 pairs, 0 failures → 1093 dossiers, 125 edges** (123 `verifiedBy` + 2 `contradictedByMedia`), **66 appears_supported / 22 appears_contradicted / 1005 unverified**; self-verification guard dropped 18 company-domain supports. Real gaps found (e.g. "ensures revenue growth" vs observed −42.3%; "recycled materials" vs 80–85% imported). `--dry-run`/`--no-llm`/`--to-neo4j` supported |
+| **P5 — Step 6b sync + Step 7 present** ✅ | `run.py neo4j_sync` (`src/esg_kg/load/neo4j_sync.py`) (dossier → Neo4j advisory layer, no LLM) + `run.py claim_ledger` (`src/esg_kg/report/claim_ledger.py`) (renders **from Neo4j only**; console + `--markdown`; `--review-queue` / `--assessment` / `--claim-id`) + `neo4j/crosscheck_queries.cypher` | Step-5 Neo4j `:_Entity`/`_node_key`/`NEO4J_*` conventions; reuses the paid P4 dossier; no LLM, no new deps | Sync writes 6558 claim props + 182 advisory edges (140 `llm_supports` + 24 `llm_contradicts` + 18 `llm_flagged_support`). Ledger renders 1093 claims (**66 supported / 22 contradicted / 1005 unverified**) from Neo4j; worked examples fire (`AAA_SC_001` −42.3 %; recycled-materials vs 80–85 % imported; bonus-system support); `--review-queue` = 14. `llm_*` edges carry the KPI contradictions the base schema can't (no `Claim→KPIObservation` edge). ESG category not stored on claims (shows year+source); tax-penalty case needs the article re-extracted (`CLAIM_CONDUCT_CROSSCHECK.md` §6/§8) |
+| **P6 — Evaluate** ❌ REMOVED 2026-07-28, no replacement command (`docs/PROJECT_HISTORY.md` §3) | ~~`src/step10_evaluate.py`~~ (coverage + case studies + ablation → **Vietnamese** report) + `config/evaluation/ablation_cases.json` (30-case gold set) + `EVALUATION.md` (**deleted with step10**: `git show a64aeb5^:docs/EVALUATION.md`) | reuses `Adjudicator.adjudicate` from `step07_crosscheck_claims_vs_conduct`; offline artifacts (dossiers, `coverage.csv`), no Neo4j | Offline-first; the only paid work is a **30-case, cost-capped, cached** OpenAI ablation (`gpt-4o-mini`, ~30 calls). Renders `graph_output/evaluation/aaa_evaluation_report.md` (VN): coverage (AAA 40 articles/1054 sentences; 124 conduct nodes; 66/22/1005 split; 115-company sector context), 3 narrated case studies + the tax-penalty known-gap, link-precision **methodology**, and ablation — baseline **73.3%** vs LLM **76.7%** agreement on the gold set (LLM catches all numeric contradictions, over-reaches on the 5 hard `irrelevant` cases = §12 failure mode); corpus structural-only 22/0 vs +LLM 22/66, guard demoted 18. `--coverage`/`--case-studies`/`--ablation`/`--no-llm` supported |
 
 **Cost discipline** (carried from the existing pipeline): ESG-only gating, `--dry-run` /
 `--no-llm` previews, budgeted `--max-llm-pairs`, resumable per-page/per-claim caching. See the
@@ -650,17 +650,17 @@ memory note *"verify cheaply, not via expensive re-runs."*
 | `data/labeled/news_labeled/aaa_news_classified.jsonl` | AAA news input | exists |
 | `data_processing/preprocess_news.py` | Pre-N news preprocess (date normalization + boilerplate) | **done (P1)** |
 | `data/interim/news_preprocessed/aaa_news_classified_preprocessed.jsonl` | Preprocessed AAA news (feeds steps 1–2) | **new output** |
-| `src/step02_extract_triplet_from_jsonl.py` | Step 2 (+ `--source news` mode, news prompt, `source_type` stamping, `--dry-run`) | **done (P2)** |
-| `src/step05_resolve_entities.py`, `src/step06_load_graph_to_neo4j.py` | Steps 4–5 | exists, unchanged |
-| `src/step07_crosscheck_claims_vs_conduct.py` | Step 6 (cross-check) | **done (P4)** |
+| `run.py extract_triples` (`src/esg_kg/graph/extract_triples.py`) | Step 2 (+ `--source news` mode, news prompt, `source_type` stamping, `--dry-run`) | **done (P2)** |
+| `run.py entities` (`src/esg_kg/resolve/entities.py`), `run.py neo4j_load` (`src/esg_kg/load/neo4j_load.py`) | Steps 4–5 | exists, unchanged |
+| `run.py claims_vs_conduct` (`src/esg_kg/crosscheck/claims_vs_conduct.py`) | Step 6 (cross-check) | **done (P4)** |
 | `docs/CLAIM_CONDUCT_CROSSCHECK.md` | Step 6 design note | **done (P4)** |
-| `src/step08_sync_crosscheck_to_neo4j.py` | Step 6b (dossier → Neo4j advisory layer, no LLM) | **done (P5)** |
-| `src/step09_report_claim_ledger.py` | Step 7 (presentation, **reads Neo4j only**) | **done (P5)** |
+| `run.py neo4j_sync` (`src/esg_kg/load/neo4j_sync.py`) | Step 6b (dossier → Neo4j advisory layer, no LLM) | **done (P5)** |
+| `run.py claim_ledger` (`src/esg_kg/report/claim_ledger.py`) | Step 7 (presentation, **reads Neo4j only**) | **done (P5)** |
 | `neo4j/crosscheck_queries.cypher` | Step 7 analyst Cypher (review queue, roll-up, dossier, coverage) | **done (P5)** |
 | `docs/CLAIM_LEDGER.md` | Step 6b + 7 design note | **done (P5)** |
 | `graph_output/crosscheck/aaa_claim_assessments.json` | Advisory dossiers (input to the Step-6b sync) | **done (P4 output)** |
 | `graph_output/crosscheck/aaa_claim_ledger.md` | Rendered Markdown ledger | **done (P5 output)** |
-| `src/step10_evaluate.py` | Step 8 / P6 evaluation (Vietnamese report: coverage + case studies + ablation) | **done (P6)** |
+| ~~`src/step10_evaluate.py`~~ **removed 2026-07-28, no replacement** | Step 8 / P6 evaluation (Vietnamese report: coverage + case studies + ablation) | **done (P6)** |
 | `config/evaluation/ablation_cases.json` | 30-case link-precision / ablation gold set (hand-labeled) | **done (P6)** |
 | `docs/EVALUATION.md` | P6 evaluation design note | **done (P6)** |
 | `graph_output/evaluation/aaa_evaluation_report.md` | Rendered Vietnamese evaluation report | **done (P6 output)** |
@@ -675,7 +675,7 @@ memory note *"verify cheaply, not via expensive re-runs."*
 [`GRAPH_LOAD_NEO4J.md`](./GRAPH_LOAD_NEO4J.md) ·
 [`CLAIM_CONDUCT_CROSSCHECK.md`](./CLAIM_CONDUCT_CROSSCHECK.md) ·
 [`CLAIM_LEDGER.md`](./CLAIM_LEDGER.md) ·
-[`EVALUATION.md`](./EVALUATION.md) ·
+`EVALUATION.md` (deleted — `git show a64aeb5^:docs/EVALUATION.md`) ·
 [`esg_news_crawler/README.md`](../esg_news_crawler/README.md) ·
 [`VIETNAM_IMPROVEMENT_PLAN.md`](./VIETNAM_IMPROVEMENT_PLAN.md)
 

@@ -53,13 +53,14 @@ capstone_test1/
 │   └── README.md                  #   News-crawler design & usage
 │
 ├── src/                           # esg_kg package: labeled JSONL → temporal knowledge graph
-│   ├── run.py                     #   Dispatcher — `python src/run.py <stage>` (--list shows all 15/15)
+│   ├── run.py                     #   Dispatcher — `python src/run.py <stage>` (--list shows all 16/16)
 │   ├── PIPELINE.md                #   Canonical run order + design history
 │   └── esg_kg/
 │       ├── pipeline.py            #   STAGES / BLOCKS table (single source of truth for run.py)
 │       ├── DESIGN.md              #   Refactor design doc + closeout record (§7)
 │       ├── core/                  #   Shared helpers: paths, schema, naming, dates, identity,
-│       │                          #     io_jsonl, llm (RateLimiter, OpenAI provider), graph_patch, datasync
+│       │                          #     io_jsonl, llm (RateLimiter; Gemini default, DeepSeek/OpenAI
+│       │                          #     opt-in), llm_cache, graph_patch, datasync
 │       ├── kpi/                   #   extract (step01), canonicalize (step03c)
 │       ├── graph/                 #   extract_triples (step02), fix_triples (step03),
 │       │                          #     anchor_kpi (step03b), build_validated (BLOCK 03→03b→03c)
@@ -133,7 +134,7 @@ Both feed the same `esg_kg` graph-construction path and land in one temporal KG.
 > HF dataset 2026-08-02 — they duplicated AAA under a different filename convention. See
 > `CLAUDE.md` for the full story before assuming only AAA is labeled/extracted.
 
-### C. Labeled JSONL → temporal knowledge graph (`src/esg_kg`, all 15/15 stages migrated)
+### C. Labeled JSONL → temporal knowledge graph (`src/esg_kg`, all 16/16 stages)
 
 Run via `python src/run.py <stage>` from the repo root (`--list` shows every stage):
 
@@ -161,8 +162,10 @@ Full per-stage flags and design rationale: `src/PIPELINE.md`, `src/esg_kg/DESIGN
 
 ### D. KPI vocabulary & GRI catalog (run-once provenance builders)
 ```
-kpi_build/   → config/kpi_definitions_construction.json  (35 KPIs, Circular 96/2020 + QĐ2171 + QCVN09 + SSC-IFC, verbatim)
-gri/         → config/gri_catalog.json                    (136 GRI indicator codes, from 42 GRI Standards PDFs)
+kpi_build/   → kpi_definitions_construction.json         (repo ROOT, not config/ — see core/paths.py:KPI_DEFS_PATH)
+             (35 KPIs, Circular 96/2020 + QĐ2171 + QCVN09 + SSC-IFC, verbatim)
+gri/         → config/gri_catalog.json                    (136 GRI indicator codes, built from 42 GRI
+             Standards PDFs that are NOT redistributed here — see gri/README.md and NOTICE.md)
 ```
 
 ### E. ESG Evidence View UI (`api/` + `frontend/` — the demo surface)
@@ -229,7 +232,7 @@ pip install -r requirements.txt
 
 # A. Annual report → labeled ESG sentences
 python -m data_processing.prepare_sentences \
-    --input  "data/raw/annual_reports_sample/AAA_Baocaothuongnien_2025.pdf" \
+    --input  "data/raw/annual_report/Xây dựng - VLXD - BĐS/AAA - Nhựa An Phát Xanh/AAA_2024.pdf" \
     --output "data/interim/sentences/aaa_sentences.jsonl"
 python -m data_processing.extract_esg
 
@@ -255,8 +258,13 @@ python src/run.py claim_ledger
 python api/main.py                                         # http://localhost:8000
 ```
 
-See `CLAUDE.md`'s "Common commands" for the full flag reference (`--provider`,
-`--dry-run`, `--no-llm`, `--label`, etc.) and `src/PIPELINE.md` for stage-by-stage detail.
+See `CLAUDE.md`'s "Common commands" for the full flag reference (`--dry-run`, `--no-llm`,
+`--label`, etc.) and `src/PIPELINE.md` for stage-by-stage detail.
+
+Provider selection is per stage, not global: `extract_triples` and `align_claims` take
+`--provider gemini|deepseek`; `claims_vs_conduct` takes `--provider-order`
+(`gemini|deepseek|openai`); and `extract`, `fix_triples` and `entities` are Gemini-only with
+no provider flag at all.
 
 The `extract_esg` output schema (one JSON object per line in
 `data/outputs/esg_extracted/esg_all_records.jsonl`):
