@@ -78,9 +78,6 @@ DEFAULT_CACHE = DEFAULT_OUT_DIR / "phase2_repairs.json"
 ARTIFACT_NAME = "all_validated_triples.json"
 
 
-# --------------------------------------------------------------------------- #
-# The paid-result cache.
-# --------------------------------------------------------------------------- #
 class RepairCache:
     """Phase-2 repairs, keyed by the content of the triple that was sent.
 
@@ -127,9 +124,6 @@ class RepairCache:
         return ok
 
 
-# --------------------------------------------------------------------------- #
-# The block.
-# --------------------------------------------------------------------------- #
 def run_block(*, input_dir: pathlib.Path, out_dir: pathlib.Path, schema: Dict[str, Any],
               sentences: Optional[List[str]] = None,
               max_per_facility: int = anchor_kpi.DEFAULT_MAX_PER_FACILITY,
@@ -150,7 +144,6 @@ def run_block(*, input_dir: pathlib.Path, out_dir: pathlib.Path, schema: Dict[st
     entity_classes, edge_labels, edge_directions = load_schema_sets(schema)
     repairs = RepairCache(cache_path) if cache_path else None
 
-    # --- 03: validate + repair (phases 1, 2, 1.5) — nothing written -------------
     logger.info("=== Block 03 — fix_triples ===")
     result = fix_triples.run_phases(
         input_dir, out_dir, schema, entity_classes, edge_labels, edge_directions,
@@ -160,7 +153,6 @@ def run_block(*, input_dir: pathlib.Path, out_dir: pathlib.Path, schema: Dict[st
         return {"fix": None, "anchor": None, "kpi": None, "goal": None}
     triples, unfixable, fix_stats = result
 
-    # --- 03b: gazetteer anchors, appended in memory -----------------------------
     logger.info("=== Block 03b — anchor_kpi ===")
     globs = sentences if sentences is not None else anchor_kpi.DEFAULT_SENTENCE_GLOBS
     sentence_index = anchor_kpi.load_sentences(globs)
@@ -169,7 +161,6 @@ def run_block(*, input_dir: pathlib.Path, out_dir: pathlib.Path, schema: Dict[st
     triples.extend(new_triples)
     logger.info(f"  appended {len(new_triples)} anchor triple(s)")
 
-    # --- 03c: canonical kpi_id + goal target_date, patched in memory ------------
     logger.info("=== Block 03c — canonicalize ===")
     defs = defs if defs is not None else json.loads(
         canonicalize.DEFAULT_DEFS.read_text(encoding="utf-8"))
@@ -184,7 +175,6 @@ def run_block(*, input_dir: pathlib.Path, out_dir: pathlib.Path, schema: Dict[st
 
     stats = {"fix": fix_stats, "anchor": anchor_stats, "kpi": kpi_stats, "goal": goal_stats}
 
-    # --- the single write -------------------------------------------------------
     if dry_run:
         logger.info(f"Dry run — nothing written. Would have saved {len(triples)} triples "
                     f"to {out_dir / ARTIFACT_NAME}")
@@ -250,7 +240,6 @@ def main() -> None:
         return
     schema = json.loads(args.schema.read_text(encoding="utf-8"))
 
-    # Phase 2 is the only paid part; everything else in the block is offline.
     client = None
     rate_limiter = None
     model = args.model

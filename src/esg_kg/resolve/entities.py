@@ -90,8 +90,6 @@ DEFAULT_SCHEMA = REPO_ROOT / "config" / "schema.json"
 DEFAULT_OUT_DIR = REPO_ROOT / "graph_output" / "resolved"
 DEFAULT_REGISTRY = REPO_ROOT / "config" / "issuer_registry.json"
 DEFAULT_STANDARDS_REGISTRY = REPO_ROOT / "config" / "standards_registry.json"
-# DEFAULT_MODEL (Stage C adjudication) comes from esg_kg.core.llm (GEMINI_MODEL env
-# var, default gemini-2.5-flash-lite) — see that module's docstring.
 DEFAULT_EMBED_MODEL = "gemini-embedding-001"
 DEFAULT_EMBED_DIM = 768
 DEFAULT_SIM = 0.92
@@ -99,10 +97,6 @@ DEFAULT_RATE_LIMIT = 10
 DEFAULT_MAX_LLM_PAIRS = 400
 DEFAULT_EMBED_BATCH = 100
 
-# Observation (per-occurrence) classes: deduped only by exact identity_keys, never
-# sent through the fuzzy embedding/LLM stage. Everything else in the schema is a
-# resolvable entity. Declared here because schema.json carries no entity/observation
-# flag; identity_keys themselves are read from the schema.
 OBSERVATION_CLASSES = {
     "KPIObservation", "SustainabilityClaim", "ThirdPartyVerification", "Controversy",
     "Penalty", "MediaReport", "Investment", "CarbonOffsetProject", "ScienceBasedTarget",
@@ -110,22 +104,10 @@ OBSERVATION_CLASSES = {
 }
 TEMPORAL_FIELDS = {"valid_from", "valid_to", "is_current", "recorded_at"}
 
-# `subjectToRegulation` (Organization->Regulation) and `adoptsStandard` (Organization->Standard)
-# both mean "the company follows this reference document" but the schema locks each to a
-# different target class. step02's LLM extraction sometimes picks the wrong one when a single
-# document could plausibly read as either (e.g. the voluntary SSC-IFC guide extracted once as a
-# "regulation") — the document's TRUE class is only known once Stage A.3's frozen standards
-# anchor resolves it (config/standards_registry.json `kind`), which happens here in Stage D, well
-# after extraction. Relabeling deterministically at this point — keyed on the node's final
-# resolved class, not on what any individual extraction guessed — means the fix holds no matter
-# how many times step01-step06 is rerun on fresh data, not just for the mentions seen so far.
 DOC_EDGE_EXPECTED_CLASS = {"subjectToRegulation": "Regulation", "adoptsStandard": "Standard"}
 DOC_EDGE_SWAP = {"subjectToRegulation": "adoptsStandard", "adoptsStandard": "subjectToRegulation"}
 
 
-# --------------------------------------------------------------------------- #
-# Union-Find.
-# --------------------------------------------------------------------------- #
 class DSU:
     def __init__(self, n: int):
         self.parent = list(range(n))
@@ -152,9 +134,6 @@ class DSU:
         return len({self.find(i) for i in idxs})
 
 
-# --------------------------------------------------------------------------- #
-# Schema + graph construction.
-# --------------------------------------------------------------------------- #
 def load_identity_keys(schema: Dict[str, Any]) -> Dict[str, List[str]]:
     return {n["class"]: list(n.get("identity_keys", [])) for n in schema.get("nodes", [])}
 
@@ -195,7 +174,7 @@ def identity_signature(node: Dict[str, Any], idkeys: Dict[str, List[str]],
     vals = []
     for k in keys:
         v = str(props.get(k, "")).strip()
-        if v.lower() in ("none", "null"):  # JSON null / "None" are not identifiers
+        if v.lower() in ("none", "null"):
             v = ""
         vals.append(normalize_name(v) if normalize else v)
     if all(v == "" for v in vals):
@@ -227,9 +206,6 @@ def prop_completeness(node: Dict[str, Any]) -> int:
     return sum(1 for v in non_temporal_props(node).values() if v not in (None, ""))
 
 
-# --------------------------------------------------------------------------- #
-# Issuer registry.
-# --------------------------------------------------------------------------- #
 def load_issuer_index(registry_path: Path) -> Tuple[Dict[str, Tuple[str, str]], int, int]:
     """normalized-name -> (ticker, canonical_name), plus (#aliases, #exclusions)."""
     if not registry_path.exists():
@@ -284,9 +260,6 @@ def load_standards_index(registry_path: Path) -> Tuple[Dict[str, Tuple[str, str,
     return index, n_alias, n_excl
 
 
-# --------------------------------------------------------------------------- #
-# Stage C — LLM adjudication.
-# --------------------------------------------------------------------------- #
 ADJUDICATE_PROMPT = """You are doing entity resolution for a Vietnamese ESG knowledge graph.
 Decide whether the two records refer to the SAME real-world entity.
 
@@ -329,9 +302,6 @@ def llm_same_entity(a: Dict[str, Any], b: Dict[str, Any], client: Any,
     return False
 
 
-# --------------------------------------------------------------------------- #
-# Stage B — embeddings.
-# --------------------------------------------------------------------------- #
 def embed_texts(texts: List[str], client: Any, model: str, dim: int,
                 rate_limiter: RateLimiter, batch: int, max_retries: int = 4) -> np.ndarray:
     """Batch-embed with retry. A batch that keeps failing falls back to zero vectors
@@ -367,9 +337,6 @@ def embed_texts(texts: List[str], client: Any, model: str, dim: int,
     return np.vstack(out) if out else np.zeros((0, dim), dtype=np.float32)
 
 
-# --------------------------------------------------------------------------- #
-# Stage D — consolidate.
-# --------------------------------------------------------------------------- #
 def edge_year(edge: Dict[str, Any]) -> str:
     tm = edge.get("temporal_metadata", {}) or {}
     for field in ("valid_from", "recorded_at"):
@@ -393,7 +360,6 @@ def consolidate(nodes: List[Dict[str, Any]], edges: List[Dict[str, Any]], dsu: D
     for root, idxs in clusters.items():
         members = [nodes[i] for i in idxs]
         tag = issuer_tag.get(root)
-        # canonical = issuer's official record if tagged, else most complete then longest name
         canonical = max(members, key=lambda n: (prop_completeness(n), len(primary_name(n))))
         props: Dict[str, Any] = {k: v for k, v in non_temporal_props(canonical).items() if v not in (None, "")}
         for m in members:
@@ -401,10 +367,6 @@ def consolidate(nodes: List[Dict[str, Any]], edges: List[Dict[str, Any]], dsu: D
                 if k not in props and v not in (None, ""):
                     props[k] = v
         if canonical["class"] in OBSERVATION_CLASSES:
-            # P2 (TEMPORAL_KG_DESIGN): event time is an essential property of a
-            # T2/T3 observation, not versioning metadata — keep it on the node.
-            # T1 entities stay timeless; their history lives in temporal_versions
-            # and on edge temporal_metadata.
             cp = canonical.get("properties", {})
             for k in ("valid_from", "valid_to", "is_current"):
                 if k in cp:
@@ -413,19 +375,10 @@ def consolidate(nodes: List[Dict[str, Any]], edges: List[Dict[str, Any]], dsu: D
         if tag:
             props["ticker"], props["name"] = tag[0], tag[1]
         elif root in standards_tag:
-            # canonical reference document name AND class (no ticker — these are not
-            # companies). The class must come from the registry's `kind`, not from whichever
-            # member `canonical` happened to pick — a single mis-extracted mention (e.g. the
-            # SSC-IFC guide tagged "Regulation" instead of "Standard") must not decide the
-            # class of the whole frozen cluster, or adoptsStandard/issuedBy edges pointing at
-            # it become schema-illegal (docs/STANDARD_INDICATOR_AXIS.md).
             props["name"], node_class = standards_tag[root]
 
         node: Dict[str, Any] = {"class": node_class, "properties": props}
         if len(members) > 1:
-            # P4: versions are distinct facts, not distinct spellings — compare
-            # dates by start instant so "2011" and "2011-01-01" collapse into one
-            # version instead of two both claiming is_current=true.
             def _vsig(mp: Dict[str, Any], m: Dict[str, Any]) -> Tuple:
                 return (
                     date_start_key(mp.get("valid_from")) or str(mp.get("valid_from")),
@@ -446,9 +399,6 @@ def consolidate(nodes: List[Dict[str, Any]], edges: List[Dict[str, Any]], dsu: D
                     "is_current": mp.get("is_current"), "properties": mp,
                 })
 
-            # P4 invariant: at most one open version may be current. If several
-            # claim is_current=true, the latest-starting open version wins; a
-            # chain that is all-closed (every valid_to set) legitimately has none.
             current_claims = [v for v in versions if v.get("is_current") is True]
             open_versions = [v for v in versions if v.get("valid_to") in (None, "")]
             if len(current_claims) != 1 and open_versions:
@@ -468,7 +418,7 @@ def consolidate(nodes: List[Dict[str, Any]], edges: List[Dict[str, Any]], dsu: D
     doc_edges_relabeled = 0
     for e in edges:
         ns, no = root_to_new[dsu.find(e["subject"])], root_to_new[dsu.find(e["object"])]
-        if ns == no:  # self-loop created by merging both endpoints
+        if ns == no:
             continue
         predicate = e["predicate"]
         expected = DOC_EDGE_EXPECTED_CLASS.get(predicate)
@@ -493,10 +443,6 @@ def consolidate(nodes: List[Dict[str, Any]], edges: List[Dict[str, Any]], dsu: D
     return {"nodes": new_nodes, "edges": new_edges}, stats
 
 
-# --------------------------------------------------------------------------- #
-# Driver — pure, no file I/O. Called by main() below and by the resolve BLOCK
-# (esg_kg/resolve/build_resolved.py, DESIGN.md §5.7).
-# --------------------------------------------------------------------------- #
 def resolve_graph(triples: List[Dict[str, Any]], idkeys: Dict[str, List[str]], *,
                   registry_path: Path, standards_registry_path: Path,
                   similarity_threshold: float = DEFAULT_SIM,
@@ -533,10 +479,6 @@ def resolve_graph(triples: List[Dict[str, Any]], idkeys: Dict[str, List[str]], *
 
     dsu = DSU(n)
 
-    # ---- Stage A.1: exact identity-key merge (entities + observations) ----
-    # Observations whose identity signature collides only because a discriminating
-    # key (e.g. source_id) is missing must NOT merge across different titles, or
-    # distinct line items ("Cost of goods sold" vs "Financial expenses") fuse.
     groups: Dict[Tuple, List[int]] = defaultdict(list)
     for i in range(n):
         sig = identity_signature(nodes[i], idkeys, normalize=False)
@@ -557,14 +499,6 @@ def resolve_graph(triples: List[Dict[str, Any]], idkeys: Dict[str, List[str]], *
     after_a1 = dsu.n_components()
     logger.info(f"Stage A.1 identity-key merge: {n} -> {after_a1} nodes")
 
-    # ---- Stage A.2: issuer anchor (frozen) ----
-    # Group matches BY TICKER before unioning — the registry can (and, since
-    # 2026-08-06, does: AAA/ACC/ACG/ADP/AGG) hold more than one company. Unioning
-    # every matched Organization node into a single `issuer_members[0]` root
-    # regardless of which ticker it matched silently fuses unrelated companies into
-    # one entity the moment a second ticker is registered (found live: adding 4
-    # tickers collapsed all 5 issuers into one node). One DSU union pass per ticker
-    # keeps each company's mentions in their OWN frozen cluster.
     issuer_index, n_alias, n_excl = load_issuer_index(registry_path)
     issuer_members_by_ticker: Dict[str, List[int]] = defaultdict(list)
     for i in entity_idx:
@@ -588,10 +522,6 @@ def resolve_graph(triples: List[Dict[str, Any]], idkeys: Dict[str, List[str]], *
                 f"into {len(issuer_roots)} frozen issuer cluster(s) "
                 f"(registry: {n_alias} aliases, {n_excl} exclusions)")
 
-    # ---- Stage A.3: standards anchor (frozen) ----
-    # Same mechanism as A.2, applied to the five reference documents. Each doc_key's mentions
-    # (GRI's many spellings, TT96 VN/EN, …) collapse onto one canonical node whose name comes
-    # from the registry — never from embeddings or an LLM (fixes diagnosis C3).
     std_index, s_alias, s_excl = load_standards_index(standards_registry_path)
     std_members: Dict[str, List[int]] = defaultdict(list)
     for i in entity_idx:
@@ -599,7 +529,7 @@ def resolve_graph(triples: List[Dict[str, Any]], idkeys: Dict[str, List[str]], *
             continue
         tag = std_index.get(normalize_name(primary_name(nodes[i])))
         if tag is not None:
-            std_members[tag[0]].append(i)          # tag[0] = doc_key
+            std_members[tag[0]].append(i)
     standards_roots: Set[int] = set()
     standards_tag: Dict[int, Tuple[str, str]] = {}
     for key, members in std_members.items():
@@ -613,11 +543,9 @@ def resolve_graph(triples: List[Dict[str, Any]], idkeys: Dict[str, List[str]], *
                 f"Standard/Regulation node(s) into {len(standards_roots)} frozen cluster(s) "
                 f"(registry: {s_alias} aliases, {s_excl} exclusions)")
 
-    # frozen node indices (issuer + standards) — excluded from Stages B/C
     anchor_roots = issuer_roots | standards_roots
     frozen = {i for i in entity_idx if dsu.find(i) in anchor_roots}
 
-    # ---- Stage B.1: normalized identity-signature merge (entities, non-issuer) ----
     norm_groups: Dict[Tuple, List[int]] = defaultdict(list)
     for i in entity_idx:
         if i in frozen:
@@ -632,15 +560,6 @@ def resolve_graph(triples: List[Dict[str, Any]], idkeys: Dict[str, List[str]], *
     after_b1 = dsu.n_components(entity_idx)
     logger.info(f"Stage B.1 normalized-name merge: entities -> {after_b1} clusters")
 
-    # ---- Stage B.1b: subsumption merge (partial identity keys) ----
-    # Stage B.1 above only merges nodes whose FULL normalized identity_keys tuple is
-    # equal, so a mention missing an optional key (e.g. Location "Hải Dương" with no
-    # `country`) never joins a mention of the same place that has it filled in
-    # (GRAPH_IMPROVEMENT_PLAN.md B1). Two normalized-signature groups merge here when
-    # they share the same anchor (first identity key, e.g. `name`) and no OTHER key
-    # holds two different non-empty values — i.e. one node's non-empty keys are a
-    # subset of the other's. A real conflict (two different non-empty values for the
-    # same key, e.g. two different provinces) still blocks the merge.
     anchor_groups: Dict[Tuple[str, str], List[Tuple]] = defaultdict(list)
     for sig in norm_groups:
         cls, vals = sig
@@ -655,10 +574,8 @@ def resolve_graph(triples: List[Dict[str, Any]], idkeys: Dict[str, List[str]], *
     after_b1b = dsu.n_components(entity_idx)
     logger.info(f"Stage B.1b subsumption merge: entities -> {after_b1b} clusters")
 
-    # ---- Stage B.2 + C: embedding blocking + LLM adjudication (entities, non-issuer) ----
     llm_comparisons = llm_matches = 0
     if not no_llm and client is not None:
-        # collect one representative node index per cluster-root, per class
         rep_of_root: Dict[int, int] = {}
         for i in entity_idx:
             if i in frozen:
@@ -671,7 +588,7 @@ def resolve_graph(triples: List[Dict[str, Any]], idkeys: Dict[str, List[str]], *
         for r, i in rep_of_root.items():
             class_roots[nodes[i]["class"]].append(r)
 
-        candidates: List[Tuple[float, int, int]] = []  # (sim, rootA, rootB)
+        candidates: List[Tuple[float, int, int]] = []
         for cls, roots in class_roots.items():
             if len(roots) < 2:
                 continue
@@ -717,7 +634,6 @@ def resolve_graph(triples: List[Dict[str, Any]], idkeys: Dict[str, List[str]], *
     else:
         logger.info("Stages B.2/C skipped (no_llm/no client)")
 
-    # ---- Stage D: consolidate ----
     resolved, dstats = consolidate(nodes, edges, dsu, issuer_tag, standards_tag)
     final_entity_clusters = dsu.n_components(entity_idx)
     logger.info(f"Stage D: {n} -> {dstats['resolved_nodes']} nodes, {len(edges)} -> {dstats['resolved_edges']} edges"

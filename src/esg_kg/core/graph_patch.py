@@ -45,7 +45,6 @@ def norm(s: Any) -> str:
     return normalize_name(s)
 
 
-# --------------------------------------------------------------------------- #
 class GraphPatch:
     """Append-only view over the resolved graph. Tracks how many nodes/edges existed before so
     the invariant can be asserted, and dedups appended nodes by identity so re-running is a no-op."""
@@ -56,25 +55,16 @@ class GraphPatch:
         self.edges: List[Dict[str, Any]] = graph["edges"]
         self.n_nodes0 = len(self.nodes)
         self.n_edges0 = len(self.edges)
-        # Identity snapshot of the existing prefix: the object id() of each node/edge dict at
-        # positions 0..n0. We only ever .append() new items and mutate existing `properties` in
-        # place, so these objects must stay the SAME objects in the SAME order — that is the
-        # invariant step06 (_node_key = "n{i}") and the step07 dossiers depend on. Snapshotting
-        # id() lets assert_append_only() catch any accidental reorder/replace while still allowing
-        # a property mutation (e.g. stamping self_reported_zero on a Penalty).
         self._prefix_node_ids = [id(n) for n in self.nodes]
         self._prefix_edge_ids = [id(e) for e in self.edges]
         self.entity_classes = entity_classes
         self.edge_labels = edge_labels
         self.edge_dirs = edge_dirs
 
-        # index existing nodes by (class, identity-name) so we neither duplicate an indicator
-        # nor a document node across runs
         self._by_id: Dict[Tuple[str, str], int] = {}
         for i, n in enumerate(self.nodes):
             self._register(i)
 
-        # existing edges as a set of (subject, predicate, object) so we don't re-add
         self._edgeset = {(e.get("subject"), e.get("predicate"), e.get("object"))
                          for e in self.edges}
         self.dropped_invalid = 0

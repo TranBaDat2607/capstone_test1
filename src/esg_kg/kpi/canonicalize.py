@@ -75,11 +75,8 @@ DEFAULT_DEFS = REPO_ROOT / "kpi_definitions_construction.json"
 DEFAULT_ALIASES = REPO_ROOT / "config" / "kpi_type_aliases.json"
 DEFAULT_STATS_OUT = REPO_ROOT / "graph_output" / "validated" / "kpi_canonical_stats.json"
 
-# A code step01 already emitted — trusted as-is, never re-derived.
 STANDARD_CODE_RE = re.compile(r"^(TT96-|QD2171|QCVN09|SSCIFC-)", re.IGNORECASE)
 
-# rapidfuzz only ever runs against the 35 official indicator NAMES (never against the alias
-# lists, which are meant to be exact), and only above a deliberately high cutoff.
 DEFAULT_FUZZY_THRESHOLD = 92
 
 GOAL_YEAR_PATTERNS = [
@@ -89,9 +86,6 @@ GOAL_YEAR_PATTERNS = [
 ]
 
 
-# --------------------------------------------------------------------------- #
-# Normalization.
-# --------------------------------------------------------------------------- #
 def normalize_title(s: Any) -> str:
     """Lowercase + collapse whitespace + drop edge punctuation. Diacritics are KEPT:
     'nước' and 'nuoc' are different words to a Vietnamese reader, and the alias file is
@@ -137,9 +131,6 @@ def rescale_value(value: Any, raw_unit: str,
         return None, None
 
 
-# --------------------------------------------------------------------------- #
-# Matching.
-# --------------------------------------------------------------------------- #
 class Matcher:
     """Tiered title→indicator matcher. Every hit reports WHICH tier fired, so a wrong
     mapping can always be traced back to the rule that produced it."""
@@ -154,7 +145,6 @@ class Matcher:
         self.reject_units = {normalize_title(u) for u in (aliases.get("reject_units") or [])}
         self.fuzzy_threshold = fuzzy_threshold
 
-        # Official indicator names — free recall, no curation needed.
         self.by_official_name = {normalize_title(d["name"]): d["id"] for d in defs}
 
         self.exact: Dict[str, str] = {}
@@ -171,7 +161,6 @@ class Matcher:
                 self.exact[normalize_title(t)] = ind
             for t in rule.get("contains") or []:
                 self.contains.append((normalize_title(t), ind))
-        # Longest phrase first so the most specific `contains` rule wins.
         self.contains.sort(key=lambda kv: -len(kv[0]))
 
         self._fuzz = None
@@ -219,9 +208,6 @@ class Matcher:
         return None, "no_match"
 
 
-# --------------------------------------------------------------------------- #
-# Passes.
-# --------------------------------------------------------------------------- #
 def _entities(triples: List[Dict[str, Any]], cls: str):
     """Yield every (property-dict) occurrence of `cls`. The triple list is denormalized —
     one logical node appears in many triples — so every occurrence must be patched."""
@@ -261,13 +247,6 @@ def canonicalize_kpis(triples: List[Dict[str, Any]], matcher: Matcher) -> Dict[s
             ind, method = matcher.match(props.get("title"), unit_norm)
 
         props["kpi_id"] = ind
-        # WHICH rule decided, stamped on the node itself (DESIGN.md §5.1, as step03b does
-        # with anchor_method and step05b with provenance_method). Two things need it:
-        # a wrong measuredUnder edge must be traceable back to the tier that minted it,
-        # and — more importantly — a null kpi_id is ambiguous without it. `rejected_unit`
-        # (a financial KPI we deliberately refused) and `no_match` (a hole in the alias
-        # file, i.e. real work) are indistinguishable on the node otherwise, and only the
-        # second is a backlog item.
         props["kpi_id_method"] = method
         if unit_norm:
             props["unit_normalized"] = unit_norm
@@ -279,7 +258,7 @@ def canonicalize_kpis(triples: List[Dict[str, Any]], matcher: Matcher) -> Dict[s
         if period:
             props["period"] = period
 
-        if key not in seen_nodes:                       # count each distinct node once
+        if key not in seen_nodes:
             seen_nodes[key] = (ind, method)
             methods[method] += 1
             if ind:
@@ -341,8 +320,6 @@ def backfill_goal_target_date(triples: List[Dict[str, Any]]) -> Dict[str, Any]:
 
         vf = _year_of(props.get("valid_from"))
         if vf is not None and year <= vf:
-            # A goal cannot target a year it already lives in — that is a date mention,
-            # not a deadline (docs/proposals/CROSSCHECK_EXPANSION.md §5 risk control).
             if first_time:
                 seen[key] = True
                 rejected_past += 1
@@ -364,7 +341,6 @@ def backfill_goal_target_date(triples: List[Dict[str, Any]]) -> Dict[str, Any]:
     }
 
 
-# --------------------------------------------------------------------------- #
 def main() -> None:
     p = argparse.ArgumentParser(
         description="Step 3c — assign canonical kpi_id + normalize units/periods + backfill "

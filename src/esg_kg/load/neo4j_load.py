@@ -70,17 +70,11 @@ DEFAULT_USER = "greenwashing"
 DEFAULT_PASSWORD = "changeme"
 DEFAULT_BATCH = 5000
 
-# Every node also gets this shared label so a single index serves _node_key lookups
-# during edge ingestion (Cypher cannot parameterize a label, and an unlabeled MATCH
-# can use no index).
 SHARED_LABEL = "_Entity"
 
 _RE_NON_WORD = re.compile(r"[^\w]")
 
 
-# --------------------------------------------------------------------------- #
-# Helpers adapted from the reference loader (EmeraldMind is read-only).
-# --------------------------------------------------------------------------- #
 def _cypher_safe(s: str) -> str:
     return _RE_NON_WORD.sub("_", s)
 
@@ -127,9 +121,6 @@ def batched(seq: List[Any], n: int):
         yield seq[i : i + n]
 
 
-# --------------------------------------------------------------------------- #
-# Build the load payload from the resolved graph (no DB needed — used by --dry-run).
-# --------------------------------------------------------------------------- #
 def build_payload(
     graph: Dict[str, Any],
     schema_sets: Tuple[set, set, Dict[str, List[Tuple[str, str]]]],
@@ -142,8 +133,8 @@ def build_payload(
     raw_edges: List[dict] = graph["edges"]
     node_class = [n.get("class") for n in raw_nodes]
 
-    nodes_by_label: Dict[str, List[dict]] = defaultdict(list)  # label -> [props incl _node_key]
-    supersedes_edges: List[dict] = []                          # {sub, obj}
+    nodes_by_label: Dict[str, List[dict]] = defaultdict(list)
+    supersedes_edges: List[dict] = []
     warnings: List[str] = []
 
     for i, n in enumerate(raw_nodes):
@@ -153,12 +144,8 @@ def build_payload(
         props = dict(n.get("properties") or {})
         versions = n.get("temporal_versions") or []
 
-        # Current temporal fields come from the latest-valid_from version.
         current = max(versions, key=lambda v: _year_sort_key(v.get("valid_from")), default=None)
         node_props = dict(props)
-        # T2/T3 observation nodes carry their own event-time props (P2); only
-        # default is_current for timeless T1 entities, whose "current" fields
-        # come from the latest temporal version below.
         node_props.setdefault("is_current", True)
         if current:
             node_props["valid_from"] = current.get("valid_from")
@@ -167,7 +154,6 @@ def build_payload(
 
         materialize = include_versions and cls in supersedes_classes and len(versions) > 1
         if materialize:
-            # Dedup identical versions; chain newest -> oldest under the canonical node.
             seen: set = set()
             distinct: List[dict] = []
             for v in versions:
@@ -188,13 +174,10 @@ def build_payload(
                 supersedes_edges.append({"sub": prev_key, "obj": vkey})
                 prev_key = vkey
         elif len(versions) > 1:
-            # Non-supersedes class (or --no-versions): keep history as a JSON blob.
             node_props["temporal_versions"] = versions
 
         nodes_by_label[cls].append(node_props)
 
-    # Data edges: rewire indices -> _node_key, flatten temporal_metadata, key on the
-    # full tuple so multi-year edges stay distinct and re-runs are idempotent.
     edges_by_pred: Dict[str, List[dict]] = defaultdict(list)
     for e in raw_edges:
         s, o, pred = e.get("subject"), e.get("object"), e.get("predicate")
@@ -231,9 +214,6 @@ def build_payload(
     }
 
 
-# --------------------------------------------------------------------------- #
-# Neo4j ingestion.
-# --------------------------------------------------------------------------- #
 def setup_indexes(driver) -> None:
     """One index on the shared label — nodes carry `_node_key`, not per-label keys.
 
@@ -362,8 +342,6 @@ def main() -> None:
     args = p.parse_args()
 
     load_dotenv(REPO_ROOT / ".env")
-    # Re-read connection settings in case .env defines them (argparse defaults captured
-    # os.getenv before load_dotenv ran).
     if args.uri == DEFAULT_URI:
         args.uri = os.getenv("NEO4J_URI", DEFAULT_URI)
     if args.user == DEFAULT_USER:
@@ -402,7 +380,7 @@ def main() -> None:
         logger.info("Dry run — no DB connection, nothing written.")
         return
 
-    from neo4j import GraphDatabase  # lazy: --dry-run works without the driver installed
+    from neo4j import GraphDatabase
 
     logger.info(f"Connecting to Neo4j at {args.uri} (db={args.database or 'default'})...")
     driver = GraphDatabase.driver(args.uri, auth=(args.user, args.password),

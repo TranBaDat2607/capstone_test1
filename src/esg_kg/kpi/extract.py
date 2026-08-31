@@ -64,11 +64,7 @@ getLogger("google_genai.models").setLevel(WARNING)
 DEFAULT_INPUT = REPO_ROOT / "data" / "labeled" / "annual_labeled" / "labeled_annual_report_company_aaa.jsonl"
 DEFAULT_KPI_DEFS = REPO_ROOT / "kpi_definitions_construction.json"
 DEFAULT_OUT_DIR = REPO_ROOT / "kpi_output"
-# DEFAULT_MODEL comes from esg_kg.core.llm (GEMINI_MODEL env var, default
-# gemini-2.5-flash-lite) — see that module's docstring. Re-exported here so
-# `extract.DEFAULT_MODEL` keeps working for existing call sites.
 
-# The construction KPI file is single-sector; sector detection is unnecessary.
 SECTOR = "Xây dựng - Vật liệu xây dựng - Bất động sản"
 
 
@@ -93,10 +89,6 @@ def normalize_kpi_response(data: List[Dict]) -> List[Dict]:
     return data
 
 
-# --------------------------------------------------------------------------- #
-# KPI JSON schema for structured outputs (Gemini OpenAPI-3 dialect:
-# nullable fields use "nullable": True; no additionalProperties).
-# --------------------------------------------------------------------------- #
 _OBSERVATION_SCHEMA = {
     "type": "object",
     "properties": {
@@ -137,13 +129,9 @@ KPI_SCHEMA = {
 }
 
 
-# --------------------------------------------------------------------------- #
-# Extractor
-# --------------------------------------------------------------------------- #
 class KPIExtractor:
     def __init__(self, kpi_defs_path: Path, model: str = DEFAULT_MODEL, max_tokens: int = 8000,
                 use_context_cache: bool = True):
-        # Load the project-global .env at the repo root regardless of cwd.
         load_dotenv(REPO_ROOT / ".env")
         self.max_tokens = max_tokens
 
@@ -160,20 +148,6 @@ class KPIExtractor:
             self.kpi_defs = json.load(f)
         self.defs_text = "\n".join(f"{d['id']}: {d.get('definition', '')}" for d in self.kpi_defs)
 
-        # issue #11: KPI_DEFINITIONS never changes across the whole run (loaded once,
-        # above), so this is the widest-scope cache of the three stages — one
-        # client.caches.create() here serves every page of every document this
-        # extractor processes, not just one document.
-        #
-        # That width is also the risk: the cache's TTL (core/llm.py, default 3600s)
-        # is fixed for the process's lifetime, but a full-sector --all run over the
-        # current corpus (873k sentences across ~197 companies) can easily run past
-        # an hour. Without self-healing, every page after expiry would 400 on
-        # cached_content and be silently lost (extract_page has no try/except of its
-        # own; the caller marks the page failed and moves on, so a second full
-        # invocation would be needed to pick the rest up). `self._ctx_cache` /
-        # `self._cache_static_content` are kept so `_recreate_cache` can force a
-        # fresh `caches.create()` — see there and `extract_page`.
         self.cache_name = None
         self._ctx_cache: Optional[GeminiContextCache] = None
         self._cache_static_content: Optional[str] = None
@@ -219,8 +193,6 @@ class KPIExtractor:
             "verbatim as given above)."
         )
 
-        # issue #11: when self.cache_name is set, KPI_DEFINITIONS lives in the cache
-        # instead of being resent every page — only the page-specific TEXT SOURCE is sent.
         if self.cache_name is not None:
             user = f"TEXT SOURCE (page {page_num} of {doc_name}):\n\"\"\"{page_text}\"\"\""
         else:
@@ -247,12 +219,6 @@ class KPIExtractor:
         return self.cache_name
 
     def _build_call(self, system: str, user: str) -> Tuple[Any, "types.GenerateContentConfig"]:
-        # issue #11 follow-up (2026-08-05): the Gemini API rejects cached_content
-        # combined with system_instruction in the SAME call ("CachedContent can not
-        # be used with GenerateContent request setting system_instruction, tools or
-        # tool_config"). Unlike extract_triples's constant system instruction, this
-        # one embeds per-page facts (company/page/doc_name) and can't be baked into
-        # the cache — so when cached, it travels as a regular content turn instead.
         if self.cache_name is not None:
             contents = f"{system}\n\n{user}"
             config = types.GenerateContentConfig(
@@ -285,12 +251,6 @@ class KPIExtractor:
                 config=config,
             )
         except Exception as e:
-            # A cached run's TTL (core/llm.py, default 3600s) can lapse mid-run on a
-            # long --all extraction — the symptom is generate_content rejecting the
-            # cached_content we sent. Recreate the cache once and retry this same
-            # page instead of losing it (the caller has no retry of its own — see
-            # __init__'s comment). Any other failure re-raises unchanged so it's
-            # handled the same way it always was.
             msg = str(e).lower()
             cache_related = self.cache_name is not None and (
                 "cachedcontent" in msg or "cached_content" in msg or "cached content" in msg
@@ -309,7 +269,6 @@ class KPIExtractor:
                 config=config,
             )
 
-        # Gemini surfaces safety blocks / non-STOP terminations via finish_reason.
         candidates = getattr(resp, "candidates", None) or []
         if candidates:
             finish = getattr(candidates[0], "finish_reason", None)
@@ -380,9 +339,6 @@ class KPIExtractor:
         return total_kpis
 
 
-# --------------------------------------------------------------------------- #
-# CLI
-# --------------------------------------------------------------------------- #
 def main() -> None:
     parser = argparse.ArgumentParser(description="Extract ESG KPIs from labeled JSONL using Claude Haiku")
     parser.add_argument("-i", "--input", type=Path, default=DEFAULT_INPUT, help="Labeled JSONL path")

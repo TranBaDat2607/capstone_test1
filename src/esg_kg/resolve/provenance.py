@@ -71,13 +71,10 @@ DEFAULT_NEWS_GLOBS = [
     "data/labeled/news_labeled/*.jsonl",
     "data/interim/news_preprocessed/*.jsonl",
 ]
-PAGE_FILE_RE = re.compile(r"^page(\d+)\.json$")   # excludes *_bugged.json / *_malformed.txt
+PAGE_FILE_RE = re.compile(r"^page(\d+)\.json$")
 PAGE_TOKEN_RE = re.compile(r"^(.+?)_page(\d+)(?:_|$)")
 
 
-# --------------------------------------------------------------------------- #
-# Indexes over the per-page extraction files + news article metadata.
-# --------------------------------------------------------------------------- #
 def build_page_indexes(graphs_dir: Path) -> Tuple[Dict[str, Set[Tuple[str, int]]],
                                                   Dict[str, Set[Tuple[str, int]]],
                                                   List[str]]:
@@ -149,9 +146,6 @@ def load_news_article_meta(globs: List[str]) -> Dict[str, Dict[str, str]]:
     return meta
 
 
-# --------------------------------------------------------------------------- #
-# Matching.
-# --------------------------------------------------------------------------- #
 def parse_page_token(source_id: Any) -> Optional[Tuple[str, int]]:
     """'AAA_Baocaothuongnien_page12_LNST_DTT_2010' -> ('AAA_Baocaothuongnien', 12).
 
@@ -206,7 +200,7 @@ def candidate_locations(node: Dict[str, Any],
         parsed = parse_source_id(sid)
         if parsed:
             src, page, _idx = parsed
-            doc = src[:-4] if src.endswith(".pdf") else src   # page dirs carry the bare stem
+            doc = src[:-4] if src.endswith(".pdf") else src
             cands.add((doc, page))
     if cands:
         return cands, "source_id"
@@ -250,9 +244,6 @@ def choose_primary(cands: Set[Tuple[str, int]], year: Optional[int]) -> Tuple[st
     return min(pool)
 
 
-# --------------------------------------------------------------------------- #
-# Stamping.
-# --------------------------------------------------------------------------- #
 def stamp_graph(graph: Dict[str, Any],
                 stable_idx: Dict[str, Set[Tuple[str, int]]],
                 source_idx: Dict[str, Set[Tuple[str, int]]],
@@ -298,7 +289,7 @@ def stamp_graph(graph: Dict[str, Any],
             props["source_pages"] = sorted(f"{d}:{p}" for d, p in cands)
             multi_location += 1
 
-        if "__" in doc:   # news doc_id shape TICKER__domain__hash
+        if "__" in doc:
             meta = news_meta.get(doc)
             if meta:
                 for k, v in meta.items():
@@ -360,7 +351,6 @@ def main() -> None:
     stats = stamp_graph(graph, stable_idx, source_idx, news_meta,
                         identity_keys_map, report_docs)
 
-    # Hard invariant: node/edge arrays untouched except for properties mutation.
     assert len(graph.get("nodes", [])) == n_nodes and len(graph.get("edges", [])) == n_edges, \
         "provenance patch must never change node/edge counts"
 

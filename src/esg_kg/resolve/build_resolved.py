@@ -94,9 +94,6 @@ DEFAULT_CACHE = DEFAULT_OUT_DIR / "entity_adjudication_cache.json"
 ARTIFACT_NAME = "resolved_graph.json"
 
 
-# --------------------------------------------------------------------------- #
-# The paid-result cache — Stage C only (see module docstring for the scoping).
-# --------------------------------------------------------------------------- #
 class AdjudicationCache:
     """Stage C same-entity verdicts, keyed by the content of the pair sent to the model.
 
@@ -142,9 +139,6 @@ class AdjudicationCache:
         return ok
 
 
-# --------------------------------------------------------------------------- #
-# The block.
-# --------------------------------------------------------------------------- #
 def run_block(*, input_path: pathlib.Path, out_dir: pathlib.Path, schema: Dict[str, Any],
               graphs_dir: pathlib.Path = DEFAULT_GRAPHS_DIR,
               news_globs: Optional[List[str]] = None,
@@ -176,7 +170,6 @@ def run_block(*, input_path: pathlib.Path, out_dir: pathlib.Path, schema: Dict[s
     catalog = catalog if catalog is not None else indicators.load_gri_catalog(DEFAULT_GRI_CATALOG)
     cache = AdjudicationCache(cache_path) if cache_path else None
 
-    # --- 05: entity resolution -> resolved graph, in memory ---------------------
     logger.info("=== Block 05 — entities ===")
     triples = json.loads(input_path.read_text(encoding="utf-8"))
     idkeys = entities.load_identity_keys(schema)
@@ -189,7 +182,6 @@ def run_block(*, input_path: pathlib.Path, out_dir: pathlib.Path, schema: Dict[s
     )
     logger.info(f"  {len(resolved['nodes'])} nodes, {len(resolved['edges'])} edges")
 
-    # --- 05b: provenance stamping, in memory ------------------------------------
     logger.info("=== Block 05b — provenance ===")
     identity_keys_map = get_identity_keys(schema)
     stable_idx, source_idx, docs = provenance.build_page_indexes(graphs_dir) \
@@ -199,7 +191,6 @@ def run_block(*, input_path: pathlib.Path, out_dir: pathlib.Path, schema: Dict[s
     prov_stats = provenance.stamp_graph(
         resolved, stable_idx, source_idx, news_meta, identity_keys_map, report_docs)
 
-    # --- 05c: indicator axis, in memory -----------------------------------------
     logger.info("=== Block 05c — indicators ===")
     entity_classes, edge_labels, edge_dirs = load_schema_sets(schema)
     axis_report = indicators.link_indicator_axis(
@@ -209,7 +200,6 @@ def run_block(*, input_path: pathlib.Path, out_dir: pathlib.Path, schema: Dict[s
 
     stats = {"resolve": resolve_stats, "provenance": prov_stats, "indicators": axis_report}
 
-    # --- the single write --------------------------------------------------------
     if dry_run:
         logger.info(f"Dry run — nothing written. Would have saved "
                     f"{len(resolved['nodes'])} nodes / {len(resolved['edges'])} edges "
@@ -282,7 +272,6 @@ def main() -> None:
     schema = json.loads(args.schema.read_text(encoding="utf-8"))
     catalog = indicators.load_gri_catalog(args.gri_catalog)
 
-    # Stage B/C is the only paid part; everything else in the block is offline.
     client = None
     rate_limiter = None
     model = args.model

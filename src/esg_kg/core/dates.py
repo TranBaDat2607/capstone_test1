@@ -36,17 +36,12 @@ from __future__ import annotations
 import re
 from typing import Any, Optional, Tuple
 
-# Dates are canonicalized to ISO YYYY[-MM[-DD]] so that downstream version
-# comparison (step05) and quality gates (step00) compare instants, not string
-# spellings ("2011" vs "2011-01-01" was observed splitting one fact into two
-# temporal_versions both flagged is_current=true).
 ISO_DATE_RE = re.compile(r"^(\d{4})(?:-(\d{1,2})(?:-(\d{1,2}))?)?$")
 _DATE_PATTERNS = [
-    # (regex, (year_group, month_group, day_group)) — day-first is the Vietnamese order
-    (re.compile(r"^(\d{4})[/.](\d{1,2})[/.](\d{1,2})$"), (1, 2, 3)),   # 2023/05/31, 2023.05.31
-    (re.compile(r"^(\d{1,2})[/.\-](\d{1,2})[/.\-](\d{4})$"), (3, 2, 1)),  # 31/05/2023, 31-05-2023
-    (re.compile(r"^(\d{1,2})[/.\-](\d{4})$"), (2, 1, None)),           # 05/2023, 05-2023
-    (re.compile(r"^(\d{4})[/.](\d{1,2})$"), (1, 2, None)),             # 2023/05
+    (re.compile(r"^(\d{4})[/.](\d{1,2})[/.](\d{1,2})$"), (1, 2, 3)),
+    (re.compile(r"^(\d{1,2})[/.\-](\d{1,2})[/.\-](\d{4})$"), (3, 2, 1)),
+    (re.compile(r"^(\d{1,2})[/.\-](\d{4})$"), (2, 1, None)),
+    (re.compile(r"^(\d{4})[/.](\d{1,2})$"), (1, 2, None)),
 ]
 
 
@@ -63,7 +58,6 @@ def normalize_date_string(value: Any) -> Tuple[Optional[str], bool]:
     if s == "" or s.lower() in ("null", "none"):
         return None, True
 
-    # datetime -> date part
     if "T" in s:
         s = s.split("T", 1)[0].strip()
 

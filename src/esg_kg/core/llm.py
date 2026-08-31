@@ -155,9 +155,9 @@ from esg_kg.core.paths import load_env
 
 logger = logging.getLogger(__name__)
 
-load_env()  # so GEMINI_MODEL below sees .env even if no stage has loaded it yet
+load_env()
 
-DEFAULT_RATE_LIMIT = 10  # RPM
+DEFAULT_RATE_LIMIT = 10
 DEFAULT_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash-lite")
 DEFAULT_MAX_RETRIES = int(os.getenv("GEMINI_MAX_RETRIES", "5"))
 DEFAULT_RETRY_BACKOFF_BASE = float(os.getenv("GEMINI_RETRY_BACKOFF_SECONDS", "2.0"))
@@ -165,10 +165,6 @@ DEEPSEEK_DEFAULT_MODEL = os.getenv("DEEPSEEK_MODEL", "deepseek-v4-flash")
 OPENAI_DEFAULT_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 
 
-# --------------------------------------------------------------------------- #
-# Rate limiter (verbatim port from 2-extract-triplet.py).
-# Per-client RPM throttle. With a single API key we use client_idx=0.
-# --------------------------------------------------------------------------- #
 class RateLimiter:
     def __init__(self, max_calls_per_minute: int = DEFAULT_RATE_LIMIT):
         self.max_calls = max_calls_per_minute
@@ -212,10 +208,6 @@ def build_gemini_client(api_key: Optional[str] = None) -> Optional[genai.Client]
         return None
 
 
-# --------------------------------------------------------------------------- #
-# LLM providers. The cascade that iterates over them (`Adjudicator`) stays in
-# the stage — see the module docstring.
-# --------------------------------------------------------------------------- #
 class _Provider:
     """One LLM backend. `call(system, user)` returns the raw text reply or raises."""
     name = "base"
@@ -330,10 +322,6 @@ class _DeepSeekProvider(_Provider):
                 ],
                 "temperature": 0,
                 "response_format": {"type": "json_object"},
-                # Thinking mode is ON by default for deepseek-v4-flash and, per DeepSeek's
-                # own docs, makes temperature/top_p INERT — so without this, `temperature=0`
-                # above silently does nothing, and every call also pays for a reasoning
-                # trace this pipeline never reads (only `content` is parsed as JSON).
                 "thinking": {"type": "disabled"},
             },
             timeout=120,
@@ -421,12 +409,6 @@ def build_llm_provider(provider: Optional[str] = None, model: Optional[str] = No
     return cls(model or _PROVIDER_DEFAULT_MODELS[name], rate_limit, api_key=api_key)
 
 
-# --------------------------------------------------------------------------- #
-# Explicit context caching (GitHub issue #11). `extract_triples`, `fix_triples`
-# and `extract` (KPI) each embed a large static block (schema.json / kpi
-# definitions) at the front of every prompt, byte-identical across many calls
-# in one run — see each stage's own module docstring for its exact reuse scope.
-# --------------------------------------------------------------------------- #
 class GeminiContextCache:
     """One `client.caches.create()` per unique static prefix, reused via
     `cached_content=` across every `generate_content` call that shares it.

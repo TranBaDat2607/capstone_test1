@@ -122,10 +122,6 @@ def parse_reply(raw: str, valid_ids: set) -> Optional[str]:
             out = json.loads(m.group(0))
         except Exception:
             return None
-    # Valid JSON of the wrong SHAPE ('[]', '"txt"', '42') must be refused like any other
-    # unusable reply. Without this the `.get` below raised AttributeError, and since run()
-    # writes the graph only after the loop and catches nothing here, one odd reply discarded
-    # every adjudication already paid for in that run.
     if not isinstance(out, dict):
         return None
     ind = out.get("indicator_id")
@@ -148,7 +144,6 @@ def run(args: argparse.Namespace) -> None:
     if missing:
         logger.warning(f"{len(missing)} indicator node(s) absent — run step05c first. Missing e.g. {missing[:3]}")
 
-    # candidates = align-classes with NO existing alignsWithIndicator edge (keyword or prior LLM)
     already = {e["subject"] for e in gp.edges if e.get("predicate") == "alignsWithIndicator"}
     candidates: List[int] = []
     for i in range(gp.n_nodes0):

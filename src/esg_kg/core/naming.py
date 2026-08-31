@@ -32,20 +32,14 @@ import re
 import unicodedata
 from typing import Any, Dict, Set
 
-# OCR / encoding artifacts seen in the PDF extraction (e.g. "MÔI TRƢỜNG"):
-# map the broken codepoints to their nearest ASCII so they normalize cleanly.
 OCR_FIXES = {"Ƣ": "U", "ƣ": "u", "ư": "u", "Ư": "U", "đ": "d", "Đ": "d"}
 
-# Legal-form boilerplate stripped for blocking/matching (normalized, space-delimited;
-# applied longest-first so "cong ty co phan" is removed before "cong ty").
 LEGAL_FORMS = [
     "cong ty trach nhiem huu han", "tong cong ty", "cong ty co phan", "cong ty cp",
     "cong ty tnhh", "cong ty", "ctcp", "tnhh", "tap doan", "joint stock company",
     "joint stock", "corporation", "company", "co ltd", "ltd", "jsc", "j s c", "plc", "inc",
 ]
 
-# Light bilingual / spelling canonicalization so an issuer's Vietnamese and English
-# names share tokens (kept deliberately small to avoid over-merging).
 SYNONYMS = {"green": "xanh", "plastics": "plastic"}
 
 
@@ -59,7 +53,7 @@ def normalize_name(s: Any) -> str:
     s = s.lower()
     s = unicodedata.normalize("NFD", s)
     s = "".join(ch for ch in s if unicodedata.category(ch) != "Mn")
-    s = s.replace("đ", "d")  # đ survives NFD
+    s = s.replace("đ", "d")
     s = re.sub(r"[^a-z0-9]+", " ", s)
     s = f" {s.strip()} "
     for phrase in sorted(LEGAL_FORMS, key=len, reverse=True):
@@ -81,7 +75,6 @@ def merge_preserving_edits(old: Dict[str, Any], new: Dict[str, Any]) -> Dict[str
     resolved = confirmed_alias | confirmed_excl_names
 
     merged_aliases = sorted(confirmed_alias | set(new["aliases"]))
-    # union exclusions (old human notes win on name collision)
     excl_by_name = {e["name"]: e for e in new["exclusions"]}
     excl_by_name.update({e["name"]: e for e in old.get("exclusions", [])})
 

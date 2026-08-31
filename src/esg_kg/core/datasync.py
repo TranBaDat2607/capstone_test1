@@ -65,31 +65,14 @@ from dotenv import load_dotenv
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
-# Route large files through classic LFS (S3 multipart) instead of Xet, which huggingface_hub
-# 1.x uses by default. Measured here: every one of the 15 LFS-bound files (all *.pdf, plus
-# all_validated_triples.json at >10 MB) failed on Xet with "connection forcibly closed"
-# (WinError 10054) and stalled at ~447 kB/s, while the 4028 non-LFS files committed fine.
-# The same PDF over classic LFS uploaded in 4.5 s at 3.14 MB/s. setdefault, so anyone whose
-# link does cope with Xet can still opt back in by exporting HF_HUB_DISABLE_XET=0.
-# Must precede any huggingface_hub import — its constants are read at import time, which is
-# why every import of it in this file is deliberately function-local.
 os.environ.setdefault("HF_HUB_DISABLE_XET", "1")
 
-# Resolved locally rather than imported from esg_kg.core.paths: this tool must run on a
-# fresh clone before the LLM/pipeline dependencies are installed, so it stays import-light
-# on purpose (three directories up from src/esg_kg/core/datasync.py).
 REPO_ROOT = Path(__file__).resolve().parents[3]
 VERSION_FILE = REPO_ROOT / "data_version.json"
 
-# The generated folders shipped to teammates. Everything here is git-ignored.
 SYNCED_FOLDERS = ["data", "graph_output", "kpi_output"]
 ALLOW_PATTERNS = [f"{f}/**" for f in SYNCED_FOLDERS]
 
-# Belt-and-braces: ALLOW_PATTERNS already scopes the upload to the three folders, but an
-# explicit deny keeps a stray secret from ever riding along if that scope is widened.
-# data/outputs/news/_cache/ is esg_news_crawler's own on-disk HTTP cache (config.py's
-# DEFAULT_CACHE_DIR) — local resume/dedup state, not pipeline data; nothing downstream
-# reads it, and at ~1.9 GB of raw HTML it would otherwise dwarf the real snapshot.
 IGNORE_PATTERNS = [
     ".env", ".env.*", "**/.env", "EmeraldMind/**", "neo4j_data/**", "**/__pycache__/**",
     "data/outputs/news/_cache/**",
@@ -102,8 +85,6 @@ def _load_token() -> Optional[str]:
     explicit = os.getenv("HF_TOKEN") or os.getenv("HUGGING_FACE_HUB_TOKEN")
     if explicit:
         return explicit
-    # get_token() also resolves the cached CLI login, so `hf auth login` alone is enough
-    # and no token needs to be written into .env.
     from huggingface_hub import get_token
 
     return get_token()
@@ -132,9 +113,6 @@ def _folder_size_mb(path: Path) -> float:
     return sum(f.stat().st_size for f in path.rglob("*") if f.is_file()) / 1048576
 
 
-# --------------------------------------------------------------------------- #
-# Commands
-# --------------------------------------------------------------------------- #
 def cmd_push(args: argparse.Namespace) -> int:
     from huggingface_hub import HfApi
 
@@ -171,11 +149,6 @@ def cmd_push(args: argparse.Namespace) -> int:
     api.create_repo(repo_id=repo_id, repo_type="dataset", private=args.private, exist_ok=True)
 
     code_commit = _git_commit()
-    # upload_large_folder, not upload_folder: the latter has no retry, so on a slow link a
-    # dropped connection leaves it hanging on a dead socket forever (seen here — it stalled
-    # at 85% and never recovered). This one is resumable, multi-threaded and retries, and it
-    # keeps its progress metadata in <folder_path>/.cache/huggingface (git-ignored) so an
-    # interrupted run picks up where it left off instead of re-uploading.
     api.upload_large_folder(
         folder_path=str(REPO_ROOT),
         repo_id=repo_id,
@@ -186,8 +159,6 @@ def cmd_push(args: argparse.Namespace) -> int:
         print_report_every=30,
     )
 
-    # It commits in batches and returns None, so the pin is the repo head once it settles —
-    # the intermediate commits are irrelevant, only the final tree needs to be reproducible.
     revision = api.dataset_info(repo_id).sha
     payload = {
         "repo_id": repo_id,
@@ -214,8 +185,6 @@ def cmd_pull(args: argparse.Namespace) -> int:
         return 1
 
     repo_id = pinned["repo_id"]
-    # --latest is an escape hatch; the default deliberately honours the pin so the data
-    # always matches the checked-out code.
     revision = None if args.latest else pinned.get("revision")
     logger.info("Pulling %s @ %s", repo_id, (revision or "latest")[:12])
     if pinned.get("code_commit", "unknown") not in ("unknown", _git_commit()):
@@ -235,11 +204,6 @@ def cmd_pull(args: argparse.Namespace) -> int:
         revision=revision,
         local_dir=str(REPO_ROOT),
         token=_load_token(),
-        # Scoped exactly like the upload. local_dir is the CODE repo, so an unscoped
-        # download writes the dataset's own root files over tracked ones — that is how
-        # the Hub's .gitattributes ended up committed here, turning on Git LFS for
-        # png/jpg/zip/parquet in a repo that never wanted it. Guarded by
-        # test/test_data_sync_scope.py.
         allow_patterns=ALLOW_PATTERNS,
     )
     logger.info("Done. Rebuild Neo4j with: python src/run.py neo4j_load --clear")
