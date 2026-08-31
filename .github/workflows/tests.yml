@@ -1,0 +1,53 @@
+name: tests
+
+# The whole suite is offline by design: no network, no Neo4j, no LLM calls, no
+# secrets. The two paid tests no-op unless RUN_LLM_INTEGRATION_TESTS /
+# RUN_LLM_SYSTEM_TEST are set, and this workflow deliberately never sets them.
+#
+# graph_output/ is git-ignored and ships through a private dataset repo, so on a
+# CI checkout the real-corpus arms fall back to test/fixtures/. run_all.py
+# reports how many arms ran on fixtures versus real data, so a green badge here
+# is not mistaken for full-corpus coverage.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  offline-suite:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # 3.10 is the floor declared in pyproject.toml (PEP 604 unions);
+        # 3.11 is what the project is developed against.
+        python-version: ["3.10", "3.11"]
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false   # the 13 report figures are LFS objects and no test reads them
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt -r requirements-test.txt
+
+      - name: Fixtures are schema-valid AND match their generator
+        # build_fixtures.py self-validates against config/schema.json, so a fixture
+        # the real pipeline would reject fails here. The git diff then catches the
+        # other direction: a hand-edited fixture that no longer matches the
+        # generator, which would make the committed files unreproducible.
+        run: |
+          python test/fixtures/build_fixtures.py
+          git diff --exit-code -- test/fixtures/
+
+      - name: Run the offline test suite
+        run: python test/run_all.py

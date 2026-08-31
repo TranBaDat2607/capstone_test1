@@ -45,7 +45,16 @@ from esg_kg.core.schema import get_identity_keys  # noqa: E402
 from esg_kg.graph import anchor_kpi as new_anchor  # noqa: E402
 
 SCHEMA_FILE = REPO / "config" / "schema.json"
+from _fixture_paths import resolve_artifact, skip_if_fixture, tag  # noqa: E402
+
 TRIPLES_FILE = REPO / "graph_output" / "validated" / "all_validated_triples.json"
+
+# Corpus arms READ from here: the real artifact when the HF snapshot is pulled,
+# otherwise the committed synthetic fixture (test/fixtures/) so the arm runs on a
+# bare clone instead of silently skipping. The canonical constant above stays put
+# because wiring assertions compare the stage's own DEFAULT_* against it.
+VALIDATED_DATA, VALIDATED_IS_FIXTURE = resolve_artifact("validated")
+
 
 _skips: list = []
 
@@ -61,9 +70,9 @@ def load_schema() -> dict:
 
 def load_triples() -> list:
     """The real validated corpus, or [] when the HF snapshot is not pulled."""
-    if not TRIPLES_FILE.exists():
+    if not VALIDATED_DATA.exists():
         return []
-    data = json.loads(TRIPLES_FILE.read_text(encoding="utf-8"))
+    data = json.loads(VALIDATED_DATA.read_text(encoding="utf-8"))
     if isinstance(data, dict):
         data = data.get("triples", [])
     return data if isinstance(data, list) else []
@@ -141,6 +150,12 @@ def test_identity_get_stable_entity_id_matches_src_on_the_real_corpus():
     triples = load_triples()
     if not triples:
         _skip("identity/stable_entity_id", f"{TRIPLES_FILE.name} absent (data_sync pull)")
+        return
+    # Tier B: the non-vacuity bar here is real corpus scale (>1000 nodes, hence
+    # many distinct identity_keys shapes). A 24-node fixture cannot clear it, and
+    # dropping the bar would defeat the check it exists to make.
+    if VALIDATED_IS_FIXTURE:
+        _skip("identity/stable_entity_id", skip_if_fixture(True))
         return
 
     keys_map = get_identity_keys(load_schema())
@@ -225,6 +240,7 @@ def test_anchor_collect_inventory_matches_src_on_the_real_corpus():
         _skip("anchor/collect_inventory", f"{TRIPLES_FILE.name} absent (data_sync pull)")
         return
 
+    print(f"     {tag(VALIDATED_IS_FIXTURE)} anchor/collect_inventory")
     new_f, new_k, new_a = new_anchor.collect_inventory(copy.deepcopy(triples))
 
     # not vacuous, and the name gates really gated: raw Facility nodes far outnumber

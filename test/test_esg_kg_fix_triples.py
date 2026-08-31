@@ -63,7 +63,16 @@ from esg_kg.core import schema as core_schema  # noqa: E402
 
 SCHEMA_FILE = REPO / "config" / "schema.json"
 GRAPHS_DIR = REPO / "graph_output" / "graphs"
+from _fixture_paths import resolve_artifact, skip_if_fixture, tag  # noqa: E402
+
 VALIDATED_FILE = REPO / "graph_output" / "validated" / "all_validated_triples.json"
+
+# Corpus arms READ from here: the real artifact when the HF snapshot is pulled,
+# otherwise the committed synthetic fixture (test/fixtures/) so the arm runs on a
+# bare clone instead of silently skipping. The canonical constant above stays put
+# because wiring assertions compare the stage's own DEFAULT_* against it.
+VALIDATED_DATA, VALIDATED_IS_FIXTURE = resolve_artifact("validated")
+
 
 _skips: list = []
 _cache: dict = {}
@@ -392,10 +401,11 @@ def test_process_all_files_matches_src_on_the_real_corpus():
 
 def test_renormalize_existing_matches_src_and_is_idempotent():
     """The ONE path that reads this stage's own output (PIPELINE.md §3)."""
-    if not VALIDATED_FILE.exists():
+    if not VALIDATED_DATA.exists():
         return _skip("renormalize_existing", "all_validated_triples.json not present")
+    print(f"     {tag(VALIDATED_IS_FIXTURE)} renormalize_existing")
     entity_classes, edge_labels, edge_directions = schema_sets()
-    original = VALIDATED_FILE.read_text(encoding="utf-8")
+    original = VALIDATED_DATA.read_text(encoding="utf-8")
 
     prev = _quiet()
     try:

@@ -4,8 +4,15 @@ Plain `assert` scripts — **no pytest, no linter is configured**. Each file is 
 own, prints pass/fail per group, and exits non-zero on failure. Run from the repo root:
 
 ```bash
-python test/<name>.py
+python test/<name>.py          # one file
+python test/run_all.py         # everything, one exit code, one summary table
+python test/run_all.py -k issuer   # only files matching a substring
 ```
+
+`run_all.py` adds no judgement of its own — each file is still the authority on itself and
+runs in its own process. It exists because CI (and anyone evaluating the project) needs a
+single command and a single exit code, and because it reports **where the data came from**
+(see "Fixtures" below).
 
 New code adds new files here, **test-first** — see the TDD working rule in `CLAUDE.md`, which
 is not optional and not limited to the refactor that started it.
@@ -17,6 +24,34 @@ A paid or networked stage is covered for free by stubbing **under** its abstract
 `_GeminiProvider`, `google.genai.Client`, `neo4j.GraphDatabase`, or a provider object passed
 in as a parameter — with a deterministic fake (usually keyed by a CRC of the prompt), so the
 real stage logic still runs against fake I/O. **Never verify by re-running a paid stage.**
+
+## Fixtures — why a green run has two meanings
+
+`graph_output/` and `data/` are git-ignored and ship through a **private** Hugging Face
+dataset repo, so a clone of this repository cannot obtain them. Arms that read
+`all_validated_triples.json` or `resolved_graph.json` therefore used to skip silently: the
+suite printed "all pass" while roughly a dozen real checks had never executed.
+
+`test/_fixture_paths.py` closes that. `resolve_artifact("validated"|"resolved")` returns the
+**real** artifact when the snapshot is pulled and falls back to the small synthetic graph in
+`test/fixtures/` otherwise. Three rules keep this honest:
+
+1. **Real data always wins.** The fixture is a fallback, never an override. There is no env
+   var to opt in — one that outsiders would never set would defeat the purpose.
+2. **Every affected arm prints `[fixture]` or `[real]`.** `run_all.py` rolls those up, so
+   `grep '\[fixture\]'` tells you exactly how much of the suite saw real data. A silent
+   substitution would make a green run mean less than it appears to.
+3. **Scale assertions refuse the fixture.** Arms asserting real corpus *size*
+   (`len(nodes) > 1000`, `claims > 100`, `candidates > 100`, `distinct_kpi_nodes > 100`,
+   `max_degree_before > 5000`) call `skip_if_fixture()` and keep skipping. Lowering a
+   threshold to make it pass on a 24-node graph would convert a real check into a
+   decorative one — do not do it.
+
+`test/fixtures/*.json` are generated, not hand-written. Edit `test/fixtures/build_fixtures.py`
+and re-run it; the script validates everything it emits against `config/schema.json` and CI
+asserts the committed files still match the generator. Arms needing artifacts *beyond* those
+two (`graph_output/graphs/`, labeled JSONL, crosscheck dossiers) still skip — closing those
+would need more fixtures than this covers.
 
 Re-run triggers worth memorising:
 
@@ -73,6 +108,15 @@ python test/test_gri_catalog_build.py      # gri/build_gri_catalog.py: a disclos
                                            # PILLAR_MAP (never a substring guess), provenance fields
                                            # agree with the attributed standard, and GRI 306's real
                                            # 2016+2020 versions still merge. Run after touching gri/.
+python test/test_evalu_annotation.py       # evalu/annotation.py score(): the annotation scoring
+                                           # used by docs/ANNOTATION_RESULTS.md and the 43-pair
+                                           # census behind main.tex S4.4. Run after touching
+                                           # evalu/annotation.py or evalu/iaa.py.
+python test/test_extract_archives_portable.py  # crawl_data/extract_archives.py stays runnable by
+                                           # someone who is not its author: repo-relative defaults,
+                                           # argparse overrides, a four-tier archiver lookup
+                                           # (flag -> env -> PATH -> per-OS install paths), and
+                                           # os.sep rather than a literal backslash.
 python test/test_console_utf8.py           # ensure_utf8_stdout in BOTH trees + the WIRING (main()
                                            # actually calls it, nothing calls it at import). Closes
                                            # the hole the equivalence test cannot see: it never
@@ -545,5 +589,6 @@ RUN_LLM_SYSTEM_TEST=1 python test/test_esg_kg_system_llm.py
                                            # way you verify an ordinary edit.
 ```
 
-The rest of `test/` and `notebooks/` are Jupyter notebooks for manual validation
-(e.g. `test/test_pdf_extraction.ipynb`).
+Manual-validation notebooks live in `notebooks/`. `test/` holds only runnable
+assert scripts; `test/test_pdf_extraction.ipynb` was deleted during the public-release
+cleanup because it imported an `extraction` package that has not existed for some time.

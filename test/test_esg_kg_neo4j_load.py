@@ -50,7 +50,16 @@ from esg_kg.load import neo4j_load as new_step06  # noqa: E402
 from esg_kg.core.schema import load_schema_sets  # noqa: E402
 
 SCHEMA_FILE = REPO / "config" / "schema.json"
+from _fixture_paths import resolve_artifact, skip_if_fixture, tag  # noqa: E402
+
 RESOLVED_FILE = REPO / "graph_output" / "resolved" / "resolved_graph.json"
+
+# Corpus arms READ from here: the real artifact when the HF snapshot is pulled,
+# otherwise the committed synthetic fixture (test/fixtures/) so the arm runs on a
+# bare clone instead of silently skipping. The canonical constant above stays put
+# because wiring assertions compare the stage's own DEFAULT_* against it.
+RESOLVED_DATA, RESOLVED_IS_FIXTURE = resolve_artifact("resolved")
+
 
 _skips: list = []
 
@@ -290,13 +299,14 @@ def test_dry_run_touches_no_driver_both_trees():
 
 
 def test_real_corpus_ingestion_calls_identical_both_trees():
-    if not RESOLVED_FILE.exists():
+    if not RESOLVED_DATA.exists():
         _skip("test_real_corpus_ingestion_calls_identical_both_trees",
               "graph_output/resolved/resolved_graph.json not present "
               "(git-ignored, shipped via the HF snapshot — see src/data_sync.py)")
         return
+    print(f"     {tag(RESOLVED_IS_FIXTURE)} real_corpus_ingestion")
     schema_sets = _schema_sets()
-    graph = json.loads(RESOLVED_FILE.read_text(encoding="utf-8"))
+    graph = json.loads(RESOLVED_DATA.read_text(encoding="utf-8"))
     payload = new_step06.build_payload(graph, schema_sets, include_versions=True)
 
     calls, driver_calls = _run_with_stub(new_step06, _ns(payload))

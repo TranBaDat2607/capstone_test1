@@ -95,7 +95,16 @@ from esg_kg.crosscheck import claims_vs_conduct as new_step07  # noqa: E402
 
 SCHEMA_FILE = REPO / "config" / "schema.json"
 DEFS_FILE = REPO / "kpi_definitions_construction.json"
+from _fixture_paths import resolve_artifact, skip_if_fixture, tag  # noqa: E402
+
 RESOLVED_FILE = REPO / "graph_output" / "resolved" / "resolved_graph.json"
+
+# Corpus arms READ from here: the real artifact when the HF snapshot is pulled,
+# otherwise the committed synthetic fixture (test/fixtures/) so the arm runs on a
+# bare clone instead of silently skipping. The canonical constant above stays put
+# because wiring assertions compare the stage's own DEFAULT_* against it.
+RESOLVED_DATA, RESOLVED_IS_FIXTURE = resolve_artifact("resolved")
+
 
 _skips: list = []
 
@@ -238,9 +247,9 @@ def strip_llm_alignments(graph: dict) -> int:
 
 def real_graph():
     """The live resolved graph with any prior LLM alignment stripped, or None on a bare clone."""
-    if not RESOLVED_FILE.exists():
+    if not RESOLVED_DATA.exists():
         return None, 0
-    graph = json.loads(RESOLVED_FILE.read_text(encoding="utf-8"))
+    graph = json.loads(RESOLVED_DATA.read_text(encoding="utf-8"))
     removed = strip_llm_alignments(graph)
     return graph, removed
 
@@ -382,6 +391,7 @@ def test_dry_run_writes_nothing():
     if graph is None:
         return _skip("test_dry_run_writes_nothing",
                      "graph_output/resolved/resolved_graph.json not present (HF snapshot)")
+    print(f"     {tag(RESOLVED_IS_FIXTURE)} align/dry_run")
     nw, _, nlogs = run_new(graph, dry_run=True)
     try:
         assert any("unaligned" in m for m in nlogs), f"candidate line missing: {nlogs}"
@@ -396,6 +406,12 @@ def test_full_run_on_real_graph():
     graph, removed = real_graph()
     if graph is None:
         return _skip("test_full_run_on_real_graph", "resolved_graph.json not present")
+    # Tier B: asserts real corpus scale (>100 candidates, a 60-adjudication
+    # budget fully spent, the 'none' branch firing). The synthetic fixture is
+    # deliberately tiny and cannot satisfy that honestly; weakening the
+    # thresholds would turn the headline arm into a decorative one.
+    if RESOLVED_IS_FIXTURE:
+        return _skip("test_full_run_on_real_graph", skip_if_fixture(True))
     budget = 60
     nw, nstub, _ = run_new(graph, max_llm_pairs=budget)
     try:
@@ -424,6 +440,7 @@ def test_run_is_append_only_and_preserves_node_order():
     if graph is None:
         return _skip("test_run_is_append_only_and_preserves_node_order",
                      "resolved_graph.json not present")
+    print(f"     {tag(RESOLVED_IS_FIXTURE)} align/append_only")
     n_nodes0, n_edges0 = len(graph["nodes"]), len(graph["edges"])
     nw, _, _ = run_new(graph, max_llm_pairs=40)
     try:
