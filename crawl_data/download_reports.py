@@ -28,11 +28,9 @@ import time
 import threading
 import sys
 
-# Import logic giai nen tu extract_archives.py (cung thu muc)
 sys.path.insert(0, str(Path(__file__).parent))
 from extract_archives import EXTRACTORS, ARCHIVE_EXTS, dest_dir, already_extracted
 
-# ---------------- Cau hinh mac dinh ----------------
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_OUT_ROOT = PROJECT_ROOT / "data" / "raw" / "annual_report"
 TARGET_SHEET = "Xây dựng - VLXD - BĐS"
@@ -40,13 +38,11 @@ TARGET_SHEET = "Xây dựng - VLXD - BĐS"
 MAX_WORKERS = 5
 TIMEOUT = 90
 MAX_RETRIES = 3
-RETRY_BACKOFF = 2  # giay, x attempt
+RETRY_BACKOFF = 2
 
-# Luon tu dong giai nen .zip/.rar/.7z va xoa file goc -> dau ra khong con archive.
 AUTO_EXTRACT = True
 DELETE_ARCHIVE_AFTER_EXTRACT = True
 
-# Runtime config (gan trong main() tu CLI)
 EXCEL_PATH: Path = Path()
 OUT_ROOT: Path = DEFAULT_OUT_ROOT
 LOG_PATH: Path = DEFAULT_OUT_ROOT / "download_log.csv"
@@ -58,7 +54,6 @@ HEADERS = {
     )
 }
 
-# Windows: cam < > : " / \ | ? * va ky tu dieu khien
 _ILLEGAL = re.compile(r'[<>:"/\\|?*\x00-\x1f]')
 
 
@@ -95,7 +90,6 @@ def load_all() -> pd.DataFrame:
     all_df = df.dropna(subset=["url", "ma_ck"]).copy()
     all_df["url"] = all_df["url"].astype(str).str.strip()
     all_df = all_df[all_df["url"].str.startswith(("http://", "https://"))]
-    # Year: NaN -> 'NA', else int
     def fmt_year(y):
         if pd.isna(y):
             return "NA"
@@ -134,7 +128,6 @@ def maybe_extract(archive: Path) -> tuple[bool, str | None]:
         return True, None
     dest = dest_dir(archive)
     if already_extracted(dest):
-        # Da co folder giai nen tu truoc -> chi xoa archive
         if DELETE_ARCHIVE_AFTER_EXTRACT and archive.exists():
             try:
                 archive.unlink()
@@ -155,14 +148,12 @@ def maybe_extract(archive: Path) -> tuple[bool, str | None]:
 
 
 def download_one(idx: int, row: dict, target: Path):
-    # Neu file da tai roi (con archive hoac da giai nen) -> bo qua
     if target.exists() and target.stat().st_size > 0:
         with _lock:
             _counters["skipped"] += 1
-        maybe_extract(target)  # truong hop archive cu chua giai nen
+        maybe_extract(target)
         return ("skipped", idx, row, target, None)
     if target.suffix.lower() in ARCHIVE_EXTS and already_extracted(dest_dir(target)):
-        # Folder giai nen da ton tai (archive da bi xoa truoc do)
         with _lock:
             _counters["skipped"] += 1
         return ("skipped", idx, row, target, None)
@@ -243,7 +234,6 @@ def main():
     df = load_all()
     _log(f"Tong so URL hop le: {len(df)}")
 
-    # Dedupe duong dan dich (cung Ma CK + Nam co the co nhieu URL)
     targets = []
     seen = {}
     for _, row in df.iterrows():

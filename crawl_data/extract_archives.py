@@ -32,24 +32,19 @@ from pathlib import Path
 
 import pandas as pd
 
-# ---------------- Cau hinh ----------------
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
-# Mac dinh tro vao thu muc dau ra cua crawl_data/download_reports.py.
 DEFAULT_ROOT = REPO_ROOT / "data" / "raw" / "annual_report"
 DEFAULT_LOG_PATH = REPO_ROOT / "data" / "raw" / "extract_log.csv"
 DEFAULT_MAX_WORKERS = 4
 
 ARCHIVE_EXTS = {".zip", ".rar", ".7z"}
 
-# Ten binary de tra tren PATH, theo thu tu uu tien.
 ARCHIVER_BINARIES = {
     "unrar": ("unrar", "unrar-free"),
     "7z": ("7z", "7za", "7zz", "7zr"),
 }
 
-# Tier cuoi cung: duong dan cai dat mac dinh theo he dieu hanh. Day KHONG phai
-# gia tri mac dinh cua bien -- chi la noi tra cuu sau khi PATH that bai.
 PLATFORM_ARCHIVER_PATHS = {
     "unrar": (
         r"C:\Program Files\WinRAR\UnRAR.exe",
@@ -67,10 +62,8 @@ PLATFORM_ARCHIVER_PATHS = {
     ),
 }
 
-# Bien moi truong cho phep chi dinh binary ma khong can sua code.
 ARCHIVER_ENV_VARS = {"unrar": "UNRAR_EXE", "7z": "SEVENZIP_EXE"}
 
-# -----------------------------------------
 
 _lock = threading.Lock()
 _counters = {"ok": 0, "skipped": 0, "failed": 0}
@@ -140,11 +133,9 @@ def already_extracted(d: Path) -> bool:
 def extract_zip(archive: Path, dest: Path, _exe=None):
     dest.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(archive) as zf:
-        # Try to fix Vietnamese filenames encoded as cp437 (common on Windows-zipped files)
         for info in zf.infolist():
             name = info.filename
             if not (info.flag_bits & 0x800):
-                # Tieng Viet ZIP cu thuong duoc encode bang cp437, can dich lai sang utf-8
                 try:
                     name = name.encode("cp437").decode("utf-8")
                 except (UnicodeDecodeError, UnicodeEncodeError):
@@ -169,8 +160,6 @@ def extract_rar(archive: Path, dest: Path, unrar_exe=None):
     if not unrar_exe:
         raise FileNotFoundError(_missing_archiver_message("unrar"))
     dest.mkdir(parents=True, exist_ok=True)
-    # x: extract voi cau truc thu muc, -o+: overwrite, -y: yes to all.
-    # UnRAR can dau phan cach cuoi de hieu dich la thu muc -- os.sep, khong phai "\".
     result = subprocess.run(
         [str(unrar_exe), "x", "-o+", "-y", str(archive), str(dest) + os.sep],
         capture_output=True,
@@ -214,7 +203,6 @@ def process(archive: Path, root: Path, archivers=None):
             _counters["ok"] += 1
         return ("ok", archive, dest, None)
     except Exception as e:
-        # Don du gon folder dich neu loi
         try:
             if dest.exists() and not any(dest.iterdir()):
                 dest.rmdir()
@@ -267,8 +255,6 @@ def main(argv=None):
         by_ext[a.suffix.lower()] = by_ext.get(a.suffix.lower(), 0) + 1
     _log(f"Phan bo: {by_ext}")
 
-    # Chi tim binary cho dinh dang thuc su co mat -- khong bat nguoi dung cai
-    # 7-Zip chi de giai nen mot thu muc toan .zip.
     archivers = {}
     for kind, ext in (("unrar", ".rar"), ("7z", ".7z")):
         if by_ext.get(ext):

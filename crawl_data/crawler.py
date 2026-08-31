@@ -72,14 +72,12 @@ def wait_for_pdf(directory: Path, known_files: set, timeout: float = 60) -> Path
     """Wait for a new completed .pdf file to appear in directory."""
     deadline = time.time() + timeout
     while time.time() < deadline:
-        # Wait for crdownload to disappear first (download in progress)
         current_pdfs = {
             f for f in directory.iterdir()
             if f.is_file() and f.suffix.lower() == ".pdf"
         }
         new_pdfs = current_pdfs - known_files
         if new_pdfs:
-            # Make sure file is not still being written
             f = list(new_pdfs)[0]
             time.sleep(0.5)
             if f.exists() and f.stat().st_size > 0:
@@ -100,7 +98,6 @@ async def crawl():
         tab = await browser.get(REPORT_URL)
 
         try:
-            # Wait for Cloudflare challenge
             print(f"Loading {REPORT_URL} ...")
             for _ in range(30):
                 title = await tab.evaluate("document.title")
@@ -112,13 +109,11 @@ async def crawl():
             await asyncio.sleep(3)
             print(f"Page ready: {await tab.evaluate('document.title')}")
 
-            # Tell Chrome to save downloads to OUTPUT_DIR
             await tab.send(cdp_browser.set_download_behavior(
                 behavior="allow",
                 download_path=str(OUTPUT_DIR.resolve()),
             ))
 
-            # Extract PDF hrefs from rendered HTML
             html = await tab.evaluate("document.documentElement.outerHTML")
             all_hrefs = re.findall(r'href="(/[^"]+\.pdf)"', html, re.IGNORECASE)
 
@@ -152,21 +147,16 @@ async def crawl():
                 }
                 print(f"  [down] {filename} ...")
 
-                # Navigate to PDF URL — Chrome will download it (PDF viewer disabled)
                 await tab.get(url)
 
-                # Wait for the download to appear
                 new_file = wait_for_pdf(OUTPUT_DIR, known_pdfs, timeout=60)
 
                 if new_file:
-                    # Rename to expected name if needed
                     if new_file.name != dest.name:
                         new_file.rename(dest)
-                    # Wait for any in-progress write to finish
                     for _ in range(10):
                         await asyncio.sleep(1)
                         if dest.exists() and dest.stat().st_size > 0:
-                            # Check no crdownload sibling
                             crdownload = dest.with_suffix(".crdownload")
                             if not crdownload.exists():
                                 break
@@ -177,7 +167,6 @@ async def crawl():
                 else:
                     print(f"         FAILED (download timeout)")
 
-                # Return to report page for next iteration
                 await tab.get(REPORT_URL)
                 await asyncio.sleep(2)
 
