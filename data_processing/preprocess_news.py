@@ -33,21 +33,14 @@ import re
 from collections import defaultdict
 from datetime import datetime
 
-# ---- config ---------------------------------------------------------------
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 INPUT_DIR = os.path.join(REPO_ROOT, "data", "labeled", "news_labeled")
 OUT_DIR = os.path.join(REPO_ROOT, "data", "interim", "news_preprocessed")
 
-# Known non-date placeholders that trafilatura emits when it can't find a real date.
 PLACEHOLDER_DATES = {"2002-01-01"}
-MIN_YEAR = 1990                       # §7.1 plausibility floor
-DEFAULT_MIN_CHARS = 15                # §8.2 near-empty text filter
+MIN_YEAR = 1990
+DEFAULT_MIN_CHARS = 15
 
-
-# ---- date utilities -------------------------------------------------------
-# Ported (not imported) from crawl_data/crawler_news.py:152-193 — those are pure
-# re/datetime helpers, but that module pulls httpx/bs4 at import time. Kept inline
-# to stay self-contained, matching the data_processing "no shared util module" style.
 
 def normalize_date(raw: str) -> str:
     """Coerce assorted date strings to YYYY-MM-DD; return "" if unrecognizable."""
@@ -106,7 +99,6 @@ def normalize_effective_date(row: dict, current_year: int) -> dict:
     """
     crawl_date = (row.get("date_crawled") or "")[:10]
 
-    # (a) trust the crawler's publish_date when it looks real
     norm = normalize_date(row.get("publish_date") or "")
     if norm and norm not in PLACEHOLDER_DATES and norm != crawl_date:
         year = int(norm[:4])
@@ -117,7 +109,6 @@ def normalize_effective_date(row: dict, current_year: int) -> dict:
                 "date_uncertain": False,
             }
 
-    # (b) recover just a year from the url, then the title/text
     year_str = extract_year_from_url(row.get("url") or "") or _year_from_text(
         row.get("title") or "", row.get("text") or ""
     )
@@ -130,11 +121,8 @@ def normalize_effective_date(row: dict, current_year: int) -> dict:
                 "date_uncertain": True,
             }
 
-    # (c) nothing usable
     return {"publish_date_normalized": "", "publish_year": None, "date_uncertain": True}
 
-
-# ---- boilerplate filter ---------------------------------------------------
 
 def is_boilerplate(row: dict, min_chars: int) -> bool:
     """True if the record should be dropped as noise (SYSTEM_DESIGN §8.2)."""
@@ -144,8 +132,6 @@ def is_boilerplate(row: dict, min_chars: int) -> bool:
         return True
     return False
 
-
-# ---- main -----------------------------------------------------------------
 
 def main(input_dir=INPUT_DIR, out_dir=OUT_DIR, min_chars=DEFAULT_MIN_CHARS):
     os.makedirs(out_dir, exist_ok=True)
@@ -160,7 +146,7 @@ def main(input_dir=INPUT_DIR, out_dir=OUT_DIR, min_chars=DEFAULT_MIN_CHARS):
     totals = defaultdict(int)
 
     for path in input_files:
-        rel = os.path.relpath(path, input_dir)                       # e.g. aaa_news_classified.jsonl
+        rel = os.path.relpath(path, input_dir)
         stem, ext = os.path.splitext(rel)
         out_path = os.path.join(out_dir, stem + "_preprocessed" + ext)
         os.makedirs(os.path.dirname(out_path), exist_ok=True)

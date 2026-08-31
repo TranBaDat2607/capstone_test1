@@ -45,13 +45,12 @@ ESG_PILLARS = ("Environmental", "Social", "Governance")
 
 
 def _normalize_label(label: str) -> str:
-    # The published config spells the neutral class "Neural"; normalize it.
     return "Neutral" if label.strip().lower() in {"neural", "neutral", "none"} else label
 
 
 def load_classifier(model_id: str = MODEL_ID, device: str | None = None):
     """Load (tokenizer, model, device, id2label). Auto-selects CUDA when available."""
-    import torch  # local import so prepare_sentences.py never needs torch
+    import torch
     from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
     if device is None:
@@ -101,13 +100,11 @@ def classify(
         ).to(device)
         with torch.no_grad():
             logits = model(**enc).logits
-            probs = torch.sigmoid(logits).cpu().tolist()  # multi-label -> sigmoid
+            probs = torch.sigmoid(logits).cpu().tolist()
 
         for row in probs:
             scores = {id2label[i]: round(float(p), 4) for i, p in enumerate(row)}
-            # Pillar tags: any E/S/G clearing the per-label threshold.
             labels = [p for p in ESG_PILLARS if scores.get(p, 0.0) >= threshold]
-            # ESG-relevance: keyed off Neutral so split signals aren't dropped.
             esg = scores.get("Neutral", 0.0) < neutral_threshold
             results.append({"scores": scores, "labels": labels, "esg": esg})
     return results
@@ -118,7 +115,7 @@ def _read_sentences(path: Path) -> list[dict]:
     if path.suffix.lower() == ".csv":
         with open(path, encoding="utf-8-sig", newline="") as f:
             rows = list(csv.DictReader(f))
-    else:  # jsonl
+    else:
         with open(path, encoding="utf-8") as f:
             rows = [json.loads(line) for line in f if line.strip()]
     return rows
@@ -196,7 +193,6 @@ def main(argv: list[str] | None = None) -> int:
     _write_jsonl(merged, out_path)
     _write_csv(merged, out_path.with_suffix(".csv"))
 
-    # Summary
     counts = {lbl: 0 for lbl in ESG_PILLARS}
     esg_total = 0
     for r in merged:
