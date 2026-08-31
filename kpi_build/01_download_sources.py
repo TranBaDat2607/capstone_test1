@@ -19,8 +19,6 @@ import requests
 HERE = pathlib.Path(__file__).resolve().parent
 SOURCES_DIR = HERE / "sources"
 
-# Browser-like headers - the government / legal portals reject the default
-# python-requests user agent with HTTP 403.
 HEADERS = {
     "User-Agent": (
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -29,7 +27,6 @@ HEADERS = {
     "Accept-Language": "vi,en;q=0.9",
 }
 
-# Each source records WHERE it comes from so provenance is traceable.
 SOURCES = [
     {
         "id": "TT96_2020",

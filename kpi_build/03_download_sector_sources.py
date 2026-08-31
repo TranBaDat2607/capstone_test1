@@ -31,7 +31,6 @@ HEADERS = {
     "Accept-Language": "vi,en;q=0.9",
 }
 
-# Each source lists mirror URLs in priority order.
 SECTOR_SOURCES = [
     {
         "id": "QD_2171_2021",
@@ -39,7 +38,6 @@ SECTOR_SOURCES = [
                  "xay khong nung tai Viet Nam den nam 2030",
         "publisher": "Thu tuong Chinh phu",
         "filename": "QD_2171_2021.html",
-        # Require the actual objectives text (a target percentage), not metadata.
         "must_contain": "tổng số vật liệu xây",
         "urls": [
             "https://hethongphapluat.com/quyet-dinh-2171-qd-ttg-nam-2021-phe-duyet-chuong-trinh-phat-trien-vat-lieu-xay-khong-nung-tai-viet-nam-den-nam-2030-do-thu-tuong-chinh-phu-ban-hanh/dieu-1",

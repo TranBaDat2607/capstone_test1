@@ -20,7 +20,6 @@ OUT = HERE.parent / "kpi_definitions_construction.json"
 
 SECTOR_LABEL = "Xây dựng - Vật liệu xây dựng - Bất động sản"
 
-# Targeted fixes for OCR/source artefacts found in the original document text.
 TEXT_FIXES = {"Chính sách lao độngnhằm": "Chính sách lao động nhằm"}
 
 PILLAR_BY_SUBSECTION = {
@@ -89,7 +88,6 @@ def build_sector() -> list[dict]:
 def main() -> None:
     kpis = build_circular96() + build_sector()
 
-    # Sanity: ids must stay unique (pipeline uses id as kpi_type token).
     ids = [k["id"] for k in kpis]
     assert len(ids) == len(set(ids)), "duplicate KPI ids!"
 
