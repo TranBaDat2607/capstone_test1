@@ -136,7 +136,7 @@ Ví dụ giá trị không tìm thấy trên trang trích dẫn:
 ---
 ## 3. Tầng 3 — đánh giá không cần nhãn ở tầng đối soát
 
-*(theo `docs/EVALUATION_WITHOUT_LABELS.md`; toàn bộ offline, 0 đồng)*
+*(theo `docs/proposals/EVALUATION_WITHOUT_LABELS.md`; toàn bộ offline, 0 đồng)*
 
 ### B2 — Kiểm định hoán vị trên số claim bị mâu thuẫn
 
@@ -176,7 +176,7 @@ Các mâu thuẫn lệch thời gian nặng nhất:
 
 > ⚠ 100% evidence mang date_uncertain=true, tức năm thường là ngày đăng bài dùng làm proxy. Vì vậy đây là CẬN TRÊN của tỷ lệ vi phạm, không phải con số chính xác.
 
-> **Vì sao kết luận này vững:** ba đường độc lập cùng chỉ về một chỗ — (1) B2b cho thấy khoảng cách năm của cặp được giữ không tốt hơn ghép ngẫu nhiên, (2) D cho thấy phần lớn mâu thuẫn dùng bằng chứng đi sau, (3) tham số `window_after` đang để 50 năm. `docs/EVALUATION_WITHOUT_LABELS.md` §3.3 đã **dự báo trước** MR-4 sẽ hỏng nặng; D xác nhận dự báo đó mà không tốn một lệnh gọi LLM nào.
+> **Vì sao kết luận này vững:** ba đường độc lập cùng chỉ về một chỗ — (1) B2b cho thấy khoảng cách năm của cặp được giữ không tốt hơn ghép ngẫu nhiên, (2) D cho thấy phần lớn mâu thuẫn dùng bằng chứng đi sau, (3) tham số `window_after` đang để 50 năm. `docs/proposals/EVALUATION_WITHOUT_LABELS.md` §3.3 đã **dự báo trước** MR-4 sẽ hỏng nặng; D xác nhận dự báo đó mà không tốn một lệnh gọi LLM nào.
 
 ### E — Ablation cửa sổ thời gian truy hồi
 
@@ -214,14 +214,14 @@ Các mâu thuẫn lệch thời gian nặng nhất:
 ### Phổ `confidence` của LLM (ghi nhận, không phải điểm số)
 
 - Phân bố: `{'0.8': 4, '0.9': 4}` → chỉ **2** giá trị phân biệt, thấp nhất 0.8.
-- Quá ít giá trị phân biệt để hiệu chuẩn — ghi nhận như một phát hiện, không phải một metric. Calibration đã chết ở đây (docs/EVALUATION_WITHOUT_LABELS.md §8).
+- Quá ít giá trị phân biệt để hiệu chuẩn — ghi nhận như một phát hiện, không phải một metric. Calibration đã chết ở đây (docs/proposals/EVALUATION_WITHOUT_LABELS.md §8).
 
 ---
 ## 3. Những gì KHÔNG ĐO ĐƯỢC — và cần gì để đo
 
 | Chỉ số | Vì sao chưa đo được | Chi phí để đo |
 |---|---|---|
-| RAGAS Context Recall | Cần tập ground-truth về những bằng chứng LẼ RA phải được truy hồi. Không có nhãn nào tồn tại — đó chính là tiền đề của đề tài. Đã ghi nhận là metric chết trong docs/EVALUATION_WITHOUT_LABELS.md §8. | gán nhãn thủ công tập bằng chứng vét cạn cho từng claim |
+| RAGAS Context Recall | Cần tập ground-truth về những bằng chứng LẼ RA phải được truy hồi. Không có nhãn nào tồn tại — đó chính là tiền đề của đề tài. Đã ghi nhận là metric chết trong docs/proposals/EVALUATION_WITHOUT_LABELS.md §8. | gán nhãn thủ công tập bằng chứng vét cạn cho từng claim |
 | RAGAS Faithfulness | Cần phán xử xem mỗi phần giải thích có được suy ra từ chính văn bản bằng chứng hay không — tốn một lệnh gọi LLM-judge cho mỗi hồ sơ, và sẽ là tự chấm điểm mình nếu dùng lại cùng một model. Không suy ra được từ artifact. | 191 lệnh gọi judge (hoặc một model độc lập thứ hai) |
 | MR-1 Negation Flip | Cần chạy lại adjudicator THẬT trên claim đã bị chèn phủ định. Chạy trên stub thì chỉ đo được chính cái stub. | ~191 lệnh gọi LLM |
 | MR-2 Numeric Flip | Cần chạy lại adjudicator THẬT trên bằng chứng đã đảo dấu con số. | ~191 lệnh gọi LLM |

@@ -27,7 +27,7 @@
 > tiêu chí "tránh cho team phải re-run" như bản nháp đầu.
 >
 > Quan hệ với các doc khác: đây là phần **mở rộng mức graph** của
-> `CROSSCHECK_EXPANSION.md` — doc đó chủ trương thay đổi tối thiểu (mức property/cặp-cạnh,
+> `proposals/CROSSCHECK_EXPANSION.md` — doc đó chủ trương thay đổi tối thiểu (mức property/cặp-cạnh,
 > không class mới) và đặt nền `step03c_canonicalize_kpis.py`; doc này bổ sung **một class mới
 > có chủ đích** (`StandardIndicator`) để vật chất hóa vocabulary 35 KPI thành node trong graph.
 > Phân công dứt khoát: **step03c canonical hóa `kpi_type` → mã chỉ tiêu** (mức validated),
@@ -230,7 +230,7 @@ step06 → step07 → step07b → step08 → step09 → step10
 
 | Stage | Loại | Vai trò trong trục chỉ tiêu |
 |---|---|---|
-| `step03c_canonicalize_kpis.py` | offline, **mới** (đã có trong `CROSSCHECK_EXPANSION.md`) | canonical hóa `kpi_type` free-text → mã chỉ tiêu. **Đây là nơi quyết định độ phủ của cả trục**, xem §5.2 |
+| `step03c_canonicalize_kpis.py` | offline, **mới** (đã có trong `proposals/CROSSCHECK_EXPANSION.md`) | canonical hóa `kpi_type` free-text → mã chỉ tiêu. **Đây là nơi quyết định độ phủ của cả trục**, xem §5.2 |
 | `config/standards_registry.json` | **config tĩnh** (từ 2026-07-26 không còn là stage) | 5 văn bản chuẩn + alias (GRI variants, TT96 VN/EN) + exclusions + `match_patterns`/`exclude_hints`. Sửa tay rồi chạy lại step05. `step00` audit độ phủ (`standards_registry_audit`). `src/step04b_build_standards_registry.py` vẫn còn để gây lại từ đầu nhưng KHÔNG nằm trên đường chạy — nó đọc output của step05 trong khi step05 đọc output của nó (vòng lặp). Xem `src/esg_kg/DESIGN.md` §4.2 |
 | `step05_resolve_entities.py` | sửa nhỏ | mở rộng Stage A.2: ngoài issuer anchor, thêm **standards anchor** cho class `Standard`/`Regulation` dùng registry trên; cụm này cũng FROZEN (loại khỏi Stage B/C). Giải quyết C3 vĩnh viễn, ~10 dòng, dùng lại `load_issuer_index`/`normalize_name` |
 | `step05c_link_standard_indicators.py` | offline, NO LLM, **mới** | vật chất hóa 35 node chỉ tiêu + `partOf` + `measuredUnder` + `equivalentTo` (GRI) + `alignsWithIndicator` tầng keyword |
@@ -417,7 +417,7 @@ Sau đó: `step06 --clear` → `step00 --label after_indicator_axis` → thêm c
 ## 6. Tương tác với step07/step07b — chỉ tiêu làm *dẫn đường*, không thay *phán xử*
 
 Retrieval hiện tại của step07 là token-overlap toàn cục (chẩn đoán D2 của
-`CROSSCHECK_EXPANSION.md`). Tầng chỉ tiêu biến retrieval thành truy vấn graph 2-hop:
+`proposals/CROSSCHECK_EXPANSION.md`). Tầng chỉ tiêu biến retrieval thành truy vấn graph 2-hop:
 
 ```
 Claim --alignsWithIndicator--> (StandardIndicator) <--measuredUnder-- conduct (source_type=news)
@@ -471,7 +471,7 @@ RETURN i.id, r.value, n.value;
 ## 8. Tham chiếu
 
 - Sơ đồ thiết kế: https://claude.ai/code/artifact/b47d74f9-c7d1-459a-ac9d-640058804fde
-- `CROSSCHECK_EXPANSION.md` — step03c (khóa join KPI), retrieval routing, kế hoạch 4 tuần defense-1
+- `proposals/CROSSCHECK_EXPANSION.md` — step03c (khóa join KPI), retrieval routing, kế hoạch 4 tuần defense-1
 - `ENTITY_RESOLUTION.md` — Stage A.2 frozen anchor, cơ chế mà standards anchor (§3.5) tái dùng
 - `KPI_EXTRACTION_FROM_JSONL.md` — prompt step01, nơi sửa `indicator_id`/`domain` ở §5.2(a)
 - `TEMPORAL_KG_DESIGN.md` — P1 (identity timeless), Q7 (hub-free), quy trình step00 before/after

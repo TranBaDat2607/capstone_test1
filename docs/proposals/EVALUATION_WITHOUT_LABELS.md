@@ -12,16 +12,16 @@
 > tự tuyên bố** hay không — ba thứ đo được mà không cần một nhãn nào. §7 (ablation) là
 > phần duy nhất trùng ý tưởng với step10, và nó ở đây với vai trò phụ.
 >
-> **Đọc trước:** [`SYSTEM_DESIGN.md`](./SYSTEM_DESIGN.md) §1.1 (ràng buộc không-ground-truth,
-> nguồn gốc của mọi thứ dưới đây) · [`TEMPORAL_KG_DESIGN.md`](./TEMPORAL_KG_DESIGN.md) §4
+> **Đọc trước:** [`SYSTEM_DESIGN.md`](../SYSTEM_DESIGN.md) §1.1 (ràng buộc không-ground-truth,
+> nguồn gốc của mọi thứ dưới đây) · [`TEMPORAL_KG_DESIGN.md`](../TEMPORAL_KG_DESIGN.md) §4
 > (Q1–Q8 — đo chất lượng **đồ thị**; tài liệu này đo chất lượng **kết quả**, hai tầng khác nhau)
-> · [`CLAIM_CONDUCT_CROSSCHECK.md`](./CLAIM_CONDUCT_CROSSCHECK.md) (đối tượng được đo)
+> · [`CLAIM_CONDUCT_CROSSCHECK.md`](../CLAIM_CONDUCT_CROSSCHECK.md) (đối tượng được đo)
 >
 > **CẬP NHẬT 2026-08-08 — tiền đề "không có nhãn nào" nay cần nói chính xác hơn.**
 > Đã tồn tại một tập nhãn người thật: **220 cặp `(claim, evidence)`, hai người chấm độc lập,
 > Cohen's κ = 0,714** (`sheetA.xlsx` / `sheetB.xlsx`, theo sổ tay đã freeze
-> [`ANNOTATION_GUIDELINE.md`](./ANNOTATION_GUIDELINE.md); kết quả ở
-> [`ANNOTATION_RESULTS.md`](./ANNOTATION_RESULTS.md)). Điều này **không** làm file này hết
+> [`ANNOTATION_GUIDELINE.md`](../ANNOTATION_GUIDELINE.md); kết quả ở
+> [`ANNOTATION_RESULTS.md`](../ANNOTATION_RESULTS.md)). Điều này **không** làm file này hết
 > giá trị, vì tập đó là mẫu các **dự đoán dương** của hệ: nó cho **precision**, còn recall,
 > prevalence và toàn bộ phần hệ thống nằm ngoài 220 cặp thì vẫn phải đo theo khung không-nhãn
 > dưới đây. Cách nói đúng từ nay: *"không có tập greenwashing có nhãn ở quy mô corpus; có một
@@ -489,11 +489,11 @@ Nếu chỉ đủ thời gian cho một việc: **làm mục 2**. Nếu đủ ch
 
 **Trong repo**
 
-- [`SYSTEM_DESIGN.md`](./SYSTEM_DESIGN.md) §1.1 — ràng buộc không-ground-truth
-- [`TEMPORAL_KG_DESIGN.md`](./TEMPORAL_KG_DESIGN.md) §3 P8, §4 Q1–Q8
-- [`STANDARD_INDICATOR_AXIS.md`](./STANDARD_INDICATOR_AXIS.md) §2.5 — vì sao bác bỏ điểm
+- [`SYSTEM_DESIGN.md`](../SYSTEM_DESIGN.md) §1.1 — ràng buộc không-ground-truth
+- [`TEMPORAL_KG_DESIGN.md`](../TEMPORAL_KG_DESIGN.md) §3 P8, §4 Q1–Q8
+- [`STANDARD_INDICATOR_AXIS.md`](../STANDARD_INDICATOR_AXIS.md) §2.5 — vì sao bác bỏ điểm
   cấp công ty
-- [`CROSSCHECK_EXPANSION.md`](./CROSSCHECK_EXPANSION.md) — `kpi_gap` là ghost signal
+- [`CROSSCHECK_EXPANSION.md`](CROSSCHECK_EXPANSION.md) — `kpi_gap` là ghost signal
 - `SOFTMAX_SCORING.md` — `assessment_scores` **không phải** xác suất greenwashing.
   ⚠ File này hiện **không có trong working tree** (bị xoá kèm các sửa đổi chưa commit,
   2026-07-28); bản trong `git HEAD` khôi phục được bằng

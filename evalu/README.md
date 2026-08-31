@@ -118,7 +118,7 @@ cũng đo được trên hiện trạng dự án. Ranh giới thực tế:
 | **D — bằng chứng đi sau claim** | **đo được**, offline, 0đ | Kiểm nguyên tắc P8 ngay trên phán quyết đã có. Thay được MR-4 (191 lệnh gọi LLM) bằng 0đ |
 | **E — ablation cửa sổ thời gian** | **đo được**, offline, 0đ | Định lượng cái giá của việc siết `window_after` từ 50 năm xuống |
 | Đánh giá không nhãn tầng đối soát | **đo được**, offline, 0đ | Hoán vị B2/B2b có p-value thật; xem `evalu_labelfree.py` |
-| RAGAS (Faithfulness / Precision / Recall) | **không đo được** | Context Recall cần ground-truth — đã ghi nhận là metric chết tại `docs/EVALUATION_WITHOUT_LABELS.md` §8 |
+| RAGAS (Faithfulness / Precision / Recall) | **không đo được** | Context Recall cần ground-truth — đã ghi nhận là metric chết tại `docs/proposals/EVALUATION_WITHOUT_LABELS.md` §8 |
 | Metamorphic MR-1…MR-4, B1 specificity | **chưa đo** | Cần chạy adjudicator THẬT, ~191 lệnh gọi LLM mỗi phép |
 | Rubric Likert + IAA (mục 3–5) | **chưa đo** | Bộ máy toán đã sẵn sàng; thiếu dữ liệu người chấm thật. `sample_expert_annotations.json` chỉ là bản mẫu dựng sẵn (claim Vinamilk), không thuộc corpus này |
 

@@ -47,7 +47,7 @@
 | `sheetB` | **Đỗ Kim Ngọc** | Giám đốc khối Khách hàng Doanh nghiệp, VPBank | Thẩm định doanh nghiệp vay vốn trong ngành này hằng ngày; nghề nghiệp là đối chiếu điều doanh nghiệp tự nói với bằng chứng độc lập |
 
 Cả hai **độc lập với nhóm tác giả** và độc lập với nhau. Điều này giải toả hai ràng buộc mà
-toàn bộ khung đánh giá không-nhãn được dựng quanh (`EVALUATION_WITHOUT_LABELS.md` §1.1):
+toàn bộ khung đánh giá không-nhãn được dựng quanh (`proposals/EVALUATION_WITHOUT_LABELS.md` §1.1):
 *"không có chuyên gia gán nhãn"* và *"tác giả tự gán nhãn thì không khách quan"*.
 
 > ⚠️ **Hai điều bắt buộc phải giữ.**

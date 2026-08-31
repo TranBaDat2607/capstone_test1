@@ -677,7 +677,7 @@ memory note *"verify cheaply, not via expensive re-runs."*
 [`CLAIM_LEDGER.md`](./CLAIM_LEDGER.md) ·
 `EVALUATION.md` (deleted — `git show a64aeb5^:docs/EVALUATION.md`) ·
 [`esg_news_crawler/README.md`](../esg_news_crawler/README.md) ·
-[`VIETNAM_IMPROVEMENT_PLAN.md`](./VIETNAM_IMPROVEMENT_PLAN.md)
+[`proposals/VIETNAM_IMPROVEMENT_PLAN.md`](./proposals/VIETNAM_IMPROVEMENT_PLAN.md)
 
 ---
 

@@ -311,4 +311,4 @@ python src/run.py extract --all --all-pages
 
 - [`KPI_DEFINITIONS_CONSTRUCTION_BUILD.md`](./KPI_DEFINITIONS_CONSTRUCTION_BUILD.md) — how the KPI vocabulary fed into the prompt is built from official sources.
 - [`SCHEMA_EXPLAINED.md`](./SCHEMA_EXPLAINED.md) — the knowledge-graph schema that consumes these KPI records as `KPIObservation` nodes.
-- [`VIETNAM_IMPROVEMENT_PLAN.md`](./VIETNAM_IMPROVEMENT_PLAN.md) — broader plan for adapting the GRI/ESRS-shaped graph to the Vietnamese regulatory reality.
+- [`proposals/VIETNAM_IMPROVEMENT_PLAN.md`](./proposals/VIETNAM_IMPROVEMENT_PLAN.md) — broader plan for adapting the GRI/ESRS-shaped graph to the Vietnamese regulatory reality.

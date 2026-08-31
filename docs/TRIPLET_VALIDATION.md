@@ -382,4 +382,4 @@ python src/run.py fix_triples --rate-limit 1000
 - [`TRIPLET_EXTRACTION_FROM_JSONL.md`](./TRIPLET_EXTRACTION_FROM_JSONL.md) — step 2, produces the per-page graphs this script validates.
 - [`KPI_EXTRACTION_FROM_JSONL.md`](./KPI_EXTRACTION_FROM_JSONL.md) — step 1, produces the KPI evidence used in step 2's prompt.
 - [`SCHEMA_EXPLAINED.md`](./SCHEMA_EXPLAINED.md) — the knowledge-graph ontology this script validates against.
-- [`VIETNAM_IMPROVEMENT_PLAN.md`](./VIETNAM_IMPROVEMENT_PLAN.md) — broader plan for adapting the graph to the Vietnamese regulatory reality.
+- [`proposals/VIETNAM_IMPROVEMENT_PLAN.md`](./proposals/VIETNAM_IMPROVEMENT_PLAN.md) — broader plan for adapting the graph to the Vietnamese regulatory reality.

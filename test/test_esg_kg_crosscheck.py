@@ -933,7 +933,7 @@ def test_adjudication_cache_survives_across_runs():
 
 
 # --------------------------------------------------------------------------- #
-# P1 (docs/thesis_review.md): the cache key must be salted with the prompt (and
+# P1 (docs/proposals/thesis_review.md): the cache key must be salted with the prompt (and
 # model), so a prompt edit can never replay a verdict produced under an OLD prompt.
 # Before this fix `ContentCache.get`/`put` were called with only
 # `(claim_text, evidence_text, evidence_meta)` — content-only, no prompt, no model —

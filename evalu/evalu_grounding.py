@@ -7,7 +7,7 @@ page it cites?**
 
 This is the only metric in the suite that is genuine accuracy rather than a
 proxy, and it is worth being precise about why, because
-``docs/EVALUATION_WITHOUT_LABELS.md`` §11 states that no metric there is
+``docs/proposals/EVALUATION_WITHOUT_LABELS.md`` §11 states that no metric there is
 accuracy. That statement is about the ADJUDICATION layer, where no ground truth
 for "is this claim greenwashing?" exists and never will. It does not bind the
 EXTRACTION layer: for the question "was this number in the document?", the

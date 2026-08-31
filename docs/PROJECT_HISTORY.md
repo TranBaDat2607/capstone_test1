@@ -59,7 +59,7 @@ just the cross-cutting lessons worth carrying into future work on this codebase:
   `graph/extract_triples.py`, wired into the per-page loop, and
   `test/test_claim_id_deterministic.py` guards it (13 groups, including real-corpus
   uniqueness arms). What remains is the accepted cost above, not a blocker. Prose elsewhere
-  in the repo that still calls issue #2 pending (`docs/AGENT_AB_EVALUATION.md`, older design
+  in the repo that still calls issue #2 pending (`docs/proposals/AGENT_AB_EVALUATION.md`, older design
   notes) is out of date.
 
 ## 2. LLM provider history — Gemini, the OpenAI window, DeepSeek

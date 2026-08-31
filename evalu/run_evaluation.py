@@ -376,7 +376,7 @@ def render_markdown(data: Dict[str, Any]) -> str:
         md.append(f"**{UNMEASURED}.** {a.get('reason', '')}")
 
     md.append("\n---\n## 3. Tầng 3 — đánh giá không cần nhãn ở tầng đối soát\n")
-    md.append("*(theo `docs/EVALUATION_WITHOUT_LABELS.md`; toàn bộ offline, 0 đồng)*\n")
+    md.append("*(theo `docs/proposals/EVALUATION_WITHOUT_LABELS.md`; toàn bộ offline, 0 đồng)*\n")
 
     b2 = t2["b2_permutation_test"]
     if b2.get("measured"):
@@ -427,7 +427,7 @@ def render_markdown(data: Dict[str, Any]) -> str:
         md.append("\n> **Vì sao kết luận này vững:** ba đường độc lập cùng chỉ về một chỗ — "
                   "(1) B2b cho thấy khoảng cách năm của cặp được giữ không tốt hơn ghép ngẫu "
                   "nhiên, (2) D cho thấy phần lớn mâu thuẫn dùng bằng chứng đi sau, (3) tham số "
-                  "`window_after` đang để 50 năm. `docs/EVALUATION_WITHOUT_LABELS.md` §3.3 đã "
+                  "`window_after` đang để 50 năm. `docs/proposals/EVALUATION_WITHOUT_LABELS.md` §3.3 đã "
                   "**dự báo trước** MR-4 sẽ hỏng nặng; D xác nhận dự báo đó mà không tốn một "
                   "lệnh gọi LLM nào.")
 

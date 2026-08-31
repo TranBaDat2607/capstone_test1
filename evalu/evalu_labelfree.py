@@ -13,7 +13,7 @@ pinned as forbidden literals in ``test/test_evalu_metrics.py``, which greps
 ``evalu/*.py`` for them — quoting one here to explain it would keep the guard
 failing forever.)
 
-What replaces them is drawn from ``docs/EVALUATION_WITHOUT_LABELS.md``, which
+What replaces them is drawn from ``docs/proposals/EVALUATION_WITHOUT_LABELS.md``, which
 already worked out which quantities are knowable here and which are not. Two
 boundaries from that document are load-bearing and are respected below:
 
@@ -488,7 +488,7 @@ class LabelFreeEvaluator:
                        minimum=min(vals) if vals else None,
                        note=("Quá ít giá trị phân biệt để hiệu chuẩn — ghi nhận như một phát hiện, "
                              "không phải một metric. Calibration đã chết ở đây "
-                             "(docs/EVALUATION_WITHOUT_LABELS.md §8)."),
+                             "(docs/proposals/EVALUATION_WITHOUT_LABELS.md §8)."),
                        source="graph_output/crosscheck/aaa_claim_assessments.json")
 
     # ------------------------------------------------------------------ #
@@ -504,7 +504,7 @@ class LabelFreeEvaluator:
                 "measured": False,
                 "reason": ("Cần tập ground-truth về những bằng chứng LẼ RA phải được truy hồi. "
                            "Không có nhãn nào tồn tại — đó chính là tiền đề của đề tài. "
-                           "Đã ghi nhận là metric chết trong docs/EVALUATION_WITHOUT_LABELS.md §8."),
+                           "Đã ghi nhận là metric chết trong docs/proposals/EVALUATION_WITHOUT_LABELS.md §8."),
                 "cost_to_obtain": "gán nhãn thủ công tập bằng chứng vét cạn cho từng claim",
             },
             "ragas_faithfulness": {

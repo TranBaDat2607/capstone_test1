@@ -274,7 +274,7 @@ below is motivated by either the Vietnamese setting or the greenwashing goal.
 history *inline* as a `temporal_versions` array, which any JSON/Graph-RAG consumer can read
 directly. The schema also defines `supersedes` edges between entity versions; emitting those
 is kept as a forward option, to be decided alongside the graph-backend question (Neo4j vs
-JSON store) raised in [`VIETNAM_IMPROVEMENT_PLAN.md`](./VIETNAM_IMPROVEMENT_PLAN.md) (open
+JSON store) raised in [`proposals/VIETNAM_IMPROVEMENT_PLAN.md`](./proposals/VIETNAM_IMPROVEMENT_PLAN.md) (open
 question #1).
 
 ---
@@ -369,6 +369,6 @@ python src/run.py entities --max-llm-pairs 400
 - [`TRIPLET_VALIDATION.md`](./TRIPLET_VALIDATION.md) — step 3, produces the validated triple list this step consumes.
 - [`TRIPLET_EXTRACTION_FROM_JSONL.md`](./TRIPLET_EXTRACTION_FROM_JSONL.md) — step 2, the per-page graphs.
 - [`SCHEMA_EXPLAINED.md`](./SCHEMA_EXPLAINED.md) — the ontology and the `identity_keys` rationale.
-- [`VIETNAM_IMPROVEMENT_PLAN.md`](./VIETNAM_IMPROVEMENT_PLAN.md) — broader Vietnam adaptation, incl. the graph-backend / `supersedes` question.
+- [`proposals/VIETNAM_IMPROVEMENT_PLAN.md`](./proposals/VIETNAM_IMPROVEMENT_PLAN.md) — broader Vietnam adaptation, incl. the graph-backend / `supersedes` question.
 - `ENTITY_RESOLUTION_PLAN.md` — the engineering build checklist for this step. **No longer in
   the repo**: `git show e903c1f^:ENTITY_RESOLUTION_PLAN.md`.

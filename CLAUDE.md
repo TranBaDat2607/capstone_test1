@@ -207,7 +207,7 @@ The five points that have actually been re-derived wrongly:
   planned full re-extraction is therefore **no longer gated on GitHub issue #2** — what
   remains is the scheduled cost of changed node order and invalidated paid dossiers, which
   DESIGN.md §5.4 already accepts. Any prose still calling issue #2 pending (including
-  `docs/AGENT_AB_EVALUATION.md`) is out of date.
+  `docs/proposals/AGENT_AB_EVALUATION.md`) is out of date.
 - **The evaluation snapshot wins over a fresher run on disk** — 10,634 nodes / 14,744 edges,
   464 dossiers across exactly five issuers (AAA ACC ACG ADP AGG), 2026-08-08T04:24:57Z. HAR is
   not a sixth issuer, and Table 4.3's `openai` provider caption is a correct historical record,
@@ -723,7 +723,7 @@ deleted from the working tree in the same commit** — `docs/ANNOTATION_RESULTS.
 not change (still the correct historical record of that round) but are no longer regenerable
 without first recovering those three files from git history (`git show bb7093b:sheetA.xlsx`).
 The *current* cited population is a separate, later 43-pair census (37 supports + 6
-contradicts, superseding the 226→24 history `docs/thesis_review.md` issue #17 tracked),
+contradicts, superseding the 226→24 history `docs/proposals/thesis_review.md` issue #17 tracked),
 labelled in `sheetA_43pairs_filled.xlsx`/`sheetB_43pairs_filled.xlsx` and reproduced by
 `python evalu/score_census_43.py` — that script, not `annotation_agreement.py`, is what backs
 `capstone_report/main.tex` §4.4 now.

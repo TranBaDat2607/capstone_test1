@@ -3,16 +3,16 @@
 > **Trạng thái: ĐỀ XUẤT, chưa triển khai.** Không có dòng code nào trong repo hiện thực
 > các phép đo dưới đây. Đọc như một *giao thức thí nghiệm*, không phải mô tả code đang chạy.
 >
-> **Quan hệ với [`EVALUATION_WITHOUT_LABELS.md`](./EVALUATION_WITHOUT_LABELS.md) (28/07):** file đó
+> **Quan hệ với [`EVALUATION_WITHOUT_LABELS.md`](EVALUATION_WITHOUT_LABELS.md) (28/07):** file đó
 > thiết kế đánh giá **tuyệt đối** một hệ thống ("hệ hiện tại có hơn ngẫu nhiên không"). File này
 > giải bài toán **so sánh hai hệ** ("thêm agent vào thì hơn ở đâu, hơn bao nhiêu, có ý nghĩa
 > thống kê không"). Hai bài toán khác nhau về bản chất, và bài toán so sánh **dễ hơn** — §1.
 > File này **tái dùng** chứ không thay thế: MR suite (§3), negative control (§4), Krippendorff α
 > (§5) của file cũ trở thành *đầu vào* cho các phép đo Δ ở đây.
 >
-> **Đọc trước:** [`SYSTEM_DESIGN.md`](./SYSTEM_DESIGN.md) §1.1 (ràng buộc không-ground-truth) ·
-> [`TEMPORAL_KG_DESIGN.md`](./TEMPORAL_KG_DESIGN.md) §4 (Q1–Q8, đã cài đặt trong `run.py quality`) ·
-> [`CROSSCHECK_EXPANSION.md`](./CROSSCHECK_EXPANSION.md) (chẩn đoán D1–D6 — chính là thứ agent
+> **Đọc trước:** [`SYSTEM_DESIGN.md`](../SYSTEM_DESIGN.md) §1.1 (ràng buộc không-ground-truth) ·
+> [`TEMPORAL_KG_DESIGN.md`](../TEMPORAL_KG_DESIGN.md) §4 (Q1–Q8, đã cài đặt trong `run.py quality`) ·
+> [`CROSSCHECK_EXPANSION.md`](CROSSCHECK_EXPANSION.md) (chẩn đoán D1–D6 — chính là thứ agent
 > được kỳ vọng sửa, nên cũng là nơi metric phải nhìn vào)
 
 ---
@@ -562,10 +562,10 @@ biến môi trường như `RUN_LLM_INTEGRATION_TESTS=1`, cùng khuôn với
 
 **Trong repo**
 
-- [`EVALUATION_WITHOUT_LABELS.md`](./EVALUATION_WITHOUT_LABELS.md) — MR suite (§3), negative control (§4),
+- [`EVALUATION_WITHOUT_LABELS.md`](EVALUATION_WITHOUT_LABELS.md) — MR suite (§3), negative control (§4),
   Krippendorff α (§5), **§8 metric đã chết — đừng đề xuất lại**, §9 cạm bẫy đo trên đồ thị này
-- [`TEMPORAL_KG_DESIGN.md`](./TEMPORAL_KG_DESIGN.md) §3 P8, §4 Q1–Q8 — nền của M0.1
-- [`CROSSCHECK_EXPANSION.md`](./CROSSCHECK_EXPANSION.md) §3 — thiết kế retrieval multi-hop mà agent
+- [`TEMPORAL_KG_DESIGN.md`](../TEMPORAL_KG_DESIGN.md) §3 P8, §4 Q1–Q8 — nền của M0.1
+- [`CROSSCHECK_EXPANSION.md`](CROSSCHECK_EXPANSION.md) §3 — thiết kế retrieval multi-hop mà agent
   ở step07 sẽ hiện thực, và D1–D6 là danh sách thứ metric phải nhìn vào
 - `CLAUDE.md` — quy tắc TDD (test offline, plain assert), `data_version.json` (ghim snapshot, §3.1),
   bảo đảm traceability `(source_pdf, page, sentence_index)` (§11.5)
