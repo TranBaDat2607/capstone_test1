@@ -76,3 +76,18 @@ neo4j_data/
 # data/, graph_output/, kpi_output/ directly into REPO_ROOT instead;
 # this folder is redundant with that flow.
 capstone/
+
+# ---- GRI Standards source PDFs (third-party copyright) ----
+# The 42 "Full set of GRI Standards" PDFs are copyright Global Reporting Initiative
+# and are NOT redistributed with this repo (see NOTICE.md). Download them yourself
+# from globalreporting.org into the path below to rebuild config/gri_catalog.json;
+# gri/README.md has the steps. The derived metadata (gri/full_gri/json/, which holds
+# a per-PDF sha256 so you can verify your copies) IS tracked.
+gri/full_gri/Full set of GRI Standards - English/
+
+# ---- Python build / tooling caches ----
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/

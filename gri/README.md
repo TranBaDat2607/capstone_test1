@@ -2,7 +2,7 @@
 
 Bộ dữ liệu cấu trúc các chỉ số tiêu chuẩn **GRI (Global Reporting Initiative Standards)** phục vụ đối soát, trích xuất KPI và xây dựng Knowledge Graph cho hệ thống Graph-RAG ESG.
 
-> **Nguồn dữ liệu chính thức:** Trích xuất trực tiếp từ file [gri-content-index-template-2021.xlsx](file:///b:/capstone/newrepotest/capstone_test1/gri/gri-content-index-template-2021.xlsx) (Version 1.3, January 2026) do GRI phát hành.
+> **Nguồn dữ liệu chính thức:** Trích xuất trực tiếp từ file [gri-content-index-template-2021.xlsx](./gri-content-index-template-2021.xlsx) (Version 1.3, January 2026) do GRI phát hành.
 
 ---
 
@@ -106,3 +106,36 @@ gri/
 - **GRI 304** (Biodiversity): Đã bị thay thế bởi GRI 101 Biodiversity 2024 trong bản Excel mới nhất, nhưng vẫn giữ lại theo yêu cầu dự án.
 - **GRI 307** (Environmental Compliance): Đã được gộp vào Disclosure 2-27 trong phiên bản mới, nhưng vẫn giữ lại theo yêu cầu dự án.
 - Dữ liệu song ngữ Anh-Việt cho mỗi disclosure hỗ trợ LLM trích xuất KPI từ Báo cáo Thường niên tiếng Việt.
+
+---
+
+## Source PDFs are not distributed with this repository
+
+The 42 "Full set of GRI Standards" PDFs are **copyright Global Reporting Initiative** and are
+deliberately **not committed** here (see [`NOTICE.md`](../NOTICE.md)). What *is* committed is
+the derived metadata: `gri/full_gri/json/` (standard ids, titles, pillars, page counts and a
+per-PDF `sha256`) and [`config/gri_catalog.json`](../config/gri_catalog.json), the 136-code
+catalog `indicators` (step05c) actually reads. Neither contains verbatim standard text.
+
+**Nothing in the pipeline reads the PDFs.** You only need them to rebuild the catalog.
+
+### Rebuilding the catalog
+
+1. Download the "Full set of GRI Standards — English" from
+   <https://www.globalreporting.org/> under GRI's own terms.
+2. Place the PDFs in `gri/full_gri/Full set of GRI Standards - English/`
+   (git-ignored). The filenames must keep GRI's original form, e.g.
+   `GRI 305_ Emissions 2016.pdf` — `parse_filename_metadata()` derives
+   `standard_id`, `version_year` and `pillar` from them.
+3. `python gri/crawl_full_gri.py` — extracts each PDF to `gri/full_gri/json/`.
+   **Despite its name this script does not download anything**; it is a local
+   PDF → JSON extractor and will do nothing if the folder above is empty.
+4. `python gri/build_gri_catalog.py` — folds those into `config/gri_catalog.json`.
+5. Commit the regenerated JSON. This is a run-once builder, not a pipeline stage.
+
+### Verifying you have the same PDFs
+
+Each entry in `gri/full_gri/json/*.json` carries `provenance.sha256`, `file_size_bytes` and
+`page_count` for the PDF it came from. Compare those against your download
+(`sha256sum "Full set of GRI Standards - English/"*.pdf`) to confirm your rebuild inputs are
+byte-identical to the ones behind the committed catalog.

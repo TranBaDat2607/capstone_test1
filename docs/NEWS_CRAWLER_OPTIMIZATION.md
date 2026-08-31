@@ -106,7 +106,7 @@ Hệ thống đã tích hợp sẵn chế độ thử nghiệm **`--test`** đ�
 
 ```bash
 # Di chuyển vào thư mục gốc của dự án
-cd b:/capstone/newrepotest/capstone_test1
+cd /path/to/capstone_test1
 
 # Chạy bản mới chế độ kiểm nghiệm nhanh
 python crawl_data/crawler_news.py --test
