@@ -44,7 +44,6 @@ from .sources import bing, ddg, google_news_rss
 
 log = logging.getLogger("esg_news")
 
-# Non-article portal / data pages worth skipping on top of config list.
 _EXTRA_SKIP = ["/du-lieu/", "studocu", "staticfile.hsx", "static2.vietstock", "/Handlers/"]
 
 
@@ -93,11 +92,6 @@ def gather_candidates(fetcher, company: Company, *, num: int, since_years: int,
                     "terms": q.terms,
                     "kind": q.kind,
                 }
-    # Rank candidates with FREE signals (no extra fetch):
-    #   1) does the search-result title name the company?  (on-target for this company)
-    #   2) is it an ESG/controversy-keyword hit?            (the evidence we want)
-    # Company-specific articles rise; generic topical ESG news sinks to fill
-    # only leftover slots under --max-articles. Nothing is dropped here.
     names = [company.ticker.lower(), company.short.lower(), company.full_name.lower()]
 
     def rank(c: dict) -> tuple:
@@ -132,7 +126,7 @@ def crawl_company(fetcher, company: Company, *, out_dir: Path, max_articles: int
             continue
         n_fetch_ok += 1
         art = extract_article(cand["url"], html)
-        if not art or len(art.text) < 120:        # drop empty / stub pages
+        if not art or len(art.text) < 120:
             continue
         tkey = (art.title or art.url).strip().lower()
         if tkey in seen_titles:
@@ -217,7 +211,6 @@ def main(argv=None) -> int:
         except Exception as e:
             log.error("  failed %s: %s", c.ticker, e, exc_info=True)
 
-    # Append/refresh coverage.csv
     if cov_rows:
         fields = ["ticker", "company", "candidates", "fetched_ok", "articles", "sentences", "top_domains"]
         write_header = not cov_path.exists()

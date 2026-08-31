@@ -16,9 +16,9 @@ from .config import KEYWORD_GROUPS
 
 @dataclass
 class Query:
-    text: str               # the actual search string
-    terms: list[str]        # keyword-group terms it carries ([] for plain identity)
-    kind: str               # "plain" | "keyword" | "site"
+    text: str
+    terms: list[str]
+    kind: str
 
 
 def _kw_identity(c: Company) -> str:
@@ -33,11 +33,9 @@ def base_queries(c: Company) -> list[Query]:
     """Per-company queries routed through every search channel."""
     out: list[Query] = []
 
-    # General coverage (no keyword) — full name + ticker market news.
     out.append(Query(text=c.full_name, terms=[], kind="plain"))
     out.append(Query(text=f"{c.ticker} cổ phiếu", terms=[], kind="plain"))
 
-    # Keyword retrieval: identity × each OR-group.
     ident = _kw_identity(c)
     for group in KEYWORD_GROUPS:
         or_expr = " OR ".join(group)
@@ -63,7 +61,7 @@ def site_queries(c: Company, domains: list[str]) -> list[Query]:
 if __name__ == "__main__":
     from .companies import load_companies
     cs = load_companies("company_annual_report.xlsx")
-    for c in (cs[0], cs[13]):  # AAA, C47 (ambiguous)
+    for c in (cs[0], cs[13]):
         print(f"=== {c.ticker} {c.short!r} ===")
         for q in base_queries(c):
             print(f"  [{q.kind:7}] {q.text}")
