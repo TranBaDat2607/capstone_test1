@@ -1,6 +1,6 @@
 """Step 3c — canonicalize KPI vocabulary + backfill Goal target dates (offline, NO LLM).
 
-Design docs: docs/CROSSCHECK_EXPANSION.md §4.1/§4.2 and docs/STANDARD_INDICATOR_AXIS.md §5.2.
+Design docs: docs/proposals/CROSSCHECK_EXPANSION.md §4.1/§4.2 and docs/STANDARD_INDICATOR_AXIS.md §5.2.
 
 WHY THIS STAGE EXISTS
 step01 already matches many KPIs against the 35 controlled definitions in
@@ -342,7 +342,7 @@ def backfill_goal_target_date(triples: List[Dict[str, Any]]) -> Dict[str, Any]:
         vf = _year_of(props.get("valid_from"))
         if vf is not None and year <= vf:
             # A goal cannot target a year it already lives in — that is a date mention,
-            # not a deadline (docs/CROSSCHECK_EXPANSION.md §5 risk control).
+            # not a deadline (docs/proposals/CROSSCHECK_EXPANSION.md §5 risk control).
             if first_time:
                 seen[key] = True
                 rejected_past += 1

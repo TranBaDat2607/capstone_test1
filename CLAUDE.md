@@ -50,16 +50,23 @@ figures, work inside it and follow its own `AGENTS.md` while you are there.
   snapshot. `neo4j_data/` is never synced — rebuild it with `neo4j_load`. Both `push` and `pull` are
   scoped with `ALLOW_PATTERNS` to exactly those three folders: `local_dir` is the CODE repo, so
   an unscoped pull writes the dataset's own root files over tracked ones — that is how the Hub's
-  `.gitattributes` came to be committed here (and why this repo now routes `*.png/jpg/zip/parquet`
-  through Git LFS). Guarded by `test/test_data_sync_scope.py`.
+  `.gitattributes` came to be committed here. That Hugging Face boilerplate was removed in
+  the public-release cleanup, so new binaries are ordinary blobs; the 13 PNGs committed under
+  `capstone_report/images/` and `notebooks/eda/output/` while it was in force are still LFS
+  objects, and re-staging one without git-lfs installed would commit the pointer stub as the
+  image. Guarded by `test/test_data_sync_scope.py`.
 - **Secrets:** copy `.env.example` -> `.env` (git-ignored — never commit it). Every `esg_kg`
   LLM stage loads it from the repo root regardless of cwd. What lives there: `GEMINI_API_KEY`
   plus `GEMINI_MODEL` (one env var drives every Gemini stage through `core/llm.py`'s
   `DEFAULT_MODEL`; default `gemini-2.5-flash-lite`), `GEMINI_MAX_RETRIES` /
   `GEMINI_RETRY_BACKOFF_SECONDS` (see the retry bullet below), `DEEPSEEK_API_KEY` /
   `DEEPSEEK_MODEL`, `LLM_PROVIDER`, `HF_TOKEN`, and `NEO4J_URI` / `NEO4J_USER` /
-  `NEO4J_PASSWORD`. `OPENAI_API_KEY` still appears in `.env.example` but **nothing reads it** —
-  that provider was removed on 2026-08-04 (`docs/PROJECT_HISTORY.md` §2).
+  `NEO4J_PASSWORD`, plus `OPENAI_API_KEY` / `OPENAI_MODEL`. The OpenAI provider was removed
+  outright on 2026-08-04 and then **re-added on 2026-08-06, opt-in and scoped to
+  `claims_vs_conduct` only** (`core/llm.py:349` `_OpenAIProvider`, registered in
+  `_PROVIDER_CLASSES`), selected per run with `--provider-order openai`. It is REST via
+  `requests`; the `openai` SDK is still not a dependency. Leave `OPENAI_API_KEY` unset and
+  nothing uses it (`docs/PROJECT_HISTORY.md` §2).
 - **`.mcp.json` is project-scoped MCP config**, currently one Overleaf server
   (`@mjyoo2/overleaf-mcp`) taking `OVERLEAF_PROJECT_ID` / `OVERLEAF_GIT_TOKEN` from the
   environment — the capstone report is drafted on Overleaf and mirrored into
@@ -114,9 +121,9 @@ figures, work inside it and follow its own `AGENTS.md` while you are there.
 - **Other deps are deliberately unlisted and imported lazily** — each degrades gracefully
   so a bare clone still runs: `huggingface_hub` (`datasync.py`), `rapidfuzz` (the
   KPI-canonicalization stage's fuzzy tier; disabled with a warning if absent).
-- **Gemini is the default paid LLM provider; DeepSeek V4 Flash is a swappable alternative for
-  the stages built against the provider-agnostic `_Provider` contract — there is no automatic
-  fallback cascade between them, and there is no OpenAI path.** `align_claims` and
+- **Gemini is the default paid LLM provider; DeepSeek V4 Flash and OpenAI are swappable
+  alternatives for the stages built against the provider-agnostic `_Provider` contract —
+  there is no automatic fallback cascade between them.** `align_claims` and
   `extract_triples` pick a provider through `core/llm.py`'s `build_llm_provider()` factory
   (`--provider gemini|deepseek`, or the `LLM_PROVIDER` env var); `claims_vs_conduct`'s
   `Adjudicator` keeps its own registry (`--provider-order` — `deepseek` alone, or a comma list
@@ -126,8 +133,11 @@ figures, work inside it and follow its own `AGENTS.md` while you are there.
   (`GeminiContextCache`), which DeepSeek has no equivalent for — so on a DeepSeek run
   `extract_triples` skips caching and always sends the full per-page prompt, making
   `--no-context-cache` a no-op there. Unset `DEEPSEEK_API_KEY` and every stage keeps using
-  Gemini. **The OpenAI provider was removed outright on 2026-08-04, no fallback kept** — do
-  not re-add one without reading `docs/PROJECT_HISTORY.md` §2 first. Entity resolution is
+  Gemini. **OpenAI was removed outright on 2026-08-04 and re-added on 2026-08-06 as an
+  opt-in for `claims_vs_conduct` ONLY** (`--provider-order openai`, `OPENAI_API_KEY` in
+  `.env`): a swappable alternative like DeepSeek, deliberately NOT the forced fallback of the
+  2026-07-27..08-04 episode, when Gemini was billing-blocked. No other stage has an OpenAI
+  path. Read `docs/PROJECT_HISTORY.md` §2 before widening it. Entity resolution is
   still normally run with `--no-llm` (Stages A + B.1 only — no embedding blocking, no
   adjudication) because Stage B/C is dormant, not because of a billing block; don't assume
   it's safe to flip that default without checking. Real-LLM tests live in
@@ -197,7 +207,7 @@ The five points that have actually been re-derived wrongly:
   planned full re-extraction is therefore **no longer gated on GitHub issue #2** — what
   remains is the scheduled cost of changed node order and invalidated paid dossiers, which
   DESIGN.md §5.4 already accepts. Any prose still calling issue #2 pending (including
-  `docs/AGENT_AB_EVALUATION.md`) is out of date.
+  `docs/proposals/AGENT_AB_EVALUATION.md`) is out of date.
 - **The evaluation snapshot wins over a fresher run on disk** — 10,634 nodes / 14,744 edges,
   464 dossiers across exactly five issuers (AAA ACC ACG ADP AGG), 2026-08-08T04:24:57Z. HAR is
   not a sixth issuer, and Table 4.3's `openai` provider caption is a correct historical record,
@@ -386,11 +396,12 @@ claims_vs_conduct (step07) → graph_output/crosscheck/<ticker>_claim_assessment
    (the analytical core: for each SustainabilityClaim, retrieve conduct-side candidates →
     LLM-adjudicate supports/contradicts/irrelevant → write verifiedBy / contradictedBy* edges.
     LLM adjudication is MANDATORY (no deterministic fallback) — `Adjudicator`'s own
-    registry (--provider-order, default `gemini`) picks `_GeminiProvider` or
-    `_DeepSeekProvider` (both core/llm.py); aborts up front if no provider is available.
+    registry (--provider-order, default `gemini`) picks `_GeminiProvider`,
+    `_DeepSeekProvider` or `_OpenAIProvider` (all core/llm.py); aborts up front if no
+    provider is available.
     OpenAI was used here from 2026-07-27 (when the Gemini project was 403-blocked) until
-    2026-08-04, when it was removed outright — do not re-add an OpenAI path without
-    checking whether Gemini is billing-blocked again. DeepSeek V4 Flash (2026-08-06) is
+    2026-08-04, when it was removed outright — then re-added 2026-08-06 as an OPT-IN for
+    this stage only (`--provider-order openai`), not a forced fallback. DeepSeek V4 Flash (2026-08-06) is
     a different situation: a swappable alternative you opt into via
     `--provider-order deepseek`, not a forced fallback, needing `DEEPSEEK_API_KEY` in
     `.env`. Passing any other name still logs "Unknown adjudication provider — ignored".
@@ -538,7 +549,7 @@ python src/esg_kg/core/datasync.py push                # after a rebuild: upload
 
 # A. Annual report → labeled ESG sentences
 python -m data_processing.prepare_sentences \
-    --input  "data/raw/annual_reports_sample/AAA_Baocaothuongnien_2025.pdf" \
+    --input  "data/raw/annual_report/Xây dựng - VLXD - BĐS/AAA - Nhựa An Phát Xanh/AAA_2024.pdf" \
     --output "data/interim/sentences/aaa_sentences.jsonl"
 python -m data_processing.extract_esg            # labeled JSONL → esg_extracted records
 
@@ -665,7 +676,8 @@ title), `STANDARD_INDICATOR_AXIS.md` (step03c/step05c — the TT96/GRI indicator
 standalone, FPT-specific `crawl_data/crawler_news.py`, not the documented `esg_news_crawler/`
 pipeline), `VIETNAM_IMPROVEMENT_PLAN.md`, `ENTITY_RESOLUTION_IMPROVEMENT.md` (Vietnamese —
 proposal to auto-resolve step04's lexically ambiguous `needs_review` cases via graph structural
-signatures). The root `ENTITY_RESOLUTION_PLAN.md` is the step04 engineering checklist.
+signatures). The root `ENTITY_RESOLUTION_PLAN.md` was the step04 engineering checklist and
+is **no longer in the repo** — recover it with `git show e903c1f^:ENTITY_RESOLUTION_PLAN.md`.
 `README.md` (root), `esg_news_crawler/README.md`, `kpi_build/README.md` and `gri/README.md`
 cover their respective subsystems.
 
@@ -711,7 +723,7 @@ deleted from the working tree in the same commit** — `docs/ANNOTATION_RESULTS.
 not change (still the correct historical record of that round) but are no longer regenerable
 without first recovering those three files from git history (`git show bb7093b:sheetA.xlsx`).
 The *current* cited population is a separate, later 43-pair census (37 supports + 6
-contradicts, superseding the 226→24 history `docs/thesis_review.md` issue #17 tracked),
+contradicts, superseding the 226→24 history `docs/proposals/thesis_review.md` issue #17 tracked),
 labelled in `sheetA_43pairs_filled.xlsx`/`sheetB_43pairs_filled.xlsx` and reproduced by
 `python evalu/score_census_43.py` — that script, not `annotation_agreement.py`, is what backs
 `capstone_report/main.tex` §4.4 now.

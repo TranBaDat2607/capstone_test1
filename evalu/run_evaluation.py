@@ -32,13 +32,16 @@ from typing import Any, Dict, List
 
 EVALU_DIR = Path(__file__).resolve().parent
 REPO_ROOT = EVALU_DIR.parent
-sys.path.insert(0, str(EVALU_DIR))
+# Put the REPO ROOT on the path (not evalu/ itself), so these are absolute package
+# imports like every other module here uses -- and so `python -m evalu.run_evaluation`
+# works as well as `python evalu/run_evaluation.py`. Matches evalu/build_census_43.py.
+sys.path.insert(0, str(REPO_ROOT))
 
-from evalu_pipeline_metrics import PipelineEvaluator  # noqa: E402
-from evalu_labelfree import LabelFreeEvaluator  # noqa: E402
-from evalu_grounding import GroundingEvaluator  # noqa: E402
-from evalu_iaa_engine import IAAEngine  # noqa: E402
-from evalu_likert_rubric import LikertRubricEvaluator  # noqa: E402
+from evalu.evalu_pipeline_metrics import PipelineEvaluator  # noqa: E402
+from evalu.evalu_labelfree import LabelFreeEvaluator  # noqa: E402
+from evalu.evalu_grounding import GroundingEvaluator  # noqa: E402
+from evalu.evalu_iaa_engine import IAAEngine  # noqa: E402
+from evalu.evalu_likert_rubric import LikertRubricEvaluator  # noqa: E402
 
 ANNOTATIONS = EVALU_DIR / "sample_expert_annotations.json"
 REPORT_JSON = EVALU_DIR / "evaluation_report.json"
@@ -376,7 +379,7 @@ def render_markdown(data: Dict[str, Any]) -> str:
         md.append(f"**{UNMEASURED}.** {a.get('reason', '')}")
 
     md.append("\n---\n## 3. Tầng 3 — đánh giá không cần nhãn ở tầng đối soát\n")
-    md.append("*(theo `docs/EVALUATION_WITHOUT_LABELS.md`; toàn bộ offline, 0 đồng)*\n")
+    md.append("*(theo `docs/proposals/EVALUATION_WITHOUT_LABELS.md`; toàn bộ offline, 0 đồng)*\n")
 
     b2 = t2["b2_permutation_test"]
     if b2.get("measured"):
@@ -427,7 +430,7 @@ def render_markdown(data: Dict[str, Any]) -> str:
         md.append("\n> **Vì sao kết luận này vững:** ba đường độc lập cùng chỉ về một chỗ — "
                   "(1) B2b cho thấy khoảng cách năm của cặp được giữ không tốt hơn ghép ngẫu "
                   "nhiên, (2) D cho thấy phần lớn mâu thuẫn dùng bằng chứng đi sau, (3) tham số "
-                  "`window_after` đang để 50 năm. `docs/EVALUATION_WITHOUT_LABELS.md` §3.3 đã "
+                  "`window_after` đang để 50 năm. `docs/proposals/EVALUATION_WITHOUT_LABELS.md` §3.3 đã "
                   "**dự báo trước** MR-4 sẽ hỏng nặng; D xác nhận dự báo đó mà không tốn một "
                   "lệnh gọi LLM nào.")
 

@@ -31,7 +31,7 @@ load_dotenv(REPO_ROOT / ".env")
 
 NEO4J_URI_DEFAULT = "bolt://localhost:8687"
 NEO4J_USER_DEFAULT = "greenwashing"
-NEO4J_PASSWORD_DEFAULT = "nammovuivui"
+NEO4J_PASSWORD_DEFAULT = "changeme"
 
 # pillar string (on StandardIndicator) → UI tab key
 PILLARS = [

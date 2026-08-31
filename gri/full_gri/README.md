@@ -2,8 +2,12 @@
 
 Thư mục này chứa cơ sở dữ liệu hoàn chỉnh của bộ tiêu chuẩn **GRI Standards (Global Reporting Initiative)** được cấu trúc hóa theo kiến trúc **Temporal Knowledge Graph** (Mô hình 3 tầng Node T1, T2, T3) phục vụ đối soát Greenwashing cho các doanh nghiệp niêm yết tại Việt Nam.
 
-> **Tài liệu Hướng dẫn Chi tiết Kiến trúc:** [`docs/GRI_MASTER_SCHEMA_DOCUMENTATION.md`](file:///b:/capstone/newrepotest/capstone_test1/docs/GRI_MASTER_SCHEMA_DOCUMENTATION.md)  
-> **Khung Nguyên tắc Temporal KG:** [`docs/TEMPORAL_KG_DESIGN.md`](file:///b:/capstone/newrepotest/capstone_test1/docs/TEMPORAL_KG_DESIGN.md)
+> **Tài liệu Hướng dẫn Chi tiết Kiến trúc:** [`docs/GRI_SCHEMA_DOCUMENTATION.md`](../../docs/GRI_SCHEMA_DOCUMENTATION.md)  
+> **Khung Nguyên tắc Temporal KG:** [`docs/TEMPORAL_KG_DESIGN.md`](../../docs/TEMPORAL_KG_DESIGN.md)
+
+> **Lưu ý:** 42 file PDF gốc trong `Full set of GRI Standards - English/` **không được commit**
+> (bản quyền GRI — xem [`NOTICE.md`](../../NOTICE.md)). Chỉ metadata dẫn xuất trong `json/`
+> được theo dõi. Cách tải lại và dựng lại catalog: [`gri/README.md`](../README.md).
 
 ---
 

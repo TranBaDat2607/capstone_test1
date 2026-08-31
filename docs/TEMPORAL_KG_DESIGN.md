@@ -1,11 +1,11 @@
 # Nguyên tắc thiết kế Temporal Knowledge Graph cho hệ thống bằng chứng greenwashing
 
 > **Trạng thái (cập nhật 2026-07-15): ĐÃ TRIỂN KHAI các phần thuộc pipeline hiện có.**
-> Cụ thể: **⓪** `src/step00_graph_quality_report.py` đo Q1–Q8 (baseline + after trong
+> Cụ thể: **⓪** `run.py quality` (`src/esg_kg/report/quality.py`) đo Q1–Q8 (baseline + after trong
 > `graph_output/quality/`); **P1** `identity_keys` đã sửa trong `config/schema.json`
 > (Location GIỮ `country`); **P2** step05 giữ `valid_from` trên node T2, schema-doc đã
 > sửa khớp; **P3** prompt step02 (report + news) đã thêm luật neo ≥ 2 + vá offline bằng
-> `src/step03b_anchor_kpi_facilities.py`; **P4** step03 có pha bất biến thời gian
+> `run.py anchor_kpi` (`src/esg_kg/graph/anchor_kpi.py`); **P4** step03 có pha bất biến thời gian
 > (`--renormalize`) và step05 ép bất biến `is_current`/gộp version theo mốc ngày.
 > Kết quả đo sau khi rebuild offline: Q2 vi phạm 1.098 → **1** (một lỗi dữ liệu
 > `valid_from>valid_to` thật, được cảnh báo đúng thiết kế); `Standard` 331 → 215 node;
@@ -19,7 +19,9 @@
 >
 > **Đọc trước:** [`SYSTEM_DESIGN.md`](./SYSTEM_DESIGN.md) ·
 > [`SCHEMA_EXPLAINED.md`](./SCHEMA_EXPLAINED.md) ·
-> [`SSRL_REASONING_LAYER.md`](./SSRL_REASONING_LAYER.md)
+> `SSRL_REASONING_LAYER.md` — **not in the repo**; the path-reasoning layer (steps 11-13) is
+> unbuilt and its design doc was removed. Recover the last version with
+> `git show 75b804c^:docs/SSRL_REASONING_LAYER.md`.
 >
 > **Vai trò của tài liệu này:** `SSRL_REASONING_LAYER.md` chẩn đoán *triệu chứng* (đồ thị
 > hình sao, 20,3% cạnh huấn luyện được) và đề xuất *thuốc* (sửa `identity_keys`, reify
@@ -274,7 +276,7 @@ SSRL doc đã xử lý một nửa: trần `df ≤ 20` cho keyword hub (§3.2) v
 
 Chọn lọc từ khung Zaveri et al. (18 chiều) những chiều **có ý nghĩa với bài toán này**, bổ
 sung 2 nhóm đặc thù (chất lượng thời gian; traversability). Mỗi thuộc tính có **chỉ số đo
-bằng máy** — đề xuất gom toàn bộ vào một script mới `src/step00_graph_quality_report.py`
+bằng máy** — đề xuất gom toàn bộ vào một script mới `run.py quality` (`src/esg_kg/report/quality.py`)
 (chạy offline trên resolved graph, 0đ, chạy trước và sau mọi thay đổi Phase 0).
 
 | # | Thuộc tính | Định nghĩa cho bài toán này | Chỉ số đo | Hiện trạng (đo 2026-07) | Ngưỡng/cổng đề xuất |
@@ -382,7 +384,7 @@ chỉ số cổng sang đường-cấu-trúc (§6.1), lệnh cấm vòng lặp l
   kiến trúc subgraph ba tầng (nguồn cảm hứng cho mô hình T1/T2/T3 §2).
 - Khảo sát TKG: *A Survey on Temporal Knowledge Graph: Representation Learning and
   Applications* (arXiv:2403.04782).
-- Nội bộ: [`SSRL_REASONING_LAYER.md`](./SSRL_REASONING_LAYER.md) ·
+- Nội bộ: `SSRL_REASONING_LAYER.md` (đã xoá — `git show 75b804c^:docs/SSRL_REASONING_LAYER.md`) ·
   [`SYSTEM_DESIGN.md`](./SYSTEM_DESIGN.md) · [`SCHEMA_EXPLAINED.md`](./SCHEMA_EXPLAINED.md) ·
   [`ENTITY_RESOLUTION.md`](./ENTITY_RESOLUTION.md) ·
   [`CLAIM_CONDUCT_CROSSCHECK.md`](./CLAIM_CONDUCT_CROSSCHECK.md).

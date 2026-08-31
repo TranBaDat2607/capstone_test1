@@ -8,7 +8,6 @@ a conservative regex splitter if underthesea isn't installed.
 from __future__ import annotations
 
 import re
-from typing import Callable
 
 try:
     from underthesea import sent_tokenize as _ut_sent_tokenize  # type: ignore

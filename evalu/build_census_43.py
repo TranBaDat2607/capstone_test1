@@ -7,7 +7,7 @@ Why a new driver instead of reusing the old sheetA/B/C.xlsx
 -------------------------------------------------------------
 sheetA.xlsx and sheetB.xlsx are already-filled, named external experts'
 answer sheets scored against the OLD 226-pair population (see
-docs/thesis_review.md issue #17). Editing them in place would corrupt that
+docs/proposals/thesis_review.md issue #17). Editing them in place would corrupt that
 historical record. sheetC.xlsx is the same old-population template, unfilled.
 
 The pipeline's cited output has since moved twice (226 -> 24 -> 43); the

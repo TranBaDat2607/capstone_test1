@@ -47,7 +47,7 @@ their inputs that changed.
 
 Only the graph-size figures above (and `capstone_report/main.tex`'s Table
 `tab:resolve-yield`, $M_{2.2}$, the abstract, and the Ch.4 aggregate summary) were
-updated to match. `docs/thesis_review.md`'s P5 finding is now fixed; GitHub issue #20
+updated to match. `docs/proposals/thesis_review.md`'s P5 finding is now fixed; GitHub issue #20
 can be closed once this file and the report are committed together.
 
 **Separately noted, NOT part of this re-pin:** re-deriving $M_{2.1}$ (Temporal Metadata
@@ -94,7 +94,7 @@ before results were seen). **Do not hand-reconstruct these numbers; run `evalu`'
   user 2026-08-08): sheet A by **Thái Anh Tuấn**, CEO of Phúc Lộc Group; sheet B by **Đỗ Kim
   Ngọc**, Director of the Corporate Banking Division at VPBank. Both are independent of the
   research team. This resolves two constraints the whole label-free framework was built
-  around (`docs/EVALUATION_WITHOUT_LABELS.md` §1.1): "no expert annotator is available" and
+  around (`docs/proposals/EVALUATION_WITHOUT_LABELS.md` §1.1): "no expert annotator is available" and
   "author self-annotation is not objective". **`ANNOTATION_PROTOCOL.md` §7 still says to
   describe this as author annotation — that instruction is now factually outdated**, and the
   protocol needs an addendum recording the real provenance (the freeze rule bars changing

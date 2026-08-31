@@ -53,9 +53,19 @@ from esg_kg.core import schema as new_schema  # noqa: E402
 from esg_kg.report import quality as new_quality  # noqa: E402
 from esg_kg.resolve import indicators as new_indicators  # noqa: E402
 
+from _fixture_paths import resolve_artifact, skip_if_fixture, tag  # noqa: E402
+
 SCHEMA_FILE = REPO / "config" / "schema.json"
 TRIPLES_FILE = REPO / "graph_output" / "validated" / "all_validated_triples.json"
 RESOLVED_FILE = REPO / "graph_output" / "resolved" / "resolved_graph.json"
+
+# Where the corpus arms actually READ from: the real artifact when the HF
+# snapshot is pulled, otherwise the committed synthetic fixture so the arms run
+# on a bare clone instead of silently skipping. TRIPLES_FILE/RESOLVED_FILE above
+# stay pinned to the canonical locations because several wiring assertions below
+# compare the stages' own DEFAULT_* constants against them.
+TRIPLES_DATA, TRIPLES_IS_FIXTURE = resolve_artifact("validated")
+RESOLVED_DATA, RESOLVED_IS_FIXTURE = resolve_artifact("resolved")
 
 # How many real triples to run through validate_triple. A cap, not a sample:
 # drift shows up in the first few hundred, and the test must stay fast.
@@ -75,9 +85,9 @@ def load_schema() -> dict:
 
 def load_triples() -> list:
     """The real validated corpus, or [] when the HF snapshot is not pulled."""
-    if not TRIPLES_FILE.exists():
+    if not TRIPLES_DATA.exists():
         return []
-    data = json.loads(TRIPLES_FILE.read_text(encoding="utf-8"))
+    data = json.loads(TRIPLES_DATA.read_text(encoding="utf-8"))
     if isinstance(data, dict):
         data = data.get("triples", [])
     return data if isinstance(data, list) else []
@@ -217,6 +227,7 @@ def test_schema_validate_triple_on_real_corpus_is_well_formed():
     if not triples:
         _skip("validate_triple/corpus", f"{TRIPLES_FILE.name} absent (run data_sync pull)")
         return
+    print(f"     {tag(TRIPLES_IS_FIXTURE)} validate_triple/corpus")
     schema = load_schema()
     ec, el, ed = new_schema.load_schema_sets(schema)
     checked = 0
@@ -260,6 +271,7 @@ def test_naming_normalize_name_on_real_names_is_well_formed():
     if not triples:
         _skip("normalize_name/corpus", f"{TRIPLES_FILE.name} absent (run data_sync pull)")
         return
+    print(f"     {tag(TRIPLES_IS_FIXTURE)} normalize_name/corpus")
     names = org_names(triples[:CORPUS_CAP])
     if not names:
         _skip("normalize_name/corpus", "no Organization names in the corpus slice")
@@ -390,6 +402,7 @@ def test_dates_on_real_corpus_is_well_formed():
     if not triples:
         _skip("dates/corpus", f"{TRIPLES_FILE.name} absent (run data_sync pull)")
         return
+    print(f"     {tag(TRIPLES_IS_FIXTURE)} dates/corpus")
     values = []
     for t in triples[:CORPUS_CAP]:
         for side in ("subject", "object"):
@@ -770,10 +783,11 @@ def test_quality_metrics_on_real_graph_are_well_formed():
     crashing. skip_slow=True: Q7(c)/(d) cost ~44s per call (the mini-graph arm above
     already exercises that BFS logic on a graph small enough to run it every time).
     """
-    if not RESOLVED_FILE.exists():
+    if not RESOLVED_DATA.exists():
         _skip("quality/real-graph", f"{RESOLVED_FILE.name} absent (run data_sync pull)")
         return
-    graph = json.loads(RESOLVED_FILE.read_text(encoding="utf-8"))
+    print(f"     {tag(RESOLVED_IS_FIXTURE)} quality/real-graph")
+    graph = json.loads(RESOLVED_DATA.read_text(encoding="utf-8"))
     nodes, edges = graph.get("nodes", []), graph.get("edges", [])
     schema = load_schema()
     assert isinstance(new_quality.q1_accuracy(nodes), dict)
@@ -903,6 +917,7 @@ def test_canonicalize_on_the_real_corpus_is_well_formed():
     if not triples:
         _skip("canonicalize/corpus", f"{TRIPLES_FILE.name} absent (run data_sync pull)")
         return
+    print(f"     {tag(TRIPLES_IS_FIXTURE)} canonicalize/corpus")
     defs, aliases = load_kpi_vocab()
     work = json.loads(json.dumps(triples))
 
@@ -926,6 +941,13 @@ def test_canonicalize_corpus_arm_is_not_vacuous():
     triples = load_triples()
     if not triples:
         _skip("canonicalize/not-vacuous", f"{TRIPLES_FILE.name} absent")
+        return
+    # Tier B: this arm asserts real corpus SCALE (>100 distinct KPI nodes) and
+    # that all four matcher tiers fire. The synthetic fixture is deliberately
+    # tiny, so it cannot satisfy either -- and lowering the thresholds to fit
+    # would turn a real check into a decorative one. Skip instead.
+    if TRIPLES_IS_FIXTURE:
+        _skip("canonicalize/not-vacuous", skip_if_fixture(True))
         return
     defs, aliases = load_kpi_vocab()
     work = json.loads(json.dumps(triples))
@@ -1395,14 +1417,15 @@ def test_indicators_temp_workspace_arm_is_not_vacuous():
 def test_indicators_on_the_real_graph_rebuilds_the_axis():
     """The strongest arm: the real resolved graph, stripped back to its pre-axis state so
     the run does the full job (67 indicators / ~1,400 axis edges) rather than a no-op."""
-    if not RESOLVED_FILE.exists():
+    if not RESOLVED_DATA.exists():
         _skip("indicators/real-graph", f"{RESOLVED_FILE.name} absent (run data_sync pull)")
         return
     if not (KPI_DEFS_FILE.exists() and CROSSWALK_FILE.exists() and GRI_CATALOG_FILE.exists()):
         _skip("indicators/real-graph", "defs/crosswalk/gri_catalog missing")
         return
 
-    base = strip_axis(json.loads(RESOLVED_FILE.read_text(encoding="utf-8")))
+    print(f"     {tag(RESOLVED_IS_FIXTURE)} indicators/real-graph")
+    base = strip_axis(json.loads(RESOLVED_DATA.read_text(encoding="utf-8")))
     defs = json.loads(KPI_DEFS_FILE.read_text(encoding="utf-8"))
     crosswalk = json.loads(CROSSWALK_FILE.read_text(encoding="utf-8"))
     catalog = json.loads(GRI_CATALOG_FILE.read_text(encoding="utf-8"))

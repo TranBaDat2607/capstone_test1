@@ -1,0 +1,13 @@
+# Extra packages the offline test suite imports directly, on top of
+# requirements.txt. Kept separate because these are NOT runtime dependencies of
+# the pipeline itself.
+#
+# huggingface_hub is imported lazily by src/esg_kg/core/datasync.py (deliberately
+# unlisted in requirements.txt so a bare clone still runs without it), but
+# test/test_esg_kg_datasync.py imports it at module level in order to replace
+# snapshot_download/HfApi with recorders. Without it that one file cannot import.
+huggingface_hub>=0.23.0
+
+# Install both:
+#   pip install -r requirements.txt -r requirements-test.txt
+#   python test/run_all.py

@@ -1,0 +1,32 @@
+cff-version: 1.2.0
+message: "If you use this software or its design, please cite it as below."
+title: "Greenwashing Detection — a Graph-RAG system over a temporal ESG knowledge graph"
+abstract: >-
+  A Graph-RAG pipeline for detecting greenwashing in Vietnamese listed companies in the
+  construction, building-materials and real-estate sector. ESG statements from annual
+  reports (the claim side) and independent news coverage (the conduct side) are classified,
+  reduced to typed KPI observations and temporal triples, and resolved into a single
+  temporal ESG knowledge graph, so a company's reported claims can be cross-checked against
+  its observed conduct with sentence-level provenance. The system deliberately emits
+  evidence and an advisory assessment rather than a greenwashing score, because no
+  ground-truth label exists for this corpus.
+type: software
+authors:
+  - family-names: "Tran"
+    given-names: "Ba Dat"
+  - family-names: "Cam"
+    given-names: "Vu Ngoc Thach"
+  - family-names: "Do"
+    given-names: "Ha Phuong"
+  - family-names: "Hoang"
+    given-names: "Quoc Tuan"
+repository-code: "https://github.com/TranBaDat2607/capstone_test1"
+license: MIT
+keywords:
+  - greenwashing
+  - ESG
+  - knowledge graph
+  - temporal knowledge graph
+  - Graph-RAG
+  - retrieval-augmented generation
+  - Vietnamese NLP

@@ -9,7 +9,7 @@
 > (how) nằm ở [`ANNOTATION_GUIDELINE.md`](./ANNOTATION_GUIDELINE.md).
 >
 > **Đọc trước:** [`SYSTEM_DESIGN.md`](./SYSTEM_DESIGN.md) §1.1 (ràng buộc không-ground-truth —
-> gốc của mọi giới hạn dưới đây) · [`EVALUATION_WITHOUT_LABELS.md`](./EVALUATION_WITHOUT_LABELS.md)
+> gốc của mọi giới hạn dưới đây) · [`proposals/EVALUATION_WITHOUT_LABELS.md`](./proposals/EVALUATION_WITHOUT_LABELS.md)
 > §1.1 (tài liệu **cấm** metric dựa trên nhãn tay — §4 giải mâu thuẫn này) ·
 > [`CLAIM_CONDUCT_CROSSCHECK.md`](./CLAIM_CONDUCT_CROSSCHECK.md) (stage sinh ra thứ được gán nhãn)
 
@@ -23,7 +23,7 @@
 | Nên gán tầng nào? | **L4 — phán xử cặp `(claim, evidence)`** thành `supports / contradicts / irrelevant`. Đây là tầng duy nhất vừa có ý nghĩa vừa phòng thủ được. |
 | Tuyệt đối không gán cái nào? | **L5 — greenwashing cấp công ty.** Bị chính `SYSTEM_DESIGN.md` §1.1 và §12 bác bỏ, không phải ý kiến cá nhân. |
 | Dự án đã có nhãn tay chưa? | **Rồi — 30 case** trong `config/evaluation/ablation_cases.json`. Nhưng code đọc nó đã bị xoá 2026-07-28, file đang **mồ côi** (§3). |
-| Có mâu thuẫn tài liệu không? | **Có, và phải giải trước khi gán.** `EVALUATION_WITHOUT_LABELS.md` §1.1 viết *"Đừng dùng"* metric nhãn tay. §4 phân giải: cái bị cấm là **nhãn greenwashing** và **tuyên bố accuracy**, không phải nhãn link. |
+| Có mâu thuẫn tài liệu không? | **Có, và phải giải trước khi gán.** `proposals/EVALUATION_WITHOUT_LABELS.md` §1.1 viết *"Đừng dùng"* metric nhãn tay. §4 phân giải: cái bị cấm là **nhãn greenwashing** và **tuyên bố accuracy**, không phải nhãn link. |
 | Chặn kỹ thuật phải sửa trước | `claims_vs_conduct.py:550` **vứt bỏ** mọi verdict `irrelevant`. Không sửa thì không lấy mẫu được lớp âm ⇒ chỉ đo được precision, không đo được recall (§6). |
 | Cỡ mẫu cần | **≈190 cặp** → khoảng tin cậy ±6 điểm phần trăm. 30 cặp hiện tại cho ±15 ⇒ chỉ minh hoạ (§7). |
 | Câu được phát biểu | *"Tầng adjudication đồng ý với người gán ở X% (CI …), κ tự-đồng-ý 0,86"* — **không bao giờ** *"phát hiện greenwashing chính xác X%"* (§8). |
@@ -128,11 +128,11 @@ xây mới. Khuyến nghị: **hồi sinh làm hạt giống nhưng migrate sang
 
 ---
 
-## 4. ⚠️ Giải mâu thuẫn với `EVALUATION_WITHOUT_LABELS.md`
+## 4. ⚠️ Giải mâu thuẫn với `proposals/EVALUATION_WITHOUT_LABELS.md`
 
 Đây là mục quan trọng nhất của tài liệu. Hai file trong repo đang nói ngược nhau.
 
-**`EVALUATION_WITHOUT_LABELS.md` §1.1 viết:**
+**`proposals/EVALUATION_WITHOUT_LABELS.md` §1.1 viết:**
 
 > *"Tác giả tự gán nhãn là không khách quan — và sẽ bị hội đồng chất vấn đúng chỗ đó."*
 > *"Ràng buộc 2 và 3 loại bỏ toàn bộ nhóm metric dựa trên mẫu gán nhãn tay: link precision,
@@ -152,7 +152,7 @@ Câu được phép: *"trên 190 cặp gán mù, tầng adjudication lệch vớ
 độ hỏng lặp lại là …"*.
 
 Câu thứ hai mới là thứ có giá trị học thuật — nó **mô tả hỏng ở đâu**, thứ mà không metric
-không-nhãn nào ở `EVALUATION_WITHOUT_LABELS.md` §3–§7 làm được.
+không-nhãn nào ở `proposals/EVALUATION_WITHOUT_LABELS.md` §3–§7 làm được.
 
 ### 4.2 Điều kiện để phân giải này đứng vững
 
@@ -166,15 +166,15 @@ và phải vá bằng **giao thức đo được**, không phải bằng lời h
 | **Freeze guideline trước khi gán** | chặn p-hacking hậu nghiệm | header + nhật ký phiên bản §10 |
 | Mượn **annotator thứ 2** cho 60 case → κ người–người | trả lời trực diện lời chất vấn §1.1 | §6.3 |
 
-**Với 4 điều này, `EVALUATION_WITHOUT_LABELS.md` §1.1 ràng buộc 2 và 3 không còn áp dụng nguyên
+**Với 4 điều này, `proposals/EVALUATION_WITHOUT_LABELS.md` §1.1 ràng buộc 2 và 3 không còn áp dụng nguyên
 vẹn** — ràng buộc 2 ("không có chuyên gia gán nhãn") được hạ xuống thành "có annotator thứ hai
 không chuyên, κ được báo cáo", và ràng buộc 3 ("tự gán không khách quan") được thay bằng một
-khoảng tin cậy có κ đi kèm. Phải ghi rõ sự thay đổi này vào `EVALUATION_WITHOUT_LABELS.md` §8
+khoảng tin cậy có κ đi kèm. Phải ghi rõ sự thay đổi này vào `proposals/EVALUATION_WITHOUT_LABELS.md` §8
 (bảng "metric đã chết") khi bộ nhãn hoàn thành, nếu không hai file lại lệch nhau lần nữa.
 
 ### 4.3 Quan hệ với thiết kế không-nhãn — bổ sung, không thay thế
 
-Bộ nhãn L4 **không thay thế** §3–§7 của `EVALUATION_WITHOUT_LABELS.md`. Nó bổ sung theo hai hướng:
+Bộ nhãn L4 **không thay thế** §3–§7 của `proposals/EVALUATION_WITHOUT_LABELS.md`. Nó bổ sung theo hai hướng:
 
 - **Metamorphic test (§3 file kia)** đo *tính nhất quán logic* — hệ có tự mâu thuẫn không. Bộ nhãn
   đo *tính đúng của link*. Hai đại lượng khác nhau, không thay nhau được.
@@ -236,7 +236,7 @@ không vào cạnh, không vào file nào.
 
 ### 6.1 Hệ quả
 
-Theo `EVALUATION_WITHOUT_LABELS.md` §2.2 (đo 2026-07-28 — **kiểm lại trên artifact hiện tại
+Theo `proposals/EVALUATION_WITHOUT_LABELS.md` §2.2 (đo 2026-07-28 — **kiểm lại trên artifact hiện tại
 trước khi lấy mẫu**):
 
 - 3.461 cặp ứng viên được phán xử;
@@ -262,7 +262,7 @@ Khoảng 5 dòng code, **không tốn thêm tiền** nếu ghép vào lần ch�
 
 ### 6.3 Lấy mẫu phân tầng
 
-Số liệu nguồn theo `EVALUATION_WITHOUT_LABELS.md` §2.2 — **kiểm lại trước khi chạy**.
+Số liệu nguồn theo `proposals/EVALUATION_WITHOUT_LABELS.md` §2.2 — **kiểm lại trước khi chạy**.
 
 | Tầng | Nguồn | Có sẵn | Lấy | Đo được gì |
 |---|---|---|---|---|
@@ -312,7 +312,7 @@ cộng ~1 giờ adjudication. Khả thi trong một tuần làm việc rời r�
 - *"Năm chế độ hỏng lặp lại: lệch cửa sổ thời gian, nhầm đại lượng, nhầm chủ thể (chỉ số toàn
   ngành vs của công ty), phủ định kép trong mục rủi ro, và …"*
 - *"Trên 32 cặp ngẫu nhiên gán nhãn tay, specificity thật của adjudicator là …"* (nâng cấp §4.2
-  của `EVALUATION_WITHOUT_LABELS.md` từ giả định thành số đo).
+  của `proposals/EVALUATION_WITHOUT_LABELS.md` từ giả định thành số đo).
 
 ### ❌ Không được
 
@@ -335,7 +335,7 @@ cộng ~1 giờ adjudication. Khả thi trong một tuần làm việc rời r�
 | 5 | Gán lượt 1 → nghỉ ≥3 ngày → lượt 2 → tính κ tự-đồng-ý | ~8 giờ người | Bước 7 |
 | 6 | Annotator thứ 2 gán 60 case → κ người–người | ~1,5 giờ người khác | — |
 | 7 | Adjudication bất đồng → `gold_links_aaa_final.jsonl` → commit | ~1 giờ | — |
-| 8 | Cập nhật `EVALUATION_WITHOUT_LABELS.md` §8 để hai file hết lệch (§4.2) | 0 | Tính nhất quán tài liệu |
+| 8 | Cập nhật `proposals/EVALUATION_WITHOUT_LABELS.md` §8 để hai file hết lệch (§4.2) | 0 | Tính nhất quán tài liệu |
 
 **Nếu chỉ đủ thời gian cho một việc:** bước 3 + 4 — vì không có chúng thì bộ nhãn sinh ra đã
 thiên vị ngay từ khâu lấy mẫu, và không giao thức gán nhãn nào cứu được điều đó về sau.
@@ -367,9 +367,9 @@ thiên vị ngay từ khâu lấy mẫu, và không giao thức gán nhãn nào 
 
 - [`SYSTEM_DESIGN.md`](./SYSTEM_DESIGN.md) §1.1 (không-ground-truth), §10 (hàng *Manual
   link-precision*), §11 P6, §12 (giới hạn & đạo đức)
-- [`EVALUATION_WITHOUT_LABELS.md`](./EVALUATION_WITHOUT_LABELS.md) §1.1 (ràng buộc bị phân giải ở
+- [`proposals/EVALUATION_WITHOUT_LABELS.md`](./proposals/EVALUATION_WITHOUT_LABELS.md) §1.1 (ràng buộc bị phân giải ở
   §4), §2.2 (số liệu nguồn của §6.3), §4.2 (negative control được nâng cấp), §8 (bảng metric đã chết)
-- [`AGENT_AB_EVALUATION.md`](./AGENT_AB_EVALUATION.md) §3.3 (pre-registration — cơ sở của "freeze
+- [`proposals/AGENT_AB_EVALUATION.md`](./proposals/AGENT_AB_EVALUATION.md) §3.3 (pre-registration — cơ sở của "freeze
   guideline"), §2 (bẫy nới lỏng)
 - [`CLAIM_CONDUCT_CROSSCHECK.md`](./CLAIM_CONDUCT_CROSSCHECK.md) — stage sinh ra cặp được gán nhãn
 - `config/evaluation/ablation_cases.json` — 30 case tiền lệ

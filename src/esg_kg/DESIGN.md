@@ -386,7 +386,7 @@ quả**. Ba trường `assessment_scores` / `score_components` /
   Neo4j/ledger cho tới khi ai đó chạy tay `python src/step07b_enrich_dossiers.py` —
   rẻ, offline, idempotent, và đó chính là lý do KHÔNG xoá file đó khỏi `src/`.
 
-**Điều kiện đảo ngược.** Nếu `signals` generator trong `docs/CROSSCHECK_EXPANSION.md`
+**Điều kiện đảo ngược.** Nếu `signals` generator trong `docs/proposals/CROSSCHECK_EXPANSION.md`
 được xây (lúc đó `lam_struct`/`lam_kpi`/`lam_bp` mới khác 0 — hiện chúng đóng góp
 đúng 0), hoặc nếu cần lại cờ `score_disagrees_with_assessment` như hàng đợi review
 (66/1093 claim mà argmax mâu thuẫn với nhãn LLM), thì dời `None` → module path và
@@ -482,7 +482,7 @@ gốc" (P6) khỏi danh sách sản phẩm giao, không phải vì có cơ chế
 **Điều kiện đảo ngược.** Nếu dự án sau này cần lại một phép đo kiểu P6 (coverage/case-study/
 ablation không có ground truth), đó là viết **mới** — tra `git log -- src/step10_evaluate.py
 docs/EVALUATION.md` trước ngày xoá để lấy lại thiết kế cũ làm tham khảo, không phải khôi phục
-nguyên trạng, vì các doc thiết kế phụ thuộc nó (`docs/CROSSCHECK_EXPANSION.md`,
+nguyên trạng, vì các doc thiết kế phụ thuộc nó (`docs/proposals/CROSSCHECK_EXPANSION.md`,
 `docs/SOFTMAX_SCORING.md`) cũng đã được đánh dấu là đề xuất treo, không còn chỗ để cắm.
 
 ## 5. Sửa lỗi trong lúc refactor — nguyên tắc "vá ở stage sớm nhất"

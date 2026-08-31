@@ -20,6 +20,7 @@ Run from the repo root:
 
 import argparse
 import sys
+import tempfile
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
@@ -114,20 +115,61 @@ def test_cmd_status_returns_clean():
     print("     (cmd_status returns 0, no exception)")
 
 
-def _run_push_dry_run(**arg_overrides):
+def _run_push_dry_run(root=None, **arg_overrides):
     """Only the --dry-run path is safe to run for free: the real path writes
     data_version.json and hits the network. --dry-run exercises everything up to
-    that point (repo-id resolution, folder presence/size logging) with no side effects."""
+    that point (repo-id resolution, folder presence/size logging) with no side effects.
+
+    `root` temporarily replaces the module-level REPO_ROOT that cmd_push scans for
+    SYNCED_FOLDERS, so the folder-presence branch is decided by the test rather than
+    by whatever happens to be on the machine's disk.
+    """
     args = argparse.Namespace(repo_id=None, private=True, dry_run=True)
     for k, v in arg_overrides.items():
         setattr(args, k, v)
-    return ds.cmd_push(args)
+    if root is None:
+        return ds.cmd_push(args)
+    previous = ds.REPO_ROOT
+    ds.REPO_ROOT = root
+    try:
+        return ds.cmd_push(args)
+    finally:
+        ds.REPO_ROOT = previous
 
 
 def test_cmd_push_dry_run_writes_nothing():
-    rc = _run_push_dry_run()
-    assert rc == 0, f"--dry-run push returned {rc}"
-    print(f"     (--dry-run push: returns {rc}, no HfApi call, nothing written)")
+    """Both folder-presence branches, pinned explicitly.
+
+    This arm used to call cmd_push with no control over REPO_ROOT and assert
+    `rc == 0` unconditionally. That passes on a maintainer's machine (which has
+    run `datasync pull`) and FAILS on a bare clone -- the exact state of every new
+    contributor and every CI runner -- because cmd_push correctly returns 1 with
+    "nothing to push" when none of the synced folders exist. The old assertion
+    made an environment-dependent outcome look like a defect, so both branches are
+    now asserted for what they are.
+    """
+    before = ds.VERSION_FILE.read_bytes() if ds.VERSION_FILE.exists() else None
+
+    with tempfile.TemporaryDirectory() as tmp:
+        empty = Path(tmp) / "bare_clone"
+        empty.mkdir()
+        rc_empty = _run_push_dry_run(root=empty)
+        assert rc_empty == 1, (
+            "with none of the synced folders present, --dry-run push must report "
+            f"'nothing to push' and return 1, got {rc_empty}")
+
+        populated = Path(tmp) / "after_a_rebuild"
+        (populated / "graph_output" / "resolved").mkdir(parents=True)
+        (populated / "graph_output" / "resolved" / "resolved_graph.json").write_text(
+            '{"nodes": [], "edges": []}', encoding="utf-8")
+        rc_present = _run_push_dry_run(root=populated)
+        assert rc_present == 0, (
+            f"with a synced folder present, --dry-run push must return 0, got {rc_present}")
+
+    after = ds.VERSION_FILE.read_bytes() if ds.VERSION_FILE.exists() else None
+    assert after == before, "--dry-run push modified data_version.json"
+    assert ds.REPO_ROOT == REPO, "REPO_ROOT was not restored after the patch"
+    print("     (--dry-run push: 1 with no folders, 0 with one, data_version.json untouched)")
 
 
 if __name__ == "__main__":

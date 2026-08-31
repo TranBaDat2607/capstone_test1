@@ -9,6 +9,10 @@ openpyxl>=3.1.0       # pandas engine for .xlsx
 requests>=2.32.0
 
 # News crawler (crawl_data/crawler_news.py)
+# feedparser is used by the DOCUMENTED news pipeline
+# (esg_news_crawler/sources/google_news_rss.py) as an unconditional import --
+# without it `python -m esg_news_crawler.run` fails on a fresh clone.
+feedparser>=6.0.0
 httpx[http2]>=0.27.0
 beautifulsoup4>=4.12.0
 lxml>=4.9.0
@@ -35,3 +39,21 @@ numpy>=1.26.0
 
 # Neo4j graph load (src/esg_kg/load/neo4j_load.py — step 5)
 neo4j>=5.0
+
+# GRI catalog builder (gri/full_gri/gri_schema.py — run-once, not a pipeline stage)
+pydantic>=2.0
+
+# Offline EDA / report figures (notebooks/eda/*.py, capstone_report/figures/*.py)
+matplotlib>=3.8.0
+
+# ---------------------------------------------------------------------------
+# Deliberately NOT listed here -- each is imported lazily and degrades with a
+# clear message, so a bare clone still runs. Do not "fix" these omissions:
+#   torch            ViDeBERTa ESG classifier; runs on GPU via
+#                    notebooks/kaggle_esg_classify.ipynb. Install locally only
+#                    to test data_processing/esg_classifier.py on CPU.
+#   huggingface_hub  src/esg_kg/core/datasync.py; kept out so the dataset tool
+#                    works on a bare clone without pulling a heavy dep.
+#   rapidfuzz        the KPI-canonicalization fuzzy tier; disabled with a
+#                    warning when absent.
+# ---------------------------------------------------------------------------

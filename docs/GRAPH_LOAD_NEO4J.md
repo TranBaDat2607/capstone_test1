@@ -1,6 +1,6 @@
 # Graph load into Neo4j (step 5)
 
-Script: [`src/step06_load_graph_to_neo4j.py`](../src/step06_load_graph_to_neo4j.py).
+Script: [`src/esg_kg/load/neo4j_load.py`](../src/esg_kg/load/neo4j_load.py).
 Input: `graph_output/resolved/resolved_graph.json` (step-4 output).
 Output: a property graph in a Neo4j instance (default `bolt://localhost:8687`, db `neo4j`).
 
@@ -86,8 +86,8 @@ named database require Enterprise/Desktop.
 
 ```bash
 pip install -r requirements.txt          # adds neo4j>=5.0
-python src/step06_load_graph_to_neo4j.py --dry-run    # offline: print planned counts, no DB
-python src/step06_load_graph_to_neo4j.py --clear      # wipe + load (needs the instance running)
+python src/run.py neo4j_load --dry-run    # offline: print planned counts, no DB
+python src/run.py neo4j_load --clear      # wipe + load (needs the instance running)
 ```
 
 Connection comes from `.env` (`NEO4J_URI` / `NEO4J_USER` / `NEO4J_PASSWORD` /

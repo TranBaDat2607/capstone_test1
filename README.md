@@ -53,13 +53,14 @@ capstone_test1/
 │   └── README.md                  #   News-crawler design & usage
 │
 ├── src/                           # esg_kg package: labeled JSONL → temporal knowledge graph
-│   ├── run.py                     #   Dispatcher — `python src/run.py <stage>` (--list shows all 15/15)
+│   ├── run.py                     #   Dispatcher — `python src/run.py <stage>` (--list shows all 16/16)
 │   ├── PIPELINE.md                #   Canonical run order + design history
 │   └── esg_kg/
 │       ├── pipeline.py            #   STAGES / BLOCKS table (single source of truth for run.py)
 │       ├── DESIGN.md              #   Refactor design doc + closeout record (§7)
 │       ├── core/                  #   Shared helpers: paths, schema, naming, dates, identity,
-│       │                          #     io_jsonl, llm (RateLimiter, OpenAI provider), graph_patch, datasync
+│       │                          #     io_jsonl, llm (RateLimiter; Gemini default, DeepSeek/OpenAI
+│       │                          #     opt-in), llm_cache, graph_patch, datasync
 │       ├── kpi/                   #   extract (step01), canonicalize (step03c)
 │       ├── graph/                 #   extract_triples (step02), fix_triples (step03),
 │       │                          #     anchor_kpi (step03b), build_validated (BLOCK 03→03b→03c)
@@ -133,7 +134,7 @@ Both feed the same `esg_kg` graph-construction path and land in one temporal KG.
 > HF dataset 2026-08-02 — they duplicated AAA under a different filename convention. See
 > `CLAUDE.md` for the full story before assuming only AAA is labeled/extracted.
 
-### C. Labeled JSONL → temporal knowledge graph (`src/esg_kg`, all 15/15 stages migrated)
+### C. Labeled JSONL → temporal knowledge graph (`src/esg_kg`, all 16/16 stages)
 
 Run via `python src/run.py <stage>` from the repo root (`--list` shows every stage):
 
@@ -161,8 +162,10 @@ Full per-stage flags and design rationale: `src/PIPELINE.md`, `src/esg_kg/DESIGN
 
 ### D. KPI vocabulary & GRI catalog (run-once provenance builders)
 ```
-kpi_build/   → config/kpi_definitions_construction.json  (35 KPIs, Circular 96/2020 + QĐ2171 + QCVN09 + SSC-IFC, verbatim)
-gri/         → config/gri_catalog.json                    (136 GRI indicator codes, from 42 GRI Standards PDFs)
+kpi_build/   → kpi_definitions_construction.json         (repo ROOT, not config/ — see core/paths.py:KPI_DEFS_PATH)
+             (35 KPIs, Circular 96/2020 + QĐ2171 + QCVN09 + SSC-IFC, verbatim)
+gri/         → config/gri_catalog.json                    (136 GRI indicator codes, built from 42 GRI
+             Standards PDFs that are NOT redistributed here — see gri/README.md and NOTICE.md)
 ```
 
 ### E. ESG Evidence View UI (`api/` + `frontend/` — the demo surface)
@@ -174,7 +177,36 @@ the graph, not a guess.
 
 ---
 
-## Onboarding (new team member — start here)
+## What you can run without data access
+
+Read this before cloning with expectations. The pipeline's generated data
+(`data/`, `graph_output/`, `kpi_output/`) is **not in this repository**. It ships through a
+**private** Hugging Face dataset repo (~19 GB, revision pinned in `data_version.json`) that
+requires an invitation to the `nammovuivui-capstone` org. There is no public mirror, because
+the corpus is built from company annual reports and crawled news articles that are not ours
+to redistribute (see [`NOTICE.md`](NOTICE.md)).
+
+So, honestly, from a bare `git clone`:
+
+| You want to | Works? | What you need |
+| --- | --- | --- |
+| Run the test suite (`python test/run_all.py`) | **Yes** | `pip install -r requirements.txt -r requirements-test.txt`. Data-backed arms run against the synthetic fixtures in `test/fixtures/` and say so; arms needing real corpus scale skip with a reason. |
+| Read the code, schema and design docs | **Yes** | nothing |
+| Rebuild the KPI vocabulary (`kpi_build/`) | **Yes** | network access to the Vietnamese regulator sites |
+| Rebuild the GRI catalog (`gri/`) | **Yes** | download the GRI Standards PDFs yourself — [`gri/README.md`](gri/README.md) |
+| Run any stage C pipeline stage | **No** | the private dataset **and** a paid `GEMINI_API_KEY` |
+| Load Neo4j / run the Evidence View UI | **No** | a resolved graph, which needs the dataset |
+| Reproduce the reported evaluation figures | **No** | the pinned 19 GB snapshot; see [`docs/EVALUATION_BASELINE.md`](docs/EVALUATION_BASELINE.md) |
+
+The fixtures exist so the test suite is a real check rather than a decorative one for anyone
+without data access — not as a stand-in for the corpus. If you are evaluating this project,
+`python test/run_all.py` is the part you can actually execute.
+
+## Onboarding (project team — requires private data access)
+
+> This section assumes membership of the `nammovuivui-capstone` Hugging Face org and your own
+> paid API keys. It is not a public setup path; see "What you can run without data access"
+> above for that.
 
 Generated data (`data/`, `graph_output/`, `kpi_output/` — ~342 MB) is **not in Git**.
 It ships via a private Hugging Face dataset repo (`nammovuivui-capstone` org), so you do
@@ -229,7 +261,7 @@ pip install -r requirements.txt
 
 # A. Annual report → labeled ESG sentences
 python -m data_processing.prepare_sentences \
-    --input  "data/raw/annual_reports_sample/AAA_Baocaothuongnien_2025.pdf" \
+    --input  "data/raw/annual_report/Xây dựng - VLXD - BĐS/AAA - Nhựa An Phát Xanh/AAA_2024.pdf" \
     --output "data/interim/sentences/aaa_sentences.jsonl"
 python -m data_processing.extract_esg
 
@@ -255,8 +287,13 @@ python src/run.py claim_ledger
 python api/main.py                                         # http://localhost:8000
 ```
 
-See `CLAUDE.md`'s "Common commands" for the full flag reference (`--provider`,
-`--dry-run`, `--no-llm`, `--label`, etc.) and `src/PIPELINE.md` for stage-by-stage detail.
+See `CLAUDE.md`'s "Common commands" for the full flag reference (`--dry-run`, `--no-llm`,
+`--label`, etc.) and `src/PIPELINE.md` for stage-by-stage detail.
+
+Provider selection is per stage, not global: `extract_triples` and `align_claims` take
+`--provider gemini|deepseek`; `claims_vs_conduct` takes `--provider-order`
+(`gemini|deepseek|openai`); and `extract`, `fix_triples` and `entities` are Gemini-only with
+no provider flag at all.
 
 The `extract_esg` output schema (one JSON object per line in
 `data/outputs/esg_extracted/esg_all_records.jsonl`):
@@ -273,17 +310,24 @@ through every stage, so every graph node can be traced back to its source.
 
 ## Testing
 
-No pytest harness — tests are plain `assert` scripts under `test/`, run offline and
-free (no LLM/DB/network), e.g.:
+No pytest harness — tests are plain `assert` scripts under `test/`, run offline and free
+(no LLM, no database, no network). Everything is runnable on a bare clone:
 
 ```bash
-python test/test_temporal_invariants.py
-python test/test_schema_contract.py
-python test/test_esg_kg_equivalence.py
+pip install -r requirements.txt -r requirements-test.txt
+python test/run_all.py                 # everything: one exit code, one summary table
+python test/run_all.py -k issuer       # just the files matching a substring
+python test/test_temporal_invariants.py   # or any single file, directly
 ```
 
-New code follows test-first (red → green → refactor); see CLAUDE.md's "Working rule:
-Test-Driven Development" and the full `test/` file list there for what each covers.
+`run_all.py` reports how many assertions ran against the **real corpus** versus the
+synthetic **fixtures** in `test/fixtures/`, because those are different claims. On a clone
+without private data access every data-backed arm runs on fixtures, and arms that genuinely
+need real corpus scale skip with a stated reason rather than lowering their thresholds.
+[`test/README.md`](test/README.md) documents every file and its re-run trigger.
+
+New code follows test-first (red → green → refactor) — see
+[`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 ---
 
@@ -296,6 +340,37 @@ temporal KG, the advisory-not-a-score framing). Per-stage docs: `SCHEMA_EXPLAINE
 `GRAPH_LOAD_NEO4J.md`, `CLAIM_CONDUCT_CROSSCHECK.md`, `CLAIM_LEDGER.md`,
 `ESG_EVIDENCE_VIEW.md`, `REAL_DATA_INTEGRATION_GUIDE.md`, `STANDARD_INDICATOR_AXIS.md`,
 `GRI_SCHEMA_DOCUMENTATION.md`, `KPI_DEFINITIONS_CONSTRUCTION_BUILD.md`,
-`PIPELINE_DIAGRAMS.md`, `PIPELINE_UNIFIED.md`, `PROJECT_OVERVIEW.md`. Full detail and
-the current refactor/migration history lives in `CLAUDE.md` — read that first when
-working on pipeline internals.
+`PIPELINE_DIAGRAMS.md`, `PIPELINE_UNIFIED.md`, `PROJECT_OVERVIEW.md`.
+[`docs/README.md`](docs/README.md) indexes every document and says which are current, which
+are frozen historical records, and which are unimplemented proposals.
+
+Two documents are worth reading before changing anything: `docs/PROJECT_HISTORY.md` (closed
+decisions — the refactor, the removed stages, the LLM-provider timeline) and
+`docs/EVALUATION_BASELINE.md` (the frozen measurement snapshot; read it before quoting any
+figure). Many docs are written in Vietnamese.
+
+`CLAUDE.md` at the repo root is an **operating manual for AI coding agents**, not user
+documentation. It is accurate and detailed about pipeline internals, but it is written to
+instruct an agent and carries a lot of internal decision history; a human reader should
+start with `docs/SYSTEM_DESIGN.md`.
+
+---
+
+## License and citation
+
+Source code is MIT licensed — see [`LICENSE`](LICENSE). **That covers this project's code
+only.** GRI Standards, the Vietnamese regulatory texts quoted in
+`kpi_definitions_construction.json`, the annual reports and the crawled news articles each
+retain their own terms; [`NOTICE.md`](NOTICE.md) sets out what is and is not covered.
+
+If you reference this work, cite it via [`CITATION.cff`](CITATION.cff) (GitHub's "Cite this
+repository" button reads that file).
+
+## Contributing
+
+See [`CONTRIBUTING.md`](CONTRIBUTING.md). The two conventions that surprise people: tests are
+plain `assert` scripts and test-first is mandatory, and paid LLM prompt templates are pinned
+byte-for-byte by guard tests — a reworded prompt still "works" while silently changing every
+verdict, which is exactly why the pin exists.
+
+To report a security issue, see [`SECURITY.md`](SECURITY.md).

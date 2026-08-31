@@ -66,7 +66,16 @@ from esg_kg.registry import issuer as new_issuer  # noqa: E402
 from esg_kg.core import naming as core_naming  # noqa: E402
 from esg_kg.core.paths import REPO_ROOT as CORE_REPO_ROOT  # noqa: E402
 
+from _fixture_paths import resolve_artifact, skip_if_fixture, tag  # noqa: E402
+
 TRIPLES_FILE = REPO / "graph_output" / "validated" / "all_validated_triples.json"
+
+# Corpus arms READ from here: the real artifact when the HF snapshot is pulled,
+# otherwise the committed synthetic fixture (test/fixtures/) so the arm runs on a
+# bare clone instead of silently skipping. The canonical constant above stays put
+# because wiring assertions compare the stage's own DEFAULT_* against it.
+VALIDATED_DATA, VALIDATED_IS_FIXTURE = resolve_artifact("validated")
+
 COMPANIES_FILE = REPO / "config" / "company_annual_report.xlsx"
 REAL_REGISTRY_FILE = REPO / "config" / "issuer_registry.json"
 
@@ -93,10 +102,10 @@ def _unquiet(prev) -> None:
 def load_triples() -> list:
     """The real validated triples, or [] when the HF snapshot is not pulled."""
     if "triples" not in _cache:
-        if not TRIPLES_FILE.exists():
+        if not VALIDATED_DATA.exists():
             _cache["triples"] = []
         else:
-            data = json.loads(TRIPLES_FILE.read_text(encoding="utf-8"))
+            data = json.loads(VALIDATED_DATA.read_text(encoding="utf-8"))
             _cache["triples"] = data if isinstance(data, list) else []
     return _cache["triples"]
 
@@ -203,6 +212,7 @@ def test_collect_org_signals_matches_src_on_the_real_corpus():
     if not triples:
         _skip("issuer/collect_org_signals", "all_validated_triples.json absent (data_sync pull)")
         return
+    print(f"     {tag(VALIDATED_IS_FIXTURE)} issuer/collect_org_signals")
     new_counts, new_orgs, new_tickers = new_issuer.collect_org_signals(triples)
     assert new_orgs, "no Organization names found — arm is vacuous"
     assert new_tickers, "no tickers detected — arm is vacuous"
@@ -279,6 +289,7 @@ def test_classify_for_ticker_matches_src_on_the_real_corpus():
     if not triples or not COMPANIES_FILE.exists():
         _skip("issuer/classify_for_ticker", "corpus or companies xlsx absent")
         return
+    print(f"     {tag(VALIDATED_IS_FIXTURE)} issuer/classify_for_ticker")
     ticker_names = new_issuer.load_ticker_official_names(COMPANIES_FILE)
     subj_counts, org_names, tickers = new_issuer.collect_org_signals(triples)
     if not tickers:
@@ -312,7 +323,7 @@ def test_build_matches_src_on_a_temp_workspace():
     try:
         with tempfile.TemporaryDirectory() as t1:
             new_out = Path(t1) / "issuer_registry.json"
-            new_issuer.build(TRIPLES_FILE, COMPANIES_FILE, new_out,
+            new_issuer.build(VALIDATED_DATA, COMPANIES_FILE, new_out,
                               new_issuer.DEFAULT_MIN_SUBJECT_EDGES, True, 0.8, 0.2)
             got = json.loads(new_out.read_text(encoding="utf-8"))
     finally:
@@ -353,7 +364,7 @@ def test_build_preserves_human_edits_across_a_rerun():
     try:
         with tempfile.TemporaryDirectory() as t1:
             new_out = Path(t1) / "issuer_registry.json"
-            new_issuer.build(TRIPLES_FILE, COMPANIES_FILE, new_out,
+            new_issuer.build(VALIDATED_DATA, COMPANIES_FILE, new_out,
                               new_issuer.DEFAULT_MIN_SUBJECT_EDGES, True, 0.8, 0.2)
 
             first = json.loads(new_out.read_text(encoding="utf-8"))
@@ -373,7 +384,7 @@ def test_build_preserves_human_edits_across_a_rerun():
             new_out.write_text(json.dumps(reg, ensure_ascii=False), encoding="utf-8")
 
             # re-run WITHOUT --force: the human edit must survive
-            new_issuer.build(TRIPLES_FILE, COMPANIES_FILE, new_out,
+            new_issuer.build(VALIDATED_DATA, COMPANIES_FILE, new_out,
                               new_issuer.DEFAULT_MIN_SUBJECT_EDGES, False, 0.8, 0.2)
             got = json.loads(new_out.read_text(encoding="utf-8"))
     finally:

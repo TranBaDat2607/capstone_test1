@@ -1,7 +1,7 @@
 # Claim ledger — the presentation stage (Step 7 / P5)
 
-Scripts: [`src/step08_sync_crosscheck_to_neo4j.py`](../src/step08_sync_crosscheck_to_neo4j.py) (Step 6b) +
-[`src/step09_report_claim_ledger.py`](../src/step09_report_claim_ledger.py) (Step 7) · queries:
+Scripts: [`src/esg_kg/load/neo4j_sync.py`](../src/esg_kg/load/neo4j_sync.py) (Step 6b) +
+[`src/esg_kg/report/claim_ledger.py`](../src/esg_kg/report/claim_ledger.py) (Step 7) · queries:
 [`neo4j/crosscheck_queries.cypher`](../neo4j/crosscheck_queries.cypher).
 System context: [`SYSTEM_DESIGN.md`](./SYSTEM_DESIGN.md) §9.
 
@@ -60,8 +60,8 @@ Idempotent (MERGE on a stable `_adv_key`); `--clear-advisory` wipes the prior la
 182 advisory edges (140 `llm_supports` + 24 `llm_contradicts` + 18 `llm_flagged_support`).
 
 ```bash
-python src/step08_sync_crosscheck_to_neo4j.py --dry-run          # counts only
-python src/step08_sync_crosscheck_to_neo4j.py --clear-advisory   # wipe + re-write
+python src/run.py neo4j_sync --dry-run          # counts only
+python src/run.py neo4j_sync --clear-advisory   # wipe + re-write
 ```
 
 ## 3. Step 7 — `step09_report_claim_ledger.py` (renders from Neo4j only)
@@ -147,10 +147,10 @@ evidence source domain.
 
 ```bash
 # Prereqs: steps 1–5 done + Step 6 dossier exists; Neo4j (step 5) running.
-python src/step08_sync_crosscheck_to_neo4j.py            # Step 6b: dossier → Neo4j advisory layer (free)
-python src/step09_report_claim_ledger.py                 # Step 7: AAA ledger (contradicted + supported)
-python src/step09_report_claim_ledger.py --review-queue  #   contradiction, no verification (14)
-python src/step09_report_claim_ledger.py --assessment all --markdown
+python src/run.py neo4j_sync            # Step 6b: dossier → Neo4j advisory layer (free)
+python src/run.py claim_ledger                 # Step 7: AAA ledger (contradicted + supported)
+python src/run.py claim_ledger --review-queue  #   contradiction, no verification (14)
+python src/run.py claim_ledger --assessment all --markdown
 ```
 
 No API key, no token cost — both scripts are LLM-free.

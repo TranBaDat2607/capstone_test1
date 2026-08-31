@@ -1,4 +1,4 @@
-# Provenance patch — step 5b (`src/step05b_stamp_provenance.py`)
+# Provenance patch — step 5b (`run.py provenance` (`src/esg_kg/resolve/provenance.py`))
 
 **Goal:** every claim card and evidence entry in the demo UI (and the CLI ledger) can cite
 its source by name — *"Báo cáo thường niên 2021, trang 36"* on the report side,
@@ -83,10 +83,10 @@ node/edge counts are unchanged before writing. This is also covered by
 ## 6. Run order (all free — no tokens)
 
 ```bash
-python src/step05b_stamp_provenance.py --dry-run   # coverage preview + stats
-python src/step05b_stamp_provenance.py             # patch resolved_graph.json in place
-python src/step06_load_graph_to_neo4j.py --clear   # reload (wipes the advisory layer too!)
-python src/step08_sync_crosscheck_to_neo4j.py      # restore the advisory layer (reuses the paid dossier)
+python src/run.py provenance --dry-run   # coverage preview + stats
+python src/run.py provenance             # patch resolved_graph.json in place
+python src/run.py neo4j_load --clear   # reload (wipes the advisory layer too!)
+python src/run.py neo4j_sync      # restore the advisory layer (reuses the paid dossier)
 ```
 
 Re-run step05b after any step05 re-run (the resolver rewrites `resolved_graph.json`).
@@ -94,7 +94,7 @@ New step02 extractions self-stamp (`stamp_provenance`, `provenance_method="extra
 so on freshly extracted docs the patch becomes a no-op for those nodes.
 
 Display side: the ESG Evidence View UI (`api/` + `frontend/`, claim source `<doc>, trang <N>`)
-and `src/step09_report_claim_ledger.py` (`[<doc> p.<N>]` / article title) — see
+and `run.py claim_ledger` (`src/esg_kg/report/claim_ledger.py`) (`[<doc> p.<N>]` / article title) — see
 `docs/ESG_EVIDENCE_VIEW.md`, `docs/CLAIM_LEDGER.md`.
 
 Stats land in `graph_output/resolved/provenance_patch_stats.json`.

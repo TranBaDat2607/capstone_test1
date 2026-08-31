@@ -56,7 +56,7 @@ Thực hiện chuẩn hóa theo phản hồi thiết kế (`feedback-gri-catalog
    - Các cạnh nối giữa `SustainabilityClaim` và `StandardIndicator` được đóng dấu thuộc tính `indicator_axis = "tt96"` hoặc `"gri_fallback"`.
 
 3. **Bộ Lọc Từ Khóa NLP Offline (NLP Smart Matcher):**
-   - Thuật toán `match_keyword` trong `src/step05c_link_standard_indicators.py` sử dụng chiến lược **Longest-Phrase Matching** ưu tiên cụm từ chuyên môn dài nhất.
+   - Thuật toán `match_keyword` trong `run.py indicators` (`src/esg_kg/resolve/indicators.py`) sử dụng chiến lược **Longest-Phrase Matching** ưu tiên cụm từ chuyên môn dài nhất.
    - Giúp tự động gán **636+ cạnh `alignsWithIndicator`** cho hàng nghìn tuyên bố văn xuôi mà **không tốn token AI LLM**.
 
 ---

@@ -67,7 +67,7 @@ DEFAULT_INPUT = REPO_ROOT / "graph_output" / "resolved" / "resolved_graph.json"
 DEFAULT_SCHEMA = REPO_ROOT / "config" / "schema.json"
 DEFAULT_URI = "bolt://localhost:8687"
 DEFAULT_USER = "greenwashing"
-DEFAULT_PASSWORD = "nammovuivui"
+DEFAULT_PASSWORD = "changeme"
 DEFAULT_BATCH = 5000
 
 # Every node also gets this shared label so a single index serves _node_key lookups
@@ -234,7 +234,12 @@ def build_payload(
 # --------------------------------------------------------------------------- #
 # Neo4j ingestion.
 # --------------------------------------------------------------------------- #
-def setup_indexes(driver, labels: List[str]) -> None:
+def setup_indexes(driver) -> None:
+    """One index on the shared label — nodes carry `_node_key`, not per-label keys.
+
+    Took a `labels` argument it never read, left over from a per-label indexing
+    scheme that no longer exists.
+    """
     logger.info("Creating indexes...")
     with driver.session() as session:
         session.run(f"CREATE INDEX IF NOT EXISTS FOR (n:`{SHARED_LABEL}`) ON (n._node_key)")
@@ -407,7 +412,7 @@ def main() -> None:
         logger.info("Connected.")
         if args.clear:
             clear_database(driver)
-        setup_indexes(driver, payload["labels"])
+        setup_indexes(driver)
         ingest_nodes(driver, payload["nodes_by_label"], args.batch_size)
         ingest_data_edges(driver, payload["edges_by_pred"], args.batch_size)
         ingest_supersedes(driver, payload["supersedes_edges"], args.batch_size)

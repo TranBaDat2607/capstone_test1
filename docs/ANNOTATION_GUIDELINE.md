@@ -4,7 +4,7 @@
 >
 > **Quy tắc freeze:** một khi lượt gán nhãn đầu tiên đã bắt đầu, **không được sửa file này**.
 > Muốn sửa ⇒ tăng lên v1.1, ghi vào §10, và **gán lại từ đầu**. Sửa guideline giữa chừng làm
-> mọi con số so sánh trở nên vô nghĩa (`AGENT_AB_EVALUATION.md` §3.3).
+> mọi con số so sánh trở nên vô nghĩa (`proposals/AGENT_AB_EVALUATION.md` §3.3).
 >
 > **Ai đọc file này:** người ngồi gán nhãn. File này **tự chứa** — bạn không cần biết gì về
 > knowledge graph, Neo4j hay pipeline để làm được việc.
@@ -311,7 +311,7 @@ Với mọi case mà **lượt 1 ≠ lượt 2** hoặc **bạn ≠ annotator 2*
 | Trường | Nghĩa |
 |---|---|
 | `id` | Mã case, duy nhất, `GL####` |
-| `claim_id` | Khoá nối về dossier — **không dùng `claim_node_index`** (đã lệch, xem `EVALUATION_WITHOUT_LABELS.md` §9.1) |
+| `claim_id` | Khoá nối về dossier — **không dùng `claim_node_index`** (đã lệch, xem `proposals/EVALUATION_WITHOUT_LABELS.md` §9.1) |
 | `evidence_key` | Khoá định danh bằng chứng = 8 ký tự đầu của `sha1(evidence_text)`. Dùng để chống gán trùng. **Không dùng `node_index`** — nó là chỉ số mảng, lệch theo phiên bản đồ thị đúng như `claim_node_index` |
 | `claim_year` / `evidence_year` | Năm, dùng cho **bước 3** của cây quyết định |
 | `evidence_class` | Loại node bằng chứng (`KPIObservation`, `MediaReport`, …) |
@@ -416,7 +416,7 @@ for i in ids:
 | v1.0 | `<điền khi commit>` | Bản đầu. Cây quyết định 4 bước + 6 quy tắc phụ, kế thừa `label_policy` của `config/evaluation/ablation_cases.json` và `ADJUDICATE_SYSTEM` của `claims_vs_conduct.py:156–171` | — |
 
 > **Mọi thay đổi từ v1.1 trở đi bắt buộc gán lại từ đầu.** Ghi rõ vì sao đổi, và **không bao giờ**
-> đổi sau khi đã nhìn thấy kết quả của hệ thống — đó là p-hacking (`AGENT_AB_EVALUATION.md` §3.3).
+> đổi sau khi đã nhìn thấy kết quả của hệ thống — đó là p-hacking (`proposals/AGENT_AB_EVALUATION.md` §3.3).
 
 ---
 
@@ -454,6 +454,6 @@ có thể lật nhãn.
 - [`LABELING_STRATEGY.md`](./LABELING_STRATEGY.md) — vì sao gán nhãn này, thiết kế lấy mẫu, cỡ mẫu, phát biểu được gì
 - `config/evaluation/ablation_cases.json` — 30 case tiền lệ; nguồn của mọi worked example ở §4
 - `src/esg_kg/crosscheck/claims_vs_conduct.py:156–171` — `ADJUDICATE_SYSTEM`, định nghĩa nhãn mà **máy** dùng (guideline này bám sát nó có chủ đích)
-- [`EVALUATION_WITHOUT_LABELS.md`](./EVALUATION_WITHOUT_LABELS.md) §9.1 — vì sao nối bằng `claim_id`, không bao giờ bằng `claim_node_index`
+- [`proposals/EVALUATION_WITHOUT_LABELS.md`](./proposals/EVALUATION_WITHOUT_LABELS.md) §9.1 — vì sao nối bằng `claim_id`, không bao giờ bằng `claim_node_index`
 - Diggelmann et al. (2020), *CLIMATE-FEVER* — [arxiv.org/pdf/2012.00614](https://arxiv.org/pdf/2012.00614) — nhiệm vụ tương tự, κ người–người 0,684
 - Stammbach et al. (2023), *Environmental Claim Detection*, ACL — [aclanthology.org/2023.acl-short.91](https://aclanthology.org/2023.acl-short.91/) — khuôn mẫu guideline + adjudication

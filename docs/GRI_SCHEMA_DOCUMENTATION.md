@@ -1,9 +1,9 @@
 # Tài liệu Kỹ thuật Chi tiết GRI Master Schema (GRI Enterprise Schema Reference)
 
 > **Loại tài liệu:** Tài liệu Mô tả Kỹ thuật Schema (Technical Specification Reference)  
-> **File Schema gốc:** [`gri_schema.json`](file:///b:/capstone/newrepotest/capstone_test1/gri/full_gri/gri_schema.json)  
-> **Model Python Pydantic:** [`gri_schema.py`](file:///b:/capstone/newrepotest/capstone_test1/gri/full_gri/gri_schema.py)  
-> **Catalog dữ liệu:** [`manifest.json`](file:///b:/capstone/newrepotest/capstone_test1/gri/full_gri/manifest.json)
+> **File Schema gốc:** [`gri_schema.json`](../gri/full_gri/gri_schema.json)  
+> **Model Python Pydantic:** [`gri_schema.py`](../gri/full_gri/gri_schema.py)  
+> **Catalog dữ liệu:** [`manifest.json`](../gri/full_gri/manifest.json)
 
 ---
 

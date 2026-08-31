@@ -1,11 +1,12 @@
 # Entity resolution — purpose, reason and logic
 
-Scripts: [`src/step04_build_issuer_registry.py`](../src/step04_build_issuer_registry.py) (one-time issuer-registry
-bootstrap) → [`src/step05_resolve_entities.py`](../src/step05_resolve_entities.py) (the resolver).
-Engineering checklist: [`ENTITY_RESOLUTION_PLAN.md`](../ENTITY_RESOLUTION_PLAN.md).
+Scripts: [`src/esg_kg/registry/issuer.py`](../src/esg_kg/registry/issuer.py) (one-time issuer-registry
+bootstrap) → [`src/esg_kg/resolve/entities.py`](../src/esg_kg/resolve/entities.py) (the resolver).
+Engineering checklist: `ENTITY_RESOLUTION_PLAN.md` — **deleted from the repo**; recover it
+with `git show e903c1f^:ENTITY_RESOLUTION_PLAN.md`.
 
 This step takes the single clean triple list produced by
-[`step03_fix_invalid_triplets.py`](../src/step03_fix_invalid_triplets.py)
+[`step03_fix_invalid_triplets.py`](../src/esg_kg/graph/fix_triples.py)
 (`graph_output/validated/all_validated_triples.json`) and collapses the **many
 duplicate entity nodes** that per-page extraction inevitably creates into single
 **canonical entities**, while preserving each entity's temporal history. The output is a
@@ -170,7 +171,7 @@ the issuer, because their `name` strings genuinely differ. The issuer — the on
 report is about — is the backbone of the greenwashing cross-check, so its identity must be
 **deterministic, never decided by embeddings or an LLM**. We make it so with a *canonical
 issuer registry* (`config/issuer_registry.json`) built once by
-[`step04_build_issuer_registry.py`](../src/step04_build_issuer_registry.py).
+[`step04_build_issuer_registry.py`](../src/esg_kg/registry/issuer.py).
 
 Naïvely matching the issuer to the official name in `company_annual_report.xlsx` does **not**
 work: in the AAA corpus the official string `CTCP Nhựa An Phát Xanh` is not even among the
@@ -273,7 +274,7 @@ below is motivated by either the Vietnamese setting or the greenwashing goal.
 history *inline* as a `temporal_versions` array, which any JSON/Graph-RAG consumer can read
 directly. The schema also defines `supersedes` edges between entity versions; emitting those
 is kept as a forward option, to be decided alongside the graph-backend question (Neo4j vs
-JSON store) raised in [`VIETNAM_IMPROVEMENT_PLAN.md`](./VIETNAM_IMPROVEMENT_PLAN.md) (open
+JSON store) raised in [`proposals/VIETNAM_IMPROVEMENT_PLAN.md`](./proposals/VIETNAM_IMPROVEMENT_PLAN.md) (open
 question #1).
 
 ---
@@ -325,17 +326,17 @@ Two steps — bootstrap the issuer registry once (and review it), then resolve:
 ```bash
 # 0. Bootstrap config/issuer_registry.json, then open it and move each
 #    needs_review entry into "aliases" or "exclusions"
-python src/step04_build_issuer_registry.py
+python src/run.py issuer
 
 # 1a. Free offline preview: identity-key + frozen issuer anchor + normalized merge
 #     (no tokens, no writes)
-python src/step05_resolve_entities.py --dry-run
+python src/run.py entities --dry-run
 
 # 1b. Deterministic-only run (writes; no embeddings/LLM)
-python src/step05_resolve_entities.py --no-llm
+python src/run.py entities --no-llm
 
 # 1c. Full hybrid run
-python src/step05_resolve_entities.py --max-llm-pairs 400
+python src/run.py entities --max-llm-pairs 400
 ```
 
 ### `step05_resolve_entities.py` flags
@@ -368,5 +369,6 @@ python src/step05_resolve_entities.py --max-llm-pairs 400
 - [`TRIPLET_VALIDATION.md`](./TRIPLET_VALIDATION.md) — step 3, produces the validated triple list this step consumes.
 - [`TRIPLET_EXTRACTION_FROM_JSONL.md`](./TRIPLET_EXTRACTION_FROM_JSONL.md) — step 2, the per-page graphs.
 - [`SCHEMA_EXPLAINED.md`](./SCHEMA_EXPLAINED.md) — the ontology and the `identity_keys` rationale.
-- [`VIETNAM_IMPROVEMENT_PLAN.md`](./VIETNAM_IMPROVEMENT_PLAN.md) — broader Vietnam adaptation, incl. the graph-backend / `supersedes` question.
-- [`ENTITY_RESOLUTION_PLAN.md`](../ENTITY_RESOLUTION_PLAN.md) — the engineering build checklist for this step.
+- [`proposals/VIETNAM_IMPROVEMENT_PLAN.md`](./proposals/VIETNAM_IMPROVEMENT_PLAN.md) — broader Vietnam adaptation, incl. the graph-backend / `supersedes` question.
+- `ENTITY_RESOLUTION_PLAN.md` — the engineering build checklist for this step. **No longer in
+  the repo**: `git show e903c1f^:ENTITY_RESOLUTION_PLAN.md`.
