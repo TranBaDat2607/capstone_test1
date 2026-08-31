@@ -14,16 +14,14 @@ import sys
 from datetime import datetime
 from typing import Dict, List, Any, Optional
 
-# Set UTF-8 encoding for stdout on Windows
 if sys.platform == "win32":
     sys.stdout.reconfigure(encoding='utf-8')
 
 try:
-    import fitz  # PyMuPDF
+    import fitz
 except ImportError:
     fitz = None
 
-# Base Directory Setup
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 FULL_GRI_DIR = os.path.join(BASE_DIR, "full_gri")
 PDF_DIR = os.path.join(FULL_GRI_DIR, "Full set of GRI Standards - English")

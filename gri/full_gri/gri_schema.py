@@ -15,10 +15,6 @@ from datetime import datetime
 from pydantic import BaseModel, Field
 
 
-# ============================================================================
-# 1. ENUMS & CORE CONSTANTS
-# ============================================================================
-
 class NodeTier(str, Enum):
     """Phân tầng Node theo TEMPORAL_KG_DESIGN.md (§2)"""
     T1_IDENTITY = "T1 — Identity (Thực thể bền phi thời gian)"
@@ -42,14 +38,10 @@ class StandardStatus(str, Enum):
 
 
 class ReportingRequirementType(str, Enum):
-    QUANTITATIVE = "Quantitative"      # KPI số lượng (tấn CO2, kWh, %, người, VNĐ)
-    QUALITATIVE = "Qualitative"        # Chính sách, quy trình quản trị, cam kết
-    HYBRID = "Hybrid"                  # Kết hợp mô tả và số liệu
+    QUANTITATIVE = "Quantitative"
+    QUALITATIVE = "Qualitative"
+    HYBRID = "Hybrid"
 
-
-# ============================================================================
-# 2. SCHEMA DETAIL MODELS (Requirement -> Disclosure -> Scope -> Temporal)
-# ============================================================================
 
 class RequirementItem(BaseModel):
     """
@@ -81,7 +73,6 @@ class GRIDisclosure(BaseModel):
     recommendations_en: Optional[str] = Field(None, description="Khuyến nghị kỹ thuật (Tiếng Anh)")
     recommendations_vi: Optional[str] = Field(None, description="Khuyến nghị kỹ thuật (Tiếng Việt)")
     
-    # Ánh xạ đa tiêu chuẩn (Cross-framework Mapping)
     sdg_mapping: List[str] = Field(default_factory=list, description="Mapping tới UN SDG (SDG 12, SDG 13...)")
     esrs_mapping: List[str] = Field(default_factory=list, description="Mapping tới ESRS (ESRS E1-6...)")
     issb_mapping: List[str] = Field(default_factory=list, description="Mapping tới IFRS S1/S2")
@@ -118,10 +109,6 @@ class ProvenanceMetadata(BaseModel):
     indexed_at: str = Field(default_factory=lambda: datetime.now().isoformat(), description="Thời điểm index ISO timestamp")
 
 
-# ============================================================================
-# 3. MASTER GRI STANDARD GRAPH NODE MODEL
-# ============================================================================
-
 class GRIStandard(BaseModel):
     """
     Cấu trúc dữ liệu Tiêu chuẩn GRI hoàn chỉnh hợp nhất
@@ -143,10 +130,6 @@ class GRIStandard(BaseModel):
     disclosures: List[GRIDisclosure] = Field(default_factory=list, description="Danh sách các chỉ số công bố")
 
 
-# ============================================================================
-# 4. NEO4J GRAPH MAPPING HELPER FUNCTIONS
-# ============================================================================
-
 def generate_cypher_ingestion(std: GRIStandard) -> List[str]:
     """
     Sinh các câu lệnh Cypher để nhập Tiêu chuẩn GRI vào Neo4j theo chuẩn TEMPORAL_KG_DESIGN.md
@@ -155,7 +138,6 @@ def generate_cypher_ingestion(std: GRIStandard) -> List[str]:
     """
     statements = []
     
-    # 1. Create T1 Identity Node (:Standard)
     cypher_t1 = f"""
     MERGE (s:Standard {{standard_id: '{std.standard_id}'}})
     ON CREATE SET 
@@ -167,7 +149,6 @@ def generate_cypher_ingestion(std: GRIStandard) -> List[str]:
     """
     statements.append(cypher_t1.strip())
     
-    # 2. Create T3 Version Node (:StandardVersion) & Relationship (:Standard)-[:HAS_VERSION]->(:StandardVersion)
     v = std.temporal_validity
     cypher_t3_ver = f"""
     MERGE (v:StandardVersion {{version_id: '{v.version_id}'}})
@@ -185,7 +166,6 @@ def generate_cypher_ingestion(std: GRIStandard) -> List[str]:
     """
     statements.append(cypher_t3_ver.strip())
     
-    # 3. Create Supersedes Relationship if applicable
     if v.replaced_by_standard_id:
         cypher_supersede = f"""
         MATCH (new_v:StandardVersion {{version_id: '{v.version_id}'}})
@@ -196,7 +176,6 @@ def generate_cypher_ingestion(std: GRIStandard) -> List[str]:
         """
         statements.append(cypher_supersede.strip())
 
-    # 4. Create Disclosures & Requirements
     for disc in std.disclosures:
         cypher_disc = f"""
         MERGE (d:GRIDisclosure {{disclosure_id: '{disc.disclosure_id}'}})
