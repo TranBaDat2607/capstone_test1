@@ -39,7 +39,6 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO / "src"))
 
-# --- new: the esg_kg package ---------------------------------------------------
 from esg_kg.core import identity as new_identity  # noqa: E402
 from esg_kg.core.schema import get_identity_keys  # noqa: E402
 from esg_kg.graph import anchor_kpi as new_anchor  # noqa: E402
@@ -49,10 +48,6 @@ from _fixture_paths import resolve_artifact, skip_if_fixture, tag  # noqa: E402
 
 TRIPLES_FILE = REPO / "graph_output" / "validated" / "all_validated_triples.json"
 
-# Corpus arms READ from here: the real artifact when the HF snapshot is pulled,
-# otherwise the committed synthetic fixture (test/fixtures/) so the arm runs on a
-# bare clone instead of silently skipping. The canonical constant above stays put
-# because wiring assertions compare the stage's own DEFAULT_* against it.
 VALIDATED_DATA, VALIDATED_IS_FIXTURE = resolve_artifact("validated")
 
 
@@ -87,12 +82,6 @@ def iter_nodes(triples: list):
                 yield node
 
 
-# --------------------------------------------------------------------------- #
-# core/identity.py — parse_source_id  <- step03b:98
-# --------------------------------------------------------------------------- #
-
-# Hand-picked inputs covering every RETURN PATH, so the arm holds even on a bare clone
-# where the corpus is absent. The real-corpus arm below adds volume, not new branches.
 SOURCE_ID_EDGE_CASES = [
     "AAA_Baocaothuongnien_2011.pdf_10_1",   # canonical <src>_<page>_<idx>
     "AAA_Baocaothuongnien_2011.pdf_0_0",    # zeros are valid, not falsy-skipped
@@ -114,7 +103,6 @@ def test_identity_parse_source_id_matches_src_on_edge_cases():
     for sid in SOURCE_ID_EDGE_CASES:
         new_identity.parse_source_id(sid)  # must not raise for any shape, incl. None/int
 
-    # not vacuous: both the parsed and the None path really fired
     parsed = [s for s in SOURCE_ID_EDGE_CASES if new_identity.parse_source_id(s) is not None]
     assert len(parsed) == 3, f"expected 3 parseable edge cases, got {parsed}"
     assert new_identity.parse_source_id("a_b_c_12_345") == ("a_b_c", 12, 345)
@@ -142,18 +130,12 @@ def test_identity_parse_source_id_matches_src_on_the_real_corpus():
     print(f"     ({len(sids)} real source_ids, {n_parsed} parseable)")
 
 
-# --------------------------------------------------------------------------- #
-# core/identity.py — get_stable_entity_id  <- step02:104
-# --------------------------------------------------------------------------- #
 def test_identity_get_stable_entity_id_matches_src_on_the_real_corpus():
     """The id every downstream dedup keys on. A drift here silently re-partitions the graph."""
     triples = load_triples()
     if not triples:
         _skip("identity/stable_entity_id", f"{TRIPLES_FILE.name} absent (data_sync pull)")
         return
-    # Tier B: the non-vacuity bar here is real corpus scale (>1000 nodes, hence
-    # many distinct identity_keys shapes). A 24-node fixture cannot clear it, and
-    # dropping the bar would defeat the check it exists to make.
     if VALIDATED_IS_FIXTURE:
         _skip("identity/stable_entity_id", skip_if_fixture(True))
         return
@@ -166,7 +148,6 @@ def test_identity_get_stable_entity_id_matches_src_on_the_real_corpus():
         seen_classes.add(node.get("class"))
         n += 1
 
-    # not vacuous: many classes, hence many different identity_keys shapes, were exercised
     assert n > 1000, f"only {n} nodes compared"
     assert len(seen_classes) > 5, f"only {len(seen_classes)} classes exercised: {seen_classes}"
     print(f"     ({n} real nodes across {len(seen_classes)} classes)")
@@ -186,19 +167,13 @@ def test_identity_get_stable_entity_id_matches_src_on_shapes_the_corpus_lacks():
     for entity in cases:
         new_identity.get_stable_entity_id(entity, keys_map)  # must not raise for any shape
 
-    # pin the two defaults explicitly, so a change to them fails loudly
     assert new_identity.get_stable_entity_id({"properties": {"name": "y"}}, keys_map) == "Unknown|y"
     assert new_identity.get_stable_entity_id(
         {"class": "Organization", "properties": {"name": "  An Phat  "}}, keys_map
     ) == "Organization|an phat"
 
 
-# --------------------------------------------------------------------------- #
-# core/identity.py — PROVENANCE_CLASSES  <- step02:501
-# --------------------------------------------------------------------------- #
 def test_identity_provenance_classes_matches_src():
-    # it is a set of real schema classes, and it deliberately excludes T1 entities
-    # (PROVENANCE_PATCH.md: a merged Organization has no single source page)
     schema_classes = {n["class"] for n in load_schema()["nodes"]}
     unknown = new_identity.PROVENANCE_CLASSES - schema_classes
     assert not unknown, f"PROVENANCE_CLASSES names classes absent from schema.json: {unknown}"
@@ -206,12 +181,8 @@ def test_identity_provenance_classes_matches_src():
         assert t1 not in new_identity.PROVENANCE_CLASSES, f"{t1} must not be stamped per-page"
 
 
-# --------------------------------------------------------------------------- #
-# graph/anchor_kpi.py  <- step03b, the stage itself
-# --------------------------------------------------------------------------- #
 def test_anchor_module_constants_match_src():
     """The gates that decide what enters the gazetteer. Silent to change, loud in the output."""
-    # the paths must be the REAL ones, not a temp dir the new tree invented
     assert new_anchor.DEFAULT_TRIPLES == TRIPLES_FILE
     assert new_anchor.DEFAULT_SCHEMA == SCHEMA_FILE
 
@@ -220,7 +191,6 @@ def test_anchor_prop_richness_matches_src():
     for props in [{}, {"a": 1}, {"a": None, "b": ""}, {"a": 0, "b": False},
                   {"name": "x", "value": None, "unit": "t"}]:
         new_anchor.prop_richness(props)  # must not raise for any shape
-    # 0 and False are NOT empty — the `not in (None, "")` test, not truthiness
     assert new_anchor.prop_richness({"a": 0, "b": False}) == 2
 
 
@@ -243,8 +213,6 @@ def test_anchor_collect_inventory_matches_src_on_the_real_corpus():
     print(f"     {tag(VALIDATED_IS_FIXTURE)} anchor/collect_inventory")
     new_f, new_k, new_a = new_anchor.collect_inventory(copy.deepcopy(triples))
 
-    # not vacuous, and the name gates really gated: raw Facility nodes far outnumber
-    # the gazetteer entries that survive MIN_NAME_CHARS / MIN_NAME_TOKENS / GENERIC_NAMES
     raw = {(n.get("properties") or {}).get("name")
            for n in iter_nodes(triples) if n.get("class") == "Facility"}
     assert len(new_f) > 0 and len(new_k) > 0, (len(new_f), len(new_k))
@@ -286,7 +254,6 @@ def test_anchor_build_patch_matches_src_on_the_real_corpus():
     new_t, new_stats = new_anchor.build_patch(
         copy.deepcopy(triples), dict(sentences), schema, cap)
 
-    # not vacuous: real anchors were actually minted, and they are the edge P3 wants
     assert new_stats["new_anchor_triples"] > 0, new_stats
     assert new_stats["facility_gazetteer_size"] > 0, new_stats
     assert all(t["predicate"] == "observedAtFacility" for t in new_t)
@@ -315,7 +282,6 @@ def test_anchor_build_patch_matches_src_on_the_hub_guard():
     new_t, new_stats = new_anchor.build_patch(
         copy.deepcopy(triples), dict(sentences), schema, 1)
 
-    # the branch really fired: some facility exceeded the cap and was dropped whole
     assert new_stats["facilities_over_cap"], "cap=1 tripped no facility — arm is vacuous"
     assert new_stats["new_anchor_triples"] < new_stats["raw_matches"], new_stats
     print(f"     (cap=1 dropped {len(new_stats['facilities_over_cap'])} facilities, "

@@ -34,10 +34,6 @@ def _load_run_py():
 run = _load_run_py()
 STAGES = run.STAGES
 
-# No stage currently sits in this state — `pipeline.py`'s own note records that the three
-# stages that were ever considered for it (step10, step04b, step07b) were all REMOVED
-# outright instead, precisely so a not-ported row never becomes permanent dead weight.
-# The mechanism (module=None) and its tests stay, so a future decision has somewhere to go.
 EXPECTED_NOT_PORTED = set()
 
 
@@ -98,12 +94,6 @@ def test_resolve_finds_a_not_ported_stage_by_its_old_id():
         assert hit[2] is None, f"{order} resolved to a module path {hit[2]!r}, expected None"
 
 
-# --------------------------------------------------------------------------- #
-# Blocks (DESIGN.md §5.7): several stages collapsed into one unit that writes its
-# artifact once. A block is NOT a stage — it has no `src/` counterpart by design,
-# because `src/` deliberately keeps the stages separate (Model A). So it needs its
-# own table and its own contract, or the stage arms above would reject it.
-# --------------------------------------------------------------------------- #
 def test_blocks_table_exists():
     assert hasattr(run, "BLOCKS"), "pipeline.py must expose BLOCKS for the §5.7 block design"
 

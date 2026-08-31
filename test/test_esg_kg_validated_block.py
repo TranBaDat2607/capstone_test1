@@ -95,15 +95,6 @@ def run_block(out_dir: pathlib.Path, **kw):
         input_dir=GRAPHS_DIR, out_dir=out_dir, schema=load_schema(), **kw)
 
 
-# --------------------------------------------------------------------------- #
-# 1. The block's own output, on the real corpus.
-#
-# This used to ALSO assert the block's artifact was byte-identical to the src/
-# 03->03b->03c chain run as an oracle on a temp copy (DESIGN.md §5.7's whole safety
-# argument). That comparison is gone with src/ (repointed 2026-07-29) — but the
-# concrete claims below about the block's OWN output (corpus really read, both
-# sub-stages really contributed) do not depend on the oracle and are kept.
-# --------------------------------------------------------------------------- #
 def test_block_output_is_well_formed_on_the_real_corpus():
     if not have_corpus():
         return _skip("block real corpus", "graph_output/graphs/ not present")
@@ -126,9 +117,6 @@ def test_block_output_is_well_formed_on_the_real_corpus():
     print(f"     ({len(got)} triples, {anchors} anchors, {kpi_ids} kpi_id)")
 
 
-# --------------------------------------------------------------------------- #
-# 2. The design property being ADDED: one write, no intermediate state.
-# --------------------------------------------------------------------------- #
 def _record_writes():
     """Wrap Path.write_text so we can see every file the block touches, in order."""
     calls = []
@@ -157,14 +145,10 @@ def test_block_writes_the_artifact_exactly_once():
 
     n = calls.count(ARTIFACT)
     assert n == 1, f"the block wrote {ARTIFACT} {n} time(s); the whole point is exactly 1"
-    # and it must be the LAST thing written, i.e. no stage reads it back afterwards
     assert calls[-1] == ARTIFACT or ARTIFACT in calls, calls
     print(f"     (writes: {calls})")
 
 
-# --------------------------------------------------------------------------- #
-# 3. The paid-result cache — the thing the block must NOT swallow.
-# --------------------------------------------------------------------------- #
 def _tampering_llm_factory(counter):
     def llm(batch, schema, client, rate_limiter, model, cached_content=None):
         counter.append(len(batch))
@@ -247,7 +231,6 @@ def test_cached_repairs_apply_with_no_llm_available_at_all():
                 client=object(), llm=_tampering_llm_factory([]), cache_path=cache)
             paid = json.loads((out_dir / ARTIFACT).read_text(encoding="utf-8"))
 
-            # now: no client, no llm — offline rebuild
             build_validated.run_block(
                 input_dir=graphs, out_dir=out_dir, schema=load_schema(),
                 client=None, cache_path=cache)
@@ -285,9 +268,6 @@ def test_the_value_guard_still_applies_inside_the_block():
         "the block wrote the LLM's translated name — the guard is not wired into it")
 
 
-# --------------------------------------------------------------------------- #
-# 4. What the block must NOT take away (DESIGN.md §5.7).
-# --------------------------------------------------------------------------- #
 def test_individual_stages_remain_runnable():
     """Collapsing into a block ADDS an entry point; it must not delete the stage ones,
     or the ability to diagnose one stage in isolation goes with them."""

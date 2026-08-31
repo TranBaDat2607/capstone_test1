@@ -60,15 +60,9 @@ sys.path.insert(0, str(REPO / "src"))
 
 from google.genai import errors as genai_errors  # noqa: E402
 
-# --- new: the esg_kg package ---------------------------------------------------
 from esg_kg.core import llm as new_llm  # noqa: E402
 
 
-# --------------------------------------------------------------------------- #
-# A fake clock. Both trees call `time.time()` / `time.sleep()` through their own
-# module-global `time`, so swapping that attribute isolates one tree at a time and
-# lets the throttle be driven deterministically without ever really sleeping.
-# --------------------------------------------------------------------------- #
 class FakeClock:
     def __init__(self, start: float = 1_000.0) -> None:
         self.now = start
@@ -104,8 +98,6 @@ def drive_limiter(module, limiter_cls, max_calls: int, script) -> tuple:
         module.time = original
 
 
-# A single script exercising: filling the window, tripping the wait, the post-sleep
-# re-eviction, an idle gap that empties the window, and a second client's independence.
 SCRIPT = [
     (0, 0), (0, 0), (0, 0),      # fill a 3-call window instantly
     (0, 0),                      # -> must sleep ~60.1
@@ -120,7 +112,6 @@ def test_rate_limiter_behaviour_is_identical():
     """The throttle is arithmetic over a clock — pin its exact trace/sleep schedule."""
     new_trace, new_sleeps = drive_limiter(new_llm, new_llm.RateLimiter, 3, SCRIPT)
 
-    # ...and the arm is not vacuous: the wait branch really fired, for BOTH clients.
     assert len(new_sleeps) == 2, f"expected the window to trip twice, got {new_sleeps}"
     for s in new_sleeps:
         assert abs(s - 60.1) < 1e-6, f"wait_time formula changed: {s}"
@@ -249,7 +240,6 @@ def test_gemini_provider_request_shape():
         else:
             os.environ["GEMINI_API_KEY"] = saved
 
-    # The shape itself, spelled out so a regression names the field it broke.
     assert new_req["model"] == "gemini-2.5-flash", new_req["model"]
     assert new_req["contents"] == "USER PROMPT", new_req["contents"]
     cfg = new_req["config"]
@@ -257,7 +247,6 @@ def test_gemini_provider_request_shape():
     assert cfg.response_mime_type == "application/json", cfg.response_mime_type
     assert cfg.temperature == 0, "temperature must stay 0 (determinism)"
 
-    # The reply is stripped, and the throttle is consulted BEFORE the request goes out.
     assert new_out == '{"verdict": "supports"}', repr(new_out)
     assert new_log == [("wait", 0), "create"], f"throttle must precede the request: {new_log}"
     print("     (request shape, strip, and wait->create ordering pinned)")
@@ -414,11 +403,6 @@ def test_gemini_provider_does_not_retry_client_error():
     print("     (4xx ClientError is NOT retried — fails fast)")
 
 
-# --------------------------------------------------------------------------- #
-# _DeepSeekProvider (swappable alternative to _GeminiProvider — OpenAI-compatible
-# REST API, no SDK dependency: stub `requests.post` the same way the Gemini arm
-# stubs `client.models.generate_content`).
-# --------------------------------------------------------------------------- #
 def _without_env_key(name: str):
     """Same restore-callable shape as `_without_gemini_key`, generalised to any var."""
     saved = os.environ.pop(name, None)
@@ -540,11 +524,6 @@ def test_deepseek_provider_survives_an_empty_choices_reply():
     print("     (choices=[] -> '')")
 
 
-# --------------------------------------------------------------------------- #
-# _OpenAIProvider (2026-08-06 re-add, opt-in for claims_vs_conduct only — see
-# core/llm.py's docstring). Same OpenAI-compatible REST shape as _DeepSeekProvider:
-# stub `requests.post`, no `openai` SDK dependency.
-# --------------------------------------------------------------------------- #
 def test_openai_provider_accepts_an_explicit_key():
     restore = _without_env_key("OPENAI_API_KEY")
     try:
@@ -621,11 +600,6 @@ def test_openai_provider_survives_an_empty_choices_reply():
     print("     (choices=[] -> '')")
 
 
-# --------------------------------------------------------------------------- #
-# build_llm_provider() — the one factory every stage should call instead of
-# hardcoding `_GeminiProvider(...)`, so "which provider" is a single switch
-# (LLM_PROVIDER env var / an explicit override) rather than N copies.
-# --------------------------------------------------------------------------- #
 def test_build_llm_provider_selects_gemini_by_default():
     restore = _without_env_key("LLM_PROVIDER")
     try:

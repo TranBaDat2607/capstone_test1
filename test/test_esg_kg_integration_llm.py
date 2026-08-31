@@ -117,7 +117,6 @@ def test_full_llm_chain_on_bbb_fixture():
         client = genai.Client(api_key=api_key)
         rl = RateLimiter(max_calls_per_minute=60)
 
-        # --- step01: KPI extraction (real LLM) ------------------------------------
         kpi_out = tmp / "kpi_output"
         extractor = kpi_extract.KPIExtractor(KPI_DEFS, model=model)
         docs = load_pages_from_jsonl(REPORT_INPUT)
@@ -125,8 +124,6 @@ def test_full_llm_chain_on_bbb_fixture():
         assert selected == ["BBB_Baocaothuongnien_2024.pdf"], selected
         total_kpis = extractor.process_document(
             selected[0], docs[selected[0]], kpi_out, esg_only=True, max_workers=2)
-        # process_document writes a file for EVERY page (all 4) — non-ESG pages (page 1)
-        # get [] without a real LLM call; only the 3 esg-flagged pages are real calls.
         kpi_files = sorted((kpi_out / "BBB_Baocaothuongnien_2024_kpis").glob("page_*_kpis.json"))
         assert len(kpi_files) == 4, f"expected 4 page file(s) (1 skipped + 3 esg), got {len(kpi_files)}"
         for f in kpi_files:
@@ -136,10 +133,7 @@ def test_full_llm_chain_on_bbb_fixture():
         print(f"PASS step01 (gemini): {total_kpis} KPI(s) extracted across {len(kpi_files)} page file(s) "
               f"(3 esg-flagged pages sent to the LLM)")
 
-        # --- step02: triple extraction (real LLM), report + news -----------------
         graphs_out = tmp / "graph_output"
-        # like step01, process_document counts EVERY page as "succeeded" (all 4 —
-        # 1 auto-empty non-ESG page + 3 real LLM calls), not just the ESG-flagged ones.
         r_success, r_failed = extract_triples.process_document(
             selected[0], docs[selected[0]], kpi_out, graphs_out, schema, model,
             client, rl, esg_only=True, max_workers=2, source="report")
@@ -167,7 +161,6 @@ def test_full_llm_chain_on_bbb_fixture():
         print(f"PASS step02 (gemini): {total_nodes} node(s) / {total_edges} edge(s) across "
               f"{len(graph_files)} page file(s) (report + news)")
 
-        # --- build_validated block (03 -> 03b -> 03c), real LLM phase-2 repair ---
         validated_out = tmp / "validated"
         fix_stats = build_validated.run_block(
             input_dir=graphs_out / "graphs", out_dir=validated_out, schema=schema,
@@ -178,7 +171,6 @@ def test_full_llm_chain_on_bbb_fixture():
         assert len(triples) > 0, "build_validated produced zero triples"
         print(f"PASS build_validated (gemini): {len(triples)} triple(s), fix stats={fix_stats['fix']}")
 
-        # --- step04: issuer registry draft (offline; scratch xlsx + output) ------
         companies_xlsx = _make_companies_xlsx(tmp)
         issuer_out = tmp / "issuer_registry.json"
         issuer.build(validated_file, companies_xlsx, issuer_out,
@@ -189,9 +181,6 @@ def test_full_llm_chain_on_bbb_fixture():
         print(f"PASS issuer (offline): drafted {sorted(registry)} "
               f"({len(registry['BBB']['aliases'])} aliases, {len(registry['BBB']['needs_review'])} needs_review)")
 
-        # --- build_resolved block (05 -> 05b -> 05c) ------------------------------
-        # --no-llm matches step05's actual production default today (embeddings
-        # dormant per CLAUDE.md) — this integration test does not exercise Stage B/C.
         resolved_out = tmp / "resolved"
         resolve_stats = build_resolved.run_block(
             input_path=validated_file, out_dir=resolved_out, schema=schema,
@@ -208,7 +197,6 @@ def test_full_llm_chain_on_bbb_fixture():
               f"{len(resolved['nodes'])} node(s) / {len(resolved['edges'])} edge(s), "
               f"{len(orgs)} Organization node(s), ticker(s) stamped: {tickers or '(none)'}")
 
-        # --- step05d: align remaining claims to indicators (real LLM) ------------
         align_args = argparse.Namespace(
             input=resolved_file, defs=INDICATOR_DEFS, schema=SCHEMA_PATH,
             max_llm_pairs=5, model=model, rate_limit=60,
@@ -218,7 +206,6 @@ def test_full_llm_chain_on_bbb_fixture():
         align_stats = json.loads(align_args.stats_out.read_text(encoding="utf-8"))
         print(f"PASS align_claims (gemini): {align_stats}")
 
-        # --- step07: claim <-> conduct crosscheck (real LLM, mandatory) ----------
         dossier_dir = tmp / "crosscheck"
         cc_args = argparse.Namespace(
             input=resolved_file, schema=SCHEMA_PATH, out_dir=dossier_dir, ticker="BBB",

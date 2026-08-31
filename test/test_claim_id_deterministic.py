@@ -173,12 +173,6 @@ def test_real_corpus_claim_ids_stay_unique():
     )
 
 
-# --------------------------------------------------------------------------- #
-# Sentence-position anchoring (GRAPH_IMPROVEMENT_PLAN.md follow-up to C1):
-# reduce the residual risk that the hash above still depends on the LLM's raw
-# copied `description` text, by anchoring to the page's real JSONL sentence
-# row(s) instead where a confident match can be found.
-# --------------------------------------------------------------------------- #
 LONG_ROW = (
     "Trong năm 2023, Hội đồng quản trị cùng Ban điều hành Công ty đã chỉ đạo các "
     "phòng chức năng thực hiện nhiều hoạt động xã hội có ý nghĩa, trong đó tiêu biểu "

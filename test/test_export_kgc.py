@@ -42,10 +42,6 @@ def _skip(name: str, why: str) -> None:
     print(f"SKIP {name} — {why}")
 
 
-# --------------------------------------------------------------------------- #
-# Synthetic 2-issuer fixture
-# --------------------------------------------------------------------------- #
-
 def build_fixture():
     """Two issuers: AAA (15 edges touching its hub node -> exceeds a threshold of
     10) and BBB (3 edges -> stays under threshold, must be left untouched).
@@ -177,7 +173,6 @@ def test_synthetic_flags_present_on_new_nodes_and_edges_only():
             n_synthetic_edges += 1
             assert "original_subject" in e or "original_object" in e
 
-    # 15 rerouted AAA edges + 3 bucketOf summary edges = 18 synthetic edges total
     assert n_synthetic_edges == 18, n_synthetic_edges
 
     untouched = [e for e in new_edges if e["subject"] in (17, 18, 19)]
@@ -194,10 +189,6 @@ def test_hubbucket_never_added_to_real_schema():
     raw = json.dumps(schema)
     assert "HubBucket" not in raw
 
-
-# --------------------------------------------------------------------------- #
-# Real AAA corpus (skips gracefully if the HF snapshot isn't pulled locally)
-# --------------------------------------------------------------------------- #
 
 def test_real_corpus_reduces_max_degree_and_never_touches_the_input_file():
     if not RESOLVED_FILE.exists():

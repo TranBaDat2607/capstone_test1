@@ -59,10 +59,8 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO / "src"))
 
-# --- the esg_kg package -----------------------------------------------------------
 from esg_kg.registry import issuer as new_issuer  # noqa: E402
 
-# --- the kernel the new tree must be REUSING, not re-copying --------------------
 from esg_kg.core import naming as core_naming  # noqa: E402
 from esg_kg.core.paths import REPO_ROOT as CORE_REPO_ROOT  # noqa: E402
 
@@ -70,10 +68,6 @@ from _fixture_paths import resolve_artifact, skip_if_fixture, tag  # noqa: E402
 
 TRIPLES_FILE = REPO / "graph_output" / "validated" / "all_validated_triples.json"
 
-# Corpus arms READ from here: the real artifact when the HF snapshot is pulled,
-# otherwise the committed synthetic fixture (test/fixtures/) so the arm runs on a
-# bare clone instead of silently skipping. The canonical constant above stays put
-# because wiring assertions compare the stage's own DEFAULT_* against it.
 VALIDATED_DATA, VALIDATED_IS_FIXTURE = resolve_artifact("validated")
 
 COMPANIES_FILE = REPO / "config" / "company_annual_report.xlsx"
@@ -110,9 +104,6 @@ def load_triples() -> list:
     return _cache["triples"]
 
 
-# --------------------------------------------------------------------------- #
-# 0. The new tree must not re-copy the naming kernel.
-# --------------------------------------------------------------------------- #
 def test_issuer_reuses_naming_kernel_not_re_copies_it():
     assert new_issuer.normalize_name is core_naming.normalize_name
     assert new_issuer.name_tokens is core_naming.name_tokens
@@ -120,16 +111,12 @@ def test_issuer_reuses_naming_kernel_not_re_copies_it():
 
 
 def test_issuer_module_constants_match_src():
-    # the paths must be the REAL ones, not a temp dir the new tree invented
     assert new_issuer.DEFAULT_INPUT == TRIPLES_FILE
     assert new_issuer.DEFAULT_COMPANIES == COMPANIES_FILE
     assert new_issuer.DEFAULT_OUTPUT == REAL_REGISTRY_FILE
     assert CORE_REPO_ROOT == REPO
 
 
-# --------------------------------------------------------------------------- #
-# 1. Pure stage-local helpers.
-# --------------------------------------------------------------------------- #
 NODE_IDENTIFIER_CASES = [
     "bare string",
     {"properties": {}},
@@ -148,7 +135,6 @@ def test_get_node_identifier_matches_src():
     for node in NODE_IDENTIFIER_CASES:
         got = new_issuer.get_node_identifier(copy.deepcopy(node))
         assert isinstance(got, str), f"get_node_identifier({node!r}) returned non-str: {got!r}"
-    # not vacuous: the priority list, the None/blank skip, and the non-dict path all fired
     assert new_issuer.get_node_identifier("bare string") == "bare string"
     assert new_issuer.get_node_identifier({"properties": {"name": "  An Phat  "}}) == "An Phat"
     assert new_issuer.get_node_identifier({"properties": {"unknown_key": "fallback value"}}) \
@@ -167,7 +153,6 @@ def test_issuer_core_tokens_matches_src():
     for n in names:
         got = new_issuer.issuer_core_tokens(n)
         assert isinstance(got, set), f"issuer_core_tokens({n!r}) returned non-set: {got!r}"
-    # not vacuous: legal-form + generic-token stripping actually dropped tokens
     core = new_issuer.issuer_core_tokens("CÔNG TY CỔ PHẦN NHỰA VÀ MÔI TRƯỜNG XANH AN PHÁT")
     assert "cong" not in core and "ty" not in core, core
     assert "an" in core and "phat" in core, core
@@ -189,15 +174,11 @@ def test_graph_similarity_matches_src():
         got = new_issuer.graph_similarity(set(a), set(b))
         assert isinstance(got, float), f"graph_similarity({a}, {b}) returned non-float: {got!r}"
         assert 0.0 <= got <= 1.0, f"graph_similarity({a}, {b}) out of [0,1]: {got!r}"
-    # not vacuous: identical signatures -> 1.0, disjoint -> 0.0, empty/empty -> 0.0
     assert new_issuer.graph_similarity({("reportsKPI", "x")}, {("reportsKPI", "x")}) == 1.0
     assert new_issuer.graph_similarity({("subjectToPenalty", "p")}, {("locatedIn", "y")}) == 0.0
     assert new_issuer.graph_similarity(set(), set()) == 0.0
 
 
-# --------------------------------------------------------------------------- #
-# 2. Real-artifact arms.
-# --------------------------------------------------------------------------- #
 def test_load_ticker_official_names_matches_src_on_the_real_xlsx():
     if not COMPANIES_FILE.exists():
         _skip("issuer/load_ticker_official_names", "config/company_annual_report.xlsx absent")
@@ -344,16 +325,10 @@ def test_build_never_touches_the_real_tracked_registry():
         _skip("issuer/build-safety", "config/issuer_registry.json absent")
         return
     before = REAL_REGISTRY_FILE.read_text(encoding="utf-8")
-    # (test_build_matches_src_on_a_temp_workspace already ran; this just re-asserts
-    #  the real file is untouched by this whole test module)
     after = REAL_REGISTRY_FILE.read_text(encoding="utf-8")
     assert before == after, "the real, tracked issuer_registry.json was modified by the tests!"
 
 
-# --------------------------------------------------------------------------- #
-# 3. merge_preserving_edits, exercised through build() with a pre-existing registry
-#    (the whole reason the function exists — confirmed edits must survive a re-run).
-# --------------------------------------------------------------------------- #
 def test_build_preserves_human_edits_across_a_rerun():
     """merge_preserving_edits' whole reason for existing: a human-made edit (moving a
     needs_review entry into exclusions) must survive a re-run without --force."""
@@ -373,7 +348,6 @@ def test_build_preserves_human_edits_across_a_rerun():
                 _skip("issuer/build-preserve-edits", "registry came out empty")
                 return
 
-            # simulate a human moving one needs_review entry into exclusions, by hand
             reg = json.loads(new_out.read_text(encoding="utf-8"))
             entry = reg[some_ticker]
             if not entry["needs_review"]:
@@ -383,7 +357,6 @@ def test_build_preserves_human_edits_across_a_rerun():
             entry["exclusions"].append({"name": moved["name"], "reason": "human: false positive"})
             new_out.write_text(json.dumps(reg, ensure_ascii=False), encoding="utf-8")
 
-            # re-run WITHOUT --force: the human edit must survive
             new_issuer.build(VALIDATED_DATA, COMPANIES_FILE, new_out,
                               new_issuer.DEFAULT_MIN_SUBJECT_EDGES, False, 0.8, 0.2)
             got = json.loads(new_out.read_text(encoding="utf-8"))
@@ -399,17 +372,6 @@ def test_build_preserves_human_edits_across_a_rerun():
     print(f"     (human edit on {some_ticker!r} survived a re-run)")
 
 
-# --------------------------------------------------------------------------- #
-# 4. DESIGN.md §5.2 "VI PHẠM": step04:428's dead `{nodes,edges}` sniff.
-# --------------------------------------------------------------------------- #
-# step03 / build_validated always write all_validated_triples.json as a flat
-# List[dict] (step03:545,622); step05 reads that exact file with no sniffing at
-# all. build()'s `{nodes,edges}` branch therefore never fires on any real input —
-# it is dead code pretending the input format is uncertain when it is not, flagged
-# for removal at exactly this migration ("xoá khi dời step04, đọc theo đúng một
-# hợp đồng"). Fixed in BOTH trees per DESIGN.md §5.3: a dict-shaped input must now
-# fail loudly (AttributeError, iterating dict keys as fake triples) instead of
-# being silently reinterpreted as a graph.
 NODES_EDGES_SHAPE = {
     "nodes": [{"class": "Organization", "properties": {"name": "Test Co"}}],
     "edges": [{"subject": 0, "object": 0, "predicate": "publishesReport"}],

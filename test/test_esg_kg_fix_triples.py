@@ -53,10 +53,8 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO / "src"))
 
-# --- the esg_kg package ---------------------------------------------------------
 from esg_kg.graph import fix_triples as new_fix  # noqa: E402
 
-# --- the kernel the new tree must be REUSING, not re-copying -------------------
 from esg_kg.core import dates as core_dates  # noqa: E402
 from esg_kg.core import llm as core_llm  # noqa: E402
 from esg_kg.core import schema as core_schema  # noqa: E402
@@ -67,10 +65,6 @@ from _fixture_paths import resolve_artifact, skip_if_fixture, tag  # noqa: E402
 
 VALIDATED_FILE = REPO / "graph_output" / "validated" / "all_validated_triples.json"
 
-# Corpus arms READ from here: the real artifact when the HF snapshot is pulled,
-# otherwise the committed synthetic fixture (test/fixtures/) so the arm runs on a
-# bare clone instead of silently skipping. The canonical constant above stays put
-# because wiring assertions compare the stage's own DEFAULT_* against it.
 VALIDATED_DATA, VALIDATED_IS_FIXTURE = resolve_artifact("validated")
 
 
@@ -142,17 +136,11 @@ def _triple(subj_props=None, obj_props=None, predicate="ownsFacility"):
     }
 
 
-# --------------------------------------------------------------------------- #
-# 1. Module surface — these run on a bare clone.
-# --------------------------------------------------------------------------- #
 def test_fix_triples_module_constants_match_src():
     """Pinned against concrete expected values (not a cross-tree comparison)."""
-    # the paths must be the REAL ones, not something the new tree invented
     assert new_fix.DEFAULT_INPUT_DIR == GRAPHS_DIR
     assert new_fix.DEFAULT_SCHEMA == SCHEMA_FILE
     assert new_fix.DEFAULT_OUT_DIR == REPO / "graph_output" / "validated"
-    # DEFAULT_MODEL is re-exported from core.llm (env-driven, GEMINI_MODEL); pin its
-    # value there instead of duplicating the fallback string here.
     assert new_fix.DEFAULT_MODEL == core_llm.DEFAULT_MODEL
     assert new_fix.DEFAULT_BATCH_SIZE == 25
     assert new_fix.DEFAULT_RATE_LIMIT == 10
@@ -179,14 +167,12 @@ def test_fix_triples_keeps_its_own_rate_limit_constant():
         assert "DEFAULT_RATE_LIMIT" not in ln, (
             f"DEFAULT_RATE_LIMIT must not be imported from core/llm: {ln!r} — "
             "that couples step03's rate limit to step02's")
-    # They agree today; the point is that they are free to diverge.
     assert new_fix.DEFAULT_RATE_LIMIT == core_llm.DEFAULT_RATE_LIMIT == 10
 
 
 def test_batch_fix_prompt_is_byte_identical():
     """The PAID prompt. A reworded prompt still 'works' while changing every repair,
     and phase 2 cannot be verified by re-running it (CLAUDE.md)."""
-    # the issue-#6 guard clause must still be in it (belt and braces on the code guard)
     assert "NEVER touch property values" in new_fix.BATCH_FIX_PROMPT
     assert "Do NOT translate" in new_fix.BATCH_FIX_PROMPT
 
@@ -204,13 +190,6 @@ def test_new_tree_reuses_the_kernel_instead_of_copying_it():
         assert dup not in src_txt, f"{dup} was copied into the new tree instead of imported"
 
 
-# --------------------------------------------------------------------------- #
-# 2. Pure functions, both trees — bare-clone safe.
-# --------------------------------------------------------------------------- #
-# (subject class, predicate, object class, expect_swapped) — reversed, correct,
-# unknown predicate, unknown class. Expectations are concrete: (Organization,
-# Facility) is the only legal direction for ownsFacility per schema.json, so the
-# reversed pair is the only one that swaps.
 DIRECTION_CASES = [
     ("Facility", "ownsFacility", "Organization", True),
     ("Organization", "ownsFacility", "Facility", False),
@@ -234,16 +213,12 @@ def test_fix_direction_matches_src():
                 "swap must preserve temporal_metadata")
         else:
             assert got == t, f"unswapped triple must be returned unchanged for {(s_cls, pred, o_cls)}"
-    # and the fixture is not vacuous: at least one case really swaps
     t = _triple()
     t["subject"]["class"], t["object"]["class"] = "Facility", "Organization"
     _, swapped = new_fix.fix_direction(t, edge_directions)
     assert swapped, "DIRECTION_CASES no longer contains a reversed triple"
 
 
-# (raw response, expected parsed value) — each case exercises one cleanup rule
-# (markdown fence, trailing comma, // comment, /* block */ comment, surrounding
-# prose) and the two failure modes (no JSON array found, unbalanced bracket).
 JSON_RESPONSE_CASES = [
     ('[{"a": 1}]', [{"a": 1}]),
     ('```json\n[{"a": 1}]\n```', [{"a": 1}]),
@@ -266,26 +241,20 @@ def test_extract_json_from_response_matches_src():
 def test_preserve_property_values_matches_src():
     """The 046e572 guard must survive the port unchanged."""
     cases = []
-    # translated name
     o = _triple(); r = copy.deepcopy(o); r["subject"]["properties"]["name"] = EN_NAME
     cases.append((o, r))
-    # invented key
     o = _triple(); r = copy.deepcopy(o); r["subject"]["properties"]["revenue"] = 1
     cases.append((o, r))
-    # dropped key
     o = _triple(subj_props={"source_id": "aaa_2024_p12_s3"})
     r = copy.deepcopy(o); del r["subject"]["properties"]["source_id"]
     cases.append((o, r))
-    # rounded value + tidied unit
     o = _triple(obj_props={"value": 1234.5, "unit": "tấn CO2e"})
     r = copy.deepcopy(o)
     r["object"]["properties"]["value"] = 1235
     r["object"]["properties"]["unit"] = "tCO2e"
     cases.append((o, r))
-    # honest repair
     o = _triple(predicate="ownsFacilty"); r = copy.deepcopy(o); r["predicate"] = "ownsFacility"
     cases.append((o, r))
-    # malformed originals
     for bad in (None, "not a dict", {"subject": None}):
         cases.append((bad, _triple()))
 
@@ -307,7 +276,6 @@ def test_enforce_temporal_invariants_matches_src():
         # unparseable date, left alone
         _triple(subj_props={"valid_from": "ngày 31 tháng 12 năm 2024"}),
     ]
-    # a news T2 node missing date_uncertain
     news = _triple()
     news["object"]["class"] = "Controversy"
     news["object"]["properties"]["source_type"] = "news"
@@ -317,14 +285,10 @@ def test_enforce_temporal_invariants_matches_src():
     t_new = copy.deepcopy(triples)
     s_new = new_fix.enforce_temporal_invariants(t_new)
 
-    # the fixture really fires every counter — otherwise this compares four zeros
     for k, v in s_new.items():
         assert v > 0, f"counter {k} never fired; fixture is vacuous: {s_new}"
 
 
-# --------------------------------------------------------------------------- #
-# 3. Real corpus — the strong arms. SKIP on a bare clone.
-# --------------------------------------------------------------------------- #
 def test_load_triples_from_file_matches_src_on_real_pages():
     files = real_page_files(limit=200)
     if not files:
@@ -418,8 +382,6 @@ def test_renormalize_existing_matches_src_and_is_idempotent():
             new_fix.renormalize_existing(d_new, entity_classes, edge_labels, edge_directions)
             out_new = (d_new / "all_validated_triples.json").read_text(encoding="utf-8")
 
-            # idempotency: the file on disk is already normalized, so a second pass
-            # must be a no-op. If it is not, every re-run silently rewrites the graph.
             new_fix.renormalize_existing(d_new, entity_classes, edge_labels, edge_directions)
             out_twice = (d_new / "all_validated_triples.json").read_text(encoding="utf-8")
             assert out_twice == out_new, "renormalize_existing is not idempotent"
@@ -428,9 +390,6 @@ def test_renormalize_existing_matches_src_and_is_idempotent():
     print("     (a second pass changes nothing)")
 
 
-# --------------------------------------------------------------------------- #
-# 4. Phase 2 — the paid branch, driven with a stub in BOTH trees.
-# --------------------------------------------------------------------------- #
 def _tampering_llm(batch, schema, client, rate_limiter, model, cached_content=None):
     """An 'honest repair' plus the silent tampering issue #6 warns about."""
     out = []
@@ -488,20 +447,13 @@ def test_phase2_repair_path_matches_src_with_a_stubbed_llm():
         _unquiet(prev)
 
     assert len(got_new) == 1, f"expected the repaired triple to be kept, got {len(got_new)}"
-    # the honest repair survived...
     assert got_new[0]["predicate"] == "ownsFacility", "the repair was lost"
-    # ...and the guard is wired into process_all_files, not just preserve_property_values itself
     assert got_new[0]["subject"]["properties"]["name"] == VN_NAME, (
         "the stage wrote the LLM's translated name — "
         "preserve_property_values is not wired into process_all_files")
     print("     (repair kept, tampering blocked)")
 
 
-# --------------------------------------------------------------------------- #
-# 5. Gemini explicit context caching for phase 2 (issue #11): one cache for the
-# whole run (the fixed SCHEMA block of BATCH_FIX_PROMPT), reused via
-# cached_content= across every batch.
-# --------------------------------------------------------------------------- #
 class _FakeCachedContent:
     def __init__(self, name):
         self.name = name
@@ -648,11 +600,6 @@ def test_run_phases_without_ctx_cache_never_touches_caches_api():
     print("     (no ctx_cache -> caches.create never called, header sent inline as before)")
 
 
-# --------------------------------------------------------------------------- #
-# 2026-08-04: the additive OpenAI path for phase 2 (added 2026-07-29) was removed
-# outright — no OpenAI fallback anywhere in this project any more. `fix_batch_with_llm`
-# only ever takes a `genai.Client`-shaped object now.
-# --------------------------------------------------------------------------- #
 def test_fix_batch_with_llm_gemini_client_takes_the_gemini_branch():
     """A plain object() (stands in for a genai.Client in these tests) drives the
     (now sole) gemini branch and throttles through rate_limiter."""

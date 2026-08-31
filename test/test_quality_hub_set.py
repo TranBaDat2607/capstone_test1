@@ -108,9 +108,6 @@ def _degrees(nodes: List[Dict[str, Any]], edges: List[Dict[str, Any]]) -> List[i
     return degrees
 
 
-# --------------------------------------------------------------------------- #
-# esg_kg.metric.hub — unit coverage
-# --------------------------------------------------------------------------- #
 def test_load_issuer_alias_index_maps_every_alias_to_its_ticker():
     idx = mhub.load_issuer_alias_index(ISSUER_REGISTRY)
     assert idx[quality.normalize_name("CTCP An Vui")] == "AVI"
@@ -175,21 +172,14 @@ def test_hub_barred_indices_unions_every_cluster():
     assert mhub.hub_barred_indices(clusters) == {0, 1}
 
 
-# --------------------------------------------------------------------------- #
-# Integration: report/quality.py's q7_traversability must bar the WHOLE
-# registry-driven hub set, not just the single global max-degree node.
-# --------------------------------------------------------------------------- #
 def test_q7_traversability_bars_the_whole_registry_not_just_the_global_max():
     nodes, edges = two_issuer_graph()
 
-    # No registry passed -> fallback single-max-degree-node behaviour (node 0
-    # only barred) -- this is what the OLD code always did.
     old_equivalent = quality.q7_traversability(nodes, edges, max_hops=4, skip_slow=False)
     assert old_equivalent["d_claims_structural_path_to_conduct_pct"] == 100.0, (
         "fixture precondition: with only node 0 barred, BOTH claims must look "
         "reachable -- this reproduces the bug GRAPH_IMPROVEMENT_PLAN.md section 1.3 describes")
 
-    # Registry passed -> both issuer clusters (node 0 AND node 1) barred.
     new_result = quality.q7_traversability(nodes, edges, max_hops=4, skip_slow=False,
                                            issuer_registry=ISSUER_REGISTRY)
     assert new_result["d_claims_structural_path_to_conduct_pct"] == 50.0, (

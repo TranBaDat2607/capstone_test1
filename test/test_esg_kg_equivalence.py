@@ -43,7 +43,6 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO / "src"))
 
-# --- the esg_kg package ---------------------------------------------------------
 from esg_kg.core import dates as new_dates  # noqa: E402
 from esg_kg.core import graph_patch as new_graph_patch  # noqa: E402
 from esg_kg.kpi import canonicalize as new_canonicalize  # noqa: E402
@@ -59,16 +58,9 @@ SCHEMA_FILE = REPO / "config" / "schema.json"
 TRIPLES_FILE = REPO / "graph_output" / "validated" / "all_validated_triples.json"
 RESOLVED_FILE = REPO / "graph_output" / "resolved" / "resolved_graph.json"
 
-# Where the corpus arms actually READ from: the real artifact when the HF
-# snapshot is pulled, otherwise the committed synthetic fixture so the arms run
-# on a bare clone instead of silently skipping. TRIPLES_FILE/RESOLVED_FILE above
-# stay pinned to the canonical locations because several wiring assertions below
-# compare the stages' own DEFAULT_* constants against them.
 TRIPLES_DATA, TRIPLES_IS_FIXTURE = resolve_artifact("validated")
 RESOLVED_DATA, RESOLVED_IS_FIXTURE = resolve_artifact("resolved")
 
-# How many real triples to run through validate_triple. A cap, not a sample:
-# drift shows up in the first few hundred, and the test must stay fast.
 CORPUS_CAP = 5000
 
 _skips: list = []
@@ -106,12 +98,7 @@ def org_names(triples: list) -> list:
     return names
 
 
-# --------------------------------------------------------------------------- #
-# core/paths.py  — REPO_ROOT and the constants stages copy-pasted identically
-# --------------------------------------------------------------------------- #
 def test_paths_repo_root_is_the_marker_directory():
-    # the marker-based lookup must land on the actual repo root — the single
-    # anchor every stage path is built from.
     assert new_paths.REPO_ROOT == REPO
 
 
@@ -124,9 +111,6 @@ def test_paths_constants_are_repo_relative():
 
 
 def test_paths_root_override_is_validated():
-    # New behaviour (no src/ equivalent): the escape hatch must still verify the
-    # marker, so a typo'd ESG_KG_REPO_ROOT fails loudly instead of silently
-    # pointing every stage at the wrong tree.
     import os
 
     prev = os.environ.get("ESG_KG_REPO_ROOT")
@@ -145,9 +129,6 @@ def test_paths_root_override_is_validated():
             os.environ["ESG_KG_REPO_ROOT"] = prev
 
 
-# --------------------------------------------------------------------------- #
-# core/schema.py  — load_schema_sets, validate_triple, get_identity_keys
-# --------------------------------------------------------------------------- #
 def test_schema_load_schema_sets_has_the_documented_shape():
     """Exact class/edge CONTENT is test_schema_contract.py's job (run after any hand-edit
     to schema.json); this checks load_schema_sets() wires the file into the right shape."""
@@ -238,9 +219,6 @@ def test_schema_validate_triple_on_real_corpus_is_well_formed():
     print(f"     ({checked} real triples compared)")
 
 
-# --------------------------------------------------------------------------- #
-# core/naming.py  — normalize_name, name_tokens, merge_preserving_edits
-# --------------------------------------------------------------------------- #
 def test_naming_normalize_name_on_hand_picked_cases():
     """Every transform normalize_name applies, against golden values captured directly
     from the function (2026-07-29) — a change to OCR_FIXES/LEGAL_FORMS/SYNONYMS that
@@ -323,7 +301,6 @@ def test_naming_merge_preserving_edits_keeps_human_edits():
     assert merged["needs_review"] == [], \
         "an entry moved to exclusions by a human must not come back as needs_review"
 
-    # empty prior registry (the first-run path) must just adopt the fresh draft
     empty = {"aliases": [], "exclusions": [], "needs_review": []}
     merged_empty = new_naming.merge_preserving_edits(empty, new_reg)
     assert merged_empty["canonical_name"] == new_reg["canonical_name"]
@@ -331,18 +308,11 @@ def test_naming_merge_preserving_edits_keeps_human_edits():
 
 
 def test_naming_constants_are_non_empty():
-    # normalize_name is only as stable as the tables it reads; drift in these is
-    # exactly the failure this file exists to catch. Exact content isn't pinned here
-    # (these tables grow with new spellings/legal forms over time by design) — the
-    # hand-picked normalize_name/name_tokens cases above are what catch a broken entry.
     assert new_naming.OCR_FIXES
     assert new_naming.LEGAL_FORMS
     assert new_naming.SYNONYMS
 
 
-# --------------------------------------------------------------------------- #
-# core/dates.py  — ISO_DATE_RE, normalize_date_string, date_start_key
-# --------------------------------------------------------------------------- #
 def test_dates_normalize_date_string_on_every_spelling():
     """Every spelling the step02 LLM has been seen to emit, plus the reject paths.
     Golden values captured directly from normalize_date_string() (2026-07-29)."""
@@ -381,8 +351,6 @@ def test_dates_date_start_key_on_every_spelling():
         got = new_dates.date_start_key(c)
         assert got == expected, f"case {c!r}: got {got!r}, expected {expected!r}"
 
-    # the P4 collapse this function exists for: "2011" and "2011-01-01" are one
-    # instant, not two versions
     assert new_dates.date_start_key("2011") == new_dates.date_start_key("2011-01-01")
 
 
@@ -421,19 +389,6 @@ def test_dates_on_real_corpus_is_well_formed():
     print(f"     ({len(set(map(repr, values)))} distinct real date values compared)")
 
 
-# --------------------------------------------------------------------------- #
-# report/quality.py  — step00. The first whole STAGE moved, not just a helper.
-#
-# A stage has no single return value to compare, so equivalence is asserted on
-# the three things that actually define it: the module constants (the T1/T2/T3
-# tier map is a contract other files import), every Q1-Q8 metric function, and
-# the rendered Markdown.
-#
-# Q7's BFS arms cost ~44s per call on the real 10k-node graph (measured), so the
-# real-corpus arm runs with skip_slow=True and the (c)/(d) BFS is covered by the
-# synthetic graph below instead, where it is instant. That synthetic graph is
-# also what lets these arms run on a bare clone.
-# --------------------------------------------------------------------------- #
 def mini_graph() -> tuple:
     """A hand-built graph that trips EVERY counter step00 reports.
 
@@ -698,13 +653,9 @@ def test_quality_mini_graph_is_not_vacuous():
     assert rep["q7_traversability"]["isolated_nodes"] > 0
     assert q7["hubs"][0]["ticker"] == "_unregistered", "no registry passed -> single-node fallback"
     assert q7["hubs"][0]["degree"] == q7["r5_max_hub_degree"] > 0
-    # both BFS arms must land strictly between 0% and 100% — that is the only
-    # proof the reachable AND unreachable branches are both walked
     for key in ("c_masked_queries_answerable_pct", "d_claims_structural_path_to_conduct_pct",
                 "r1_reachability_pct", "r1_trainable_pct"):
         assert 0.0 < q7[key] < 100.0, f"q7.{key} = {q7[key]} exercises only one branch"
-    # R1' must actually differ from R1 (barring the hub changes the answer) —
-    # otherwise this fixture wouldn't prove the hub-exclusion code path fires.
     assert q7["r1_prime_hub_free_pct"] != q7["r1_reachability_pct"]
     assert q7["r1_prime_edges_total"] < q7["r1_edges_total"], (
         "barring the hub must drop at least one edge from R1's denominator")
@@ -807,14 +758,6 @@ def test_quality_metrics_on_real_graph_are_well_formed():
     print(f"     ({len(nodes)} nodes / {len(edges)} edges compared, Q7 BFS skipped by design)")
 
 
-# --------------------------------------------------------------------------- #
-# step03c -> esg_kg.kpi.canonicalize  (STAGE arm)
-# --------------------------------------------------------------------------- #
-# A stage has no single return value, so — as with step00 — the arm compares the
-# three things that define it: module constants, each pure function, and the full
-# output produced on real input. The vocabulary inputs (kpi_definitions_construction
-# .json, config/kpi_type_aliases.json) are BOTH tracked in git, so every arm except
-# the corpus one runs on a bare clone.
 KPI_DEFS_FILE = REPO / "kpi_definitions_construction.json"
 KPI_ALIASES_FILE = REPO / "config" / "kpi_type_aliases.json"
 
@@ -942,10 +885,6 @@ def test_canonicalize_corpus_arm_is_not_vacuous():
     if not triples:
         _skip("canonicalize/not-vacuous", f"{TRIPLES_FILE.name} absent")
         return
-    # Tier B: this arm asserts real corpus SCALE (>100 distinct KPI nodes) and
-    # that all four matcher tiers fire. The synthetic fixture is deliberately
-    # tiny, so it cannot satisfy either -- and lowering the thresholds to fit
-    # would turn a real check into a decorative one. Skip instead.
     if TRIPLES_IS_FIXTURE:
         _skip("canonicalize/not-vacuous", skip_if_fixture(True))
         return
@@ -959,20 +898,6 @@ def test_canonicalize_corpus_arm_is_not_vacuous():
         assert methods.get(tier, 0) > 0, f"tier {tier!r} never fired: {methods}"
 
 
-# --------------------------------------------------------------------------- #
-# core/graph_patch.py  — GraphPatch / temporal_md, extracted out of step05c
-# --------------------------------------------------------------------------- #
-# These get their own arm group rather than riding along with the step05c stage arm
-# below, because their lifetime is different: step05d imports GraphPatch/temporal_md
-# STRAIGHT FROM CORE once it moves, so the shared contract has to be pinned
-# independently of how step05c happens to use it. Per DESIGN.md §5.3 this group only
-# retires when `src/step05c_link_standard_indicators.py` is deleted — later than the
-# stage arm.
-#
-# The fixture uses real schema labels so add_edge's direction check is exercised against
-# the real rules: partOf (StandardIndicator -> Regulation) is legal, measuredUnder
-# (Regulation -> StandardIndicator) is a real label pointed the wrong way, and
-# "notARealLabel" is not in the schema at all.
 def patch_fixture() -> dict:
     """A tiny graph in a fixed order, so the append-only prefix check has something to hold."""
     return {
@@ -1003,12 +928,10 @@ def drive_graph_patch(mod, schema_sets) -> dict:
     gp = mod.GraphPatch(graph, *schema_sets)
     out = {"n_nodes0": gp.n_nodes0, "n_edges0": gp.n_edges0}
 
-    # find(): index 0 is a legitimate answer, which is why the stage tests `is None`
     out["find_doc"] = gp.find("Regulation", "Thông tư 96/2020/TT-BTC")
     out["find_indicator"] = gp.find("StandardIndicator", "TT96-6.1.1")
     out["find_missing"] = gp.find("StandardIndicator", "TT96-9.9.9")
 
-    # dedup by identity: the indicator already there is found, a new one is appended
     out["ensure_dup"] = gp.ensure_node(
         {"class": "StandardIndicator", "properties": {"id": "TT96-6.1.1", "name": "khác hẳn"}})
     out["ensure_new"] = gp.ensure_node(
@@ -1144,23 +1067,11 @@ def test_graph_patch_assert_append_only_draws_the_documented_line():
                         "edge_replaced", "edge_dropped")), verdicts
 
 
-# --------------------------------------------------------------------------- #
-# step05c -> esg_kg.resolve.indicators  (STAGE arm)
-# --------------------------------------------------------------------------- #
-# Same three layers as step00/step03c: module constants, each pure function, and the
-# full output of a real run(). run() reads and writes files, so "output" here means a
-# temp workspace: graph + defs + crosswalk + catalog in, patched graph + stats out.
-# The Workspace shape is lifted from test/test_indicator_axis.py:150 — same ten
-# Namespace fields the stage's main() builds.
 CROSSWALK_FILE = REPO / "config" / "standard_crosswalk.json"
 GRI_CATALOG_FILE = REPO / "config" / "gri_catalog.json"
 
-# The four indicators the fixture needs: 6.1.1 (GHG, keyword tier + Emission), 6.5.1/6.5.2
-# (the Penalty split), 6.6.3 (social, but its code contains "6.3" — the pillar trap).
 FIXTURE_IDS = ("TT96-6.1.1", "TT96-6.5.1", "TT96-6.5.2", "TT96-6.6.3")
 
-# What step05c mints. Stripping these is what turns the real-graph arm from a no-op
-# re-run into a full one — see strip_axis().
 AXIS_EDGE_LABELS = {"partOf", "measuredUnder", "equivalentTo", "alignsWithIndicator"}
 
 
@@ -1243,8 +1154,6 @@ def run_indicators(mod, graph, defs, crosswalk, catalog, **overrides) -> tuple:
         for k, v in overrides.items():
             setattr(args, k, v)
         mod.run(args)
-        # --dry-run returns before writing either file; "no stats" is itself part of the
-        # behaviour being compared, so report None rather than papering over it.
         stats = json.loads(stats_path.read_text(encoding="utf-8")) if stats_path.exists() else None
         return (json.loads(paths["resolved_graph"].read_text(encoding="utf-8")), stats)
     finally:
@@ -1282,10 +1191,6 @@ def strip_axis(graph: dict) -> dict:
 
 
 def test_indicators_constants_are_the_documented_shape():
-    # TODAY / norm belong to core/graph_patch.py now — their arms are test_graph_patch_*
-    # above. KEYWORDS is a large, growing lookup table (same treatment as naming's
-    # OCR_FIXES/LEGAL_FORMS/SYNONYMS) — checked for shape/coverage, not pinned verbatim;
-    # the match_keyword probes below are what catch an entry breaking.
     assert new_indicators.DOC_OF_PREFIX == [
         ("TT96-", ("TT96", "Regulation")), ("QD2171", ("QD2171", "Regulation")),
         ("QCVN09", ("QCVN09", "Standard")), ("SSCIFC-", ("SSCIFC", "Standard"))]
@@ -1347,12 +1252,10 @@ def test_indicators_pure_helpers_on_hand_picked_cases():
         "TT96-6.1.1": "Môi trường", "TT96-6.5.1": "Môi trường", "TT96-6.5.2": "Môi trường",
         "TT96-6.6.3": "Xã hội", "GRI 2-27": "Quản trị", "GRI 305-1": "Môi trường"}
 
-    # load_gri_catalog degrades to {} on a missing/broken file
     assert new_indicators.load_gri_catalog(REPO / "config" / "does_not_exist.json") == {}
     if GRI_CATALOG_FILE.exists():
         assert isinstance(new_indicators.load_gri_catalog(GRI_CATALOG_FILE), dict)
 
-    # restamp mutates in place; TT96-6.6.3's stale "Môi trường" -> authority's "Xã hội"
     authority = new_indicators.pillar_authority(defs, catalog)
     nodes = fixture_graph()["nodes"]
     changes = new_indicators.restamp_pillars(nodes, authority)
@@ -1360,8 +1263,6 @@ def test_indicators_pure_helpers_on_hand_picked_cases():
     restamped = next(n for n in nodes if n["class"] == "StandardIndicator")
     assert restamped["properties"]["pillar"] == "Xã hội"
 
-    # keyword tier: longest matching phrase wins (pinned as-is; changing it is a
-    # behaviour commit under DESIGN.md §5.3, not something to "fix" toward older docs)
     kw = new_indicators.build_keyword_index(defs, catalog)
     probes = [
         ("Cam kết giảm phát thải khí nhà kính đến 2030", "TT96-6.1.1"),
@@ -1405,9 +1306,7 @@ def test_indicators_temp_workspace_arm_is_not_vacuous():
     assert stats["penalty_self_reported_zero"] > 0, stats
     assert stats["unmapped_kpi_ids"], stats
     assert stats["pillar_restamped"] > 0, stats
-    # the confirmed-only gate really gated: TT96-6.1.1's row is needs_review
     assert stats["created_edges"]["equivalentTo"] == 1, stats
-    # and the document node already in the graph was reused, not duplicated
     docs = [n for n in graph["nodes"]
             if n.get("class") == "Regulation"
             and (n.get("properties") or {}).get("name") == "Thông tư 96/2020/TT-BTC"]
@@ -1432,7 +1331,6 @@ def test_indicators_on_the_real_graph_rebuilds_the_axis():
 
     graph, stats = run_indicators(new_indicators, base, defs, crosswalk, catalog)
 
-    # not vacuous: the stripped graph really was rebuilt, not re-read
     for label in ("partOf", "measuredUnder", "equivalentTo", "alignsWithIndicator"):
         assert stats["created_edges"].get(label, 0) > 0, \
             f"{label} not rebuilt on the real graph: {stats['created_edges']}"
